@@ -9,7 +9,7 @@ public class Version {
    
     private static final int MAJOR = 1;
     private static final int MINOR = 0;
-    private static final int REVISION = 12;
+    private static final int REVISION = 13;
     private static final String RELEASE = "Beta";
     
 	public final static String expectedBerkeleyDBVersion = "6.2.7";

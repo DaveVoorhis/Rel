@@ -1,5 +1,8 @@
 Last Exception* number: RS0405
 
+Version 1.0.13:
+
+
 Version 1.0.12:
 
   - note: Rel: Updated storage engine to Oracle Berkeley DB 
