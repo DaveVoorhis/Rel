@@ -1,0 +1,718 @@
+Last Exception* number: RS0405
+
+Version 1.0.12:
+
+  - note: Rel: Updated storage engine to Oracle Berkeley DB 
+       Java Edition version 6.2.7
+  - enhancement: Rel: Database resilience after power failures or system
+       crashes considerably increased.
+  - fix: Rel: Updates to relation-valued parameters, which created side-effects,
+       have been disallowed.
+  - fix: Rel: TREAT_AS_type and IS_type did not work correctly with
+       static inheritance.  This has been fixed.
+  - fix: Rel: The following...
+	   TYPE Temperature UNION;
+	   TYPE Temperature_Normal IS {Temperature POSSREP {t INTEGER}};
+	   TYPE Temperature_NoReading IS {Temperature POSSREP {}};
+	   TYPE Temperature_OutOfRange IS {Temperature POSSREP {}};
+	   VAR Readings REAL RELATION {timestamp INTEGER, temp Temperature} KEY {timestamp};
+	   INSERT Readings REL {
+	    TUP {timestamp 12938, temp Temperature_Normal(33)},
+  	    TUP {timestamp 12940, temp Temperature_Normal(33)},
+  	    TUP {timestamp 12943, temp Temperature_Normal(34)},
+  	    TUP {timestamp 12948, temp Temperature_NoReading()},
+  	    TUP {timestamp 12955, temp Temperature_OutOfRange()}
+	   };
+	   ...crashed due to hash error on Temperature_NoReading(), etc.  Fixed.
+  - fix: Rel: Some CONSTRAINT failures display an un-helpful "Transaction is not active" error
+    message.  Corrected.
+
+Version 1.0.11:
+  - enhancement: DBrowser: now displays friendlier messages when attempting to open
+    an already-open database, or when a connection attempt to a remote server
+    fails.
+  - enhancement: DBrowser: provides option to hide headings and declared types in headings.
+  - enhancement: DBrowser: now has "Get File Path" button to 
+    facilitate putting file paths in source code.  This facilitates use of external
+    data sources, described below.
+  - enhancement: Rel: syntax improvements - parentheses around 
+    WRAP, UNWRAP, GROUP, UNGROUP removed. 
+    UNGROUP (a) and UNWRAP (a) now UNGROUP a and UNWRAP a 
+  - enhancement: Rel: all error messages uniquely identified
+  - enhancement: Rel: Update to version 6.0.11 of Berkeley Java DB
+  - enhancement: Rel: Simple support for CSV/XLS/XLSX/JDBC sources as relvars
+      e.g., VAR myvar EXTERNAL CSV "/home/dave/test.csv";
+      e.g., VAR myvar EXTERNAL XLS "/home/dave/test.xls" DUP_REMOVE;
+      e.g., VAR myvar EXTERNAL XLS "/home/dave/test.xlsx" DUP_COUNT;
+      e.g., VAR myvar EXTERNAL XLS "/home/dave/test.xlsx" AUTOKEY;
+      e.g., VAR myvar EXTERNAL JDBC "<host>,<user>,<password>,<database>.<table>,<driverpath>,<drivername>";
+  - enhancement: Rel: Support for user-defined relvar types as extensions of
+    TableCustom and RelvarCustomMetadata.  Must be installed in CustomRelvars folder of
+    Rel installation and/or CustomRelvars folder of a database folder.  If an attempt
+    is made to create a duplicate custom relvar in a database folder, it is silently
+    ignored.
+  - enhancement: Rel: 'x RENAME {}' is now valid syntax.
+  - enhancement: Rel: Errors occurring in a database constraint are treated as if
+    the constraint evaluates to false, and the failing constraint is named in
+    the error message.
+  - fix: DBrowser: Fixed minor errors parsing certain error messages.
+  - fix: Rel: Given...
+	   VAR S BASE RELATION { SNO CHAR, SNAME CHAR, STATUS INTEGER, CITY CHAR } KEY {SNO};
+	   VAR SP BASE RELATION { SNO CHAR, PNO CHAR, QTY INTEGER } KEY {SNO, PNO};
+	   VAR SPQ BASE INIT(EXTEND S: {PQ := RELATION {TUPLE {SNO SNO}} COMPOSE SP}) KEY{SNO};
+	...these failed: 
+	   UPDATE SPQ WHERE SNO = "S2": {INSERT PQ RELATION {TUPLE {PNO "P5", QTY 500}}};	
+	   UPDATE SPQ WHERE SNO = "S2": {UPDATE PQ WHERE PNO="P5": {QTY := 250}};	
+	   UPDATE SPQ WHERE SNO = "S2": {DELETE PQ WHERE PNO="P5"};
+    This has been corrected.
+  - fix: Rel: The following should return true; returns false.
+	 RELATION  {
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P5"}
+	        }},
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P2"}
+	        }},
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P4"}
+	        }}
+	 } 
+	 = 
+	 RELATION  {
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P5"}
+	        }},
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P2"}
+	        }},
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P4"}
+	        }}
+	 }
+    Corrected by making only Value derivatives that define a total order be 
+    Comparable.  This meant converting a number of TreeSetS to HashSets, which 
+    may have an impact (+ve? -ve?) on performance.
+  - fix: Rel: JOIN {}, TIMES {}, and COMPOSE {} now return DEE.
+  - fix: Rel: XUNION {}, D_UNION {}, UNION {} now return TUPLE {}.
+  - fix: Rel: XUNION {} {}, D_UNION {} {}, UNION {} {} return DUM.
+  - fix: Rel: INTERSECT {} and INTERSECT {} {} throw an error.
+  - fix: Rel: Type checking was too weak on comparison operators, allowing incorrect
+    expressions like 'tuple{x 1} = tuple{y 2, x 1}' to return a result instead
+    of throwing an error.  Fixed.
+  - fix: Rel: RELATION {TUPLE {x 10, y DEE}} WHERE x = 100 UNGROUP y throws fatal
+    error.  Should throw type error due to attempt to ungroup integer 100. Fixed. 
+  - fix: Rel: Built-in operator name OP_GREATHERTHANOREQUALS corrected to
+    OP_GREATERTHANOREQUALS
+  - fix: Rel: assignment to a real relvar altered its CreationSequence.  Fixed.
+  - fix: Rel: CAST_AS_INTEGER("blah") and CAST_AS_RATIONAL("blah") should have
+    thrown semantic errors, not fatal errors.  Fixed.
+
+Version 1.0.10:
+  - fix: Rel tests: revised TestDelete0 and TestRelvar26 to 
+    eliminate order-dependent testing.
+  - fix: Rel: reversed execution order of statements in multiple
+    assignment to prevent counterintuitive behaviour in
+    partial implementation of multiple assignment. Now executes
+    from first to last.
+  - fix: Rel: passing a non-boolean to the WHERE clause of an UPDATE 
+    would result in a crash.  Fixed.
+  - enhancement: Rel: Added partial support for anonymous operators. 
+    This is a work-in-progress documented at 
+    http://dbappbuilder.sourceforge.net/docs/AnonymousAndFirstClassOperatorsInTutorialD.pdf
+  - enhancement: Rel: Update to version 5.0.58 of Berkeley Java DB
+  - enhancement: Rel: Various changes to support DBE syntax:
+    EXTEND:
+       old: EXTEND r ADD (p AS q, a AS b)
+       new: EXTEND r : {q := p, b := a}
+    UPDATE:
+       old: UPDATE r (p := q, b := a)
+       new: UPDATE r : {p := q, b := a}
+    RENAME:
+       old: r RENAME (a AS b)
+       new: r RENAME {a AS b}
+    SUMMARIZE:
+       old: SUMMARIZE p ADD (SUM(x) AS y)
+       new: SUMMARIZE p : {y := SUM(x))
+    WITH:
+       old: WITH a AS b, x AS y : ...
+       new: WITH (b := a, y := x) : ...
+    WRAP:
+       old: r WRAP ({a, b} AS c, {d, e} AS f)
+       new  (r WRAP ({a, b} AS c)) WRAP ({d, e} AS f)
+    UNWRAP:
+       old: r UNWRAP (a, b)
+       new: (r UNWRAP (a)) UNWRAP (b)
+    GROUP:
+       old: r GROUP ({a, b} AS c, {d, e} AS f)
+       new  (r GROUP ({a, b} AS c)) GROUP ({d, e} AS f)
+    UNGROUP:
+       old: r UNGROUP (a, b)
+       new: (r UNGROUP (a)) UNGROUP (b)
+    Removed ANY and ALL synonyms for OR and AND.
+    Implemented n-adic COMPOSE.
+    Implemented XUNION, TIMES, I_MINUS, I_DELETE, 
+       D_INSERT and updated INSERT to silently 
+       ignore duplicate tuples.
+  - enhancement: Rel: POSSREP keyword ORDERED now
+    recognised in addition to ORDINAL, but is a no-op.
+  - enhancement: Rel: Improved shutdown procedure is less
+    likely to result in corrupt database if there are
+    problems encountered during shutdown.
+  - enhancement: Scripts: DatabaseToScript.d, Views.d
+    changed to accommodate support for DBE syntax.
+  - enhancement: DBrowser: Splash screen disappears 
+    as soon as Ok appears.
+  - enhancement: DBrowser: Error messages that specify
+    line and column now cause the cursor to move
+    to the position of the error in the source.
+
+Version 1.0.9 (DBrowser 2.12):
+  - enhancement: Rel: Update to version 5.0.34 of Berkeley Java DB
+  - enhancement: Rel: TempStorageTuples and TempIndexTuples now dynamically switch from 
+    in-memory to disk-based storage.  This may fix peculiar bugs re duplicate btree keys,
+    etc., too.
+  - fix: Rel: Fixed reference to "ca.mb.armchair.rel3.values.ValueChar" to
+    "ca.mb.armchair.rel3.values.ValueCharacter" in ForeignCompilerJava.java.  This
+    fixes problems defining new Java-based types that define methods/operators which use
+    CHAR parameters.
+  - fix: DBrowser: Altered ResponseParser.jj grammar in literal() rule to include
+    LOOKAHEAD(3) to avoid warning.
+  - fix: Rel3Client: ResponseParser.jj grammar to admit unicode (UNICODE_INPUT = true).
+  - fix: Rel: TutorialD.jjt grammar to admit unicode (UNICODE_INPUT = true).
+  - fix: Rel: ValueCharacter.stripDelimitedString() now performs unquote() on strings,
+    to correctly invert toParsableString().  This will allow, e.g., backups
+    to restore quoted strings without introducing extraneous backslashes.
+  - enhancement: Rel: Implemented mechanism to ensure expected version of Berkeley Java 
+    DB is installed.
+  - enhancement: Scripts: TypeDate.d now includes THE_readable element to obtain
+    a human-friendly date.
+  - enhancement: DBrowser: Crashes will now send error reports.
+  - fix: RelTest redesigned to allow tests to run in random order.
+  - enhancement: Rel: Improved likelihood that JDK tools.jar will be used for
+    Java compilation, instead of external javac.
+
+Version 1.0.8 (DBrowser 2.11):
+  - enhancement: Rel: Improved error reporting on Java-based built-in 
+    operators when they fail.  E.g., SUBSTRING("blah", 1, 20) used 
+    to fail in an un-helpful manner; now the error message goes some 
+    way toward explaining and locating the problem.
+  - fix: Rel: The following failed with a low-level error; now fixed:
+	   var items private relation { id  integer, name  character } init ( 
+	    relation { 
+	     tuple {id 1, name "hi" }, 
+	     tuple {id 2, name "lo"}, 
+	     tuple {id 3, name "do"} } ) key {id};
+	   var result private relation { r relation  same_heading_as (items) } key { r };
+	   var inner private relation same_heading_as (items) key {id};
+	   insert inner relation { tuple from items where id = 1 };
+	   insert result  relation {tuple {r inner }};
+   - fix: Rel: Updating an RVA caused an error like the following:
+     "ERROR: '%tuple23' has not been defined."  This has been corrected. E.g.:
+	 var x private relation {a integer, b relation {c integer}} 
+	         init (relation {tuple {a 1, b relation {tuple {c 2}}}}) 
+	         key {a};
+	 update x where a = 1 (b := update (b) (c := 33));
+   
+Version 1.0.7 (DBrowser 2.10):
+  - enhancement: Rel: Built-in operator GET_UNIQUE_NUMBER
+    returns an integer guaranteed to be unique in a given
+    database.
+  - fix: Rel: given TYPE POSINT IS {INTEGER CONSTRAINT INTEGER > 0},
+    MAX(RELATION {TUPLE {X 1}, TUPLE {X 2}}, X) failed due to a missing
+    target.  Fixed.
+  - fix: Rel: set longer transaction timeout
+    in RelDatabase, to reduce likelihood of spurious
+    timeouts in multithreaded applications.
+  - fix: Rel: The following...
+	   var cons real relation { id integer, kind integer, value  relation { price integer, quantity integer } }
+	   init
+	   ( relation {
+	    tuple { id 1, kind 1, value relation { tuple { price 1, quantity  5 } } },
+	    tuple { id 2, kind 1, value relation { tuple { price 1, quantity  5 } } }
+	    } )
+	   key { id, kind };
+	   var ccc private relation same_heading_as (cons { kind, value }) key {kind};
+	   var ddd private relation same_heading_as ((cons ungroup (value)) {kind, price, quantity}) key {kind, price};
+	   ddd := summarize (cons  ungroup (value)) by { kind, price } add ( sum ( quantity ) as quantity );
+	   output ddd group ( { price, quantity} as value);
+	   ccc := ddd group ( { price, quantity} as value);
+	...threw: Table: update failed: java.io.NotSerializableException: ca.mb.armchair.rel3.storage.RelvarPrivateCell
+	Fixed.
+  - fix: Rel: The following...
+	   var x real relation { a integer, b relation { c integer }} init ( relation {tuple {a 1, b relation {tuple {c 2}}}}) key {a};  
+	   var y private relation { c integer } init ( relation { tuple { c 88 }}) key {c};  
+	   update x where a = 1 ( b := y ); 
+	...threw: Table: update failed: java.io.NotSerializableException: ca.mb.armchair.rel3.storage.RelvarPrivateCell
+    Fixed.
+  - fix: Rel: Given the following...
+	   var notok private relation { a integer, b integer } init (relation {tuple { a 1, b 1 }}) key { a };
+	The following...
+	   delete notok where a = 3;
+	      -or-
+	   update notok where a = 1 ( b := 2 );
+	...threw: 'ERROR: Expected a relation-valued variable in DELETE ... WHERE' or
+	   'ERROR: Expected a relation-valued variable in UPDATE ... WHERE'.
+	Fixed.
+	
+Version 1.0.6:
+  - enhancement: Rel: Implemented <agg op inv> per
+    "Database Explorations", which subsumes <agg op inv>
+    per "TDRM".
+  - enhancement: Rel: Implemented synonyms for some
+    common keywords, as per "Database Explorations":
+      INTEGER = INT
+      RATIONAL = RAT
+      BOOLEAN = BOOL
+      TUPLE = TUP
+      RELATION = REL
+    Note that TABLE_DEE = DEE and TABLE_DUM = DUM
+    have been in Rel since the earliest versions.
+
+Version 1.0.5:
+  - fix: Rel: 
+	relation { x integer, y integer } {tuple{x 1, z 1}}
+    is accepted and yields 
+    relation { x integer, y integer } {tuple{x 1, y 1}}.  Fixed.
+  - fix: Rel: A change in the way the third-party storage
+    engine (Berkeley Java DB) reported errors resulted in 
+    possible Rel crashes, particularly when performing 
+    database updates after any Rel error (e.g., a syntax 
+    error) has been generated.
+
+Version 1.0.4:
+  - enhancement: Rel: Implemented inference of most specific common 
+    supertype (excluding Alpha), such that evaluating...
+       relation {
+          tuple {x triangle(point(0,0), point(2,3), point(7,4))}
+          tuple {x square(point(1,1), point(4,3))}
+       }
+    ...returns:
+       relation {x shape} {
+          tuple {x triangle(point(0,0), point(2,3), point(7,4))}
+          tuple {x square(point(1,1), point(4,3))}
+       }
+  - enhancement: Rel: Implemented selectors for immediate
+    subtypes of built-in types per Database Explorations 
+    Chapter 21 page 348 "Selectors for System Defined Types".
+  - fix: Rel: <derived possrep def list> should be allowed
+    to be empty if dummy type or derived from built-in type, 
+    but required at least one POSSREP.  E.g., the following 
+    legitimate definition was not allowed:
+      TYPE posint IS {INTEGER CONSTRAINT THE_VALUE(INTEGER) >= 0};
+    Fixed.
+  - fix: Rel: A bug has been corrected that could, in rare 
+    circumstances, cause a database to fail to open with an 
+    internal "LOG INTEGRITY" error.
+  - fix: Rel: A bug has been corrected that could, in rare
+    circumstances, cause corruption of user-defined type
+    values when inserted into a relvar immediately after
+    any Rel error (e.g., a syntax error) has been generated. 
+
+Version 1.0.3:
+  - fix: Rel: Performing a JOIN on relations with common
+    attributes that belong to a user-defined TYPE with at 
+    least one relation-valued component could
+    result in a Java exception.  Fixed.
+
+Version 1.0.2:
+  - fix: Rel: In some cases, the superset operator >= did not work
+    correctly.  E.g... 
+       WITH (S WHERE CITY = 'London') AS S1,
+            (SP RENAME (P# AS P#1)) AS SP1:
+                (P WHERE
+                   ((SP1 WHERE P#1=P#) {S#}) >= (S1 {S#}))
+    ...returned bogus results.  Fixed.
+
+Version 1.0.1:
+  - fix: Rel: Given relation with RVA having cardinality 0, e.g.:
+	  extend S {S#} add (relation {tuple {S# S#}} compose SP as SP_result).
+	Ungrouping this relation causes a java exception:
+	  (extend S {S#} add (relation {tuple {S# S#}} compose SP as SP_result)) 
+	     ungroup (SP_result)
+    Fixed.
+  - fix: Rel: This resulted in duplicate column names:
+	  sys.Catalog RENAME (Definition AS Name)
+    Fixed.
+  - fix: Rel: S JOIN SP JOIN P returned bogus result, due to
+    incorrect comparison of user-defined type values
+    in relvars in some cases.  Fixed.
+  - fix: Rel: GROUP with multiple AS clauses, or performing GROUP on a relation
+    with relation-valued attributes, e.g., ...
+      (sys.Catalog GROUP ({isVirtual, Name} as Blah, {Owner} as Blah2)) 
+    ...threw a Java exception.  This has been corrected.
+  - fix: DBrowser: DBrowser incorrectly displayed RATIONAL values of 
+    NaN, -Infinity and Infinity.  Fixed.
+  
+Version 1.0.0:
+  - fix: Rel: Relvar definitions with both
+    a defined heading and an INIT section did
+    not correctly map the INIT expression to
+    the heading.  E.g., in the following,
+    company_name and department_name wound up 
+    reversed:
+		VAR Department
+	    BASE RELATION {company_name CHAR, 
+	         department_name CHAR}
+	    INIT (RELATION {
+	      TUPLE {department_name 
+	           "Research and Development", 
+	           company_name "General Electronics"},
+	      TUPLE {department_name "Management", 
+	           company_name "Ads are Us"},
+	      TUPLE {department_name "Management", 
+	           company_name "General Electronics"}})
+	    KEY {department_name, company_name};
+  - fix: DBrowser: Enhanced mode now correctly displays
+    user-defined TYPE values with relation-valued
+    components.  Previously, these caused unpredictable
+    display quirks.
+  - enhancement: Rel: Given:
+	    TYPE Point POSSREP { x INTEGER , y INTEGER };
+	    TYPE Line UNION;
+	    TYPE Line2p IS { Line POSSREP 
+	    	{ p1 Point , p2 Point } };
+	    TYPE LineInfinite IS { 
+	    	Line POSSREP { points RELATION { p Point } } };
+	    VAR myvar3 REAL RELATION {x INTEGER, y Line} KEY {x};
+	    INSERT myvar3 RELATION {
+  	     TUPLE {x 1, y Line2p(Point(2, 2), Point(3,3))},
+  	     TUPLE {x 2, y LineInfinite(relation {
+  				TUPLE {p Point(3,4)}, TUPLE {p Point(4,2)}, 
+  				TUPLE {p Point(6,7)}})}
+	    };
+	A type "not compatible" error is generated by the INSERT 
+	because Line2p is neither a subtype or supertype of LineInfinite.  
+	The error message has been extended to recommend
+	the user specify an explicit relation heading.
+
+*** Update to Beta status, and version 1.0.0 designation ***
+
+Revision 0.3.20:
+  - enhancement: Rel: Builtin-in types may
+    now be subtyped, and symbolic operators
+    now invoke associated named operators.
+    This involves replacement of Scripts/*.
+    Java-based UDTs and UDOs have new
+    requirements.
+  - change: Rel: TCLOSE has been implemented,
+    though inefficiently, as it is based
+    on TRANCLO() from page 175 of TTM3.
+
+Revision 19:
+  - fix: Rel: Valid long integer values caused
+    an internal exception.  This has been
+    corrected.
+  - fix: Rel: Invalid rational values caused
+    an internal exception.  This has been
+    corrected. 
+  - fix: Rel: Attempting to select a user-
+    defined type that employs a CONSTRAINT 
+    employing a user-defined Java-based 
+    operator would cause an invalid constraint 
+    failure if the type and operator were 
+    defined, and the type selected, all 
+    in the same transaction.  This has been
+    corrected.
+
+Revision 18:
+  - change: Rel:
+    TTM non-conforming implicit tagged UNION 
+    construct has been removed.  Where this 
+    was supported:
+      TYPE List  
+	     POSSREP Node {data INTEGER, next List} 
+	     POSSREP Nothing {};
+	Use this:
+      TYPE List UNION;
+      TYPE Node IS {List 
+         POSSREP {data INTEGER, next List}};
+      TYPE Nothing IS {List POSSREP {}}; 
+  - fix: distribution: 
+    Rel.bat and DBrowser.bat referenced 
+    parameters as $n instead of %n. Fixed.
+  - fix: Rel:
+     VAR TEST BASE RELATION {X Date} 
+       KEY{X}; 
+    where Date is 'FOREIGN Java' type
+    caused exception.  Fixed.  
+  - fix: Rel:
+     TYPE DATE POSSREP { c CHAR 
+        CONSTRAINT LENGTH ( c ) = 8 AND 
+        IS_DIGITS ( c ) };
+     VAR TEST BASE RELATION {
+        ID INTEGER, D DATE} KEY{ID};
+     TEST := RELATION {
+        TUPLE {ID 1, D "15061989"}};
+	The above threw an internal error 
+	instead of the appropriate type
+	mismatch error.  Fixed.
+
+Revision 17:
+  - fix: Rel: dynamic dispatch did not
+    correctly resolve invocations based
+    on MST; it used DT.
+  - fix: Rel: attributes of user-defined
+    type threw exception when used in real
+    relvar.
+  - enhancement: Rel: sys.Operators relvar
+    reorganised.
+  - enhancement: Scripts: DatabaseToScript.d
+    modified to support sys.Operators
+    reorganisation.
+
+Revision 16:
+  - fix: DBrowser: negative rational and
+    integer literals returned by Rel are
+    now recognised.
+  - fix: DBrowser: relation-valued 
+  	attributes with cardinality 0 now 
+  	display correctly in enhanced mode.
+  - enhancement: DBrowser: startup error
+    messages now wrap to prevent msgbox
+    being wider than screen.
+  - enhancement: Scripts: replaced IS_NUMERIC
+    with IS_DIGITS, which only returns true
+    if supplied CHAR consists strictly of
+    0-9.
+  - enhancement: Rel: User-defined types
+    support Rel extension 'INIT', for explicitly 
+    setting values of components not in the 
+    current possrep. Only required by types 
+    with multiple possreps. Takes the place 
+    of "highly protected operators not part 
+    of D". (pg 382, etc.)
+  - enhancement: Rel: User-defined types
+    without INIT section are treated as
+    tagged union types.  THE_x operators
+    applied to components not in the current
+    possrep for a given value will throw
+    an exception.
+  - enhancement: Rel: Support for jikes
+    removed.  Replaced with tools.jar
+    compilation.
+  - enhancement: Rel: Types cached to
+    improve performance.
+  - enhancement: Rel: Operators spawned
+    by user-defined types may not be
+    explicitly dropped.
+  - enhancement: Rel: Dropping a user-defined
+    type will now attempt to drop spawned
+    operators.
+  - enhancement: Rel: SET <attribute> <value>
+    now available to manipulate system
+    environment settings.
+  - enhancement: Rel: Initial implementation
+    of S-by-C on single inheritance is now
+    available.
+  - enhancement: Rel: no longer serialise
+    types in the database metadata.  
+    All metadata now represented via 
+    primitive types.  Complex types
+    are explicitly loaded from definitions
+    in database.
+
+Revision 15:
+  - fix: DBrowser: in enhanced mode, adjacent 
+    tuple or relation valued attributes were 
+    displayed one above the other, instead of 
+    beside each other.  Corrected.
+  - fix: Rel: A bug that would cause this...
+       summarize relation {tuple {a 'A', x 0}} 
+         by {a} 
+         add ( 
+           sum(x) as xx, 
+           sum(xx) as xxx
+         )
+     ...or this...
+       extend sys.Catalog add (
+         1 as p,
+         2 as q,
+         extend sys.Catalog add (q as y) as r
+       )
+     ...to generate an internal error has been
+     corrected.
+  - fix: Rel: CreationSequence column on relvars
+    was incorrect relative to other objects.
+  - enhancement: Rel: Simple user-defined TYPEs
+    are now supported.
+  - enhancement: Rel: sys.Types relvar now
+    contains built-in primitive types.
+  - enhancement: Rel: new sys.OperatorsBuiltin
+    relvar contains built-in operator names.
+  - enhancement: Rel: sys.Operators now has a
+    ReturnsType column.
+  - enhancement: Scripts: DateBookSampleRelvars.d
+    corrected and revised to use POSSREPs.
+  - enhancement: Scripts: Views.d revised to use
+    new Dependencies relvars.
+
+Revision 14:
+  - fix: DBrowser: Pressing ctrl-tab in the entry 
+    panel resulted in a stack overflow.  This
+    has been corrected.
+  - fix: DBrowser: User-defined font settings now
+    load on start-up.
+  - fix: DBrowser: User-defined font size (but not
+    style) now applies to enhanced output.
+  - fix: Rel: aggregate UNION, D_UNION, MAX, MIN,
+    and INTERSECT now correctly throw error when
+    performing operations on cardinality-0
+    relations.
+    
+Revision 13:
+  - fix: In some cases, an expression that used the
+    result of one WHERE operator as input to another
+    WHERE operator resulted in bogus results or thrown 
+    exceptions. This has been corrected.
+  - fix: JOIN on relations with generated RVAs (e.g.,
+    via GROUP) no longer causes exception.
+  - fix: No longer display bogus tuple update
+    notices after transaction failure due
+    to constraint violation.
+  - feature: Literal CHARACTER strings now output
+    with delimiters in un-enhanced mode, in order 
+    to be consistent with the view that Rel output 
+    can be parsed.
+  - feature: Added character LENGTH operator to
+    OperatorsChar.d
+  - feature: CHARs now appear formatted and
+    un-delimited in DBrowser.
+  - feature: Improved formatting of code on 
+    generated Java-based operators.
+  - feature: Improved readability of parse
+    error messages -- removed token name.
+
+Revision 12:
+  - feature: Alter ORDER() to return an ARRAY.
+  - feature: Alter FOR to iterate ARRAY tuples.
+  - feature: Alter LOAD ... FROM ... to load ARRAY from ARRAY.
+  - feature: Alter RelClient parser to recognise ARRAYs.
+  - fix: Attempt to JOIN RELATION {TUPLE {x 1, y 2.3}} to 
+    RELATION {TUPLE {y 2.3, x 1}} could fail.  Fixed.
+  - enhancement: Removed 'Serializable' from JoinMap, 
+    OrderMap, NativeFunction and NativeProcedure because
+    unnecessary.
+  - enhancement: provided user-friendly index-out-of-bounds
+    messages for ARRAY
+  - enhancement: lowered operator precedence of ORDER to below
+    WHERE, and [...] (array dereference) to below ORDER. This
+    allows formation of natural expressions, e.g.,
+    sys.Catalog WHERE Owner<>"Rel" ORDER (ASC Name) [2]
+  - enhancement: JOIN can now emit tuples before indexing
+    is complete.
+  - Deployed to SourceForge on August 3, 2008
+ 
+Revision 11:
+  - fix: Rel: assigning a relvar to itself could result in locking up,
+    as it perpetually tried to insert newly-inserted tuples into itself.
+    This has been corrected.
+  - fix: Rel: updating a key value in a relvar could result in locking
+    up, as updated tuples moved ahead of the internal cursor to be 
+    updated again, forever.
+    This has been corrected.
+  - fix: Rel: inserting a substituted relvar into itself could result
+    in locking up, as the newly-inserted tuples appeared in the source
+    relvar, which were then copied into the target relvar, which then
+    appeared in the source relvar, which were then copied into the
+    target relvar, which then appeared in the source relvar, etc.
+    This has been corrected.
+  - fix: Rel: INIT clause of REAL relvar definition would define
+    the relvar correctly, but not assign any tuples.
+    This has been corrected.
+  - Fix: DBrowser: A thread race condition that caused un-enhanced
+    display to sometimes duplicate or drop text has been corrected.
+  - feature: Rel: relation JOIN performance has been improved.
+  - feature: Rel: CPU consumption during external Java compilation
+    has been reduced.
+  - feature: Rel: Tuple update notices are now consolidated and
+    deferred until the end of execution, to avoid cluttering
+    output with results of individual operations.
+  - Deployed to SourceForge on August 1, 2008
+
+Revision 10:
+  - fix: DBrowser: command-line parms with spaces are now supported
+  - fix: DBrowser Monitor no longer closes when supplied
+    with incorrect number of arguments
+  - fix: DBrowser: ':' in backup file name will be changed to '_'
+  - feature: DBrowser: more error-checking in Backup process
+  - Deployed to SourceForge on July 30, 2008
+    
+Revision 9:
+  - fix: fixed memory leak in Enhanced/non-enhanced switching in DBrowser
+  - fix: DBrowser "splash" window widened to display under
+    OpenJDK without the text bleeding outside the window.
+  - feature: added free memory display in DBrowser
+  - feature: provided unhandled exception reporting in DBrowser
+  - feature: Under UNIX/Linux, changed "Uninstall" menu entry
+    to "Uninstall Rel", to avoid ambiguity when merged with
+    other menu entries.
+  - feature: DBrowser window now preserves screen position and
+    dimensions across invocations.
+  - feature: Implemented DBrowser Monitor window
+  - feature: 'r ORDER (<order_item_commalist>)' now implemented
+    as relational operator
+  - feature: minor grammar tweak to avoid extraneous parentheses.
+    E.g. (union {sys.Catalog}) = (union {sys.Catalog}) can now
+    be expressed as union {sys.Catalog} = union {sys.Catalog}
+  - feature: 'FOR r; <statement>; END FOR;' now implemented to
+    iterate tuples of a relation.  Should be considered
+    shorthand for LOAD array FROM r and associated iteration,
+    local variables, etc. 
+  - note: DatabaseToScript.d revised to use FOR and ORDER. 
+  - Deployed to SourceForge on July 29, 2008
+
+Revision 8:
+  - fix: DBrowser toolbars no longer tear off to form a blank
+    floating window.
+  - feature: DBrowser now has Backup button to automate generating
+    a backup script
+  - fix: If a Java-based type was created, dropped, and then re-created
+    with revisions, the original type definition would be used instead
+    of the revised version.  This has been corrected.
+  - feature: Installer now creates Start menu entries & desktop icons 
+    on some operating systems
+  - Deployed to SourceForge on July 15, 2008
+
+Revision 7:
+  - feature: relvar updates now report number of tuples affected
+  - feature: extensive DBrowser changes, including tabular formatting
+    of relations and tuples.
+  - Deployed to SourceForge on July 11, 2008
+
+Revision 6:
+  - feature: database directory may now be specified via command switch
+    to Rel and DBrowser, or via DBrowser user interface
+  - fix: changed replaceAll() to replace() in DirClassLoader to
+    hopefully fix Vista issue reported by Hugh Darwen.
+  - Deployed to SourceForge on June 26, 2008
+
+Revision 5:
+  - fix: aggregate operators SUM, AVG, MIN, MAX, UNION, D_UNION, and INTERSECT 
+    now return correct types in all cases
+  - fix: OUTPUT now appends newline to output
+  - feature: implemented user-defined Java-based types and operators
+  - feature: database now contained in the Database subdirectory
+  - refactor: moved built-in operator definition to RelDatabase
+  - Deployed to SourceForge on June 21, 2008
+
+Revision 4:
+  - fix to Context scoping bug
+  - License changed to Apache License ver 2.0
+  - Major Catalog revisions
+  - Numerous minor fixes
+  - Operators and Constraints now persistent
+  - Deployed to SourceForge on May 1, 2008
+
+Revision 3:
+  - INSERT bugs fixed
+  - all KEY specs now honoured
+
+Revision 2:
+  - Catalog (initial version) and VIRTUAL relvars implemented.
+
+Revision 0 & 1:
+  - pre-release to testers
+ 
+Transition from version 0.0.14 to 0.3.0:
+  - Ground-up rewrite.
+  

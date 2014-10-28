@@ -1,0 +1,318 @@
+/*
+ * Rel response parser
+ *
+ */
+
+options {
+  LOOKAHEAD = 1;
+  CHOICE_AMBIGUITY_CHECK = 2;
+  OTHER_AMBIGUITY_CHECK = 1;
+  STATIC = false;
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  DEBUG_TOKEN_MANAGER = false;
+  ERROR_REPORTING = true;
+  JAVA_UNICODE_ESCAPE = true;
+  UNICODE_INPUT = true;
+  IGNORE_CASE = false;
+  USER_TOKEN_MANAGER = false;
+  USER_CHAR_STREAM = false;
+  BUILD_PARSER = true;
+  BUILD_TOKEN_MANAGER = true;
+  SANITY_CHECK = true;
+  FORCE_LA_CHECK = false;
+  OUTPUT_DIRECTORY = "core";
+  JDK_VERSION = "1.6";
+}
+
+PARSER_BEGIN(ResponseParser)
+package ca.mb.armchair.rel3.client.parser.core;
+import ca.mb.armchair.rel3.client.parser.ResponseHandler;
+import ca.mb.armchair.rel3.client.parser.ResponseAdapter;
+import ca.mb.armchair.rel3.client.utilities.StringUtils;
+public class ResponseParser {
+	private ResponseHandler responseHandler = new ResponseAdapter();
+	public void setResponseHandler(ResponseHandler handler) {
+		responseHandler = handler;
+	}
+}
+PARSER_END(ResponseParser)
+
+/*
+ *
+ * Lexer definitions
+ *
+ */
+
+SKIP : /* WHITE SPACE */
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+SPECIAL_TOKEN : /* COMMENTS */
+{
+  <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+| <FORMAL_COMMENT: "/**" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+| <MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+}
+
+TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
+{
+  < ARRAY: "ARRAY" >
+| < EOT: "<EOT>" >
+| < FALSE: "FALSE" >
+| < RELATION: "RELATION" >
+| < TRUE: "TRUE" >
+| < TUPLE: "TUPLE" >
+| < OPERATOR: "OPERATOR" >
+| < END: "END" >
+| < RETURNS: "RETURNS" >
+}
+
+TOKEN : /* LITERALS */
+{
+  < INTEGER_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])?
+      | <HEX_LITERAL> (["l","L"])?
+      | <OCTAL_LITERAL> (["l","L"])?
+  >
+|
+  < #DECIMAL_LITERAL: (["+","-"])? ["1"-"9"] (["0"-"9"])* >
+|
+  < #HEX_LITERAL: (["+","-"])? "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+|
+  < #OCTAL_LITERAL: (["+","-"])? "0" (["0"-"7"])* >
+|
+  < FLOATING_POINT_LITERAL:
+        (["+","-"])?
+        (           (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
+         | "Infinity"
+        )
+      | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
+      | "NaN"
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < STRING_LITERAL:
+     ( 
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+     )
+   | (
+      "'"
+      (   (~["\'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "'"
+     )
+  >
+}
+
+TOKEN : /* IDENTIFIERS */
+{
+  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>|"."|"#")* >
+|
+  < #LETTER:
+      [
+       "\u0024",
+       "\u0041"-"\u005a",
+       "\u005f",
+       "\u0061"-"\u007a",
+       "\u00c0"-"\u00d6",
+       "\u00d8"-"\u00f6",
+       "\u00f8"-"\u00ff",
+       "\u0100"-"\u1fff",
+       "\u3040"-"\u318f",
+       "\u3300"-"\u337f",
+       "\u3400"-"\u3d2d",
+       "\u4e00"-"\u9fff",
+       "\uf900"-"\ufaff"
+      ]
+  >
+|
+  < #DIGIT:
+      [
+       "\u0030"-"\u0039",
+       "\u0660"-"\u0669",
+       "\u06f0"-"\u06f9",
+       "\u0966"-"\u096f",
+       "\u09e6"-"\u09ef",
+       "\u0a66"-"\u0a6f",
+       "\u0ae6"-"\u0aef",
+       "\u0b66"-"\u0b6f",
+       "\u0be7"-"\u0bef",
+       "\u0c66"-"\u0c6f",
+       "\u0ce6"-"\u0cef",
+       "\u0d66"-"\u0d6f",
+       "\u0e50"-"\u0e59",
+       "\u0ed0"-"\u0ed9",
+       "\u1040"-"\u1049"
+      ]
+  >
+}
+
+TOKEN : /* SEPARATORS */
+{
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < COLON: ":" >
+}
+
+/***********************************************
+ *          THE GRAMMAR STARTS HERE            *
+ ***********************************************/
+
+void parse() :
+{}
+{
+	literal(0) ( <EOT> | <EOF> ) 
+}
+
+void literal(int depth) :
+{}
+{
+  LOOKAHEAD(3)  // is this necessary?
+  		tuple_relation_or_array(depth)
+	|	scalar(depth)
+}
+
+void tuple_relation_or_array(int depth) :
+{}
+{		tuple(depth)
+	|	relation_or_array(depth)
+}
+
+void tuple(int depth) :
+{}
+{
+	<TUPLE> 
+	{responseHandler.beginTuple(depth);} 
+	"{" 
+		[ tuple_component(depth) ( "," tuple_component(depth) )* ] 
+	"}"
+	{responseHandler.endTuple(depth);} 
+}
+
+void tuple_component(int depth) :
+{String s;}
+{
+	s = identifier() {responseHandler.attributeNameInTuple(depth, s);} literal(1)
+}
+
+void relation_or_array(int depth) :
+{}
+{
+	( <RELATION> | <ARRAY> ) 
+	{responseHandler.beginContainer(depth);}
+	[ LOOKAHEAD(heading() "{") heading() ] "{" [ tuple(2) ( "," tuple(2) )* ] "}"
+	{responseHandler.endContainer(depth);}
+}
+
+void heading() :
+{}
+{
+	"{" 
+		[
+		  {if (responseHandler.isEmitHeading()) responseHandler.beginHeading();}
+		  attribute_spec() ( "," attribute_spec() )*
+		  {if (responseHandler.isEmitHeading()) responseHandler.endHeading();}
+		] 
+	"}"
+}
+
+void attribute_spec() :
+{String s;}
+{
+	{if (responseHandler.isEmitHeading()) responseHandler.beginAttributeSpec();}
+	s = identifier() {if (responseHandler.isEmitHeading()) responseHandler.attributeName(s);} type_ref()
+	{if (responseHandler.isEmitHeading()) responseHandler.endAttributeSpec();}
+}
+
+void type_ref() :
+{String v;}
+{
+		<TUPLE> {if (responseHandler.isEmitHeading()) responseHandler.beginTupleDefinition();} heading() {if (responseHandler.isEmitHeading()) responseHandler.endTupleDefinition();}
+	|	( <RELATION> | <ARRAY> ) {if (responseHandler.isEmitHeading()) responseHandler.beginContainerDefinition();} heading() {if (responseHandler.isEmitHeading()) responseHandler.endContainerDefinition();}
+	|	v = identifier()	{if (responseHandler.isEmitHeading() && responseHandler.isEmitHeadingTypes()) responseHandler.typeReference(v);}
+	| 	op_type()
+}
+
+String identifier() :
+{Token t;}
+{
+	t = <IDENTIFIER> {return t.image;}
+}
+
+void op_type() :
+{}
+{
+  	{responseHandler.beginOperatorDefinition();} <OPERATOR> "("	{responseHandler.beginOperatorDefinitionParameters();} type_ref_commalist()	{responseHandler.endOperatorDefinitionParameters();} ")" [ {responseHandler.beginOperatorReturnType();} <RETURNS> type_ref() {responseHandler.endOperatorReturnType();} ]
+	{responseHandler.endOperatorDefinition();}
+}
+
+void type_ref_commalist() :
+{}
+{
+	[ parameter_type() ( "," {responseHandler.emitOperatorParameterSeparator();} parameter_type() )* ]
+}
+
+void parameter_type() :
+{}{
+  {responseHandler.beginOperatorParameter();}
+  type_ref()   {responseHandler.endOperatorParameter();}
+}
+
+void scalar(int depth) :
+{}
+{
+	{responseHandler.beginScalar(depth);}
+	possrep(depth, false)
+	{responseHandler.endScalar(depth);} 
+}
+
+void possrep(int depth, boolean inPossrep) :
+{Token t;}
+{
+	    LOOKAHEAD(2) t = <IDENTIFIER> 
+	    	{responseHandler.beginPossrep(t.image);} 
+	    	"(" [ possrep(depth, true) ( "," {responseHandler.separatePossrepComponent();} possrep(depth, true) )* ] ")" 
+	    	{responseHandler.endPossrep();}
+	|   primitive(inPossrep)
+}
+
+void primitive(boolean inPossrep) :
+{Token t;}
+{
+	( 
+	  t = <STRING_LITERAL> {responseHandler.primitive((inPossrep) ? t.image : StringUtils.unquote(t.image.substring(1, t.image.length()-1)));}
+	| t = <INTEGER_LITERAL> {responseHandler.primitive(t.image);} 
+	| t = <FLOATING_POINT_LITERAL> {responseHandler.primitive(t.image);}
+	| t = <TRUE> {responseHandler.primitive(t.image);}
+	| t = <FALSE> {responseHandler.primitive(t.image);}
+	| tuple_relation_or_array(0)
+	) 
+}

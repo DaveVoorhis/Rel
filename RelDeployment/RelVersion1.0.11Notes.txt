@@ -1,0 +1,136 @@
+This version of Rel -- an implementation of Date & Darwen's "Tutorial
+D" database language -- is a maintenance release featuring various
+enhancements and bug fixes.
+
+Prior to installing this version of Rel, you must make a backup of
+your database(s). Then, install this update and load and attempt to
+execute your backup script(s). If your script successfully loads,
+you're done. If Rel complains of syntax errors, you'll need to edit
+the backup script — based on the "Rel Version 1.0.11+ Syntax" article
+at http://dbappbuilder.sourceforge.net — until the script successfully
+loads.
+
+Changes in this update:
+
+* Enhancement: DBrowser: Now displays human-friendly messages when
+attempting to open an already-open database, or when a connection
+attempt to a remote Rel server fails.
+
+* Enhancement: DBrowser: Now provides options to hide headings and
+declared types in headings in displayed output of relations.
+
+* Enhancement: DBrowser: Now provides a "Get File Path" button to
+simplify putting file paths in source code.  This facilitates use of
+external data sources, described below.
+
+* Enhancement: Rel: Some minor syntax improvements have been made, in
+accordance with changes to Tutorial D.  Formerly-required parentheses
+around WRAP, UNWRAP, GROUP, UNGROUP clauses have been removed. UNGROUP
+(a) and UNWRAP (a) are now UNGROUP a and UNWRAP a, respectively.
+ 
+* Enhancement: Rel: All error messages are now uniquely identified to
+disambiguate references to them.
+
+* Enhancement: Rel: Updated to version 6.0.11 of the Berkeley Java DB,
+which is used as a storage engine.
+
+* Enhancement: Rel: A student project has produced simple support for
+external CSV/XLS/XLSX/JDBC sources as relvars:
+
+ e.g., VAR myvar EXTERNAL CSV "/home/dave/test.csv";
+ e.g., VAR myvar EXTERNAL XLS "/home/dave/test.xls" DUP_REMOVE;
+ e.g., VAR myvar EXTERNAL XLS "/home/dave/test.xlsx" DUP_COUNT;
+ e.g., VAR myvar EXTERNAL XLS "/home/dave/test.xlsx" AUTOKEY;
+ e.g., VAR myvar EXTERNAL JDBC "<host>,<user>,<password>,<database>.<table>,<driverpath>,<drivername>";
+
+This feature also makes it possible to define new relvar types as Rel
+plug-ins.  Documentation for this feature will be provided in the
+future.
+
+* Enhancement: Rel: 'x RENAME {}' is now valid syntax.
+
+* Enhancement: Rel: Errors occurring in a database constraint are now
+treated as if the constraint evaluates to false, and the failing
+constraint is named in the error message.
+
+* Fix: DBrowser: Fixed minor errors parsing certain error messages.
+
+* Fix: Rel: Given...
+
+   VAR S BASE RELATION { 
+        SNO CHAR, SNAME CHAR, STATUS INTEGER, CITY CHAR 
+   } KEY {SNO};
+   VAR SP BASE RELATION { SNO CHAR, PNO CHAR, QTY INTEGER } KEY {SNO, PNO};
+   VAR SPQ BASE INIT(
+      EXTEND S: {PQ := RELATION {TUPLE {SNO SNO}} COMPOSE SP}
+   ) KEY{SNO};
+
+...these failed: 
+
+  UPDATE SPQ WHERE SNO = "S2": 
+      {INSERT PQ RELATION {TUPLE {PNO "P5", QTY 500}}};	
+  UPDATE SPQ WHERE SNO = "S2": {UPDATE PQ WHERE PNO="P5": {QTY := 250}};	
+  UPDATE SPQ WHERE SNO = "S2": {DELETE PQ WHERE PNO="P5"};
+  
+This has been corrected.
+
+* Fix: Rel: The following should have returned true but returned
+  false:
+
+	 RELATION  {
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P5"}
+	        }},
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P2"}
+	        }},
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P4"}
+	        }}
+	 } 
+	 = 
+	 RELATION  {
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P5"}
+	        }},
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P2"}
+	        }},
+	        TUPLE { SUPPLIES RELATION {
+	          TUPLE {PID "P4"}
+	        }}
+	 }
+
+This has been corrected.  Internal changes to address this and similar
+errors in comparing relations with relation-valued attributes may have
+performance impact -- some queries may run faster, others slower.
+
+* Fix: Rel: JOIN {}, TIMES {}, and COMPOSE {} now return DEE.
+
+* Fix: Rel: XUNION {}, D_UNION {}, UNION {} now return TUPLE {}.
+
+* Fix: Rel: XUNION {} {}, D_UNION {} {}, UNION {} {} return DUM.
+
+* Fix: Rel: INTERSECT {} and INTERSECT {} {} throw an error.
+
+* Fix: Rel: Type checking was too weak on comparison operators,
+allowing incorrect expressions like 'tuple{x 1} = tuple{y 2, x 1}' to
+return a result instead of throwing an error.  Fixed.
+
+* Fix: Rel: RELATION {TUPLE {x 10, y DEE}} WHERE x = 100 UNGROUP y
+threw a fatal error.  It should have thrown a type error due to an
+attempt to ungroup integer 100. This has been fixed.
+
+* Fix: Rel: Built-in operator name OP_GREATHERTHANOREQUALS corrected
+to OP_GREATERTHANOREQUALS.
+
+* Fix: Rel: Assignment to a real relvar altered its CreationSequence.
+Fixed.
+
+* Fix: Rel: CAST_AS_INTEGER("blah") and CAST_AS_RATIONAL("blah")
+should have thrown semantic errors, not fatal errors.  Fixed.
+
+Note: This release includes experimental support for a work-in-progress visual query language called Rev. Using an icons-on-strings data-flow style, it permits constructing queries visually and iteratively, and allows testing sub-expressions whilst constructing a query. To experiment with it, install the Rev package and it will appear as an additional tab in a DBrowser session. To remove it, delete the rev.jar file. Further documentation and video demonstrations will be provided in the future. 
+
+For more information, or to download Rel, see
+http://dbappbuilder.sourceforge.net/Rel.html

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Rel3Shared"/>
+	<classpathentry kind="lib" path="/RelDeployment/je.jar" sourcepath="/home/dave/je-4.0.103/src"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

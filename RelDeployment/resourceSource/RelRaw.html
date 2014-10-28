@@ -1,0 +1,1473 @@
+
+<p><div align="center">
+<table cellpadding="5" border="1"><tr><td>
+
+<b>After a hiatus of over a year, active development on Rel has officially resumed!</b>
+
+<p>Development is underway to produce a version of Rel compliant with the Third Edition of Hugh Darwen and Chris Date's "Databases, Types, and the Relational Model - The Third Manifesto".  Expect a new release in the third or fourth quarter of 2007.
+
+</td></tr></table>
+</div>
+
+<p>
+
+<p><div align="center">
+<table cellpadding="5" border="1"><tr><td>
+<p><b>New! </b>See the Rel Forum at <a href="http://shark.armchair.mb.ca/~dave/relforum">http://shark.armchair.mb.ca/~dave/relforum</a>.
+<p>Sign up for announcements of Rel releases or critical bugs:
+<a href="http://lists.sourceforge.net/lists/listinfo/dbappbuilder-relannounce">
+http://lists.sourceforge.net/lists/listinfo/dbappbuilder-relannounce</a></p>
+<!-- <p>Try the <a href="http://shark.armchair.mb.ca/cgi-bin/Rel/wiki.pl?RelProject">RelProject</a> Wiki.  Feedback and comments are encouraged!</p> -->
+<p>Rel is hosted on <a href="http://sourceforge.net">SourceForge</a> at <a href="http://sourceforge.net/projects/dbappbuilder/">http://sourceforge.net/projects/dbappbuilder/</a>
+</td></tr></table>
+</div>
+
+<h2>What is Rel?</h2>
+
+<blockquote>
+<li>Rel is a true relational database server based
+on a relational language called "<b>Tutorial D</b>".  Rel is <i>not</i> SQL!
+<li>Rel is free, open source software.
+</blockquote>
+
+<p>&nbsp;</p>
+
+
+<a name="Introduction"><h2>Introduction</h2>
+
+<p>In the field of information technology, so-called relational
+databases have achieved a dominant role in providing information
+storage and retrieval. Almost without exception, database products
+such as Microsoft SQL Server[<a name="BRef1"><a href="#Ref1">1</a>],
+Oracle[<a name="BRef2"><a href="#Ref2">2</a>], DB2[<a name="#BRef3"><a
+href="#Ref3">3</a>], MySQL[<a name="BRef4"><a href="#Ref4">4</a>],
+PostgreSQL[<a name="BRef5"><a href="#Ref5">5</a>] are based
+on a programming language called SQL.[<a name="BRef6"><a
+href="#Ref6">6</a>] However, most SQL implementations are
+<i>not</i> fully relational, at least according to the theoretical
+model introduced in E. F. &quot;Ted&quot; Codd's seminal paper,
+&quot;A Relational Model for Large Shared Data Banks.&quot;[<a
+name="BRef7"><a href="#Ref7">7</a>]</p>
+
+<p>As a result, the &quot;Relational Database&quot; label attached to
+most SQL products should be considered a distinctly different, and
+possibly inappropriate, application of the term
+&quot;relational.&quot; It can be argued that the typical lack of
+relational completeness, plus other significant failings, are
+responsible for a common but mistaken impression that relational
+databases are flawed or limited -- when in fact SQL is flawed and
+fully relational databases are virtually unknown.</p>
+
+<p>To many SQL developers, the preceding paragraph will seem to be
+grumpy zealotry, favouring abstract theory over useful practice.
+After all, SQL gets the job done in countless practical applications.
+However, the limitations of SQL have a negative effect on
+productivity.  There are relatively minor inconveniences -- such as
+having to express certain queries as &quot;<code>SELECT * FROM
+someTable</code>&quot; where &quot;<code>someTable</code>&quot; should
+be sufficient to obtain all rows and columns from a table -- and major
+issues such as:</p>
+
+<ul>
+
+<li>Inconsistent or awkward syntax. For example, some clauses may be
+nested, others may not.
+
+<li>Confusing, error-prone, and non-relational dependence on column order.
+
+<li>Unintuitive or unexpected behaviour due to NULLs or duplicate
+rows.
+
+<li>Lack, in most implementations, of relation (table) or tuple (row)
+valued variables.
+
+<li>Lack of certain powerful operators.
+
+</ul>
+
+<p>Many SQL developers, having never encountered an alternative, do
+not realise these problems exist.</p>
+
+<p>Due to these limitations, the use of SQL -- instead of better
+alternatives -- is a cause of lost time and money.  Alternatives to
+SQL would almost certainly improve developer productivity and software
+reliability, and therefore save time and money.  
+
+<p>A common argument against using alternatives is that SQL is a
+standard, and therefore the use of SQL -- flawed as it may be --
+permits multi-vendor compatibility, portability, and all the good
+things implied by adherence to standards.  However, in practice almost
+every SQL vendor implements extensions or variations. This results in
+a plethora of non-standard SQL dialects -- with all the compatibility,
+portability, and other issues implied by deviating from a standard.
+Therefore, the "SQL standard" argument is specious.  Of course, even
+if every vendor adhered strictly to the standard, the standard would
+still have the flaws noted above.</p>
+
+<p>An alternative to SQL has been proposed by C. J. Date and Hugh Darwen,
+and is called &quot;<b>Tutorial D</b>&quot;.[<a name="BRef8"><a
+href="#Ref8">8</a>][<a name="BRef9"><a href="#Ref9">9</a>] This
+document presents a work-in-progress implementation of a database
+server called &quot;Rel&quot; that uses <b>Tutorial D</b> syntax.  Together,
+Rel and <b>Tutorial D</b> form a fully relational alternative to SQL.
+Henceforth, this implementation will be identified as the
+&quot;current Rel implementation of <b>Tutorial D</b>,&quot; or
+&quot;Rel&quot; for short. </p>
+
+<p>Rel is intended to serve multiple purposes:</p>
+
+<ul>
+
+<li>It is a tool for learning, teaching, and exploring relational
+database concepts in general;
+
+<li>It is a tool for discovering the power and expressiveness of
+a true relational language;
+
+<li>It is a tool for learning <b>Tutorial D</b>;
+
+<li>It is a relational database server;
+
+<li>It may serve as a prototype or &quot;working blueprint&quot; for
+future implementations of <b>Tutorial D</b> or any &quot;D&quot; language
+(more on this later);
+
+<li>It may serve as a platform for experimenting with and/or examining
+database engine internals.
+
+</ul>
+
+<p>In its present and incomplete form, Rel is suitable for exploring
+true relational concepts, and is suitable as a practical educational
+tool.  Future versions will eventually be usable as an enterprise
+database product.</p>
+
+<p>This document assumes the reader is familiar with <b>Tutorial D</b>
+syntax.  For further information, please see &quot;Foundation for
+Object/Relational Databases -- The Third Manifesto&quot;[<a
+href="#Ref8">8</a>] or &quot;Foundation for Future Database Systems --
+The Third Manifesto&quot;[<a href="#Ref9">9</a>] (which are
+first and second editions, respectively, and shall be collectively
+identified within this document as &quot;The Third Manifesto&quot;[<a
+name="BRef10"><a href="#Ref10">10</a>]) by C. J. Date and Hugh Darwen.
+See also &quot;An Introduction to Database Systems&quot;[<a name="BRef11"><a
+href="#Ref11">11</a>] by C. J. Date.</p>
+
+<p>&nbsp;</p>
+
+
+
+<a name="Background"><h2>Background</h2>
+
+<p>In The Third Manifesto, Date and Darwen propose a database language
+that:</p>
+
+<ul>
+<li>Is truly relational;
+<li>Provides certain desirable programming language features,
+including some that are typically (but not exclusively) found under
+the &quot;Object Oriented&quot; heading;
+<li>Represents a &quot;firm foundation for the future of data.&quot;
+</ul>
+
+<p>Date and Darwen have expanded these underlying principles into a
+collection of specific prescriptions and proscriptions.  A language
+that conforms to these is said to be an implementation of
+&quot;D&quot;.  Since the prescriptions and proscriptions are not
+syntactic, there may be many different language implementations that
+qualify as &quot;D&quot;.</p>
+
+<p>The Third Manifesto provides a detailed specification of a specific
+&quot;D&quot; called &quot;<b>Tutorial D</b>,&quot; which is intended
+primarily for illustration and education.  Its definition, and its
+application as an illustrative tool, form a core component of The
+Third Manifesto and a significant portion Date's popular text,
+&quot;An Introduction to Database Systems.&quot;</p>
+
+<p>To the knowledge of this author, at the time of this writing there
+are no complete open source <b>Tutorial D</b> language implementations.  That
+includes Rel!  However, the implementation described here does provide
+a significant and usable subset of the definition, and so it is
+deemed worthy of distribution, under the &quot;release early, release
+often&quot; principle of open source development -- if for no other
+reason than to solicit suggestions and gather bug reports.  The
+incomplete functionality is described in a later section.</p>
+
+<p>&nbsp;</p>
+
+
+
+<a name="Architecture"><h2>Architectural Overview</h2>
+
+<p>The Rel server is constructed from several major components:</p>
+
+<ul>
+
+<li>A simple stack-based virtual machine, implemented in Java, which
+supports operator (function) definition and execution, simple
+expression evaluation, flow control, types, static type checking, and
+variables;
+
+<li>SleepyCat Software's Java version of the Berkeley DB, used as
+a storage engine;
+
+<li>The Rel kernel, which implements the relational algebra,
+interfaces with the storage engine, and compiles and executes Tutorial
+D constructs on the virtual machine.
+
+<li>A language interpreter, which recognises <b>Tutorial D</b> syntax and
+interacts with the Rel kernel to process <b>Tutorial D</b> code and
+expressions and generate appropriate results.  The language parser 
+has been constructed using the JavaCC parser/scanner generator,
+available at <a 
+href="https://javacc.dev.java.net/">https://javacc.dev.java.net</a>.  No other
+external tools, other than a Java compiler, are required to
+build Rel.
+
+<li>A session and connection manager, which handles communication
+between clients and the language parser.
+
+</ul>
+
+<p>A running Rel server listens on a communications channel
+(implemented as a socket) for incoming requests for connections from
+clients.  Each new client connection establishes a new session inside
+the Rel engine.  Each session is an independent entity, sharing only
+relvars with other running sessions.</p>
+
+<p>The simple DBrowser client bundled with Rel permits immediate
+evaluation of expressions on a Rel server.  For example:</p>
+
+<blockquote><code><pre>
+3 + 4
+</pre></code></blockquote>
+
+<p>Produces the following result:</p>
+
+<blockquote><code><pre>
+7
+</pre></code></blockquote>
+
+<p>Responses generated by the Rel engine are presented using Tutorial
+D syntax where appropriate.  For example, entering the following
+literal relation:</p>
+
+<blockquote><code><pre>
+RELATION {TUPLE {x 1, y &quot;fish&quot;}, TUPLE {x 2, y &quot;zap&quot;}}
+</pre></code></blockquote>
+
+<p>Produces the following response:</p>
+
+<blockquote><code><pre>
+RELATION {x INTEGER, y CHAR} {
+	TUPLE {x 1, y &quot;fish&quot;},
+	TUPLE {x 2, y &quot;zap&quot;}}
+</pre></code></blockquote>
+
+<p>Similarly, executing a relational expression:</p>
+
+<blockquote><code><pre>
+RELATION {TUPLE {x 1}} UNION RELATION {TUPLE {x 2}}
+</pre></code></blockquote>
+
+<p>Produces the following response:</p>
+
+<blockquote><code><pre>
+RELATION {x INTEGER} {
+	TUPLE {x 1},
+	TUPLE {x 2}}
+</pre></code></blockquote>
+
+<p>The use of <b>Tutorial D</b> syntax in responses is consistent and
+intuitive, and it means sophisticated clients may employ a parser
+based on a subset of the <b>Tutorial D</b> server grammar, rather than having
+to design and implement a separate result parser.  In the future, this
+approach will be used to develop a client API that conforms to a JDBC
+(Java Data Base Connectivity) standard.  This will allow Rel to be
+used by any Java application that supports JDBC, as long as the
+application does not require SQL syntax.  Obviously, this may be
+extended to ODBC (Open Data Base Connectivity) as well.</p>
+
+<p>The use of the same syntax for data input and results also has
+value in an educational or development setting, as raw output from the
+server may be fed as input back into the server.</p>
+
+<p>Rel recognises <b>Tutorial D</b> constructs as specified in The Third
+Manifesto, plus alternative syntax shown in Date's &quot;An
+Introduction to Database Systems,&quot; except for syntax features
+that are not yet implemented and which are noted under &quot;Current
+Limitations and Work in Progress,&quot; below.  For example, a real
+relvar may be defined either as:</p>
+
+<blockquote><code><pre>
+VAR myRelVar REAL RELATION ...
+</pre></code></blockquote>
+
+<p>...or...</p>
+
+<blockquote><code><pre>
+VAR myRelVar BASE RELATION ...
+</pre></code></blockquote>
+
+<p>The former is The Third Manifesto syntax, the latter is &quot;An
+Introduction to Database Systems&quot; syntax.</p>
+
+<p>Rel is implemented as a Java[<a name="BRef12"><a
+href="#Ref12">12</a>] application, and should run on any host that
+supports a J2SE 5.x platform.  It has been extensively tested on Linux
+(RedHat 9.0, Fedora Core 2, 3, and 4), Mac OS X and Microsoft Windows
+(ME, 2000, and XP).</p>
+
+<p>Java was chosen for two reasons:</p>
+
+<ol>
+
+<li>It is cross platform, obviating the need to recompile for various
+platforms and environments.  
+
+<li>Java's automated memory management allows development effort
+to focus on the problem domain without having to deal with hazardous
+materials, jagged edges, and unsafe working conditions such as memory
+leaks, pointers to deleted or freed objects, references vs. pointers,
+and object ownership issues -- at least not to the same degree
+required with (for example) C and C++.
+
+</ol>
+
+<p>The performance limitations of Java (which definitely exist, but
+are not as significant as typically rumoured) are not considered a
+problem, as Rel is first and foremost an educational tool and a
+working prototype for future full-featured &quot;enterprise&quot;
+implementations.  It is not, in its present form, a DBMS for managing
+terabytes of data, but this has nothing to do with being implemented
+in Java.  Although there are surely practical applications for the
+present implementation, it is not sufficiently mature or complete to
+be considered a suitable host for the company payroll data.</p>
+
+<p>The provided software distribution consists of two Java
+applications: a Rel database server and the interactive client called
+DBrowser.  The DBrowser client sends user-entered Tutoral D code and
+expressions to the Rel server, which in turn parses and (if there are
+no syntax errors) executes them and returns the results to DBrowser
+for display.  Rel is multi-user, and will service multiple DBrowser
+sessions on the local host and other hosts via a network.  For
+convenience, if there is no Rel server running on the local host when
+DBrowser is started, it will automatically start up a Rel server and
+shut it down when all instances of DBrowser have closed.  This
+eliminates the need to explicitly load a server before using the
+client.</p>
+
+<p>If deemed appropriate, future releases might not be
+implemented in Java.</p>
+
+<p>&nbsp;</p>
+
+
+
+<a name="Enhancements"><h2>Language Enhancements</h2>
+
+<p>The following enhancements should be considered experimental.
+Depending on their value (or lack thereof) they may or may not be
+included in future versions of Rel.</p>
+
+<p><b>Catalog:</b> Rel provides a simple system catalog, via a
+predefined relvar called "Catalog".  The contents of the Catalog,
+i.e., the relvars currently defined in a database, may be displayed by
+retrieving the contents of the Catalog relvar.  For example:
+
+<blockquote><code><pre>
+Catalog
+</pre></code></blockquote>
+
+A relation of all defined relvar names can be obtained using:
+
+<blockquote><code><pre>
+Catalog {name}
+</pre></code></blockquote>
+
+<p><b>Single vs. Multiple statements:</b> The grammar described in The
+Third Manifesto requires that multiple statements be surrounded by a
+BEGIN/END block.  For example:
+
+<blockquote><code><pre>
+IF blah THEN
+	BEGIN;
+		x := r1 UNION r2;
+		y := 2 + 2;
+	END;
+END IF;
+</pre></code></blockquote>
+
+<p>Rel makes the BEGIN/END statements optional.  The following is
+equivalent to the above:</p>
+
+<blockquote><code><pre>
+IF blah THEN
+	x := r1 UNION r2;
+	y := 2 + 2;
+END IF;
+</pre></code></blockquote>
+
+<p>This simplification is available wherever BEGIN/END blocks would
+otherwise be required.</p>
+
+<p><b>END matching:</b> Refering again to the above example, the
+&quot;IF&quot; keyword following &quot;END&quot; is optional.  This
+simplification is available on all &quot;END&quot;s.<p>
+
+<p><b>Case sensitivity:</b> Rel language keywords are not case
+sensitive.  By convention, keywords are shown here in upper case to
+visually distinguish them, but the parser recognises them in lower
+case as well.  Rel identifiers and string comparisons are case
+sensitive.</p>
+
+<p><b>SAME_TYPE_AS:</b> The SAME_TYPE_AS keyword may be equivalently
+specified as SAME TYPE AS.</p>
+
+<p><b>Transactions:</b> START TRANSACTION, COMMIT TRANSACTION, and
+ABORT TRANSACTION may be shortened to START, COMMIT, and ABORT,
+respectively.</p>
+
+<p><b>Restriction:</b> WHERE clauses may be abbreviated, as shown in
+the following example:</p>
+
+<blockquote><code><pre>
+R WHERE x = 1 AND y = 2
+</pre></code></blockquote>
+
+<p>May be abbreviated to:
+
+<blockquote><code><pre>
+R [ x = 1 AND y = 2 ]
+</pre></code></blockquote>
+
+<p>This is intended to be faster to type, less SQL-like, and distantly
+evocative of an array index operation.  Of course, a restriction is
+most certainly not an array index operator, but does represent a
+notion of &quot;retrieve a specified subset of a whole&quot; in a
+vaguely similar manner to an index operator, which also retrieves a
+specified subset of a whole, i.e., an individual array item. </p>
+
+<p><b>Operator invocation:</b> The CALL keyword is optional.</p>
+
+<p><b>OUTPUT, WRITE, and WRITELN statements:</b> Statements have been introduced to
+send raw text to the client.  For example, the following:</p>
+
+<blockquote><code><pre>
+VAR i INTEGER;
+DO i := 1 TO 3
+	OUTPUT i;
+END;
+</pre></code></blockquote>
+
+<p>Will send the following to the client:</p>
+
+<blockquote><code><pre>
+1
+2
+3
+</pre></code></blockquote>
+
+<p>OUTPUT, WRITE, and WRITELN each have slightly different behaviour.
+OUTPUT sends text in a form that can be parsed by Rel, followed by
+a new line.  WRITELN sends text in a natural human-readable form, followed
+by a new line.  WRITE is the same as WRITELN, but does not send a new line.  In
+the current implementation, the only significant difference between
+OUTPUT and WRITELN is that OUTPUT will present a CHAR surrounded by
+double quotes, whereas WRITELN will not include the double quotes.
+
+<p>WRITELN and OUTPUT may be specified with no expression, in order
+to send a new line.  Eg.:
+
+<blockquote><code><pre>
+WRITELN;
+</pre></code></blockquote>
+
+<p><b>INSERT:</b> A shorthand syntax is available for INSERT.  The
+following:</p>
+
+<blockquote><code><pre>
+INSERT INTO r RELATION {TUPLE {x 1, y 3}};
+</pre></code></blockquote>
+
+<p>May also be specified as:</p>
+
+<blockquote><code><pre>
+INSERT r TUPLE {x 1, y 3};
+</pre></code></blockquote>
+
+<p>Or:</p>
+
+<blockquote><code><pre>
+r += TUPLE {x 1, y 3};
+</pre></code></blockquote>
+
+<p>The lattermost syntax is intended to be vaguely evocative of the
+&quot;increment by 'n' and assign&quot; operator found in C,
+C++, Java, and other languages.</p>
+
+<p><b>DELETE:</b> A shorthand syntax is available for DELETE.  The
+following:</p>
+
+<blockquote><code><pre>
+DELETE r;
+</pre></code></blockquote>
+
+<p>May also be specified as:</p>
+
+<blockquote><code><pre>
+r -= ALL;
+</pre></code></blockquote>
+
+<p>The following:</p>
+
+<blockquote><code><pre>
+DELETE r WHERE x = 2;
+</pre></code></blockquote>
+
+<p>May also be specified as:</p>
+
+<blockquote><code><pre>
+r -= WHERE x = 2;
+</pre></code></blockquote>
+
+<p>Or:</p>
+
+<blockquote><code><pre>
+r -= [ x = 2 ];
+</pre></code></blockquote>
+
+<p>The use of &quot;-=&quot; is intended to be vaguely evocative of
+the &quot;decrement by 'n' and assign&quot; operator found
+in various popular programming languages.</p>
+
+<p><b>UPDATE:</b> A shorthand syntax is available for UPDATE.  The
+following:</p>
+
+<blockquote><code><pre>
+UPDATE r WHERE x = 2 SET ( y := 3, z := 4);
+</pre></code></blockquote>
+
+<p>May also be specified as:</p>
+
+<blockquote><code><pre>
+r @= WHERE x = 2 SET ( y := 3, z := 4 );
+</pre></code></blockquote>
+
+<p>Or:</p>
+
+<blockquote><code><pre>
+r @= [ x = 2 ] SET ( y := 3, z := 4 );
+</pre></code></blockquote>
+
+<p>Or, because SET is optional:</p>
+
+<blockquote><code><pre>
+r @= [ x = 2 ] ( y := 3, z := 4 );
+</pre></code></blockquote>
+
+<p>Or even:</p>
+
+<blockquote><code><pre>
+r @= [ x = 2 ] BEGIN
+	y := 3;
+	z := 4;
+END;
+</pre></code></blockquote>
+
+<p>The lattermost construct is intended to allow code of arbitrary
+complexity to be executed within the context of an UPDATE.  The
+various forms of shorthand may be mixed.  For example, the following
+(and all other logical permutations thereof) is valid:</p>
+
+<blockquote><code><pre>
+UPDATE r [ x = 2 ] BEGIN
+	y := 3;
+	z := 4;
+END UPDATE;
+</pre></code></blockquote>
+
+<p>Comments: Comments are specified using conventional C++ and Java
+syntax.  Eg:</p>
+
+<blockquote><code><pre>
+// This is a comment line
+
+/* This is a multi-line
+   comment block */
+</pre></code></blockquote>
+
+<p><b>INTEGER post and pre increment and decrement:</b> The following
+statements are valid on INTEGER types, and behave in the usual
+manner:</p>
+
+<blockquote><code><pre>
+x ++;		// increment x
+++ x;		// increment x
+x --;		// decrement x
+-- x;		// decrement x
+</pre></code></blockquote>
+
+<p>The following are valid as well:</p>
+
+<blockquote><code><pre>
+y := x ++;	// evaluate x, then increment it
+y := ++ x;	// increment x, then evaluate it
+y := x --;	// evaluate x, then decrement it
+y := -- x;	// decrement x, then evaluate it
+</pre></code></blockquote>
+
+<p><b>TABLE_DEE and TABLE_DUM:</b> These special relation literals
+may also be referenced by the shorthand equivalents DEE and DUM,
+respectively.</p>
+
+<p><b>SEMIJOIN and SEMIMINUS:</b> SEMIJOIN may also be specified as
+MATCHING or INCLUDE.  SEMIMINUS may also be specified as NOT MATCHING
+or EXCLUDE.  It is a matter of debate as to whether or not the
+keywords INCLUDE and EXCLUDE capture the essence of the operators any
+more intuitively than SEMIJOIN and SEMIMINUS, but MATCHING and NOT
+MATCHING certainly do, so SEMIJOIN, SEMIMINUS, INCLUDE and EXCLUDE may
+be eliminated in a future version of Rel.</p>
+
+<p><b>EXTEND:</b> An infix syntax is available for EXTEND.  The
+following:</p>
+
+<blockquote><code><pre>
+EXTEND r ADD (1 AS x, 2 AS y)
+</pre></code></blockquote>
+
+<p>Can also be specified as:</p>
+
+<blockquote><code><pre>
+r EXTEND (1 AS x, 2 AS y)
+</pre></code></blockquote>
+
+<p>Or, using a tuple selector-like syntax, as:</p>
+
+<blockquote><code><pre>
+r EXTEND {x 1, y 2}
+</pre></code></blockquote>
+
+<p><b>SUMMARIZE:</b> An infix syntax is available for SUMMARIZE.  The
+following:</p>
+
+<blockquote><code><pre>
+SUMMARIZE r PER s {p} ADD SUM(x) AS y
+</pre></code></blockquote>
+
+<p>Can also be specified as:</p>
+
+<blockquote><code><pre>
+r SUMMARIZE PER s {p} ADD SUM(x) AS y
+</pre></code></blockquote>
+  
+<p>The COUNTD, SUMD, and AVGD aggregate operators may be
+equivalently specified as DISTINCT COUNT, DISTINCT SUM,
+and DISTINCT AVG.  
+
+<blockquote><code><pre>
+SUMMARIZE S PER S {S#} ADD DISTINCT SUM(STATUS) AS x
+</pre></code></blockquote>
+
+<p>This is to be consistent with the
+'DISTINCT' qualifier that can be applied to
+user-defined aggregate operators, which will be
+implemented in a future version.
+
+<p>SUM, AVG, MAX, and MIN
+accept an optional second parameter, which is a value to be returned
+if the relation is empty.  If the relation is empty and
+this additional parameter is not specified, an exception
+will be thrown -- except for SUM and COUNT, which return 0.
+Use of this parameter is questionable, but avoids the need for filtering
+out empty groups before aggregating, as long as the 'empty'
+value is understood. For example:
+
+<blockquote><code><pre>
+SUMMARIZE S PER S {S#} ADD DISTINCT AVG(STATUS, -1) AS x
+</pre></code></blockquote>
+
+<p>Furthermore, COUNTD expects an expression.  Only COUNT
+does not require an expression.
+
+<p><b>DROP OPERATOR:</b> Since operators may be overloaded, an
+alteration to the specified grammar is required to disambiguate the
+desired operator.  For example, the following operator definitions are
+allowable:</p>
+
+<blockquote><code><pre>
+OPERATOR foo(x INTEGER, y INTEGER) RETURNS (INTEGER)
+	RETURN x + y;
+END;
+
+OPERATOR foo(x INTEGER) RETURNS (INTEGER)
+	RETURN x + 2;
+END;
+</pre></code></blockquote>
+
+<p>Dropping the first operator is performed with the following:</p>
+
+<blockquote><code><pre>
+DROP OPERATOR foo(INTEGER, INTEGER);
+</pre></code></blockquote>
+
+<p>Dropping the second is performed with the following:</p>
+
+<blockquote><code><pre>
+DROP OPERATOR foo(INTEGER);
+</pre></code></blockquote>
+
+<p><b>Relvar definitions:</b> Alternative keywords are available, in
+order to conform to both The Third Manifesto syntax and &quot;An
+Introduction to Database Systems&quot; syntax.</p>
+
+<p>A real relvar may be specified as:</p>
+
+<blockquote><code><pre>
+VAR myRelVar REAL RELATION ...
+</pre></code></blockquote>
+
+<p>...or...</p>
+
+<blockquote><code><pre>
+VAR myRelVar BASE RELATION ...
+</pre></code></blockquote>
+
+<p>A virtual relvar may be specified as:</p>
+
+<blockquote><code><pre>
+VAR myRelVar VIRTUAL ...
+</pre></code></blockquote>
+
+<p>...or...</p>
+
+<blockquote><code><pre>
+VAR myRelVar VIEW ...
+</pre></code></blockquote>
+
+<p><b>Outer joins:</b> While not strictly necessary, outer joins are
+convenient in real applications.  The syntax is based on, but not the
+same as, that described in a <b>Tutorial D</b> grammar specification
+available at <a
+href="http://thethirdmanifesto.com">http://thethirdmanifesto.com</a>.
+A mandatory FILL clause specifies the contents for non-matching
+tuples, thus avoiding the need for NULLs.  For example:</p>
+
+<blockquote><code><pre>
+rleft LEFT JOIN rright FILL {x 0, y &quot;no match&quot;}
+</pre></code></blockquote>
+
+<p>This syntax is experimental.  A proposed (but as yet unimplemented)
+alternative might be:</p>
+
+<blockquote><code><pre>
+rleft LEFT FILL {x 0, y &quot;no match&quot;} JOIN rright 
+</pre></code></blockquote>
+
+<p>Or, possibly:</p>
+
+<blockquote><code><pre>
+rleft LEFT {x 0, y &quot;no match&quot;} JOIN rright
+</pre></code></blockquote>
+
+<p><b>FOR:</b> The 'FOR' statement permits iterating over
+the tuples of a relation and executing arbitrary code.
+For example:</p>
+
+<blockquote><code><pre>
+FOR S {S#, SNAME} BEGIN
+    WRITELN "S# = " || S#;
+    WRITELN "SNAME = " || SNAME;
+END;
+</pre></code></blockquote>
+
+<p>FOR may be used in conjunction with ORDER (<i>see below</i>) to permit iterating tuples
+in a specified sequence.</p>
+
+<p>FOR should be considered shorthand for declaring a temporary array, 
+copying the expression's tuples into the array, and 
+then iterating the tuples in the array.
+
+<p><b>EXECUTE:</b> The EXECUTE statement permits run-time execution
+of dynamically-generated <b>Tutorial D</b> code.  For
+example, the following uses EXECUTE to emit <b>Tutorial D</b> 
+definitions of user-defined real relvars, by dynamically
+generating and executing an 'OUTPUT' statement for 
+each relvar using the relvar name obtained at run-time:</p>
+
+<blockquote><code><pre>
+FOR Catalog [owner &lt;&gt; "system" AND NOT isVirtual] BEGIN
+	WRITELN "VAR " || name || " REAL " || definition || ";";
+	WRITE name || " := ";
+	EXECUTE "OUTPUT " || name || ";";
+	WRITELN ";";
+END;
+</pre></code></blockquote>
+
+<p><b>GROUP:</b> The GROUP operator permits an alternate syntax.  The
+attribute list may be surrounded by parentheses or curly braces.  For
+example, the following are permissible:</p>
+
+<blockquote><code><pre>
+S GROUP (ALL BUT X, Y) AS P;
+</pre></code></blockquote>
+
+<p>...or...</p>
+
+<blockquote><code><pre>
+S GROUP {ALL BUT X, Y} AS P;
+</pre></code></blockquote>
+
+<p>This makes the syntax similar to that used with WRAP, and encourages
+consistency in using curly braces to delimit lists of attributes (or attribute
+definitions) and parentheses to delimit lists of clauses.
+
+<p><b>Debugging facilities:</b> The following have been provided to
+enable/disable various debugging levels:
+
+<ul>
+<li><code>SET TRACE RUN ON</code> and <code>SET TRACE RUN OFF</code> enable and
+  disable run-time tracing.</li>
+<li><code>SET TRACE COMPILE ON</code> and <code>SET TRACE COMPILE OFF</code> 
+  enable and disable compile-time tracing.</li>
+<li><code>SET DUMPING ON</code> and <code>SET DUMPING OFF</code> to enable and
+  disable display of the virtual machine state after each execution.
+</ul>
+
+<p>These facilities all direct their output to the standard output stream, so their
+output will appear in the Java console (or whatever), but not the DBrowser window.</p>
+
+<p><b>Arrays:</b>  Arrays are implemented as described in The Third Manifesto,
+with the following additions:
+
+<ul>
+<li>An ARRAY type has been implemented, declarable as:
+<blockquote><code><pre>
+ARRAY OF &lt;type&gt;
+</pre></code></blockquote>
+<p>For example:
+<blockquote><code><pre>
+VAR myArray ARRAY OF INTEGER;
+VAR myOtherArray ARRAY OF TUPLE {x INTEGER, y CHAR};
+VAR nested ARRAY OF ARRAY OF INTEGER;
+</pre></code></blockquote>
+
+<p><li>Literal arrays may be specified, eg:
+<blockquote><code><pre>
+ARRAY {1, 2, 3, 4}
+</pre></code></blockquote>
+<p>...or...
+<blockquote><code><pre>
+ARRAY OF INTEGER {1, 2, 3, 4}
+</pre></code></blockquote>
+
+<p><li>Array items are dereferenced via '[]'s, eg:
+<blockquote><code><pre>
+x := myArray[1];
+</pre></code></blockquote>
+<p>Nested arrays may be referenced as shown in the following:
+<blockquote><code><pre>
+x := myNestedArray[outerIndex][innerIndex];
+</pre></code></blockquote>
+
+<p><li>Assigning array items uses a non-conventional
+syntax.  Instead of the typical:
+<blockquote><code><pre>
+x[index] := 3;
+</pre></code></blockquote>
+<p>Use:
+<blockquote><code><pre>
+x SET index := 3;
+</pre></code></blockquote>
+
+<p>This makes array item references distinct
+from array item assignments, in a similar manner
+to the way relation references are distinct
+from relation updates.
+
+<p><li>COUNT works with ARRAY types.  (This <i>is</i> described in
+The Third Manifesto, but bears repeating here for completeness.)
+
+<p><li>LOAD has been implemented, but has the following
+feature and/or bug:  
+
+<p>Creating an ARRAY of a given RELATION type will allow storage of
+TUPLEs of that RELATION's type.  For example:
+
+<blockquote><code><pre>
+// This is not strictly correct, as it says 'x' is an array
+// of relations, not an array of tuples.
+VAR x ARRAY OF SAME TYPE AS (S);
+// This is fine.
+VAR p SAME TYPE AS (S);
+LOAD x FROM S ASC SNAME;
+WRITELN x;
+LOAD p FROM x;
+WRITELN p;
+</pre></code></blockquote>
+
+<p>Though convenient, this behaviour is not strictly correct, and may
+be altered in a future version.
+</ul>
+
+<p><b>Aggregate operators:</b> SUM, AVG, MAX, and MIN
+accept an optional third parameter, which is a value to be returned
+if the relation is empty.  If the relation is empty and
+this additional parameter is not specified, an exception
+will be thrown -- except for SUM and COUNT, which return 0.
+Use of this parameter is questionable, but avoids the need for filtering
+out empty groups before aggregating, as long as the 'empty'
+value is understood. For example:
+
+<blockquote><code><pre>
+VAR x RELATION {S# INTEGER}; 
+WRITELN AVG(x, S#, -1);
+</pre></code></blockquote>
+
+</p>
+    
+<p><b>ORDER:</b> An ORDER operator has been implemented to generate row-ordered
+relations.  This has no meaning in the context
+of relational algebra, but has practical value in
+generating human-readable output.  For example:
+ 
+<blockquote><code><pre>
+WRITELN P ORDER (DESC WEIGHT, ASC P#);
+</pre></code></blockquote>
+  
+<p>ORDER is experimental, and may eventually vanish in favour of using ARRAYs.
+
+<p><b>User-defined OPERATORs written in Java:</b>
+OPERATORs may be defined in Java, as shown in the following
+example:
+
+<blockquote><code><pre>
+OPERATOR Times(x INTEGER, y INTEGER) RETURNS (INTEGER) FOREIGN Java
+     // Any code allowed within a static method
+     // can go here.
+     return new ValueInteger(x.longValue() * y.longValue());
+END;
+</pre></code></blockquote>   
+
+See the Java 'Value' class in the <code>ca.mb.armchair.Rel.VM</code> javadocs 
+for more information.  All parameters and the return value extend 
+<code>ca.mb.armchair.Rel.VM.Value</code></p>
+
+<p><b>TYPE_OF:</b> The built-in TYPE_OF operator returns the type of
+an expression.  If the expression is a RELATION or TUPLE, TYPE_OF returns
+RELATION {name CHAR, type CHAR, parent CHAR}.  If the expression is a scalar value
+or array, TYPE_OF returns CHAR.  For example, entering...
+
+<blockquote><code><pre>
+TYPE_OF (3.2 + 6.8)
+</pre></code></blockquote>
+
+<p>...returns:
+
+<blockquote><code><pre>
+RATIONAL
+</pre></code></blockquote>
+
+<p>The following...
+
+<blockquote><code><pre>
+TYPE_OF (RELATION {TUPLE {x 1, y RELATION {TUPLE {z 5.0}}}})
+</pre></code></blockquote>
+
+<p>...returns:
+
+<blockquote</code><pre>
+RELATION {name CHAR, type CHAR, parent CHAR} {
+   TUPLE {name "x", type "INTEGER", parent ""},
+   TUPLE {name "y", type "RELATION {z RATIONAL}", parent ""},
+   TUPLE {name "z", type "RATIONAL", parent "y"}}
+</pre></code></blockquote>
+
+<p><b>User-defined TYPEs written in Java:</b>
+New TYPEs may be defined using Java within Rel, as
+illustrated in the following example of a simple 
+Date TYPE:
+
+<blockquote><code><pre>
+TYPE Date FOREIGN Java
+
+// A simple Date type. 
+
+	private java.util.Date d;
+
+	/** Type constructor. */
+	public Date() {}
+
+	/** Value constructor.  Construct date given a number of milliseconds
+                         * since January 1, 1970, 00:00:00 GMT. */
+	public Date(ValueInteger milliseconds) {
+		d = new java.util.Date(milliseconds.longValue());
+	}
+
+	/** Return this Date as a number of milliseconds since the epoch. */
+	public ValueInteger milliseconds() {
+		return new ValueInteger(d.getTime());
+	}
+
+	/** Compare this Value to another Value of the same Type. */
+	public int compareTo(XAction t, Object o) {
+		return d.compareTo(((Date)o).d);
+	}
+
+	/** Stringify this Value. */
+	public String stringValue(XAction t) {
+		return d.toString();
+	}
+    
+	/** Return a parsable representation of this Value. */
+	public String parseValue(XAction t) {
+		return "Date(" + d.getTime() + ")";
+	}
+
+	/** Set up this Value from a byte stream. */
+	public void fromBytestream(XAction t, BytestreamInput in) {
+		d = new java.util.Date(in.getlong());
+	}
+
+	/** Write this Value to a byte stream. */
+	public void toBytestream(XAction t, BytestreamOutput out) {
+		out.putLong(d.getTime());
+	}
+    
+	/** Get a default Value of this Type. */
+	public Value getDefaultValue() {
+		return new Date(new ValueInteger(System.currentTimeMillis()));
+	}
+
+END;
+</pre></code></blockquote>
+
+<p>OPERATORs to invoke methods will be automatically generated, but only for methods whose
+parameters and return value are composed exclusively
+of <code>ca.mb.armchair.Rel.VM.Value</code> class derivatives.  
+
+<p>Every user-defined
+Java-based TYPE is derived from <code>ca.mb.armchair.Rel.VM.TypeJava</code>  User-defined
+TYPEs and OPERATORs are stored in an automatically-created directory
+named <code>UserRelCode</code></p>
+
+<p><b>Database update reporting:</b> A facility is available to generate 
+notifications of created and dropped relvars, dropped types and operators,
+and numbers of tuples inserted, updated, and deleted.</p>
+  
+<p>Enable this mode with:</p>
+
+<blockquote><code><pre>
+SET VERBOSE ON;
+</pre></code></blockquote>
+     
+<p>Disable this mode with:
+
+<blockquote><code><pre>
+SET VERBOSE OFF;
+</pre></code></blockquote>
+
+<p>The default is OFF, but DBrowser automatically turns
+VERBOSE ON when it connects to a Rel server.</p>
+
+<p><b>Update operators:</b> Update and assignment operators may be used within expressions. 
+When used within an expression, an assignment evaluates to the assigned value.  Eg.:
+<blockquote><code><pre>
+WHILE (x := getPosition()) > 0 
+   ...
+END;  
+</pre></code></blockquote>
+
+<p>An UPDATE, INSERT, DELETE, or LOAD returns 
+a relation with (at least) an INTEGER 
+attribute 'N'.  'N' is the number of tuples 
+affected by the update.  Eg.:
+
+<blockquote><code><pre>
+WRITELN "Add " || N FROM (x += TUPLE {a 1});
+</pre></code></blockquote>
+
+<p><b>Compile-time announcements:</b>  A statement
+has been provided to output strings during compilation.  This
+may be used to provide compilation progress indicators in 
+lengthy scripts. Eg.:
+
+<blockquote><code><pre>
+ANNOUNCE 'Operator fibonacci (INTEGER) INTEGER being created...';
+OPERATOR fibonacci (r INTEGER) RETURNS (INTEGER)
+	IF r <= 1 THEN
+		RETURN r;
+	ELSE
+		RETURN fibonacci(r - 1) + fibonacci(r - 2);
+	END;
+END;
+</pre></code></blockquote>
+
+<p><b>Shorthand variable declaration and assignment:</b>  The following code...
+
+<blockquote><code><pre>
+VAR myVar SAME TYPE AS (x + y) INIT (x + y);
+</pre></code></blockquote>
+
+<p>...can also be written as:
+
+<blockquote><code><pre>
+VAR myVar := x + y;
+</pre></code></blockquote>
+
+<p><b>Constants:</b>  Constants may be declared, as shown
+in the following examples:
+
+<blockquote><code><pre>
+CONST myVar1 := 3;
+CONST myVar2 := RELATION {TUPLE {x 1}, TUPLE {x 3}};
+CONST myVar3 := x + y;
+</pre></code></blockquote>
+
+<p>&nbsp;</p>
+
+
+<a name="Limitations"><h2>Current Limitations and Work in Progress</h2>
+
+<p>It should be emphasized that all the limitations described below
+will be addressed in future versions of Rel.</p>
+
+
+<h3>Limitations -- DBrowser Client</h3>
+
+<p><b>Display of relations:</b> While not strictly a limitation, relations returned
+by the Rel server are displayed as raw text in <b>Tutorial D</b> syntax.  A
+future version will provide an option to display relations in a
+tabular form.<p>
+
+<p><b>Response scrolling:</b> When using the &quot;Enhanced text&quot; display mode, available by
+right clicking on the output window, the output scrolls down the
+window in an unpleasant manner.  This will be corrected in a future
+version.</p>
+
+
+<h3>Limitations -- Rel Server</h3>
+
+<p><b>Nested Transactions:</b> The current version of the
+storage engine -- SleepyCat Software's Java edition of the
+Berkeley DB -- supports low level nested transactions within the API,
+but throws an exception at runtime to indicate the feature is not
+implemented yet.  If this condition persists, a different storage
+engine will have to be used. If needed, this will probably be the C
+version of the Berkeley DB, but a custom storage engine will almost
+certainly replace it at some point.
+
+<p>As a result, nested transactions that ABORT cause their parent
+ transactions to abort.  A nested COMMIT does nothing.
+</p>
+
+<p><b>Relvar definitions - foreign keys:</b> The parser supports foreign key
+definitions but the Rel engine ignores them.  
+
+<p><b>Relvar definitions - candidate keys:</b> Only the first candidate
+key definition is processed -- subsequent key definitions are ignored.</p>
+
+<p><b>POSSREPs:</b> The user defined type facilities described by Date
+and Darwen are not yet implemented.  It is, however, possible to define new
+types using Java syntax within Rel.  See <a href="#Enhancements">Language 
+Enhancements</a>, above.</p>
+
+<p>Of course, POSSREPs will
+be incorporated into future Rel versions.</p>
+
+<p><b>Transitive closure:</b> TCLOSE is not yet implemented.</p>
+
+<p><b>Outer joins:</b> Though not part of The Third Manifesto
+specification, outer joins will be available with a mechanism to
+prevent generation of NULL values. Outer joins are recognised by the
+parser, but are not implemented yet.</p>
+
+<p><b>Operators:</b> The UPDATES parameter modifier is not implemented
+yet.</p>
+
+<p><b>Flow control:</b> The LEAVE statement is not implemented
+yet.</p>
+
+<p><b>Constraints:</b> Database constraints can be created using the
+CONSTRAINT statement and dropped using DROP CONSTRAINT, but type constraints
+are not yet supported.</p>
+
+<p><b>Optimisation:</b> There is none, anywhere, of any kind.  Even
+the primary key indexes are studiously ignored in the quest for poorer
+performance.  JOINs, for example, are brute force.  However, since
+&quot;premature optimisation is the root of all evil,&quot;
+(C. A. R. Hoare) this cannot be considered entirely a bad thing.
+Future versions of Rel will implement appropriate optimisation
+mechanisms.</p>
+
+<p>&nbsp;</p>
+
+
+
+<a name="Future"><h2>Future Development</h2>
+
+<p>As defined in The Third Manifesto, the <b>Tutorial D</b> specification
+does not describe various practical features such as security, storage
+management, back-up management, database maintenance, exception
+handling, and so on.  Future releases will define and implement a
+superset of <b>Tutorial D</b> to address these, thus making Rel a
+practical alternative to SQL database products.</p>
+
+<p>Naturally, the pervasive nature of SQL products necessitates
+integration with the existing SQL world.  Future versions of Rel will
+allow access to SQL databases, perhaps by wrapping SQL tables in
+relations when NULLs and duplicate rows are guaranteed not to occur,
+and/or perhaps by allowing SQL tables with NULLs and duplicate rows to
+be manipulated as non-relational &quot;second class&quot; citizens in
+the relational world of Rel.</p>
+
+<p>Furthermore, Rel will be used as the basis for tools that
+facilitate the development of practical database-based applications.
+The web site <a
+href="http://dbappbuilder.sourceforge.net">http://dbappbuilder.sourceforge.net</a>
+provides a home for these.</p>
+
+<p>&nbsp;</p>
+
+
+
+<a name="Grammar"><h2><b>Tutorial D</b> Grammar</h2>
+
+<p>The grammar for the Rel implementation of <b>Tutorial D</b> can be
+found <a href="TutorialDGrammar.html" target="grammar">here</a>.</p>
+
+<p>&nbsp;</p>
+
+
+
+<a name="License"><h2>Copyright and Software License</h2>
+
+Rel - An implementation of Date and Darwen's "<b>Tutorial D</b>"
+Relational Database Language.
+
+<p>Copyright &copy; 2004-2006 Dave Voorhis and Armchair Airlines Computer
+Services Inc.
+
+<p>This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+<p>You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+<p>Rel incorporates a binary distribution of SleepyCat Software's Java
+edition of the Berkeley DB, which is licensed separately.  The source
+code is available at <a
+href="http://www.sleepycat.com/">http://www.sleepycat.com</a>.  The
+copyright and license terms are included here:</p>
+
+<blockquote>
+
+<p>Copyright &copy; 2002-2004 Sleepycat Software.  All rights reserved.</p>
+ 
+<p>Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:</p>
+
+<ol> 
+
+<li>Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+
+<li>Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+
+<li>Redistributions in any form must be accompanied by information on
+     how to obtain complete source code for the DB software and any
+     accompanying software that uses the DB software.  The source code
+     must either be included in the distribution or be available for no
+     more than the cost of distribution plus a nominal fee, and must be
+     freely redistributable under reasonable conditions.  For an
+     executable file, complete source code means the source code for all
+     modules it contains.  It does not include source code for modules or
+     files that typically accompany the major components of the operating
+     system on which the executable file runs.
+ 
+</ol>
+
+<p>THIS SOFTWARE IS PROVIDED BY SLEEPYCAT SOFTWARE ``AS IS'' AND ANY EXPRESS
+ OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
+ NON-INFRINGEMENT, ARE DISCLAIMED.  IN NO EVENT SHALL SLEEPYCAT SOFTWARE
+ BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+ THE POSSIBILITY OF SUCH DAMAGE.</p>
+
+</blockquote>
+
+<p>&nbsp;</p>
+
+
+
+<a name="Installation"><h2>Download and Installation</h2>
+
+<b>*** IMPORTANT INSTRUCTIONS FOR UPGRADING: ***</b>
+
+<ol>
+ <li>If you are upgrading from an older version of Rel, you
+    <b>MUST</b> back up your database <b>BEFORE</b> you install an
+    upgrade!  Run the DatabaseToScript.d script found in the Samples
+    directory.  This script will emit your database as a new
+    <b>Tutorial D</b> script. To back up your database, save the
+    generated script.</li>
+
+ <p><li><b>NOTE:</b> Rel now requires Java 5 (also known as Java
+ 1.5.x) or higher.  The Sun Microsystems implementation is available
+ at <a href="http://java.sun.com/"
+ target="_pop">http://java.sun.com</a>.
+ 
+ <p><li>Once you have made a back-up, you <b>must</b> delete the
+    current database by deleting all the "*.jdb" files.</li>
+
+ <p><li>Install the upgrade. (See the Installation instructions
+    below.) A new database will be created when
+    the Rel server (or DBrowser) is run.</li>
+
+ <p><li>To restore your database, load and run the script you created
+    and saved in Step 1, above.</li> </ol>
+
+</blockquote>
+
+<p><b>*** Installation ***</b></p>
+       
+<ol>
+
+<li>Rel requires the Java 5 (also known as Java 1.5.x) JDK (Java
+Development Kit) platform to be installed.  You <i>can</i> use
+the Java 5 JRE (Java Runtime Environment), but certain functionality
+will be unavailable.  In particular, you will not be able to create
+Java-based user-defined OPERATORs or TYPEs.  A number of the provided
+(see the Samples folder) Rel examples and utilities depend on this, so
+it is strongly recommended to use the JDK rather than just the JRE.
+
+<p><ul> <li>You can obtain the Sun Microsystems J2SE JDK at <a
+href="http://java.sun.com/" target="_pop">http://java.sun.com</a>.
+Other vendors' JDK implementations may work, but have not been tested.
+
+<p>Rel will use the <code>javac</code> compiler included with the
+JDK</a> or it can use the <a
+href="http://oss.software.ibm.com/developerworks/opensource/jikes/">
+<code>jikes</code> Java compiler from IBM</a>.  At least one of these
+must be installed in order to define Java-based TYPEs or OPERATORs.
+If both jikes and javac are available, jikes will be used.
+
+<p><li>Depending on the operating system you use, you may need to configure
+your system PATH (or equivalent) in order to recognise Java from any directory
+or folder.  Unfortunately, instructions for doing this are beyond the scope
+of this document.
+</ul>
+
+<p><li>Download the Rel installation .jar file from SourceForge at <a
+href="http://sourceforge.net/project/showfiles.php?group_id=70867&package_id=124252"
+target="_pop">http://sourceforge.net/project/showfiles.php?group_id=70867&package_id=124252</a>
+
+<p><li>Execute the .jar file.  On most platforms, you should merely
+have to click on the .jar file to run it.  If your platform does not
+support this, type the following at the command line:
+
+<blockquote><code><pre>
+java -jar RelInstall-0.0.13.jar
+</pre></code></blockquote>
+
+<p><li>Follow the instructions provided in the installer.
+Unfortunately, at this time the installer does not create shortcuts or
+desktop or "Start" menu items, so you will have to invoke the programs
+from the installation directory and/or create your own shortcuts.
+
+<p><li>To get started, go to the installation directory and execute
+DBrowser.jar, either by clicking on DBrowser.jar (all OSs that support
+one-click invocation of Java programs), DBrowser.bat (Windows),
+DBrowser (UNIX or UNIX-like operating systems), or by typing the
+following at the command line:
+
+<blockquote><code><pre>
+java -jar DBrowser.jar
+</pre></code></blockquote>
+
+</ol>
+
+<p>&nbsp;</p>
+
+
+
+<a name="References"><h2>References</h2>
+
+<p>[<a href="#BRef1">1</a>] <a name="Ref1">Microsoft SQL Server home
+page: <a href="http://www.microsoft.com/sql/"
+target="_pop">http://www.microsoft.com/sql</a></p>
+
+<p>[<a href="#BRef2">2</a>] <a name="Ref2">Oracle database home page:
+<a href="http://www.oracle.com/database/"
+target="_pop">http://www.oracle.com/database</a></p>
+
+<p>[<a href="#BRef3">3</a>] <a name="Ref3">DB2 home page: <a
+href="http://www.ibm.com/software/data/db2/"
+target="_pop">http://www.ibm.com/software/data/db2/</a></p>
+
+<p>[<a href="#BRef4">4</a>] <a name="Ref4">MySQL home page: <a
+href="http://www.mysql.com/"
+target="_pop">http://www.mysql.com</a></p>
+
+<p>[<a href="#BRef5">5</a>] <a name="Ref5">PostgreSQL home page: <a
+href="http://www.postgresql.org/"
+target="_pop">http://www.postgresql.org</a></p>
+
+<p>[<a href="#BRef6">6</a>] <a name="Ref6">As SQL is a collection of
+language dialects and a standard, rather than a specific product,
+there is no definitive home page or reference.  Wikipedia's entry is a
+good starting point for further reading: <a
+href="http://en.wikipedia.org/wiki/SQL"
+target="_pop">http://en.wikipedia.org/wiki/SQL</a></p>
+
+<p>[<a href="#BRef7">7</a>] <a name="Ref7">&quot;A Relational Model
+ for Large Shared Data Banks&quot;, E. F. Codd, Communications of the
+ ACM, Vol. 13, No. 6, June 1970, pp. 377-387. Copyright &copy; 1970,
+ Association for Computing Machinery, Inc.  Reprinted at <a
+ href="http://www.acm.org/classics/nov95/toc.html"
+ target="_pop">http://www.acm.org/classics/nov95/toc.html</a></p>
+
+<p>[<a href="#BRef8">8</a>] <a name="Ref8">&quot;Foundation for
+Object/Relational Databases -- The Third Manifesto&quot;, C. J. Date
+and Hugh Darwen, Addison-Wesley Professional, 1998, ISBN: 0201309785
+</p>
+
+<p>[<a href="#BRef9">9</a>] <a name="Ref9">&quot;Foundation for Future
+Database Systems -- The Third Manifesto&quot;, C. J. Date and Hugh
+Darwen, Addison-Wesley Professional, 2nd edition (2000), ASIN:
+0201709287
+</p>
+
+<p>[<a href="#BRef10">10</a>] <a name="Ref10">The Third Manifesto home
+page: <a href="http://thethirdmanifesto.com/"
+target="_pop">http://thethirdmanifesto.com</a></p>
+
+<p>[<a href="#BRef11">11</a>] <a name="Ref11">&quot;An Introduction to
+Database Systems&quot;, C. J. Date, Pearson Education, 8th edition
+(2003), ISBN: 0321197844 </p>
+
+<p>[<a href="#BRef12">12</a>] <a name="Ref12">Sun Microsystems' Java
+home page: <a href="http://java.sun.com/"
+target="_pop">http://java.sun.com</a></p>
+
+
+
+<p><center><b>END</b></center></p> 
+
+

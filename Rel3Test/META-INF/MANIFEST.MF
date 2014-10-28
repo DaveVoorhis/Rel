@@ -1,0 +1,41 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.8.2
+Created-By: 1.5.0_22-b03 (Sun Microsystems Inc.)
+Built-By: pb2user
+Bundle-Vendor: Sun Microsystems Inc.
+Bundle-Classpath: .
+Bundle-Version: 5.1.25
+Bundle-Name: Sun Microsystems' JDBC Driver for MySQL
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.mysql.jdbc
+Export-Package: com.mysql.jdbc;version="5.1.25";uses:="com.mysql.jdbc.
+ log,javax.naming,javax.net.ssl,javax.xml.transform,org.xml.sax",com.m
+ ysql.jdbc.jdbc2.optional;version="5.1.25";uses:="com.mysql.jdbc,com.m
+ ysql.jdbc.log,javax.naming,javax.sql,javax.transaction.xa",com.mysql.
+ jdbc.log;version="5.1.25",com.mysql.jdbc.profiler;version="5.1.25";us
+ es:="com.mysql.jdbc",com.mysql.jdbc.util;version="5.1.25";uses:="com.
+ mysql.jdbc.log",com.mysql.jdbc.exceptions;version="5.1.25",com.mysql.
+ jdbc.exceptions.jdbc4;version="5.1.25";uses:="com.mysql.jdbc",com.mys
+ ql.jdbc.interceptors;version="5.1.25";uses:="com.mysql.jdbc",com.mysq
+ l.jdbc.integration.c3p0;version="5.1.25",com.mysql.jdbc.integration.j
+ boss;version="5.1.25",com.mysql.jdbc.configs;version="5.1.25",org.gjt
+ .mm.mysql;version="5.1.25"
+Import-Package: javax.net,javax.net.ssl;version="[1.0.1, 2.0.0)";resol
+ ution:=optional,javax.xml.parsers, javax.xml.stream,javax.xml.transfo
+ rm,javax.xml.transform.dom,javax.xml.transform.sax,javax.xml.transfor
+ m.stax,javax.xml.transform.stream,org.w3c.dom,org.xml.sax,org.xml.sax
+ .helpers;resolution:=optional,javax.naming,javax.naming.spi,javax.sql
+ ,javax.transaction.xa;version="[1.0.1, 2.0.0)";resolution:=optional,c
+ om.mchange.v2.c3p0;version="[0.9.1.2, 1.0.0)";resolution:=optional,or
+ g.jboss.resource.adapter.jdbc;resolution:=optional,org.jboss.resource
+ .adapter.jdbc.vendor;resolution:=optional
+
+Name: common
+Specification-Title: JDBC
+Specification-Version: 4.0
+Specification-Vendor: Sun Microsystems Inc.
+Implementation-Title: MySQL Connector Java
+Implementation-Version: 5.1.25
+Implementation-Vendor-Id: com.mysql
+Implementation-Vendor: Oracle
+

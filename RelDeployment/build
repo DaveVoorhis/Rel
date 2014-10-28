@@ -1,0 +1,10 @@
+#!/bin/sh
+
+rm RelSource.zip
+cd ..
+zip -9r RelDeployment/RelSource.zip Rel3DBrowser Rel3Shared Rel3Client Rel3Server Rel3Test Rel3Test Rev -x@RelDeployment/exclude.lst
+cd /home/dave/IzPack/bin
+./compile /home/dave/workspace/RelDeployment/install.xml -b /home/dave/workspace/RelDeployment -o /home/dave/workspace/RelDeployment/install.jar
+cd /home/dave/workspace/RelDeployment
+mv install.jar RelInstall-1.0.12.jar
+jjdoc -ONE_TABLE=false /home/dave/workspace/Rel3Server/ca/mb/armchair/rel3/languages/tutoriald/parser/TutorialD.jj

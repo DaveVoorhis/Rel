@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="lib" path="DBrowser.jar"/>
+	<classpathentry kind="lib" path="je.jar"/>
+	<classpathentry kind="lib" path="junit.jar"/>
+	<classpathentry kind="lib" path="Rel.jar"/>
+	<classpathentry kind="lib" path="relclient.jar"/>
+	<classpathentry kind="lib" path="relshared.jar"/>
+	<classpathentry kind="lib" path="RelTest.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

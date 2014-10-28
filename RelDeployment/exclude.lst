@@ -1,0 +1,14 @@
+Rel3Server/.settings/
+*.prefs
+*.svn
+*/*.settings 
+*.project
+*/*.svn/*
+*.jardesc
+*.class
+*.classpath
+*.jdb
+*.id
+*.lck
+*.jar
+*/resourceSource/*

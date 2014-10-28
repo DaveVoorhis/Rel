@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="lib/XLS/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/XLS/poi-3.9-20121203.jar"/>
+	<classpathentry kind="lib" path="lib/XLS/poi-ooxml-3.9-20121203.jar"/>
+	<classpathentry kind="lib" path="lib/XLS/poi-ooxml-schemas-3.9-20121203.jar"/>
+	<classpathentry kind="lib" path="lib/XLS/stax-api-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/XLS/xmlbeans-2.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/Hadoop/commons-configuration-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/Hadoop/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/Hadoop/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/Hadoop/hadoop-core-1.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/Hadoop/hbase-0.94.9.jar"/>
+	<classpathentry kind="lib" path="lib/Hadoop/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="lib/Hadoop/protobuf-java-2.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/Hadoop/slf4j-api-1.4.3.jar"/>
+	<classpathentry kind="lib" path="lib/Hadoop/slf4j-log4j12-1.4.3.jar"/>
+	<classpathentry kind="lib" path="lib/Hadoop/zookeeper-3.4.5.jar"/>
+	<classpathentry kind="lib" path="/RelDeployment/junit.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Rel3Test"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Rel3Server"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

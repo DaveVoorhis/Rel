@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<shortcuts>
+
+  <programGroup defaultName="Rel" location="applications"/>
+
+   <shortcut
+     name="DBrowser"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="no"
+     startup="no"
+     target="java"
+     workingDirectory="$INSTALL_PATH"
+     commandLine="-jar &quot;$INSTALL_PATH/DBrowser.jar&quot;"
+     initialState="normal"
+     iconFile="$INSTALL_PATH/RelIcon1.png"
+     iconIndex="0"
+     type="Application"
+     encoding="UTF-8"
+     description="Rel - DBrowser">
+     <createForPack name="DBrowser"/>
+   </shortcut>
+
+   <shortcut
+     name="Uninstall Rel"
+     programGroup="yes"
+     desktop="no"
+     applications="no"
+     startMenu="no"
+     startup="no"
+     target="java"
+     commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
+     initialState="noShow"
+     iconFile="trashcan_full"
+     iconIndex="0"
+     workingDirectory="$INSTALL_PATH"
+     type="Application"
+     encoding="UTF-8"
+     description="Rel uninstaller">
+     <createForPack name="Docs" />
+   </shortcut>
+
+</shortcuts>

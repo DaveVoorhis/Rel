@@ -1,0 +1,2937 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>BNF for TutorialD.jj</TITLE>
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>BNF for TutorialD.jj</H1>
+<H2 ALIGN=CENTER>TOKENS</H2>
+<TABLE>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/*
+ *
+ * Lexer definitions
+ *
+ */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SKIP : {
+" "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SPECIAL : {
+&lt;SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")&gt;
+| &lt;FORMAL_COMMENT: "/**" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/"&gt;
+| &lt;MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN [IGNORE_CASE] : {
+&lt;ADD: "ADD"&gt;
+| &lt;ALL: "ALL"&gt;
+| &lt;AND: "AND"&gt;
+| &lt;ANNOUNCE: "ANNOUNCE"&gt;
+| &lt;ARRAY: "ARRAY"&gt;
+| &lt;AS: "AS"&gt;
+| &lt;ASC: "ASC"&gt;
+| &lt;AVG: "AVG"&gt;
+| &lt;AVGD: "AVGD"&gt;
+| &lt;BASE: "BASE"&gt;
+| &lt;BEGIN: "BEGIN"&gt;
+| &lt;BUT: "BUT"&gt;
+| &lt;BY: "BY"&gt;
+| &lt;CALL: "CALL"&gt;
+| &lt;CASE: "CASE"&gt;
+| &lt;COMMIT: "COMMIT"&gt;
+| &lt;COMPOSE: "COMPOSE"&gt;
+| &lt;CONSTRAINT: "CONSTRAINT"&gt;
+| &lt;COUNT: "COUNT"&gt;
+| &lt;COUNTD: "COUNTD"&gt;
+| &lt;DELETE: "DELETE"&gt;
+| &lt;DESC: "DESC"&gt;
+| &lt;DIVIDEBY: "DIVIDEBY"&gt;
+| &lt;DO: "DO"&gt;
+| &lt;DROP: "DROP"&gt;
+| &lt;D_INSERT: "D_INSERT"&gt;
+| &lt;D_UNION: "D_UNION"&gt;
+| &lt;ELSE: "ELSE"&gt;
+| &lt;END: "END"&gt;
+| &lt;EOT: "&lt;EOT&gt;"&gt;
+| &lt;EXACTLYD: "EXACTLYD"&gt;
+| &lt;EXACTLY: "EXACTLY"&gt;
+| &lt;EXECUTE: "EXECUTE"&gt;
+| &lt;EXTEND: "EXTEND"&gt;
+| &lt;EXTERNAL: "EXTERNAL"&gt;
+| &lt;FALSE: "FALSE"&gt;
+| &lt;FOREIGN: "FOREIGN"&gt; : SCRIPT
+| &lt;FOR: "FOR"&gt;
+| &lt;FROM: "FROM"&gt;
+| &lt;GROUP: "GROUP"&gt;
+| &lt;I_DELETE: "I_DELETE"&gt;
+| &lt;I_MINUS: "I_MINUS"&gt;
+| &lt;IF: "IF"&gt;
+| &lt;IN: "IN"&gt;
+| &lt;INIT: "INIT"&gt;
+| &lt;INSERT: "INSERT"&gt;
+| &lt;INTERSECT: "INTERSECT"&gt;
+| &lt;IS: "IS"&gt;
+| &lt;JOIN: "JOIN"&gt;
+| &lt;KEY: "KEY"&gt;
+| &lt;LEAVE: "LEAVE"&gt;
+| &lt;LOAD: "LOAD"&gt;
+| &lt;LAMBDA: "~["&gt;
+| &lt;LAMBDAEND: "]~"&gt;
+| &lt;MATCHING: "MATCHING"&gt;
+| &lt;MAX: "MAX"&gt;
+| &lt;MIN: "MIN"&gt;
+| &lt;MINUS: "MINUS"&gt;
+| &lt;NOT: "NOT"&gt;
+| &lt;OPERATOR: "OPERATOR"&gt;
+| &lt;ORDER: "ORDER"&gt;
+| &lt;ORDERED: "ORDERED"&gt;
+| &lt;ORDINAL: "ORDINAL"&gt;
+| &lt;OR: "OR"&gt;
+| &lt;OUTPUT: "OUTPUT"&gt;
+| &lt;PER: "PER"&gt;
+| &lt;POSSREP: "POSSREP"&gt;
+| &lt;PREFIX: "PREFIX"&gt;
+| &lt;PRIVATE: "PRIVATE"&gt;
+| &lt;PUBLIC: "PUBLIC"&gt;
+| &lt;REAL: "REAL"&gt;
+| &lt;RELATION: "RELATION" | "REL"&gt;
+| &lt;RENAME: "RENAME"&gt;
+| &lt;RETURN: "RETURN"&gt;
+| &lt;RETURNS: "RETURNS"&gt;
+| &lt;ROLLBACK: "ROLLBACK"&gt;
+| &lt;SAME_HEADING_AS: "SAME_HEADING_AS"&gt;
+| &lt;SAME_TYPE_AS: "SAME_TYPE_AS"&gt;
+| &lt;SET: "SET"&gt;
+| &lt;SEMIJOIN: "SEMIJOIN"&gt;
+| &lt;SEMIMINUS: "SEMIMINUS"&gt;
+| &lt;SUFFIX: "SUFFIX"&gt;
+| &lt;SUMD: "SUMD"&gt;
+| &lt;SUMMARIZE: "SUMMARIZE"&gt;
+| &lt;SUM: "SUM"&gt;
+| &lt;SYNONYMS: "SYNONYMS"&gt;
+| &lt;TABLE_DEE: "DEE" | "TABLE_DEE"&gt;
+| &lt;TABLE_DUM: "DUM" | "TABLE_DUM"&gt;
+| &lt;TCLOSE: "TCLOSE"&gt;
+| &lt;THEN: "THEN"&gt;
+| &lt;TIMES: "TIMES"&gt;
+| &lt;TO: "TO"&gt;
+| &lt;TRANSACTION: "TRANSACTION"&gt;
+| &lt;TRUE: "TRUE"&gt;
+| &lt;TUPLE: "TUPLE" | "TUP"&gt;
+| &lt;TYPE: "TYPE"&gt;
+| &lt;UNGROUP: "UNGROUP"&gt;
+| &lt;UNION: "UNION"&gt;
+| &lt;UNWRAP: "UNWRAP"&gt;
+| &lt;UPDATES: "UPDATES"&gt;
+| &lt;UPDATE: "UPDATE"&gt;
+| &lt;VAR: "VAR"&gt;
+| &lt;VERSION: "VERSION"&gt;
+| &lt;VIRTUAL: "VIRTUAL" | "VIEW"&gt;
+| &lt;WHEN: "WHEN"&gt;
+| &lt;WHERE: "WHERE"&gt;
+| &lt;WHILE: "WHILE"&gt;
+| &lt;WITH: "WITH"&gt;
+| &lt;WRAP: "WRAP"&gt;
+| &lt;WRITE: "WRITE"&gt;
+| &lt;WRITELN: "WRITELN"&gt;
+| &lt;XOR: "XOR"&gt;
+| &lt;XUNION: "XUNION"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;INTEGER_LITERAL: &lt;DECIMAL_LITERAL&gt; (["l","L"])? | &lt;HEX_LITERAL&gt; (["l","L"])? | &lt;OCTAL_LITERAL&gt; (["l","L"])?&gt;
+| &lt;#DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])*&gt;
+| &lt;#HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+&gt;
+| &lt;#OCTAL_LITERAL: "0" (["0"-"7"])*&gt;
+| &lt;FLOATING_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])* (&lt;EXPONENT&gt;)? (["f","F","d","D"])? | "." (["0"-"9"])+ (&lt;EXPONENT&gt;)? (["f","F","d","D"])? | (["0"-"9"])+ &lt;EXPONENT&gt; (["f","F","d","D"])? | (["0"-"9"])+ (&lt;EXPONENT&gt;)? ["f","F","d","D"]&gt;
+| &lt;#EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+&gt;
+| &lt;STRING_LITERAL: "\"" (~["\"","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"]))* "\"" | "\'" (~["\'","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"]))* "\'"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;IDENTIFIER: &lt;LETTER&gt; (&lt;LETTER&gt; | &lt;DIGIT&gt; | "." | "#")*&gt;
+| &lt;#LETTER: ["$","A"-"Z","_","a"-"z","\u00c0"-"\u00d6","\u00d8"-"\u00f6","\u00f8"-"\u00ff","\u0100"-"\u1fff","\u3040"-"\u318f","\u3300"-"\u337f","\u3400"-"\u3d2d","\u4e00"-"\u9fff","\uf900"-"\ufaff"]&gt;
+| &lt;#DIGIT: ["0"-"9","\u0660"-"\u0669","\u06f0"-"\u06f9","\u0966"-"\u096f","\u09e6"-"\u09ef","\u0a66"-"\u0a6f","\u0ae6"-"\u0aef","\u0b66"-"\u0b6f","\u0be7"-"\u0bef","\u0c66"-"\u0c6f","\u0ce6"-"\u0cef","\u0d66"-"\u0d6f","\u0e50"-"\u0e59","\u0ed0"-"\u0ed9","\u1040"-"\u1049"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;LPAREN: "("&gt;
+| &lt;RPAREN: ")"&gt;
+| &lt;LBRACE: "{"&gt;
+| &lt;RBRACE: "}"&gt;
+| &lt;SEMICOLON: ";"&gt;
+| &lt;COMMA: ","&gt;
+| &lt;COLON: ":"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;ASSIGN: ":="&gt;
+| &lt;EQ: "="&gt;
+| &lt;GT: "&gt;"&gt;
+| &lt;LT: "&lt;"&gt;
+| &lt;LTE: "&lt;="&gt;
+| &lt;GTE: "&gt;="&gt;
+| &lt;NEQ: "&lt;&gt;"&gt;
+| &lt;PLUS: "+"&gt;
+| &lt;SUBT: "-"&gt;
+| &lt;STAR: "*"&gt;
+| &lt;SLASH: "/"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;SCRIPT&gt; TOKEN : {
+&lt;ENDFOREIGN: "\nEND"&gt; : DEFAULT
+| &lt;TEXT: ~[]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+</TABLE>
+<H2 ALIGN=CENTER>NON-TERMINALS</H2>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>evaluate</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">evaluate</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod2">compound_statement_body</A> ";" )? <A HREF="#prod3">expression</A> ( &lt;EOT&gt; | &lt;EOF&gt; )</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>code</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod4">code</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod5">statement</A> ( <A HREF="#prod5">statement</A> )* ( &lt;EOT&gt; | &lt;EOF&gt; )</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>statement</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod5">statement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod6">statement_body</A> ";"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>op_before_returns</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod7">op_before_returns</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OPERATOR&gt; <A HREF="#prod8">identifier</A> "(" ( <A HREF="#prod8">identifier</A> <A HREF="#prod9">type_ref</A> ( "," <A HREF="#prod8">identifier</A> <A HREF="#prod9">type_ref</A> )* )? ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>op_after_returns</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod10">op_after_returns</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod11">op_updates</A> <A HREF="#prod12">op_synonym</A> <A HREF="#prod13">op_version</A> ";" <A HREF="#prod14">op_body</A> &lt;END&gt; &lt;OPERATOR&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> &lt;FOREIGN&gt; ( &lt;TEXT&gt; )* &lt;ENDFOREIGN&gt; &lt;OPERATOR&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>getoperatorreturntype</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">getoperatorreturntype</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod7">op_before_returns</A> <A HREF="#prod16">op_returns</A> <A HREF="#prod10">op_after_returns</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>getheading</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">getheading</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod18">heading</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>getsignature</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">getsignature</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod20">op_signature</A> <A HREF="#prod16">op_returns</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>statement_body</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod6">statement_body</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod21">assignment</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod22">loop</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod23">op_def</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod24">type_def</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod25">drop</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod26">var_def</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod27">db_constraint_def</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod28">relation_array_load</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod29">begin_transaction</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">compound_statement_body</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod30">commit</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod31">rollback</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod32">call</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod33">return_statement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod34">case_statement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod35">if_statement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod36">leave</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod37">write</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod38">writeln</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod39">output</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod40">announce</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod41">execute</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod42">set</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Rel extension - non-TTM */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>write</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod37">write</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;WRITE&gt; <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Rel extension - non-TTM */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>writeln</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod38">writeln</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;WRITELN&gt; ( <A HREF="#prod3">expression</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Rel extension - non-TTM */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>output</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod39">output</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OUTPUT&gt; <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Rel extension - non-TTM */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>announce</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod40">announce</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ANNOUNCE&gt; <A HREF="#prod43">string_literal</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Rel extension - non-TTM */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>execute</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod41">execute</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EXECUTE&gt; <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Rel extension - non-TTM */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>set</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod42">set</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SET&gt; <A HREF="#prod8">identifier</A> <A HREF="#prod8">identifier</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>compound_statement_body</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod2">compound_statement_body</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BEGIN&gt; ";" ( <A HREF="#prod5">statement</A> )* &lt;END&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>op_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod23">op_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OPERATOR&gt; <A HREF="#prod8">identifier</A> "(" <A HREF="#prod44">parameter_def_commalist</A> ")" <A HREF="#prod16">op_returns</A> ( <A HREF="#prod45">rel_op_def</A> | <A HREF="#prod46">external_op_def</A> )</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>lambda</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod47">lambda</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OPERATOR&gt; <A HREF="#prod48">lambda_definition</A> &lt;END&gt; &lt;OPERATOR&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LAMBDA&gt; <A HREF="#prod48">lambda_definition</A> &lt;LAMBDAEND&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>lambda_definition</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod48">lambda_definition</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"(" <A HREF="#prod44">parameter_def_commalist</A> ")" &lt;RETURNS&gt; <A HREF="#prod9">type_ref</A> ";" <A HREF="#prod14">op_body</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>external_op_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod46">external_op_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> &lt;FOREIGN&gt; ( &lt;TEXT&gt; )* &lt;ENDFOREIGN&gt; &lt;OPERATOR&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>rel_op_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod45">rel_op_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod11">op_updates</A> <A HREF="#prod12">op_synonym</A> <A HREF="#prod13">op_version</A> ";" <A HREF="#prod14">op_body</A> &lt;END&gt; &lt;OPERATOR&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Note: op_returns() and op_updates()
+should be mutually exclusive. */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>op_returns</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">op_returns</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;RETURNS&gt; <A HREF="#prod9">type_ref</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>op_updates</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod11">op_updates</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;UPDATES&gt; "{" ( &lt;ALL&gt; &lt;BUT&gt; <A HREF="#prod49">parameter_name_commalist</A> )? "}" )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>op_synonym</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod12">op_synonym</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod50">synonym_def</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>op_version</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">op_version</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;VERSION&gt; <A HREF="#prod8">identifier</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>op_body</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">op_body</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod5">statement</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>return_statement</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod33">return_statement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;RETURN&gt; ( <A HREF="#prod3">expression</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Not explicitly defined in TTM3 */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>parameter_def_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod44">parameter_def_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod51">parameter_def</A> ( "," <A HREF="#prod51">parameter_def</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>parameter_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod51">parameter_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> <A HREF="#prod9">type_ref</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Not explicitly defined in TTM3 */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>parameter_name_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod49">parameter_name_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod8">identifier</A> ( "," <A HREF="#prod8">identifier</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>synonym_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod50">synonym_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SYNONYMS&gt; "{" <A HREF="#prod52">user_op_name_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Not explicitly defined in TTM3 */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>user_op_name_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod52">user_op_name_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> ( "," <A HREF="#prod8">identifier</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Inclusion of type_ref_commalist() in
+OPERATOR DROP is not per TTM3,
+but necessary to 
+disambiguate operators. */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>drop</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod25">drop</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DROP&gt; ( &lt;OPERATOR&gt; <A HREF="#prod20">op_signature</A> | &lt;VAR&gt; <A HREF="#prod8">identifier</A> | &lt;CONSTRAINT&gt; <A HREF="#prod8">identifier</A> | &lt;TYPE&gt; <A HREF="#prod8">identifier</A> )</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>op_signature</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">op_signature</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> "(" <A HREF="#prod53">type_ref_commalist</A> ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>op_type</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod54">op_type</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OPERATOR&gt; "(" <A HREF="#prod53">type_ref_commalist</A> ")" ( &lt;RETURNS&gt; <A HREF="#prod9">type_ref</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_ref_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod53">type_ref_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod9">type_ref</A> ( "," <A HREF="#prod9">type_ref</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Was user_scalar_type_def */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">type_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TYPE&gt; <A HREF="#prod8">identifier</A> <A HREF="#prod55">type_def_kind</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_def_kind</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod55">type_def_kind</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod56">type_def_external</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod57">type_def_internal</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_def_external</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod56">type_def_external</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> &lt;FOREIGN&gt; ( &lt;TEXT&gt; )* &lt;ENDFOREIGN&gt; &lt;TYPE&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* User-defined (internal) types start here */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_def_internal</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod57">type_def_internal</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod58">type_def_internal_ordinal</A> <A HREF="#prod59">type_def_internal_union</A> <A HREF="#prod60">type_def_internal_is_or_possrep</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_def_internal_is_or_possrep</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod60">type_def_internal_is_or_possrep</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod61">is_def</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod62">possrep_def_list</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_def_internal_ordinal</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod58">type_def_internal_ordinal</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod63">type_def_internal_opt_ordinal</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_def_internal_opt_ordinal</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod63">type_def_internal_opt_ordinal</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;ORDINAL&gt; | &lt;ORDERED&gt; )</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_def_internal_union</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod59">type_def_internal_union</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod64">type_def_internal_opt_union</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_def_internal_opt_union</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod64">type_def_internal_opt_union</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UNION&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>is_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod61">is_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IS&gt; "{" ( <A HREF="#prod65">single_inheritance_is_def</A> | <A HREF="#prod66">multiple_inheritance_is_def</A> ) "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>single_inheritance_is_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod65">single_inheritance_is_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> <A HREF="#prod67">possrep_or_specialization_details</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>possrep_or_specialization_details</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod67">possrep_or_specialization_details</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod68">specialisation_constraint_def</A> ( <A HREF="#prod69">derived_possrep_def_list</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod62">possrep_def_list</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>multiple_inheritance_is_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod66">multiple_inheritance_is_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod70">scalar_type_name_commalist</A> <A HREF="#prod69">derived_possrep_def_list</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Not explicitly defined in TTM3 */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>scalar_type_name_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod70">scalar_type_name_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod71">scalar_type_name</A> ( "," <A HREF="#prod71">scalar_type_name</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>scalar_type_name</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod71">scalar_type_name</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Not explicitly defined in TTM3 */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>possrep_def_list</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod62">possrep_def_list</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod72">possrep_def</A> )* <A HREF="#prod73">possrep_opt_initialiser</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Not defined in TTM3.  For explicitly setting
+values of components not in the current possrep.  
+Only required by types with multiple possreps.
+Takes the place of "highly protected
+operators not part of D". (pg 382, etc.) */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>possrep_opt_initialiser</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod73">possrep_opt_initialiser</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;INIT&gt; <A HREF="#prod74">possrep_initialiser_assignments</A> ( <A HREF="#prod74">possrep_initialiser_assignments</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Not defined in TTM3, as per above.
+Identifier should be existing POSSREP name. */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>possrep_initialiser_assignments</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod74">possrep_initialiser_assignments</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> "(" <A HREF="#prod21">assignment</A> ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>possrep_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod72">possrep_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;POSSREP&gt; <A HREF="#prod75">possrep_def_identifier</A> "{" <A HREF="#prod76">possrep_component_def_commalist</A> <A HREF="#prod77">possrep_opt_constraint_def</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>possrep_def_identifier</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod75">possrep_def_identifier</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod8">identifier</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>possrep_opt_constraint_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod77">possrep_opt_constraint_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod78">constraint_def</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Not explicitly defined in TTM3 */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>possrep_component_def_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod76">possrep_component_def_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod79">possrep_component_def</A> ( "," <A HREF="#prod79">possrep_component_def</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>possrep_component_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod79">possrep_component_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> <A HREF="#prod9">type_ref</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Expression must be boolean */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>constraint_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod78">constraint_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CONSTRAINT&gt; <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Expression must be boolean */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>specialisation_constraint_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod68">specialisation_constraint_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CONSTRAINT&gt; <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Not explicitly defined in TTM3 */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>derived_possrep_def_list</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod69">derived_possrep_def_list</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod80">derived_possrep_def</A> ( <A HREF="#prod80">derived_possrep_def</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>derived_possrep_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod80">derived_possrep_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;POSSREP&gt; <A HREF="#prod81">derived_possrep_def_opt_identifier</A> "{" <A HREF="#prod82">derived_possrep_component_def_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>derived_possrep_def_opt_identifier</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod81">derived_possrep_def_opt_identifier</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod8">identifier</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Not explicitly defined in TTM3 */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>derived_possrep_component_def_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod82">derived_possrep_component_def_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod83">derived_possrep_component_def</A> ( "," <A HREF="#prod83">derived_possrep_component_def</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>derived_possrep_component_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod83">derived_possrep_component_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> "=" <A HREF="#prod8">identifier</A> "(" <A HREF="#prod8">identifier</A> ")"</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* End user-defined types (internal) */
+
+/* Includes scalar_var_def,
+relation_var_def,
+array_var_def and
+tuple_var_def */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>var_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod26">var_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;VAR&gt; <A HREF="#prod8">identifier</A> ( <A HREF="#prod84">var_scalar_or_tuple</A> | <A HREF="#prod85">var_array</A> | <A HREF="#prod86">var_relvar</A> )</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>var_relvar</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod86">var_relvar</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;REAL&gt; | &lt;BASE&gt; ) <A HREF="#prod87">var_type_or_init_value</A> <A HREF="#prod88">var_keydeflist</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;PRIVATE&gt; <A HREF="#prod87">var_type_or_init_value</A> <A HREF="#prod88">var_keydeflist</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;PUBLIC&gt; <A HREF="#prod9">type_ref</A> <A HREF="#prod88">var_keydeflist</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;VIRTUAL&gt; <A HREF="#prod3">expression</A> <A HREF="#prod89">var_keydeflistoptional</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod90">var_relvar_external</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>var_relvar_external</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod90">var_relvar_external</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EXTERNAL&gt; <A HREF="#prod8">identifier</A> <A HREF="#prod43">string_literal</A> ( <A HREF="#prod8">identifier</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>var_keydeflist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod88">var_keydeflist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod91">var_keydef</A> ( <A HREF="#prod91">var_keydef</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>var_keydeflistoptional</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod89">var_keydeflistoptional</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod91">var_keydef</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>var_keydef</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod91">var_keydef</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;KEY&gt; "{" <A HREF="#prod92">attribute_name_list</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>var_scalar_or_tuple</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod84">var_scalar_or_tuple</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod87">var_type_or_init_value</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>var_type_or_init_value</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod87">var_type_or_init_value</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod93">var_type_and_optional_init</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod94">var_init</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>var_type_and_optional_init</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod93">var_type_and_optional_init</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod9">type_ref</A> ( &lt;INIT&gt; "(" <A HREF="#prod3">expression</A> ")" )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>var_init</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod94">var_init</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INIT&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>var_array</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod85">var_array</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ARRAY&gt; <A HREF="#prod9">type_ref</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>db_constraint_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod27">db_constraint_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CONSTRAINT&gt; <A HREF="#prod8">identifier</A> <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* type -- scalar_type, tuple_type, relation_type */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_ref</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod9">type_ref</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod95">type_same_type_as</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod96">tuple_type</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod97">relation_type</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod54">op_type</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>type_same_type_as</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod95">type_same_type_as</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SAME_TYPE_AS&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>tuple_type</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod96">tuple_type</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TUPLE&gt; <A HREF="#prod98">heading_type</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>relation_type</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod97">relation_type</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;RELATION&gt; <A HREF="#prod98">heading_type</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>heading_type</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod98">heading_type</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod18">heading</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod99">same_heading_as</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>same_heading_as</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod99">same_heading_as</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SAME_HEADING_AS&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>relation_array_load</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod28">relation_array_load</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LOAD&gt; <A HREF="#prod8">identifier</A> &lt;FROM&gt; <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>begin_transaction</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod29">begin_transaction</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BEGIN&gt; &lt;TRANSACTION&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>commit</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod30">commit</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;COMMIT&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>rollback</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod31">rollback</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ROLLBACK&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>case_statement</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod34">case_statement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CASE&gt; ";" <A HREF="#prod100">when_def_list</A> <A HREF="#prod101">case_else</A> &lt;END&gt; &lt;CASE&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>when_def_list</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod100">when_def_list</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod102">when_def</A> ( <A HREF="#prod102">when_def</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>when_def</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod102">when_def</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;WHEN&gt; <A HREF="#prod3">expression</A> &lt;THEN&gt; <A HREF="#prod5">statement</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>case_else</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod101">case_else</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;ELSE&gt; <A HREF="#prod5">statement</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Note that THEN and ELSE are not
+followed by semicolons, but maybe should be? */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>if_statement</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod35">if_statement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IF&gt; <A HREF="#prod3">expression</A> &lt;THEN&gt; <A HREF="#prod5">statement</A> <A HREF="#prod103">if_statement_else</A> &lt;END&gt; &lt;IF&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>if_statement_else</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod103">if_statement_else</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;ELSE&gt; <A HREF="#prod5">statement</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>loop</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod22">loop</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod8">identifier</A> ":" )? ( <A HREF="#prod104">do_statement</A> | <A HREF="#prod105">while_statement</A> | <A HREF="#prod106">for_statement</A> )</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>do_statement</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod104">do_statement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DO&gt; <A HREF="#prod8">identifier</A> ":=" <A HREF="#prod3">expression</A> &lt;TO&gt; <A HREF="#prod3">expression</A> ";" <A HREF="#prod5">statement</A> &lt;END&gt; &lt;DO&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>while_statement</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod105">while_statement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;WHILE&gt; <A HREF="#prod3">expression</A> ";" <A HREF="#prod5">statement</A> &lt;END&gt; &lt;WHILE&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>for_statement</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod106">for_statement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FOR&gt; <A HREF="#prod3">expression</A> ";" <A HREF="#prod5">statement</A> &lt;END&gt; &lt;FOR&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>leave</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod36">leave</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEAVE&gt; <A HREF="#prod8">identifier</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>call</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod32">call</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CALL&gt; <A HREF="#prod8">identifier</A> "(" <A HREF="#prod107">arglist</A> ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>assignment</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">assignment</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod108">assign</A> ( "," <A HREF="#prod108">assign</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>assign</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod108">assign</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> ":=" <A HREF="#prod3">expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INSERT&gt; <A HREF="#prod8">identifier</A> <A HREF="#prod3">expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;D_INSERT&gt; <A HREF="#prod8">identifier</A> <A HREF="#prod3">expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DELETE&gt; <A HREF="#prod8">identifier</A> <A HREF="#prod109">delete_parameter</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;I_DELETE&gt; <A HREF="#prod8">identifier</A> <A HREF="#prod3">expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UPDATE&gt; <A HREF="#prod8">identifier</A> <A HREF="#prod110">update_where</A> ":" <A HREF="#prod111">update_assignment</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>delete_parameter</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod109">delete_parameter</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;WHERE&gt; )? <A HREF="#prod3">expression</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>update_where</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod110">update_where</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;WHERE&gt; <A HREF="#prod3">expression</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>update_assignment</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod111">update_assignment</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"{" <A HREF="#prod21">assignment</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Expressions */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod3">expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod112">attribute_from</A> | <A HREF="#prod113">basic_expression</A> | <A HREF="#prod114">tuple_from</A> | <A HREF="#prod115">with</A> | <A HREF="#prod116">tclose</A> )</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>attribute_from</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod112">attribute_from</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> &lt;FROM&gt; <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>tuple_from</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod114">tuple_from</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TUPLE&gt; &lt;FROM&gt; <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>with</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod115">with</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;WITH&gt; "(" <A HREF="#prod117">name_intro_commalist</A> ")" ":" <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>name_intro_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod117">name_intro_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod118">name_intro</A> ( "," <A HREF="#prod118">name_intro</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>name_intro</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod118">name_intro</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> ":=" <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>tclose</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod116">tclose</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TCLOSE&gt; <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>basic_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod113">basic_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod119">order_expression</A> ( "[" <A HREF="#prod3">expression</A> "]" | "(" <A HREF="#prod107">arglist</A> ")" )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>order_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod119">order_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod120">where_expression</A> ( &lt;ORDER&gt; "(" <A HREF="#prod121">order_item_commalist</A> ")" )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>where_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod120">where_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod122">or_expression</A> ( &lt;WHERE&gt; <A HREF="#prod122">or_expression</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>or_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod122">or_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod123">xor_expression</A> ( &lt;OR&gt; <A HREF="#prod123">xor_expression</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>xor_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod123">xor_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod124">and_expression</A> ( &lt;XOR&gt; <A HREF="#prod124">and_expression</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>and_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod124">and_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod125">compare_expression</A> ( &lt;AND&gt; <A HREF="#prod125">compare_expression</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>compare_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod125">compare_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod126">rel_diadic</A> ( "=" <A HREF="#prod126">rel_diadic</A> | "&lt;&gt;" <A HREF="#prod126">rel_diadic</A> | "&gt;=" <A HREF="#prod126">rel_diadic</A> | "&lt;=" <A HREF="#prod126">rel_diadic</A> | "&gt;" <A HREF="#prod126">rel_diadic</A> | "&lt;" <A HREF="#prod126">rel_diadic</A> | &lt;IN&gt; <A HREF="#prod126">rel_diadic</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>rel_diadic</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod126">rel_diadic</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod127">rel_monadic</A> ( &lt;UNION&gt; <A HREF="#prod127">rel_monadic</A> | &lt;XUNION&gt; <A HREF="#prod127">rel_monadic</A> | &lt;D_UNION&gt; <A HREF="#prod127">rel_monadic</A> | &lt;INTERSECT&gt; <A HREF="#prod127">rel_monadic</A> | &lt;MINUS&gt; <A HREF="#prod127">rel_monadic</A> | &lt;I_MINUS&gt; <A HREF="#prod127">rel_monadic</A> | &lt;JOIN&gt; <A HREF="#prod127">rel_monadic</A> | &lt;TIMES&gt; <A HREF="#prod127">rel_monadic</A> | &lt;COMPOSE&gt; <A HREF="#prod127">rel_monadic</A> | ( &lt;SEMIJOIN&gt; | &lt;MATCHING&gt; ) <A HREF="#prod127">rel_monadic</A> | ( &lt;SEMIMINUS&gt; | &lt;NOT&gt; &lt;MATCHING&gt; ) <A HREF="#prod127">rel_monadic</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>rel_monadic</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod127">rel_monadic</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod128">rel_project</A> ( &lt;RENAME&gt; "{" <A HREF="#prod129">renaming_commalist</A> "}" | &lt;WRAP&gt; <A HREF="#prod130">wrapping</A> | &lt;UNWRAP&gt; <A HREF="#prod8">identifier</A> | &lt;GROUP&gt; <A HREF="#prod131">grouping</A> | &lt;UNGROUP&gt; <A HREF="#prod8">identifier</A> | &lt;DIVIDEBY&gt; <A HREF="#prod3">expression</A> &lt;PER&gt; "(" <A HREF="#prod3">expression</A> <A HREF="#prod132">divide_per_optional</A> ")" )?</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Not explicitly defined in TTM3 */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>order_item_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod121">order_item_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod133">order_item</A> ( "," <A HREF="#prod133">order_item</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>order_item</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod133">order_item</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ASC&gt; <A HREF="#prod8">identifier</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DESC&gt; <A HREF="#prod8">identifier</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>divide_per_optional</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod132">divide_per_optional</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "," <A HREF="#prod3">expression</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>rel_project</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod128">rel_project</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod134">add_expression</A> ( "{" <A HREF="#prod92">attribute_name_list</A> "}" )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>grouping</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod131">grouping</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"{" <A HREF="#prod92">attribute_name_list</A> "}" &lt;AS&gt; <A HREF="#prod8">identifier</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>wrapping</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod130">wrapping</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"{" <A HREF="#prod92">attribute_name_list</A> "}" &lt;AS&gt; <A HREF="#prod8">identifier</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>renaming_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod129">renaming_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod135">renaming</A> ( "," <A HREF="#prod135">renaming</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>renaming</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod135">renaming</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod136">renaming_simple</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod137">renaming_prefix</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod138">renaming_suffix</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>renaming_simple</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod136">renaming_simple</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> &lt;AS&gt; <A HREF="#prod8">identifier</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>renaming_prefix</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod137">renaming_prefix</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;PREFIX&gt; <A HREF="#prod43">string_literal</A> &lt;AS&gt; <A HREF="#prod43">string_literal</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>renaming_suffix</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod138">renaming_suffix</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SUFFIX&gt; <A HREF="#prod43">string_literal</A> &lt;AS&gt; <A HREF="#prod43">string_literal</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>attribute_name_list</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod92">attribute_name_list</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod139">optional_all_but</A> <A HREF="#prod140">attribute_name_commalist</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>optional_all_but</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod139">optional_all_but</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;ALL&gt; &lt;BUT&gt; )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>attribute_name_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod140">attribute_name_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod8">identifier</A> ( "," <A HREF="#prod8">identifier</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>add_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod134">add_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod141">mul_expression</A> ( "+" <A HREF="#prod141">mul_expression</A> | "-" <A HREF="#prod141">mul_expression</A> | "||" <A HREF="#prod141">mul_expression</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>mul_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod141">mul_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod142">unary_expression</A> ( "*" <A HREF="#prod142">unary_expression</A> | "/" <A HREF="#prod142">unary_expression</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>unary_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod142">unary_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;NOT&gt; <A HREF="#prod142">unary_expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"+" <A HREF="#prod142">unary_expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"-" <A HREF="#prod142">unary_expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod143">primary_expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>primary_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod143">primary_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod144">literal</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod145">aggregate_operator</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod146">exactly</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod147">nadic_or</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod148">nadic_xor</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod149">nadic_and</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod150">nadic_union</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod151">nadic_xunion</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod152">nadic_disjoint_union</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod153">nadic_intersect</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod154">nadic_join</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod155">nadic_times</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod156">nadic_compose</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod157">nadic_count</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod158">nadic_sum</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod159">nadic_avg</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod160">nadic_max</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod161">nadic_min</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod162">extend</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod163">summarize</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod164">substitute</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod165">case_expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod166">if_expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod167">fn_invoke</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod168">dereference</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>case_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod165">case_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CASE&gt; <A HREF="#prod169">when_def_list_expr</A> &lt;ELSE&gt; <A HREF="#prod3">expression</A> &lt;END&gt; &lt;CASE&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>when_def_list_expr</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod169">when_def_list_expr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod170">when_def_expr</A> ( <A HREF="#prod170">when_def_expr</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>when_def_expr</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod170">when_def_expr</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;WHEN&gt; <A HREF="#prod3">expression</A> &lt;THEN&gt; <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>if_expression</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod166">if_expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IF&gt; <A HREF="#prod3">expression</A> &lt;THEN&gt; <A HREF="#prod3">expression</A> &lt;ELSE&gt; <A HREF="#prod3">expression</A> &lt;END&gt; &lt;IF&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* Update expression, *not* assignment.
+Contents of expression() does not change! */</PRE>
+  </TD>
+ </TR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>substitute</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod164">substitute</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UPDATE&gt; <A HREF="#prod3">expression</A> ":" <A HREF="#prod111">update_assignment</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_optional_heading</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod171">nadic_optional_heading</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod18">heading</A> "{" <A HREF="#prod172">heading_exp_commalist</A> "}"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"{" <A HREF="#prod172">heading_exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_union</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod150">nadic_union</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UNION&gt; <A HREF="#prod171">nadic_optional_heading</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_xunion</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod151">nadic_xunion</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;XUNION&gt; <A HREF="#prod171">nadic_optional_heading</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_disjoint_union</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod152">nadic_disjoint_union</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;D_UNION&gt; <A HREF="#prod171">nadic_optional_heading</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_intersect</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod153">nadic_intersect</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INTERSECT&gt; <A HREF="#prod171">nadic_optional_heading</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_join</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod154">nadic_join</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;JOIN&gt; "{" <A HREF="#prod172">heading_exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_times</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod155">nadic_times</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TIMES&gt; "{" <A HREF="#prod172">heading_exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_compose</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod156">nadic_compose</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;COMPOSE&gt; "{" <A HREF="#prod172">heading_exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_or</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod147">nadic_or</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OR&gt; "{" <A HREF="#prod173">bool_exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_xor</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod148">nadic_xor</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;XOR&gt; "{" <A HREF="#prod173">bool_exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_and</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod149">nadic_and</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;AND&gt; "{" <A HREF="#prod173">bool_exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_count</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod157">nadic_count</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;COUNT&gt; "{" <A HREF="#prod174">exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_sum</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod158">nadic_sum</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SUM&gt; "{" <A HREF="#prod174">exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_avg</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod159">nadic_avg</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;AVG&gt; "{" <A HREF="#prod174">exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_max</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod160">nadic_max</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;MAX&gt; "{" <A HREF="#prod174">exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>nadic_min</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod161">nadic_min</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;MIN&gt; "{" <A HREF="#prod174">exp_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>exactly</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod146">exactly</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EXACTLY&gt; "(" <A HREF="#prod3">expression</A> ( "," <A HREF="#prod3">expression</A> ( "," <A HREF="#prod3">expression</A> )* )? ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>exp_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod174">exp_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod3">expression</A> ( "," <A HREF="#prod3">expression</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>bool_exp_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod173">bool_exp_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod3">expression</A> ( "," <A HREF="#prod3">expression</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>heading_exp_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod172">heading_exp_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod3">expression</A> ( "," <A HREF="#prod3">expression</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>extend</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod162">extend</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EXTEND&gt; <A HREF="#prod3">expression</A> ":" "{" <A HREF="#prod175">extend_add_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>extend_add_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod175">extend_add_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod176">extend_add</A> ( "," <A HREF="#prod176">extend_add</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>extend_add</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod176">extend_add</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> ":=" <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>summarize</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod163">summarize</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SUMMARIZE&gt; <A HREF="#prod3">expression</A> <A HREF="#prod177">per_or_by</A> ":" "{" <A HREF="#prod178">summarize_add_commalist</A> "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>per_or_by</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod177">per_or_by</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;PER&gt; "(" <A HREF="#prod3">expression</A> ")" | &lt;BY&gt; "{" <A HREF="#prod92">attribute_name_list</A> "}" )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>summarize_add_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod178">summarize_add_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod179">summarize_add</A> ( "," <A HREF="#prod179">summarize_add</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>summarize_add</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod179">summarize_add</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> ":=" <A HREF="#prod180">summary</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>summary</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod180">summary</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;COUNT&gt; "(" ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;COUNTD&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SUM&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SUMD&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;AVG&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;AVGD&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;MAX&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;MIN&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;AND&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OR&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;XOR&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EXACTLY&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EXACTLYD&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UNION&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;XUNION&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;D_UNION&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INTERSECT&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>fn_invoke</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod167">fn_invoke</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> "(" <A HREF="#prod107">arglist</A> ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>arglist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod107">arglist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod3">expression</A> ( "," <A HREF="#prod3">expression</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>aggregate_operator</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod145">aggregate_operator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;COUNT&gt; "(" <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SUM&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;AVG&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;MAX&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;MIN&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;AND&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OR&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;XOR&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UNION&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;XUNION&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;D_UNION&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INTERSECT&gt; "(" <A HREF="#prod3">expression</A> "," <A HREF="#prod3">expression</A> ")"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>literal</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod144">literal</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod47">lambda</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod181">tuple</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod182">relation</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod183">integer</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod184">character</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod185">rational</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod186">bool</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>tuple</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod181">tuple</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TUPLE&gt; "{" ( <A HREF="#prod187">tuple_component_commalist</A> )? "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>tuple_component_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod187">tuple_component_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod188">tuple_component</A> ( "," <A HREF="#prod188">tuple_component</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>tuple_component</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod188">tuple_component</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> <A HREF="#prod3">expression</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>relation</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod182">relation</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;RELATION&gt; <A HREF="#prod189">relation_heading</A> "{" <A HREF="#prod190">tuple_exp_commalist</A> "}"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TABLE_DUM&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TABLE_DEE&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>relation_heading</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod189">relation_heading</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod18">heading</A> )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>heading</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">heading</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"{" ( <A HREF="#prod191">attribute_spec_commalist</A> )? "}"</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>tuple_exp_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod190">tuple_exp_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod3">expression</A> ( "," <A HREF="#prod3">expression</A> )* )?</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>attribute_spec_commalist</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod191">attribute_spec_commalist</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod192">attribute_spec</A> ( "," <A HREF="#prod192">attribute_spec</A> )*</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>attribute_spec</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod192">attribute_spec</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">identifier</A> <A HREF="#prod9">type_ref</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>identifier</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod8">identifier</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>dereference</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod168">dereference</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>character</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod184">character</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STRING_LITERAL&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>string_literal</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod43">string_literal</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STRING_LITERAL&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>integer</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod183">integer</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INTEGER_LITERAL&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>rational</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod185">rational</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FLOATING_POINT_LITERAL&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+
+<TABLE ALIGN=CENTER>
+<CAPTION><STRONG>bool</STRONG></CAPTION>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod186">bool</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TRUE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FALSE&gt;</TD>
+</TR>
+</TABLE>
+<HR>
+</BODY>
+</HTML>

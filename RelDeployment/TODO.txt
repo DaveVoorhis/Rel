@@ -1,0 +1,115 @@
+** TO DO **
+
+Short term:
+	// TODO - Currently, it seems that Rel does not fully support the parallel execution of individual renamings 
+	//        which is specified in Tutorial D. For instance,
+	//        TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x}
+    //        does not evaluate to tuple with x and y interchanged as it should (Rel reports an error).
+	// TODO - provide Rel source as a ready-to-build Eclipse project.
+    // TODO - enhancement:  Use the following TCLOSE:
+    //    // By Vilem Vychodil, Palacky University in Olomouc (Czech Republic)
+	//			OPERATOR tr (r RELATION {x INT, y INT}) RETURNS SAME_TYPE_AS (r);
+	//			  BEGIN;
+	//			    VAR result PRIVATE INIT (r) KEY {x,y};
+	//			    VAR work PRIVATE INIT (r) KEY {x,y};
+	//			    WHILE NOT (IS_EMPTY (work));
+	//			      BEGIN;
+	//			        work := (r RENAME {y AS z}) COMPOSE (work RENAME {x AS z});
+	//			        work := work MINUS result;
+	//			        result := result UNION work;
+	//			      END;
+	//			    END WHILE;
+	//			    RETURN result;
+	//			  END;
+	//			END OPERATOR;
+	// TODO - why doesn't fibonacci implementation work?  E.g.:
+	//   OPERATOR fib(n INT) RETURNS INT; 
+	//     RETURN IF n=0 OR n=1 THEN n ELSE fib(n-1) + fib(n+1) END IF;
+	//   END OPERATOR;
+	// TODO - provide \t\n\r translation in DBrowser, so that string literals like...
+	//          WRITELN("blah
+	//                blah
+	//                blah");
+	//        ...translate to WRITELN("blah\nblah\nblah");
+    // TODO - Fix needed:
+    //   OPERATOR LENGTH(s CHAR) RETURNS INTEGER Java FOREIGN
+    //    return ValueInteger.select(context.getGenerator(), s.stringValue().length());
+    //   END OPERATOR;
+    //   TYPE BDT_symbolic POSSREP { VALUE CHAR } ;
+    //   TYPE identifier IS { BDT_symbolic CONSTRAINT LENGTH ( THE_VALUE ( BDT_symbolic ) ) <= 64 
+    //   POSSREP { VALUE = THE_VALUE ( BDT_symbolic) } } ;
+    //   VAR Base_data_type BASE RELATION { name identifier } KEY { name } ;
+    //   // Rel goes into an infinite loop on the final definition.
+    //   // Appears to be due to VALUE = THE_VALUE (...) which results in unresolved
+    //   // recursive reference.
+	// TODO - Optimise TupleIteratorCount
+	// TODO - complete anonymous operator support
+	// TODO - allow operator names to be used as identifiers to obtain ValueOperator values.
+	//        Maybe... What does this do to polymorphism?
+    // TODO - replace OPERATOR BOOLEAN(BOOLEAN) RETURNS BOOLEAN with
+    //        OPERATOR BOOLEAN(RELATION {}) RETURNS BOOLEAN, such that
+    //        we can have:
+    //           CONST TRUE INIT(BOOLEAN(TABLE_DEE));
+    //           CONST FALSE INIT(BOOLEAN(TABLE_DUM));
+    //      - on the other hand, what do we do with the other
+    //        built-in types?
+	// TODO - create ATTRIBUTES_OF(rel_expr) keyword as alternative to 
+	//        attribute_name_commalist.
+	// TODO - fix multiple assignment
+	// TODO - Fix bug reported by Hugh re OP_EQUALS() etc.
+	// TODO - IS_x(n) and TREAT_AS_x(n), should these report
+	//        true and cast to x, respectively, given 
+	//        n a subtype of x?
+	// TODO - UNION {x, y} should work where x and y define attributes
+	//        that have the same name and differing type but have
+	//        a common supertype.
+	// TODO - Alter inference of most specific common supertype, such that evaluating:
+	//  RELATION {
+	//    TUPLE {x 1, y 2.3, z 'two'},
+	//    TUPLE {x 2.3, y 1, z true}
+	//  }
+	//     ...returns...
+	//  RELATION {x ALPHA, y ALPHA, z ALPHA} {
+	//    TUPLE {x 1, y 2.3, z 'two'},
+	//    TUPLE {x 2.3, y 1, z true}
+	//  }
+	// TODO - Rewrite areas where high-cardinality relations currently run out of RAM. 
+	// TODO - INTERSECT {c CHARACTER} {} should either return maximal relation or throw exception
+	// TODO - ...or implement 'INTERSECT {h} {} WHERE boolexp' as "relation comprehension"
+	// TODO - implement multiple inheritance
+	// TODO - check constraints when used on Catalog, e.g., "CONSTRAINT blah COUNT(Catalog) = 6;"
+	// TODO - implement leave statement
+	// TODO - implement operator UPDATE parameters
+	// TODO - implement RANK - (page 221)
+	// TODO - implement partial evaluation and memoization
+
+Enhancements:
+
+- Implement triggers.  Maybe.
+- Optimise constraints that implement semantics of
+  SQL's "foreign key" constraints.
+- Quote strings on all generated error messages.
+- Implement security restrictions.
+- Implement named arguments and default parameters
+  for operator invocation?
+- Test user-defined types with Array and Relation 
+  parameters and return values.
+- Build 'EVALUATE' -- like EXECUTE but returns a value.
+- Create a view to represent active
+  connections, including statistics.
+- Create a view to represent system information, such
+  as host name, current date, unique ID, etc.
+- Create a relvar to contain all log messages.
+- Create a "KILL" operator to kill a connection.
+- Replacing an Operator should immediately update
+  any references to that Operator in the running
+  code.  Implementing this may be deferred until
+  everything (code, data, types) is stored in the
+  catalog, with appropriate triggers and
+  foreign key constraints.
+- Eliminate the Rel VM and compile directly to Java
+  bytecode.
+- Build JDBC and/or ODBC drivers.
+- Build a front end for users and application 
+  development.
+ 

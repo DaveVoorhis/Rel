@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="/home/dave/workspace/RelDeployment/RelTest.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/Rel3Test/Rel3Test.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" mainClassHandleIdentifier="=Rel3Test/&lt;{AllTests.java[AllTests" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=Rel3Test/&lt;ca.mb.armchair.rel3.tests.external"/>
+        <javaElement handleIdentifier="=Rel3Test/&lt;ca.mb.armchair.rel3.tests.engine"/>
+        <javaElement handleIdentifier="=Rel3Test/&lt;ca.mb.armchair.rel3.tests.inheritance"/>
+        <javaElement handleIdentifier="=Rel3Test/&lt;"/>
+        <javaElement handleIdentifier="=Rel3Test/&lt;ca.mb.armchair.rel3.tests"/>
+        <javaElement handleIdentifier="=Rel3Test/&lt;ca.mb.armchair.rel3.tests.main"/>
+    </selectedElements>
+</jardesc>

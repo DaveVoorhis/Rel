@@ -1,0 +1,54 @@
+
+                           ** ACKNOWLEDGEMENTS **
+
+Thanks to Hugh Darwen and Chris Date for The Third Manifesto and
+Tutorial D.
+
+Special thanks to Hugh Darwen for reviewing the first release of Rel,
+and for helpful comments and encouragment.
+
+
+            ** AUTHORS AND CONTRIBUTORS (IN ALPHABETICAL ORDER) **
+
+Bresnahan, Mike
+ - Comments, suggestions, and testing
+ - DBrowser font selection and menu
+ 
+Coulton, Ian
+ - Type implementation work with Dave Voorhis
+
+Darwen, Hugh
+ - Extensive testing
+
+Felix-Leite-Praca, Andre
+ - External relvars
+
+FitzSimons, Bob
+ - Rel source code examples for Rel2
+ - Extensive testing of Rel2
+
+Glasu, Laura
+ - Rev enhancements
+
+Record, James
+ - Rev enhancements
+
+Voorhis, Dave  <d.voorhis@derby.ac.uk> or <dave@armchair.mb.ca>
+ - Rel
+ - DBrowser
+
+
+                              ** CREDITS **
+
+JavaCC Project  https://javacc.dev.java.net/
+ - javacc parser/scanner generator for Java
+
+Oracle Corp.  http://oracle.com
+ - Berkeley Java DB (used as a storage engine)
+ - Java SDK
+ - Miscellaneous Java source code
+
+
+   If you've been missed from this document, please email Dave Voorhis
+   (see above)
+
