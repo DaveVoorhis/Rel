@@ -9,7 +9,8 @@ and pick "Clone URI".  The URI is
 https://github.com/DaveVoorhis/Rel.git
 
 See the RelDeployment directory for installable versions of Rel.
-These are executable Java .jar files, named RelInstall.x.y.jar
+These are executable Java .jar files, with names of the form
+RelInstall-x.y.z.jar
 
 Read the RelDeployment/README.txt file for further information on
 running Rel.
