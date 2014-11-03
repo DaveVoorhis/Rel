@@ -1,6 +1,8 @@
 ** TO DO **
 
 Short term:
+    // TODO - DBrowser: Holding down F5 on (say) sys.Catalog so keyboard repeat takes effect
+    //        crashes DBrowser, sooner or later.
 	// TODO - Currently, it seems that Rel does not fully support the parallel execution of individual renamings 
 	//        which is specified in Tutorial D. For instance,
 	//        TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x}
