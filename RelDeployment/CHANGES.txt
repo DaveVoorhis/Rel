@@ -2,6 +2,7 @@ Last Exception* number: RS0405
 
 Version 1.0.13:
 
+  - enhancement: Now require Java 8
 
 Version 1.0.12:
 
