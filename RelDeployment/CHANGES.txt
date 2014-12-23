@@ -3,6 +3,7 @@ Last Exception* number: RS0405
 Version 1.0.13:
 
   - enhancement: Now require Java 8
+  - enhancement: Source now on GitHub; trivial to load into Eclipse.
 
 Version 1.0.12:
 

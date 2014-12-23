@@ -1,13 +1,13 @@
 ** TO DO **
 
 Short term:
+    // TODO - Make it easier to create and access multiple databases in arbitrary locations
     // TODO - DBrowser: Holding down F5 on (say) sys.Catalog so keyboard repeat takes effect
-    //        crashes DBrowser, sooner or later.
+    //        crashes DBrowser, sooner or later.  Fix it.
 	// TODO - Currently, it seems that Rel does not fully support the parallel execution of individual renamings 
 	//        which is specified in Tutorial D. For instance,
 	//        TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x}
     //        does not evaluate to tuple with x and y interchanged as it should (Rel reports an error).
-	// TODO - provide Rel source as a ready-to-build Eclipse project.
     // TODO - enhancement:  Use the following TCLOSE:
     //    // By Vilem Vychodil, Palacky University in Olomouc (Czech Republic)
 	//			OPERATOR tr (r RELATION {x INT, y INT}) RETURNS SAME_TYPE_AS (r);
