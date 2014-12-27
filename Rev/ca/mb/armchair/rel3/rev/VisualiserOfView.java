@@ -38,10 +38,10 @@ public class VisualiserOfView extends VisualiserOfRel {
 	private int scrollbarWidth = 40;
 	private boolean maximized = false;
 	//Icons
-    private final String MinimizeIconFile = "/ca/mb/armchair/rel3/resources/minimize.png";
-    private final String MaximizeIconFile = "/ca/mb/armchair/rel3/resources/maximize.png";
-    private final String StoreIconFile = "/ca/mb/armchair/rel3/resources/store.png";
-    private final String DeleteIconFile = "/ca/mb/armchair/rel3/resources/delete.png";
+    private final String MinimizeIconFile = "ca/mb/armchair/rel3/resources/minimize.png";
+    private final String MaximizeIconFile = "ca/mb/armchair/rel3/resources/maximize.png";
+    private final String StoreIconFile = "ca/mb/armchair/rel3/resources/store.png";
+    private final String DeleteIconFile = "ca/mb/armchair/rel3/resources/delete.png";
     private javax.swing.ImageIcon MinimizeIcon = null;
     private javax.swing.ImageIcon MaximizeIcon = null;
     private javax.swing.ImageIcon StoreIcon = null;
@@ -220,7 +220,8 @@ public class VisualiserOfView extends VisualiserOfRel {
 		//Save button
 		JButton save = new JButton();
         try {
-        	StoreIcon = new javax.swing.ImageIcon(getClass().getResource(StoreIconFile));
+        	ClassLoader cl = this.getClass().getClassLoader();
+        	StoreIcon = new javax.swing.ImageIcon(cl.getResource(StoreIconFile));
         	save.setIcon(StoreIcon);
         } catch (Exception e) {
         	save.setText("Sto");
@@ -236,7 +237,8 @@ public class VisualiserOfView extends VisualiserOfRel {
 		//Delete button
 		JButton delete = new JButton();
         try {
-        	DeleteIcon = new javax.swing.ImageIcon(getClass().getResource(DeleteIconFile));
+        	ClassLoader cl = this.getClass().getClassLoader();
+        	DeleteIcon = new javax.swing.ImageIcon(cl.getResource(DeleteIconFile));
         	delete.setIcon(DeleteIcon);
         } catch (Exception e) {
         	delete.setText("Del");
@@ -252,7 +254,8 @@ public class VisualiserOfView extends VisualiserOfRel {
 		//Minimize button
 		JButton minimize = new JButton();
         try {
-        	MinimizeIcon = new javax.swing.ImageIcon(getClass().getResource(MinimizeIconFile));
+        	ClassLoader cl = this.getClass().getClassLoader();
+        	MinimizeIcon = new javax.swing.ImageIcon(cl.getResource(MinimizeIconFile));
         	minimize.setIcon(MinimizeIcon);
         } catch (Exception e) {
         	minimize.setText("_");
@@ -268,7 +271,8 @@ public class VisualiserOfView extends VisualiserOfRel {
 		//Maximize button
 		JButton maximize = new JButton();
         try {
-        	MaximizeIcon = new javax.swing.ImageIcon(getClass().getResource(MaximizeIconFile));
+        	ClassLoader cl = this.getClass().getClassLoader();
+        	MaximizeIcon = new javax.swing.ImageIcon(cl.getResource(MaximizeIconFile));
         	maximize.setIcon(MaximizeIcon);
         } catch (Exception e) {
         	maximize.setText("|_");

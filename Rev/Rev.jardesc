@@ -12,12 +12,12 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.Utilities.Layouts"/>
-        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.Utilities.Visualisation.Lines"/>
-        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.rel3.rev.popmenu"/>
-        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.Utilities.Visualisation.Glyphs"/>
         <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.rel3.rev.graphics"/>
+        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.rel3.rev.popmenu"/>
+        <javaElement handleIdentifier="=Rel3DBrowser/&lt;ca.mb.armchair.rel3.dbrowser"/>
+        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.Utilities.Visualisation.Lines"/>
+        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.Utilities.Visualisation.Glyphs"/>
         <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.rel3.rev.version"/>
         <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.rel3.rev"/>
-        <javaElement handleIdentifier="=Rel3DBrowser/&lt;ca.mb.armchair.rel3.dbrowser"/>
     </selectedElements>
 </jardesc>

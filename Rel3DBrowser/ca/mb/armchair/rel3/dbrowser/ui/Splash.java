@@ -27,7 +27,7 @@ public class Splash extends JWindow {
     private JProgressBar jProgressBar;
    
     protected String getSplashImageFilename() {
-    	return "/ca/mb/armchair/rel3/resources/RelLogo4.png";
+    	return "ca/mb/armchair/rel3/resources/RelLogo4.png";
     }
     
     protected String getSplashText() {
@@ -46,8 +46,10 @@ public class Splash extends JWindow {
     
     /** Get ImageIcon of splash screen image. */
     private ImageIcon getAppSplashImage() {
-        if (SplashImageResource == null)
-            SplashImageResource = (new Object().getClass()).getResource(getSplashImageFilename());
+        if (SplashImageResource == null) {
+        	ClassLoader loader = this.getClass().getClassLoader();
+        	SplashImageResource = loader.getResource(getSplashImageFilename());
+        }
         return new ImageIcon(SplashImageResource);
     }
 

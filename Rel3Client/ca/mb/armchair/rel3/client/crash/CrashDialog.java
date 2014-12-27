@@ -316,7 +316,7 @@ public class CrashDialog extends JDialog {
 			panelPrompt.setLayout(gbl_panelPrompt);
 			{
 				JLabel labelIcon = new JLabel((String) null);
-				labelIcon.setIcon(new ImageIcon(CrashDialog.class.getResource("/ca/mb/armchair/rel3/resources/nuclear-explosion.png")));
+				labelIcon.setIcon(new ImageIcon(CrashDialog.class.getResource("ca/mb/armchair/rel3/resources/nuclear-explosion.png")));
 				GridBagConstraints gbc_labelIcon = new GridBagConstraints();
 				gbc_labelIcon.insets = new Insets(5, 5, 5, 5);
 				gbc_labelIcon.anchor = GridBagConstraints.NORTH;

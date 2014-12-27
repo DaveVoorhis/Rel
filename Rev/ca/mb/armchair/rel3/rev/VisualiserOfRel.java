@@ -22,8 +22,8 @@ public abstract class VisualiserOfRel extends Visualiser {
 	
 	private static final long serialVersionUID = 1L;
 	
-    private final String InvokeIconFile = "/ca/mb/armchair/rel3/resources/PlayIconTiny.png";
-    private final String EditorIconFile = "/ca/mb/armchair/rel3/resources/EditIconTiny.png";
+    private final String InvokeIconFile = "ca/mb/armchair/rel3/resources/PlayIconTiny.png";
+    private final String EditorIconFile = "ca/mb/armchair/rel3/resources/EditIconTiny.png";
     private javax.swing.ImageIcon InvokeIcon = null;
     private javax.swing.ImageIcon EditorIcon = null;
     private final int ButtonWidth = 18;
@@ -172,7 +172,8 @@ public abstract class VisualiserOfRel extends Visualiser {
         });
         jButtonInvoke.setEnabled(true);
         try {
-        	InvokeIcon = new javax.swing.ImageIcon(getClass().getResource(InvokeIconFile));
+        	ClassLoader cl = this.getClass().getClassLoader();
+        	InvokeIcon = new javax.swing.ImageIcon(cl.getResource(InvokeIconFile));
             jButtonInvoke.setIcon(InvokeIcon);
         } catch (Exception e) {
         	jButtonInvoke.setText(">");
@@ -193,7 +194,8 @@ public abstract class VisualiserOfRel extends Visualiser {
         });
         jButtonEdit.setEnabled(true);
         try {
-        	EditorIcon = new javax.swing.ImageIcon(getClass().getResource(EditorIconFile));
+        	ClassLoader cl = this.getClass().getClassLoader();
+        	EditorIcon = new javax.swing.ImageIcon(cl.getResource(EditorIconFile));
         	jButtonEdit.setIcon(EditorIcon);
         } catch (Exception e) {
         	jButtonEdit.setText("+");

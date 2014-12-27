@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="/home/dave/workspace/RelDeployment/Rel.jar"/>
+    <jar path="RelDeployment/Rel.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/Rel3Server/RelJar.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>

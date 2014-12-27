@@ -17,7 +17,7 @@ import ca.mb.armchair.rel3.dbrowser.utilities.Preferences;
 public class Browser extends javax.swing.JFrame {
 	private final static long serialVersionUID = 0;
 	
-    private static String AppIcon = "/ca/mb/armchair/rel3/resources/RelIcon1.png";
+    private static String AppIcon = "ca/mb/armchair/rel3/resources/RelIcon1.png";
     
     private static java.net.URL ImageIconResource = null;
     
@@ -171,8 +171,10 @@ public class Browser extends javax.swing.JFrame {
     
     /** Get ImageIcon of application icon image. */
     private java.awt.Image getAppIcon() {
-        if (ImageIconResource == null)
-            ImageIconResource = (new Object().getClass()).getResource(getAppIconFilename());
+        if (ImageIconResource == null) {
+        	ClassLoader cl = this.getClass().getClassLoader();
+        	ImageIconResource = cl.getResource(getAppIconFilename());
+        }
         return java.awt.Toolkit.getDefaultToolkit().getImage(ImageIconResource);        
     }
 

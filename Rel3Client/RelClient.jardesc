@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="/home/dave/workspace/RelDeployment/relclient.jar"/>
+    <jar path="RelDeployment/relclient.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/Rel3Client/RelClient.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -11,12 +11,12 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.utilities"/>
-        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.parser"/>
         <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.string"/>
-        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.crash"/>
         <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.stream"/>
         <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.parser.core"/>
         <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client"/>
+        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.utilities"/>
+        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.parser"/>
+        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.crash"/>
     </selectedElements>
 </jardesc>
