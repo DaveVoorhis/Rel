@@ -1,5 +1,6 @@
 #!/bin/sh
 rm jars/*.jar
+mkdir jars
 cp ~/git/Rel/RelDeployment/*.jar jars
 rm jars/RelInstall*
 echo Password:
