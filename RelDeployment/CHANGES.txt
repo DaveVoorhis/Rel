@@ -4,6 +4,9 @@ Version 1.0.13:
 
   - enhancement: Now require Java 8
   - enhancement: Source now on GitHub; trivial to load into Eclipse.
+  - enhancement: Default database now found in getProperty("user.dir") + "Reldb.rel".
+  - enhancement: Default database now refers to explicit path
+  - enhancement: -f command line option description a bit clearer
 
 Version 1.0.12:
 

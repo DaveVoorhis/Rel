@@ -92,7 +92,7 @@ public class RelDatabase {
     private DirClassLoader dirClassLoader;
     
     // Relative database directory name
-    private static final String databaseHomeRelative = "Database";
+    private static final String databaseHomeRelative = "Reldb.rel";
 
     // Relative user code directory name
     private static final String userCodeHomeRelative = "RelUserCode";
@@ -101,13 +101,13 @@ public class RelDatabase {
     private static final String relUserCodePackage = databaseHomeRelative + "." + userCodeHomeRelative;
     
     // User code home dir
-    private String userCodeHome = "./";
+    private String userCodeHome;
     
     // Database home dir
     private String databaseHome = databaseHomeRelative;
     
     // Rel home dir
-    private String homeDir = userCodeHome;
+    private String homeDir;
     
     // Special mode for caching permanent operators and types
     private boolean specialCacheMode = true;

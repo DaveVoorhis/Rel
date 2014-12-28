@@ -21,7 +21,7 @@ public class Browser extends javax.swing.JFrame {
     
     private static java.net.URL ImageIconResource = null;
     
-    private String databaseDir;
+    private String databasePath;
     
     private static boolean noLocalRel = true;
     
@@ -38,8 +38,8 @@ public class Browser extends javax.swing.JFrame {
     }
     
     /** Creates new form Browser */
-    private Browser(String databaseDir) {
-    	this.databaseDir = databaseDir;
+    private Browser(String databasePath) {
+    	this.databasePath = databasePath;
     	setName("DBrowserMain");
     	Splash.showSplash(this);
     	Splash.resetProgressBar(4);
@@ -258,7 +258,7 @@ public class Browser extends javax.swing.JFrame {
     }
 
     public void go() {
-        if (databaseDir != null) {
+        if (databasePath != null) {
         	if (noLocalRel) {
         		String dbURL = "localhost";
         		AttemptConnectionResult result = attemptConnection(dbURL);
@@ -267,7 +267,7 @@ public class Browser extends javax.swing.JFrame {
             		return;
             	}
             } else {
-            	if (openConnection("local:" + databaseDir, true))
+            	if (openConnection("local:" + databasePath, true))
             		return;
                 if (openConnection("localhost", false))
                     return;
@@ -281,10 +281,10 @@ public class Browser extends javax.swing.JFrame {
     		if (noLocalRel) {
     			javax.swing.JOptionPane.showMessageDialog(null, "Local Rel server is not installed.", "Unable to open database", javax.swing.JOptionPane.INFORMATION_MESSAGE);    			
     		} else {
-    			if (databaseDir == null)
+    			if (databasePath == null)
         			javax.swing.JOptionPane.showMessageDialog(null, "Default 'local' database access has been disabled.  Please specify a database as local:<directory>", "Unable to open database", javax.swing.JOptionPane.INFORMATION_MESSAGE);
         		else
-        			openConnection("local:" + databaseDir, false);
+        			openConnection("local:" + databasePath, false);
     		}
     	else 
     		openConnection(location, false);
@@ -391,7 +391,7 @@ public class Browser extends javax.swing.JFrame {
     	} catch (ClassNotFoundException cnfe) {
     		noLocalRel = true;
         }
-    	String databaseDir = "./";
+    	String databaseDir = System.getProperty("user.dir");
     	if (args.length > 1) {
     		System.out.println("More than the expected number of command-line arguments.");
     		usage();

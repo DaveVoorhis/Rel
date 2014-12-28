@@ -43,16 +43,16 @@ public class Instance {
     	return database;
     }
     
-	private void usage(File databaseDir) {
-		System.out.println("Usage: Rel [-f<databaseDir>] [-D[port] | [-e] [-v0 | -v1]] < <source>");
-		System.out.println(" -f<databaseDir> -- database directory - default is " + databaseDir.getAbsolutePath());
+	private void usage(File databasePath) {
+		System.out.println("Usage: Rel [-f<database>] [-D[port] | [-e] [-v0 | -v1]] < <source>");
+		System.out.println(" -f<database>    -- database - default is " + databasePath);
 		System.out.println(" -D[port]        -- run as server (port optional - default is " + Defaults.getDefaultPort() + ")");
 		System.out.println(" -e              -- evaluate expression");
 		System.out.println(" -v0             -- run-time debugging");
 		System.out.println(" -v1             -- output AST");
 	}
 	
-	private void initDb(File databaseDir) {
+	private void initDb(File databasePath) {
 		Thread serverShutdownHook = new Thread() {
 			public void run() {
 				if (server != null)
@@ -75,16 +75,16 @@ public class Instance {
 		} catch (UnknownHostException uhe) {
 			localHostName = "<unknown>";
 		}
-		database = openDatabases.get(databaseDir);
+		database = openDatabases.get(databasePath);
 		if (database == null) {
-			database = new RelDatabase(databaseDir);
+			database = new RelDatabase(databasePath);
 			database.loadConstraints(System.out);
-			openDatabases.put(databaseDir, database);
+			openDatabases.put(databasePath, database);
 		}
 	}
 
-	private File obtainDatabaseDir(String databaseDir) {
-		File f = new File(databaseDir);
+	private File obtaindatabasePath(String databasePath) {
+		File f = new File(databasePath);
 		if (!f.exists())
 			throw new ExceptionFatal("RS0307: Directory " + f + " does not exist.");
 		if (!f.isDirectory())
@@ -92,12 +92,12 @@ public class Instance {
 		return f;
 	}
 	
-	public Instance(String databaseDir) {
-		initDb(obtainDatabaseDir(databaseDir));
+	public Instance(String databasePath) {
+		initDb(obtaindatabasePath(databasePath));
 	}
 	
 	public Instance(String args[]) {
-		File databaseDir = new File("./");
+		File databasePath = new File(System.getProperty("user.dir"));
 		if (args.length >= 1) {
 			for (int i=0; i<args.length; i++) {
 				if (args[i].startsWith("-D")) {
@@ -111,7 +111,7 @@ public class Instance {
 							return;
 						}
 					}
-					initDb(databaseDir);
+					initDb(databasePath);
 					server = new Server(this, portnum);
 					return;
 				}
@@ -123,18 +123,18 @@ public class Instance {
 					evaluate = true;
 				else if (args[i].startsWith("-f")) {
 					if (args[i].length() <= 2) {
-						usage(databaseDir);
+						usage(databasePath);
 						return;
 					}
-					databaseDir = obtainDatabaseDir(args[i].substring(2));
+					databasePath = obtaindatabasePath(args[i].substring(2));
 				}
 				else {
-					usage(databaseDir);
+					usage(databasePath);
 					return;
 				}
 			}
 		}
-		initDb(databaseDir);
+		initDb(databasePath);
 		Interpreter interpreter = new Interpreter(database, System.out);
 		interpreter.setDebugOnRun(debugOnRun);
 		interpreter.setDebugAST(debugAST);
