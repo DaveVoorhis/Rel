@@ -391,7 +391,7 @@ public class Browser extends javax.swing.JFrame {
     	} catch (ClassNotFoundException cnfe) {
     		noLocalRel = true;
         }
-    	String databaseDir = System.getProperty("user.dir");
+    	String databaseDir = System.getProperty("user.home");
     	if (args.length > 1) {
     		System.out.println("More than the expected number of command-line arguments.");
     		usage();
