@@ -28,9 +28,11 @@ public class Instance {
 	public void announceActive(PrintStream output) {
 		output.println(Version.getCopyright());
 		output.println("Rel is running on " + localHostName);
-		output.println("Persistence provided by " + database.getNativeDBVersion());
+		output.println("using " + System.getProperty("java.vendor") + "'s Java version " + System.getProperty("java.version") + " from " + System.getProperty("java.vendor.url"));
+		output.println("on " + System.getProperty("os.name") + " version " + System.getProperty("os.version") + " for " + System.getProperty("os.arch") + ".");
+		output.println("Persistence is provided by " + database.getNativeDBVersion());
 		output.println(Version.getLicense());
-		output.println("Ok.");		
+		output.println("Ok.");
 	}
 	
     /** Get host name. */
@@ -42,17 +44,8 @@ public class Instance {
     public RelDatabase getDatabase() {
     	return database;
     }
-    
-	private void usage(File databasePath) {
-		System.out.println("Usage: Rel [-f<database>] [-D[port] | [-e] [-v0 | -v1]] < <source>");
-		System.out.println(" -f<database>    -- database - default is " + databasePath);
-		System.out.println(" -D[port]        -- run as server (port optional - default is " + Defaults.getDefaultPort() + ")");
-		System.out.println(" -e              -- evaluate expression");
-		System.out.println(" -v0             -- run-time debugging");
-		System.out.println(" -v1             -- output AST");
-	}
 	
-	private void initDb(File databasePath) {
+	private void initDb(File databasePath, boolean createDbAllowed, PrintStream output) {
 		Thread serverShutdownHook = new Thread() {
 			public void run() {
 				if (server != null)
@@ -77,8 +70,8 @@ public class Instance {
 		}
 		database = openDatabases.get(databasePath);
 		if (database == null) {
-			database = new RelDatabase(databasePath);
-			database.loadConstraints(System.out);
+			database = new RelDatabase();
+			database.open(databasePath, createDbAllowed, output);
 			openDatabases.put(databasePath, database);
 		}
 	}
@@ -92,11 +85,20 @@ public class Instance {
 		return f;
 	}
 	
-	public Instance(String databasePath) {
-		initDb(obtaindatabasePath(databasePath));
+	public Instance(String databasePath, boolean createDbAllowed, PrintStream output) {
+		initDb(obtaindatabasePath(databasePath), createDbAllowed, output);
+	}
+    
+	private void usage(File databasePath) {
+		System.out.println("Usage: Rel [-f<database>] [-D[port] | [-e] [-v0 | -v1]] < <source>");
+		System.out.println(" -f<database>    -- database - default is " + databasePath);
+		System.out.println(" -D[port]        -- run as server (port optional - default is " + Defaults.getDefaultPort() + ")");
+		System.out.println(" -e              -- evaluate expression");
+		System.out.println(" -v0             -- run-time debugging");
+		System.out.println(" -v1             -- output AST");
 	}
 	
-	public Instance(String args[]) {
+	private Instance(String args[]) {
 		File databasePath = new File(System.getProperty("user.home"));
 		if (args.length >= 1) {
 			for (int i=0; i<args.length; i++) {
@@ -111,7 +113,7 @@ public class Instance {
 							return;
 						}
 					}
-					initDb(databasePath);
+					initDb(databasePath, true, System.out);
 					server = new Server(this, portnum);
 					return;
 				}
@@ -134,7 +136,7 @@ public class Instance {
 				}
 			}
 		}
-		initDb(databasePath);
+		initDb(databasePath, true, System.out);
 		Interpreter interpreter = new Interpreter(database, System.out);
 		interpreter.setDebugOnRun(debugOnRun);
 		interpreter.setDebugAST(debugAST);

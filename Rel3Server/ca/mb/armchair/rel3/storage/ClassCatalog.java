@@ -30,7 +30,7 @@ public class ClassCatalog {
     	
         // Open the environment in subdirectory of the above
     	String classesDir = directory + java.io.File.separator + "classes";
-    	RelDatabase.mkdir(classesDir);
+    	RelDatabase.mkdir(classesDir, System.out);
         environment = new Environment(new File(classesDir), environmentConfig);
         
         // Open the class catalog db. This is used to optimize class serialization.

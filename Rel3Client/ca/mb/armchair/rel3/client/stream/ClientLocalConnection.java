@@ -16,7 +16,7 @@ public class ClientLocalConnection extends ClientConnection implements StreamRec
 	private PrintStream output;
 
 	/** Establish a connection with a server. */
-	public ClientLocalConnection(String databaseDir) throws IOException {
+	public ClientLocalConnection(String databaseDir, boolean createDbAllowed) throws IOException {
 		ClassPathHack.addFile("je.jar");
 		ClassPathHack.addFile("Rel.jar");
 		ClassPathHack.addFile("relshared.jar");
@@ -29,7 +29,7 @@ public class ClientLocalConnection extends ClientConnection implements StreamRec
 		input = new PipedInputStream();
 		PipedOutputStream pipeOutput = new PipedOutputStream(input);
 		output = new PrintStream(pipeOutput, true);
-		Instance instance = new Instance(databaseDir);
+		Instance instance = new Instance(databaseDir, createDbAllowed, output);
 		interpreter = new Interpreter(instance.getDatabase(), output);
 		instance.announceActive(output);
 		output.println("<EOT>");

@@ -170,7 +170,7 @@ public class Rev extends JPanel {
 		model = new Model();
 		model.setRev(this);
 		try {
-			connection = new Connection(dbURL);
+			connection = new Connection(dbURL, false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

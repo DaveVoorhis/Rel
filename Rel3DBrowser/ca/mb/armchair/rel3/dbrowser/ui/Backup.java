@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -16,7 +18,7 @@ import ca.mb.armchair.rel3.dbrowser.version.Version;
 
 public class Backup {
 
-	public static String getSuggestedBackupFileName(String dbURL) {
+	public String getSuggestedBackupFileName(String dbURL) {
 		String fname;
 		if (dbURL.startsWith("local:"))
 			fname = dbURL.substring(6).replace('.', '_').replace('/', '_').replace('\\', '_').replace(':', '_').replace(' ', '_');
@@ -28,20 +30,19 @@ public class Backup {
 		String timestamp = sdf.format(cal.getTime());
 		return "relbackup_" + fname + "_" + timestamp + ".d";
 	}
-
-	public static BackupResponse backupToFile(String dbURL, File outputFile) {
-		String backupScript;
+	
+	public BackupResponse backupToFile(String dbURL, File outputFile) {
+		String backupScript = "";
 		try {
-			File backupScriptFile = new File("Scripts/DatabaseToScript.d");
-			BufferedReader f = new BufferedReader(new FileReader(backupScriptFile));
-			StringBuffer fileImage = new StringBuffer();
-			String line;
-			while ((line = f.readLine()) != null) {
-				fileImage.append(line);
-				fileImage.append('\n');
-			}
-			f.close();
-			backupScript = fileImage.toString();
+        	ClassLoader loader = this.getClass().getClassLoader();
+        	URL backupScriptURL = loader.getResource("ca/mb/armchair/rel3/resources/DatabaseToScript.d");
+        	BufferedReader in = new BufferedReader(new InputStreamReader(backupScriptURL.openStream()));
+		    String line;
+		    while ((line = in.readLine()) != null) {
+		    	backupScript += line + System.lineSeparator();
+		    }
+		    in.close();
+        	System.out.println(backupScript);
 		} catch (IOException ioe) {
 			return new BackupResponse(ioe.toString(), "Unable to load backup script", javax.swing.JOptionPane.ERROR_MESSAGE, false);
 		}
@@ -55,7 +56,7 @@ public class Backup {
 		long linesWritten = 0;
 		StringReceiverClient client = null;
 		try {
-			client = ClientFromURL.openConnection(dbURL);
+			client = ClientFromURL.openConnection(dbURL, false);
 			StringBuffer initialServerResponse = new StringBuffer();
 			String r;
 			while ((r = client.receive()) != null) {

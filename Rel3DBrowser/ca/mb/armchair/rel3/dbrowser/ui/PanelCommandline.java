@@ -1212,7 +1212,8 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 	}
 	
 	public void doBackup() {
-		jFileChooserSaveBackup.setSelectedFile(new File(Backup.getSuggestedBackupFileName(session.getDbURL())));
+		Backup backup = new Backup();
+		jFileChooserSaveBackup.setSelectedFile(new File(backup.getSuggestedBackupFileName(session.getDbURL())));
 		if (jFileChooserSaveBackup.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			if (jFileChooserSaveBackup.getSelectedFile().isFile())
 				if (JOptionPane.showConfirmDialog(this, "File "
@@ -1223,7 +1224,7 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 			setProcessingDisplay("Saving");
 			(new javax.swing.SwingWorker<Object, Object>() {
 				protected Object doInBackground() throws Exception {
-					BackupResponse response = Backup.backupToFile(session.getDbURL(), jFileChooserSaveBackup.getSelectedFile());
+					BackupResponse response = backup.backupToFile(session.getDbURL(), jFileChooserSaveBackup.getSelectedFile());
 					endProcessingDisplay();
 					if (response.isSuccessful())
 						systemResponse("Saved backup " + jFileChooserSaveBackup.getSelectedFile());

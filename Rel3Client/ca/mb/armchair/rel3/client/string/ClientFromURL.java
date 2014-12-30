@@ -9,11 +9,11 @@ import ca.mb.armchair.rel3.shared.Defaults;
 public class ClientFromURL {
 	
     /** Open a connection. */
-    public static StringReceiverClient openConnection(String databaseURL) throws NumberFormatException, IOException, MalformedURLException, ClassNotFoundException {
+    public static StringReceiverClient openConnection(String databaseURL, boolean createDbAllowed) throws NumberFormatException, IOException, MalformedURLException, ClassNotFoundException {
     	if (databaseURL.toLowerCase().startsWith("local:")) {
     		Class.forName("ca.mb.armchair.rel3.version.Version");
     		if (databaseURL.length() > 6)
-    			return new ClientLocal(databaseURL.substring(6).trim());
+    			return new ClientLocal(databaseURL.substring(6).trim(), createDbAllowed);
     		else
     			throw new MalformedURLException("Please specify a local database as local:<directory>");
     	} else {

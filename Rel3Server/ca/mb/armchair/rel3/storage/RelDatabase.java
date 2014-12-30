@@ -145,10 +145,10 @@ public class RelDatabase {
     	return JEVersion.CURRENT_VERSION.getVersionString();
     }
 
-    public static void mkdir(String dir) {
+    public static void mkdir(String dir, PrintStream outputStream) {
 		File dirf = new File(dir);
 		if (!dirf.exists()) {
-			System.out.println("Creating directory: " + dirf);
+			outputStream.println("Creating directory: " + dirf);
 			if (!dirf.mkdirs()) {
 				String msg = "Unable to create directory: " + dirf;
 				throw new ExceptionFatal("RS0324: " + msg);
@@ -156,7 +156,7 @@ public class RelDatabase {
 		}
     }
     
-    public RelDatabase(File envHome) {
+    public void open(File envHome, boolean canCreateDb, PrintStream outputStream) {
     	String usingBerkeleyJavaDBVersion = getBerkeleyJavaDBVersion(); 
     	if (!usingBerkeleyJavaDBVersion.equals(Version.expectedBerkeleyDBVersion))
     		throw new ExceptionFatal("RS0323: Expected to find Berkeley Java DB version " + Version.expectedBerkeleyDBVersion + " but found version " + usingBerkeleyJavaDBVersion + ".\nAn attempted update or re-installation has probably failed.\nPlease make sure je.jar is not read-only, then try the update or re-installation again.");
@@ -165,9 +165,11 @@ public class RelDatabase {
     		homeDir = homeDir.substring(0, homeDir.length() - 1);
     	if (!homeDir.endsWith(java.io.File.separator))
     		homeDir += java.io.File.separator;
-    	System.out.println("Opening database: " + homeDir);    	
+    	outputStream.println("Opening database: " + homeDir);    	
     	databaseHome = homeDir + databaseHomeRelative;
-    	mkdir(databaseHome);
+    	if (!canCreateDb && !(new File(databaseHome)).exists())
+    		throw new ExceptionSemantic("RS0405: Database " + homeDir + " either doesn't exist or isn't a Rel database.");
+    	mkdir(databaseHome, outputStream);
     	userCodeHome = databaseHome + java.io.File.separator + userCodeHomeRelative;
     
     	dirClassLoader = new DirClassLoader(homeDir);
@@ -260,11 +262,12 @@ public class RelDatabase {
 			customRelvars = new ArrayList<String>();
 			
 			loadPaths(new File(customRelvarsDatabase), new File(customRelvarsHome));
-	        System.out.println("Database " + homeDir + " open.");
+			loadConstraints(outputStream);
+	        outputStream.println("Database " + homeDir + " open.");
         } catch (DatabaseException db) {
         	String msg = "Unable to open database: " + db.getMessage();
-        	System.out.println(msg);
-    		db.printStackTrace();
+        	outputStream.println(msg);
+    		db.printStackTrace(outputStream);
         	throw new ExceptionFatal("RS0325: " + msg);
         }
     }
@@ -415,7 +418,7 @@ public class RelDatabase {
 		}
 	}
     
-    public synchronized void loadConstraints(final PrintStream outputStream) {
+    private void loadConstraints(final PrintStream outputStream) {
     	try {
 	    	(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {

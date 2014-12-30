@@ -14,8 +14,8 @@ public class ClientLocal extends Client implements StringReceiverClient {
 	private boolean receiverRunning;
 	
 	/** Establish a connection with a server. */
-	public ClientLocal(String databaseDir) throws IOException {
-		connection = new ClientLocalConnection(databaseDir);		
+	public ClientLocal(String databaseDir, boolean createDbAllowed) throws IOException {
+		connection = new ClientLocalConnection(databaseDir, createDbAllowed);
 		final BufferedReader input = new BufferedReader(new InputStreamReader(connection.getServerResponseInputStream()));
 		Thread receiver = new Thread() {
 			public void run() {

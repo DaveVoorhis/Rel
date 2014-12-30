@@ -201,10 +201,10 @@ public class Browser extends javax.swing.JFrame {
     }
     
     /** Attempt to open a connection.  Return null if succeeded (!) and exception if failed. */
-    private AttemptConnectionResult attemptConnection(String dbURL) {
+    private AttemptConnectionResult attemptConnectionOpen(String dbURL) {
         setStatus("Opening connection to " + dbURL);
         try {
-        	StringReceiverClient client = ClientFromURL.openConnection(dbURL);
+        	StringReceiverClient client = ClientFromURL.openConnection(dbURL, false);
             return new AttemptConnectionResult(client);
         } catch (Throwable exception) {
         	return new AttemptConnectionResult(exception);
@@ -247,7 +247,7 @@ public class Browser extends javax.swing.JFrame {
     		doConnectionResultFailed("Local Rel server is not installed.", dbURL);
     		return false;
     	}
-    	AttemptConnectionResult result = attemptConnection(dbURL);
+    	AttemptConnectionResult result = attemptConnectionOpen(dbURL);
     	if (result.client != null) {
     		doConnectionResultSuccess(result.client, dbURL, permanent);
     		return true;
@@ -261,7 +261,7 @@ public class Browser extends javax.swing.JFrame {
         if (databasePath != null) {
         	if (noLocalRel) {
         		String dbURL = "localhost";
-        		AttemptConnectionResult result = attemptConnection(dbURL);
+        		AttemptConnectionResult result = attemptConnectionOpen(dbURL);
             	if (result.client != null) {
             		doConnectionResultSuccess(result.client, dbURL, true);
             		return;

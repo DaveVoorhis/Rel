@@ -23,7 +23,7 @@ public class TestStorage {
 	private RelDatabase database;
 	
 	public TestStorage() {
-		instance = new Instance("./");
+		instance = new Instance("./", true, System.out);
 		database = instance.getDatabase();
 	}
 	

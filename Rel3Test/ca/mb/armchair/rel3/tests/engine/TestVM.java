@@ -17,7 +17,7 @@ public class TestVM {
 	private VirtualMachine machine;
 	
 	public TestVM() {
-		instance = new Instance("./");
+		instance = new Instance("./", true, System.out);
 		RelDatabase database = instance.getDatabase();
 		Interpreter interpreter = new Interpreter(database, System.out);
 		generator = interpreter.getGenerator();

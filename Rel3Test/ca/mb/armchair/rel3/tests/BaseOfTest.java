@@ -12,7 +12,7 @@ import ca.mb.armchair.rel3.exceptions.*;
 
 public class BaseOfTest {
 	
-	protected static Instance instance = new Instance("./");
+	protected static Instance instance = new Instance("./", true, System.out);
 	protected static Interpreter interpreter = new Interpreter(instance.getDatabase(), System.out);
 	protected static Generator generator = interpreter.getGenerator();
 	

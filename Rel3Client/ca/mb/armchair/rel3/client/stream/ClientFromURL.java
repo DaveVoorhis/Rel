@@ -9,10 +9,10 @@ import ca.mb.armchair.rel3.shared.Defaults;
 public class ClientFromURL {
 
     /** Open a connection. */
-    public static StreamReceiverClient openConnection(String databaseURL) throws NumberFormatException, IOException, MalformedURLException {
+    public static StreamReceiverClient openConnection(String databaseURL, boolean createDbAllowed) throws NumberFormatException, IOException, MalformedURLException {
     	if (databaseURL.toLowerCase().startsWith("local:"))
     		if (databaseURL.length() > 6)
-    			return new ClientLocalConnection(databaseURL.substring(6).trim());
+    			return new ClientLocalConnection(databaseURL.substring(6).trim(), createDbAllowed);
     		else
     			throw new MalformedURLException("Please specify a local database as local:<directory>");
     	else {
