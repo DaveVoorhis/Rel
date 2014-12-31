@@ -99,7 +99,7 @@ public class Instance {
 	}
 	
 	private Instance(String args[]) {
-		File databasePath = new File(System.getProperty("user.home"));
+		File databasePath = new File("./");
 		if (args.length >= 1) {
 			for (int i=0; i<args.length; i++) {
 				if (args[i].startsWith("-D")) {

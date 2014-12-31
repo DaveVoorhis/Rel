@@ -26,7 +26,7 @@ public class RelvarExternal extends RelvarGlobal {
 			String tableName = metadata.tableClassName();
 			String type = metadata.getType();
 			try {
-				table = (TableCustom)Class.forName("plugins.relvars." + type.toUpperCase() + "." + tableName).getConstructors()[0].newInstance(name, metadata, generator, duplicates);
+				table = (TableCustom)Class.forName("Relplugins.relvars." + type.toUpperCase() + "." + tableName).getConstructors()[0].newInstance(name, metadata, generator, duplicates);
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (SecurityException e) {

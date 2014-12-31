@@ -25,10 +25,12 @@ public class DialogRemoteDatabase extends JDialog {
 		okButton.setText("Ok");
 		okButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				if (jTextFieldPort.getText().trim().length() > 0)
-					browser.openRemoteDatabase(jTextFieldLocation.getText() + ":" + jTextFieldPort.getText());
-				else
-					browser.openRemoteDatabase(jTextFieldLocation.getText());
+				if (jTextFieldLocation.getText().trim().length() > 0) {
+					if (jTextFieldPort.getText().trim().length() > 0)
+						browser.openRemoteDatabase(jTextFieldLocation.getText() + ":" + jTextFieldPort.getText());
+					else
+						browser.openRemoteDatabase(jTextFieldLocation.getText());
+				}
 				setVisible(false);
 			}
 		});

@@ -1,9 +1,32 @@
 package ca.mb.armchair.rel3.dbrowser.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTextField;
+import javax.swing.Timer;
+import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileFilter;
 
 import ca.mb.armchair.rel3.client.string.*;
 import ca.mb.armchair.rel3.dbrowser.utilities.ClassPathHack;
@@ -14,7 +37,7 @@ import ca.mb.armchair.rel3.dbrowser.utilities.Preferences;
  *
  * @author  dave
  */
-public class Browser extends javax.swing.JFrame {
+public class Browser extends JFrame {
 	private final static long serialVersionUID = 0;
 	
     private static String AppIcon = "ca/mb/armchair/rel3/resources/RelIcon1.png";
@@ -53,28 +76,54 @@ public class Browser extends javax.swing.JFrame {
         Preferences.getInstance().obtainMainWindowPositionAndState(this);
     }
 
+    private JFileChooser createLocalDatabaseChooser(String title, String buttonText) {
+    	JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setDialogTitle(title);
+        chooser.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                return f.isDirectory();
+            }
+            @Override
+            public String getDescription() {
+                return "Any folder";
+            }
+        });
+        chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+        chooser.setApproveButtonText(buttonText);
+        ArrayList<JPanel> ldcpanels = new ArrayList<JPanel>();
+        for (Component c: chooser.getComponents()) {
+            if (c instanceof JPanel) {
+            	ldcpanels.add((JPanel)c);
+            }
+        }
+        ldcpanels.get(0).getComponent(0).setVisible(false);
+        ldcpanels.get(2).getComponent(0).setVisible(false);
+    	return chooser;
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      */
     private void initComponents() {
-        jMenuBarMain = new javax.swing.JMenuBar();
-        FileMenu = new javax.swing.JMenu();
-        OptionsMenu = new javax.swing.JMenu();
-        HelpMenu = new javax.swing.JMenu();
-        jPanelLocation = new javax.swing.JPanel();
-        jPanelStatus = new javax.swing.JPanel();
-        jLabelLocation = new javax.swing.JLabel();
-        jTextFieldLocation = new javax.swing.JTextField();
-        jLabelStatus = new javax.swing.JLabel();
+        jMenuBarMain = new JMenuBar();
+        FileMenu = new JMenu();
+        OptionsMenu = new JMenu();
+        HelpMenu = new JMenu();
+        jPanelLocation = new JPanel();
+        jPanelStatus = new JPanel();
+        jLabelLocation = new JLabel();
+        jTextFieldLocation = new JTextField();
+        jLabelStatus = new JLabel();
         jTabbedPaneContent = new JTabbedPaneWithCloseIcons();
-        jButtonPickLocal = new javax.swing.JButton();
-        localDatabaseChooser = new javax.swing.JFileChooser();
-        jProgressBarMemory = new javax.swing.JProgressBar();
+        jButtonPickLocal = new JButton();
+        jProgressBarMemory = new JProgressBar();
         
-		localDatabaseChooser.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
-		localDatabaseChooser.setDialogTitle("Open Local Database");
-        remoteDatabaseChooser = new DialogRemoteDatabase(this);
-		
+        localDatabaseChooser = createLocalDatabaseChooser("Open Local Database", "Open");
+        localDatabaseCreator = createLocalDatabaseChooser("New Local Database", "Accept");
+		remoteDatabaseChooser = new DialogRemoteDatabase(this);
+        
         FileMenu.setText("Menu");
         jMenuBarMain.add(FileMenu);
 
@@ -84,70 +133,70 @@ public class Browser extends javax.swing.JFrame {
         OptionsMenu.setText("Menu");
         jMenuBarMain.add(HelpMenu);
         
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Rel - DBrowser");
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
             	handleClosing();
             }
         });
 
-        jPanelLocation.setLayout(new java.awt.BorderLayout());
+        jPanelLocation.setLayout(new BorderLayout());
 
-        jLabelLocation.setFont(new java.awt.Font("Dialog", 0, 10));
+        jLabelLocation.setFont(new Font("Dialog", 0, 10));
         jLabelLocation.setText("Location: ");
-        jPanelLocation.add(jLabelLocation, java.awt.BorderLayout.WEST);
+        jPanelLocation.add(jLabelLocation, BorderLayout.WEST);
 
-        jButtonPickLocal.setFont(new java.awt.Font("Dialog", 0, 8));
+        jButtonPickLocal.setFont(new Font("Dialog", 0, 8));
         jButtonPickLocal.setText("...");
         jButtonPickLocal.setToolTipText("Click to open a local database.");
-        jButtonPickLocal.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        jButtonPickLocal.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButtonPickLocal.setMargin(new Insets(0, 0, 0, 0));
+        jButtonPickLocal.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 chooseLocalDatabase();
             }
         });
-        jPanelLocation.add(jButtonPickLocal, java.awt.BorderLayout.EAST);
+        jPanelLocation.add(jButtonPickLocal, BorderLayout.EAST);
         
-        jTextFieldLocation.setFont(new java.awt.Font("Dialog", 0, 10));
+        jTextFieldLocation.setFont(new Font("Dialog", 0, 10));
         jTextFieldLocation.setToolTipText("Enter the domain name of a remote Rel server here, or 'local:' followed by the directory of a local database.");
-        jTextFieldLocation.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-            	setLocationFromTextFieldLocation();
+        jTextFieldLocation.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+            	setLocationFromTextFieldLocation(false);
             }
         });
-        jPanelLocation.add(jTextFieldLocation, java.awt.BorderLayout.CENTER);
+        jPanelLocation.add(jTextFieldLocation, BorderLayout.CENTER);
 
-        getContentPane().add(jPanelLocation, java.awt.BorderLayout.NORTH);
+        getContentPane().add(jPanelLocation, BorderLayout.NORTH);
 
-        jPanelStatus.setLayout(new java.awt.BorderLayout());
+        jPanelStatus.setLayout(new BorderLayout());
         
-        jLabelStatus.setFont(new java.awt.Font("Dialog", 0, 10));
+        jLabelStatus.setFont(new Font("Dialog", 0, 10));
         jLabelStatus.setText("Status");
         
-        jPanelStatus.add(jLabelStatus, java.awt.BorderLayout.WEST);
+        jPanelStatus.add(jLabelStatus, BorderLayout.WEST);
         
-        jProgressBarMemory.setFont(new java.awt.Font("Dialog", 0, 10));
+        jProgressBarMemory.setFont(new Font("Dialog", 0, 10));
         jProgressBarMemory.setMinimum(0);
         jProgressBarMemory.setMaximum(100);
         jProgressBarMemory.setValue(0);
         jProgressBarMemory.setString("Memory Used");
         jProgressBarMemory.setStringPainted(true);
         
-        jPanelStatus.add(jProgressBarMemory, java.awt.BorderLayout.EAST);
+        jPanelStatus.add(jProgressBarMemory, BorderLayout.EAST);
         
-        getContentPane().add(jPanelStatus, java.awt.BorderLayout.SOUTH);
+        getContentPane().add(jPanelStatus, BorderLayout.SOUTH);
 
-        getContentPane().add(jTabbedPaneContent, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jTabbedPaneContent, BorderLayout.CENTER);
         jTabbedPaneContent.addTabSelectedListener(new TabSelectedListener() {
-        	public void tabSelected(java.awt.Component tabComponent, String tabTitle) {
+        	public void tabSelected(Component tabComponent, String tabTitle) {
         		jTextFieldLocation.setText(tabTitle);
         	}
         });
 
-        setIconImage(getAppIcon());
+        setIconImage(getAppIcon().getImage());
         
-		javax.swing.Timer memoryCheckTimer = new javax.swing.Timer(500, new ActionListener() {
+		Timer memoryCheckTimer = new Timer(500, new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				int memoryFree = getMemoryPercentageFree(); 
 				jProgressBarMemory.setValue(memoryFree);
@@ -170,12 +219,12 @@ public class Browser extends javax.swing.JFrame {
     }
     
     /** Get ImageIcon of application icon image. */
-    private java.awt.Image getAppIcon() {
+    private ImageIcon getAppIcon() {
         if (ImageIconResource == null) {
         	ClassLoader cl = this.getClass().getClassLoader();
         	ImageIconResource = cl.getResource(getAppIconFilename());
         }
-        return java.awt.Toolkit.getDefaultToolkit().getImage(ImageIconResource);        
+        return new ImageIcon(ImageIconResource);        
     }
 
     /** Set status display. */
@@ -184,6 +233,8 @@ public class Browser extends javax.swing.JFrame {
     }
     
     private String shortened(String s) {
+    	if (s.length() < 80)
+    		return s;
     	return s.replace(": ",":\n");
     }
     
@@ -201,10 +252,10 @@ public class Browser extends javax.swing.JFrame {
     }
     
     /** Attempt to open a connection.  Return null if succeeded (!) and exception if failed. */
-    private AttemptConnectionResult attemptConnectionOpen(String dbURL) {
+    private AttemptConnectionResult attemptConnectionOpen(String dbURL, boolean createAllowed) {
         setStatus("Opening connection to " + dbURL);
         try {
-        	StringReceiverClient client = ClientFromURL.openConnection(dbURL, false);
+        	StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed);
             return new AttemptConnectionResult(client);
         } catch (Throwable exception) {
         	return new AttemptConnectionResult(exception);
@@ -228,13 +279,13 @@ public class Browser extends javax.swing.JFrame {
         setStatus(msg);
         msg = shortened(msg);
         if (msg.contains("The environment cannot be locked for single writer access. ENV_LOCKED")) {
-        	javax.swing.JOptionPane.showMessageDialog(null, "A copy of Rel is already accessing the database you're trying to open at " + dbURL, 
-        			"Unable to open local database", javax.swing.JOptionPane.ERROR_MESSAGE);
+        	JOptionPane.showMessageDialog(null, "A copy of Rel is already accessing the database you're trying to open at " + dbURL, 
+        			"Unable to open local database", JOptionPane.ERROR_MESSAGE);
     	} else if (msg.contains("Connection refused")) {
-        	javax.swing.JOptionPane.showMessageDialog(null, "A Rel server doesn't appear to be running or available at " + dbURL, 
-        			"Unable to open remote database", javax.swing.JOptionPane.ERROR_MESSAGE);
+        	JOptionPane.showMessageDialog(null, "A Rel server doesn't appear to be running or available at " + dbURL, 
+        			"Unable to open remote database", JOptionPane.ERROR_MESSAGE);
     	} else 
-        	javax.swing.JOptionPane.showMessageDialog(null, msg, "Unable to open database", javax.swing.JOptionPane.ERROR_MESSAGE);
+        	JOptionPane.showMessageDialog(null, msg, "Unable to open database", JOptionPane.ERROR_MESSAGE);
     }
     
     private void doConnectionResultFailed(Throwable exception, String dbURL) {
@@ -242,12 +293,12 @@ public class Browser extends javax.swing.JFrame {
     }
     
     /** Open a connection and associated panel. */
-    private boolean openConnection(String dbURL, boolean permanent) {
+    private boolean openConnection(String dbURL, boolean permanent, boolean canCreate) {
     	if (noLocalRel && dbURL.startsWith("local:")) {
     		doConnectionResultFailed("Local Rel server is not installed.", dbURL);
     		return false;
     	}
-    	AttemptConnectionResult result = attemptConnectionOpen(dbURL);
+    	AttemptConnectionResult result = attemptConnectionOpen(dbURL, canCreate);
     	if (result.client != null) {
     		doConnectionResultSuccess(result.client, dbURL, permanent);
     		return true;
@@ -261,50 +312,67 @@ public class Browser extends javax.swing.JFrame {
         if (databasePath != null) {
         	if (noLocalRel) {
         		String dbURL = "localhost";
-        		AttemptConnectionResult result = attemptConnectionOpen(dbURL);
+        		AttemptConnectionResult result = attemptConnectionOpen(dbURL, false);
             	if (result.client != null) {
             		doConnectionResultSuccess(result.client, dbURL, true);
             		return;
             	}
             } else {
-            	if (openConnection("local:" + databasePath, true))
+            	if (openConnection("local:" + databasePath, true, true))
             		return;
-                if (openConnection("localhost", false))
+                if (openConnection("localhost", false, false))
                     return;
             }
         }
         setStatus("Ok.  Please open a database.");        	
     }
     
-    private void setLocation(String location) {
+    private void setLocation(String location, boolean canCreate) {
     	if (location.equalsIgnoreCase("local"))
     		if (noLocalRel) {
-    			javax.swing.JOptionPane.showMessageDialog(null, "Local Rel server is not installed.", "Unable to open database", javax.swing.JOptionPane.INFORMATION_MESSAGE);    			
+    			JOptionPane.showMessageDialog(null, "Local Rel server is not installed.", "Unable to open database", JOptionPane.INFORMATION_MESSAGE);    			
     		} else {
     			if (databasePath == null)
-        			javax.swing.JOptionPane.showMessageDialog(null, "Default 'local' database access has been disabled.  Please specify a database as local:<directory>", "Unable to open database", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        			JOptionPane.showMessageDialog(null, "Default 'local' database access has been disabled.  Please specify a database as local:<directory>", "Unable to open database", JOptionPane.INFORMATION_MESSAGE);
         		else
-        			openConnection("local:" + databasePath, false);
+        			openConnection("local:" + databasePath, false, canCreate);
     		}
     	else 
-    		openConnection(location, false);
+    		openConnection(location, false, canCreate);
     }
     
-    private void setLocationFromTextFieldLocation() {
-    	setLocation(jTextFieldLocation.getText().trim());    	
+    private void setLocationFromTextFieldLocation(boolean canCreate) {
+    	setLocation(jTextFieldLocation.getText().trim(), canCreate);
     }
 
     public void chooseLocalDatabase() {
 		int returnVal = localDatabaseChooser.showOpenDialog(this);
-		if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			jTextFieldLocation.setText("local:" + localDatabaseChooser.getSelectedFile());
-			setLocationFromTextFieldLocation();
-		}    	
+			setLocationFromTextFieldLocation(false);
+		}
+    }
+    
+    public void createLocalDatabase() {
+    	int returnVal = localDatabaseCreator.showSaveDialog(this);
+    	if (returnVal == JFileChooser.APPROVE_OPTION) {
+	    	File dir = localDatabaseCreator.getSelectedFile();
+	        if (!dir.exists()) {
+	            JOptionPane.showMessageDialog(null, "No directory was selected.", "Database Not Created", JOptionPane.INFORMATION_MESSAGE);
+	        	return;
+	        }
+	        if (dir.isDirectory() && (new File(dir + File.separator + "Reldb.rel").exists())) {
+	        	if (JOptionPane.showConfirmDialog(null, "The selected directory already contains a Rel database.  Open it?", "Database Already Exists", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION)
+	        		return;
+	        }
+			jTextFieldLocation.setText("local:" + localDatabaseCreator.getSelectedFile());
+			setLocationFromTextFieldLocation(true);
+    	}
     }
     
     public void openRemoteDatabase(String reference) {
 		jTextFieldLocation.setText(reference);
-		setLocationFromTextFieldLocation();   	
+		setLocationFromTextFieldLocation(false);   	
     }
     
     public void chooseRemoteDatabase() {
@@ -372,7 +440,7 @@ public class Browser extends javax.swing.JFrame {
 						browser = null;
 					}
 					e.printStackTrace();
-					javax.swing.JOptionPane.showMessageDialog(null, "Out of memory!  Shutting down NOW!", "OUT OF MEMORY", javax.swing.JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Out of memory!  Shutting down NOW!", "OUT OF MEMORY", JOptionPane.ERROR_MESSAGE);
 				} else {
 					System.err.println("Unknown error: " + t);
 					if (browser != null) {
@@ -380,7 +448,7 @@ public class Browser extends javax.swing.JFrame {
 						browser = null;
 					}
 					e.printStackTrace();
-					javax.swing.JOptionPane.showMessageDialog(null, e, "Unexpected Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, e, "Unexpected Error", JOptionPane.ERROR_MESSAGE);
 				}
 				System.exit(1);						
 			}				
@@ -413,18 +481,19 @@ public class Browser extends javax.swing.JFrame {
         browser.requestFocusInWindow();
     }
     
-    private javax.swing.JMenu FileMenu;
-    private javax.swing.JMenu OptionsMenu;
-    private javax.swing.JMenu HelpMenu;
-    private javax.swing.JLabel jLabelLocation;
-    private javax.swing.JLabel jLabelStatus;
-    private javax.swing.JMenuBar jMenuBarMain;
-    private javax.swing.JPanel jPanelLocation;
-    private javax.swing.JPanel jPanelStatus;
+    private JMenu FileMenu;
+    private JMenu OptionsMenu;
+    private JMenu HelpMenu;
+    private JLabel jLabelLocation;
+    private JLabel jLabelStatus;
+    private JMenuBar jMenuBarMain;
+    private JPanel jPanelLocation;
+    private JPanel jPanelStatus;
     private JTabbedPaneWithCloseIcons jTabbedPaneContent;
-    private javax.swing.JTextField jTextFieldLocation;
-    private javax.swing.JButton jButtonPickLocal;
-    private javax.swing.JFileChooser localDatabaseChooser;
+    private JTextField jTextFieldLocation;
+    private JButton jButtonPickLocal;
+    private JFileChooser localDatabaseChooser;
+    private JFileChooser localDatabaseCreator;
     private DialogRemoteDatabase remoteDatabaseChooser;
-    private javax.swing.JProgressBar jProgressBarMemory;
+    private JProgressBar jProgressBarMemory;
 }

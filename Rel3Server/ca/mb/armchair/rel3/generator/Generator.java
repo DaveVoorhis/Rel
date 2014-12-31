@@ -373,7 +373,7 @@ public class Generator {
 			if (externalRelvarType.compareToIgnoreCase(type) == 0) {
 				typeIsRegistered = true;
 				try {
-					RelvarDefinition relvar = new RelvarDefinition(varname, (RelvarCustomMetadata)Class.forName("plugins.relvars." + type.toUpperCase() + ".Relvar"+ type.toUpperCase() +"Metadata").getConstructors()[0].newInstance(database, userRelvarOwner, externalRelvarSpecification, handler), new References());
+					RelvarDefinition relvar = new RelvarDefinition(varname, (RelvarCustomMetadata)Class.forName("Relplugins.relvars." + type.toUpperCase() + ".Relvar"+ type.toUpperCase() +"Metadata").getConstructors()[0].newInstance(database, userRelvarOwner, externalRelvarSpecification, handler), new References());
 					relvarsInProgress.put(varname, relvar);
 					beginAssignment();
 					compileInstruction(new OpCreateExternalRelvar(relvarsInProgress, relvar));

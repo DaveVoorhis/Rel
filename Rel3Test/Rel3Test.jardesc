@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="/home/dave/workspace/RelDeployment/RelTest.jar"/>
+    <jar path="RelDeployment/RelTest.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/Rel3Test/Rel3Test.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -13,9 +13,9 @@
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <javaElement handleIdentifier="=Rel3Test/&lt;ca.mb.armchair.rel3.tests.external"/>
         <javaElement handleIdentifier="=Rel3Test/&lt;ca.mb.armchair.rel3.tests.engine"/>
-        <javaElement handleIdentifier="=Rel3Test/&lt;ca.mb.armchair.rel3.tests.inheritance"/>
-        <javaElement handleIdentifier="=Rel3Test/&lt;"/>
         <javaElement handleIdentifier="=Rel3Test/&lt;ca.mb.armchair.rel3.tests"/>
+        <javaElement handleIdentifier="=Rel3Test/&lt;"/>
         <javaElement handleIdentifier="=Rel3Test/&lt;ca.mb.armchair.rel3.tests.main"/>
+        <javaElement handleIdentifier="=Rel3Test/&lt;ca.mb.armchair.rel3.tests.inheritance"/>
     </selectedElements>
 </jardesc>

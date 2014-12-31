@@ -145,10 +145,9 @@ public class RelDatabase {
     	return JEVersion.CURRENT_VERSION.getVersionString();
     }
 
-    public static void mkdir(String dir, PrintStream outputStream) {
+    public static void mkdir(String dir) {
 		File dirf = new File(dir);
 		if (!dirf.exists()) {
-			outputStream.println("Creating directory: " + dirf);
 			if (!dirf.mkdirs()) {
 				String msg = "Unable to create directory: " + dirf;
 				throw new ExceptionFatal("RS0324: " + msg);
@@ -165,11 +164,11 @@ public class RelDatabase {
     		homeDir = homeDir.substring(0, homeDir.length() - 1);
     	if (!homeDir.endsWith(java.io.File.separator))
     		homeDir += java.io.File.separator;
-    	outputStream.println("Opening database: " + homeDir);    	
+ 	
     	databaseHome = homeDir + databaseHomeRelative;
     	if (!canCreateDb && !(new File(databaseHome)).exists())
     		throw new ExceptionSemantic("RS0405: Database " + homeDir + " either doesn't exist or isn't a Rel database.");
-    	mkdir(databaseHome, outputStream);
+    	mkdir(databaseHome);
     	userCodeHome = databaseHome + java.io.File.separator + userCodeHomeRelative;
     
     	dirClassLoader = new DirClassLoader(homeDir);
@@ -249,8 +248,8 @@ public class RelDatabase {
 			reset();
 
 			// Set up plugin directories
-			File homePlugins = new File(homeDir + "plugins");
-			File databasePlugins = new File(databaseHome + java.io.File.separator + "plugins");
+			File homePlugins = new File(homeDir + "Relplugins");
+			File databasePlugins = new File(databaseHome + java.io.File.separator + "Relplugins");
 			
 			if(!homePlugins.exists())
 				homePlugins.mkdir();
@@ -263,11 +262,11 @@ public class RelDatabase {
 			
 			loadPaths(new File(customRelvarsDatabase), new File(customRelvarsHome));
 			loadConstraints(outputStream);
-	        outputStream.println("Database " + homeDir + " open.");
+
         } catch (DatabaseException db) {
         	String msg = "Unable to open database: " + db.getMessage();
         	outputStream.println(msg);
-    		db.printStackTrace(outputStream);
+    		db.printStackTrace(System.out);
         	throw new ExceptionFatal("RS0325: " + msg);
         }
     }
