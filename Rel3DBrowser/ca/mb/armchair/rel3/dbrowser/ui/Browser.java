@@ -11,7 +11,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,7 +25,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
-import javax.swing.filechooser.FileFilter;
 
 import ca.mb.armchair.rel3.client.string.*;
 import ca.mb.armchair.rel3.dbrowser.utilities.ClassPathHack;
@@ -75,38 +73,12 @@ public class Browser extends JFrame {
         Splash.dismissSplash();
         Preferences.getInstance().obtainMainWindowPositionAndState(this);
     }
-
-    private JFileChooser createLocalDatabaseChooser(String title, String buttonText) {
-    	JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser.setDialogTitle(title);
-        chooser.setFileFilter(new FileFilter() {
-            @Override
-            public boolean accept(File f) {
-                return f.isDirectory();
-            }
-            @Override
-            public String getDescription() {
-                return "Any folder";
-            }
-        });
-        chooser.setDialogType(JFileChooser.SAVE_DIALOG);
-        chooser.setApproveButtonText(buttonText);
-        ArrayList<JPanel> ldcpanels = new ArrayList<JPanel>();
-        for (Component c: chooser.getComponents()) {
-            if (c instanceof JPanel) {
-            	ldcpanels.add((JPanel)c);
-            }
-        }
-        ldcpanels.get(0).getComponent(0).setVisible(false);
-        ldcpanels.get(2).getComponent(0).setVisible(false);
-    	return chooser;
-    }
     
     /** This method is called from within the constructor to
      * initialize the form.
      */
-    private void initComponents() {
+    @SuppressWarnings("serial")
+	private void initComponents() {
         jMenuBarMain = new JMenuBar();
         FileMenu = new JMenu();
         OptionsMenu = new JMenu();
@@ -120,8 +92,12 @@ public class Browser extends JFrame {
         jButtonPickLocal = new JButton();
         jProgressBarMemory = new JProgressBar();
         
-        localDatabaseChooser = createLocalDatabaseChooser("Open Local Database", "Open");
-        localDatabaseCreator = createLocalDatabaseChooser("New Local Database", "Accept");
+        localDatabaseChooser = new DatabaseChooser("Open Local Database", "Open");
+        localDatabaseCreator = new DatabaseChooser("New Local Database", "Accept") {
+        	public boolean accept(File f) {
+        		return f.isDirectory();
+        	}
+        };
 		remoteDatabaseChooser = new DialogRemoteDatabase(this);
         
         FileMenu.setText("Menu");
@@ -190,6 +166,7 @@ public class Browser extends JFrame {
         getContentPane().add(jTabbedPaneContent, BorderLayout.CENTER);
         jTabbedPaneContent.addTabSelectedListener(new TabSelectedListener() {
         	public void tabSelected(Component tabComponent, String tabTitle) {
+        		jTextFieldLocation.setForeground(Color.BLACK);
         		jTextFieldLocation.setText(tabTitle);
         	}
         });
@@ -284,6 +261,12 @@ public class Browser extends JFrame {
     	} else if (msg.contains("Connection refused")) {
         	JOptionPane.showMessageDialog(null, "A Rel server doesn't appear to be running or available at " + dbURL, 
         			"Unable to open remote database", JOptionPane.ERROR_MESSAGE);
+    	} else if (msg.contains("RS0405:")) {
+    		JOptionPane.showMessageDialog(null, dbURL + " doesn't contain a Rel database.",
+    				"Unable to open local database", JOptionPane.ERROR_MESSAGE);
+    	} else if (msg.contains("RS0307:")) {
+    		JOptionPane.showMessageDialog(null, dbURL + " doesn't exist.",
+    				"Unable to open local database", JOptionPane.ERROR_MESSAGE);    		
     	} else 
         	JOptionPane.showMessageDialog(null, msg, "Unable to open database", JOptionPane.ERROR_MESSAGE);
     }
@@ -301,9 +284,11 @@ public class Browser extends JFrame {
     	AttemptConnectionResult result = attemptConnectionOpen(dbURL, canCreate);
     	if (result.client != null) {
     		doConnectionResultSuccess(result.client, dbURL, permanent);
+    		jTextFieldLocation.setForeground(Color.BLACK);
     		return true;
     	} else {
     		doConnectionResultFailed(result.exception, dbURL);
+    		jTextFieldLocation.setForeground(Color.RED);
     		return false;
     	}
     }
@@ -357,15 +342,13 @@ public class Browser extends JFrame {
     	int returnVal = localDatabaseCreator.showSaveDialog(this);
     	if (returnVal == JFileChooser.APPROVE_OPTION) {
 	    	File dir = localDatabaseCreator.getSelectedFile();
-	        if (!dir.exists()) {
-	            JOptionPane.showMessageDialog(null, "No directory was selected.", "Database Not Created", JOptionPane.INFORMATION_MESSAGE);
-	        	return;
-	        }
-	        if (dir.isDirectory() && (new File(dir + File.separator + "Reldb.rel").exists())) {
+	        if (!dir.exists())
+	        	dir = dir.getParentFile();
+	        if (DatabaseChooser.isRelDatabase(dir)) {
 	        	if (JOptionPane.showConfirmDialog(null, "The selected directory already contains a Rel database.  Open it?", "Database Already Exists", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION)
 	        		return;
 	        }
-			jTextFieldLocation.setText("local:" + localDatabaseCreator.getSelectedFile());
+			jTextFieldLocation.setText("local:" + dir);
 			setLocationFromTextFieldLocation(true);
     	}
     }
