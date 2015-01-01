@@ -14,18 +14,20 @@ public class MenuBar extends javax.swing.JMenuBar {
 		menu.setMnemonic(java.awt.event.KeyEvent.VK_F);
 		add(menu);
 		{
-			menu.add(new MenuItem("New local database...", javax.swing.KeyStroke.getKeyStroke('N', java.awt.event.InputEvent.ALT_DOWN_MASK)) {
-				private static final long serialVersionUID = 1L;
-				public void action() {
-					browser.createLocalDatabase();
-				}
-			});			
-			menu.add(new MenuItem("Open local database...", javax.swing.KeyStroke.getKeyStroke('L', java.awt.event.InputEvent.ALT_DOWN_MASK)) {
-				private static final long serialVersionUID = 1L;
-				public void action() {
-					browser.chooseLocalDatabase();
-				}
-			});
+			if (browser.isLocalRelAvailable()) {
+				menu.add(new MenuItem("New local database...", javax.swing.KeyStroke.getKeyStroke('N', java.awt.event.InputEvent.ALT_DOWN_MASK)) {
+					private static final long serialVersionUID = 1L;
+					public void action() {
+						browser.createLocalDatabase();
+					}
+				});			
+				menu.add(new MenuItem("Open local database...", javax.swing.KeyStroke.getKeyStroke('L', java.awt.event.InputEvent.ALT_DOWN_MASK)) {
+					private static final long serialVersionUID = 1L;
+					public void action() {
+						browser.chooseLocalDatabase();
+					}
+				});
+			}
 			menu.add(new MenuItem("Open remote database...", javax.swing.KeyStroke.getKeyStroke('R', java.awt.event.InputEvent.ALT_DOWN_MASK)) {
 				private static final long serialVersionUID = 1L;
 				public void action() {

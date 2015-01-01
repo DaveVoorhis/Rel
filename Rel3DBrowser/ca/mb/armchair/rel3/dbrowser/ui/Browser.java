@@ -12,6 +12,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -21,9 +22,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
 import ca.mb.armchair.rel3.client.string.*;
@@ -45,18 +44,6 @@ public class Browser extends JFrame {
     private String databasePath;
     
     private static boolean noLocalRel = true;
-    
-    /** Get memory free as a percentage value between 0 and 100. */
-    private int getMemoryPercentageFree() {
-    	java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
-    	long maxmemory = runtime.totalMemory();
-    	int memfree = (int)((double)runtime.freeMemory() / (double)maxmemory * 100.0);
-    	if (memfree < 10) {
-    		runtime.gc();
-        	return (int)((double)runtime.freeMemory() / (double)maxmemory * 100.0);
-    	} else
-    		return memfree;
-    }
     
     /** Creates new form Browser */
     private Browser(String databasePath) {
@@ -90,7 +77,7 @@ public class Browser extends JFrame {
         jLabelStatus = new JLabel();
         jTabbedPaneContent = new JTabbedPaneWithCloseIcons();
         jButtonPickLocal = new JButton();
-        jProgressBarMemory = new JProgressBar();
+        memoryDisplay = new FreeMemoryDisplay();
         
         localDatabaseChooser = new DatabaseChooser("Open Local Database", "Open");
         localDatabaseCreator = new DatabaseChooser("New Local Database", "Accept") {
@@ -151,18 +138,14 @@ public class Browser extends JFrame {
         jLabelStatus.setText("Status");
         
         jPanelStatus.add(jLabelStatus, BorderLayout.WEST);
-        
-        jProgressBarMemory.setFont(new Font("Dialog", 0, 10));
-        jProgressBarMemory.setMinimum(0);
-        jProgressBarMemory.setMaximum(100);
-        jProgressBarMemory.setValue(0);
-        jProgressBarMemory.setString("Memory Used");
-        jProgressBarMemory.setStringPainted(true);
-        
-        jPanelStatus.add(jProgressBarMemory, BorderLayout.EAST);
+
+        memoryDisplay.setFont(new Font("Dialog", 0, 10));
+        memoryDisplay.setOpaque(true);
+        memoryDisplay.setBorder(BorderFactory.createEtchedBorder());
+        jPanelStatus.add(memoryDisplay, BorderLayout.EAST);
         
         getContentPane().add(jPanelStatus, BorderLayout.SOUTH);
-
+        
         getContentPane().add(jTabbedPaneContent, BorderLayout.CENTER);
         jTabbedPaneContent.addTabSelectedListener(new TabSelectedListener() {
         	public void tabSelected(Component tabComponent, String tabTitle) {
@@ -172,20 +155,6 @@ public class Browser extends JFrame {
         });
 
         setIconImage(getAppIcon().getImage());
-        
-		Timer memoryCheckTimer = new Timer(500, new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				int memoryFree = getMemoryPercentageFree(); 
-				jProgressBarMemory.setValue(memoryFree);
-				jProgressBarMemory.setString(memoryFree + "% memory free");
-		    	if (memoryFree < 10)
-		    		jProgressBarMemory.setForeground(new Color(210, 10, 10));
-		    	else
-		            jProgressBarMemory.setForeground(new Color(150, 210, 150));
-			}
-		});
-		memoryCheckTimer.setRepeats(true);
-		memoryCheckTimer.start();
         
         pack();
     }
@@ -386,7 +355,11 @@ public class Browser extends JFrame {
 		System.out.println(" -f<databaseDir> -- open specified local database directory");
 		System.out.println(" -f              -- do not open a local database");
 	}
-		
+
+	public boolean isLocalRelAvailable() {
+		return !noLocalRel;
+	}
+
     /**
      * @param args the command line arguments
      */
@@ -478,5 +451,5 @@ public class Browser extends JFrame {
     private JFileChooser localDatabaseChooser;
     private JFileChooser localDatabaseCreator;
     private DialogRemoteDatabase remoteDatabaseChooser;
-    private JProgressBar jProgressBarMemory;
+    private FreeMemoryDisplay memoryDisplay;
 }
