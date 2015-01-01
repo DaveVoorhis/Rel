@@ -6,6 +6,6 @@ public class Version {
 	}
 
 	public static String getCopyright() {
-		return "Copyright &copy 2014 Dave Voorhis";
+		return "Copyright &copy 2014 - 2015 Dave Voorhis";
 	}
 }

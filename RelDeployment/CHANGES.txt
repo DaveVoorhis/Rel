@@ -4,11 +4,12 @@ Version 1.0.13:
 
   - enhancement: Now require Java 8
   - enhancement: Source now on GitHub; trivial to load into Eclipse.
-  - enhancement: Default database now found in getProperty("user.dir") + "Reldb.rel".
-  - enhancement: Default database now refers to explicit path
-  - enhancement: -f command line option description a bit clearer
-  - enhancement: System startup announcement now provides more information about runtime platform.
-  - enhancement: Backup script embedded in DBrowser; no longer relies on Scripts folder.
+  - enhancement: DBrowser: Default database now found in getProperty("user.dir") + "Reldb.rel".
+  - enhancement: Rel: Default database now refers to explicit path
+  - enhancement: Rel: -f command line option description a bit clearer
+  - enhancement: Rel: System startup announcement now provides more information about runtime platform.
+  - enhancement: DBrowser: Backup script embedded in DBrowser; no longer relies on Scripts folder.
+  - enhancement: DBrowser: improved database new/open dialog boxes.
 
 Version 1.0.12:
 
