@@ -21,8 +21,8 @@ public class FreeMemoryDisplay extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private JLabel jLabelMemory;
-	private JLabel jLabelBuffer1;
-	private JLabel jLabelBuffer2;
+	private JLabel jLabelShim1;
+	private JLabel jLabelShim2;
 	private Deque<Integer> percentageHistory;
 
 	private Timer memoryCheckTimer;
@@ -87,10 +87,10 @@ public class FreeMemoryDisplay extends JPanel {
 		super.setFont(f);
 		if (jLabelMemory != null)
 			jLabelMemory.setFont(f);
-		if (jLabelBuffer1 != null)
-			jLabelBuffer1.setFont(f);
-		if (jLabelBuffer2 != null)
-			jLabelBuffer2.setFont(f);
+		if (jLabelShim1 != null)
+			jLabelShim1.setFont(f);
+		if (jLabelShim2 != null)
+			jLabelShim2.setFont(f);
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -160,12 +160,12 @@ public class FreeMemoryDisplay extends JPanel {
 		jLabelMemory.setBorder(null);
 		jLabelMemory.setOpaque(false);
 		jLabelMemory.addMouseListener(clickListener);
-		jLabelBuffer1 = new JLabel(" ");
-		jLabelBuffer1.addMouseListener(clickListener);
-		jLabelBuffer2 = new JLabel(" ");
-		jLabelBuffer2.addMouseListener(clickListener);
-		add(jLabelBuffer1, BorderLayout.NORTH);  // buffer
-		add(jLabelBuffer2, BorderLayout.EAST);
+		jLabelShim1 = new JLabel(" ");
+		jLabelShim1.addMouseListener(clickListener);
+		jLabelShim2 = new JLabel(" ");
+		jLabelShim2.addMouseListener(clickListener);
+		add(jLabelShim1, BorderLayout.NORTH);
+		add(jLabelShim2, BorderLayout.EAST);
 		add(jLabelMemory, BorderLayout.CENTER);
         memoryCheckTimer = new Timer(500, new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {

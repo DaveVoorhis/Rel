@@ -2,7 +2,6 @@ package ca.mb.armchair.rel3.dbrowser.ui;
 
 import java.awt.Component;
 import java.io.File;
-import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
@@ -19,9 +18,10 @@ public class DatabaseChooser extends JFileChooser {
 	public boolean accept(File f) {
 		return isRelDatabase(f);
 	}
-	
+		
 	public DatabaseChooser(String title, String buttonText) {
 		super();
+		setAcceptAllFileFilterUsed(false);
         setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         setDialogTitle(title);
         setFileFilter(new FileFilter() {
@@ -36,13 +36,11 @@ public class DatabaseChooser extends JFileChooser {
         });
         setDialogType(JFileChooser.SAVE_DIALOG);
         setApproveButtonText(buttonText);
-        ArrayList<JPanel> ldcpanels = new ArrayList<JPanel>();
         for (Component c: getComponents()) {
             if (c instanceof JPanel) {
-            	ldcpanels.add((JPanel)c);
+            	((JPanel)c).getComponent(0).setVisible(false);
+            	break;
             }
         }
-        ldcpanels.get(0).getComponent(0).setVisible(false);
-        ldcpanels.get(2).getComponent(0).setVisible(false);
 	}
 }
