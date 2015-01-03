@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -156,7 +157,7 @@ public class Monitor extends javax.swing.JFrame {
                 shutdown();
             }
         });
-        setIconImage(getAppIcon());
+        setIconImage(getAppIcon().getImage());
         
 		jFileChooserSave.setDialogType(JFileChooser.SAVE_DIALOG);
 		FileNameExtensionFilter filterTXT = new FileNameExtensionFilter("Text files", "txt");
@@ -284,12 +285,12 @@ public class Monitor extends javax.swing.JFrame {
     }
     
     /** Get ImageIcon of application icon image. */
-    private java.awt.Image getAppIcon() {
+    private ImageIcon getAppIcon() {
         if (ImageIconResource == null) {
         	ClassLoader cl = this.getClass().getClassLoader();
         	ImageIconResource = cl.getResource(getAppIconFilename());
         }
-        return java.awt.Toolkit.getDefaultToolkit().getImage(ImageIconResource);        
+        return new ImageIcon(ImageIconResource);        
     }
 
     private String[] lastArgs;
