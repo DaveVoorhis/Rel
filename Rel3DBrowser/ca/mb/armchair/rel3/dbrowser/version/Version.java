@@ -2,7 +2,7 @@ package ca.mb.armchair.rel3.dbrowser.version;
 
 public class Version {
 	public static String getVersion() {
-		return "DBrowser 2.16";
+		return "DBrowser 2.17";
 	}
 
 	public static String getCopyright() {

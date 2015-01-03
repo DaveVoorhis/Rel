@@ -65,44 +65,42 @@ public class Browser extends JFrame {
         Preferences.getInstance().obtainMainWindowPositionAndState(this);
     }
     
-    /** This method is called from within the constructor to
-     * initialize the form.
-     */
-	private void initComponents() {
-        jMenuBarMain = new JMenuBar();
-        FileMenu = new JMenu();
-        OptionsMenu = new JMenu();
-        HelpMenu = new JMenu();
-        jPanelLocation = new JPanel();
-        jPanelStatus = new JPanel();
-        jLabelLocation = new JLabel();
-        jTextFieldLocation = new JTextField();
-        jLabelStatus = new JLabel();
-        jTabbedPaneContent = new JTabbedPaneWithCloseIcons();
-        jButtonPickLocal = new JButton();
-        memoryDisplay = new FreeMemoryDisplay();
-        cpuDisplay = new FreeCPUDisplay();
+    private JPanel makeStatusPanel() {    
+        FreeMemoryDisplay memoryDisplay = new FreeMemoryDisplay();
+        FreeCPUDisplay cpuDisplay = new FreeCPUDisplay();
         
-        localDatabaseChooser = new DirectoryChooser("Open Local Database", "Open");
-        localDatabaseCreator = new DirectoryChooser("New Local Database", "Accept");
-		remoteDatabaseChooser = new DialogRemoteDatabase(this);
+        JPanel jPanelStatus = new JPanel();
         
-        FileMenu.setText("Menu");
-        jMenuBarMain.add(FileMenu);
+        jPanelStatus.setLayout(new BorderLayout());
+        
+        jLabelStatus.setFont(new Font("Dialog", 0, 10));
+        jLabelStatus.setText("Status");
+        
+        jPanelStatus.add(jLabelStatus, BorderLayout.WEST);
+        
+        JPanel monitors = new JPanel();
+        monitors.setLayout(new FlowLayout());
+        
+        cpuDisplay.setFont(new Font("Dialog", 0, 10));
+        cpuDisplay.setOpaque(true);
+        cpuDisplay.setBorder(BorderFactory.createEtchedBorder());
+        cpuDisplay.setPreferredSize(new Dimension(100, 30));
+        monitors.add(cpuDisplay);
 
-        OptionsMenu.setText("Menu");
-        jMenuBarMain.add(OptionsMenu);
-
-        OptionsMenu.setText("Menu");
-        jMenuBarMain.add(HelpMenu);
+        memoryDisplay.setFont(new Font("Dialog", 0, 10));
+        memoryDisplay.setOpaque(true);
+        memoryDisplay.setBorder(BorderFactory.createEtchedBorder());
+        memoryDisplay.setPreferredSize(new Dimension(100, 30));
+        monitors.add(memoryDisplay);
         
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Rel - DBrowser");
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent evt) {
-            	handleClosing();
-            }
-        });
+        jPanelStatus.add(monitors, BorderLayout.EAST);
+
+        return jPanelStatus;
+    }
+    
+    private JPanel makeLocationPanel() {
+        JPanel jPanelLocation = new JPanel();
+        JLabel jLabelLocation = new JLabel();
 
         jPanelLocation.setLayout(new BorderLayout());
 
@@ -129,42 +127,58 @@ public class Browser extends JFrame {
             }
         });
         jPanelLocation.add(jTextFieldLocation, BorderLayout.CENTER);
-
-        getContentPane().add(jPanelLocation, BorderLayout.NORTH);
-
-        jPanelStatus.setLayout(new BorderLayout());
         
-        jLabelStatus.setFont(new Font("Dialog", 0, 10));
-        jLabelStatus.setText("Status");
-        
-        jPanelStatus.add(jLabelStatus, BorderLayout.WEST);
-        
-        JPanel monitors = new JPanel();
-        monitors.setLayout(new FlowLayout());
-        
-        cpuDisplay.setFont(new Font("Dialog", 0, 10));
-        cpuDisplay.setOpaque(true);
-        cpuDisplay.setBorder(BorderFactory.createEtchedBorder());
-        cpuDisplay.setPreferredSize(new Dimension(100, 30));
-        monitors.add(cpuDisplay);
-
-        memoryDisplay.setFont(new Font("Dialog", 0, 10));
-        memoryDisplay.setOpaque(true);
-        memoryDisplay.setBorder(BorderFactory.createEtchedBorder());
-        memoryDisplay.setPreferredSize(new Dimension(100, 30));
-        monitors.add(memoryDisplay);
-        
-        jPanelStatus.add(monitors, BorderLayout.EAST);
-        
-        getContentPane().add(jPanelStatus, BorderLayout.SOUTH);
-        
-        getContentPane().add(jTabbedPaneContent, BorderLayout.CENTER);
+        return jPanelLocation;
+    }
+    
+    private JTabbedPaneWithCloseIcons makeContentPanel() {
+        jTabbedPaneContent = new JTabbedPaneWithCloseIcons();
         jTabbedPaneContent.addTabSelectedListener(new TabSelectedListener() {
         	public void tabSelected(Component tabComponent, String tabTitle) {
         		jTextFieldLocation.setForeground(Color.BLACK);
         		jTextFieldLocation.setText(tabTitle);
         	}
         });
+    	return jTabbedPaneContent;
+    }
+    
+    /** This method is called from within the constructor to
+     * initialize the form.
+     */
+	private void initComponents() {
+        jMenuBarMain = new JMenuBar();
+        FileMenu = new JMenu();
+        OptionsMenu = new JMenu();
+        HelpMenu = new JMenu();
+
+        jTextFieldLocation = new JTextField();
+        jButtonPickLocal = new JButton();
+        jLabelStatus = new JLabel();
+        
+        localDatabaseChooser = new DirectoryChooser("Open Local Database", "Open");
+        localDatabaseCreator = new DirectoryChooser("New Local Database", "Accept");
+		remoteDatabaseChooser = new DialogRemoteDatabase(this);
+        
+        FileMenu.setText("Menu");
+        jMenuBarMain.add(FileMenu);
+
+        OptionsMenu.setText("Menu");
+        jMenuBarMain.add(OptionsMenu);
+
+        OptionsMenu.setText("Menu");
+        jMenuBarMain.add(HelpMenu);
+        
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Rel - DBrowser");
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+            	handleClosing();
+            }
+        });
+
+        getContentPane().add(makeLocationPanel(), BorderLayout.NORTH);
+        getContentPane().add(makeContentPanel(), BorderLayout.CENTER);
+        getContentPane().add(makeStatusPanel(), BorderLayout.SOUTH);
 
         setIconImage(getAppIcon().getImage());
         
@@ -459,17 +473,12 @@ public class Browser extends JFrame {
     private JMenu FileMenu;
     private JMenu OptionsMenu;
     private JMenu HelpMenu;
-    private JLabel jLabelLocation;
     private JLabel jLabelStatus;
     private JMenuBar jMenuBarMain;
-    private JPanel jPanelLocation;
-    private JPanel jPanelStatus;
     private JTabbedPaneWithCloseIcons jTabbedPaneContent;
     private JTextField jTextFieldLocation;
     private JButton jButtonPickLocal;
     private JFileChooser localDatabaseChooser;
     private JFileChooser localDatabaseCreator;
     private DialogRemoteDatabase remoteDatabaseChooser;
-    private FreeMemoryDisplay memoryDisplay;
-    private FreeCPUDisplay cpuDisplay;
 }
