@@ -64,7 +64,6 @@ public class Browser extends JFrame {
     /** This method is called from within the constructor to
      * initialize the form.
      */
-    @SuppressWarnings("serial")
 	private void initComponents() {
         jMenuBarMain = new JMenuBar();
         FileMenu = new JMenu();
@@ -79,12 +78,8 @@ public class Browser extends JFrame {
         jButtonPickLocal = new JButton();
         memoryDisplay = new FreeMemoryDisplay();
         
-        localDatabaseChooser = new DatabaseChooser("Open Local Database", "Open");
-        localDatabaseCreator = new DatabaseChooser("New Local Database", "Accept") {
-        	public boolean accept(File f) {
-        		return f.isDirectory();
-        	}
-        };
+        localDatabaseChooser = new DirectoryChooser("Open Local Database", "Open");
+        localDatabaseCreator = new DirectoryChooser("New Local Database", "Accept");
 		remoteDatabaseChooser = new DialogRemoteDatabase(this);
         
         FileMenu.setText("Menu");
@@ -307,14 +302,21 @@ public class Browser extends JFrame {
 		}
     }
     
+    public static boolean isRelDatabase(File f) {
+    	return (f.isDirectory() && (new File(f + File.separator + "Reldb.rel").exists()));
+    }
+    
     public void createLocalDatabase() {
     	int returnVal = localDatabaseCreator.showSaveDialog(this);
     	if (returnVal == JFileChooser.APPROVE_OPTION) {
 	    	File dir = localDatabaseCreator.getSelectedFile();
 	        if (!dir.exists())
 	        	dir = dir.getParentFile();
-	        if (DatabaseChooser.isRelDatabase(dir)) {
-	        	if (JOptionPane.showConfirmDialog(null, "The selected directory already contains a Rel database.  Open it?", "Database Already Exists", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION)
+	        if (isRelDatabase(dir)) {
+	        	if (JOptionPane.showConfirmDialog(null, dir + " already contains a Rel database.  Open it?", "Database Already Exists", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION)
+	        		return;
+	        } else {
+	        	if (JOptionPane.showConfirmDialog(null, "Create a new database in " + dir + "?", "Create Database", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION)
 	        		return;
 	        }
 			jTextFieldLocation.setText("local:" + dir);

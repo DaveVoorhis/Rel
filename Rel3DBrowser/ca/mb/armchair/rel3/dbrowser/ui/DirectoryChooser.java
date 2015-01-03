@@ -8,16 +8,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
-public class DatabaseChooser extends JFileChooser {
+public class DirectoryChooser extends JFileChooser {
 
 	private static final long serialVersionUID = 1L;
-	   
-    public static boolean isRelDatabase(File f) {
-    	return (f.isDirectory() && (new File(f + File.separator + "Reldb.rel").exists()));
-    }
 
 	public boolean accept(File f) {
-		return isRelDatabase(f);
+		return f.isDirectory();
 	}
 	
 	private JTextField obtainTheJTextFieldInComponentHierarchy(Component[] components) {
@@ -32,7 +28,7 @@ public class DatabaseChooser extends JFileChooser {
         return null;
 	}
 	
-	public DatabaseChooser(String title, String buttonText) {
+	public DirectoryChooser(String title, String buttonText) {
 		super();
 		setAcceptAllFileFilterUsed(false);
         setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -40,7 +36,7 @@ public class DatabaseChooser extends JFileChooser {
         setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File f) {
-            	return DatabaseChooser.this.accept(f);
+            	return DirectoryChooser.this.accept(f);
             }
             @Override
             public String getDescription() {
