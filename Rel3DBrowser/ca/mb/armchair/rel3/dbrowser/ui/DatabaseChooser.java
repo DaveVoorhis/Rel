@@ -20,13 +20,16 @@ public class DatabaseChooser extends JFileChooser {
 		return isRelDatabase(f);
 	}
 	
-	private boolean isJTextFieldInComponentHierarchy(Component[] components) {
+	private JTextField obtainTheJTextFieldInComponentHierarchy(Component[] components) {
         for (Component c: components)
-            if (c instanceof JPanel && isJTextFieldInComponentHierarchy(((JPanel)c).getComponents()))
-            	return true;
+            if (c instanceof JPanel) {
+            	JTextField jtf = obtainTheJTextFieldInComponentHierarchy(((JPanel)c).getComponents());
+            	if (jtf != null)
+            		return jtf;
+            }
             else if (c instanceof JTextField)
-            	return true;
-        return false;
+            	return (JTextField)c;
+        return null;
 	}
 	
 	public DatabaseChooser(String title, String buttonText) {
@@ -47,12 +50,8 @@ public class DatabaseChooser extends JFileChooser {
         setDialogType(JFileChooser.SAVE_DIALOG);
         setApproveButtonText(buttonText);
         // Hide file name textbox
-        for (Component c: getComponents()) {
-        	if (c instanceof JPanel)
-        		if (isJTextFieldInComponentHierarchy(((JPanel)c).getComponents())) {
-        			c.setVisible(false);
-        			break;
-        		}
-        }
+        JTextField fileNameTextField = obtainTheJTextFieldInComponentHierarchy(getComponents());
+        if (fileNameTextField != null)
+        	fileNameTextField.getParent().setVisible(false);
 	}
 }
