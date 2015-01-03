@@ -1,4 +1,4 @@
-package ca.mb.armchair.rel3.dbrowser.ui;
+package ca.mb.armchair.rel3.dbrowser.ui.monitors;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,9 +15,10 @@ import java.util.LinkedList;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-public class FreeMemoryDisplay extends JPanel {
+public class PercentDisplay extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private JLabel jLabelMemory;
@@ -33,25 +34,6 @@ public class FreeMemoryDisplay extends JPanel {
 	private Color goodColor;
 	private Color okColor;
 	private Color badColor;
-
-    /** Get memory free as a percentage value between 0 and 100. */
-    public static int getMemoryPercentageFreeClassic() {
-    	java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
-    	long maxmemory = runtime.totalMemory();
-    	int memfree = (int)((double)runtime.freeMemory() / (double)maxmemory * 100.0);
-    	return memfree;
-    }
-	
-    /** Get memory free as a percentage value between 0 and 100. */
-	public static int getMemoryPercentageFree() {
-    	java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
-        long maxMemory = runtime.maxMemory();
-        long allocatedMemory = runtime.totalMemory();
-        long freeMemory = runtime.freeMemory();
-        long estimatedFree = freeMemory + (maxMemory - allocatedMemory);
-    	int memfree = (int)((double)estimatedFree / (double)maxMemory * 100.0);
-    	return memfree;
-    }
 	
 	public void setMiddleLimit(int middleLimit) {
 		if (this.middleLimit < 0 || this.middleLimit > 100)
@@ -141,12 +123,12 @@ public class FreeMemoryDisplay extends JPanel {
 		return new Color(cr(c.getRed() - 30), cr(c.getGreen() + 30), cr(c.getBlue() - 30));		
 	}
 	
-	public FreeMemoryDisplay() {
+	public PercentDisplay(String displaytext, PercentSource percent) {
 		super();
 		MouseListener clickListener = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setPreferredSize(FreeMemoryDisplay.this.getSize());
+				setPreferredSize(PercentDisplay.this.getSize());
 				jLabelMemory.setVisible(!jLabelMemory.isVisible());				
 			}
 		};
@@ -167,14 +149,16 @@ public class FreeMemoryDisplay extends JPanel {
 		add(jLabelShim1, BorderLayout.NORTH);
 		add(jLabelShim2, BorderLayout.EAST);
 		add(jLabelMemory, BorderLayout.CENTER);
+		jLabelMemory.setText("100% " + displaytext);
+		jLabelMemory.setHorizontalAlignment(SwingConstants.RIGHT);
         memoryCheckTimer = new Timer(500, new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				int memoryFree = getMemoryPercentageFree(); 
-				percentageHistory.add(memoryFree);
-				while (percentageHistory.size() > FreeMemoryDisplay.this.getWidth())
+				int percentValue = percent.getPercent(); 
+				percentageHistory.add(percentValue);
+				while (percentageHistory.size() > PercentDisplay.this.getWidth())
 					percentageHistory.removeFirst();
-				jLabelMemory.setText(memoryFree + "% memory free");
-		    	FreeMemoryDisplay.this.repaint();
+				jLabelMemory.setText(String.format("%3d%% ", percentValue) + displaytext);
+		    	PercentDisplay.this.repaint();
 			}
 		});
 		memoryCheckTimer.setRepeats(true);

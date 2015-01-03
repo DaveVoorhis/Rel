@@ -22,5 +22,6 @@
         <javaElement handleIdentifier="=Rel3DBrowser/&lt;ca.mb.armchair.Utilities.ClassLoaders"/>
         <javaElement handleIdentifier="=Rel3DBrowser/&lt;ca.mb.armchair.rel3.dbrowser"/>
         <javaElement handleIdentifier="=Rel3DBrowser/&lt;ca.mb.armchair.rel3.dbrowser.ui"/>
+        <javaElement handleIdentifier="=Rel3DBrowser/&lt;ca.mb.armchair.rel3.dbrowser.ui.monitors"/>
     </selectedElements>
 </jardesc>

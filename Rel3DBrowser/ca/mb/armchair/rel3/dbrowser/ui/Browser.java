@@ -3,6 +3,8 @@ package ca.mb.armchair.rel3.dbrowser.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -26,6 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import ca.mb.armchair.rel3.client.string.*;
+import ca.mb.armchair.rel3.dbrowser.ui.monitors.FreeCPUDisplay;
+import ca.mb.armchair.rel3.dbrowser.ui.monitors.FreeMemoryDisplay;
 import ca.mb.armchair.rel3.dbrowser.utilities.ClassPathHack;
 import ca.mb.armchair.rel3.dbrowser.utilities.Preferences;
 
@@ -77,6 +81,7 @@ public class Browser extends JFrame {
         jTabbedPaneContent = new JTabbedPaneWithCloseIcons();
         jButtonPickLocal = new JButton();
         memoryDisplay = new FreeMemoryDisplay();
+        cpuDisplay = new FreeCPUDisplay();
         
         localDatabaseChooser = new DirectoryChooser("Open Local Database", "Open");
         localDatabaseCreator = new DirectoryChooser("New Local Database", "Accept");
@@ -133,11 +138,23 @@ public class Browser extends JFrame {
         jLabelStatus.setText("Status");
         
         jPanelStatus.add(jLabelStatus, BorderLayout.WEST);
+        
+        JPanel monitors = new JPanel();
+        monitors.setLayout(new FlowLayout());
+        
+        cpuDisplay.setFont(new Font("Dialog", 0, 10));
+        cpuDisplay.setOpaque(true);
+        cpuDisplay.setBorder(BorderFactory.createEtchedBorder());
+        cpuDisplay.setPreferredSize(new Dimension(100, 30));
+        monitors.add(cpuDisplay);
 
         memoryDisplay.setFont(new Font("Dialog", 0, 10));
         memoryDisplay.setOpaque(true);
         memoryDisplay.setBorder(BorderFactory.createEtchedBorder());
-        jPanelStatus.add(memoryDisplay, BorderLayout.EAST);
+        memoryDisplay.setPreferredSize(new Dimension(100, 30));
+        monitors.add(memoryDisplay);
+        
+        jPanelStatus.add(monitors, BorderLayout.EAST);
         
         getContentPane().add(jPanelStatus, BorderLayout.SOUTH);
         
@@ -454,4 +471,5 @@ public class Browser extends JFrame {
     private JFileChooser localDatabaseCreator;
     private DialogRemoteDatabase remoteDatabaseChooser;
     private FreeMemoryDisplay memoryDisplay;
+    private FreeCPUDisplay cpuDisplay;
 }
