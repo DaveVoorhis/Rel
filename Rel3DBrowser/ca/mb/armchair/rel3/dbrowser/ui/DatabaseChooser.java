@@ -5,6 +5,7 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
 public class DatabaseChooser extends JFileChooser {
@@ -18,7 +19,16 @@ public class DatabaseChooser extends JFileChooser {
 	public boolean accept(File f) {
 		return isRelDatabase(f);
 	}
-		
+	
+	private boolean isJTextFieldInComponentHierarchy(Component[] components) {
+        for (Component c: components)
+            if (c instanceof JPanel && isJTextFieldInComponentHierarchy(((JPanel)c).getComponents()))
+            	return true;
+            else if (c instanceof JTextField)
+            	return true;
+        return false;
+	}
+	
 	public DatabaseChooser(String title, String buttonText) {
 		super();
 		setAcceptAllFileFilterUsed(false);
@@ -36,11 +46,13 @@ public class DatabaseChooser extends JFileChooser {
         });
         setDialogType(JFileChooser.SAVE_DIALOG);
         setApproveButtonText(buttonText);
+        // Hide file name textbox
         for (Component c: getComponents()) {
-            if (c instanceof JPanel) {
-            	((JPanel)c).getComponent(0).setVisible(false);
-            	break;
-            }
+        	if (c instanceof JPanel)
+        		if (isJTextFieldInComponentHierarchy(((JPanel)c).getComponents())) {
+        			c.setVisible(false);
+        			break;
+        		}
         }
 	}
 }
