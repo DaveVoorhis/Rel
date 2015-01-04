@@ -1,6 +1,7 @@
 ** TO DO **
 
 Short term:
+    // TODO - DBrowser: Examine how large volume and/or continuous Rel output is handled
     // TODO - DBrowser: Holding down F5 on (say) sys.Catalog so keyboard repeat takes effect
     //        crashes DBrowser, sooner or later.  Fix it.
 	// TODO - Currently, it seems that Rel does not fully support the parallel execution of individual renamings 
@@ -58,9 +59,6 @@ Short term:
 	//        attribute_name_commalist.
 	// TODO - fix multiple assignment
 	// TODO - Fix bug reported by Hugh re OP_EQUALS() etc.
-	// TODO - IS_x(n) and TREAT_AS_x(n), should these report
-	//        true and cast to x, respectively, given 
-	//        n a subtype of x?
 	// TODO - UNION {x, y} should work where x and y define attributes
 	//        that have the same name and differing type but have
 	//        a common supertype.
