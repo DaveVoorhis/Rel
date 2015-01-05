@@ -74,7 +74,7 @@ public class PercentDisplay extends JPanel {
 		if (jLabelShim2 != null)
 			jLabelShim2.setFont(f);
 	}
-	
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Dimension d = getSize();
@@ -83,23 +83,23 @@ public class PercentDisplay extends JPanel {
 		Integer[] percentages = percentageHistory.toArray(new Integer[0]);
 		int lastX = 0;
 		int lastY = 0;
-		for (int i=0; i<percentages.length; i++) {
-			if (percentages[i] < lowerLimit)
+		for (int xpos=0; xpos<percentages.length; xpos++) {
+			if (percentages[xpos] < lowerLimit)
 				g.setColor(badColor);
-			else if (percentages[i] < middleLimit)
+			else if (percentages[xpos] < middleLimit)
 				g.setColor(okColor);
 			else
 				g.setColor(goodColor);
-			int bartop = (100 - percentages[i]) * d.height / 100 + 2;
-			g.drawLine(i, d.height, i, bartop);
+			int barY = (100 - percentages[xpos]) * d.height / 100 + 2;
+			g.drawLine(xpos, d.height, xpos, barY);
 			int dontDrawLineBelow = jLabelMemory.getY();
-			if (lastY < dontDrawLineBelow && bartop < dontDrawLineBelow)
+			if (lastY < dontDrawLineBelow && barY < dontDrawLineBelow)
 				g.setColor(Color.BLACK);
 			else
 				g.setColor(Color.LIGHT_GRAY);
-			g.drawLine(lastX, lastY, i, bartop);
-			lastX = i;
-			lastY = bartop;
+			g.drawLine(lastX, lastY, xpos, barY);
+			lastX = xpos;
+			lastY = barY;
 		}
     }
 	

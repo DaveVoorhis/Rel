@@ -87,13 +87,6 @@ public class Rev extends JPanel {
 	public JPopupMenu getPopup() {
 		return popup;
 	}
-	
-	/*private static class Separator {
-		public Separator(JPopupMenu parent) {
-			JSeparator separator = new JSeparator();
-			parent.add(separator);
-		}
-	}*/
 
 	private long getUniqueNumber() {
 		return DatabaseAbstractionLayer.getUniqueNumber(connection);
@@ -220,7 +213,8 @@ public class Rev extends JPanel {
 				}
 			});
 		
-		}insOperators.setBorder(BorderFactory.createBevelBorder(0));
+		}
+		insOperators.setBorder(BorderFactory.createBevelBorder(0));
 		menuBar.add(insOperators);
 		//Views
 		viewMenu = new JMenu("Insert View");
@@ -231,7 +225,6 @@ public class Rev extends JPanel {
 		viewMenu.setBorder(BorderFactory.createBevelBorder(0));
 		//Add the drop downs to the menu bar
 		menus.add(menuBar);
-		
 		
 		//Create relvar
 		JButton addNewRelation = addButton("Create Relvar");
@@ -338,6 +331,7 @@ public class Rev extends JPanel {
 			updateComboBox(viewMenu, "sys.rev.View", "stored = true");
 		}
 	}
+	
 	private void updateComboBox(JMenu box, String relvar, String where) {
 		if (box == null) {
 			return;
@@ -535,16 +529,6 @@ public class Rev extends JPanel {
 		detailView.add(detail, BorderLayout.CENTER);
 		detailView.validate();
 	}
-
-	/*private void presentWithoutRevExtensions() {
-		int nextX = 10;
-		int nextY = 10;
-		for (Tuple tuple: DatabaseAbstractionLayer.getRelvarsWithoutRevExtensions(connection)) {
-			Visualiser relvar = new VisualiserOfRelvar(this, tuple.getAttributeValue(0).toString());
-			relvar.setLocation(nextX, nextY);
-			nextY += relvar.getHeight() + 10;
-		}
-	}*/
 	
 	private void presentRelvarsWithRevExtensions(String where) {
 		int nextX = 10;
