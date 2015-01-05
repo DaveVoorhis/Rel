@@ -2,6 +2,7 @@ package ca.mb.armchair.rel3.client;
 
 import java.io.*;
 import java.util.Stack;
+import java.util.Vector;
 
 import ca.mb.armchair.rel3.client.parser.ResponseAdapter;
 import ca.mb.armchair.rel3.client.parser.ResponseToHTML;
@@ -75,8 +76,27 @@ public class Connection {
 		public abstract void run(StreamReceiverClient client) throws IOException;
 	};
 	
-	/** Override to obtain every character received in the response. */
+	public interface CharacterListener {
+		public void receive(int character);
+	}
+	
+	private Vector<CharacterListener> characterListeners = new Vector<CharacterListener>();
+	
+	/** Add listener which receives every character in the response. */
+	public void addCharacterListener(CharacterListener listener) {
+		characterListeners.addElement(listener);
+	}
+
+	/** Remove listener which receives every character in the response. */
+	public void removeCharacterListener(CharacterListener listener) {
+		characterListeners.removeElement(listener);
+	}
+	
+	/** Override to obtain every character received in the response.  If super.capturedResponseStream(character) is not
+	 * called in an overridden capturedResponseStream, addCharacterListener becomes a no-op. */
 	protected void capturedResponseStream(int character) {
+		for (CharacterListener listener: characterListeners)
+			listener.receive(character);
 	}
 	
 	private class ErrorMessageTrap extends InputStreamInterceptor {
