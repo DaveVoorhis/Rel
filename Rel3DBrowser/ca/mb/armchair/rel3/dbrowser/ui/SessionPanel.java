@@ -11,7 +11,7 @@ import javax.swing.JTabbedPane;
 import ca.mb.armchair.rel3.client.string.StringReceiverClient;
 
 /** A UI to encapsulate a user's session with a database. */
-public class Session extends JPanel {
+public class SessionPanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -20,7 +20,7 @@ public class Session extends JPanel {
 	private StringReceiverClient client;
 	private String dbURL;
 	
-	public Session(StringReceiverClient client, String dbURL) {
+	public SessionPanel(StringReceiverClient client, String dbURL) {
 		this.client = client;
 		this.dbURL = dbURL;
 		commandlinePanel = new PanelCommandline(this);

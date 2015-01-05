@@ -53,7 +53,7 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 	private boolean isShowHeadings = true;
 	private boolean isShowHeadingTypes = true;
 	
-	private Session session;
+	private SessionPanel session;
 		
 	private static boolean isLastNonWhitespaceCharacter(String s, char c) {
 		int endPosn = s.length() - 1;
@@ -237,7 +237,7 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 	}
 	
 	/** Creates new form PanelCommandline to connect to Rel server. */
-	public PanelCommandline(Session session) {
+	public PanelCommandline(SessionPanel session) {
 		this.session = session;
 		initialise();
 	}

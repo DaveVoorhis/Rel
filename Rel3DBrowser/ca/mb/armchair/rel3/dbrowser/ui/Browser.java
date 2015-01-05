@@ -235,7 +235,7 @@ public class Browser extends JFrame {
     }
 
     private void doConnectionResultSuccess(StringReceiverClient client, String dbURL, boolean permanent) {
-        Session panel = new Session(client, dbURL);
+        SessionPanel panel = new SessionPanel(client, dbURL);
         if (permanent)
         	jTabbedPaneContent.addPermanentTab(dbURL, panel);
         else
@@ -368,7 +368,7 @@ public class Browser extends JFrame {
 		Preferences.getInstance().preserveMainWindowPositionAndState(this);
     	try {
     		for (int i=0; i<jTabbedPaneContent.getTabCount(); i++)
-    			((Session)jTabbedPaneContent.getComponentAt(i)).close();
+    			((SessionPanel)jTabbedPaneContent.getComponentAt(i)).close();
     	} catch (Throwable t) {
     		System.out.println("Problem closing tabs: " + t.getMessage());
     	}
