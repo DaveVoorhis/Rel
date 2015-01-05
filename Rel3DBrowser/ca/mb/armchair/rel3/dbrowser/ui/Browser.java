@@ -65,39 +65,6 @@ public class Browser extends JFrame {
         Preferences.getInstance().obtainMainWindowPositionAndState(this);
     }
     
-    private JPanel makeStatusPanel() {    
-        FreeMemoryDisplay memoryDisplay = new FreeMemoryDisplay();
-        FreeCPUDisplay cpuDisplay = new FreeCPUDisplay();
-        
-        JPanel jPanelStatus = new JPanel();
-        
-        jPanelStatus.setLayout(new BorderLayout());
-        
-        jLabelStatus.setFont(new Font("Dialog", 0, 10));
-        jLabelStatus.setText("Status");
-        
-        jPanelStatus.add(jLabelStatus, BorderLayout.WEST);
-        
-        JPanel monitors = new JPanel();
-        monitors.setLayout(new FlowLayout());
-        
-        cpuDisplay.setFont(new Font("Dialog", 0, 10));
-        cpuDisplay.setOpaque(true);
-        cpuDisplay.setBorder(BorderFactory.createEtchedBorder());
-        cpuDisplay.setPreferredSize(new Dimension(100, 30));
-        monitors.add(cpuDisplay);
-
-        memoryDisplay.setFont(new Font("Dialog", 0, 10));
-        memoryDisplay.setOpaque(true);
-        memoryDisplay.setBorder(BorderFactory.createEtchedBorder());
-        memoryDisplay.setPreferredSize(new Dimension(100, 30));
-        monitors.add(memoryDisplay);
-        
-        jPanelStatus.add(monitors, BorderLayout.EAST);
-
-        return jPanelStatus;
-    }
-    
     private JPanel makeLocationPanel() {
         JPanel jPanelLocation = new JPanel();
         JLabel jLabelLocation = new JLabel();
@@ -140,6 +107,39 @@ public class Browser extends JFrame {
         	}
         });
     	return jTabbedPaneContent;
+    }
+    
+    private JPanel makeStatusPanel() {    
+        FreeMemoryDisplay memoryDisplay = new FreeMemoryDisplay();
+        FreeCPUDisplay cpuDisplay = new FreeCPUDisplay();
+        
+        JPanel jPanelStatus = new JPanel();
+        
+        jPanelStatus.setLayout(new BorderLayout());
+        
+        jLabelStatus.setFont(new Font("Dialog", 0, 10));
+        jLabelStatus.setText("Status");
+        
+        jPanelStatus.add(jLabelStatus, BorderLayout.WEST);
+        
+        JPanel monitors = new JPanel();
+        monitors.setLayout(new FlowLayout());
+        
+        cpuDisplay.setFont(new Font("Dialog", 0, 10));
+        cpuDisplay.setOpaque(true);
+        cpuDisplay.setBorder(BorderFactory.createEtchedBorder());
+        cpuDisplay.setPreferredSize(new Dimension(100, 30));
+        monitors.add(cpuDisplay);
+
+        memoryDisplay.setFont(new Font("Dialog", 0, 10));
+        memoryDisplay.setOpaque(true);
+        memoryDisplay.setBorder(BorderFactory.createEtchedBorder());
+        memoryDisplay.setPreferredSize(new Dimension(100, 30));
+        monitors.add(memoryDisplay);
+        
+        jPanelStatus.add(monitors, BorderLayout.EAST);
+
+        return jPanelStatus;
     }
     
     /** This method is called from within the constructor to

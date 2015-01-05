@@ -1,8 +1,5 @@
 package ca.mb.armchair.rel3.dbrowser.ui;
 
-import java.io.*;
-import java.util.*;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
@@ -10,9 +7,21 @@ import javax.swing.text.*;
 import java.awt.Font;
 import java.awt.event.*;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import java.util.Vector;
+
 import ca.mb.armchair.rel3.client.crash.CrashTrap;
 import ca.mb.armchair.rel3.client.parser.ResponseToHTML;
 import ca.mb.armchair.rel3.client.parser.core.ParseException;
+
 import ca.mb.armchair.rel3.dbrowser.style.DBrowserStyle;
 import ca.mb.armchair.rel3.dbrowser.utilities.Preferences;
 import ca.mb.armchair.rel3.dbrowser.version.Version;
@@ -873,6 +882,62 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 		formattedOut.append(s);
 	}
 	
+	/**************** Bits from VisualiserOfRel used to display HTML ****************
+	
+	private JTextPane getDisplayForTuples() {		
+		final JTextPane pane = new JTextPane();
+		pane.setToolTipText("Rel server responses are displayed here.");				
+		pane.setDoubleBuffered(true);
+		pane.setContentType("text/html");
+		return pane;
+	}
+
+	private static class ElementHolder {
+		private Element element = null;
+		public void setElement(Element e) {
+			element = e;
+		}
+		public Element getElement() {
+			return element;
+		}
+	}
+	
+	private void evaluate(String query, Connection.HTMLReceiver receiver) {
+		//session.getConnection().evaluate(query, receiver, new CrashTrap(query, connection.getServerAnnouncement(), Version.getVersion()));		
+	}
+	
+	private void evaluateAndDisplay(String query) {
+		final JTextPane display = getDisplayForTuples();
+		final ElementHolder table = new ElementHolder();
+		final HTMLDocument document = (HTMLDocument)display.getDocument();
+		evaluate(query, new Connection.HTMLReceiver() {
+			String initialHTML = "";
+			String progressiveHTML = "";
+			public void emitInitialHTML(String s) {
+				initialHTML += s;
+			}
+			public void endInitialHTML() {
+				display.setText(initialHTML);
+				Element element = document.getElement("table");
+				table.setElement(element);
+			}
+			public void emitProgressiveHTML(String s) {
+				progressiveHTML += s;
+			}
+			public void endProgressiveHTMLRow() {
+				try {
+					document.insertBeforeEnd(table.getElement(), progressiveHTML);
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					progressiveHTML = "";
+				}
+			}
+		});		
+	}
+
+	***************************/
+	
 	/** Record formatted responses. */
 	private void responseFormatted(String s, boolean parseResponse) {
 		if (parseResponse) {
@@ -1150,16 +1215,16 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 	private void doRun() {
 		if (!isInputEnabled())
 			return;
-		(new javax.swing.SwingWorker<Object, Object>() {
-			public Object doInBackground() {
-				startProcessingDisplay();
-				disableInput();
-				if (jCheckBoxAutoclear.isSelected())
-					clearOutput();
-				addHistoryItem(jTextAreaInput.getText());
-				if (jCheckBoxCopyToOutput.isSelected())
-					userResponse(jTextAreaInput.getText());
-				String runMe = jTextAreaInput.getText().trim();
+		startProcessingDisplay();
+		disableInput();
+		if (jCheckBoxAutoclear.isSelected())
+			clearOutput();
+		addHistoryItem(jTextAreaInput.getText());
+		if (jCheckBoxCopyToOutput.isSelected())
+			userResponse(jTextAreaInput.getText());
+		String runMe = jTextAreaInput.getText().trim();
+		SwingWorker<StringBuffer, StringBuffer> worker = new javax.swing.SwingWorker<StringBuffer, StringBuffer>() {
+			public StringBuffer doInBackground() {
 				StringBuffer errorInformationBuffer = null;
 				try {
 					if (isLastNonWhitespaceCharacter(runMe, ';')) {
@@ -1171,44 +1236,37 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 						setProcessingDisplay("Receiving");
 						errorInformationBuffer = obtainClientResponse(true, null);
 					}
+					enableInput();
+					if (errorInformationBuffer != null) {
+						ErrorInformation eInfo = parseErrorInformationFrom(errorInformationBuffer.toString());
+						if (eInfo != null) {
+							int startOffset = 0;
+							try {
+								if (eInfo.getLine() > 0) {
+									startOffset = jTextAreaInput.getLineStartOffset(eInfo.getLine() - 1);
+									if (eInfo.getColumn() > 0)
+										startOffset += eInfo.getColumn() - 1;
+								}
+								jTextAreaInput.setCaretPosition(startOffset);
+								if (eInfo.getBadToken() != null)
+									jTextAreaInput.moveCaretPosition(startOffset + eInfo.getBadToken().length());
+							} catch (BadLocationException e) {
+								System.out.println("PanelCommandline: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
+							}
+						} else
+							System.out.println("PanelCommandline: Unable to locate error in " + errorInformationBuffer.toString());
+					} else {
+						jTextAreaInput.selectAll();
+					}
+					jTextAreaInput.requestFocusInWindow();
+					endProcessingDisplay();					
 				} catch (Throwable ioe) {
 					badResponse(ioe.getMessage());
 				}
-				enableInput();
-				if (errorInformationBuffer != null) {
-					ErrorInformation eInfo = parseErrorInformationFrom(errorInformationBuffer.toString());
-					if (eInfo != null) {
-						int startOffset = 0;
-						try {
-							if (eInfo.getLine() > 0) {
-								startOffset = jTextAreaInput.getLineStartOffset(eInfo.getLine() - 1);
-								if (eInfo.getColumn() > 0)
-									startOffset += eInfo.getColumn() - 1;
-							}
-							jTextAreaInput.setCaretPosition(startOffset);
-							if (eInfo.getBadToken() != null)
-								jTextAreaInput.moveCaretPosition(startOffset + eInfo.getBadToken().length());
-						} catch (BadLocationException e) {
-							System.out.println("PanelCommandline: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
-						}
-					} else
-						System.out.println("PanelCommandline: Unable to locate error in " + errorInformationBuffer.toString());
-				} else {
-					jTextAreaInput.selectAll();
-				}
-				jTextAreaInput.requestFocusInWindow();
-				Runnable runner = new Runnable() {
-					public void run() {
-						endProcessingDisplay();
-					}
-				};
-				if (javax.swing.SwingUtilities.isEventDispatchThread())
-					runner.run();
-				else
-					javax.swing.SwingUtilities.invokeLater(runner);		
 				return null;
 			}
-		}).execute();
+		};
+		worker.execute();
 	}
 	
 	public void doBackup() {
