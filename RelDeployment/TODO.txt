@@ -1,6 +1,10 @@
 ** TO DO **
 
 Short term:
+	// TODO - Build backup mechanism into Rel.jar, so that backup can be invoked on a specified database.
+	// TODO - Each Rel.jar should have a version number based on the revision to the metadata structure.  E.g., Rel0.jar
+	// TODO - Rel.jar should be a wrapper around the Rel<n>.jar files, and uses the appropriate Rel<n>.jar file
+	//        to backup a database of version <n> and import it into the current Rel<n> database. 
     // TODO - DBrowser: Examine how large volume and/or continuous Rel output is handled
     // TODO - DBrowser: Holding down F5 on (say) sys.Catalog so keyboard repeat takes effect
     //        crashes DBrowser, sooner or later.  Fix it.
