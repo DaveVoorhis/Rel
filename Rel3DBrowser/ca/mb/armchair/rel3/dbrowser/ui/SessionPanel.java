@@ -19,30 +19,38 @@ public class SessionPanel extends JPanel {
 
 	private StringReceiverClient client;
 	private String dbURL;
+
+	private JPanel rev = null;
+	private Method revGo = null;
 	
 	public SessionPanel(StringReceiverClient client, String dbURL) {
 		this.client = client;
 		this.dbURL = dbURL;
 		commandlinePanel = new PanelCommandline(this);
-	}
-	
-	public void go() {
 		setLayout(new BorderLayout());
-    	try {
-    		Class<?> revclass = Class.forName("ca.mb.armchair.rel3.rev.Rev");
+		try {
+			Class<?> revClass = Class.forName("ca.mb.armchair.rel3.rev.Rev");
     		Class<?> parms[] = new Class[] {new String().getClass()};
-    		Constructor<?> ctor = revclass.getConstructor(parms);
-    		Object rev = ctor.newInstance(dbURL);
-    		Method go = revclass.getMethod("go");
-			go.invoke(rev);
+    		Constructor<?> revCtor = revClass.getConstructor(parms);
+			rev = (JPanel)revCtor.newInstance(dbURL);
+			revGo = revClass.getMethod("go");
+			System.out.println("Rev add-on is available.");
 			JTabbedPane tabpane = new JTabbedPane();
 			add(tabpane, BorderLayout.CENTER);
 			tabpane.addTab("Command Line", commandlinePanel);
-			tabpane.addTab("Rev", (JPanel)rev);
-			System.out.println("Rev add-on is available.");
-    	} catch (Throwable t) {
-    		add(commandlinePanel, BorderLayout.CENTER);
+			tabpane.addTab("Rev", rev);
+		} catch (Throwable e) {
     		System.out.println("Rev add-on is not available.");
+    		add(commandlinePanel, BorderLayout.CENTER);			
+		}
+	}
+	
+	public void go() {
+		try {
+			revGo.invoke(rev);
+		} catch (Throwable t) {
+			System.out.println("Rev add-on could not be activated.");
+			t.printStackTrace();
 		}
 		commandlinePanel.go();		
 	}

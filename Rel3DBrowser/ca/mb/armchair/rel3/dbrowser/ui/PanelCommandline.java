@@ -587,6 +587,7 @@ public class PanelCommandline extends javax.swing.JPanel {
 			public void fontChanged(Font font) {
 				jTextPaneOutputPlain.setFont(font);
 				jTextAreaInput.setFont(font);
+				jTextPaneOutputFormatted.setFont(font);
 				DBrowserStyle.setBodyFontStyle(jTextPaneOutputFormatted, font);
 			}
 		});
