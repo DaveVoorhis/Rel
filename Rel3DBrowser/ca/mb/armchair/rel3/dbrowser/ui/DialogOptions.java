@@ -1,6 +1,9 @@
 package ca.mb.armchair.rel3.dbrowser.ui;
 
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+
 import javax.swing.*;
 
 /**
@@ -17,46 +20,56 @@ public class DialogOptions extends JDialog {
 	private JButton saveButton = new JButton();
 	private JButton cancelButton = new JButton();
 	private DisplayPropertiesEditor displayPropertiesEditor = new DisplayPropertiesEditor();
-
+	
 	public DialogOptions(Frame frame, String title, boolean modal) {
 		super(frame, title, modal);
-		try {
-			jbInit();
-			jTabbedPane1.addTab("Display", displayPropertiesEditor);
-			pack();
 
-			java.awt.Dimension screenSize = java.awt.Toolkit
-					.getDefaultToolkit().getScreenSize();
-			setLocation(screenSize.width / 2 - getSize().width / 2,
-					screenSize.height / 2 - getSize().height / 2);
-
-			saveButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					for (int i = 0; i < jTabbedPane1.getTabCount(); ++i) {
-						EditorOptions editor = (EditorOptions) jTabbedPane1
-								.getComponentAt(i);
-						editor.save();
-					}
-					setVisible(false);
+		jbInit();
+					
+		addComponentListener(new ComponentAdapter() {
+			public void componentShown(ComponentEvent e) {
+				for (int i = 0; i < jTabbedPane1.getTabCount(); ++i) {
+					EditorOptions editor = (EditorOptions) jTabbedPane1.getComponentAt(i);
+					editor.open();
 				}
-			});
+			}
+		});
+		
+		jTabbedPane1.addTab("Display", displayPropertiesEditor);
 
-			cancelButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					// TODO - add change detection and confirmation dialog.
-					setVisible(false);
+		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation(screenSize.width / 2 - getSize().width / 2,
+				screenSize.height / 2 - getSize().height / 2);
+
+		saveButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				for (int i = 0; i < jTabbedPane1.getTabCount(); ++i) {
+					EditorOptions editor = (EditorOptions) jTabbedPane1.getComponentAt(i);
+					editor.save();
 				}
-			});
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+				setVisible(false);
+			}
+		});
+
+		cancelButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				// TODO - add change detection and confirmation dialog.
+				for (int i = 0; i < jTabbedPane1.getTabCount(); ++i) {
+					EditorOptions editor = (EditorOptions) jTabbedPane1.getComponentAt(i);
+					editor.cancel();
+				}
+				setVisible(false);
+			}
+		});
+		
+		pack();
 	}
 
 	public DialogOptions() {
 		this(null, "", false);
 	}
 
-	private void jbInit() throws Exception {
+	private void jbInit() {
 		panel1.setLayout(borderLayout1);
 		jPanel1.setLayout(gridBagLayout1);
 		saveButton.setText("Save");

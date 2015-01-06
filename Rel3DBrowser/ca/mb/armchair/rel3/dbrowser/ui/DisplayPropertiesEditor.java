@@ -25,7 +25,7 @@ public class DisplayPropertiesEditor extends JPanel implements EditorOptions {
 	public DisplayPropertiesEditor() {
 		try {
 			jbInit();
-
+			
 			String fontFamilies[] = java.awt.GraphicsEnvironment
 					.getLocalGraphicsEnvironment()
 					.getAvailableFontFamilyNames();
@@ -36,24 +36,17 @@ public class DisplayPropertiesEditor extends JPanel implements EditorOptions {
 				fontSizeComboBox.addItem(new Integer(size));
 			}
 
-			fontFamilyComboBox.setSelectedItem(Preferences.getInstance()
-					.getInputOutputFont().getFamily());
-			fontSizeComboBox.setSelectedItem(new Integer(Preferences
-					.getInstance().getInputOutputFont().getSize()));
+			fontFamilyComboBox.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					updateSample();
+				}
+			});
 
-			fontFamilyComboBox
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(java.awt.event.ActionEvent e) {
-							updateSample();
-						}
-					});
-
-			fontSizeComboBox
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(java.awt.event.ActionEvent e) {
-							updateSample();
-						}
-					});
+			fontSizeComboBox.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					updateSample();
+				}
+			});
 
 			updateSample();
 		} catch (Exception ex) {
@@ -61,10 +54,24 @@ public class DisplayPropertiesEditor extends JPanel implements EditorOptions {
 		}
 	}
 
+	/** Override to be notified every time font changes as user interacts with this. */
+	public void sampleUpdate(Font font) {
+		Preferences.getInstance().fireInputOutputFontChange(font);
+	}
+
 	public void save() {
 		Preferences.getInstance().setInputOutputFont(getSelectedFont());
 	}
 
+	public void cancel() {
+		sampleUpdate(Preferences.getInstance().getInputOutputFont());
+	}
+
+	public void open() {
+		fontFamilyComboBox.setSelectedItem(Preferences.getInstance().getInputOutputFont().getFamily());
+		fontSizeComboBox.setSelectedItem(new Integer(Preferences.getInstance().getInputOutputFont().getSize()));							
+	}
+	
 	private void updateSample() {
 		sampleLabel.setFont(getSelectedFont());
 		sampleLabel.setText(
@@ -72,12 +79,12 @@ public class DisplayPropertiesEditor extends JPanel implements EditorOptions {
 				"abcdefghijklmnopqrstuvwxyz\n\r" +
 				"01234567890`¬!\"£$%^&*()-_=\n\r" + 
 				"+|\\<,>.?/:;@'~#{[]}'");
+		sampleUpdate(getSelectedFont());
 	}
 
 	private java.awt.Font getSelectedFont() {
 		return new java.awt.Font((String) fontFamilyComboBox.getSelectedItem(),
-				java.awt.Font.PLAIN, ((Integer) fontSizeComboBox
-						.getSelectedItem()).intValue());
+				   java.awt.Font.PLAIN, ((Integer) fontSizeComboBox.getSelectedItem()).intValue());
 	}
 
 	void jbInit() throws Exception {

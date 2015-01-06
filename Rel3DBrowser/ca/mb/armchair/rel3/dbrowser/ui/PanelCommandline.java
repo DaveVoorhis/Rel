@@ -3,10 +3,11 @@ package ca.mb.armchair.rel3.dbrowser.ui;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 import java.awt.Font;
 import java.awt.event.*;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -15,13 +16,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.util.Vector;
 
 import ca.mb.armchair.rel3.client.crash.CrashTrap;
 import ca.mb.armchair.rel3.client.parser.ResponseToHTML;
 import ca.mb.armchair.rel3.client.parser.core.ParseException;
-
 import ca.mb.armchair.rel3.dbrowser.style.DBrowserStyle;
 import ca.mb.armchair.rel3.dbrowser.utilities.Preferences;
 import ca.mb.armchair.rel3.dbrowser.version.Version;
@@ -31,22 +30,17 @@ import ca.mb.armchair.rel3.dbrowser.version.Version;
  *
  * @author  dave
  */
-public class PanelCommandline extends javax.swing.JPanel implements EditorOptions {
+public class PanelCommandline extends javax.swing.JPanel {
 	private final static long serialVersionUID = 0;
 	
 	private javax.swing.Timer scrollTimer;
 	private javax.swing.Timer silentTimer;
 	private javax.swing.Timer progressTimer;
 
-	private JTextComponent jTextAreaOutput;
-
 	private Vector<String> entryHistory = new Vector<String>();
 	private int currentHistoryItem = 0;
 
-	private StringBuffer formattedOut = new StringBuffer();
-	private StringBuffer textOut = new StringBuffer();
 	private StringBuffer serverInitialResponse = new StringBuffer();
-	private String lastText;
 
 	private boolean inputEnabled = false;
 
@@ -66,18 +60,27 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 		return (s.charAt(endPosn) == c);
 	}
 	
+	private JTextPane getPlainPane() {
+		final JTextPane pane = new JTextPane();
+		pane.setToolTipText("Rel server responses are displayed here.");				
+		pane.setDoubleBuffered(true);
+		pane.setContentType("text/plain");
+		pane.setFont(Preferences.getInstance().getInputOutputFont());
+		return pane;
+	}
+
+	private JTextPane getEnhancedPane() {
+		final JTextPane pane = new JTextPane();
+		DBrowserStyle.setEnhancedOutputStyle(pane);
+		pane.setToolTipText("Rel server responses are displayed here.");				
+		pane.setDoubleBuffered(true);
+		return pane;
+	}
+	
 	/** Refresh display and scroll down. */
 	private void scrollDown() {
-		Runnable runner = new Runnable() {
-			public void run() {
-				javax.swing.JScrollBar vscroller = jScrollPaneOutput.getVerticalScrollBar();
-				vscroller.setValue(vscroller.getMaximum());
-			}			
-		};
-		if (javax.swing.SwingUtilities.isEventDispatchThread())
-			runner.run();
-		else
-			javax.swing.SwingUtilities.invokeLater(runner);
+		javax.swing.JScrollBar vscroller = jScrollPaneOutput.getVerticalScrollBar();
+		vscroller.setValue(vscroller.getMaximum());
 	}
 
 	/** Set up the scrollTimer. */
@@ -109,24 +112,6 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 			}
 		});
 		progressTimer.setRepeats(true);
-	}
-
-	/** Update output display */
-	private void updateOutput() {
-		final String mostRecentTextLine = lastText;
-		Runnable runner = new Runnable() {
-			public void run() {
-				if (isEnhancedOutput())
-					jTextAreaOutput.setText(formattedOut.toString());
-				else
-					((JTextArea) jTextAreaOutput).append(mostRecentTextLine);						
-			}
-		};
-		if (javax.swing.SwingUtilities.isEventDispatchThread())
-			runner.run();
-		else
-			javax.swing.SwingUtilities.invokeLater(runner);
-		scrollDown();
 	}
 
 	/** Initialise timers. */
@@ -181,8 +166,7 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 	/** Set up history button status. */
 	private void setButtons() {
 		jButtonPreviousCommand.setEnabled(currentHistoryItem > 0 && entryHistory.size() > 1);
-		jButtonNextCommand.setEnabled(currentHistoryItem < entryHistory.size() - 1
-						&& entryHistory.size() > 1);
+		jButtonNextCommand.setEnabled(currentHistoryItem < entryHistory.size() - 1 && entryHistory.size() > 1);
 	}
 
 	/** True if input is enabled. */
@@ -207,14 +191,6 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 	/** Initialisation. */
 	private void initialise() {
 		initComponents();
-		// React to changes in the font.
-		Preferences.getInstance().addInputOutputFontChangeListener(
-				new Preferences.InputOutputFontChangeListener() {
-					public void fontChanged(java.awt.Font font) {
-						jTextAreaInput.setFont(font);
-						jTextAreaOutput.setFont(font);
-					}
-				});
 		initTimers();
 		FileNameExtensionFilter filterD = new FileNameExtensionFilter("D source files", "d");
 		jFileChooserGetPath.addChoosableFileFilter(new FileNameExtensionFilter("XLS", "xls"));
@@ -301,8 +277,8 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 		jButtonRun = new javax.swing.JButton();
 		jLabelCaretPosition = new javax.swing.JLabel();
 		jLabelRunning = new javax.swing.JLabel();
-		jTextAreaOutputFormatted = new JTextPane();
-		jTextAreaOutputPlain = new JTextArea();
+		jTextPaneOutputFormatted = getEnhancedPane();
+		jTextPaneOutputPlain = getPlainPane();
 
 		jFileChooserSave.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
 		jFileChooserSaveOutputText.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
@@ -400,8 +376,7 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 		jCheckBoxWrapOutput.setText("Wrap");
 		jCheckBoxWrapOutput.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				if (jTextAreaOutput instanceof JTextArea)
-					((JTextArea) jTextAreaOutput).setLineWrap(jCheckBoxWrapOutput.isSelected());
+				// ((JTextArea) jTextAreaOutputPlain).setLineWrap(jCheckBoxWrapOutput.isSelected());
 			}
 		});
 		jToolBarOutput.add(jCheckBoxWrapOutput);
@@ -458,11 +433,6 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 		jTextAreaInput.addKeyListener(new java.awt.event.KeyAdapter() {
 			public void keyReleased(java.awt.event.KeyEvent evt) {
 				PanelCommandline.this.keyReleased(evt);
-			}
-		});
-		Preferences.getInstance().addInputOutputFontChangeListener(new Preferences.InputOutputFontChangeListener() {
-			public void fontChanged(Font font) {
-				jTextAreaInput.setFont(Preferences.getInstance().getInputOutputFont());
 			}
 		});
 
@@ -612,34 +582,12 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 		jSplitPaneMain.setBottomComponent(jPanelInput);
 
 		add(jSplitPaneMain, java.awt.BorderLayout.CENTER);
-
-		jTextAreaOutputPlain.setToolTipText("Rel server responses are displayed here.");
-		jTextAreaOutputPlain.setFont(Preferences.getInstance().getInputOutputFont());
-		((JTextArea) jTextAreaOutputPlain).setText(textOut.toString());
-		jTextAreaOutputFormatted.addKeyListener(new java.awt.event.KeyAdapter() {
-			public void keyReleased(java.awt.event.KeyEvent evt) {
-				PanelCommandline.this.keyReleased(evt);
-			}
-		});
-		Preferences.getInstance().addInputOutputFontChangeListener(new Preferences.InputOutputFontChangeListener() {
-			public void fontChanged(Font font) {
-				jTextAreaOutputPlain.setFont(Preferences.getInstance().getInputOutputFont());
-			}
-		});
 		
-		jTextAreaOutputFormatted = new JTextPane();
-		jTextAreaOutputFormatted.setToolTipText("Rel server responses are displayed here.");				
-		DBrowserStyle.setEnhancedOutputStyle((JTextPane)jTextAreaOutputFormatted);
-		jTextAreaOutputFormatted.setDoubleBuffered(true);
-		jTextAreaOutputFormatted.addKeyListener(new java.awt.event.KeyAdapter() {
-			public void keyReleased(java.awt.event.KeyEvent evt) {
-				PanelCommandline.this.keyReleased(evt);
-			}
-		});
 		Preferences.getInstance().addInputOutputFontChangeListener(new Preferences.InputOutputFontChangeListener() {
 			public void fontChanged(Font font) {
-				DBrowserStyle.setEnhancedOutputStyle((JTextPane)jTextAreaOutputFormatted);
-				jTextAreaOutputFormatted.setText(formattedOut.toString());
+				jTextPaneOutputPlain.setFont(font);
+				jTextAreaInput.setFont(font);
+				DBrowserStyle.setBodyFontStyle(jTextPaneOutputFormatted, font);
 			}
 		});
 	}
@@ -648,32 +596,15 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 		if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_F5)
 			doRun();
 	}
-
-	private boolean isEnhancedOutput() {
-		return (jTextAreaOutput instanceof JTextPane);
-	}
-
-	public void save() {
-		jTextAreaOutput.setFont(Preferences.getInstance().getInputOutputFont());
-		jTextAreaInput.setFont(Preferences.getInstance().getInputOutputFont());
-	}
 	
 	private void setEnhancedOutput(boolean flag) {
-		if (jTextAreaOutput != null && flag == isEnhancedOutput())
-			return;
 		jCheckBoxShowHeadings.setVisible(flag);
 		jCheckBoxShowHeadingTypes.setVisible(flag && jCheckBoxShowHeadings.isSelected());
 		jCheckBoxWrapOutput.setVisible(!flag);
-		if (flag) {
-			jTextAreaOutputFormatted.setText(formattedOut.toString());
-			jScrollPaneOutput.setViewportView(jTextAreaOutputFormatted);
-			jTextAreaOutput = jTextAreaOutputFormatted;
-		} else {			
-			((JTextArea) jTextAreaOutputPlain).setLineWrap(jCheckBoxWrapOutput.isSelected());
-			jTextAreaOutputPlain.setText(textOut.toString());
-			jScrollPaneOutput.setViewportView(jTextAreaOutputPlain);
-			jTextAreaOutput = jTextAreaOutputPlain;
-		}
+		if (flag)
+			jScrollPaneOutput.setViewportView(jTextPaneOutputFormatted);
+		else			
+			jScrollPaneOutput.setViewportView(jTextPaneOutputPlain);
 		startOutputUpdateTimers();
 	}
 	
@@ -704,11 +635,11 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 	}
 	
 	private void saveOutputText() {
-		saveOutput(textOut.toString(), jFileChooserSaveOutputText);
+		saveOutput(jTextPaneOutputPlain.getText().toString(), jFileChooserSaveOutputText);
 	}
 
 	private void saveOutputFormatted() {
-		BufferedReader htmlStreamed = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(jTextAreaOutput.getText().getBytes())));
+		BufferedReader htmlStreamed = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(jTextPaneOutputFormatted.getText().getBytes())));
 		StringBuffer output = new StringBuffer();
 		String line;
 		try {
@@ -736,17 +667,14 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 	}
 
 	private void copyOutputToInput() {
-		jTextAreaInput.setText(textOut.toString());
+		jTextAreaInput.setText(jTextPaneOutputPlain.getText());
 		jTextAreaInput.requestFocus();
 	}
 
 	private void clearOutput() {
-		formattedOut = new StringBuffer();
-		textOut = new StringBuffer();
-		lastText = "";
-		if (!isEnhancedOutput())
-			jTextAreaOutput.setText("");
-		updateOutput();
+		jTextPaneOutputPlain.setText("");
+		jTextPaneOutputFormatted.setText("");
+		scrollDown();
 	}
 
 	private void clearInput() {
@@ -874,78 +802,38 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 
 	/** Set display to quick mode and start output timers. */
 	private void outputUpdated() {
-		updateOutput();
+		scrollDown();
 		startOutputUpdateTimers();
 	}
 	
+	private void outputPlain(String s) {
+		Document doc = jTextPaneOutputPlain.getStyledDocument();
+	    try {
+			doc.insertString(doc.getLength(), s, null);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}		
+	}
+	
 	private void outputHTML(String s) {
-		formattedOut.append(s);
+		HTMLDocument doc = (HTMLDocument)jTextPaneOutputFormatted.getDocument();
+		HTMLEditorKit kit = (HTMLEditorKit)jTextPaneOutputFormatted.getEditorKit();
+	    try {
+	    	kit.insertHTML((HTMLDocument) doc, doc.getLength(), s, 0, 0, null);
+		} catch (BadLocationException | IOException e) {
+			e.printStackTrace();
+		}		
 	}
 	
-	/**************** Bits from VisualiserOfRel used to display HTML ****************
-	
-	private JTextPane getDisplayForTuples() {		
-		final JTextPane pane = new JTextPane();
-		pane.setToolTipText("Rel server responses are displayed here.");				
-		pane.setDoubleBuffered(true);
-		pane.setContentType("text/html");
-		return pane;
-	}
-
-	private static class ElementHolder {
-		private Element element = null;
-		public void setElement(Element e) {
-			element = e;
-		}
-		public Element getElement() {
-			return element;
-		}
-	}
-	
-	private void evaluate(String query, Connection.HTMLReceiver receiver) {
-		//session.getConnection().evaluate(query, receiver, new CrashTrap(query, connection.getServerAnnouncement(), Version.getVersion()));		
-	}
-	
-	private void evaluateAndDisplay(String query) {
-		final JTextPane display = getDisplayForTuples();
-		final ElementHolder table = new ElementHolder();
-		final HTMLDocument document = (HTMLDocument)display.getDocument();
-		evaluate(query, new Connection.HTMLReceiver() {
-			String initialHTML = "";
-			String progressiveHTML = "";
-			public void emitInitialHTML(String s) {
-				initialHTML += s;
-			}
-			public void endInitialHTML() {
-				display.setText(initialHTML);
-				Element element = document.getElement("table");
-				table.setElement(element);
-			}
-			public void emitProgressiveHTML(String s) {
-				progressiveHTML += s;
-			}
-			public void endProgressiveHTMLRow() {
-				try {
-					document.insertBeforeEnd(table.getElement(), progressiveHTML);
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					progressiveHTML = "";
-				}
-			}
-		});		
-	}
-
-	***************************/
-	
-	/** Record formatted responses. */
-	private void responseFormatted(String s, boolean parseResponse) {
+	/** Get formatted response. */
+	private String getResponseFormatted(String s, boolean parseResponse) {
 		if (parseResponse) {
 			try {
+				StringBuffer sb = new StringBuffer();
 				setProcessingDisplay("Formatting");
 				ResponseToHTML response = new ResponseToHTML(s) {
 					public void emitHTML(String generatedHTML) {
-						outputHTML(generatedHTML);
+						sb.append(generatedHTML);
 					}
 					public boolean isEmitHeading() {
 						return isShowHeadings;
@@ -955,69 +843,58 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 					}
 				};
 				response.parse();
+				return sb.toString();
 			} catch (ParseException pe) {
-				outputHTML("<br>" + ResponseToHTML.textToHTML(s));
+				return "<br>" + ResponseToHTML.textToHTML(s);
 			}
 		} else {
-			outputHTML("<br>" + ResponseToHTML.textToHTML(s).replace(" ", "&nbsp;"));
+			return "<br>" + ResponseToHTML.textToHTML(s).replace(" ", "&nbsp;");
 		}
 	}
 
 	/** Record text responses. */
 	private void responseText(String s) {
-		lastText = s + '\n';
-		textOut.append(s);
-		textOut.append('\n');
+		outputPlain(s + '\n');
 	}
 
 	/** Handle a received line of 'good' content. */
 	private void goodResponse(String s) {
-		formattedOut.append("<font color=\"green\">");
-		responseFormatted(s, false);
-		formattedOut.append("</font>");
+		outputHTML("<div class=\"ok\">" + getResponseFormatted(s, false) + "</div>");
 		responseText(s);
 		outputUpdated();
 	}
 
 	/** Handle user entry. */
 	private void userResponse(String s) {
-		formattedOut.append("<br><font color=\"gray\"><b>");
-		responseFormatted(s, false);
-		formattedOut.append("</b></font>");
+		outputHTML("<div class=\"user\"><b>" + getResponseFormatted(s, false) + "</b></div>");
 		responseText(s);
 		outputUpdated();
 	}
 
 	/** Handle a received line of system notice. */
 	private void systemResponse(String s) {
-		formattedOut.append("<font color=\"blue\">");
-		responseFormatted(s, false);
-		formattedOut.append("</font>");
+		outputHTML("<div class=\"note\">" + getResponseFormatted(s, false) + "</div>");
 		responseText(s);
 		outputUpdated();
 	}
 
 	/** Handle a received line of 'bad' content. */
 	void badResponse(String s) {
-		formattedOut.append("<pre><font color=\"red\"><b>");
-		responseFormatted(s, false);
-		formattedOut.append("</b></pre></font>");
+		outputHTML("<div class=\"bad\"><pre><b>" + getResponseFormatted(s, false) + "</b></pre></div>");
 		responseText(s);
 		outputUpdated();
 	}
 		
 	/** Handle a notice. */
 	private void noticeResponse(String s) {
-		formattedOut.append("<font color=\"black\"><b>");
-		responseFormatted(s, false);
-		formattedOut.append("</b></font>");
+		outputHTML("<font color=\"black\"><b>" + getResponseFormatted(s, false) + "</b></font>");
 		responseText(s);
-		outputUpdated();		
+		outputUpdated();
 	}
 	
 	/** Handle received data. */
 	private void response(String s, boolean interpretResponse) {
-		responseFormatted(s, interpretResponse);
+		outputHTML(getResponseFormatted(s, interpretResponse));
 		responseText(s);
 		outputUpdated();
 	}
@@ -1333,6 +1210,6 @@ public class PanelCommandline extends javax.swing.JPanel implements EditorOption
 	private JTextArea jTextAreaInput;
 	private JToolBar jToolBarInput;
 	private JToolBar jToolBarOutput;
-	private JTextPane jTextAreaOutputFormatted;
-	private JTextArea jTextAreaOutputPlain;
+	private JTextPane jTextPaneOutputFormatted;
+	private JTextPane jTextPaneOutputPlain;
 }

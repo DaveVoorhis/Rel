@@ -235,7 +235,8 @@ public class Browser extends JFrame {
     }
 
     private void doConnectionResultSuccess(StringReceiverClient client, String dbURL, boolean permanent) {
-        SessionPanel panel = new SessionPanel(client, dbURL);
+
+    	SessionPanel panel = new SessionPanel(client, dbURL);
         if (permanent)
         	jTabbedPaneContent.addPermanentTab(dbURL, panel);
         else

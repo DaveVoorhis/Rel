@@ -13,6 +13,7 @@ import javax.swing.text.html.HTMLDocument;
 
 import ca.mb.armchair.rel3.client.Connection;
 import ca.mb.armchair.rel3.client.Tuples;
+
 import ca.mb.armchair.rel3.rev.graphics.Argument;
 import ca.mb.armchair.rel3.rev.graphics.Parameter;
 import ca.mb.armchair.rel3.rev.graphics.Visualiser;

@@ -43,7 +43,7 @@ public class Preferences {
 		fireInputOutputFontChange(font);
 	}
 
-	protected void fireInputOutputFontChange(java.awt.Font font) {
+	public void fireInputOutputFontChange(java.awt.Font font) {
 		for (int i = 0; i < inputOutputFontChangeListenerList.size(); ++i) {
 			InputOutputFontChangeListener listener = (InputOutputFontChangeListener) inputOutputFontChangeListenerList.get(i);
 			listener.fontChanged(font);
