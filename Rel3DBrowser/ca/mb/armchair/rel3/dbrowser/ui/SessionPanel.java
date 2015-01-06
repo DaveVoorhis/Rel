@@ -46,12 +46,13 @@ public class SessionPanel extends JPanel {
 	}
 	
 	public void go() {
-		try {
-			revGo.invoke(rev);
-		} catch (Throwable t) {
-			System.out.println("Rev add-on could not be activated.");
-			t.printStackTrace();
-		}
+		if (rev != null && revGo != null)
+			try {
+				revGo.invoke(rev);
+			} catch (Throwable t) {
+				System.out.println("Rev add-on could not be activated.");
+				t.printStackTrace();
+			}
 		commandlinePanel.go();		
 	}
 	
