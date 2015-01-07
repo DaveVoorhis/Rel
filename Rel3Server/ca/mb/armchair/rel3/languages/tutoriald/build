@@ -1,4 +1,0 @@
-#!/bin/sh
-rm *.java *.class *.jj
-jjtree TutorialD.jjt
-javacc TutorialD.jj

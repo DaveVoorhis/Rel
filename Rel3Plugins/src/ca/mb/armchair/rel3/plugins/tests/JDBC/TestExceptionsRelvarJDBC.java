@@ -1,6 +1,5 @@
 package ca.mb.armchair.rel3.plugins.tests.JDBC;
 
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -63,14 +62,14 @@ public class TestExceptionsRelvarJDBC extends TestMySQLJDBCSettings {
 
 	@Test(expected = ExceptionSemantic.class)
 	public void testJDBC3() { // Creating relvar from non-existing
-								// database.table
+		// database.table
 		String src = "BEGIN;\n" + "var brokenVAR external jdbc \"" + wrongAbsolutePath + "\" dup_remove;" + "END;\n";
 		testEvaluate(src);
 	}
 
 	@Test(expected = ExceptionSemantic.class)
 	public void testJDBC4() { // Creating relvar with non-identified duplicate
-								// handling method
+		// handling method
 		String src = "BEGIN;\n" + "var brokenVAR external jdbc \"" + absolutePath + "\" something;" + "END;\n";
 		testEvaluate(src);
 	}

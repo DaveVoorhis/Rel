@@ -19,7 +19,8 @@
 	<classpathentry kind="lib" path="lib/Hadoop/zookeeper-3.4.5.jar"/>
 	<classpathentry kind="lib" path="/RelDeployment/junit.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Rel3Test"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Rel3Server"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Rel3ServerV0000"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Rel3Shared"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

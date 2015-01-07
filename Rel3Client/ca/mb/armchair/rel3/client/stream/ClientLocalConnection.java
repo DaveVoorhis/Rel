@@ -3,11 +3,11 @@ package ca.mb.armchair.rel3.client.stream;
 import java.io.*;
 
 import ca.mb.armchair.rel3.interpreter.*;
+import ca.mb.armchair.rel3.languages.tutoriald.parser.ParseException;
+import ca.mb.armchair.rel3.languages.tutoriald.parser.TokenMgrError;
 import ca.mb.armchair.rel3.client.utilities.ClassPathHack;
 import ca.mb.armchair.rel3.client.utilities.ParseExceptionPrinter;
 import ca.mb.armchair.rel3.exceptions.*;
-import ca.mb.armchair.rel3.languages.tutoriald.parser.ParseException;
-import ca.mb.armchair.rel3.languages.tutoriald.parser.TokenMgrError;
 
 public class ClientLocalConnection extends ClientConnection implements StreamReceiverClient {
 	

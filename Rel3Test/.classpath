@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/RelDeployment/je.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Rel3Server"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Rel3Shared"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Rel3ServerV0000"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

@@ -1,6 +1,6 @@
 import java.io.IOException;
 
-import ca.mb.armchair.rel3.interpreter.ClassPathHack;
+import ca.mb.armchair.rel3.ClassPathHack;
 
 /** Convenient runner for the Rel interpreter. */
 
@@ -14,6 +14,6 @@ public class Rel {
 			System.out.println(ioe.toString());
 			return;
 		}
-		ca.mb.armchair.rel3.interpreter.Instance.main(args);
+	//	ca.mb.armchair.rel3.Instance.main(args);
 	}
 }

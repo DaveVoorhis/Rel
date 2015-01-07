@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.*;
 
-import ca.mb.armchair.rel3.generator.Generator;
 import ca.mb.armchair.rel3.interpreter.*;
+import ca.mb.armchair.rel3.generator.Generator;
 import ca.mb.armchair.rel3.languages.tutoriald.parser.ParseException;
 import ca.mb.armchair.rel3.values.Value;
 import ca.mb.armchair.rel3.exceptions.*;

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="RelDeployment/rel0000.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/Rel3ServerV0000/rel0000.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.generator"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.languages.tutoriald.parser"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.storage.temporary"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.storage.tables"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.types"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.storage.relvars"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.storage"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.values"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.vm.instructions.array"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.vm.instructions.tuple"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.types.userdefined"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.external"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.server"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.version"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.vm.instructions.system"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.storage.catalog"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.vm.instructions.relvar"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.debuginfo"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.vm.instructions.possrep"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.vm"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.languages.tutoriald{BaseASTNode.java"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.interpreter"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.types.builtin"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.vm.instructions.relation"/>
+        <javaElement handleIdentifier="=Rel3ServerV0000/src&lt;ca.mb.armchair.rel3.vm.instructions.core"/>
+    </selectedElements>
+</jardesc>
