@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="RelDeployment/DBrowser.jar"/>
-    <options buildIfNeeded="true" compress="true" descriptionLocation="/RelDBrowser/DBrowser.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <jar path="_Deployment/DBrowser.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/DBrowser/DBrowser.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
-    <manifest generateManifest="true" mainClassHandleIdentifier="=RelDBrowser/&lt;{DBrowser.java[DBrowser" manifestLocation="/Rel3DBrowser/DBrowser.mf" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+    <manifest generateManifest="true" mainClassHandleIdentifier="=DBrowser/&lt;{DBrowser.java[DBrowser" manifestLocation="/Rel3DBrowser/DBrowser.mf" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
         <sealing sealJar="false">
             <packagesToSeal/>
             <packagesToUnSeal/>
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=RelDBrowser/&lt;org.reldb.rel.dbrowser.ui"/>
-        <javaElement handleIdentifier="=RelDBrowser/&lt;org.reldb.rel.dbrowser.version"/>
-        <javaElement handleIdentifier="=RelDBrowser/&lt;org.reldb.rel.Utilities.Widgets"/>
-        <javaElement handleIdentifier="=RelDBrowser/&lt;org.reldb.rel.resources"/>
-        <javaElement handleIdentifier="=RelDBrowser/&lt;org.reldb.rel.Utilities.ClassLoaders"/>
-        <file path="/RelDBrowser/.gitignore"/>
-        <file path="/RelDBrowser/DBrowser.jardesc"/>
-        <javaElement handleIdentifier="=RelDBrowser/&lt;org.reldb.rel.dbrowser.style"/>
-        <javaElement handleIdentifier="=RelDBrowser/&lt;org.reldb.rel.dbrowser.monitor"/>
-        <javaElement handleIdentifier="=RelDBrowser/&lt;org.reldb.rel.dbrowser.ui.monitors"/>
-        <javaElement handleIdentifier="=RelDBrowser/&lt;"/>
-        <javaElement handleIdentifier="=RelDBrowser/&lt;org.reldb.rel.Utilities.ContentTranslation"/>
-        <file path="/RelDBrowser/.project"/>
-        <javaElement handleIdentifier="=RelDBrowser/&lt;org.reldb.rel.dbrowser.utilities"/>
-        <file path="/RelDBrowser/.classpath"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.Utilities.ClassLoaders"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.style"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.version"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.Utilities.ContentTranslation"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.monitor"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.utilities"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.resources"/>
+        <file path="/DBrowser/.project"/>
+        <file path="/DBrowser/.gitignore"/>
+        <file path="/DBrowser/DBrowser.jardesc"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.ui.monitors"/>
+        <file path="/DBrowser/.classpath"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.ui"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.Utilities.Widgets"/>
     </selectedElements>
 </jardesc>

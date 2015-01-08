@@ -21,6 +21,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ServerV0000"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
-	<classpathentry kind="lib" path="/Deployment/junit.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/junit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

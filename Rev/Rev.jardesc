@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="RelDeployment/rev.jar"/>
+    <jar path="_Deployment/rev.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/Rev/Rev.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -11,8 +11,8 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.Utilities.Visualisation.Lines"/>
         <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.rev.graphics"/>
+        <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.Utilities.Visualisation.Lines"/>
         <file path="/Rev/.project"/>
         <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.rev.popmenu"/>
         <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.Utilities.Layouts"/>
