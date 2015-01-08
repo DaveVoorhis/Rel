@@ -1,7 +1,7 @@
 ** TO DO **
 
 Short term:
-	// TODO - Create minimal public interface to Rel core, and refactor other packages (especially Rel3Client) to use it.
+	// TODO - Database creation must create version indicator file.  Database open must check it.
 	// TODO - Build backup mechanism into Rel.jar, so that backup can be invoked on a specified database.
 	// TODO - Each Rel.jar should have a version number based on the revision to the metadata structure.  E.g., Rel0.jar
 	// TODO - Rel.jar should be a wrapper around the Rel<n>.jar files, and uses the appropriate Rel<n>.jar file

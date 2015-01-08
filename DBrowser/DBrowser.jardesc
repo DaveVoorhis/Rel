@@ -12,19 +12,15 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.Utilities.ClassLoaders"/>
-        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.style"/>
-        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.version"/>
         <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.Utilities.ContentTranslation"/>
         <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.monitor"/>
         <javaElement handleIdentifier="=DBrowser/&lt;"/>
         <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.utilities"/>
         <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.resources"/>
-        <file path="/DBrowser/.project"/>
-        <file path="/DBrowser/.gitignore"/>
-        <file path="/DBrowser/DBrowser.jardesc"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.style"/>
         <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.ui.monitors"/>
-        <file path="/DBrowser/.classpath"/>
         <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.ui"/>
+        <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.dbrowser.version"/>
         <javaElement handleIdentifier="=DBrowser/&lt;org.reldb.rel.Utilities.Widgets"/>
     </selectedElements>
 </jardesc>

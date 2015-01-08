@@ -3,7 +3,7 @@ package org.reldb.rel.client.stream;
 import java.io.*;
 
 import org.reldb.rel.client.utilities.ClassPathHack;
-import org.reldb.rel.v0.engine.Rel;
+import org.reldb.rel.Rel;
 
 public class ClientLocalConnection extends ClientConnection implements StreamReceiverClient {
 	

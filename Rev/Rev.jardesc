@@ -13,13 +13,10 @@
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.rev.graphics"/>
         <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.Utilities.Visualisation.Lines"/>
-        <file path="/Rev/.project"/>
         <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.rev.popmenu"/>
         <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.Utilities.Layouts"/>
-        <file path="/Rev/.classpath"/>
         <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.Utilities.Visualisation.Glyphs"/>
         <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.rev.version"/>
         <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.rev"/>
-        <file path="/Rev/Rev.jardesc"/>
     </selectedElements>
 </jardesc>

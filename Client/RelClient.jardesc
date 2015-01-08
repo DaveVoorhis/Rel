@@ -14,12 +14,9 @@
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{ParseException.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseToHTML.java"/>
-        <file path="/Client/.project"/>
-        <file path="/Client/RelClient.jardesc"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.stream"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseToHTMLProgressive.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.string"/>
-        <file path="/Client/.classpath"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseAdapter.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{ResponseParserConstants.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{ResponseParserTokenManager.java"/>

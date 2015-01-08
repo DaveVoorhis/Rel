@@ -444,7 +444,7 @@ public class Browser extends JFrame {
 			}				
 		});
     	try {
-    		Class.forName("org.reldb.rel.version.Version");
+    		Class.forName("org.reldb.rel.Rel");
     		noLocalRel = false;
     	} catch (ClassNotFoundException cnfe) {
     		noLocalRel = true;

@@ -12,14 +12,10 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.external"/>
-        <file path="/Tests/.gitignore"/>
-        <file path="/Tests/RelTest.jardesc"/>
-        <file path="/Tests/.project"/>
-        <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests"/>
-        <file path="/Tests/.classpath"/>
         <folder path="/Tests/META-INF"/>
         <javaElement handleIdentifier="=Tests/&lt;"/>
         <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.main"/>
         <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.inheritance"/>
+        <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests"/>
     </selectedElements>
 </jardesc>
