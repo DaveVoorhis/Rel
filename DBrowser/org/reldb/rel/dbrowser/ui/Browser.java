@@ -335,7 +335,7 @@ public class Browser extends JFrame {
     }
     
     public static boolean isRelDatabase(File f) {
-    	return (f.isDirectory() && (new File(f + File.separator + "Reldb.rel").exists()));
+    	return (f.isDirectory() && (new File(f + File.separator + "Reldb").exists()));
     }
     
     public void createLocalDatabase() {

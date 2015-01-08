@@ -91,7 +91,7 @@ public class RelDatabase {
     private DirClassLoader dirClassLoader;
     
     // Relative database directory name
-    private static final String databaseHomeRelative = "Reldb.rel";
+    private static final String databaseHomeRelative = "Reldb";
 
     // Relative user code directory name
     private static final String userCodeHomeRelative = "RelUserCode";
