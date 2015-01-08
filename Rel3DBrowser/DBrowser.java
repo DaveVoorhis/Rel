@@ -1,5 +1,5 @@
-import ca.mb.armchair.rel3.dbrowser.monitor.Monitor;
-import ca.mb.armchair.rel3.dbrowser.monitor.BrowserLog;
+import org.reldb.rel.dbrowser.monitor.BrowserLog;
+import org.reldb.rel.dbrowser.monitor.Monitor;
 
 public class DBrowser {
 	

@@ -2,13 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="/Rel3Shared"/>
+	<classpathentry kind="src" path="/RelShared"/>
 	<classpathentry kind="lib" path="/RelDeployment/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="/RelDeployment/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="/RelDeployment/httpclient-4.1.3.jar"/>
 	<classpathentry kind="lib" path="/RelDeployment/httpclient-cache-4.1.3.jar"/>
 	<classpathentry kind="lib" path="/RelDeployment/httpcore-4.1.4.jar"/>
 	<classpathentry kind="lib" path="/RelDeployment/httpmime-4.1.3.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Rel3ServerV0000"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RelServerV0000"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="RelDeployment/RelTest.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/RelTest/RelTest.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" mainClassHandleIdentifier="=RelTest/&lt;{AllTests.java[AllTests" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=RelTest/&lt;"/>
+        <javaElement handleIdentifier="=RelTest/&lt;org.reldb.rel.tests"/>
+        <javaElement handleIdentifier="=RelTest/&lt;org.reldb.rel.tests.inheritance"/>
+        <javaElement handleIdentifier="=RelTest/&lt;org.reldb.rel.tests.main"/>
+        <file path="/RelTest/.project"/>
+        <file path="/RelTest/.gitignore"/>
+        <javaElement handleIdentifier="=RelTest/&lt;org.reldb.rel.tests.external"/>
+        <file path="/RelTest/.classpath"/>
+        <folder path="/RelTest/META-INF"/>
+        <file path="/RelTest/Rel3Test.jardesc"/>
+    </selectedElements>
+</jardesc>

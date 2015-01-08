@@ -1,4 +1,4 @@
-import ca.mb.armchair.rel3.dbrowser.monitor.BrowserLog;
+import org.reldb.rel.dbrowser.monitor.BrowserLog;
 
 /** Alternative startup without execution monitor.  Useful when developing and debugging DBrowser itself. */
 public class DBrowserWithoutMonitor {	

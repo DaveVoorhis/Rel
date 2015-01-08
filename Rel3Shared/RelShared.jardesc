@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
     <jar path="RelDeployment/relshared.jar"/>
-    <options buildIfNeeded="true" compress="true" descriptionLocation="/Rel3Shared/RelShared.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/RelShared/RelShared.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
     <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
@@ -11,8 +11,10 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=Rel3Shared/&lt;ca.mb.armchair.rel3"/>
-        <javaElement handleIdentifier="=Rel3Shared/&lt;ca.mb.armchair.rel3.exceptions"/>
-        <javaElement handleIdentifier="=Rel3Shared/&lt;ca.mb.armchair.rel3.shared"/>
+        <file path="/RelShared/.project"/>
+        <javaElement handleIdentifier="=RelShared/&lt;org.reldb.rel.shared"/>
+        <javaElement handleIdentifier="=RelShared/&lt;org.reldb.rel.exceptions"/>
+        <file path="/RelShared/.classpath"/>
+        <file path="/RelShared/RelShared.jardesc"/>
     </selectedElements>
 </jardesc>

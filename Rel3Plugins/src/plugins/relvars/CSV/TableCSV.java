@@ -8,23 +8,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.mb.armchair.rel3.exceptions.ExceptionSemantic;
-import ca.mb.armchair.rel3.generator.Generator;
-import ca.mb.armchair.rel3.storage.relvars.RelvarExternal;
-import ca.mb.armchair.rel3.storage.relvars.RelvarExternalMetadata;
-import ca.mb.armchair.rel3.storage.tables.TableCustom;
-import ca.mb.armchair.rel3.values.RelTupleFilter;
-import ca.mb.armchair.rel3.values.RelTupleMap;
-import ca.mb.armchair.rel3.values.TupleFilter;
-import ca.mb.armchair.rel3.values.TupleIterator;
-import ca.mb.armchair.rel3.values.TupleIteratorCount;
-import ca.mb.armchair.rel3.values.TupleIteratorUnique;
-import ca.mb.armchair.rel3.values.Value;
-import ca.mb.armchair.rel3.values.ValueCharacter;
-import ca.mb.armchair.rel3.values.ValueInteger;
-import ca.mb.armchair.rel3.values.ValueRelation;
-import ca.mb.armchair.rel3.values.ValueTuple;
-import ca.mb.armchair.rel3.vm.Context;
+import org.reldb.rel.exceptions.ExceptionSemantic;
+import org.reldb.rel.generator.Generator;
+import org.reldb.rel.storage.relvars.RelvarExternal;
+import org.reldb.rel.storage.relvars.RelvarExternalMetadata;
+import org.reldb.rel.storage.tables.TableCustom;
+import org.reldb.rel.values.RelTupleFilter;
+import org.reldb.rel.values.RelTupleMap;
+import org.reldb.rel.values.TupleFilter;
+import org.reldb.rel.values.TupleIterator;
+import org.reldb.rel.values.TupleIteratorCount;
+import org.reldb.rel.values.TupleIteratorUnique;
+import org.reldb.rel.values.Value;
+import org.reldb.rel.values.ValueCharacter;
+import org.reldb.rel.values.ValueInteger;
+import org.reldb.rel.values.ValueRelation;
+import org.reldb.rel.values.ValueTuple;
+import org.reldb.rel.vm.Context;
 
 public class TableCSV extends TableCustom {
 

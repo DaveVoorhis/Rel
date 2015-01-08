@@ -11,13 +11,15 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.Utilities.Layouts"/>
-        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.rel3.rev.graphics"/>
-        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.rel3.rev.popmenu"/>
-        <javaElement handleIdentifier="=Rel3DBrowser/&lt;ca.mb.armchair.rel3.dbrowser"/>
-        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.Utilities.Visualisation.Lines"/>
-        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.Utilities.Visualisation.Glyphs"/>
-        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.rel3.rev.version"/>
-        <javaElement handleIdentifier="=Rev/&lt;ca.mb.armchair.rel3.rev"/>
+        <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.Utilities.Visualisation.Lines"/>
+        <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.rev.graphics"/>
+        <file path="/Rev/.project"/>
+        <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.rev.popmenu"/>
+        <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.Utilities.Layouts"/>
+        <file path="/Rev/.classpath"/>
+        <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.Utilities.Visualisation.Glyphs"/>
+        <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.rev.version"/>
+        <javaElement handleIdentifier="=Rev/&lt;org.reldb.rel.rev"/>
+        <file path="/Rev/Rev.jardesc"/>
     </selectedElements>
 </jardesc>

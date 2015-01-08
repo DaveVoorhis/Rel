@@ -6,18 +6,17 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
-
-import ca.mb.armchair.rel3.exceptions.ExceptionSemantic;
-import ca.mb.armchair.rel3.generator.Generator;
-import ca.mb.armchair.rel3.storage.RelDatabase;
-import ca.mb.armchair.rel3.storage.relvars.RelvarCustomMetadata;
-import ca.mb.armchair.rel3.storage.relvars.RelvarExternal;
-import ca.mb.armchair.rel3.storage.relvars.RelvarGlobal;
-import ca.mb.armchair.rel3.storage.relvars.RelvarHeading;
-import ca.mb.armchair.rel3.storage.tables.TableExternal.DuplicateHandling;
-import ca.mb.armchair.rel3.types.Heading;
-import ca.mb.armchair.rel3.types.builtin.TypeCharacter;
-import ca.mb.armchair.rel3.types.builtin.TypeInteger;
+import org.reldb.rel.exceptions.ExceptionSemantic;
+import org.reldb.rel.generator.Generator;
+import org.reldb.rel.storage.RelDatabase;
+import org.reldb.rel.storage.relvars.RelvarCustomMetadata;
+import org.reldb.rel.storage.relvars.RelvarExternal;
+import org.reldb.rel.storage.relvars.RelvarGlobal;
+import org.reldb.rel.storage.relvars.RelvarHeading;
+import org.reldb.rel.storage.tables.TableExternal.DuplicateHandling;
+import org.reldb.rel.types.Heading;
+import org.reldb.rel.types.builtin.TypeCharacter;
+import org.reldb.rel.types.builtin.TypeInteger;
 
 public class RelvarHADOOPMetadata extends RelvarCustomMetadata {
 	private static final long serialVersionUID = 0;

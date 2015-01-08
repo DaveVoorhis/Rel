@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import ca.mb.armchair.rel3.tests.ClassPathHack;
+import org.reldb.rel.tests.ClassPathHack;
 
 public class AllTests {
 	
 	private static final String tests[] = {
-		"ca.mb.armchair.rel3.tests.engine",
-		"ca.mb.armchair.rel3.tests.main",
-		"ca.mb.armchair.rel3.tests.external",
-		"ca.mb.armchair.rel3.tests.inheritance",
+		"org.reldb.rel.tests.engine",
+		"org.reldb.rel.tests.main",
+		"org.reldb.rel.tests.external",
+		"org.reldb.rel.tests.inheritance",
 	};
 	
 	/**

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
     <jar path="RelDeployment/relclient.jar"/>
-    <options buildIfNeeded="true" compress="true" descriptionLocation="/Rel3Client/RelClient.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/RelClient/RelClient.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
     <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
@@ -11,12 +11,25 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.string"/>
-        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.stream"/>
-        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.parser.core"/>
-        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client"/>
-        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.utilities"/>
-        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.parser"/>
-        <javaElement handleIdentifier="=Rel3Client/&lt;ca.mb.armchair.rel3.client.crash"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser{ResponseProcessor.java"/>
+        <file path="/RelClient/RelClient.jardesc"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser{ResponseToHTMLProgressive.java"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser.core{ResponseParserConstants.java"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser.core{ResponseParserTokenManager.java"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.stream"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.string"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser{ResponseAdapter.java"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client"/>
+        <file path="/RelClient/.project"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.crash"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser.core{JavaCharStream.java"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser.core{ParseException.java"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser{ResponseHandler.java"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser.core{ResponseParser.java"/>
+        <file path="/RelClient/.classpath"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser{ResponseToHTML.java"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser.core{TokenMgrError.java"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.parser.core{Token.java"/>
+        <javaElement handleIdentifier="=RelClient/&lt;org.reldb.rel.client.utilities"/>
     </selectedElements>
 </jardesc>
