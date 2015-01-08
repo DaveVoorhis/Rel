@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>RelClient</name>
+	<name>Client</name>
 	<comment>JavaCC Nature</comment>
 	<projects>
 		<project>Rel3Server</project>
