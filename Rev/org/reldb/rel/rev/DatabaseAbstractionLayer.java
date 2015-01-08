@@ -12,7 +12,7 @@ import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
 import org.reldb.rel.client.Connection.HTMLReceiver;
 import org.reldb.rel.client.crash.CrashTrap;
-import org.reldb.rel.client.utilities.StringUtils;
+import org.reldb.rel.utilities.StringUtils;
 import org.reldb.rel.rev.version.Version;
 
 public class DatabaseAbstractionLayer {

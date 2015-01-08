@@ -6,16 +6,16 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.reldb.rel.exceptions.ExceptionSemantic;
-import org.reldb.rel.generator.Generator;
-import org.reldb.rel.storage.RelDatabase;
-import org.reldb.rel.storage.relvars.RelvarCustomMetadata;
-import org.reldb.rel.storage.relvars.RelvarExternal;
-import org.reldb.rel.storage.relvars.RelvarGlobal;
-import org.reldb.rel.storage.relvars.RelvarHeading;
-import org.reldb.rel.storage.tables.TableExternal.DuplicateHandling;
-import org.reldb.rel.types.Heading;
-import org.reldb.rel.types.builtin.TypeCharacter;
-import org.reldb.rel.types.builtin.TypeInteger;
+import org.reldb.rel.v0.generator.Generator;
+import org.reldb.rel.v0.storage.RelDatabase;
+import org.reldb.rel.v0.storage.relvars.RelvarCustomMetadata;
+import org.reldb.rel.v0.storage.relvars.RelvarExternal;
+import org.reldb.rel.v0.storage.relvars.RelvarGlobal;
+import org.reldb.rel.v0.storage.relvars.RelvarHeading;
+import org.reldb.rel.v0.storage.tables.TableExternal.DuplicateHandling;
+import org.reldb.rel.v0.types.Heading;
+import org.reldb.rel.v0.types.builtin.TypeCharacter;
+import org.reldb.rel.v0.types.builtin.TypeInteger;
 
 public class RelvarCSVMetadata extends RelvarCustomMetadata {
 	public static final long serialVersionUID = 0;

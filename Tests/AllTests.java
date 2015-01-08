@@ -12,10 +12,10 @@ import org.reldb.rel.tests.ClassPathHack;
 public class AllTests {
 	
 	private static final String tests[] = {
-		"org.reldb.rel.tests.engine",
-		"org.reldb.rel.tests.main",
-		"org.reldb.rel.tests.external",
-		"org.reldb.rel.tests.inheritance",
+		"org.reldb.rel.v0.tests.engine",
+		"org.reldb.rel.v0.tests.main",
+		"org.reldb.rel.v0.tests.external",
+		"org.reldb.rel.v0.tests.inheritance",
 	};
 	
 	/**

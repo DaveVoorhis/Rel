@@ -14,6 +14,6 @@ public class Rel {
 			System.out.println(ioe.toString());
 			return;
 		}
-	//	org.reldb.rel.Instance.main(args);
+	//	org.reldb.rel.v0.Instance.main(args);
 	}
 }

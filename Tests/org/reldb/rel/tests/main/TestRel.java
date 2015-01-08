@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.tests.BaseOfTest;
-import org.reldb.rel.values.*;
+import org.reldb.rel.v0.values.*;
 
 public class TestRel extends BaseOfTest {
 	

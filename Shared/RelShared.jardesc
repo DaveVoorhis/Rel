@@ -11,10 +11,8 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=Shared/&lt;org.reldb.rel.exceptions"/>
-        <file path="/Shared/.classpath"/>
-        <file path="/Shared/RelShared.jardesc"/>
+        <javaElement handleIdentifier="=Shared/&lt;org.reldb.rel.utilities"/>
         <javaElement handleIdentifier="=Shared/&lt;org.reldb.rel.shared"/>
-        <file path="/Shared/.project"/>
+        <javaElement handleIdentifier="=Shared/&lt;org.reldb.rel.exceptions"/>
     </selectedElements>
 </jardesc>

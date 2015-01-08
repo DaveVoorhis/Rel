@@ -10,8 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.reldb.rel.exceptions.ExceptionSemantic;
-import org.reldb.rel.interpreter.ClassPathHack;
 import org.reldb.rel.plugins.tests.TestMySQLJDBCSettings;
+import org.reldb.rel.v0.interpreter.ClassPathHack;
 
 public class TestExceptionsRelvarJDBC extends TestMySQLJDBCSettings {
 

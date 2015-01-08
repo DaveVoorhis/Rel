@@ -5,10 +5,10 @@ import static org.junit.Assert.*;
 import java.io.*;
 
 import org.reldb.rel.exceptions.*;
-import org.reldb.rel.generator.Generator;
-import org.reldb.rel.interpreter.*;
-import org.reldb.rel.languages.tutoriald.parser.ParseException;
-import org.reldb.rel.values.Value;
+import org.reldb.rel.v0.generator.Generator;
+import org.reldb.rel.v0.interpreter.*;
+import org.reldb.rel.v0.languages.tutoriald.parser.ParseException;
+import org.reldb.rel.v0.values.Value;
 
 public class BaseOfTest {
 	

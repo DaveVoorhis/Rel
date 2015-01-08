@@ -14,9 +14,9 @@ import org.reldb.rel.tests.ClassPathHack;
 
 public class RunTests {
 
-	private static final String tests[] = { "org.reldb.rel.plugins.tests.CSV",
-											"org.reldb.rel.plugins.tests.JDBC",
-											"org.reldb.rel.plugins.tests.XLS" };
+	private static final String tests[] = { "org.reldb.rel.v0.plugins.tests.CSV",
+											"org.reldb.rel.v0.plugins.tests.JDBC",
+											"org.reldb.rel.v0.plugins.tests.XLS" };
 
 	public static void main(String[] args) {
 		try {

@@ -1,0 +1,1690 @@
+/*
+ * Rel implementation of Tutorial D from TTM 3rd Edition
+ *
+ */
+
+options {
+  LOOKAHEAD = 1;
+  CHOICE_AMBIGUITY_CHECK = 2;
+  OTHER_AMBIGUITY_CHECK = 1;
+  STATIC = false;
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  DEBUG_TOKEN_MANAGER = false;
+  ERROR_REPORTING = true;
+  JAVA_UNICODE_ESCAPE = true;
+  UNICODE_INPUT = true;
+  IGNORE_CASE = false;
+  USER_TOKEN_MANAGER = false;
+  USER_CHAR_STREAM = false;
+  BUILD_PARSER = true;
+  BUILD_TOKEN_MANAGER = true;
+  SANITY_CHECK = true;
+  FORCE_LA_CHECK = false;
+  MULTI = true;
+  NODE_SCOPE_HOOK = true;
+  VISITOR = true;
+  NODE_DEFAULT_VOID = true;
+  NODE_EXTENDS = "org.reldb.rel.v0.languages.tutoriald.BaseASTNode";
+  NODE_PACKAGE = "org.reldb.rel.v0.languages.tutoriald.parser";
+  JJTREE_OUTPUT_DIRECTORY = "parser";
+  JDK_VERSION = "1.6";
+}
+
+PARSER_BEGIN(TutorialD)
+package org.reldb.rel.v0.languages.tutoriald.parser;
+public class TutorialD {
+  void jjtreeOpenNodeScope( Node node )
+  {
+    ((org.reldb.rel.v0.languages.tutoriald.BaseASTNode)node).first_token = getToken(1);
+  }
+
+  void jjtreeCloseNodeScope( Node node )
+  {
+    ((org.reldb.rel.v0.languages.tutoriald.BaseASTNode)node).last_token = getToken(0);
+  }
+}
+PARSER_END(TutorialD)
+
+/*
+ *
+ * Lexer definitions
+ *
+ */
+
+SKIP : /* WHITE SPACE */
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+SPECIAL_TOKEN : /* COMMENTS */
+{
+  <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+| <FORMAL_COMMENT: "/**" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+| <MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+}
+
+TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
+{
+  < ADD: "ADD" >
+| < ALL: "ALL" >
+| < AND: "AND" >
+| < ANNOUNCE: "ANNOUNCE" >
+| < ARRAY: "ARRAY" >
+| < AS: "AS" >
+| < ASC: "ASC" >
+| < AVG: "AVG" >
+| < AVGD: "AVGD" >
+| < BASE: "BASE" >
+| < BEGIN: "BEGIN" >
+| < BUT: "BUT" >
+| < BY: "BY" >
+| < CALL: "CALL" >
+| < CASE: "CASE" >
+| < COMMIT: "COMMIT" >
+| < COMPOSE: "COMPOSE" >
+| < CONSTRAINT: "CONSTRAINT" >
+| < COUNT: "COUNT" >
+| < COUNTD: "COUNTD" >
+| < DELETE: "DELETE" >
+| < DESC: "DESC" >
+| < DIVIDEBY: "DIVIDEBY" >
+| < DO: "DO" >
+| < DROP: "DROP" >
+| < D_INSERT: "D_INSERT" >
+| < D_UNION: "D_UNION" >
+| < ELSE: "ELSE" >
+| < END: "END" >
+| < EOT: "<EOT>" >
+| < EXACTLYD: "EXACTLYD" >
+| < EXACTLY: "EXACTLY" >
+| < EXECUTE: "EXECUTE" >
+| < EXTEND: "EXTEND" >
+| < EXTERNAL: "EXTERNAL" >
+| < FALSE: "FALSE" >
+| < FOREIGN: "FOREIGN" >: SCRIPT
+| < FOR: "FOR" >
+| < FROM: "FROM" >
+| < GROUP: "GROUP" >
+| < I_DELETE: "I_DELETE" >
+| < I_MINUS: "I_MINUS" >
+| < IF: "IF" >
+| < IN: "IN" >
+| < INIT: "INIT" >
+| < INSERT: "INSERT" >
+| < INTERSECT: "INTERSECT" >
+| < IS: "IS" >
+| < JOIN: "JOIN" >
+| < KEY: "KEY" >
+| < LEAVE: "LEAVE" >
+| < LOAD: "LOAD" >
+| < LAMBDA: "~[" >
+| < LAMBDAEND: "]~" >
+| < MATCHING: "MATCHING" >
+| < MAX: "MAX" >
+| < MIN: "MIN" >
+| < MINUS: "MINUS" >
+| < NOT: "NOT" >
+| < OPERATOR: "OPERATOR" >
+| < ORDER: "ORDER" >
+| < ORDERED: "ORDERED" >
+| < ORDINAL: "ORDINAL" >
+| < OR: "OR" >
+| < OUTPUT: "OUTPUT" >
+| < PER: "PER" >
+| < POSSREP: "POSSREP" >
+| < PREFIX: "PREFIX" >
+| < PRIVATE: "PRIVATE" >
+| < PUBLIC: "PUBLIC" >
+| < REAL: "REAL" >
+| < RELATION: ( "RELATION" | "REL" ) >
+| < RENAME: "RENAME" >
+| < RETURN: "RETURN" >
+| < RETURNS: "RETURNS" >
+| < ROLLBACK: "ROLLBACK" >
+| < SAME_HEADING_AS: "SAME_HEADING_AS" >
+| < SAME_TYPE_AS: "SAME_TYPE_AS" >
+| < SET: "SET" >
+| < SEMIJOIN: "SEMIJOIN" > 
+| < SEMIMINUS: "SEMIMINUS" >
+| < SUFFIX: "SUFFIX" >
+| < SUMD: "SUMD" >
+| < SUMMARIZE: "SUMMARIZE" >
+| < SUM: "SUM" >
+| < SYNONYMS: "SYNONYMS" >
+| < TABLE_DEE: ( "DEE" | "TABLE_DEE" ) >
+| < TABLE_DUM: ( "DUM" | "TABLE_DUM" ) >
+| < TCLOSE: "TCLOSE" >
+| < THEN: "THEN" >
+| < TIMES: "TIMES" >
+| < TO: "TO" >
+| < TRANSACTION: "TRANSACTION" >
+| < TRUE: "TRUE" >
+| < TUPLE: ( "TUPLE" | "TUP" ) >
+| < TYPE: "TYPE" >
+| < UNGROUP: "UNGROUP" >
+| < UNION: "UNION" >
+| < UNWRAP: "UNWRAP" >
+| < UPDATES: "UPDATES" >
+| < UPDATE: "UPDATE" >
+| < VAR: "VAR" >
+| < VERSION: "VERSION" >
+| < VIRTUAL: ( "VIRTUAL" | "VIEW" ) >
+| < WHEN: "WHEN" >
+| < WHERE: "WHERE" >
+| < WHILE: "WHILE" >
+| < WITH: "WITH" >
+| < WRAP: "WRAP" >
+| < WRITE: "WRITE" >
+| < WRITELN: "WRITELN" >
+| < XOR: "XOR" >
+| < XUNION: "XUNION" >
+}
+
+TOKEN : /* LITERALS */
+{
+  < INTEGER_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])?
+      | <HEX_LITERAL> (["l","L"])?
+      | <OCTAL_LITERAL> (["l","L"])?
+  >
+|
+  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
+|
+  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+|
+  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
+|
+  < FLOATING_POINT_LITERAL:
+        (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
+      | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < STRING_LITERAL:
+     ( 
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+     )
+   | (
+      "'"
+      (   (~["\'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "'"
+     )
+  >
+}
+
+TOKEN : /* IDENTIFIERS */
+{
+  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>|"."|"#")* >
+|
+  < #LETTER:
+      [
+       "\u0024",
+       "\u0041"-"\u005a",
+       "\u005f",
+       "\u0061"-"\u007a",
+       "\u00c0"-"\u00d6",
+       "\u00d8"-"\u00f6",
+       "\u00f8"-"\u00ff",
+       "\u0100"-"\u1fff",
+       "\u3040"-"\u318f",
+       "\u3300"-"\u337f",
+       "\u3400"-"\u3d2d",
+       "\u4e00"-"\u9fff",
+       "\uf900"-"\ufaff"
+      ]
+  >
+|
+  < #DIGIT:
+      [
+       "\u0030"-"\u0039",
+       "\u0660"-"\u0669",
+       "\u06f0"-"\u06f9",
+       "\u0966"-"\u096f",
+       "\u09e6"-"\u09ef",
+       "\u0a66"-"\u0a6f",
+       "\u0ae6"-"\u0aef",
+       "\u0b66"-"\u0b6f",
+       "\u0be7"-"\u0bef",
+       "\u0c66"-"\u0c6f",
+       "\u0ce6"-"\u0cef",
+       "\u0d66"-"\u0d6f",
+       "\u0e50"-"\u0e59",
+       "\u0ed0"-"\u0ed9",
+       "\u1040"-"\u1049"
+      ]
+  >
+}
+
+TOKEN : /* SEPARATORS */
+{
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < COLON: ":" >
+}
+
+TOKEN : /* OPERATOR SYMBOLS */
+{
+  < ASSIGN: ":=" >
+| < EQ: "=" >
+| < GT: ">" >
+| < LT: "<" >
+| < LTE: "<=" >
+| < GTE: ">=" >
+| < NEQ: "<>" >
+| < PLUS: "+" >
+| < SUBT: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
+}
+
+<SCRIPT> TOKEN: /* Source code grabber */
+{
+	< ENDFOREIGN : "\nEND" >: DEFAULT
+|	< TEXT : ~[] >
+}
+
+ASTEvaluate evaluate() #Evaluate :
+{}
+{
+	[ compound_statement_body() ";" ] expression() ( <EOT> | <EOF> ) {return jjtThis;}
+}
+
+ASTCode code() #Code :
+{}
+{
+	statement() ( statement() )* ( <EOT> | <EOF> ) {return jjtThis;}
+}
+
+ASTStatement statement() #Statement :
+{}
+{
+	statement_body() ";" {return jjtThis;}
+}
+
+void op_before_returns() :
+{}
+{
+	<OPERATOR> identifier() "(" [ identifier() type_ref() ( "," identifier() type_ref() )* ] ")"
+}
+
+void op_after_returns() :
+{}
+{
+		 	op_updates() op_synonym() op_version() ";" op_body() <END> <OPERATOR>
+	  | 	identifier() <FOREIGN> ( <TEXT> )* <ENDFOREIGN> <OPERATOR>
+}
+
+ASTGetOperatorReturnType getoperatorreturntype() #GetOperatorReturnType(3) :
+{}
+{
+	op_before_returns() op_returns() op_after_returns() {return jjtThis;}
+}
+
+ASTGetHeading getheading() #GetHeading :
+{}
+{
+	heading() {return jjtThis;}
+}
+
+ASTGetSignature getsignature() #GetSignature :
+{}
+{
+	op_signature() op_returns() {return jjtThis;}
+}
+
+void statement_body() :
+{}
+{		LOOKAHEAD(2) assignment() | loop()
+	|	op_def()
+	|	type_def()
+	|	drop()
+	|	var_def()
+	|	db_constraint_def()
+	|	relation_array_load()
+	|	LOOKAHEAD(2) begin_transaction() | compound_statement_body()
+	|	commit()
+	|	rollback()
+	|	call()
+	|	return_statement()
+	|	case_statement()
+	|	if_statement()
+	|	leave()
+	|	write()
+	|	writeln()
+	|	output()
+	|	announce()
+	|	execute()
+	|   set()
+}
+
+/* Rel extension - non-TTM */
+void write() #Write :
+{}
+{
+	<WRITE> expression()
+}
+
+/* Rel extension - non-TTM */
+void writeln() #Writeln :
+{}
+{
+	<WRITELN> [ expression() ]
+}
+
+/* Rel extension - non-TTM */
+void output() #Output :
+{}
+{
+	<OUTPUT> expression()
+}
+
+/* Rel extension - non-TTM */
+void announce() #Announce :
+{}
+{
+	<ANNOUNCE> string_literal()
+}
+
+/* Rel extension - non-TTM */ 
+void execute() #Execute :
+{}
+{
+	<EXECUTE> expression()
+}
+
+/* Rel extension - non-TTM */
+void set() #Set :
+{}
+{
+	<SET> identifier() identifier()
+}
+
+void compound_statement_body() :
+{}
+{
+	<BEGIN> ";"
+		( statement() )*
+	<END>
+}
+
+void op_def() :
+{}
+{
+	<OPERATOR> identifier() "(" parameter_def_commalist() ")" op_returns() ( rel_op_def() | external_op_def() )
+}
+
+void lambda() :
+{}
+{
+    <OPERATOR> lambda_definition() <END> <OPERATOR>
+  | <LAMBDA> lambda_definition() <LAMBDAEND>}
+
+void lambda_definition() #Lambda :
+{}
+{
+   "(" parameter_def_commalist() ")" <RETURNS> type_ref() ";" op_body()}
+
+void external_op_def() #ExternalOpDef(4) :
+{Token t; StringBuffer s = new StringBuffer();}
+{
+	identifier() <FOREIGN> ( t = <TEXT> {s.append(t.toString());} )* {jjtThis.tokenValue = s.toString();} <ENDFOREIGN> <OPERATOR>
+}
+
+void rel_op_def() #UserOpDef(7) :
+{}
+{
+ 	op_updates() op_synonym() op_version() ";"
+	op_body()
+	<END> <OPERATOR>
+}
+
+/* Note: op_returns() and op_updates()
+should be mutually exclusive. */
+void op_returns() #UserOpReturns :
+{}
+{
+	[ <RETURNS> type_ref() ]
+}
+
+void op_updates() #UserOpUpdates :
+{}
+{
+	[ <UPDATES> "{" [ <ALL> <BUT> parameter_name_commalist() ] "}" ]
+}
+
+void op_synonym() #UserOpSynonym :
+{}
+{
+	[ synonym_def() ]
+}
+
+void op_version() #UserOpVersion :
+{}
+{
+	[ <VERSION> identifier() ]
+}
+
+void op_body() #UserOpBody :
+{}
+{
+	[ statement() ]
+}
+
+void return_statement() #ReturnExpression :
+{}
+{
+	<RETURN> [ expression() ]
+}	
+
+/* Not explicitly defined in TTM3 */
+void parameter_def_commalist() #UserOpParameters :
+{}
+{
+	[ parameter_def() ( "," parameter_def() )* ]
+}
+
+void parameter_def() #ParmDef :
+{}
+{
+	identifier() type_ref()
+}
+
+/* Not explicitly defined in TTM3 */
+void parameter_name_commalist() :
+{}
+{
+	[ identifier() ( "," identifier() )* ]
+}
+
+void synonym_def() :
+{}
+{
+	<SYNONYMS> "{" user_op_name_commalist() "}"
+}
+
+/* Not explicitly defined in TTM3 */
+void user_op_name_commalist() :
+{}
+{
+	identifier() ( "," identifier() )*
+}
+
+/* Inclusion of type_ref_commalist() in
+OPERATOR DROP is not per TTM3,
+but necessary to 
+disambiguate operators. */
+void drop() :
+{}
+{
+	<DROP> 
+	(
+			<OPERATOR> op_signature()									#DropOperator
+		|	<VAR> identifier()											#DropRelvar(1)
+		|	<CONSTRAINT> identifier()									#DropConstraint(1)
+		|	<TYPE> identifier()											#DropType(1)
+	)
+}
+
+void op_signature() #OpSignature :
+{}
+{
+	identifier() "(" type_ref_commalist() ")"
+}
+
+void op_type() #OpType :
+{}{	<OPERATOR> "(" type_ref_commalist() ")" [ <RETURNS> type_ref() ]
+}
+
+void type_ref_commalist() #TypeRefCommalist :
+{}
+{
+	[ type_ref() ( "," type_ref() )* ]
+}
+
+/* Was user_scalar_type_def */
+void type_def() #TypeDef :
+{}
+{
+	<TYPE> identifier() type_def_kind()
+}
+
+void type_def_kind() :
+{}
+{
+	 	LOOKAHEAD(type_def_external()) 	type_def_external()
+	|									type_def_internal() 
+}
+
+void type_def_external() #TypeDefExternal :
+{Token t; StringBuffer s = new StringBuffer();}
+{
+	identifier() <FOREIGN> ( t = <TEXT> {s.append(t.toString());} )* {jjtThis.tokenValue = s.toString();} <ENDFOREIGN> <TYPE>
+}
+
+/* User-defined (internal) types start here */
+
+void type_def_internal() #TypeDefInternal :
+{}
+{
+	type_def_internal_ordinal() type_def_internal_union() type_def_internal_is_or_possrep()
+}
+
+void type_def_internal_is_or_possrep() :
+{}
+{
+       is_def() 
+	|  possrep_def_list()
+}
+
+void type_def_internal_ordinal() :
+{}
+{
+	[ type_def_internal_opt_ordinal() ]
+}
+
+void type_def_internal_opt_ordinal() :
+{}
+{
+	(
+	  <ORDINAL> #TypeDefInternalOptOrdinal 
+	| <ORDERED> #TypeDefInternalOptOrdered
+	)
+}
+
+void type_def_internal_union() :
+{}
+{
+	[ type_def_internal_opt_union() ]
+}
+
+void type_def_internal_opt_union() #TypeDefInternalOptUnion :
+{}
+{
+	<UNION>
+}
+
+void is_def() :
+{}
+{
+	<IS> "{"
+	(
+		LOOKAHEAD(2) single_inheritance_is_def() | multiple_inheritance_is_def()
+	)
+	"}"
+}
+
+void single_inheritance_is_def() #SingleInheritanceIsDef :
+{}
+{
+	identifier() possrep_or_specialization_details()
+}
+
+void possrep_or_specialization_details() :
+{}
+{
+		specialisation_constraint_def() [ derived_possrep_def_list() ]
+	|	possrep_def_list()
+}
+
+void multiple_inheritance_is_def() #MultipleInheritanceIsDef :
+{}
+{
+	scalar_type_name_commalist() derived_possrep_def_list()
+}
+
+/* Not explicitly defined in TTM3 */
+void scalar_type_name_commalist() :
+{}
+{
+	scalar_type_name() ( "," scalar_type_name() )* 
+}
+
+void scalar_type_name() #ScalarTypeName :
+{}
+{
+	identifier()
+}
+
+/* Not explicitly defined in TTM3 */
+void possrep_def_list() :
+{}
+{
+	( possrep_def() )* possrep_opt_initialiser()
+}
+
+/* Not defined in TTM3.  For explicitly setting
+values of components not in the current possrep.  
+Only required by types with multiple possreps.
+Takes the place of "highly protected
+operators not part of D". (pg 382, etc.) */
+void possrep_opt_initialiser() #PossrepInitialiser :
+{}
+{
+	[ <INIT> possrep_initialiser_assignments() ( possrep_initialiser_assignments() )* ]
+}
+
+/* Not defined in TTM3, as per above.
+Identifier should be existing POSSREP name. */
+void possrep_initialiser_assignments() #PossrepInitialiserAssignments :
+{}
+{
+	identifier() "(" assignment() ")"
+}
+
+void possrep_def() #PossrepDef :
+{}
+{
+	<POSSREP> possrep_def_identifier() "{" possrep_component_def_commalist() possrep_opt_constraint_def() "}"
+}
+
+void possrep_def_identifier() #PossrepDefIdentifier :
+{}
+{
+	[ identifier() ]
+}
+
+void possrep_opt_constraint_def() #PossrepDefConstraintDef :
+{}
+{
+	[ constraint_def() ]
+}
+
+/* Not explicitly defined in TTM3 */
+void possrep_component_def_commalist() #PossrepDefComponentCommalist :
+{}
+{
+	[ possrep_component_def() ( "," possrep_component_def() )* ]
+}
+
+void possrep_component_def() #PossrepDefComponent:
+{}
+{
+	identifier() type_ref()
+}
+
+/* Expression must be boolean */
+void constraint_def() #PossrepConstraintDef :
+{}
+{
+	<CONSTRAINT> expression()
+}
+
+/* Expression must be boolean */ 
+void specialisation_constraint_def() #SpecialisationConstraintDef :
+{}
+{
+	<CONSTRAINT> expression()
+}
+
+/* Not explicitly defined in TTM3 */
+void derived_possrep_def_list() :
+{}
+{
+	derived_possrep_def() ( derived_possrep_def() )*
+}
+
+void derived_possrep_def() #DerivedPossrepDef :
+{}
+{
+	<POSSREP> derived_possrep_def_opt_identifier() "{" derived_possrep_component_def_commalist() "}"
+}
+
+void derived_possrep_def_opt_identifier() #DerivedPossrepDefOptIdentifier :
+{}
+{
+	[ identifier() ]	
+}
+
+/* Not explicitly defined in TTM3 */
+void derived_possrep_component_def_commalist() :
+{}
+{
+	derived_possrep_component_def() ( "," derived_possrep_component_def() )*
+}
+
+void derived_possrep_component_def() #DerivedPossrepComponentDef :
+{}
+{
+	identifier() "=" identifier() "(" identifier() ")"
+}
+
+/* End user-defined types (internal) */
+
+/* Includes scalar_var_def,
+relation_var_def,
+array_var_def and
+tuple_var_def */
+void var_def() #VarDef :
+{}
+{
+	<VAR> identifier() 
+	(
+			var_scalar_or_tuple()
+		|	var_array()
+		|	var_relvar()
+	)
+}
+
+void var_relvar() :
+{}
+{
+		( <REAL> | <BASE> ) var_type_or_init_value() var_keydeflist()		#VarRelvarReal(2)
+	|	<PRIVATE>			var_type_or_init_value() var_keydeflist()		#VarRelvarPrivate(2)
+	|	<PUBLIC>			type_ref() var_keydeflist()						#VarRelvarPublic(2)
+	|	<VIRTUAL>			expression() var_keydeflistoptional()			#VarRelvarVirtual(2)
+	| 	var_relvar_external()
+}
+
+void var_relvar_external() 	#VarRelvarExternal :
+{}{		<EXTERNAL>	identifier() string_literal() [ identifier() ]
+}
+
+void var_keydeflist() #KeyDefList :
+{}
+{
+	var_keydef() ( var_keydef() )*
+}
+
+void var_keydeflistoptional() #KeyDefList :
+{}
+{
+	( var_keydef() )*
+}
+
+void var_keydef() #KeyDef :
+{}
+{
+	<KEY> "{" attribute_name_list() "}"
+}
+
+void var_scalar_or_tuple() #VarScalarOrTuple : 
+{}
+{
+	var_type_or_init_value()
+}
+
+void var_type_or_init_value() :
+{}
+{
+		var_type_and_optional_init()
+	|	var_init()
+}
+
+void var_type_and_optional_init() #VarTypeAndOptionalInit :
+{}
+{
+	type_ref() [ <INIT> "(" expression() ")" ]
+}
+
+void var_init() #VarInit :
+{}
+{
+	<INIT> "(" expression() ")"
+}
+
+void var_array() #VarArray :
+{}
+{
+	<ARRAY> type_ref()
+}
+
+void db_constraint_def() #DatabaseConstraint :
+{}
+{
+	<CONSTRAINT> identifier() expression()
+}
+
+/* type -- scalar_type, tuple_type, relation_type */
+void type_ref() :
+{}
+{
+		identifier()							#Type
+	|	type_same_type_as()
+	|	tuple_type()
+	|	relation_type()
+	| 	op_type()
+}
+
+void type_same_type_as() #TypeSameTypeAs :
+{}
+{
+	<SAME_TYPE_AS> "(" expression() ")"
+}
+
+void tuple_type() #TypeTuple :
+{}
+{
+	<TUPLE> heading_type()
+}
+
+void relation_type() #TypeRelation :
+{}
+{
+	<RELATION> heading_type()
+}
+
+void heading_type() :
+{}
+{
+		heading()
+	|	same_heading_as()
+}
+
+void same_heading_as() #SameHeadingAs :
+{}
+{
+	<SAME_HEADING_AS> "(" expression() ")"
+}
+
+void relation_array_load() #RelationArrayLoad :
+{}
+{
+	<LOAD> identifier() <FROM> expression()
+}
+
+void begin_transaction() #TransactionBegin :
+{}
+{
+	<BEGIN> <TRANSACTION>
+}
+
+void commit() #TransactionCommit :
+{}
+{
+	<COMMIT>
+}
+
+void rollback() #TransactionRollback :
+{}
+{
+	<ROLLBACK>
+}
+
+void case_statement() #CaseStatement :
+{}
+{
+	<CASE> ";" 
+	when_def_list() 
+	case_else() 
+	<END> <CASE>
+}
+
+void when_def_list() #CaseWhenList :
+{}
+{
+	when_def() ( when_def() )*
+}
+
+void when_def() #CaseWhen :
+{}
+{
+	<WHEN> expression() <THEN> statement()
+}
+
+void case_else() #CaseElse :
+{}
+{
+	[ <ELSE> statement() ]
+}
+
+/* Note that THEN and ELSE are not
+followed by semicolons, but maybe should be? */
+void if_statement() #IfStatement :
+{}
+{
+	<IF> expression() <THEN> statement() 
+	if_statement_else()
+	<END> <IF>
+}
+
+void if_statement_else() #ElseStatement :
+{}
+{
+	[ <ELSE> statement() ] 
+}
+
+void loop() :
+{}
+{
+	[ identifier() ":" ] ( do_statement() | while_statement() | for_statement() )
+}
+
+void do_statement() #DoLoop :
+{}
+{
+	<DO> identifier() ":=" expression() <TO> expression() ";"
+		statement()
+	<END> <DO>
+}
+
+void while_statement() #WhileLoop :
+{}
+{
+	<WHILE> expression() ";"
+		statement()
+	<END> <WHILE>
+}
+
+void for_statement() #ForLoop :
+{}
+{
+	<FOR> expression() ";"
+		statement()
+	<END> <FOR>
+}
+
+void leave() :
+{}
+{
+	<LEAVE> identifier()
+}
+
+void call() #Call :
+{}
+{
+	<CALL> identifier() "(" arglist() ")"
+}
+
+void assignment() #Assignment :
+{}
+{
+	assign() ( "," assign() )*
+}
+
+void assign() :
+{}
+{
+		identifier() ":=" expression() 									#Assign(2)
+	|	<INSERT> identifier() expression()								#Insert(2)
+	| 	<D_INSERT> identifier() expression()							#DInsert(2)
+	|	<DELETE> identifier() delete_parameter()						#Delete(2)
+	|	<I_DELETE> identifier() expression()							#IDelete(2)
+	|	<UPDATE> identifier() update_where() ":" update_assignment()	#UpdateStatement(3)
+}
+
+void delete_parameter() #DeleteParameter :{}
+{	[ [ <WHERE> #DeleteWhere ] expression() ]
+}
+
+void update_where() #UpdateWhere :
+{}
+{
+	[ <WHERE> expression() ]
+}
+
+void update_assignment() #UpdateAssignment :
+{}
+{
+	"{" assignment() "}"
+}
+
+/* Expressions */
+
+void expression() #Expression :
+{}
+{
+		LOOKAHEAD(2) attribute_from() 
+	| 	LOOKAHEAD(2) basic_expression() 
+	|	tuple_from()
+	|	with()
+	|	tclose()
+}
+
+void attribute_from() #AttributeFrom :
+{}
+{
+	identifier() <FROM> expression()
+}
+
+void tuple_from() #TupleFrom :
+{}
+{
+	<TUPLE> <FROM> expression()
+}
+
+void with() #With :
+{}
+{
+	<WITH> "(" name_intro_commalist() ")" ":" expression()
+}
+
+void name_intro_commalist() #WithNameIntroCommalist :
+{}
+{
+	name_intro() ( "," name_intro() )*
+}
+
+void name_intro() :
+{}
+{
+	identifier() ":=" expression() 				#WithNameIntro(2)
+}
+
+void tclose() #TClose :
+{}
+{
+	<TCLOSE> expression()
+}
+
+void basic_expression() :
+{}
+{
+	order_expression()
+	[
+						"[" expression() "]"	#ArrayDereference(2)
+		| 				"(" arglist() ")"		#FnInvokeAnonymous(2)
+	]
+}
+
+void order_expression() :
+{}
+{
+	where_expression() [ <ORDER> "(" order_item_commalist() ")"   #AlgOrder(2) ]		
+}
+
+void where_expression() :
+{}
+{
+	or_expression() [ <WHERE> or_expression() #AlgWhere(2) ]
+}
+
+void or_expression() : 
+{} 
+{ 
+	xor_expression() ( <OR> xor_expression() #Or(2) )* 
+}
+
+void xor_expression() :
+{}
+{
+	and_expression() ( <XOR> and_expression() #Xor(2) )* 
+}
+
+void and_expression() : 
+{} 
+{ 
+	compare_expression() ( <AND> compare_expression() #And(2) )*
+}
+
+void compare_expression() : 
+{} 
+{ 
+	rel_diadic() [
+			"="  rel_diadic() #CompEqual(2)
+		|	"<>" rel_diadic() #CompNequal(2)
+		|	">=" rel_diadic() #CompGTE(2)
+		|	"<=" rel_diadic() #CompLTE(2)
+		|	">"  rel_diadic() #CompGT(2)
+		|	"<"  rel_diadic() #CompLT(2)
+		|	<IN> rel_diadic() #TupleIn(2)
+	]
+}
+
+void rel_diadic() :
+{}
+{
+	rel_monadic() (
+			<UNION> rel_monadic() 								#AlgUnion(2) 
+		|   <XUNION> rel_monadic()								#AlgXunion(2)
+		|	<D_UNION> rel_monadic() 							#AlgDUnion(2) 
+		|	<INTERSECT> rel_monadic() 							#AlgIntersect(2)
+		|	<MINUS> rel_monadic() 								#AlgMinus(2)
+		|	<I_MINUS> rel_monadic() 							#AlgIMinus(2)
+		|	<JOIN> rel_monadic() 								#AlgJoin(2)
+		|	<TIMES> rel_monadic() 								#AlgTimes(2)
+		|	<COMPOSE> rel_monadic() 							#AlgCompose(2)
+		|	( <SEMIJOIN> | <MATCHING> ) rel_monadic() 			#AlgSemijoin(2)
+		|	( <SEMIMINUS> | <NOT> <MATCHING> ) rel_monadic()	#AlgSemiminus(2) 
+	)*
+}
+
+void rel_monadic() :
+{}
+{
+  	// Parentheses around WRAP, UNWRAP, GROUP, UNGROUP removed as of 1.0.11
+	rel_project() [
+			<RENAME> "{" renaming_commalist() "}" 				#AlgRename(2)
+		|	<WRAP> wrapping()  									#AlgWrap(2)
+		|	<UNWRAP> identifier()  								#AlgUnwrap(2) 
+		|	<GROUP> grouping()
+		|	<UNGROUP> identifier()		 						#AlgUngroup(2)
+		|	<DIVIDEBY> expression() <PER> "(" expression() divide_per_optional() ")" #AlgDivide(4)
+	]
+}
+
+/* Not explicitly defined in TTM3 */
+void order_item_commalist() #OrderItemCommalist :
+{}
+{
+	[ order_item() ( "," order_item() )* ]
+}
+
+void order_item() :
+{}
+{
+      <ASC>    identifier()  #OrderItemAsc 
+	| <DESC>   identifier()	 #OrderItemDesc
+}
+
+void divide_per_optional() #AlgDividePerOptional :
+{}
+{
+	[ "," expression() ]
+}
+
+void rel_project() :
+{}
+{
+	add_expression() [ "{" attribute_name_list() "}" #AlgProject(2) ]
+}
+
+void grouping() :
+{}
+{
+	"{" attribute_name_list() "}" <AS> identifier() #Group(3)
+}
+
+void wrapping() #WrappingItem :
+{}
+{
+	"{" attribute_name_list() "}" <AS> identifier()
+}
+
+void renaming_commalist() #RenamingList :
+{}
+{
+	[ renaming() ( "," renaming() )* ]
+}
+
+void renaming() :
+{}
+{
+		renaming_simple()
+	|	renaming_prefix()
+	|	renaming_suffix()
+}
+
+void renaming_simple() #RenamingSimple :
+{}
+{
+	identifier() <AS> identifier()
+}
+
+void renaming_prefix() #RenamingPrefix :
+{}
+{
+	<PREFIX> string_literal() <AS> string_literal()
+}
+
+void renaming_suffix() #RenamingSuffix :
+{}
+{
+	<SUFFIX> string_literal() <AS> string_literal()	
+}
+
+void attribute_name_list() #AttributeNameList :
+{}
+{
+	optional_all_but() attribute_name_commalist()
+}
+
+void optional_all_but() #AllBut :
+{}
+{
+	[ <ALL> <BUT> #AllBut ]
+}
+
+void attribute_name_commalist() #AttributeNameCommalist :
+{}
+{
+	[ identifier() ( "," identifier() )* ]
+}
+
+void add_expression() : 
+{} 
+{
+	mul_expression() (
+			"+"  mul_expression() #Add(2)
+		| 	"-"  mul_expression() #Subtract(2)
+		|	"||" mul_expression() #Concatenate(2)
+	)*
+}
+
+void mul_expression() : 
+{} 
+{ 
+	unary_expression() ( 
+			"*" unary_expression() #Times(2)
+		|	"/" unary_expression() #Divide(2)
+	)*
+}
+
+void unary_expression() :
+{}
+{
+		<NOT> unary_expression() #UnaryNot(1)
+	| 	"+"   unary_expression() #UnaryPlus(1)
+	|	"-"   unary_expression() #UnaryMinus(1)
+	|		  primary_expression()
+}
+
+void primary_expression() : 
+{}
+{
+		literal()
+	|	LOOKAHEAD(2) aggregate_operator()
+	|	exactly()
+	|	nadic_or()
+	|	nadic_xor()
+	|	nadic_and()
+	|	nadic_union()
+	|	nadic_xunion()
+	|	nadic_disjoint_union()
+	|	nadic_intersect()
+	|	nadic_join()
+	|	nadic_times()
+	| 	nadic_compose()
+	|	nadic_count()
+	|	nadic_sum()
+	|	nadic_avg()
+	|	nadic_max()
+	|	nadic_min()
+	|	extend()
+	|	summarize()
+	|	substitute()
+	|	case_expression()
+	|	if_expression()
+	|	LOOKAHEAD(2) fn_invoke() 
+	| 	dereference() 
+	| 	"(" expression() ")"
+}
+
+void case_expression() #CaseExpression :
+{}
+{
+	<CASE> 
+	when_def_list_expr() 
+	<ELSE> expression() 
+	<END> <CASE>
+}
+
+void when_def_list_expr() #CaseWhenListExpression :
+{}
+{
+	when_def_expr() ( when_def_expr() )*
+}
+
+void when_def_expr() #CaseWhenExpression :
+{}
+{
+	<WHEN> expression() <THEN> expression()
+}
+
+void if_expression() #IfExpression :
+{}
+{
+	<IF> expression() <THEN> expression() 
+	<ELSE> expression()
+	<END> <IF>
+}
+
+/* Update expression, *not* assignment.
+Contents of expression() does not change! */
+void substitute() #Substitute :
+{}
+{
+	<UPDATE> expression() ":" update_assignment()
+}
+
+void nadic_optional_heading() :
+{}
+{	     LOOKAHEAD(heading() "{" heading_exp_commalist() "}") heading() #NadicHeading "{" heading_exp_commalist() "}"
+	   | "{" heading_exp_commalist() "}" 
+}
+
+void nadic_union() #NadicUnion :
+{}
+{
+	<UNION> nadic_optional_heading()
+}
+
+void nadic_xunion() #NadicXunion :
+{}
+{
+	<XUNION> nadic_optional_heading()
+}
+
+void nadic_disjoint_union() #NadicDUnion :
+{}
+{
+	<D_UNION> nadic_optional_heading()
+}
+
+void nadic_intersect() #NadicIntersect :
+{}
+{
+	<INTERSECT> nadic_optional_heading()
+}
+
+void nadic_join() #NadicJoin :
+{}
+{
+	<JOIN> "{" heading_exp_commalist() "}"
+}
+
+void nadic_times() #NadicTimes :
+{}
+{	<TIMES> "{" heading_exp_commalist() "}"
+}
+
+void nadic_compose() #NadicCompose :
+{}
+{	<COMPOSE> "{" heading_exp_commalist() "}"
+}
+
+void nadic_or() #NadicOr :
+{}
+{
+	<OR> "{" bool_exp_commalist() "}"
+}
+
+void nadic_xor() #NadicXor :
+{}
+{
+	<XOR> "{" bool_exp_commalist() "}"
+}
+
+void nadic_and() #NadicAnd :
+{}
+{
+	<AND> "{" bool_exp_commalist() "}"
+}
+
+void nadic_count() #NadicCount :
+{}
+{
+	<COUNT> "{" exp_commalist() "}"
+}
+
+void nadic_sum() #NadicSum :
+{}
+{
+	<SUM> "{" exp_commalist() "}"
+}
+
+void nadic_avg() #NadicAvg :
+{}
+{
+	<AVG> "{" exp_commalist() "}"
+}
+
+void nadic_max() #NadicMax :
+{}
+{
+	<MAX> "{" exp_commalist() "}"
+}
+
+void nadic_min() #NadicMin :
+{}
+{
+	<MIN> "{" exp_commalist() "}"
+}
+
+void exactly() #Exactly :
+{}
+{
+	<EXACTLY> "(" expression() [ "," expression() ( "," expression() )* ] ")"
+}
+
+void exp_commalist() #ExpressionCommalist :
+{}
+{
+	[ expression() ( "," expression() )* ]
+}
+
+void bool_exp_commalist() #BooleanExpressionCommalist :
+{}
+{
+	[ expression() ( "," expression() )* ]
+}
+
+void heading_exp_commalist() #HeadingExpCommalist :
+{}
+{
+	[ expression() ( "," expression() )* ] 
+}
+
+void extend() #Extend :
+{}
+{
+	<EXTEND> expression() ":" "{" extend_add_commalist() "}"
+}
+
+void extend_add_commalist() #ExtendList :
+{}
+{
+	extend_add() ( "," extend_add() )*
+}
+
+void extend_add() #ExtendItem :
+{}
+{
+	identifier() ":=" expression()
+}
+
+void summarize() #Summarize :
+{}
+{
+	<SUMMARIZE> expression() per_or_by() ":" "{" summarize_add_commalist() "}"
+}
+
+void per_or_by() #SummarizePerOrBy :
+{}
+{
+	[
+			<PER> "(" expression() ")" #SummarizePer(1)
+		|	<BY> "{" attribute_name_list() "}" #SummarizeBy(1)
+	]
+}
+
+void summarize_add_commalist() #SummarizeItems :
+{}
+{
+	summarize_add() ( "," summarize_add() )*
+}
+
+void summarize_add() #SummarizeItem :
+{}
+{
+	identifier() ":=" summary()
+}
+
+void summary() :
+{}
+{
+		<COUNT>	"("	")"										#SummarizeCount
+	|	<COUNTD> "(" expression() ")" 						#SummarizeCountDistinct(1)
+	|	<SUM> "(" expression() ")"							 #SummarizeSum(1)
+	|	<SUMD> "(" expression() ")"							 #SummarizeSumDistinct(1)
+	|	<AVG> "(" expression() ")"							 #SummarizeAvg(1)
+	|	<AVGD> "(" expression() ")"							 #SummarizeAvgDistinct(1)
+	|	<MAX> "(" expression() ")"							 #SummarizeMax(1)
+	|	<MIN> "(" expression() ")"							 #SummarizeMin(1)
+	|	<AND> "(" expression() ")"					 		#SummarizeAnd(1)
+	|	<OR> "(" expression() ")"							 #SummarizeOr(1)
+	|	<XOR> "(" expression() ")"							 #SummarizeXor(1)
+	|	<EXACTLY> "(" expression() "," expression() ")"	 	#SummarizeExactly(2)
+	|	<EXACTLYD> "(" expression() "," expression() ")"	 #SummarizeExactlyDistinct(2)
+	|	<UNION> "(" expression() ")"						 #SummarizeUnion(1)
+	|	<XUNION> "(" expression() ")"						 #SummarizeXunion(1)
+	|	<D_UNION> "(" expression() ")" 						#SummarizeDUnion(1)
+	|	<INTERSECT> "(" expression() ")" 					#SummarizeIntersect(1)
+}
+
+void fn_invoke() #FnInvoke :
+{}
+{
+	identifier() "(" arglist() ")"
+}
+
+void arglist() #ArgList :
+{}
+{
+	[ expression() ( "," expression() )* ]
+}
+
+void aggregate_operator() :
+{}
+{
+		<COUNT> "(" expression() ")"							#AggCount(1)
+	|	<SUM> "(" expression() "," expression() ")"				#AggSum(2)
+	|	<AVG> "(" expression() "," expression() ")"				#AggAvg(2)
+	|	<MAX> "(" expression() "," expression() ")"				#AggMax(2)
+	|	<MIN> "(" expression() "," expression() ")"				#AggMin(2)				
+	|	<AND> "(" expression() "," expression() ")"				#AggAnd(2)
+	|	<OR> "(" expression() "," expression() ")"				#AggOr(2)
+	|	<XOR> "(" expression() "," expression() ")"				#AggXor(2)
+	|	<UNION> "(" expression() "," expression() ")"			#AggUnion(2)
+	|	<XUNION> "(" expression() "," expression() ")"			#AggXunion(2)
+	|	<D_UNION> "(" expression() "," expression() ")"			#AggDUnion(2)
+	|	<INTERSECT> "(" expression() "," expression() ")"		#AggIntersect(2)
+}
+
+void literal() :
+{}
+{
+  		lambda()
+	| 	tuple()
+	|	relation()
+	|	integer()
+	|	character()							  	
+	|	rational()
+	|	bool()
+}
+
+void tuple() #Tuple :
+{}
+{
+	<TUPLE> "{" [ tuple_component_commalist() ] "}"
+}
+
+void tuple_component_commalist() :
+{}
+{
+	tuple_component() ( "," tuple_component() )*
+}
+
+void tuple_component() #TupleComponent :
+{}
+{
+	identifier() expression()
+}
+
+void relation() :
+{}
+{
+		<RELATION> relation_heading() "{" tuple_exp_commalist() "}"		#Relation(2)
+	|	<TABLE_DUM>														#RelationDum
+	|	<TABLE_DEE>														#RelationDee
+}
+
+void relation_heading() #RelationHeading :
+{}
+{
+	[ LOOKAHEAD(heading()) heading() ]
+}
+
+void heading() #Heading :
+{}
+{
+	"{" [ attribute_spec_commalist() ] "}"
+}
+
+void tuple_exp_commalist() #TupleExpressionCommalist :
+{}
+{
+	[ expression() ( "," expression() )* ]
+}
+
+void attribute_spec_commalist() :
+{}
+{
+	attribute_spec() ( "," attribute_spec() )*
+}
+
+void attribute_spec() #AttributeSpec :
+{}
+{
+	identifier() type_ref()
+}
+
+void identifier() #Identifier :
+{Token t;}
+{
+	t = <IDENTIFIER> {jjtThis.tokenValue = t.image;}
+}
+
+void dereference() #Dereference :
+{Token t;}
+{
+	t = <IDENTIFIER> {jjtThis.tokenValue = t.image;}
+}
+
+void character() #Character :
+{Token t;}
+{
+	t = <STRING_LITERAL> {jjtThis.tokenValue = t.image;}
+}
+
+void string_literal() #StringLiteral :
+{Token t;}
+{
+	t = <STRING_LITERAL> {jjtThis.tokenValue = t.image;}
+}
+
+void integer() #Integer : 
+{Token t;} 
+{ 
+	t = <INTEGER_LITERAL> {jjtThis.tokenValue = t.image;}
+}
+
+void rational() #Rational : 
+{Token t;} 
+{ 
+	t = <FLOATING_POINT_LITERAL> {jjtThis.tokenValue = t.image;}
+}
+
+void bool() : 
+{}
+{
+		<TRUE> #True
+	|	<FALSE> #False
+}

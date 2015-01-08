@@ -3,5 +3,6 @@
 	<classpathentry kind="src" path=""/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Client"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

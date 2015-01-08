@@ -3,7 +3,7 @@ package org.reldb.rel.tests.main;
 import org.junit.After;
 import org.junit.Test;
 import org.reldb.rel.tests.BaseOfTest;
-import org.reldb.rel.values.*;
+import org.reldb.rel.v0.values.*;
 
 public class TestOperatorSimpleReturn extends BaseOfTest {
 	
