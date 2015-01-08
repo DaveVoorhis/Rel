@@ -10,7 +10,7 @@ https://github.com/DaveVoorhis/Rel.git
 
 See the Rel home page at http://reldb.org
 
-See the RelDeployment directory for conventional installable versions
+See the Deployment directory for conventional installable versions
 of Rel.  These are executable Java .jar files, with names of the form
 RelInstall-x.y.z.jar
 
