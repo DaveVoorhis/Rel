@@ -19,7 +19,7 @@ installable version of Rel.  Download DBrowser.jnlp and invoke with
 javaws (e.g., javaws DBrowser.jnlp) to run the Java Web Start
 installation, or use the Launch button on http://reldb.org/
 
-Read the RelDeployment/README.txt file for further information on
+Read the Deployment/README.txt file for further information on
 running Rel.
 
 For support or to discuss Rel, see the Rel Forum at
