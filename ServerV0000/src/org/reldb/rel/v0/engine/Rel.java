@@ -14,7 +14,7 @@ import org.reldb.rel.v0.interpreter.ParseExceptionPrinter;
 import org.reldb.rel.v0.languages.tutoriald.parser.ParseException;
 import org.reldb.rel.v0.languages.tutoriald.parser.TokenMgrError;
 
-/** Convenient access point for running a stand-alone interpreter. */
+/** Convenient access point for running an embedded or stand-alone interpreter. */
 
 public class Rel {
 	
@@ -87,6 +87,18 @@ public class Rel {
 				output.println("\nOk.");
 			}
 		});
+	}
+	
+	/** Convenient runner for a stand-alone Rel interpreter. */
+	public static void main(String[] args) {
+		try {
+			ClassPathHack.addFile("je.jar");
+			ClassPathHack.addFile("relshared.jar");
+		} catch (IOException ioe) {
+			System.out.println(ioe.toString());
+			return;
+		}
+		org.reldb.rel.v0.interpreter.Instance.main(args);
 	}
 	
 }
