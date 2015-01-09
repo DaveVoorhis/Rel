@@ -7,8 +7,8 @@ package org.reldb.rel.v0.version;
  */
 public class Version {
    
-    private static final int MAJOR = 1;
-    private static final int MINOR = 0;
+    private static final int PRODUCT_VERSION = 1;
+    private static final int DATABASE_VERSION = 0;
     private static final int REVISION = 13;
     private static final String RELEASE = "Beta";
     
@@ -17,17 +17,17 @@ public class Version {
     /** No instances. */
     private Version() {}
     
-    /** Get major version number. */
-    public static int getMajor() {
-        return MAJOR;
+    /** Get major version number. Changes to this mean a whole new product series. */
+    public static int getProductVersion() {
+        return PRODUCT_VERSION;
     }
     
-    /** Get minor version number. */
-    public static int getMinor() {
-        return MINOR;
+    /** Get minor version number. Changes to this mean databases are not compatible. This serves as the database format version number. */
+    public static int getDatabaseVersion() {
+        return DATABASE_VERSION;
     }
     
-    /** Get revision number. */
+    /** Get revision number. Changes to this mean bug fixes and enhancements. */
     public static int getRevision() {
         return REVISION;
     }
@@ -39,7 +39,7 @@ public class Version {
     
     /** Get numeric version string, without release. */
     public static String getNumericVersion() {
-    	return getMajor() + "." + getMinor() + "." + getRevision();
+    	return getProductVersion() + "." + getDatabaseVersion() + "." + getRevision();
     }
     
     /** Get version string. */
