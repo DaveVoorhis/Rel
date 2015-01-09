@@ -67,7 +67,7 @@ public class Rel {
 			output.println("ERROR: " + t);
 			t.printStackTrace(output);
 			t.printStackTrace();
-			throw new ExceptionFatal("ERROR: ", t);
+			throw t;
 		}
 		output.println("<EOT>");			
 	}
