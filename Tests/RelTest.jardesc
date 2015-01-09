@@ -12,7 +12,6 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.external"/>
-        <folder path="/Tests/META-INF"/>
         <javaElement handleIdentifier="=Tests/&lt;"/>
         <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.main"/>
         <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.inheritance"/>

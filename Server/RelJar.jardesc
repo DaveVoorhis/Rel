@@ -11,7 +11,7 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=Server/&lt;"/>
+        <javaElement handleIdentifier="=Server/&lt;{Rel.java"/>
         <javaElement handleIdentifier="=Server/&lt;org.reldb.rel"/>
     </selectedElements>
 </jardesc>
