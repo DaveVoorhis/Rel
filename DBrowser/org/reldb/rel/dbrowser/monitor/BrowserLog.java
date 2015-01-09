@@ -98,6 +98,7 @@ public class BrowserLog extends javax.swing.JFrame {
 		jFileChooserSave.setDialogType(JFileChooser.SAVE_DIALOG);
 		FileNameExtensionFilter filterTXT = new FileNameExtensionFilter("Text files", "txt");
 		jFileChooserSave.addChoosableFileFilter(filterTXT);
+		jFileChooserSave.setFileFilter(filterTXT);
 		jFileChooserSave.setDialogTitle("Save Log");
         
         getContentPane().setLayout(new BorderLayout());

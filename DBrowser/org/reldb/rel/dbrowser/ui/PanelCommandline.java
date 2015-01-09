@@ -192,18 +192,22 @@ public class PanelCommandline extends javax.swing.JPanel {
 	private void initialise() {
 		initComponents();
 		initTimers();
-		FileNameExtensionFilter filterD = new FileNameExtensionFilter("D source files", "d");
+		FileNameExtensionFilter filterRel = new FileNameExtensionFilter("Rel source files", "rel");
 		jFileChooserGetPath.addChoosableFileFilter(new FileNameExtensionFilter("XLS", "xls"));
 		jFileChooserGetPath.addChoosableFileFilter(new FileNameExtensionFilter("XLSX", "xlsx"));
 		jFileChooserGetPath.addChoosableFileFilter(new FileNameExtensionFilter("CSV", "csv"));
-		jFileChooserLoad.addChoosableFileFilter(filterD);
-		jFileChooserSave.addChoosableFileFilter(filterD);
+		jFileChooserLoad.addChoosableFileFilter(filterRel);
+		jFileChooserLoad.setFileFilter(filterRel);
+		jFileChooserSave.addChoosableFileFilter(filterRel);
+		jFileChooserSave.setFileFilter(filterRel);
 		FileNameExtensionFilter filterTXT = new FileNameExtensionFilter("Text files", "txt");
 		jFileChooserSaveOutputText.addChoosableFileFilter(filterTXT);
-		jFileChooserSaveOutputText.addChoosableFileFilter(filterD);
+		jFileChooserSaveOutputText.addChoosableFileFilter(filterRel);
+		jFileChooserSaveOutputText.setFileFilter(filterTXT);
 		jFileChooserSaveOutputText.setDialogTitle("Save Text");
 		FileNameExtensionFilter filterHTML = new FileNameExtensionFilter("HTML files", "html", "htm");
 		jFileChooserSaveOutputFormatted.addChoosableFileFilter(filterHTML);
+		jFileChooserSaveOutputFormatted.setFileFilter(filterHTML);
 		jFileChooserSaveOutputFormatted.setDialogTitle("Save HTML");
 		setButtons();
 		jCheckBoxEnhanced.setSelected(true);

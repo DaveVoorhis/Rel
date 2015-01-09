@@ -28,14 +28,14 @@ public class Backup {
 	    Calendar cal = Calendar.getInstance();
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MMMMM_dd_hh_mm_aaa");
 		String timestamp = sdf.format(cal.getTime());
-		return "relbackup_" + fname + "_" + timestamp + ".d";
+		return "relbackup_" + fname + "_" + timestamp + ".rel";
 	}
 	
 	public BackupResponse backupToFile(String dbURL, File outputFile) {
 		String backupScript = "";
 		try {
         	ClassLoader loader = this.getClass().getClassLoader();
-        	URL backupScriptURL = loader.getResource("org/reldb/rel/resources/DatabaseToScript.d");
+        	URL backupScriptURL = loader.getResource("org/reldb/rel/resources/DatabaseToScript.rel");
         	BufferedReader in = new BufferedReader(new InputStreamReader(backupScriptURL.openStream()));
 		    String line;
 		    while ((line = in.readLine()) != null) {
