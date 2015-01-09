@@ -1,7 +1,7 @@
 #!/bin/sh
 rm jars/*.jar
 mkdir jars
-cp ~/git/Rel/RelDeployment/*.jar jars
+cp ~/git/Rel/_Deployment/*.jar jars
 rm jars/RelInstall*
 echo Password:
 read -s PASSWORD
