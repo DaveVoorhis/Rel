@@ -83,7 +83,7 @@ public class Instance {
 				// Backup oldRel's database
 				// Close oldRel
 				// Rename Reldb to Reldb_old<n> where <n> is its detected version
-				// Create new database using this in Reldb
+				// Create new database
 				// Import oldRel's database script into new database
 			}
 			openDatabases.put(databasePath, database);
