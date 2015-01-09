@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
 
 import org.reldb.rel.exceptions.*;
 import org.reldb.rel.v0.external.DirClassLoader;
@@ -153,8 +154,52 @@ public class RelDatabase {
 			}
 		}
     }
+
+    private String getVersionFileName() {
+    	return databaseHome + File.separator + "version";
+    }
     
-    public void open(File envHome, boolean canCreateDb, PrintStream outputStream) {
+    private void writeVersion() throws IOException {
+    	FileWriter writer = null;
+    	try {
+	    	writer = new FileWriter(getVersionFileName(), false);
+	    	writer.write(Integer.toString(Version.getDatabaseVersion()));
+    	} finally {
+    		if (writer != null)
+    	    	writer.close();
+    	}
+    }
+    
+    private int readVersion() {
+    	List<String> lines = null;
+    	try {
+			lines = Files.readAllLines(new File(getVersionFileName()).toPath());
+		} catch (IOException e1) {
+			return -1;
+		}
+    	if (lines.isEmpty())
+    		return -1;
+	    try {
+	    	return Integer.parseInt(lines.get(0));
+	    } catch (NumberFormatException nfe) {
+	    	return -1;
+	    }
+    }
+
+    public static class DatabaseConversionException extends Exception {
+		private static final long serialVersionUID = 1L;
+		private int oldVersion;
+    	private String homeDir;
+    	public DatabaseConversionException(int oldVersion, String homeDir) {
+    		super("RS0410: Database requires conversion from v" + oldVersion + " in " + homeDir);
+    		this.oldVersion = oldVersion;
+    		this.homeDir = homeDir;
+    	}
+    	public int getOldVersion() {return oldVersion;}
+    	public String getHomeDir() {return homeDir;}
+    }
+    
+    public void open(File envHome, boolean canCreateDb, PrintStream outputStream) throws DatabaseConversionException {
     	String usingBerkeleyJavaDBVersion = getBerkeleyJavaDBVersion(); 
     	if (!usingBerkeleyJavaDBVersion.equals(Version.expectedBerkeleyDBVersion))
     		throw new ExceptionFatal("RS0323: Expected to find Berkeley Java DB version " + Version.expectedBerkeleyDBVersion + " but found version " + usingBerkeleyJavaDBVersion + ".\nAn attempted update or re-installation has probably failed.\nPlease make sure je.jar is not read-only, then try the update or re-installation again.");
@@ -165,12 +210,28 @@ public class RelDatabase {
     		homeDir += java.io.File.separator;
  	
     	databaseHome = homeDir + databaseHomeRelative;
-    	if (!canCreateDb) {
-    		if (!(new File(databaseHome)).exists())
+ 
+		if (!(new File(databaseHome)).exists())
+			if (!canCreateDb)
         		throw new ExceptionSemantic("RS0406: Database " + homeDir + " either doesn't exist or isn't a Rel database.");
-    	}
-    	
-    	mkdir(databaseHome);
+			else {
+				mkdir(databaseHome);
+				try {
+					writeVersion();
+				} catch (IOException ioe) {
+					throw new ExceptionSemantic("RS0408: Can't write version file in database in " + homeDir + ".");
+				}
+			}
+		else {
+			int detectedVersion = readVersion();
+			if (detectedVersion < 0) {
+				throw new ExceptionSemantic("RS0407: Database in " + homeDir + " has no version information, or it's invalid.  The database must be upgraded manually.\nBack it up with the version of Rel used to create it and load the backup into a new database.");
+			} else if (detectedVersion < Version.getDatabaseVersion()) {
+				throw new DatabaseConversionException(detectedVersion, homeDir);
+			} else if (detectedVersion > Version.getDatabaseVersion()) {
+				throw new ExceptionSemantic("RS0409: Database in " + homeDir + " appears to have been created by a newer version of Rel than this one.\nOpen it with the latest version of Rel.");
+			}
+		}
     	
     	userCodeHome = databaseHome + java.io.File.separator + userCodeHomeRelative;
     
@@ -254,9 +315,9 @@ public class RelDatabase {
 			File homePlugins = new File(homeDir + "Relplugins");
 			File databasePlugins = new File(databaseHome + java.io.File.separator + "Relplugins");
 			
-			if(!homePlugins.exists())
+			if (!homePlugins.exists())
 				homePlugins.mkdir();
-			if(!databasePlugins.exists())
+			if (!databasePlugins.exists())
 				databasePlugins.mkdir();
 			
 			customRelvarsHome = homePlugins.getAbsolutePath() + java.io.File.separator + "relvars";

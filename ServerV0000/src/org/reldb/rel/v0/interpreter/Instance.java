@@ -9,6 +9,7 @@ import org.reldb.rel.exceptions.*;
 import org.reldb.rel.shared.Defaults;
 import org.reldb.rel.v0.server.Server;
 import org.reldb.rel.v0.storage.*;
+import org.reldb.rel.v0.storage.RelDatabase.DatabaseConversionException;
 import org.reldb.rel.v0.version.Version;
 
 /** A self-contained instance of the Rel system. */
@@ -71,7 +72,20 @@ public class Instance {
 		database = openDatabases.get(databasePath);
 		if (database == null) {
 			database = new RelDatabase();
-			database.open(databasePath, createDbAllowed, output);
+			try {
+				database.open(databasePath, createDbAllowed, output);
+			} catch (DatabaseConversionException e) {
+				throw new ExceptionSemantic("RS0411: Database conversion from format v" + e.getOldVersion() + 
+						" to v" + Version.getDatabaseVersion() + " not implemented yet.");
+				// TODO - finish database conversion code
+				// Load detected version's .jar file
+				// Instantiate old version as oldRel
+				// Backup oldRel's database
+				// Close oldRel
+				// Rename Reldb to Reldb_old<n> where <n> is its detected version
+				// Create new database using this in Reldb
+				// Import oldRel's database script into new database
+			}
 			openDatabases.put(databasePath, database);
 		}
 	}
