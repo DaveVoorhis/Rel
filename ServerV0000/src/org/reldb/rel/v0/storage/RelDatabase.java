@@ -165,9 +165,13 @@ public class RelDatabase {
     		homeDir += java.io.File.separator;
  	
     	databaseHome = homeDir + databaseHomeRelative;
-    	if (!canCreateDb && !(new File(databaseHome)).exists())
-    		throw new ExceptionSemantic("RS0405: Database " + homeDir + " either doesn't exist or isn't a Rel database.");
+    	if (!canCreateDb) {
+    		if (!(new File(databaseHome)).exists())
+        		throw new ExceptionSemantic("RS0406: Database " + homeDir + " either doesn't exist or isn't a Rel database.");
+    	}
+    	
     	mkdir(databaseHome);
+    	
     	userCodeHome = databaseHome + java.io.File.separator + userCodeHomeRelative;
     
     	dirClassLoader = new DirClassLoader(homeDir);

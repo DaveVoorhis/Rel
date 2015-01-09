@@ -257,7 +257,7 @@ public class Browser extends JFrame {
     	} else if (msg.contains("Connection refused")) {
         	JOptionPane.showMessageDialog(null, "A Rel server doesn't appear to be running or available at " + dbURL, 
         			"Unable to open remote database", JOptionPane.ERROR_MESSAGE);
-    	} else if (msg.contains("RS0405:")) {
+    	} else if (msg.contains("RS0406:")) {
     		JOptionPane.showMessageDialog(null, dbURL + " doesn't contain a Rel database.",
     				"Unable to open local database", JOptionPane.ERROR_MESSAGE);
     	} else if (msg.contains("RS0307:")) {
