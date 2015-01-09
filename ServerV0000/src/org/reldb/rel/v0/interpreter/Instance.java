@@ -77,7 +77,7 @@ public class Instance {
 			} catch (DatabaseConversionException e) {
 				throw new ExceptionSemantic("RS0411: Database conversion from format v" + e.getOldVersion() + 
 						" to v" + Version.getDatabaseVersion() + " not implemented yet.");
-				// TODO - finish database conversion code
+				// TODO - finish database conversion code - announce progress via 'output' stream.
 				// Load detected version's .jar file
 				// Instantiate old version as oldRel
 				// Backup oldRel's database
