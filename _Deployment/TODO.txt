@@ -2,8 +2,7 @@
 
 Short term:
 	// TODO - Check: in ForeignCompilerJava, should JDK_HOME take priority over JAVA_HOME?
-	// TODO - Check: in ForeignCompilerJava, should all org.reldb.rel.v0.* package refs be in Version?
-	// TODO - Test web deployment.
+	// TODO - Check: in ForeignCompilerJava, see why external compilation fails in Web Start.
 	// TODO - Test all scripts in Scripts folder, particularly Date.rel
 	// TODO - Make sure Berkeley Java DB jar is versioned, so it can be paired with relevant ServerVnnnn.
 	// TODO - Complete database versioning, particularly handling updates.
