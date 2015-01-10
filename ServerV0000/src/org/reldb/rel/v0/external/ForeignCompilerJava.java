@@ -43,6 +43,13 @@ public class ForeignCompilerJava {
 		this.verbose = verbose;
 	}
 	
+	/** Return the package to which this entire Rel core belongs. */
+	private String getPackagePrefix() {
+		String thisPackageName = getClass().getPackage().getName();
+		String relPackageName = thisPackageName.replace(".external", "");
+		return relPackageName;
+	}
+	
 	/** Return classpath to the Rel core. */
     private static String getLocalClasspath(RelDatabase database) {
         return "." + java.io.File.pathSeparatorChar + 
@@ -118,7 +125,8 @@ public class ForeignCompilerJava {
 	}
 	
 	private static String getToolsJarPath() {
-		String javaHome = System.getProperty("java.home"); 
+		String javaHome;
+		javaHome = System.getProperty("java.home"); 
 		if (javaHome != null) {
 			 String toolsDir = getToolsJarPath(javaHome);
 			 if (toolsDir != null)
@@ -261,18 +269,18 @@ public class ForeignCompilerJava {
     	return getStrippedName(name);
     }
         
-    private static Type getTypeForClassName(Generator generator, String className) {
-        if (className.equals("org.reldb.rel.v0.values.ValueBoolean"))
+    private Type getTypeForClassName(Generator generator, String className) {
+        if (className.equals(getPackagePrefix() + ".values.ValueBoolean"))
             return TypeBoolean.getInstance();
-        else if (className.equals("org.reldb.rel.v0.values.ValueCharacter"))
+        else if (className.equals(getPackagePrefix() + ".values.ValueCharacter"))
             return TypeCharacter.getInstance();
-        else if (className.equals("org.reldb.rel.v0.values.ValueInteger"))
+        else if (className.equals(getPackagePrefix() + ".values.ValueInteger"))
             return TypeInteger.getInstance();
-        else if (className.equals("org.reldb.rel.v0.values.ValueRational"))
+        else if (className.equals(getPackagePrefix() + ".values.ValueRational"))
             return TypeRational.getInstance();
-        else if (className.equals("org.reldb.rel.v0.values.ValueObject"))
+        else if (className.equals(getPackagePrefix() + ".values.ValueObject"))
             return TypeInteger.getInstance();
-        else if (className.equals("org.reldb.rel.v0.values.ValueOperator"))
+        else if (className.equals(getPackagePrefix() + ".values.ValueOperator"))
             return TypeOperator.getInstance();
         else 
             return generator.locateType(getStrippedClassname(className));
@@ -320,7 +328,7 @@ public class ForeignCompilerJava {
         }
         String language = "Java";
         String typeName = getStrippedClassname(c.getName());
-        String src = "\n\treturn new " + typeName + "(" + arguments + ");";  
+        String src = "return new " + typeName + "(" + arguments + ");";  
         notify("* Constructor " + con + " of " + c + " implemented as selector OPERATOR " + sig);
         OperatorDefinition newOp = compileForeignOperator(sig, language, src);
         newOp.setCreatedByType(typeName);
@@ -377,9 +385,9 @@ public class ForeignCompilerJava {
         String typeName = getStrippedClassname(c.getName());
         String returnStr = (returnType == null) ? "" : "return ";
         if (Modifier.isStatic(m.getModifiers()))
-            src = "\n\t" + returnStr + typeName + "." + m.getName() + "(" + arguments + ");";
+            src = returnStr + typeName + "." + m.getName() + "(" + arguments + ");";
     	else
-            src = "\n\t" + returnStr + "px." + m.getName() + "(" + arguments + ");";
+            src = returnStr + "px." + m.getName() + "(" + arguments + ");";
         notify("* Method " + m + " of " + c + " implemented as OPERATOR " + sig);
         OperatorDefinition newOp = compileForeignOperator(sig, language, src);
         newOp.setCreatedByType(typeName);
@@ -403,14 +411,14 @@ public class ForeignCompilerJava {
 	public void compileForeignType(String name, String language, String src) {
         if (!language.equals("Java"))
             throw new ExceptionSemantic("RS0009: " + language + " is not recognised as a foreign language.");
-        String body = src;
-        src = "package " + RelDatabase.getRelUserCodePackage() + ";\n" +
-        	  "import org.reldb.rel.v0.vm.*;\n" +
-              "import org.reldb.rel.v0.types.*;\n" + 
-              "import org.reldb.rel.v0.types.builtin.*;\n" + 
-              "import org.reldb.rel.v0.types.userdefined.*;\n" + 
-			  "import org.reldb.rel.v0.values.*;\n" +
-			  "import org.reldb.rel.v0.generator.Generator;\n" +
+        String body = src.replace("\n", "\n\t");
+        src = "package " + RelDatabase.getRelUserCodePackage() + ";\n\n" +
+        	  "import " + getPackagePrefix() + ".vm.*;\n" +
+              "import " + getPackagePrefix() + ".types.*;\n" + 
+              "import " + getPackagePrefix() + ".types.builtin.*;\n" + 
+              "import " + getPackagePrefix() + ".types.userdefined.*;\n" + 
+			  "import " + getPackagePrefix() + ".values.*;\n" +
+			  "import " + getPackagePrefix() + ".generator.Generator;\n\n" +
               "public class " + name + " extends ValueTypeJava {\n" + 
                   body +
               "\n}";
@@ -420,7 +428,7 @@ public class ForeignCompilerJava {
             if (typeClass == null)
                 throw new ExceptionSemantic("RS0010: Despite having been compiled, " + name + " could not be loaded.");
             notify("> Java class " + typeClass.getName() + " loaded to implement type " + name);
-            Constructor<?> ctor = typeClass.getConstructor(new Class[] {org.reldb.rel.v0.generator.Generator.class});
+            Constructor<?> ctor = typeClass.getConstructor(new Class[] {Generator.class});
             if (ctor == null)
             	throw new ExceptionSemantic("RS0011: Unable to find a constructor of the form " + name + "(Generator generator)");
             generator.addTypeInProgress(name, (Type)ctor.newInstance(generator));
@@ -437,28 +445,28 @@ public class ForeignCompilerJava {
         // Modify src here to include class definition and appropriate methods
         // One of these must be 'public static void execute(Session s)'
         String comp = 
-        	  "package " + RelDatabase.getRelUserCodePackage() + ";\n" +
-			  "import org.reldb.rel.v0.types.*;\n" +
-              "import org.reldb.rel.v0.types.builtin.*;\n" + 
-              "import org.reldb.rel.v0.types.userdefined.*;\n" + 
-			  "import org.reldb.rel.v0.values.*;\n" +
-			  "import org.reldb.rel.v0.vm.Context;\n" +
+        	  "package " + RelDatabase.getRelUserCodePackage() + ";\n\n" +
+			  "import " + getPackagePrefix() + ".types.*;\n" +
+              "import " + getPackagePrefix() + ".types.builtin.*;\n" + 
+              "import " + getPackagePrefix() + ".types.userdefined.*;\n" + 
+			  "import " + getPackagePrefix() + ".values.*;\n" +
+			  "import " + getPackagePrefix() + ".vm.Context;\n\n" +
               "public class " + getStrippedClassname(signature.getClassSignature()) + " {\n" +
-              "private static final " + getJavaTypeForType(generator, signature.getReturnType()) + " " +
+              "\tprivate static final " + getJavaTypeForType(generator, signature.getReturnType()) + " " +
               "do_" + getStrippedName(signature.getName()) + "(" + getJavaMethodParmsForParameters(generator, signature) + ") {\n" + 
-              src + "}\n" +
-              "public static final void execute(Context context) {\n";
+              "\t\t" + src.replace("\n", "\n\t\t") + "\n\t}\n\n" +
+              "\tpublic static final void execute(Context context) {\n";
         String args = "context";
         Type[] parmTypes = signature.getParameterTypes();
         for (int i=parmTypes.length - 1; i >= 0; i--) {
-            comp += "\t" + getJavaTypeForType(generator, parmTypes[i]) + " " + "p" + i + " = " + getJavaPopForType(generator, parmTypes[i]) + ";\n";
+            comp += "\t\t" + getJavaTypeForType(generator, parmTypes[i]) + " " + "p" + i + " = " + getJavaPopForType(generator, parmTypes[i]) + ";\n";
             args += ", p" + (parmTypes.length - i - 1);
         }
         if (signature.getReturnType() != null)
-            comp += "\tcontext.push(" + "do_" + getStrippedName(signature.getName()) + "(" + args + "));\n";
+            comp += "\t\tcontext.push(" + "do_" + getStrippedName(signature.getName()) + "(" + args + "));\n";
         else
             comp += "\t" + "do_" + getStrippedName(signature.getName()) + "(" + args + ");\n";
-        comp += "}\n}";
+        comp += "\t}\n}";
         // compile source
         compileForeignCode(generator.getDatabase(), generator.getPrintStream(), signature.getClassSignature(), comp);
         notify("> Java class " + signature.getClassSignature() + " compiled to implement OPERATOR " + signature);
