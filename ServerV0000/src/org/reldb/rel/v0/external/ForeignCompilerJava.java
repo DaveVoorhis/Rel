@@ -3,12 +3,15 @@ package org.reldb.rel.v0.external;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.tools.Diagnostic;
@@ -42,6 +45,83 @@ public class ForeignCompilerJava {
 		this.generator = generator;
 		this.verbose = verbose;
 	}
+
+	private static final String MANIFEST = "META-INF/MANIFEST.MF";
+	
+	private static String relCoreJar = null;
+	
+	// This bit of hackery is used to get a Rel core jar file so we can compile user Java code under a Web Start environment.
+	// From https://weblogs.java.net/blog/2005/05/27/using-java-compiler-your-web-start-application
+	private synchronized String getLocalWebStartRelJarName() {
+		if (relCoreJar != null)
+			return relCoreJar;
+		try {
+			for (Enumeration<?> e = getClass().getClassLoader().getResources(MANIFEST); e.hasMoreElements();) {
+				URL url = (URL) e.nextElement();
+				if (url.getFile().contains(Version.getCoreJarFilename())) {
+					String relCoreJarName = getLocalJarFilename(url);
+					if (relCoreJarName != null) {
+						relCoreJar = relCoreJarName;
+						return relCoreJar;
+					}
+				}
+			}
+		} catch (IOException exc) {
+			exc.printStackTrace();
+		}
+		return null;
+	}
+	
+	private static String getLocalJarFilename(URL remoteManifestFileName) {
+		// remove trailing
+		String urlStrManifest = remoteManifestFileName.getFile();
+		String urlStrJar = urlStrManifest.substring(0, urlStrManifest.length() - MANIFEST.length() - 2);
+		InputStream inputStreamJar = null;
+		File tempJar;
+		FileOutputStream fosJar = null;
+		try {
+			URL urlJar = new URL(urlStrJar);
+			inputStreamJar = urlJar.openStream();
+			String strippedName = urlStrJar;
+			int dotIndex = strippedName.lastIndexOf('.');
+			if (dotIndex >= 0) {
+				strippedName = strippedName.substring(0, dotIndex);
+				strippedName = strippedName.replace("/", File.separator);
+				strippedName = strippedName.replace("\\", File.separator);
+				int slashIndex = strippedName.lastIndexOf(File.separator);
+				if (slashIndex >= 0) {
+					strippedName = strippedName.substring(slashIndex + 1);
+				}
+			}
+			tempJar = File.createTempFile(strippedName, ".jar");
+			tempJar.deleteOnExit();
+			fosJar = new FileOutputStream(tempJar);
+			byte[] ba = new byte[1024];
+			while (true) {
+				int bytesRead = inputStreamJar.read(ba);
+				if (bytesRead < 0) {
+					break;
+				}
+				fosJar.write(ba, 0, bytesRead);
+			}
+			return tempJar.getAbsolutePath();
+		} catch (Exception ioe) {
+			System.out.println(ioe.getMessage());
+			ioe.printStackTrace();
+		} finally {
+			try {
+				if (inputStreamJar != null) {
+					inputStreamJar.close();
+				}
+			} catch (IOException ioe) {}
+			try {
+				if (fosJar != null) {
+					fosJar.close();
+				}
+			} catch (IOException ioe) {}
+		}
+		return null;
+	}
 	
 	/** Return the package to which this entire Rel core belongs. */
 	private String getPackagePrefix() {
@@ -52,7 +132,7 @@ public class ForeignCompilerJava {
 	
 	/** Return classpath to the Rel core. */
     private static String getLocalClasspath(RelDatabase database) {
-        return java.io.File.pathSeparatorChar + Version.getCoreJarFilename() + 
+        return System.getProperty("user.dir") + java.io.File.pathSeparatorChar + Version.getCoreJarFilename() + 
         	   java.io.File.pathSeparatorChar + database.getJavaUserSourcePath() +
         	   java.io.File.pathSeparatorChar + database.getHomeDir();
     }
@@ -76,10 +156,22 @@ public class ForeignCompilerJava {
     /** Obtain a Java compiler invocation string.  The file name of the
      * Java source file to be compiled will be appended to this string 
      * to form a compilation command for external execution. */
-    private static String getJavacInvocation(RelDatabase database) {        
-        String sysclasspath = cleanClassPath(System.getProperty("java.class.path"));
-        String devclasspath = cleanClassPath(getLocalClasspath(database));
-        return "javac -classpath " + sysclasspath + java.io.File.pathSeparatorChar + devclasspath;
+    private String getJavacInvocation(RelDatabase database) {
+    	String sysclasspathRaw = System.getProperty("java.class.path");
+        System.out.println("ForeignCompilerJava: sysclasspathRaw is " + sysclasspathRaw);
+        String sysclasspath = cleanClassPath(sysclasspathRaw);
+        String devclasspathRaw = getLocalClasspath(database);
+        System.out.println("ForeignCompilerJava: devclasspathRaw is " + devclasspathRaw);
+        String devclasspath = cleanClassPath(devclasspathRaw);
+        System.out.println("ForeignCompilerJava: sysclasspath is " + sysclasspath);
+        System.out.println("ForeignCompilerJava: devclasspath is " + devclasspath);
+        String webclasspath = getLocalWebStartRelJarName();
+        System.out.println("ForeignCompilerJava: webclasspath is " + webclasspath);
+        String cmd = "javac -classpath " + sysclasspath + java.io.File.pathSeparatorChar + devclasspath;
+        if (webclasspath != null)
+        	cmd += java.io.File.pathSeparatorChar + webclasspath;
+        System.out.println("ForeignCompilerJava: cmd is " + cmd);
+        return cmd;
     }
     
     /** Given an operator signature, return a Java method parameter definition. */
@@ -102,7 +194,7 @@ public class ForeignCompilerJava {
         while (st.hasMoreElements()) {
             String element = (String)st.nextElement();
             java.io.File f = new java.io.File(element);
-            if (f.exists()) {
+            if (f.exists() && !element.contains("deploy.jar")) {
             	String fname = f.toString();
             	if (fname.indexOf(' ')>=0)
             		fname = '"' + fname + '"';
@@ -220,6 +312,9 @@ public class ForeignCompilerJava {
             	System.getProperty("java.class.path") + 
             	java.io.File.pathSeparatorChar + 
             	cleanClassPath(getLocalClasspath(database));
+            String webclasspath = getLocalWebStartRelJarName();
+            if (webclasspath != null)
+            	classpath += File.pathSeparatorChar + webclasspath;
             optionList.addAll(Arrays.asList("-classpath", classpath)); 
             compiler.getTask(null, fileManager, diagnostics, optionList, null, fileManager.getJavaFileObjects(sourcef)).call();
             String msg = "";
@@ -244,6 +339,7 @@ public class ForeignCompilerJava {
             if (sourcefile.indexOf(' ')>=0)
             	sourcefile = '"' + sourcefile + '"';
            	String command = getJavacInvocation(database) + " " + sourcefile;
+           	System.out.println("ForeignCompilerJava: command is " + command);
            	retval = ExternalExecutor.run(printstream, command);
             if (retval != 0) {
             	notify("? Compile failed.  Attempted with: " + command);
