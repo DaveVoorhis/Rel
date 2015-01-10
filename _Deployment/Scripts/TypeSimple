@@ -1,0 +1,44 @@
+TYPE Simple Java FOREIGN
+
+// A simple demonstration type. 
+
+	private String x;
+
+	/** Type constructor. */
+	public Date(Generator generator) {
+		super(generator);
+		x = "";
+	}
+
+	/** Value constructor. */
+	public Simple(Generator generator, ValueInteger v) {
+		super(generator);
+		x = v.toString();
+	}
+
+	/** Return a Simple in a readable format. */
+	public ValueCharacter readable(Generator generator) {
+		return ValueCharacter.select(generator, x);
+	}
+
+	/** Compare this Value to another Value of the same Type. */
+	public int compareTo(Value v) {
+		return x.compareTo(((Simple)v).x);
+	}
+    
+	/** Return a parsable representation of this Value. */
+	public String toParsableString(Type type) {
+		return toString();
+	}
+    
+	/** Return a string representation of this Value. */
+	public String toString() {
+		return "Simple(" + x + ")";
+	}
+    
+	/** Get a default Value of this Type. */
+	public Value getDefaultValue(Generator generator) {
+		return new Simple(generator, Now(generator));
+	}
+
+END TYPE;
