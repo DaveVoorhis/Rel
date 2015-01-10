@@ -5,7 +5,7 @@ TYPE Simple Java FOREIGN
 	private String x;
 
 	/** Type constructor. */
-	public Date(Generator generator) {
+	public Simple(Generator generator) {
 		super(generator);
 		x = "";
 	}
@@ -38,7 +38,7 @@ TYPE Simple Java FOREIGN
     
 	/** Get a default Value of this Type. */
 	public Value getDefaultValue(Generator generator) {
-		return new Simple(generator, Now(generator));
+		return new Simple(generator, ValueInteger.select(generator, 0L));
 	}
 
 END TYPE;
