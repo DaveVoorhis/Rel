@@ -11,7 +11,6 @@ public class ClientFromURL {
     /** Open a connection. */
     public static StringReceiverClient openConnection(String databaseURL, boolean createDbAllowed) throws NumberFormatException, IOException, MalformedURLException, ClassNotFoundException {
     	if (databaseURL.toLowerCase().startsWith("local:")) {
-    		// Class.forName("org.reldb.rel.v0.version.Version");
     		if (databaseURL.length() > 6)
     			return new ClientLocal(databaseURL.substring(6).trim(), createDbAllowed);
     		else
