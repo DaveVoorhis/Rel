@@ -26,7 +26,11 @@ public class Version {
     public static int getDatabaseVersion() {
         return DATABASE_VERSION;
     }
-    
+
+	public static String getCoreJarFilename() {
+		return String.format("rel%04d.jar", getDatabaseVersion());
+	}
+
     /** Get revision number. Changes to this mean bug fixes and enhancements. */
     public static int getRevision() {
         return REVISION;

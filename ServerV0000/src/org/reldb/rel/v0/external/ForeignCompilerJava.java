@@ -27,6 +27,7 @@ import org.reldb.rel.v0.types.builtin.TypeBoolean;
 import org.reldb.rel.v0.types.builtin.TypeCharacter;
 import org.reldb.rel.v0.types.builtin.TypeInteger;
 import org.reldb.rel.v0.types.builtin.TypeRational;
+import org.reldb.rel.v0.version.Version;
 
 /**
  * @author Dave
@@ -45,7 +46,7 @@ public class ForeignCompilerJava {
 	/** Return classpath to the Rel core. */
     private static String getLocalClasspath(RelDatabase database) {
         return "." + java.io.File.pathSeparatorChar + 
-               "Rel.jar" + java.io.File.pathSeparatorChar +
+               Version.getCoreJarFilename() + java.io.File.pathSeparatorChar +
                database.getJavaUserSourcePath();
     }
     
