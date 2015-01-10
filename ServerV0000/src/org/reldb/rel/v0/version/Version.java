@@ -27,6 +27,7 @@ public class Version {
         return DATABASE_VERSION;
     }
 
+    /** Name of the jar file that contains this class. */
 	public static String getCoreJarFilename() {
 		return String.format("rel%04d.jar", getDatabaseVersion());
 	}
