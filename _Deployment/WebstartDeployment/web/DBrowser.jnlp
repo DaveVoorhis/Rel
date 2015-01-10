@@ -68,6 +68,7 @@
 	  <jar href="relclient.jar" />
 	  <jar href="relshared.jar" />
 	  <jar href="rev.jar" />
+	  <jar href="rel0000.jar" />
      </resources>
 
      <application-desc main-class="DBrowserWithoutMonitor" />
