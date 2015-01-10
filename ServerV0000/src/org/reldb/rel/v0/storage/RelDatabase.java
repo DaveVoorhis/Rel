@@ -335,6 +335,11 @@ public class RelDatabase {
         }
     }
 
+    /** Return the directory that contains the database. */
+    public String getHomeDir() {
+    	return homeDir;
+    }
+    
 	public void registerTupleIterator(RegisteredTupleIterator registeredTupleIterator) {
 		registeredTupleIterators.add(registeredTupleIterator);
 	}

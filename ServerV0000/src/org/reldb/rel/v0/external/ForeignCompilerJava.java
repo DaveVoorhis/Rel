@@ -52,9 +52,9 @@ public class ForeignCompilerJava {
 	
 	/** Return classpath to the Rel core. */
     private static String getLocalClasspath(RelDatabase database) {
-        return "." + java.io.File.pathSeparatorChar + 
-               Version.getCoreJarFilename() + java.io.File.pathSeparatorChar +
-               database.getJavaUserSourcePath();
+        return java.io.File.pathSeparatorChar + Version.getCoreJarFilename() + 
+        	   java.io.File.pathSeparatorChar + database.getJavaUserSourcePath() +
+        	   java.io.File.pathSeparatorChar + database.getHomeDir();
     }
     
     /** Given a Type, return the name of the equivalent Java type. */
@@ -212,8 +212,7 @@ public class ForeignCompilerJava {
        		compiler = getSystemJavaCompiler();
         	initialised = true;
         }
-
-        if (compiler != null) {        	
+        if (compiler != null) {
             StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
             DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
             List<String> optionList = new ArrayList<String>();
@@ -227,11 +226,11 @@ public class ForeignCompilerJava {
             for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
             	msg += "Java error: " + diagnostic.getMessage(null) + ":\n" +
             			" in line " + diagnostic.getLineNumber() + " of:\n" +
-                                diagnostic.getSource().toString() + "\n";
+                                ((diagnostic.getSource() != null) ? diagnostic.getSource().toString() : "<unknown>") + "\n";
             }
         	if (msg.length() > 0)
         		throw new ExceptionSemantic("RS0004: " + msg);
-        	return;				
+        	return;
         }
         
     	System.out.println("NOTE: A 'tools.jar' or internal Java compiler can't be found.");
