@@ -375,6 +375,10 @@ public class Browser extends JFrame {
     	}
     }
     
+    private void loadSourceFile(String loadFile) {
+    	System.out.println("Browser: load file " + loadFile + " goes here.");
+	}
+    
     private static Browser browser;
     
     /** Exit the app. */
@@ -384,7 +388,7 @@ public class Browser extends JFrame {
     }
         
 	private static void usage() {
-		System.out.println("Usage: Rel [-nomonitor] [-f[<databaseDir>]]");
+		System.out.println("Usage: Rel [-nomonitor] [-f[<databaseDir>] | <sourcefile.rel>]");
 		System.out.println(" -nomonitor      -- do not open monitor window");
 		System.out.println(" -f<databaseDir> -- open specified local database directory");
 		System.out.println(" -f              -- do not open a local database");
@@ -450,15 +454,20 @@ public class Browser extends JFrame {
     		noLocalRel = true;
         }
     	String databaseDir = System.getProperty("user.home");
+    	String loadFile = null;
     	if (args.length > 1) {
     		System.out.println("More than the expected number of command-line arguments.");
     		usage();
     		System.exit(1);
     	} else if (args.length == 1) {
     		if (!(args[0].startsWith("-f"))) {
-    			System.out.println("Expected -f command-line argument, but got " + args[0]);
-    			usage();
-    			System.exit(1);
+    			if (args[0].endsWith(".rel")) {
+    				loadFile = args[0];
+    			} else {
+    				System.out.println("Expected -f command-line argument or a Rel source file, but got " + args[0]);
+    				usage();
+    				System.exit(1);
+    			}
     		}
     		if (args[0].length() == 2)
     			databaseDir = null;
@@ -468,10 +477,11 @@ public class Browser extends JFrame {
         browser = new Browser(databaseDir);
         browser.setVisible(true);
         browser.go();
+        browser.loadSourceFile(loadFile);
         browser.requestFocusInWindow();
     }
-    
-    private JMenu FileMenu;
+
+	private JMenu FileMenu;
     private JMenu OptionsMenu;
     private JMenu HelpMenu;
     private JLabel jLabelStatus;
