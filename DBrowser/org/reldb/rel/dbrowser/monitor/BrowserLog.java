@@ -44,7 +44,7 @@ public class BrowserLog extends javax.swing.JFrame {
     	setName("DBrowserLog");
     	Splash.showSplash(this);
     	Splash.resetProgressBar(4);
-    	Splash.setProgressBar("Loading DBrowser...");
+    	Splash.setProgressBar("Loading Rel...");
         initComponents();
         Splash.dismissSplash();
         Preferences.getInstance().obtainMainWindowPositionAndState(this, 0, 0, 384, 240);
@@ -87,7 +87,7 @@ public class BrowserLog extends javax.swing.JFrame {
      */
     private void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Rel - DBrowser Log");
+        setTitle("Rel - Rel Log");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 Preferences.getInstance().preserveMainWindowPositionAndState(BrowserLog.this);

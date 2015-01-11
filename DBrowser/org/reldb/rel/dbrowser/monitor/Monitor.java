@@ -46,8 +46,8 @@ public class Monitor extends javax.swing.JFrame {
     private JTextArea outputDisplay;
     private JScrollPane outputScroller;
     private JTextField javaCommandBox = new JTextField();
-    private JButton btnRunDBrowser = new JButton("Run DBrowser");
-    private JButton btnKillDBrowser = new JButton("Kill DBrowser");
+    private JButton btnRunDBrowser = new JButton("Run Rel");
+    private JButton btnKillDBrowser = new JButton("Kill Rel");
     private JCheckBox checkCloseOnDBrowserExit = new JCheckBox();
     private Process procDBrowser; 
     private JFileChooser jFileChooserSave = new JFileChooser();
@@ -57,7 +57,7 @@ public class Monitor extends javax.swing.JFrame {
     	setName("DBrowserMonitor");
     	Splash.showSplash(this);
     	Splash.resetProgressBar(4);
-    	Splash.setProgressBar("Loading DBrowser...");
+    	Splash.setProgressBar("Loading Rel...");
         initComponents();
         Splash.dismissSplash();
         Preferences.getInstance().obtainMainWindowPositionAndState(this, 0, 0, 384, 240);
@@ -149,10 +149,10 @@ public class Monitor extends javax.swing.JFrame {
      */
     private void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Rel - DBrowser Monitor");
+        setTitle("Rel - Rel Monitor");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
-                if (btnKillDBrowser.isEnabled() && JOptionPane.showConfirmDialog(Monitor.this, "DBrowser is running.  Are you sure you wish to close the monitor?") != JOptionPane.YES_OPTION)
+                if (btnKillDBrowser.isEnabled() && JOptionPane.showConfirmDialog(Monitor.this, "Rel is running.  Are you sure you wish to close the monitor?") != JOptionPane.YES_OPTION)
 					return;
                 shutdown();
             }
@@ -240,7 +240,7 @@ public class Monitor extends javax.swing.JFrame {
         toolBar.add(btnSaveLog);        
         
         btnRunDBrowser.setFont(new Font("Dialog", 0, 10));
-        btnRunDBrowser.setToolTipText("Start up DBrowser.");
+        btnRunDBrowser.setToolTipText("Start up Rel.");
         btnRunDBrowser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				goAgain();
@@ -250,12 +250,12 @@ public class Monitor extends javax.swing.JFrame {
         toolBar.add(btnRunDBrowser);
         
         btnKillDBrowser.setFont(new Font("Dialog", 0, 10));
-        btnKillDBrowser.setToolTipText("Forcibly terminate DBrowser.");
+        btnKillDBrowser.setToolTipText("Forcibly terminate Rel.");
         btnKillDBrowser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (JOptionPane.showConfirmDialog(Monitor.this, "Are you sure you wish to terminate DBrowser?") == JOptionPane.YES_OPTION) {
+				if (JOptionPane.showConfirmDialog(Monitor.this, "Are you sure you wish to terminate Rel?") == JOptionPane.YES_OPTION) {
 					procDBrowser.destroy();
-					log("DBrowser will be forcibly terminated.  (Please avoid doing this, if possible.)\n");
+					log("Rel will be forcibly terminated.  (Please avoid doing this, if possible.)\n");
 				}	
 			}
         });
@@ -266,8 +266,8 @@ public class Monitor extends javax.swing.JFrame {
         
         checkCloseOnDBrowserExit.setSelected(true);
         checkCloseOnDBrowserExit.setFont(new Font("Dialog", 0, 10));
-        checkCloseOnDBrowserExit.setText("Close monitor when DBrowser exits normally.");
-        checkCloseOnDBrowserExit.setToolTipText("Un-check to make the monitor remain active when DBrowser shuts down normally.");
+        checkCloseOnDBrowserExit.setText("Close monitor when Rel exits normally.");
+        checkCloseOnDBrowserExit.setToolTipText("Un-check to make the monitor remain active when Rel shuts down normally.");
         actionPanel.add(checkCloseOnDBrowserExit);
         
         getContentPane().add(actionPanel, BorderLayout.NORTH);
@@ -298,7 +298,7 @@ public class Monitor extends javax.swing.JFrame {
     
     private void goAgain() {
     	outputDisplay.setText("");
-       	run(javaCommandBox.getText() + " -jar DBrowser.jar -nomonitor ", lastArgs);
+       	run(javaCommandBox.getText() + " -jar Rel.jar -nomonitor ", lastArgs);
     }
     
     private void go(String args[]) {

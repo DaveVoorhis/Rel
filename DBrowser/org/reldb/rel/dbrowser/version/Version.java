@@ -2,7 +2,7 @@ package org.reldb.rel.dbrowser.version;
 
 public class Version {
 	public static String getVersion() {
-		return "DBrowser 2.17";
+		return "User interface version 2.17";
 	}
 
 	public static String getCopyright() {

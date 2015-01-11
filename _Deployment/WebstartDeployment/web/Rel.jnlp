@@ -71,5 +71,5 @@
 	  <jar href="rel0000.jar" />
      </resources>
 
-     <application-desc main-class="DBrowserWithoutMonitor" />
+     <application-desc main-class="RelWithoutMonitor" />
 </jnlp>

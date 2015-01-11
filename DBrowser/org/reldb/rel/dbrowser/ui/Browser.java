@@ -55,7 +55,7 @@ public class Browser extends JFrame {
     	setName("DBrowserMain");
     	Splash.showSplash(this);
     	Splash.resetProgressBar(4);
-    	Splash.setProgressBar("Loading DBrowser...");
+    	Splash.setProgressBar("Loading Rel...");
     	Splash.setProgressBar("Initialising...");
         initComponents();
     	Splash.setProgressBar("Setting up menu...");
@@ -169,7 +169,7 @@ public class Browser extends JFrame {
         jMenuBarMain.add(HelpMenu);
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Rel - DBrowser");
+        setTitle("Rel");
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
             	handleClosing();
@@ -384,7 +384,7 @@ public class Browser extends JFrame {
     }
         
 	private static void usage() {
-		System.out.println("Usage: DBrowser [-nomonitor] [-f[<databaseDir>]]");
+		System.out.println("Usage: Rel [-nomonitor] [-f[<databaseDir>]]");
 		System.out.println(" -nomonitor      -- do not open monitor window");
 		System.out.println(" -f<databaseDir> -- open specified local database directory");
 		System.out.println(" -f              -- do not open a local database");
