@@ -124,6 +124,28 @@ public class ForeignCompilerJava {
 		String relPackageName = thisPackageName.replace(".external", "");
 		return relPackageName;
 	}
+    
+    /** Return a classpath cleaned of non-existent files and Web Start's deploy.jar.  
+     * Classpath elements with spaces are converted to quote-delimited strings. */
+    private final static String cleanClassPath(String s) {
+    	if (java.io.File.separatorChar == '/')
+    		s = s.replace('\\', '/');
+    	else
+    		s = s.replace('/', '\\');
+        String outstr = "";
+        java.util.StringTokenizer st = new java.util.StringTokenizer(s, java.io.File.pathSeparator);
+        while (st.hasMoreElements()) {
+            String element = (String)st.nextElement();
+            java.io.File f = new java.io.File(element);
+            if (f.exists() && !element.contains("deploy.jar")) {
+            	String fname = f.toString();
+            	if (fname.indexOf(' ')>=0)
+            		fname = '"' + fname + '"';
+                outstr += ((outstr.length()>0) ? java.io.File.pathSeparator : "") + fname;
+            }
+        }
+        return outstr;
+    }
 	
 	/** Return classpath to the Rel core. */
     private static String getLocalClasspath(RelDatabase database) {
@@ -156,28 +178,6 @@ public class ForeignCompilerJava {
         return s;
     }
     
-    /** Return a classpath cleaned of non-existent files and Web Start's deploy.jar.  
-     * Classpath elements with spaces are converted to quote-delimited strings. */
-    private final static String cleanClassPath(String s) {
-    	if (java.io.File.separatorChar == '/')
-    		s = s.replace('\\', '/');
-    	else
-    		s = s.replace('/', '\\');
-        String outstr = "";
-        java.util.StringTokenizer st = new java.util.StringTokenizer(s, java.io.File.pathSeparator);
-        while (st.hasMoreElements()) {
-            String element = (String)st.nextElement();
-            java.io.File f = new java.io.File(element);
-            if (f.exists() && !element.contains("deploy.jar")) {
-            	String fname = f.toString();
-            	if (fname.indexOf(' ')>=0)
-            		fname = '"' + fname + '"';
-                outstr += ((outstr.length()>0) ? java.io.File.pathSeparator : "") + fname;
-            }
-        }
-        return outstr;
-    }
-    
     /** Compile foreign code using Eclipse JDT compiler. */
     private void compileForeignCode(RelDatabase database, PrintStream stream, String className, String src) {
     	ByteArrayOutputStream messageStream = new ByteArrayOutputStream();
@@ -196,7 +196,7 @@ public class ForeignCompilerJava {
     			+ "unusedPrivate," + "unusedThrown");
 
     	String classpath = 
-    			System.getProperty("java.class.path") + 
+    			cleanClassPath(System.getProperty("java.class.path")) + 
     			java.io.File.pathSeparatorChar + 
     			cleanClassPath(getLocalClasspath(database));
     	String webclasspath = getLocalWebStartRelJarName();
