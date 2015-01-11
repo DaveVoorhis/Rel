@@ -747,7 +747,7 @@ public class PanelCommandline extends javax.swing.JPanel {
 			}).execute();
 		}
 	}
-
+	
 	private void getPath() {
 		if (jFileChooserGetPath.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			(new javax.swing.SwingWorker<Object, Object>() {
@@ -761,35 +761,43 @@ public class PanelCommandline extends javax.swing.JPanel {
 			}).execute();
 		}
 	}
+
+	private void loadSourceFile(File file) {
+		startProcessingDisplay();
+		setProcessingDisplay("Loading");
+		(new javax.swing.SwingWorker<Object, Object>() {
+			protected Object doInBackground() throws Exception {
+				try {
+					BufferedReader f = new BufferedReader(new FileReader(file));
+					StringBuffer fileImage = new StringBuffer();
+					String line;
+					while ((line = f.readLine()) != null) {
+						fileImage.append(line);
+						fileImage.append('\n');
+					}
+					f.close();
+					jTextAreaInput.setText(fileImage.toString());
+					if (jFileChooserLoad.getSelectedFile() == null)
+						jFileChooserLoad.setSelectedFile(file);
+					jFileChooserSave.setSelectedFile(jFileChooserLoad.getSelectedFile());
+					systemResponse("Loaded " + file);
+					jTextAreaInput.requestFocusInWindow();
+				} catch (IOException ioe) {
+					badResponse(ioe.toString());
+				}
+				endProcessingDisplay();
+				return null;
+			}
+		}).execute();
+	}
+	
+	public void loadSourceFile(String fname) {
+		loadSourceFile(new File(fname));
+	}
 	
 	private void loadCommand() {
 		if (jFileChooserLoad.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			startProcessingDisplay();
-			setProcessingDisplay("Loading");
-			(new javax.swing.SwingWorker<Object, Object>() {
-				protected Object doInBackground() throws Exception {
-					try {
-						BufferedReader f = new BufferedReader(new FileReader(
-								jFileChooserLoad.getSelectedFile()));
-						StringBuffer fileImage = new StringBuffer();
-						String line;
-						while ((line = f.readLine()) != null) {
-							fileImage.append(line);
-							fileImage.append('\n');
-						}
-						f.close();
-						jTextAreaInput.setText(fileImage.toString());
-						jFileChooserSave.setSelectedFile(jFileChooserLoad
-								.getSelectedFile());
-						systemResponse("Loaded " + jFileChooserLoad.getSelectedFile());
-						jTextAreaInput.requestFocusInWindow();
-					} catch (IOException ioe) {
-						badResponse(ioe.toString());
-					}
-					endProcessingDisplay();
-					return null;
-				}
-			}).execute();
+			loadSourceFile(jFileChooserLoad.getSelectedFile());
 		}
 	}
 

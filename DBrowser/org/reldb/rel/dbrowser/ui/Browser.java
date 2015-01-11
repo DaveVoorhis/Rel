@@ -234,12 +234,14 @@ public class Browser extends JFrame {
         }
     }
 
+    private SessionPanel lastPermanentSessionPanel = null;
+    
     private void doConnectionResultSuccess(StringReceiverClient client, String dbURL, boolean permanent) {
-
     	SessionPanel panel = new SessionPanel(client, dbURL);
-        if (permanent)
+        if (permanent) {
         	jTabbedPaneContent.addPermanentTab(dbURL, panel);
-        else
+        	lastPermanentSessionPanel = panel;
+        } else
         	jTabbedPaneContent.addTab(dbURL, panel);
         jTabbedPaneContent.setSelectedComponent(panel);
         panel.requestFocus();
@@ -376,7 +378,8 @@ public class Browser extends JFrame {
     }
     
     private void loadSourceFile(String loadFile) {
-    	System.out.println("Browser: load file " + loadFile + " goes here.");
+    	if (lastPermanentSessionPanel != null)
+    		lastPermanentSessionPanel.loadSourceFile(loadFile);
 	}
     
     private static Browser browser;
@@ -469,7 +472,7 @@ public class Browser extends JFrame {
     				System.exit(1);
     			}
     		}
-    		if (args[0].length() == 2)
+    		else if (args[0].length() == 2)
     			databaseDir = null;
     		else
     			databaseDir = args[0].substring(2);
@@ -477,7 +480,8 @@ public class Browser extends JFrame {
         browser = new Browser(databaseDir);
         browser.setVisible(true);
         browser.go();
-        browser.loadSourceFile(loadFile);
+        if (loadFile != null)
+        	browser.loadSourceFile(loadFile);
         browser.requestFocusInWindow();
     }
 

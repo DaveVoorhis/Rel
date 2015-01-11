@@ -44,6 +44,11 @@ public class SessionPanel extends JPanel {
     		add(commandlinePanel, BorderLayout.CENTER);			
 		}
 	}
+
+	public void loadSourceFile(String loadFile) {
+		if (commandlinePanel != null)
+			commandlinePanel.loadSourceFile(loadFile);
+	}
 	
 	public void go() {
 		if (rev != null && revGo != null)
