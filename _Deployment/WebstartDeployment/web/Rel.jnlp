@@ -5,12 +5,11 @@
   href="DBrowser.jnlp">
 
      <information>
-          <title>Rel DBrowser</title>
+          <title>Rel</title>
           <vendor>reldb.org</vendor>
           <homepage href="http://reldb.org/" />
-          <description>Rel DBrowser</description>
-          <description kind="short">Rel DBrowser starts up the
-          desktop database environment.</description>
+          <description>Rel</description>
+          <description kind="short">Rel desktop database environment.</description>
           <icon href="RelIcon1.png"/>
 	  <icon kind="splash" href="RelLogo4.png"/>
 	  <offline-allowed/>
@@ -32,7 +31,7 @@
 
      <information os="Windows">   
           <title>Rel DBrowser</title>
-          <icon href="RelIcon1.png"/>
+          <icon href="RelIcon1.ico"/>
 	  <offline-allowed/>
 	  <shortcut online="true" install="true">
 	    <desktop/>

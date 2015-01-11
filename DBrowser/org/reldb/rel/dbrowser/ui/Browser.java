@@ -401,7 +401,7 @@ public class Browser extends JFrame {
 		try {
 			ClassPathHack.addFile("relclient.jar");
 			ClassPathHack.addFile("relshared.jar");
-			ClassPathHack.addFile("Rel.jar");
+			ClassPathHack.addFile("RelDBMS.jar");
 			ClassPathHack.addFile("rev.jar");
 		} catch (IOException ioe) {
 			System.out.println(ioe.toString());

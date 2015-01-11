@@ -11,7 +11,7 @@ public class ClientLocalConnection extends ClientConnection implements StreamRec
 
 	/** Establish a connection with a server. */
 	public ClientLocalConnection(String databaseDir, boolean createDbAllowed) throws IOException {
-		ClassPathHack.addFile("Rel.jar");
+		ClassPathHack.addFile("RelDBMS.jar");
 		ClassPathHack.addFile("commons-codec-1.4.jar");
 		ClassPathHack.addFile("commons-logging-1.1.1.jar");
 		ClassPathHack.addFile("httpclient-4.1.3.jar");
