@@ -55,8 +55,8 @@
 
      <resources>
       <j2se version="1.8+" />
-	  <jar href="DBrowser.jar" main="true" />
-      <jar href="Rel.jar" />
+	  <jar href="Rel.jar" main="true" />
+      <jar href="RelDBMS.jar" />
 	  <jar href="commons-codec-1.4.jar" />
 	  <jar href="commons-logging-1.1.1.jar" />
 	  <jar href="httpclient-4.1.3.jar" />
