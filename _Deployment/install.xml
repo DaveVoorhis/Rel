@@ -8,7 +8,7 @@
 	-->
 	<info>
 		<appname>Rel</appname>
-		<appversion>1.0.12 Beta</appversion>
+		<appversion>1.0.13 Beta</appversion>
 		<authors>
 		    <author name="Dave Voorhis" email="dave@armchair.mb.ca"/>
 		</authors>
@@ -93,9 +93,9 @@
 			<file src="CHANGES.txt" targetdir="$INSTALL_PATH" />
 			<file src="TODO.txt" targetdir="$INSTALL_PATH" />
 		</pack>
-		<pack name="DBrowser" required="no" preselected="yes">
-			<description>DBrowser client.  Allows you to interact with Rel servers and databases.  To use a Rel database, DBrowser must access a local and/or remote Rel server.  If you also select the "Rel" pack, a local Rel server will be installed that automatically starts whenever you run DBrowser.</description>
-			<file src="DBrowser.jar" targetdir="$INSTALL_PATH" />
+		<pack name="RelUI" required="no" preselected="yes">
+			<description>Graphical user interface for interacting with Rel servers and databases.  If you also select the "RelDBMS" pack, a local Rel database server will be installed that automatically starts whenever you run the Rel UI.</description>
+			<file src="Rel.jar" targetdir="$INSTALL_PATH" />
 			<file src="relclient.jar" targetdir="$INSTALL_PATH" />
 			<file src="relshared.jar" targetdir="$INSTALL_PATH" />
 			<file src="DBrowser" os="unix" targetdir="$INSTALL_PATH" />
@@ -118,11 +118,12 @@
 		  <file src="rev.jar" targetdir="$INSTALL_PATH" />
 		  <depends packname="DBrowser" />
 		</pack>
-		<pack name="Rel" required="no" preselected="yes">
-			<description>Rel server.  Manages a Rel database and allows clients like DBrowser to access it.  To interact with a Rel server, you need a client like DBrowser.</description>
-			<file src="Rel.jar" targetdir="$INSTALL_PATH" />
+		<pack name="RelDBMS" required="no" preselected="yes">
+			<description>Rel server.  Manages a Rel database.  To interact with a Rel server, you need a client like the RelUI described above.</description>
+			<file src="RelDBMS.jar" targetdir="$INSTALL_PATH" />
 			<file src="relshared.jar" targetdir="$INSTALL_PATH" />
-			<file src="je.jar" targetdir="$INSTALL_PATH" />
+			<file src="je-6.2.31.jar" targetdir="$INSTALL_PATH" />
+			<file src="org.eclipse.jdt.core_3.10.0.jar" targetdir="$INSTALL_PATH" />
 			<file src="RelServer" os="unix" targetdir="$INSTALL_PATH" />
 			<file src="RelServer.bat" os="windows" targetdir="$INSTALL_PATH" />
 			<file src="Rel" os="unix" targetdir="$INSTALL_PATH" />
