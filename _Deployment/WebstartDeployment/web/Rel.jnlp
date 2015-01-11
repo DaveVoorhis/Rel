@@ -2,7 +2,7 @@
 <jnlp 
   spec="6.0+" 
   codebase="http://reldb.org/webstart" 
-  href="DBrowser.jnlp">
+  href="Rel.jnlp">
 
      <information>
           <title>Rel</title>
@@ -20,7 +20,7 @@
      </information>
 
      <information os="linux">   
-          <title>Rel DBrowser</title>
+          <title>Rel</title>
           <icon href="RelIcon1.png"/>
 	  <offline-allowed/>
 	  <shortcut online="true" install="true">
@@ -30,7 +30,7 @@
      </information>
 
      <information os="Windows">   
-          <title>Rel DBrowser</title>
+          <title>Rel</title>
           <icon href="RelIcon1.ico"/>
 	  <offline-allowed/>
 	  <shortcut online="true" install="true">
@@ -40,7 +40,7 @@
      </information>
 
      <information os="Mac">   
-          <title>Rel DBrowser</title>
+          <title>Rel</title>
           <icon href="RelIcon1.icns"/>
 	  <offline-allowed/>
 	  <shortcut online="true" install="true">
