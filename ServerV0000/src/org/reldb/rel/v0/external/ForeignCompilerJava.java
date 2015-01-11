@@ -14,21 +14,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.List;
 
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
-
+import org.eclipse.jdt.core.compiler.CompilationProgress;
 import org.reldb.rel.exceptions.*;
 import org.reldb.rel.v0.generator.*;
-import org.reldb.rel.v0.interpreter.ClassPathHack;
 import org.reldb.rel.v0.storage.RelDatabase;
 import org.reldb.rel.v0.types.*;
 import org.reldb.rel.v0.types.builtin.TypeBoolean;
@@ -188,171 +178,10 @@ public class ForeignCompilerJava {
         return outstr;
     }
     
-	private static String getToolsJarPath(String javaHome) {
-        File toolsJar = new File(javaHome, "../lib/tools.jar"); 
-        if (toolsJar.exists())
-        	return toolsJar.toString();
-        toolsJar = new File(javaHome, "lib/tools.jar");
-        if (toolsJar.exists())
-        	return toolsJar.toString();
-        toolsJar = new File(javaHome, "tools.jar");
-        if (toolsJar.exists())
-        	return toolsJar.toString();
-        return null;
-	}
-	
-	private static String getToolsJarPath() {
-		String javaHome;
-		javaHome = System.getProperty("java.home"); 
-		if (javaHome != null) {
-			 String toolsDir = getToolsJarPath(javaHome);
-			 if (toolsDir != null)
-				 return toolsDir;
-		}
-        javaHome = System.getenv("JAVA_HOME");
-		if (javaHome != null) {
-			 String toolsDir = getToolsJarPath(javaHome);
-			 if (toolsDir != null)
-				 return toolsDir;
-		}
-        javaHome = System.getenv("JDK_HOME");
-		if (javaHome != null) {
-			 String toolsDir = getToolsJarPath(javaHome);
-			 if (toolsDir != null)
-				 return toolsDir;
-		}
-		return null;
-	}
-	
-	private JavaCompiler getSystemJavaCompiler() {
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		if (compiler != null)
-			return compiler;
-		String toolsJarPath = getToolsJarPath();
-		if (toolsJarPath != null) {
-			notify("ForeignCompilerJava: Found tools.jar at " + toolsJarPath.toString());
-			try {
-				ClassPathHack.addFile(toolsJarPath.toString());
-			} catch (IOException e) {
-				notify("ForeignCompilerJava: Unable to update classpath to include Tools.jar due to I/O error.");
-				return null;
-			}
-			notify("ForeignCompilerJava: Attempting to load compiler via ToolProvider.");
-			compiler = ToolProvider.getSystemJavaCompiler();
-			if (compiler != null)
-				return compiler;
-			try {
-				notify("ForeignCompilerJava: Attempting to load compiler class.");
-				@SuppressWarnings("unchecked")
-				Class<JavaCompiler> compilerClass = (Class<JavaCompiler>) Class.forName("com.sun.tools.javac.api.JavacTool");
-				notify("ForeignCompilerJava: Tools.jar loaded.");
-				if (compilerClass != null) {
-					notify("ForeignCompilerJava: compiler class loaded.");
-					try {
-						return compilerClass.newInstance();
-					} catch (Exception e) {
-						notify("ForeignCompilerJava: Unable to instantiate internal Java compiler: " + e.toString());
-					}
-				} else {
-					notify("ForeignCompilerJava: compiler class load failed.");
-				}
-			} catch (ClassNotFoundException e1) {
-				notify("ForeignCompilerJava: Tools.jar load failed: JavaCompiler class not found.");
-			}
-		} else
-			notify("ForeignCompilerJava: tools.jar not found.");
-		return null;
-	}
-
-    /** Obtain a Java compiler invocation string.  The file name of the
-     * Java source file to be compiled will be appended to this string 
-     * to form a compilation command for external execution. */
-    private String getJavacInvocation(RelDatabase database) {
-    	String sysclasspathRaw = System.getProperty("java.class.path");
-        String devclasspathRaw = getLocalClasspath(database);
-        String sysclasspath = cleanClassPath(sysclasspathRaw);
-        String devclasspath = cleanClassPath(devclasspathRaw);
-        String cmd = "javac -classpath " + sysclasspath + java.io.File.pathSeparatorChar + devclasspath;
-        String webclasspath = getLocalWebStartRelJarName();
-        if (webclasspath != null)
-        	cmd += java.io.File.pathSeparatorChar + webclasspath;
-        return cmd;
-    }
-	
-	private static boolean initialised = false;
-	private static JavaCompiler compiler = null;
-	
-    /** Compilation of foreign source code. */
-    public void xcompileForeignCode(RelDatabase database, PrintStream printstream, String className, String src) {
-        // If resource directory doesn't exist, create it.
-        File resourceDir = new File(database.getJavaUserSourcePath()); 
-        if (!(resourceDir.exists()))
-            resourceDir.mkdirs();
-        
-        File sourcef;
-        try {
-	        // Write source to a Java source file
-	        sourcef = new File(database.getJavaUserSourcePath() + java.io.File.separator + getStrippedClassname(className) + ".java");
-	        PrintStream sourcePS = new PrintStream(new FileOutputStream(sourcef));
-	        sourcePS.print(src);
-	        sourcePS.close();
-        } catch (IOException ioe) {
-        	throw new ExceptionFatal("RS0293: Unable to save Java source: " + ioe.toString());
-        }
-        
-        if (!initialised) {
-       		compiler = getSystemJavaCompiler();
-        	initialised = true;
-        }
-        if (compiler != null) {
-            StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-            DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-            List<String> optionList = new ArrayList<String>();
-            String classpath = 
-            	System.getProperty("java.class.path") + 
-            	java.io.File.pathSeparatorChar + 
-            	cleanClassPath(getLocalClasspath(database));
-            String webclasspath = getLocalWebStartRelJarName();
-            if (webclasspath != null)
-            	classpath += File.pathSeparatorChar + webclasspath;
-            optionList.addAll(Arrays.asList("-classpath", classpath)); 
-            compiler.getTask(null, fileManager, diagnostics, optionList, null, fileManager.getJavaFileObjects(sourcef)).call();
-            String msg = "";
-            for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
-            	msg += "Java error: " + diagnostic.getMessage(null) + ":\n" +
-            			" in line " + diagnostic.getLineNumber() + " of:\n" +
-                                ((diagnostic.getSource() != null) ? diagnostic.getSource().toString() : "<unknown>") + "\n";
-            }
-        	if (msg.length() > 0)
-        		throw new ExceptionSemantic("RS0004: " + msg);
-        	return;
-        }
-        
-    	System.out.println("NOTE: A 'tools.jar' or internal Java compiler can't be found.");
-    	System.out.println("      Make sure JAVA_HOME or JDK_HOME point to a JDK installation.");
-    	System.out.println("      Trying to find an external javac compiler as an alternative.");
-    	
-    	try {
-            // Compile source
-            int retval = -1;
-            String sourcefile = sourcef.getAbsolutePath();
-            if (sourcefile.indexOf(' ')>=0)
-            	sourcefile = '"' + sourcefile + '"';
-           	String command = getJavacInvocation(database) + " " + sourcefile;
-           	retval = ExternalExecutor.run(printstream, command);
-            if (retval != 0) {
-            	notify("? Compile failed.  Attempted with: " + command);
-            	throw new ExceptionSemantic("RS0005: Java compilation failed due to errors.");
-            }
-        } catch (Throwable t) {
-            throw new ExceptionSemantic("RS0289: " + t.toString());
-        }
-    }
-    
     /** Compile foreign code using Eclipse JDT compiler. */
-    private void compileForeignCode2(RelDatabase database, PrintStream stream, String className, String src) {
-    	ByteArrayOutputStream baosMessages = new ByteArrayOutputStream();
-    	ByteArrayOutputStream baosWarnings = new ByteArrayOutputStream();
+    private void compileForeignCode(RelDatabase database, PrintStream stream, String className, String src) {
+    	ByteArrayOutputStream messageStream = new ByteArrayOutputStream();
+    	ByteArrayOutputStream warningStream = new ByteArrayOutputStream();
     	String warningSetting = new String("allDeprecation,"
     			+ "allJavadoc," + "assertIdentifier," + "charConcat,"
     			+ "conditionAssign," + "constructorName," + "deprecation,"
@@ -374,6 +203,10 @@ public class ForeignCompilerJava {
     	if (webclasspath != null)
     		classpath += File.pathSeparatorChar + webclasspath;
 
+        // If resource directory doesn't exist, create it.
+        File resourceDir = new File(database.getJavaUserSourcePath()); 
+        if (!(resourceDir.exists()))
+            resourceDir.mkdirs();
     	File sourcef;
     	try {
     		// Write source to a Java source file
@@ -385,16 +218,35 @@ public class ForeignCompilerJava {
     		throw new ExceptionFatal("RS0293: Unable to save Java source: " + ioe.toString());
     	}
 
-    	// Start compilation using jdtcore
-    	@SuppressWarnings("deprecation")
-    	boolean compiled = org.eclipse.jdt.internal.compiler.batch.Main.compile("-1.8 -source 1.8 -warn:" + 
+    	// Start compilation using JDT
+    	boolean compiled = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile("-1.8 -source 1.8 -warn:" + 
     			warningSetting + " " + 
     			"-cp " + classpath + " " + sourcef,
-    			new PrintWriter(baosMessages), new PrintWriter(baosWarnings));
+    			new PrintWriter(messageStream), new PrintWriter(warningStream), 
+    			new CompilationProgress() {
+					@Override
+					public void begin(int arg0) {
+					}
+					@Override
+					public void done() {
+					}
+					@Override
+					public boolean isCanceled() {
+						return false;
+					}
+					@Override
+					public void setTaskName(String arg0) {
+						ForeignCompilerJava.this.notify(arg0);
+					}
+					@Override
+					public void worked(int arg0, int arg1) {
+					}
+    			}
+    	);
 
     	String compilerMessages = "";
     	// Parse the messages and the warnings.
-    	BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(baosMessages.toByteArray())));
+    	BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(messageStream.toByteArray())));
     	while (true) {
     		String str = null;
     		try {
@@ -407,7 +259,7 @@ public class ForeignCompilerJava {
     		}
     		compilerMessages += str + '\n';
     	}
-    	BufferedReader brWarnings = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(baosWarnings.toByteArray())));
+    	BufferedReader brWarnings = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(warningStream.toByteArray())));
     	while (true) {
     		String str = null;
     		try {
@@ -592,7 +444,7 @@ public class ForeignCompilerJava {
               "public class " + name + " extends ValueTypeJava {\n" + 
                   body +
               "\n}";
-        compileForeignCode2(generator.getDatabase(), generator.getPrintStream(), name, src);
+        compileForeignCode(generator.getDatabase(), generator.getPrintStream(), name, src);
         try {
         	Class<?> typeClass = generator.getDatabase().loadClass(name);
             if (typeClass == null)
@@ -638,7 +490,7 @@ public class ForeignCompilerJava {
             comp += "\t" + "do_" + getStrippedName(signature.getName()) + "(" + args + ");\n";
         comp += "\t}\n}";
         // compile source
-        compileForeignCode2(generator.getDatabase(), generator.getPrintStream(), signature.getClassSignature(), comp);
+        compileForeignCode(generator.getDatabase(), generator.getPrintStream(), signature.getClassSignature(), comp);
         notify("> Java class " + signature.getClassSignature() + " compiled to implement OPERATOR " + signature);
         // construct operator definition
         OperatorDefinitionNative o;
