@@ -13,6 +13,7 @@
           <icon href="RelIcon1.png"/>
 	  <icon kind="splash" href="RelLogo4.png"/>
 	  <offline-allowed/>
+	  <association mime-type="application-x/rel" extensions="rel" />
 	  <shortcut online="true" install="true">
 	    <desktop/>
 	    <menu submenu="Rel"/>
