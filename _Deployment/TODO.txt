@@ -1,11 +1,7 @@
 ** TO DO **
 
 Short term:
-    // TODO - In ForeignCompilerJava, generate all necessary source, track source files, then compile.
-	// TODO - Check: in ForeignCompilerJava, should JDK_HOME take priority over JAVA_HOME?
-	// TODO - Check: in ForeignCompilerJava, see if tools.jar can be found in Web Start.
 	// TODO - Test all scripts in Scripts folder, particularly Date.rel
-	// TODO - Make sure Berkeley Java DB jar is versioned, so it can be paired with relevant ServerVnnnn.
 	// TODO - Complete database versioning, particularly handling updates.
 	// TODO - Build backup mechanism into Rel.jar, so that backup can be invoked on a specified database.
     // TODO - DBrowser: Examine how large volume and/or continuous Rel output is handled
