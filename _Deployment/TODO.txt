@@ -1,7 +1,6 @@
 ** TO DO **
 
 Short term:
-	// TODO - Test all scripts in Scripts folder, particularly Date.rel
 	// TODO - Complete database versioning, particularly handling updates.
 	// TODO - Build backup mechanism into Rel.jar, so that backup can be invoked on a specified database.
     // TODO - DBrowser: Examine how large volume and/or continuous Rel output is handled
