@@ -14,6 +14,7 @@ import org.reldb.rel.v0.interpreter.Interpreter;
 import org.reldb.rel.v0.interpreter.ParseExceptionPrinter;
 import org.reldb.rel.v0.languages.tutoriald.parser.ParseException;
 import org.reldb.rel.v0.languages.tutoriald.parser.TokenMgrError;
+import org.reldb.rel.v0.version.Version;
 
 /** Convenient access point for running an embedded or stand-alone interpreter. */
 
@@ -22,11 +23,27 @@ public class Rel {
 	private Interpreter interpreter;
 	private PipedInputStream input;
 	private PrintStream output;
+	
+	private static void buildClasspath() throws IOException {
+		ClassPathHack.addFile(Version.getBerkeleyDbJarFilename());
+		ClassPathHack.addFile("relshared.jar");	
+		ClassPathHack.addFile("org.eclipse.jdt.core_3.10.0.jar");
+	}
+	
+	/** Convenient runner for a stand-alone Rel interpreter. */
+	public static void main(String[] args) {
+		try {
+			buildClasspath();
+		} catch (IOException ioe) {
+			System.out.println(ioe.toString());
+			return;
+		}
+		org.reldb.rel.v0.interpreter.Instance.main(args);
+	}
 
 	/** Establish a connection with this server. */
 	public Rel(String databaseDir, boolean createDbAllowed) throws IOException {
-		ClassPathHack.addFile("je.jar");
-		ClassPathHack.addFile("relshared.jar");
+		buildClasspath();
 		input = new PipedInputStream();
 		PipedOutputStream pipeOutput = new PipedOutputStream(input);
 		output = new PrintStream(pipeOutput, true);		
@@ -88,18 +105,6 @@ public class Rel {
 				output.println("\nOk.");
 			}
 		});
-	}
-	
-	/** Convenient runner for a stand-alone Rel interpreter. */
-	public static void main(String[] args) {
-		try {
-			ClassPathHack.addFile("je.jar");
-			ClassPathHack.addFile("relshared.jar");
-		} catch (IOException ioe) {
-			System.out.println(ioe.toString());
-			return;
-		}
-		org.reldb.rel.v0.interpreter.Instance.main(args);
 	}
 	
 }

@@ -8,6 +8,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.reldb.rel.tests.ClassPathHack;
+import org.reldb.rel.v0.version.Version;
 
 public class AllTests {
 	
@@ -101,7 +102,7 @@ public class AllTests {
 		try {
 			ClassPathHack.addFile("rel0000.jar");
 			ClassPathHack.addFile("relshared.jar");
-			ClassPathHack.addFile("je.jar");
+			ClassPathHack.addFile(Version.getBerkeleyDbJarFilename());
 			ClassPathHack.addFile("junit.jar");
 		} catch (IOException ioe) {
 			System.out.println(ioe.toString());

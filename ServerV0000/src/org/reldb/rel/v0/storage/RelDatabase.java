@@ -202,7 +202,7 @@ public class RelDatabase {
     public void open(File envHome, boolean canCreateDb, PrintStream outputStream) throws DatabaseConversionException {
     	String usingBerkeleyJavaDBVersion = getBerkeleyJavaDBVersion(); 
     	if (!usingBerkeleyJavaDBVersion.equals(Version.expectedBerkeleyDBVersion))
-    		throw new ExceptionFatal("RS0323: Expected to find Berkeley Java DB version " + Version.expectedBerkeleyDBVersion + " but found version " + usingBerkeleyJavaDBVersion + ".\nAn attempted update or re-installation has probably failed.\nPlease make sure je.jar is not read-only, then try the update or re-installation again.");
+    		throw new ExceptionFatal("RS0323: Expected to find Berkeley Java DB version " + Version.expectedBerkeleyDBVersion + " but found version " + usingBerkeleyJavaDBVersion + ".\nAn attempted update or re-installation has probably failed.\nPlease make sure " + Version.getBerkeleyDbJarFilename() + " is not read-only, then try the update or re-installation again.");
     	homeDir = envHome.getAbsolutePath();
     	if (homeDir.endsWith("."))
     		homeDir = homeDir.substring(0, homeDir.length() - 1);

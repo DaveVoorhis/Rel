@@ -158,19 +158,13 @@ public class ForeignCompilerJava {
      * to form a compilation command for external execution. */
     private String getJavacInvocation(RelDatabase database) {
     	String sysclasspathRaw = System.getProperty("java.class.path");
-        System.out.println("ForeignCompilerJava: sysclasspathRaw is " + sysclasspathRaw);
-        String sysclasspath = cleanClassPath(sysclasspathRaw);
         String devclasspathRaw = getLocalClasspath(database);
-        System.out.println("ForeignCompilerJava: devclasspathRaw is " + devclasspathRaw);
+        String sysclasspath = cleanClassPath(sysclasspathRaw);
         String devclasspath = cleanClassPath(devclasspathRaw);
-        System.out.println("ForeignCompilerJava: sysclasspath is " + sysclasspath);
-        System.out.println("ForeignCompilerJava: devclasspath is " + devclasspath);
-        String webclasspath = getLocalWebStartRelJarName();
-        System.out.println("ForeignCompilerJava: webclasspath is " + webclasspath);
         String cmd = "javac -classpath " + sysclasspath + java.io.File.pathSeparatorChar + devclasspath;
+        String webclasspath = getLocalWebStartRelJarName();
         if (webclasspath != null)
         	cmd += java.io.File.pathSeparatorChar + webclasspath;
-        System.out.println("ForeignCompilerJava: cmd is " + cmd);
         return cmd;
     }
     
@@ -182,8 +176,8 @@ public class ForeignCompilerJava {
         return s;
     }
     
-    /** Return a classpath cleaned of non-existent files.  Classpath
-     * elements with spaces are converted to quote-delimited strings. */
+    /** Return a classpath cleaned of non-existent files and Web Start's deploy.jar.  
+     * Classpath elements with spaces are converted to quote-delimited strings. */
     private final static String cleanClassPath(String s) {
     	if (java.io.File.separatorChar == '/')
     		s = s.replace('\\', '/');
@@ -339,7 +333,6 @@ public class ForeignCompilerJava {
             if (sourcefile.indexOf(' ')>=0)
             	sourcefile = '"' + sourcefile + '"';
            	String command = getJavacInvocation(database) + " " + sourcefile;
-           	System.out.println("ForeignCompilerJava: command is " + command);
            	retval = ExternalExecutor.run(printstream, command);
             if (retval != 0) {
             	notify("? Compile failed.  Attempted with: " + command);

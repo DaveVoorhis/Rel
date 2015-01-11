@@ -32,6 +32,11 @@ public class Version {
 		return String.format("rel%04d.jar", getDatabaseVersion());
 	}
 
+	/** Name of the jar file that contains the Berkeley Java DB. */
+	public static String getBerkeleyDbJarFilename() {
+		return "je-" + expectedBerkeleyDBVersion + ".jar";
+	}
+	
     /** Get revision number. Changes to this mean bug fixes and enhancements. */
     public static int getRevision() {
         return REVISION;

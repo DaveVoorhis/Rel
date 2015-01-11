@@ -55,16 +55,17 @@
      </security>
 
      <resources>
-          <j2se version="1.8+" />
-          <jar href="DBrowser.jar" main="true" />
-          <jar href="Rel.jar" />
+      <j2se version="1.8+" />
+	  <jar href="DBrowser.jar" main="true" />
+      <jar href="Rel.jar" />
 	  <jar href="commons-codec-1.4.jar" />
 	  <jar href="commons-logging-1.1.1.jar" />
 	  <jar href="httpclient-4.1.3.jar" />
 	  <jar href="httpclient-cache-4.1.3.jar" />
 	  <jar href="httpcore-4.1.4.jar" />
 	  <jar href="httpmime-4.1.3.jar" />
-	  <jar href="je.jar" />
+	  <jar href="je-6.2.31.jar" />
+	  <jar href="org.eclipse.jdt.core_3.10.0.jar" />
 	  <jar href="relclient.jar" />
 	  <jar href="relshared.jar" />
 	  <jar href="rev.jar" />
