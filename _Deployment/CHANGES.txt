@@ -16,6 +16,7 @@ Version 1.0.13:
   - enhancement: Rel: External Java compilation integrated; no longer requires JDK.
   - enhancement: DBrowser name deprecated in favour of Rel in general, 
                  or Rel graphical user interface in particular.
+  - enhancement: DBrowser can load source files from command line.  E.g., java -jar Rel.jar myfile.rel
 
 Version 1.0.12:
 
