@@ -13,6 +13,7 @@ Version 1.0.13:
   - enhancement: Rel: Updated storage engine to Oracle Berkeley DB JE version 6.2.31
   - enhancement: DBrowser: smoother, faster output and display options now provide live update of font change.
   - enhancement: All: major code rebasing from ca.mb.armchair.rel3 to org.reldb.rel
+  - enhancement: Rel: External Java compilation integrated; no longer requires JDK.
 
 Version 1.0.12:
 
