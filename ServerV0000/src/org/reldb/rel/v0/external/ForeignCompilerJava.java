@@ -1,10 +1,15 @@
 package org.reldb.rel.v0.external;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -152,21 +157,6 @@ public class ForeignCompilerJava {
             throw new ExceptionFatal("RS0292: Got null type in getJavaPopForType()");
         return "(" + getJavaTypeForType(generator, t) + ")context.pop()";
     }
-
-    /** Obtain a Java compiler invocation string.  The file name of the
-     * Java source file to be compiled will be appended to this string 
-     * to form a compilation command for external execution. */
-    private String getJavacInvocation(RelDatabase database) {
-    	String sysclasspathRaw = System.getProperty("java.class.path");
-        String devclasspathRaw = getLocalClasspath(database);
-        String sysclasspath = cleanClassPath(sysclasspathRaw);
-        String devclasspath = cleanClassPath(devclasspathRaw);
-        String cmd = "javac -classpath " + sysclasspath + java.io.File.pathSeparatorChar + devclasspath;
-        String webclasspath = getLocalWebStartRelJarName();
-        if (webclasspath != null)
-        	cmd += java.io.File.pathSeparatorChar + webclasspath;
-        return cmd;
-    }
     
     /** Given an operator signature, return a Java method parameter definition. */
     private final static String getJavaMethodParmsForParameters(Generator generator, OperatorSignature os) {
@@ -197,6 +187,7 @@ public class ForeignCompilerJava {
         }
         return outstr;
     }
+    
 	private static String getToolsJarPath(String javaHome) {
         File toolsJar = new File(javaHome, "../lib/tools.jar"); 
         if (toolsJar.exists())
@@ -272,12 +263,27 @@ public class ForeignCompilerJava {
 			notify("ForeignCompilerJava: tools.jar not found.");
 		return null;
 	}
+
+    /** Obtain a Java compiler invocation string.  The file name of the
+     * Java source file to be compiled will be appended to this string 
+     * to form a compilation command for external execution. */
+    private String getJavacInvocation(RelDatabase database) {
+    	String sysclasspathRaw = System.getProperty("java.class.path");
+        String devclasspathRaw = getLocalClasspath(database);
+        String sysclasspath = cleanClassPath(sysclasspathRaw);
+        String devclasspath = cleanClassPath(devclasspathRaw);
+        String cmd = "javac -classpath " + sysclasspath + java.io.File.pathSeparatorChar + devclasspath;
+        String webclasspath = getLocalWebStartRelJarName();
+        if (webclasspath != null)
+        	cmd += java.io.File.pathSeparatorChar + webclasspath;
+        return cmd;
+    }
 	
 	private static boolean initialised = false;
 	private static JavaCompiler compiler = null;
 	
     /** Compilation of foreign source code. */
-    public void compileForeignCode(RelDatabase database, PrintStream printstream, String className, String src) {
+    public void xcompileForeignCode(RelDatabase database, PrintStream printstream, String className, String src) {
         // If resource directory doesn't exist, create it.
         File resourceDir = new File(database.getJavaUserSourcePath()); 
         if (!(resourceDir.exists()))
@@ -341,6 +347,82 @@ public class ForeignCompilerJava {
         } catch (Throwable t) {
             throw new ExceptionSemantic("RS0289: " + t.toString());
         }
+    }
+    
+    /** Compile foreign code using Eclipse JDT compiler. */
+    private void compileForeignCode2(RelDatabase database, PrintStream stream, String className, String src) {
+    	ByteArrayOutputStream baosMessages = new ByteArrayOutputStream();
+    	ByteArrayOutputStream baosWarnings = new ByteArrayOutputStream();
+    	String warningSetting = new String("allDeprecation,"
+    			+ "allJavadoc," + "assertIdentifier," + "charConcat,"
+    			+ "conditionAssign," + "constructorName," + "deprecation,"
+    			+ "emptyBlock," + "fieldHiding," + "finalBound,"
+    			+ "finally," + "indirectStatic," + "intfNonInherited,"
+    			+ "javadoc," + "localHiding," + "maskedCatchBlocks,"
+    			+ "noEffectAssign," + "pkgDefaultMethod," + "serial,"
+    			+ "semicolon," + "specialParamHiding," + "staticReceiver,"
+    			+ "syntheticAccess," + "unqualifiedField,"
+    			+ "unnecessaryElse," + "uselessTypeCheck," + "unsafe,"
+    			+ "unusedArgument," + "unusedImport," + "unusedLocal,"
+    			+ "unusedPrivate," + "unusedThrown");
+
+    	String classpath = 
+    			System.getProperty("java.class.path") + 
+    			java.io.File.pathSeparatorChar + 
+    			cleanClassPath(getLocalClasspath(database));
+    	String webclasspath = getLocalWebStartRelJarName();
+    	if (webclasspath != null)
+    		classpath += File.pathSeparatorChar + webclasspath;
+
+    	File sourcef;
+    	try {
+    		// Write source to a Java source file
+    		sourcef = new File(database.getJavaUserSourcePath() + java.io.File.separator + getStrippedClassname(className) + ".java");
+    		PrintStream sourcePS = new PrintStream(new FileOutputStream(sourcef));
+    		sourcePS.print(src);
+    		sourcePS.close();
+    	} catch (IOException ioe) {
+    		throw new ExceptionFatal("RS0293: Unable to save Java source: " + ioe.toString());
+    	}
+
+    	// Start compilation using jdtcore
+    	@SuppressWarnings("deprecation")
+    	boolean compiled = org.eclipse.jdt.internal.compiler.batch.Main.compile("-1.8 -source 1.8 -warn:" + 
+    			warningSetting + " " + 
+    			"-cp " + classpath + " " + sourcef,
+    			new PrintWriter(baosMessages), new PrintWriter(baosWarnings));
+
+    	String compilerMessages = "";
+    	// Parse the messages and the warnings.
+    	BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(baosMessages.toByteArray())));
+    	while (true) {
+    		String str = null;
+    		try {
+    			str = br.readLine();
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    		if (str == null) {
+    			break;
+    		}
+    		compilerMessages += str + '\n';
+    	}
+    	BufferedReader brWarnings = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(baosWarnings.toByteArray())));
+    	while (true) {
+    		String str = null;
+    		try {
+    			str = brWarnings.readLine();
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    		if (str == null) {
+    			break;
+    		}
+    		compilerMessages += str + '\n';
+    	}
+
+    	if (!compiled)
+        	throw new ExceptionSemantic("RS0005: Java compilation failed due to errors: " + compilerMessages);    		    
     }
     
     /** Get a stripped name.  Only return text after the final '.' */
@@ -510,7 +592,7 @@ public class ForeignCompilerJava {
               "public class " + name + " extends ValueTypeJava {\n" + 
                   body +
               "\n}";
-        compileForeignCode(generator.getDatabase(), generator.getPrintStream(), name, src);
+        compileForeignCode2(generator.getDatabase(), generator.getPrintStream(), name, src);
         try {
         	Class<?> typeClass = generator.getDatabase().loadClass(name);
             if (typeClass == null)
@@ -556,7 +638,7 @@ public class ForeignCompilerJava {
             comp += "\t" + "do_" + getStrippedName(signature.getName()) + "(" + args + ");\n";
         comp += "\t}\n}";
         // compile source
-        compileForeignCode(generator.getDatabase(), generator.getPrintStream(), signature.getClassSignature(), comp);
+        compileForeignCode2(generator.getDatabase(), generator.getPrintStream(), signature.getClassSignature(), comp);
         notify("> Java class " + signature.getClassSignature() + " compiled to implement OPERATOR " + signature);
         // construct operator definition
         OperatorDefinitionNative o;
