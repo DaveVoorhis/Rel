@@ -389,12 +389,19 @@ public class Browser extends JFrame {
     	browser.handleClosing();
     	System.exit(0);
     }
-        
-	private static void usage() {
-		System.out.println("Usage: Rel [-nomonitor] [-f[<databaseDir>] | <sourcefile.rel>]");
-		System.out.println(" -nomonitor      -- do not open monitor window");
-		System.out.println(" -f<databaseDir> -- open specified local database directory");
-		System.out.println(" -f              -- do not open a local database");
+
+	private static void usage(String args[], String msg) {
+		String out = "";
+		if (msg != null)
+			out += msg + "\n\n";
+		out += "Usage:\n" +
+			   " Rel [-nomonitor] [-f[<databaseDir>] | [-open] <sourcefile.rel>]\n" +
+			   " -nomonitor      -- do not open monitor window\n" +
+			   " -f<databaseDir> -- open specified local database directory\n" +
+			   " -f              -- do not open a local database";
+		System.out.println(out);
+		JOptionPane.showMessageDialog(null, out, "Invalid Arguments", JOptionPane.ERROR_MESSAGE);
+		System.exit(1);
 	}
 
 	public boolean isLocalRelAvailable() {
@@ -458,24 +465,26 @@ public class Browser extends JFrame {
         }
     	String databaseDir = System.getProperty("user.home");
     	String loadFile = null;
-    	if (args.length > 1) {
-    		System.out.println("More than the expected number of command-line arguments.");
-    		usage();
-    		System.exit(1);
+    	if (args.length > 2) {
+    		usage(args, "More than the expected number of command-line arguments.");
     	} else if (args.length == 1) {
     		if (!(args[0].startsWith("-f"))) {
     			if (args[0].endsWith(".rel")) {
     				loadFile = args[0];
     			} else {
-    				System.out.println("Expected -f command-line argument or a Rel source file, but got " + args[0]);
-    				usage();
-    				System.exit(1);
+    				usage(args, "Expected -f command-line argument or a Rel source file, but got " + args[0]);
     			}
     		}
     		else if (args[0].length() == 2)
     			databaseDir = null;
     		else
     			databaseDir = args[0].substring(2);
+    	} else if (args.length == 2) {
+    		if (args[0].equals("-open")) {
+    			loadFile = args[1];
+    		} else {
+    			usage(args, null);
+    		}
     	}
         browser = new Browser(databaseDir);
         browser.setVisible(true);
