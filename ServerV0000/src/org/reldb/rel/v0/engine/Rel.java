@@ -30,14 +30,10 @@ public class Rel {
 		ClassPathHack.addFile("org.eclipse.jdt.core_3.10.0.jar");
 	}
 	
-	/** Convenient runner for a stand-alone Rel interpreter. */
-	public static void main(String[] args) {
-		try {
-			buildClasspath();
-		} catch (IOException ioe) {
-			System.out.println(ioe.toString());
-			return;
-		}
+	/** Convenient runner for a stand-alone Rel interpreter. 
+	 * @throws IOException */
+	public static void main(String[] args) throws IOException {
+		buildClasspath();
 		org.reldb.rel.v0.interpreter.Instance.main(args);
 	}
 
