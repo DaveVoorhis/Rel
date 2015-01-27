@@ -1,7 +1,5 @@
 /JavaCharStream.java
 /ParseException.java
-/ResponseParser.java
 /ResponseParserConstants.java
-/ResponseParserTokenManager.java
 /Token.java
 /TokenMgrError.java

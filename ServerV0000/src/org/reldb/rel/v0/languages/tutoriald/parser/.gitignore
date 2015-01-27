@@ -234,10 +234,10 @@
 /ASTWriteln.java
 /ASTXor.java
 /JJTTutorialDState.java
-/Node.java
-/SimpleNode.java
 /JavaCharStream.java
+/Node.java
 /ParseException.java
+/SimpleNode.java
 /Token.java
 /TokenMgrError.java
 /TutorialD.java
