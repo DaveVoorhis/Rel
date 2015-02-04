@@ -8,7 +8,7 @@
  * Contributors:
  *     Steven Spungin <steven@spungin.tv> - initial API and implementation
  *******************************************************************************/
-package relui;
+package org.reldb.relui;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;

@@ -5,7 +5,7 @@
       <children xsi:type="advanced:Perspective" xmi:id="_1_YZlabsEeSFCpZI3OEurw">
         <children xsi:type="basic:PartSashContainer" xmi:id="_1_YZlqbsEeSFCpZI3OEurw">
           <children xsi:type="basic:PartStack" xmi:id="_1_YZl6bsEeSFCpZI3OEurw">
-            <children xsi:type="basic:Part" xmi:id="_1_YZmKbsEeSFCpZI3OEurw" contributionURI="bundleclass://RelUI/relui.parts.SamplePart" label="Sample Part"/>
+            <children xsi:type="basic:Part" xmi:id="_1_YZmKbsEeSFCpZI3OEurw" contributionURI="bundleclass://RelUI/org.reldb.relui.parts.SamplePart" label="Sample Part"/>
           </children>
         </children>
       </children>
@@ -27,10 +27,10 @@
       </children>
     </trimBars>
   </children>
-  <handlers xmi:id="_1_YZgabsEeSFCpZI3OEurw" elementId="RelUI.handler.quitCommand" contributionURI="bundleclass://RelUI/relui.handlers.QuitHandler" command="_1_YZgKbsEeSFCpZI3OEurw"/>
-  <handlers xmi:id="_1_YZhabsEeSFCpZI3OEurw" elementId="RelUI.handler.openCommand" contributionURI="bundleclass://RelUI/relui.handlers.OpenHandler" command="_1_YZhKbsEeSFCpZI3OEurw"/>
-  <handlers xmi:id="_1_YZiKbsEeSFCpZI3OEurw" elementId="RelUI.handler.saveCommand" contributionURI="bundleclass://RelUI/relui.handlers.SaveHandler" command="_1_YZh6bsEeSFCpZI3OEurw"/>
-  <handlers xmi:id="_1_YZi6bsEeSFCpZI3OEurw" elementId="RelUI.handler.aboutCommand" contributionURI="bundleclass://RelUI/relui.handlers.AboutHandler" command="_1_YZiqbsEeSFCpZI3OEurw"/>
+  <handlers xmi:id="_1_YZgabsEeSFCpZI3OEurw" elementId="RelUI.handler.quitCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.QuitHandler" command="_1_YZgKbsEeSFCpZI3OEurw"/>
+  <handlers xmi:id="_1_YZhabsEeSFCpZI3OEurw" elementId="RelUI.handler.openCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.OpenHandler" command="_1_YZhKbsEeSFCpZI3OEurw"/>
+  <handlers xmi:id="_1_YZiKbsEeSFCpZI3OEurw" elementId="RelUI.handler.saveCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.SaveHandler" command="_1_YZh6bsEeSFCpZI3OEurw"/>
+  <handlers xmi:id="_1_YZi6bsEeSFCpZI3OEurw" elementId="RelUI.handler.aboutCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.AboutHandler" command="_1_YZiqbsEeSFCpZI3OEurw"/>
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
     <bindings xmi:id="_1_YZg6bsEeSFCpZI3OEurw" keySequence="M1+Q" command="_1_YZgKbsEeSFCpZI3OEurw"/>
     <bindings xmi:id="_1_YZhqbsEeSFCpZI3OEurw" keySequence="M1+O" command="_1_YZhKbsEeSFCpZI3OEurw"/>

@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Lars Vogel <lars.Vogel@gmail.com> - Bug 419770
  *******************************************************************************/
-package relui.parts;
+package org.reldb.relui.parts;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
