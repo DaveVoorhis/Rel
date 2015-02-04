@@ -17,7 +17,7 @@
    <windowImages/>
 
 
-   <launcher>
+   <launcher name="Rel">
       <solaris/>
       <win useIco="false">
          <bmp/>
