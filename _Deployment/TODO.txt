@@ -26,10 +26,6 @@ Short term:
 	//			    RETURN result;
 	//			  END;
 	//			END OPERATOR;
-	// TODO - why doesn't fibonacci implementation work?  E.g.:
-	//   OPERATOR fib(n INT) RETURNS INT; 
-	//     RETURN IF n=0 OR n=1 THEN n ELSE fib(n-1) + fib(n+1) END IF;
-	//   END OPERATOR;
 	// TODO - provide \t\n\r translation in DBrowser, so that string literals like...
 	//          WRITELN("blah
 	//                blah
