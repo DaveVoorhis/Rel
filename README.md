@@ -1,8 +1,14 @@
 This is the live development repository for Rel.
 
 If you wish to work with the source code, it can be imported directly
-into Eclipse.  First, you'll need the JavaCC Eclipse plugin.  Download
-and install it from http://eclipse-javacc.sourceforge.net/
+into Eclipse.  
+
+First, you'll need Eclipse.  RelUI development requires the 
+Eclipse for RCP and RAP Developers download.  All the other subprojects
+will compile with the Eclipse IDE for Java developers.
+
+You'll need the JavaCC Eclipse plugin.  Download
+and install it in Eclipse from http://eclipse-javacc.sourceforge.net/
 
 Then, in Eclipse, select "File | Import... | Git | Projects from Git"
 and pick "Clone URI".  The URI is
