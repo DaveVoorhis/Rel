@@ -19,6 +19,10 @@
                name="appName"
                value="Rel">
          </property>
+         <property
+               name="aboutText"
+               value="This is the &apos;about&apos; text.">
+         </property>
       </product>
    </extension>
 

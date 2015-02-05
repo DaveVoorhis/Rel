@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_1_XycKbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ide.application" bindingContexts="_1_XyeabsEeSFCpZI3OEurw">
-  <children xsi:type="basic:TrimmedWindow" xmi:id="_1_XycabsEeSFCpZI3OEurw" label="RelUI" width="500" height="400">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_1_XycabsEeSFCpZI3OEurw" label="Rel" width="750" height="600">
     <children xsi:type="advanced:PerspectiveStack" xmi:id="_1_YZlKbsEeSFCpZI3OEurw">
-      <children xsi:type="advanced:Perspective" xmi:id="_1_YZlabsEeSFCpZI3OEurw">
+      <children xsi:type="advanced:Perspective" xmi:id="_1_YZlabsEeSFCpZI3OEurw" tooltip="this is the perspective tooltip">
         <children xsi:type="basic:PartSashContainer" xmi:id="_1_YZlqbsEeSFCpZI3OEurw">
           <children xsi:type="basic:PartStack" xmi:id="_1_YZl6bsEeSFCpZI3OEurw">
             <children xsi:type="basic:Part" xmi:id="_1_YZmKbsEeSFCpZI3OEurw" contributionURI="bundleclass://RelUI/org.reldb.relui.parts.SamplePart" label="Sample Part"/>
@@ -41,6 +41,12 @@
     <children xmi:id="_1_XyeqbsEeSFCpZI3OEurw" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
     <children xmi:id="_1_Xye6bsEeSFCpZI3OEurw" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
   </rootContext>
+  <descriptors xmi:id="_mK_5oK1hEeSOtbblMyKyoQ" elementId="relui.partdescriptor.partdescriptor" label="PartDescriptor" tooltip="this is a tooltip" allowMultiple="true" closeable="true" dirtyable="true">
+    <toolbar xmi:id="_n82RwK1hEeSOtbblMyKyoQ" elementId="relui.toolbar.0"/>
+  </descriptors>
+  <descriptors xmi:id="_rH1nEK1hEeSOtbblMyKyoQ" elementId="relui.partdescriptor.anotherPartDescriptor" label="Another part descriptor" tooltip="this is another part descriptor" allowMultiple="true" closeable="true" dirtyable="true">
+    <toolbar xmi:id="_tOvCIK1hEeSOtbblMyKyoQ" elementId="relui.toolbar.1"/>
+  </descriptors>
   <commands xmi:id="_1_YZgKbsEeSFCpZI3OEurw" elementId="org.eclipse.ui.file.exit" commandName="quitCommand"/>
   <commands xmi:id="_1_YZhKbsEeSFCpZI3OEurw" elementId="RelUI.open" commandName="openCommand"/>
   <commands xmi:id="_1_YZh6bsEeSFCpZI3OEurw" elementId="org.eclipse.ui.file.save" commandName="saveCommand"/>

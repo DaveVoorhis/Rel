@@ -3,6 +3,11 @@
 
 <product name="Rel" uid="Rel_1_1_0" id="RelUI.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" version="1.1.0.beta" useFeatures="false" includeLaunchers="true">
 
+   <aboutInfo>
+      <text>
+         This is the &apos;about&apos; text.
+      </text>
+   </aboutInfo>
 
    <configIni use="default">
    </configIni>
@@ -28,6 +33,11 @@
    <vm>
    </vm>
 
+   <license>
+        <text>
+   license text goes here
+         </text>
+   </license>
 
    <plugins>
       <plugin id="RelUI"/>
