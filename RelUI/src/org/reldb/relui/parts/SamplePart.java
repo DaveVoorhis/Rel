@@ -87,7 +87,7 @@ public class SamplePart {
 
 		final Runnable r = new Runnable() {
 		    public void run() {
-				TableItem item = new TableItem (table, SWT.NONE);
+				TableItem item = new TableItem(table, SWT.NONE);
 				item.setText (0, "x");
 				item.setText (1, "y");
 				item.setText (2, "!");
@@ -96,7 +96,6 @@ public class SamplePart {
 				item.setText (5, "zip");
 				item.setText (6, "line " + i++ + " in nowhere");
 				table.setSelection(table.getItemCount());
-				table.showSelection();
 				Display.getDefault().asyncExec(this);
 		    }
 		};
