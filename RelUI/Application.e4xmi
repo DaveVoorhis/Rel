@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_1_XycKbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ide.application" bindingContexts="_1_XyeabsEeSFCpZI3OEurw">
-  <children xsi:type="basic:TrimmedWindow" xmi:id="_1_XycabsEeSFCpZI3OEurw" label="Rel" width="750" height="600">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_1_XycabsEeSFCpZI3OEurw" label="Rel">
     <children xsi:type="advanced:PerspectiveStack" xmi:id="_1_YZlKbsEeSFCpZI3OEurw">
-      <children xsi:type="advanced:Perspective" xmi:id="_1_YZlabsEeSFCpZI3OEurw" tooltip="this is the perspective tooltip">
+      <children xsi:type="advanced:Perspective" xmi:id="_1_YZlabsEeSFCpZI3OEurw" elementId="id.dbrowser" label="DBrowser" tooltip="this is the perspective tooltip">
         <children xsi:type="basic:PartSashContainer" xmi:id="_1_YZlqbsEeSFCpZI3OEurw">
           <children xsi:type="basic:PartStack" xmi:id="_1_YZl6bsEeSFCpZI3OEurw">
             <children xsi:type="basic:Part" xmi:id="_1_YZmKbsEeSFCpZI3OEurw" contributionURI="bundleclass://RelUI/org.reldb.relui.parts.SamplePart" label="Sample Part"/>
+          </children>
+        </children>
+      </children>
+      <children xsi:type="advanced:Perspective" xmi:id="_1_YZlabsEeSFCpZI3OEurw" elementId="id.log" label="Log" tooltip="this is the perspective tooltip">
+        <children xsi:type="basic:PartSashContainer" xmi:id="_1_YZlqbsEeSFCpZI3OEurw">
+          <children xsi:type="basic:PartStack" xmi:id="_1_YZl6bsEeSFCpZI3OEurw">
+            <children xsi:type="basic:Part" xmi:id="_6dUdkLHmEeSVj9DsBGeSUQ" elementId="relui.part.anotherpart" contributionURI="bundleclass://RelUI/org.reldb.relui.parts.AnotherPart" label="AnotherPart"/>
           </children>
         </children>
       </children>

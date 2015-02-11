@@ -24,16 +24,13 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-public class SamplePart {
+public class AnotherPart {
 
 	private Text txtInput;
-	private Table table;
-	
+	private TableViewer tableViewer;
+
 	@Inject
 	private MDirtyable dirty;
 
@@ -51,36 +48,17 @@ public class SamplePart {
 		});
 		txtInput.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		table = new Table (parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-		table.setLinesVisible (true);
-		table.setHeaderVisible (true);
-		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-		data.heightHint = 200;
-		table.setLayoutData(data);
-		String[] titles = {" ", "C", "!", "Description", "Resource", "In Folder", "Location"};
-		for (int i=0; i<titles.length; i++) {
-			TableColumn column = new TableColumn (table, SWT.NONE);
-			column.setText (titles [i]);
-		}	
-		int count = 128;
-		for (int i=0; i<count; i++) {
-			TableItem item = new TableItem (table, SWT.NONE);
-			item.setText (0, "x");
-			item.setText (1, "y");
-			item.setText (2, "!");
-			item.setText (3, "this stuff behaves the way I expect");
-			item.setText (4, "almost everywhere");
-			item.setText (5, "some.folder");
-			item.setText (6, "line " + i + " in nowhere");
-		}
-		for (int i=0; i<titles.length; i++) {
-			table.getColumn (i).pack ();
-		}	
+		tableViewer = new TableViewer(parent);
+
+		tableViewer.add("Blah");
+		tableViewer.add("Blat");
+		tableViewer.add("Zap");
+		tableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 	}
 
 	@Focus
 	public void setFocus() {
-		table.setFocus();
+		tableViewer.getTable().setFocus();
 	}
 
 	@Persist
