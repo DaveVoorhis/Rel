@@ -88,6 +88,8 @@ public class SamplePart {
 		final Runnable r = new Runnable() {
 		    public void run() {
 		    	for (int n=0; n<100; n++) {
+					if (table.isDisposed())
+						return;
 					TableItem item = new TableItem(table, SWT.NONE);
 					item.setText (0, "x");
 					item.setText (1, "y");
@@ -96,6 +98,8 @@ public class SamplePart {
 					item.setText (4, "zap");
 					item.setText (5, "zip");
 					item.setText (6, "line " + i++ + " in nowhere");
+					if (table.isDisposed())
+						return;
 					table.showItem(item);
 		    	}
 				Display.getDefault().asyncExec(this);

@@ -7,6 +7,7 @@
           <children xsi:type="basic:PartStack" xmi:id="_1_YZl6bsEeSFCpZI3OEurw">
             <children xsi:type="basic:Part" xmi:id="_1_YZmKbsEeSFCpZI3OEurw" contributionURI="bundleclass://RelUI/org.reldb.relui.parts.SamplePart" label="Sample Part"/>
           </children>
+          <children xsi:type="basic:Part" xmi:id="_0j9d4LIwEeSd8JqXpbRsOQ" elementId="relui.part.0"/>
         </children>
       </children>
     </children>
