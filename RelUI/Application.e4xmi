@@ -9,13 +9,6 @@
           </children>
         </children>
       </children>
-      <children xsi:type="advanced:Perspective" xmi:id="_1_YZlabsEeSFCpZI3OEurw" elementId="id.log" label="Log" tooltip="this is the perspective tooltip">
-        <children xsi:type="basic:PartSashContainer" xmi:id="_1_YZlqbsEeSFCpZI3OEurw">
-          <children xsi:type="basic:PartStack" xmi:id="_1_YZl6bsEeSFCpZI3OEurw">
-            <children xsi:type="basic:Part" xmi:id="_6dUdkLHmEeSVj9DsBGeSUQ" elementId="relui.part.anotherpart" contributionURI="bundleclass://RelUI/org.reldb.relui.parts.AnotherPart" label="AnotherPart"/>
-          </children>
-        </children>
-      </children>
     </children>
     <mainMenu xmi:id="_1_YZjabsEeSFCpZI3OEurw" elementId="menu:org.eclipse.ui.main.menu">
       <children xsi:type="menu:Menu" xmi:id="_1_YZjqbsEeSFCpZI3OEurw" label="File">

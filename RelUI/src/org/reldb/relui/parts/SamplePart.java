@@ -17,13 +17,13 @@ import javax.inject.Inject;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.di.Persist;
 import org.eclipse.e4.ui.model.application.ui.MDirtyable;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -61,7 +61,7 @@ public class SamplePart {
 		for (int i=0; i<titles.length; i++) {
 			TableColumn column = new TableColumn (table, SWT.NONE);
 			column.setText (titles [i]);
-		}	
+		}
 		int count = 128;
 		for (int i=0; i<count; i++) {
 			TableItem item = new TableItem (table, SWT.NONE);
@@ -76,11 +76,32 @@ public class SamplePart {
 		for (int i=0; i<titles.length; i++) {
 			table.getColumn (i).pack ();
 		}	
+		
 	}
+
+	static int i = 10000;
 
 	@Focus
 	public void setFocus() {
 		table.setFocus();
+
+		final Runnable r = new Runnable() {
+		    public void run() {
+				TableItem item = new TableItem (table, SWT.NONE);
+				item.setText (0, "x");
+				item.setText (1, "y");
+				item.setText (2, "!");
+				item.setText (3, "zot");
+				item.setText (4, "zap");
+				item.setText (5, "zip");
+				item.setText (6, "line " + i++ + " in nowhere");
+				table.setSelection(table.getItemCount());
+				table.showSelection();
+				Display.getDefault().asyncExec(this);
+		    }
+		};
+		
+		Display.getDefault().asyncExec(r);
 	}
 
 	@Persist
