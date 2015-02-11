@@ -87,15 +87,17 @@ public class SamplePart {
 
 		final Runnable r = new Runnable() {
 		    public void run() {
-				TableItem item = new TableItem(table, SWT.NONE);
-				item.setText (0, "x");
-				item.setText (1, "y");
-				item.setText (2, "!");
-				item.setText (3, "zot");
-				item.setText (4, "zap");
-				item.setText (5, "zip");
-				item.setText (6, "line " + i++ + " in nowhere");
-				table.setSelection(table.getItemCount());
+		    	for (int n=0; n<100; n++) {
+					TableItem item = new TableItem(table, SWT.NONE);
+					item.setText (0, "x");
+					item.setText (1, "y");
+					item.setText (2, "!");
+					item.setText (3, "zot");
+					item.setText (4, "zap");
+					item.setText (5, "zip");
+					item.setText (6, "line " + i++ + " in nowhere");
+					table.showItem(item);
+		    	}
 				Display.getDefault().asyncExec(this);
 		    }
 		};
