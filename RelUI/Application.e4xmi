@@ -5,9 +5,8 @@
       <children xsi:type="advanced:Perspective" xmi:id="_1_YZlabsEeSFCpZI3OEurw" elementId="id.dbrowser" label="DBrowser" tooltip="this is the perspective tooltip">
         <children xsi:type="basic:PartSashContainer" xmi:id="_1_YZlqbsEeSFCpZI3OEurw">
           <children xsi:type="basic:PartStack" xmi:id="_1_YZl6bsEeSFCpZI3OEurw">
-            <children xsi:type="basic:Part" xmi:id="_1_YZmKbsEeSFCpZI3OEurw" contributionURI="bundleclass://RelUI/org.reldb.relui.parts.SamplePart" label="Sample Part"/>
+            <children xsi:type="basic:Part" xmi:id="_1_YZmKbsEeSFCpZI3OEurw" contributionURI="bundleclass://RelUI/org.reldb.relui.parts.Content" label="Content"/>
           </children>
-          <children xsi:type="basic:Part" xmi:id="_0j9d4LIwEeSd8JqXpbRsOQ" elementId="relui.part.0"/>
         </children>
       </children>
     </children>
@@ -25,6 +24,12 @@
       <children xsi:type="menu:ToolBar" xmi:id="_1_ZAkabsEeSFCpZI3OEurw" elementId="toolbar:org.eclipse.ui.main.toolbar">
         <children xsi:type="menu:HandledToolItem" xmi:id="_1_ZAkqbsEeSFCpZI3OEurw" iconURI="platform:/plugin/RelUI/icons/sample.png" command="_1_YZhKbsEeSFCpZI3OEurw"/>
         <children xsi:type="menu:HandledToolItem" xmi:id="_1_ZAk6bsEeSFCpZI3OEurw" iconURI="platform:/plugin/RelUI/icons/save_edit.png" command="_1_YZh6bsEeSFCpZI3OEurw"/>
+        <children xsi:type="menu:ToolControl" xmi:id="_FRiY8LL2EeSwCoTndOKorQ" elementId="relui.toolcontrol.1" contributionURI="bundleclass://RelUI/org.reldb.relui.tools.LocationBar"/>
+      </children>
+    </trimBars>
+    <trimBars xmi:id="_qG-hkLL0EeSwCoTndOKorQ" elementId="relui.trimbar.0" side="Bottom">
+      <children xsi:type="menu:ToolBar" xmi:id="_sDre0LL0EeSwCoTndOKorQ" elementId="relui.toolbar.2">
+        <children xsi:type="menu:ToolControl" xmi:id="_C7BNgLL2EeSwCoTndOKorQ" elementId="relui.toolcontrol.0" contributionURI="bundleclass://RelUI/org.reldb.relui.tools.StatusBar"/>
       </children>
     </trimBars>
   </children>

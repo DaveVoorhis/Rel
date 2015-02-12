@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-public class SamplePart {
+public class Content {
 
 	private Text txtInput;
 	private Table table;
@@ -76,14 +76,6 @@ public class SamplePart {
 		for (int i=0; i<titles.length; i++) {
 			table.getColumn (i).pack ();
 		}	
-		
-	}
-
-	static int i = 10000;
-
-	@Focus
-	public void setFocus() {
-		table.setFocus();
 
 		final Runnable r = new Runnable() {
 		    public void run() {
@@ -106,7 +98,14 @@ public class SamplePart {
 		    }
 		};
 		
-		Display.getDefault().asyncExec(r);
+		Display.getDefault().asyncExec(r);		
+	}
+
+	static int i = 10000;
+
+	@Focus
+	public void setFocus() {
+		table.setFocus();
 	}
 
 	@Persist
