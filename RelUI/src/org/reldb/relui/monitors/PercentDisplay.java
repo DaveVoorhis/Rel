@@ -143,13 +143,15 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 						gc.setForeground(okColor);
 					else
 						gc.setForeground(goodColor);
-					gc.drawLine(barX, rect.height - rect.y, barX, barY);
-					int dontDrawLineBelow = 5;
-					if (lastY < dontDrawLineBelow && barY < dontDrawLineBelow)
-						gc.setForeground(black);
-					else
-						gc.setForeground(lightGray);
-					gc.drawLine(lastX, lastY, barX, barY);
+					gc.drawLine(barX, rect.height, barX, barY);
+					if (index > 0) {
+						int dontDrawLineBelow = 5;
+						if (lastY < dontDrawLineBelow && barY < dontDrawLineBelow)
+							gc.setForeground(black);
+						else
+							gc.setForeground(lightGray);
+						gc.drawLine(lastX, lastY, barX, barY);
+					}
 					lastX = barX;
 					lastY = barY;
 				}
