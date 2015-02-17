@@ -6,6 +6,7 @@ import swing2swt.layout.BorderLayout;
 
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.reldb.relui.monitors.FreeCPUDisplay;
 import org.reldb.relui.monitors.FreeMemoryDisplay;
@@ -22,7 +23,7 @@ public class StatusPanel extends Composite {
 		super(parent, style);
 		setLayout(new BorderLayout(0, 0));
 		
-		Label lblStatus = new Label(this, SWT.BORDER);
+		Label lblStatus = new Label(this, SWT.NONE);
 		lblStatus.setLayoutData(BorderLayout.WEST);
 		lblStatus.setText("Status");
 		
@@ -32,6 +33,20 @@ public class StatusPanel extends Composite {
 		
 		FreeMemoryDisplay memDisplay = new FreeMemoryDisplay(composite, SWT.BORDER);
 		FreeCPUDisplay cpuDisplay = new FreeCPUDisplay(composite, SWT.BORDER);
+		
+		pack();
+	}
+
+	private Point preferredSize() {
+		return new Point(100, 25);
+	}
+	
+	public Point computeSize(int w, int h) {
+		return preferredSize(); 
+	}
+
+	public Point computeSize(int w, int h, boolean changed) {
+		return preferredSize();
 	}
 
 	@Override

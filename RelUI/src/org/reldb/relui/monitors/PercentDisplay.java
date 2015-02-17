@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -110,6 +111,18 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 		percentageHistory.add(percentValue);
 		while (percentageHistory.size() > displayWidth)
 			percentageHistory.removeFirst();
+	}
+
+	private Point preferredSize() {
+		return new Point(100, 25);
+	}
+	
+	public Point computeSize(int h, int w) {
+		return preferredSize();
+	}
+	
+	public Point computeSize(int h, int w, boolean changed) {
+		return preferredSize();
 	}
 	
 	public PercentDisplay(Composite parent, int style, String displaytext, PercentSource percent) {
