@@ -5,7 +5,6 @@ import org.eclipse.swt.widgets.Composite;
 import swing2swt.layout.BorderLayout;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
 
 public class MainPanel extends Composite {
 
