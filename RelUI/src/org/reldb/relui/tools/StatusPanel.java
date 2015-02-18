@@ -49,9 +49,4 @@ public class StatusPanel extends Composite {
 		return preferredSize();
 	}
 
-	@Override
-	protected void checkSubclass() {
-		// Disable the check that prevents subclassing of SWT components
-	}
-
 }

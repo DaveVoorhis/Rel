@@ -9,17 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *     Lars Vogel <lars.Vogel@gmail.com> - Bug 419770
  *******************************************************************************/
-package org.reldb.relui.parts;
+package org.reldb.relui.tools;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
-import org.eclipse.e4.ui.di.Focus;
-import org.eclipse.e4.ui.di.Persist;
-import org.eclipse.e4.ui.model.application.ui.MDirtyable;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -27,31 +19,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 
-public class Content {
-
-	private Text txtInput;
+public class ContentPanel extends Composite {
 	private Table table;
-	
-	@Inject
-	private MDirtyable dirty;
 
-	@PostConstruct
-	public void createComposite(Composite parent) {
-		parent.setLayout(new GridLayout(1, false));
+	static int i = 10000;
 
-		txtInput = new Text(parent, SWT.BORDER);
-		txtInput.setMessage("Enter text to mark part as dirty");
-		txtInput.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				dirty.setDirty(true);
-			}
-		});
-		txtInput.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	public ContentPanel(Composite parent, int style) {
+		super(parent, style);
+		
+		setLayout(new GridLayout(1, false));
 
-		table = new Table (parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+		table = new Table (this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible (true);
 		table.setHeaderVisible (true);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -99,17 +78,5 @@ public class Content {
 		};
 		
 		Display.getDefault().asyncExec(r);		
-	}
-
-	static int i = 10000;
-
-	@Focus
-	public void setFocus() {
-		table.setFocus();
-	}
-
-	@Persist
-	public void save() {
-		dirty.setDirty(false);
 	}
 }

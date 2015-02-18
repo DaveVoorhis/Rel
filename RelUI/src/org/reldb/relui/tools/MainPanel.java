@@ -18,20 +18,15 @@ public class MainPanel extends Composite {
 		super(parent, style);
 		setLayout(new BorderLayout(0, 0));
 		
-		ToolPanel toolPanel = new ToolPanel(this, SWT.BORDER);
+		ToolPane toolPanel = new ToolPane(this, SWT.NONE);
 		toolPanel.setLayoutData(BorderLayout.NORTH);
 		
-		Browser browser = new Browser(this, SWT.BORDER);
-		toolPanel.setLayoutData(BorderLayout.CENTER);
+		ContentPanel content = new ContentPanel(this, SWT.BORDER);
+		content.setLayoutData(BorderLayout.CENTER);
 		
 		StatusPanel statusPanel = new StatusPanel(this, SWT.NONE);
 		statusPanel.setLayoutData(BorderLayout.SOUTH);
 		
 		pack();
-	}
-
-	@Override
-	protected void checkSubclass() {
-		// Disable the check that prevents subclassing of SWT components
 	}
 }
