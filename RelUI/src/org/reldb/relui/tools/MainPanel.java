@@ -20,7 +20,7 @@ public class MainPanel extends Composite {
 		ToolPane toolPanel = new ToolPane(this, SWT.NONE);
 		toolPanel.setLayoutData(BorderLayout.NORTH);
 		
-		ContentPanel content = new ContentPanel(this, SWT.BORDER);
+		ContentPanel content = new ContentPanel(this, SWT.NONE);
 		content.setLayoutData(BorderLayout.CENTER);
 		
 		StatusPanel statusPanel = new StatusPanel(this, SWT.NONE);
