@@ -15,6 +15,7 @@ public class ToolPanel extends Composite {
 	 * @param parent
 	 * @param style
 	 */
+	@SuppressWarnings("unused")
 	public ToolPanel(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new BorderLayout(0, 0));
@@ -48,17 +49,20 @@ public class ToolPanel extends Composite {
 		
 		ToolBar rightBar = new ToolBar(this, SWT.NONE);
 		rightBar.setLayoutData(BorderLayout.EAST);
-		ToolItem rel = new ToolItem(rightBar, SWT.PUSH);
+		
+		ToolItem sep = new ToolItem(rightBar, SWT.SEPARATOR);
+		ToolItem rel = new ToolItem(rightBar, SWT.RADIO);
 		rel.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16d.png"));
 		rel.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16h.png"));
 		rel.setImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16.png"));
 		rel.setToolTipText("Rel");
-		ToolItem rev = new ToolItem(rightBar, SWT.PUSH);
+		rel.setSelection(true);
+		ToolItem rev = new ToolItem(rightBar, SWT.RADIO);
 		rev.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16d.png"));
 		rev.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16h.png"));
 		rev.setImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16.png"));
 		rev.setToolTipText("Rev");
-		ToolItem cmd = new ToolItem(rightBar, SWT.PUSH);
+		ToolItem cmd = new ToolItem(rightBar, SWT.RADIO);
 		cmd.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16d.png"));
 		cmd.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16h.png"));
 		cmd.setImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16.png"));

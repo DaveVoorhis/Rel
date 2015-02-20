@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Display;
 import swing2swt.layout.BorderLayout;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabItem;
 
 public class MainPanel extends Composite {
 
@@ -29,7 +30,10 @@ public class MainPanel extends Composite {
 		
 		DemoContent cntnt1 = new DemoContent(tab.getContentParent(), SWT.NONE);
 		tab.setContent(cntnt1);
-
+		
+		CTabItem tbtmNewItem = new TabPanel(tabFolder, SWT.NONE);
+		tbtmNewItem.setText("New");
+		
 		StatusPanel statusPanel = new StatusPanel(this, SWT.NONE);
 		statusPanel.setLayoutData(BorderLayout.SOUTH);
 		
