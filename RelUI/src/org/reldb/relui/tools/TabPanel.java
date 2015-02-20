@@ -17,8 +17,8 @@ public class TabPanel extends CTabItem {
 		area = new Composite(parent, style);
 		area.setLayout(new BorderLayout());
 
-		ToolPane tools = new ToolPane(area, SWT.NONE);
-		tools.setLayoutData(BorderLayout.NORTH);
+		TopPanel topPanel = new TopPanel(area, SWT.NONE);
+		topPanel.setLayoutData(BorderLayout.NORTH);
 		
 		setControl(area);
 	}
