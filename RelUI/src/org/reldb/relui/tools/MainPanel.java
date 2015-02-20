@@ -3,11 +3,11 @@ package org.reldb.relui.tools;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 
 import swing2swt.layout.BorderLayout;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabItem;
 
 public class MainPanel extends Composite {
 
@@ -24,15 +24,17 @@ public class MainPanel extends Composite {
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		tabFolder.setLayoutData(BorderLayout.CENTER);
 
-		TabPanel tab = new TabPanel(tabFolder, SWT.NONE);
-		tab.setText("Default");
-		tabFolder.setSelection(tab);
+		TabPanel tabDefault = new TabPanel(tabFolder, SWT.NONE);
+		tabDefault.setText("Default");
+		tabDefault.setContent(new DemoContent(tabDefault.getContentParent(), SWT.NONE));
 		
-		DemoContent cntnt1 = new DemoContent(tab.getContentParent(), SWT.NONE);
-		tab.setContent(cntnt1);
+		TabPanel tabNew = new TabPanel(tabFolder, SWT.NONE);
+		tabNew.setText("New");
+		Label tabNewContent = new Label(tabNew.getContentParent(), SWT.BORDER);
+		tabNewContent.setText("Nothing is here yet.");
+		tabNew.setContent(tabNewContent);
 		
-		CTabItem tbtmNewItem = new TabPanel(tabFolder, SWT.NONE);
-		tbtmNewItem.setText("New");
+		tabFolder.setSelection(tabDefault);
 		
 		StatusPanel statusPanel = new StatusPanel(this, SWT.NONE);
 		statusPanel.setLayoutData(BorderLayout.SOUTH);

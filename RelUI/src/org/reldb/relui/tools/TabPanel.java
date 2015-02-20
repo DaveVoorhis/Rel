@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 import swing2swt.layout.BorderLayout;
 
@@ -27,7 +28,7 @@ public class TabPanel extends CTabItem {
 		return area;
 	}
 
-	public void setContent(Composite comp) {
+	public void setContent(Control comp) {
 		comp.setLayoutData(BorderLayout.CENTER);
 	}
 	
