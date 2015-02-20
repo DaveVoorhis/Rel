@@ -1,6 +1,8 @@
 package org.reldb.relui.tools;
 
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 import swing2swt.layout.BorderLayout;
 
@@ -16,13 +18,18 @@ public class MainPanel extends Composite {
 	public MainPanel(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new BorderLayout(0, 0));
+
+		CTabFolder tabFolder = new CTabFolder(this, SWT.NONE);
+		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+		tabFolder.setLayoutData(BorderLayout.CENTER);
+
+		TabPanel tab = new TabPanel(tabFolder, SWT.NONE);
+		tab.setText("Default");
+		tabFolder.setSelection(tab);
 		
-		ToolPane toolPanel = new ToolPane(this, SWT.NONE);
-		toolPanel.setLayoutData(BorderLayout.NORTH);
-		
-		ContentPanel content = new ContentPanel(this, SWT.NONE);
-		content.setLayoutData(BorderLayout.CENTER);
-		
+		DemoContent cntnt1 = new DemoContent(tab.getContentParent(), SWT.NONE);
+		tab.setContent(cntnt1);
+
 		StatusPanel statusPanel = new StatusPanel(this, SWT.NONE);
 		statusPanel.setLayoutData(BorderLayout.SOUTH);
 		

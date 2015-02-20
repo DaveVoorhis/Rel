@@ -114,7 +114,7 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 	}
 
 	private Point preferredSize() {
-		return new Point(100, 25);
+		return new Point(75, 25);
 	}
 	
 	public Point computeSize(int h, int w) {

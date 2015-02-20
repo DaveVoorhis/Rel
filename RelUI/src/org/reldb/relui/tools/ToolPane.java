@@ -17,15 +17,7 @@ public class ToolPane {
 	 * @param style
 	 */
 	public ToolPane(Composite parent, int style) {		
-		banner = new CBanner(parent, SWT.BORDER);
-		
-		ToolBar leftBar = new ToolBar(banner, SWT.NONE);
-		for (int i=0; i<8; i++) {
-			ToolItem item = new ToolItem(leftBar, SWT.PUSH);
-			item.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16d.png"));
-			item.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16h.png"));
-			item.setImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16.png"));
-		}
+		banner = new CBanner(parent, style);
 		
 		ToolBar rightBar = new ToolBar(banner, SWT.NONE);
 		ToolItem rel = new ToolItem(rightBar, SWT.PUSH);
@@ -44,11 +36,19 @@ public class ToolPane {
 		cmd.setImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16.png"));
 		cmd.setToolTipText("Command line");
 		
+		ToolBar toolBar = new ToolBar(banner, SWT.NONE);
+		for (int i=0; i<8; i++) {
+			ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+			item.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16d.png"));
+			item.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16h.png"));
+			item.setImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16.png"));
+		}
+		
 		LocationPanel locationPanel = new LocationPanel(banner, SWT.NONE);
 		
-		banner.setLeft(leftBar);
+		banner.setLeft(locationPanel);
 		banner.setRight(rightBar);
-		banner.setBottom(locationPanel);
+		banner.setBottom(toolBar);
 		
 		banner.setLocation(0, 0);
 		
