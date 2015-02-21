@@ -24,31 +24,9 @@ public class LocationPanel extends Composite {
 		super(parent, style);
 		setLayout(new FormLayout());
 		
-		Label lblNewLabel = new Label(this, SWT.NONE);
-		FormData fd_lblNewLabel = new FormData();
-		fd_lblNewLabel.top = new FormAttachment(0, 8);
-		lblNewLabel.setLayoutData(fd_lblNewLabel);
-		lblNewLabel.setText("Database:");
-		
-		textDatabase = new Text(this, SWT.BORDER);
-		fd_lblNewLabel.right = new FormAttachment(textDatabase, -6);
-		FormData fd_textDatabase = new FormData();
-		fd_textDatabase.left = new FormAttachment(0, 136);
-		fd_textDatabase.top = new FormAttachment(0, 5);
-		textDatabase.setLayoutData(fd_textDatabase);
-		
-		Button btnChooser = new Button(this, SWT.NONE);
-		fd_textDatabase.right = new FormAttachment(btnChooser, -6);
-		FormData fd_btnChooser = new FormData();
-		fd_btnChooser.right = new FormAttachment(100);
-		fd_btnChooser.top = new FormAttachment(0, 1);
-		btnChooser.setLayoutData(fd_btnChooser);
-		btnChooser.setText("...");
-		
 		ToolBar toolBar = new ToolBar(this, SWT.FLAT | SWT.RIGHT);
-		fd_lblNewLabel.left = new FormAttachment(toolBar, 6);
 		FormData fd_toolBar = new FormData();
-		fd_toolBar.top = new FormAttachment(0, 5);
+		fd_toolBar.top = new FormAttachment(0, 0);
 		fd_toolBar.left = new FormAttachment(0);
 		toolBar.setLayoutData(fd_toolBar);
 		
@@ -66,5 +44,26 @@ public class LocationPanel extends Composite {
 		tltmOpenRemote.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16d.png"));
 		tltmOpenRemote.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16h.png"));
 		tltmOpenRemote.setImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16.png"));
+		
+		Label lblDatabase = new Label(this, SWT.NONE);
+		FormData fd_lblNewLabel = new FormData();
+		fd_lblNewLabel.top = new FormAttachment(0, 0);
+		fd_lblNewLabel.left = new FormAttachment(toolBar, 0);
+		lblDatabase.setLayoutData(fd_lblNewLabel);
+		lblDatabase.setText("Database:");
+		
+		textDatabase = new Text(this, SWT.BORDER);
+		FormData fd_textDatabase = new FormData();
+		fd_textDatabase.top = new FormAttachment(0, 0);
+		fd_textDatabase.left = new FormAttachment(lblDatabase, 0);
+		textDatabase.setLayoutData(fd_textDatabase);
+		
+		Button btnChooser = new Button(this, SWT.NONE);
+		fd_textDatabase.right = new FormAttachment(btnChooser, 0);
+		FormData fd_btnChooser = new FormData();
+		fd_btnChooser.top = new FormAttachment(0, 0);
+		fd_btnChooser.right = new FormAttachment(100);
+		btnChooser.setLayoutData(fd_btnChooser);
+		btnChooser.setText("...");
 	}
 }

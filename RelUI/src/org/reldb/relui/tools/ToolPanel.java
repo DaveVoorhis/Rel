@@ -6,7 +6,9 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.ResourceManager;
 
-import swing2swt.layout.BorderLayout;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
 
 public class ToolPanel extends Composite {
 	
@@ -18,10 +20,13 @@ public class ToolPanel extends Composite {
 	@SuppressWarnings("unused")
 	public ToolPanel(Composite parent, int style) {
 		super(parent, style);
-		setLayout(new BorderLayout(0, 0));
+		setLayout(new FormLayout());
 		
 		ToolBar toolBar = new ToolBar(this, SWT.NONE);
-		toolBar.setLayoutData(BorderLayout.WEST);
+		FormData fd_toolBar = new FormData();
+		fd_toolBar.top = new FormAttachment(0);
+		fd_toolBar.left = new FormAttachment(0);
+		toolBar.setLayoutData(fd_toolBar);
 		ToolItem item1 = new ToolItem(toolBar, SWT.PUSH);
 		item1.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16d.png"));
 		item1.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16h.png"));
@@ -48,7 +53,10 @@ public class ToolPanel extends Composite {
 		item6.setImage(ResourceManager.getPluginImage("RelUI", "icons/makefg16.png"));
 		
 		ToolBar rightBar = new ToolBar(this, SWT.NONE);
-		rightBar.setLayoutData(BorderLayout.EAST);
+		FormData fd_rightBar = new FormData();
+		fd_rightBar.right = new FormAttachment(100);
+		fd_rightBar.top = new FormAttachment(0);
+		rightBar.setLayoutData(fd_rightBar);
 		
 		ToolItem sep = new ToolItem(rightBar, SWT.SEPARATOR);
 		ToolItem rel = new ToolItem(rightBar, SWT.RADIO);

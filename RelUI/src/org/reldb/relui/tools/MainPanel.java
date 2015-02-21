@@ -5,9 +5,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
-import swing2swt.layout.BorderLayout;
-
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
 
 public class MainPanel extends Composite {
 
@@ -18,11 +19,15 @@ public class MainPanel extends Composite {
 	 */
 	public MainPanel(Composite parent, int style) {
 		super(parent, style);
-		setLayout(new BorderLayout(0, 0));
-
+		setLayout(new FormLayout());
+		
 		CTabFolder tabFolder = new CTabFolder(this, SWT.NONE);
+		FormData fd_tabFolder = new FormData();
+		fd_tabFolder.top = new FormAttachment(0);
+		fd_tabFolder.left = new FormAttachment(0);
+		fd_tabFolder.right = new FormAttachment(100);
+		tabFolder.setLayoutData(fd_tabFolder);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
-		tabFolder.setLayoutData(BorderLayout.CENTER);
 
 		TabPanel tabDefault = new TabPanel(tabFolder, SWT.NONE);
 		tabDefault.setText("Default");
@@ -37,8 +42,12 @@ public class MainPanel extends Composite {
 		tabFolder.setSelection(tabDefault);
 		
 		StatusPanel statusPanel = new StatusPanel(this, SWT.NONE);
-		statusPanel.setLayoutData(BorderLayout.SOUTH);
-		
-		pack();
+		fd_tabFolder.bottom = new FormAttachment(statusPanel, 0);
+		FormData fd_lblNewLabel = new FormData();
+		fd_lblNewLabel.left = new FormAttachment(0);
+		fd_lblNewLabel.right = new FormAttachment(100);
+		fd_lblNewLabel.top = new FormAttachment(100, -24);
+		fd_lblNewLabel.bottom = new FormAttachment(100);
+		statusPanel.setLayoutData(fd_lblNewLabel);
 	}
 }
