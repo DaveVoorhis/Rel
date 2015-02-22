@@ -28,7 +28,6 @@
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
     <bindings xmi:id="_1_YZg6bsEeSFCpZI3OEurw" keySequence="M1+Q" command="_1_YZgKbsEeSFCpZI3OEurw"/>
     <bindings xmi:id="_1_YZhqbsEeSFCpZI3OEurw" keySequence="M1+O" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
-    <bindings xmi:id="_1_YZjKbsEeSFCpZI3OEurw" keySequence="M1+A" command="_1_YZiqbsEeSFCpZI3OEurw"/>
   </bindingTables>
   <rootContext xmi:id="_1_XyeabsEeSFCpZI3OEurw" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_1_XyeqbsEeSFCpZI3OEurw" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
