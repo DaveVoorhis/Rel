@@ -27,6 +27,10 @@
                name="aboutImage"
                value="icons/RelLogoNew128.png">
          </property>
+         <property
+               name="windowImages"
+               value="icons/RelLogoNew16.png,icons/RelLogoNew32.png,icons/RelLogoNew48.png,icons/RelLogoNew64.png,icons/RelLogoNew128.png,icons/RelLogoNew256.png">
+         </property>
       </product>
    </extension>
    <extension

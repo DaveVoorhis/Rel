@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+    <!-- Root page -->
+    <page id="root" style="html/style.css"  style-id="page">	    
+        <title style-id="intro-header">Minimal Intro</title>
+        <link url="http://org.eclipse.ui.intro/switchToLaunchBar" label="Go to theWorkbench" id="workbench" />
+        <link label="Link to tutorials" url="http://org.eclipse.ui.intro/showPage?id=tutorials" id="tutorials" />
+    </page>
+	
+    <!-- Standby page -->
+    <page id="standby" style="html/style.css" style-id="page">
+   		 <title style-id="intro-header">Standby Page</title> 
+    </page>    
+    
+    <!-- Tutorials page -->
+	<page id="tutorials" style= "html/style.css" style-id="page">
+        <title style-id="intro-header">Tutorials</title>	
+        <text>This page under construction</text>
+    </page>   
+</introContent>
