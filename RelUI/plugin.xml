@@ -23,7 +23,38 @@
                name="aboutText"
                value="This is the &apos;about&apos; text.">
          </property>
+         <property
+               name="aboutImage"
+               value="icons/RelLogoNew128.png">
+         </property>
       </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="RelUI.intro">
+      </intro>
+      <introProductBinding
+            introId="RelUI.intro"
+            productId="RelUI.product">
+      </introProductBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.config">
+      <config
+            content="introContent.xml"
+            id="RelUI.introConfigId"
+            introId="RelUI.intro">
+         <presentation
+               home-page-id="root">
+            <implementation
+                  kind="html"
+                  os="win32,linux,macosx"
+                  style="content/shared.css">
+            </implementation>
+         </presentation>
+      </config>
    </extension>
 
 </plugin>

@@ -15,7 +15,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -55,7 +54,7 @@ public class DemoContent extends Composite {
 		for (int i=0; i<titles.length; i++) {
 			table.getColumn (i).pack ();
 		}	
-
+/*
 		final Runnable r = new Runnable() {
 		    public void run() {
 		    	for (int n=0; n<100; n++) {
@@ -73,10 +72,17 @@ public class DemoContent extends Composite {
 						return;
 					table.showItem(item);
 		    	}
+		    	try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Display.getDefault().asyncExec(this);
 		    }
 		};
 		
-		Display.getDefault().asyncExec(r);				
+		Display.getDefault().asyncExec(r);
+*/
 	}
 }

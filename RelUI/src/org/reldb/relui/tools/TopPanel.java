@@ -14,7 +14,10 @@ public class TopPanel extends Composite {
 	@SuppressWarnings("unused")
 	public TopPanel(Composite parent, int style) {
 		super(parent, style);
-		setLayout(new FillLayout(SWT.VERTICAL));
+		FillLayout layout = new FillLayout(SWT.VERTICAL);
+		layout.marginHeight = 1;
+		layout.marginWidth = 1;
+		setLayout(layout);
 		
 		LocationPanel location = new LocationPanel(this, SWT.NONE);
 		ToolPanel tools = new ToolPanel(this, SWT.NONE);

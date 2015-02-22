@@ -25,22 +25,21 @@ public class StatusPanel extends Composite {
 		
 		Label lblStatus = new Label(this, SWT.NONE);
 		FormData fd_lblStatus = new FormData();
-		fd_lblStatus.left = new FormAttachment(0, 10);
-		fd_lblStatus.top = new FormAttachment(0, 8);
+		fd_lblStatus.left = new FormAttachment(0);
+		fd_lblStatus.top = new FormAttachment(0);
 		lblStatus.setLayoutData(fd_lblStatus);
 		lblStatus.setText("Status");
 		
 		freeRAM = new FreeMemoryDisplay(this, SWT.BORDER);
 		FormData fd_ram = new FormData();
-		fd_ram.top = new FormAttachment(lblStatus, -9, SWT.TOP);
+		fd_ram.top = new FormAttachment(0);
+		fd_ram.right = new FormAttachment(100);
 		freeRAM.setLayoutData(fd_ram);
 		
 		freeCPU = new FreeCPUDisplay(this, SWT.BORDER);
-		fd_ram.left = new FormAttachment(freeCPU, 2);
-		fd_lblStatus.right = new FormAttachment(100, -172);
 		FormData fd_cpu = new FormData();
-		fd_cpu.top = new FormAttachment(lblStatus, -9, SWT.TOP);
-		fd_cpu.left = new FormAttachment(lblStatus, 12);
+		fd_cpu.top = new FormAttachment(0);
+		fd_cpu.right = new FormAttachment(freeRAM);
 		freeCPU.setLayoutData(fd_cpu);
 	}
 }

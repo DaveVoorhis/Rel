@@ -42,12 +42,11 @@ public class MainPanel extends Composite {
 		tabFolder.setSelection(tabDefault);
 		
 		StatusPanel statusPanel = new StatusPanel(this, SWT.NONE);
-		fd_tabFolder.bottom = new FormAttachment(statusPanel, 0);
-		FormData fd_lblNewLabel = new FormData();
-		fd_lblNewLabel.left = new FormAttachment(0);
-		fd_lblNewLabel.right = new FormAttachment(100);
-		fd_lblNewLabel.top = new FormAttachment(100, -24);
-		fd_lblNewLabel.bottom = new FormAttachment(100);
-		statusPanel.setLayoutData(fd_lblNewLabel);
+		fd_tabFolder.bottom = new FormAttachment(statusPanel);
+		FormData fd_statusPanel = new FormData();
+		fd_statusPanel.left = new FormAttachment(0);
+		fd_statusPanel.right = new FormAttachment(100);
+		fd_statusPanel.bottom = new FormAttachment(100);
+		statusPanel.setLayoutData(fd_statusPanel);
 	}
 }
