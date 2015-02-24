@@ -1,6 +1,11 @@
 ** TO DO **
 
 Short term:
+	// TODO - RELATION {TUPLE {SID 1, PID 1}, TUPLE {SID 4, PID 5}} GROUP {PID} AS PARTS
+	//          UNION
+	//        RELATION {TUPLE {SID 1, PARTS RELATION {TUPLE {PID 1}}},
+    //                    TUPLE {SID 4, PARTS RELATION {TUPLE {PID 5}}}}
+    //        Produces bogus result, apparently due to GROUP.  Fix!
 	// TODO - UNION (RELATION {x RELATION {y INT}} {}, x) returns error.
 	//        It should give RELATION {y INT}} {}.
 	// TODO - Complete database versioning, particularly handling updates.
