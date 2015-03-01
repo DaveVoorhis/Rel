@@ -1,6 +1,9 @@
 ** TO DO **
 
 Short term:
+	// TODO - Make sys.Catalog improvements.  Provide catalog relvar of relvar attributes
+	//        and keys.
+	// TODO - Re-introduce TYPE_OF(r)
 	// TODO - RELATION {TUPLE {SID 1, PID 1}, TUPLE {SID 4, PID 5}} GROUP {PID} AS PARTS
 	//          UNION
 	//        RELATION {TUPLE {SID 1, PARTS RELATION {TUPLE {PID 1}}},
