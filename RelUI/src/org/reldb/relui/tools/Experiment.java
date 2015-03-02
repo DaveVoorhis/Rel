@@ -81,10 +81,10 @@ public class Experiment extends Shell {
 					@Override
 					public void handleEvent (Event e) {
 						GC gc = e.gc;
-						if (isRetina())
+			//			if (isRetina())
 							gc.drawImage(image1, 0, 0, 32, 32, 0, 0, 16, 16);
-						else
-							gc.drawImage(image2, 0, 0);
+			//			else
+			//				gc.drawImage(image2, 0, 0);
 					}
 			});
 		}

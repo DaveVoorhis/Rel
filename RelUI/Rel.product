@@ -4,7 +4,7 @@
 <product name="Rel" uid="Rel_1_1_0" id="RelUI.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" version="1.1.0.beta" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/RelUI/icons/RelLogoNew128.png"/>
+      <image path="/RelUI/icons/RelLogo128x128.png"/>
       <text>
          This is the &apos;about&apos; text.
       </text>
@@ -20,16 +20,16 @@
       </vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/RelUI/icons/RelLogoNew16.png" i32="/RelUI/icons/RelLogoNew32.png" i48="/RelUI/icons/RelLogoNew48.png" i64="/RelUI/icons/RelLogoNew64.png" i128="/RelUI/icons/RelLogoNew128.png" i256="/RelUI/icons/RelLogoNew256.png"/>
+   <windowImages i16="/RelUI/icons/RelLogo16x16.png" i32="/RelUI/icons/RelLogo32x32.png" i48="/RelUI/icons/RelLogo48x48.png" i64="/RelUI/icons/RelLogo64x64.png" i128="/RelUI/icons/RelLogo128x128.png" i256="/RelUI/icons/RelLogo256x256.png"/>
 
    <splash
       location="RelUI" />
    <launcher name="Rel">
-      <linux icon="/RelUI/icons/RelLogoNew256-128x128-32.xpm"/>
-      <macosx icon="/RelUI/icons/RelLogoNew256.icns"/>
+      <linux icon="/RelUI/icons/RelLogo256x256.xpm"/>
+      <macosx icon="/RelUI/icons/RelLogo256x256.icns"/>
       <solaris/>
       <win useIco="true">
-         <ico path="/RelUI/icons/RelLogoNew256.ico"/>
+         <ico path="/RelUI/icons/RelLogo256x256.ico"/>
          <bmp/>
       </win>
    </launcher>

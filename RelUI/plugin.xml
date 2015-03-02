@@ -25,11 +25,11 @@
          </property>
          <property
                name="aboutImage"
-               value="icons/RelLogoNew128.png">
+               value="icons/RelLogo128x128.png">
          </property>
          <property
                name="windowImages"
-               value="icons/RelLogoNew16.png,icons/RelLogoNew32.png,icons/RelLogoNew48.png,icons/RelLogoNew64.png,icons/RelLogoNew128.png,icons/RelLogoNew256.png">
+               value="icons/RelLogo16x16.png,icons/RelLogo32x32.png,icons/RelLogo48x48.png,icons/RelLogo64x64.png,icons/RelLogo128x128.png,icons/RelLogo256x256.png">
          </property>
       </product>
    </extension>
