@@ -69,8 +69,9 @@ public class Experiment extends Shell {
 	protected void createContents() {
 		setText("SWT Application");
 		setSize(450, 300);
-		Image image1 = SWTResourceManager.getImage("/Users/dave/git/Rel/RelUI/icons/OpenDBRemoteIcon@2x.png");
-		Image image2 = SWTResourceManager.getImage("/Users/dave/git/Rel/RelUI/icons/OpenDBRemoteIcon.png");
+		String iconName = "ModeCmdIcon";
+		Image image1 = SWTResourceManager.getImage("/Users/dave/git/Rel/RelUI/icons/" + iconName + "@2x.png");
+		Image image2 = SWTResourceManager.getImage("/Users/dave/git/Rel/RelUI/icons/" + iconName + ".png");
 		setLayout(null);
 		Canvas canvas1 = new Canvas(this, SWT.NONE);
 		canvas1.setBounds(0, 0, 18, 18);
