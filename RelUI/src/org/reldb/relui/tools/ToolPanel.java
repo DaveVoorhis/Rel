@@ -66,14 +66,14 @@ public class ToolPanel extends Composite {
 		rel.setToolTipText("Rel");
 		rel.setSelection(true);
 		ToolItem rev = new ToolItem(rightBar, SWT.RADIO);
-		rev.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
-		rev.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
-		rev.setImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
+		rev.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/ModeRevIcon.png"));
+		rev.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/ModeRevIcon.png"));
+		rev.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeRevIcon.png"));
 		rev.setToolTipText("Rev");
 		ToolItem cmd = new ToolItem(rightBar, SWT.RADIO);
-		cmd.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
-		cmd.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
-		cmd.setImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
+		cmd.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/ModeCmdIcon.png"));
+		cmd.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/ModeCmdIcon.png"));
+		cmd.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeCmdIcon.png"));
 		cmd.setToolTipText("Command line");
 	}
 }
