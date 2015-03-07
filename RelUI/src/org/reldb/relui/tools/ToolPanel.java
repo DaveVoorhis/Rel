@@ -60,6 +60,10 @@ public class ToolPanel extends Composite {
 		ToolItem item10 = new ToolItem(toolBar, SWT.CHECK);
 		item10.setImage(ResourceManager.getPluginImage("RelUI", "icons/copyToOutputIcon.png"));
 		item10.setSelection(true);
+		
+		ToolItem item11 = new ToolItem(toolBar, SWT.CHECK);
+		item11.setImage(ResourceManager.getPluginImage("RelUI", "icons/wrapIcon.png"));
+		item11.setSelection(true);
 				
 		ToolBar rightBar = new ToolBar(this, SWT.NONE);
 		FormData fd_rightBar = new FormData();

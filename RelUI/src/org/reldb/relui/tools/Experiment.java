@@ -69,7 +69,7 @@ public class Experiment extends Shell {
 	protected void createContents() {
 		setText("SWT Application");
 		setSize(450, 300);
-		String iconName = "ModeCmdIcon";
+		String iconName = "OpenDBRemoteIcon";
 		Image image1 = SWTResourceManager.getImage("/Users/dave/git/Rel/RelUI/icons/" + iconName + "@2x.png");
 		Image image2 = SWTResourceManager.getImage("/Users/dave/git/Rel/RelUI/icons/" + iconName + ".png");
 		setLayout(null);
