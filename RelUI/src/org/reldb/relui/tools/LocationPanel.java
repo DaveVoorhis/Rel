@@ -30,20 +30,14 @@ public class LocationPanel extends Composite {
 		toolBar.setLayoutData(fd_toolBar);
 		
 		ToolItem tltmNew = new ToolItem(toolBar, SWT.NONE);
-		tltmNew.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
-		tltmNew.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
 		tltmNew.setImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
 		tltmNew.setToolTipText("New database");
 
 		ToolItem tltmOpenLocal = new ToolItem(toolBar, SWT.NONE);
-		tltmOpenLocal.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/OpenDBLocalIcon.png"));
-		tltmOpenLocal.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/OpenDBLocalIcon.png"));
 		tltmOpenLocal.setImage(ResourceManager.getPluginImage("RelUI", "icons/OpenDBLocalIcon.png"));
 		tltmOpenLocal.setToolTipText("Open local database");
 		
 		ToolItem tltmOpenRemote = new ToolItem(toolBar, SWT.NONE);
-		tltmOpenRemote.setDisabledImage(ResourceManager.getPluginImage("RelUI", "icons/OpenDBRemoteIcon.png"));
-		tltmOpenRemote.setHotImage(ResourceManager.getPluginImage("RelUI", "icons/OpenDBRemoteIcon.png"));
 		tltmOpenRemote.setImage(ResourceManager.getPluginImage("RelUI", "icons/OpenDBRemoteIcon.png"));
 		tltmOpenRemote.setToolTipText("Open remote database");
 		
