@@ -8,14 +8,14 @@
     </children>
     <mainMenu xmi:id="_36hGILqYEeSSsbhT1QHqRQ" elementId="relui.menu.0">
       <children xsi:type="menu:Menu" xmi:id="_JS68YLqZEeSSsbhT1QHqRQ" elementId="relui.menu.file" label="File" tooltip="" mnemonics="F">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_XU6QcLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.newDatabase" label="New database" iconURI="platform:/plugin/RelUI/icons/NewDBIcon.png" mnemonics="N" command="_eqs_ALqpEeSSsbhT1QHqRQ"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_YysdELqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openLocalDatabase" label="Open local database" iconURI="platform:/plugin/RelUI/icons/OpenDBLocalIcon.png" mnemonics="L" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_aF044LqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openRemoteDatabase" label="Open remote database" iconURI="platform:/plugin/RelUI/icons/OpenDBRemoteIcon.png" mnemonics="R" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_XU6QcLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.newDatabase" label="_New database" iconURI="platform:/plugin/RelUI/icons/NewDBIcon.png" mnemonics="n" command="_eqs_ALqpEeSSsbhT1QHqRQ"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_YysdELqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openLocalDatabase" label="Open _local database" iconURI="platform:/plugin/RelUI/icons/OpenDBLocalIcon.png" mnemonics="l" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_aF044LqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openRemoteDatabase" label="Open _remote database" iconURI="platform:/plugin/RelUI/icons/OpenDBRemoteIcon.png" mnemonics="r" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_4_VjsLqZEeSSsbhT1QHqRQ" elementId="relui.menuseparator.0"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_58XzsLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.exit" label="Exit" mnemonics="x" command="_1_YZgKbsEeSFCpZI3OEurw"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_58XzsLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.exit" label="Exit" mnemonics="&amp;x" command="_1_YZgKbsEeSFCpZI3OEurw"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_V4OQALqZEeSSsbhT1QHqRQ" elementId="relui.menu.tools" label="Tools">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_giqZcLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.options" label="Options" mnemonics="O" command="_BmWNELqrEeSSsbhT1QHqRQ"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_giqZcLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.options" label="_Options" iconURI="platform:/plugin/RelUI/icons/settingsIcon.png" mnemonics="o" command="_BmWNELqrEeSSsbhT1QHqRQ"/>
       </children>
     </mainMenu>
   </children>
