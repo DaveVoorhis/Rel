@@ -17,7 +17,6 @@ public class ToolPanel extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	@SuppressWarnings("unused")
 	public ToolPanel(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FormLayout());
@@ -107,7 +106,7 @@ public class ToolPanel extends Composite {
 		fd_rightBar.top = new FormAttachment(0);
 		rightBar.setLayoutData(fd_rightBar);
 		
-		ToolItem sep = new ToolItem(rightBar, SWT.SEPARATOR);
+		new ToolItem(rightBar, SWT.SEPARATOR);
 		
 		ToolItem rel = new ToolItem(rightBar, SWT.RADIO);
 		rel.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeRelIcon.png"));
