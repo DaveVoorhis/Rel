@@ -90,7 +90,17 @@ public class ToolPanel extends Composite {
 		item14.setImage(ResourceManager.getPluginImage("RelUI", "icons/showOkIcon.png"));
 		item14.setToolTipText("Write 'Ok.' after execution");
 		item14.setSelection(true);
-				
+		
+		ToolItem item15 = new ToolItem(toolBar, SWT.CHECK);
+		item15.setImage(ResourceManager.getPluginImage("RelUI", "icons/headingIcon.png"));
+		item15.setToolTipText("Show relation headings");
+		item15.setSelection(true);
+		
+		ToolItem item16 = new ToolItem(toolBar, SWT.CHECK);
+		item16.setImage(ResourceManager.getPluginImage("RelUI", "icons/typeSuppressIcon.png"));
+		item16.setToolTipText("Suppress attribute types in relation headings");
+		item16.setSelection(false);
+		
 		ToolBar rightBar = new ToolBar(this, SWT.NONE);
 		FormData fd_rightBar = new FormData();
 		fd_rightBar.right = new FormAttachment(100);
