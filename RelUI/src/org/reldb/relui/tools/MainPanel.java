@@ -4,7 +4,6 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
@@ -28,7 +27,7 @@ public class MainPanel extends Composite {
 		fd_tabFolder.right = new FormAttachment(100);
 		tabFolder.setLayoutData(fd_tabFolder);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
-
+		
 		TabPanel tabDefault = new TabPanel(tabFolder, SWT.NONE);
 		tabDefault.setText("Default");
 		tabDefault.setContent(new DemoContent(tabDefault.getContentParent(), SWT.NONE));

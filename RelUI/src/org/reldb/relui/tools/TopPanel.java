@@ -1,11 +1,14 @@
 package org.reldb.relui.tools;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.SWT;
 
-public class TopPanel extends Composite {
+public abstract class TopPanel extends Composite {
 
+	private ToolPanel tools;
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -20,9 +23,20 @@ public class TopPanel extends Composite {
 		setLayout(layout);
 		
 		LocationPanel location = new LocationPanel(this, SWT.NONE);
-		ToolPanel tools = new ToolPanel(this, SWT.NONE);
+		tools = new ToolPanel(this, SWT.NONE) {
+			@Override
+			public void notifyModeChange(String modeName) {
+				TopPanel.this.notifyModeChange(modeName);
+			}
+		};
 		
 		pack();
+	}
+
+	public abstract void notifyModeChange(String modeName);
+	
+	public ToolBar getToolBar() {
+		return tools.getToolBar();
 	}
 
 }

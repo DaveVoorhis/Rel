@@ -1,16 +1,65 @@
 package org.reldb.relui.tools;
 
+import java.util.Vector;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.ResourceManager;
-
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 
-public class ToolPanel extends Composite {
+public abstract class ToolPanel extends Composite {
+	
+	private static class Mode {
+		public ToolItem toolItem;
+		public String modeName;
+		public Mode(ToolItem toolItem, String modeName) {this.toolItem = toolItem; this.modeName = modeName;}
+	}
+	
+	private ToolBar toolBar;
+	private ToolBar rightBar;
+	private Mode lastSelected = null;
+	
+	private Vector<Mode> modes = new Vector<Mode>();
+
+	public abstract void notifyModeChange(String modeName);
+	
+	SelectionListener listener = new SelectionListener() {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			Mode selected = null;
+			for (Mode mode: modes) {
+				if (mode.toolItem.getSelection())
+					selected = mode;
+			}
+			if (selected == lastSelected)
+				return;
+			lastSelected = selected;
+			notifyModeChange(selected.modeName);
+		}
+		@Override
+		public void widgetDefaultSelected(SelectionEvent e) {
+			System.out.println("ToolPanel: Rel widgetDefaultSelected");
+		}			
+	};
+
+	private void addMode(String iconFileName, String toolTipText, String modeName) {
+		ToolItem item = new ToolItem(rightBar, SWT.RADIO);
+		item.setImage(ResourceManager.getPluginImage("RelUI", "icons/" + iconFileName));
+		item.setToolTipText(toolTipText);
+		item.addSelectionListener(listener);
+		modes.add(new Mode(item, modeName));
+	}
+	
+	private void setDefaultMode(int modeNumber) {
+		modes.get(modeNumber).toolItem.setSelection(true);
+		notifyModeChange(modes.get(modeNumber).modeName);
+	}
 	
 	/**
 	 * Create the composite.
@@ -21,7 +70,7 @@ public class ToolPanel extends Composite {
 		super(parent, style);
 		setLayout(new FormLayout());
 		
-		ToolBar toolBar = new ToolBar(this, SWT.NONE);
+		toolBar = new ToolBar(this, SWT.NONE);
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.top = new FormAttachment(0);
 		fd_toolBar.left = new FormAttachment(0);
@@ -100,25 +149,22 @@ public class ToolPanel extends Composite {
 		item16.setToolTipText("Suppress attribute types in relation headings");
 		item16.setSelection(false);
 		
-		ToolBar rightBar = new ToolBar(this, SWT.NONE);
+		rightBar = new ToolBar(this, SWT.NONE);
 		FormData fd_rightBar = new FormData();
 		fd_rightBar.right = new FormAttachment(100);
 		fd_rightBar.top = new FormAttachment(0);
 		rightBar.setLayoutData(fd_rightBar);
 		
 		new ToolItem(rightBar, SWT.SEPARATOR);
+
+		addMode("ModeRelIcon.png", "Rel", "Rel");
+		addMode("ModeRevIcon.png", "Rev", "Rev");
+		addMode("ModeCmdIcon.png", "Command line", "Cmd");
 		
-		ToolItem rel = new ToolItem(rightBar, SWT.RADIO);
-		rel.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeRelIcon.png"));
-		rel.setToolTipText("Rel");
-		rel.setSelection(true);
-		
-		ToolItem rev = new ToolItem(rightBar, SWT.RADIO);
-		rev.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeRevIcon.png"));
-		rev.setToolTipText("Rev");
-		
-		ToolItem cmd = new ToolItem(rightBar, SWT.RADIO);
-		cmd.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeCmdIcon.png"));
-		cmd.setToolTipText("Command line");
+		setDefaultMode(0);
+	}
+
+	public ToolBar getToolBar() {
+		return toolBar;
 	}
 }
