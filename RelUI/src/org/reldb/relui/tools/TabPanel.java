@@ -7,6 +7,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.wb.swt.ResourceManager;
 
 public class TabPanel extends CTabItem {
 
@@ -28,6 +29,8 @@ public class TabPanel extends CTabItem {
 		topPanel.setLayoutData(gd_topPanel);
 		
 		setControl(area);
+		
+		setImage(ResourceManager.getPluginImage("RelUI", "icons/DatabaseIcon.png"));
 	}
 
 	public Composite getContentParent() {

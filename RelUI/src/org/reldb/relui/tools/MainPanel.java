@@ -33,6 +33,14 @@ public class MainPanel extends Composite {
 		tabDefault.setText("Default");
 		tabDefault.setContent(new DemoContent(tabDefault.getContentParent(), SWT.NONE));
 		
+		TabPanel tabOther1 = new TabPanel(tabFolder, SWT.NONE);
+		tabOther1.setText("blah");
+		tabOther1.setShowClose(true);
+		
+		TabPanel tabOther2 = new TabPanel(tabFolder, SWT.NONE);
+		tabOther2.setText("blat");
+		tabOther2.setShowClose(true);
+		
 		TabPanel tabNew = new TabPanel(tabFolder, SWT.NONE);
 		tabNew.setText("New");
 		Label tabNewContent = new Label(tabNew.getContentParent(), SWT.BORDER);
