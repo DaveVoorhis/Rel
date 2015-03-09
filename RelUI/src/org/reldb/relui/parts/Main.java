@@ -6,6 +6,7 @@ import javax.annotation.PostConstruct;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.reldb.relui.tools.MainPanel;
+import org.reldb.relui.ui.DbTab;
 
 public class Main {
 	@Inject
@@ -14,7 +15,9 @@ public class Main {
 	
 	@PostConstruct
 	public void postConstruct(Composite parent) {
-		new MainPanel(parent, SWT.None);
+		MainPanel main = new MainPanel(parent, SWT.None);
+		new DbTab(main.getTabFolder(), SWT.None);
+		main.getTabFolder().setSelection(0);
 	}
 
 }

@@ -14,7 +14,6 @@ public abstract class TopPanel extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	@SuppressWarnings("unused")
 	public TopPanel(Composite parent, int style) {
 		super(parent, style);
 		FillLayout layout = new FillLayout(SWT.VERTICAL);
@@ -22,7 +21,8 @@ public abstract class TopPanel extends Composite {
 		layout.marginWidth = 1;
 		setLayout(layout);
 		
-		LocationPanel location = new LocationPanel(this, SWT.NONE);
+		new LocationPanel(this, SWT.NONE);
+		
 		tools = new ToolPanel(this, SWT.NONE) {
 			@Override
 			public void notifyModeChange(String modeName) {
@@ -37,6 +37,14 @@ public abstract class TopPanel extends Composite {
 	
 	public ToolBar getToolBar() {
 		return tools.getToolBar();
+	}
+	
+	public void addMode(String iconFileName, String toolTipText, String modeName) {
+		tools.addMode(iconFileName, toolTipText, modeName);
+	}
+		
+	public void setMode(int modeNumber) {
+		tools.setMode(modeNumber);
 	}
 
 }
