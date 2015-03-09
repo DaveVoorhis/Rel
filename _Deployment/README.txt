@@ -1,7 +1,7 @@
 Rel -- An implementation of Date and Darwen's Tutorial D.
 
-NOTE: As of version 1.0.11, Rel requires Oracle Java 
-      version 1.7.x (also known as Java 7) or a higher version, 
+NOTE: As of version 1.0.12, Rel requires Oracle Java 
+      version 1.8.x (also known as Java 8) or a higher version, 
       or a compatible equivalent.
 
 
@@ -63,6 +63,5 @@ start a Rel server.
 
 For more information, please see http://dbappbuilder.sourceforge.net
 
-Copyright (c) 2004-2014 Dave Voorhis
+Copyright (c) 2004-2015 Dave Voorhis
 All Rights Reserved
-
