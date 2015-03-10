@@ -13,7 +13,8 @@ import org.reldb.relui.monitors.FreeMemoryDisplay;
 public class StatusPanel extends Composite {
 	private FreeCPUDisplay freeCPU;
 	private FreeMemoryDisplay freeRAM;
-
+	private Label lblStatus;
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -23,7 +24,7 @@ public class StatusPanel extends Composite {
 		super(parent, style);
 		setLayout(new FormLayout());
 		
-		Label lblStatus = new Label(this, SWT.NONE);
+		lblStatus = new Label(this, SWT.NONE);
 		FormData fd_lblStatus = new FormData();
 		fd_lblStatus.left = new FormAttachment(0);
 		fd_lblStatus.top = new FormAttachment(0);
@@ -41,5 +42,9 @@ public class StatusPanel extends Composite {
 		fd_cpu.top = new FormAttachment(0);
 		fd_cpu.right = new FormAttachment(freeRAM);
 		freeCPU.setLayoutData(fd_cpu);
+	}
+	
+	public Label getStatusLabel() {
+		return lblStatus;
 	}
 }

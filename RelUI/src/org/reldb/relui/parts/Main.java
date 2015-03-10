@@ -16,7 +16,7 @@ public class Main {
 	@PostConstruct
 	public void postConstruct(Composite parent) {
 		MainPanel main = new MainPanel(parent, SWT.None);
-		new DbTab(main.getTabFolder(), SWT.None);
+		new DbTab(main);
 		main.getTabFolder().setSelection(0);
 	}
 

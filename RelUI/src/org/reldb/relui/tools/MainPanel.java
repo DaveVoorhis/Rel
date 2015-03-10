@@ -3,6 +3,7 @@ package org.reldb.relui.tools;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
@@ -11,6 +12,7 @@ import org.eclipse.swt.layout.FormAttachment;
 public class MainPanel extends Composite {
 	
 	private CTabFolder tabFolder;
+	private StatusPanel statusPanel;
 	
 	/**
 	 * Create the composite.
@@ -29,7 +31,7 @@ public class MainPanel extends Composite {
 		tabFolder.setLayoutData(fd_tabFolder);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		
-		StatusPanel statusPanel = new StatusPanel(this, SWT.NONE);
+		statusPanel = new StatusPanel(this, SWT.NONE);
 		fd_tabFolder.bottom = new FormAttachment(statusPanel);
 		FormData fd_statusPanel = new FormData();
 		fd_statusPanel.left = new FormAttachment(0);
@@ -42,4 +44,8 @@ public class MainPanel extends Composite {
 		return tabFolder;
 	}
 
+	public Label getStatusLabel() {
+		return statusPanel.getStatusLabel();
+	}
+	
 }
