@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -29,7 +30,7 @@ public abstract class ToolPanel extends Composite {
 
 	public abstract void notifyModeChange(String modeName);
 	
-	SelectionListener listener = new SelectionListener() {
+	SelectionListener listener = new SelectionAdapter() {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			Mode selected = null;
@@ -42,9 +43,6 @@ public abstract class ToolPanel extends Composite {
 			lastSelected = selected;
 			notifyModeChange(selected.modeName);
 		}
-		@Override
-		public void widgetDefaultSelected(SelectionEvent e) {
-		}			
 	};
 	
 	/**

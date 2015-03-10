@@ -7,12 +7,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.ResourceManager;
-import org.reldb.relui.tools.MainPanel;
 import org.reldb.relui.tools.ModeTabContent;
 
 public class DbTabContentRev implements ModeTabContent {
-
-	public DbTabContentRev(MainPanel main) {}
 
 	@Override
 	public Control getContent(Composite contentParent) {
