@@ -6,9 +6,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -75,9 +75,9 @@ public abstract class ToolPanel extends Composite {
 		return toolBar;
 	}
 
-	public void addMode(String iconFileName, String toolTipText, String modeName) {
+	public void addMode(Image iconImage, String toolTipText, String modeName) {
 		ToolItem item = new ToolItem(rightBar, SWT.RADIO);
-		item.setImage(ResourceManager.getPluginImage("RelUI", "icons/" + iconFileName));
+		item.setImage(iconImage);
 		item.setToolTipText(toolTipText);
 		item.addSelectionListener(listener);
 		modes.add(new Mode(item, modeName));

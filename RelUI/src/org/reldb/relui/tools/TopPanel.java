@@ -2,6 +2,7 @@ package org.reldb.relui.tools;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.SWT;
 
@@ -20,8 +21,8 @@ public abstract class TopPanel extends Composite {
 		layout.marginHeight = 1;
 		layout.marginWidth = 1;
 		setLayout(layout);
-		
-		new LocationPanel(this, SWT.NONE);
+
+		buildLocationPanel(this);
 		
 		tools = new ToolPanel(this, SWT.NONE) {
 			@Override
@@ -34,13 +35,15 @@ public abstract class TopPanel extends Composite {
 	}
 
 	public abstract void notifyModeChange(String modeName);
+
+	public void buildLocationPanel(TopPanel parent) {}
 	
 	public ToolBar getToolBar() {
 		return tools.getToolBar();
 	}
 	
-	public void addMode(String iconFileName, String toolTipText, String modeName) {
-		tools.addMode(iconFileName, toolTipText, modeName);
+	public void addMode(Image iconImage, String toolTipText, String modeName) {
+		tools.addMode(iconImage, toolTipText, modeName);
 	}
 		
 	public void setMode(int modeNumber) {

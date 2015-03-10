@@ -3,6 +3,7 @@ package org.reldb.relui.tools;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -29,12 +30,17 @@ public abstract class TabPanel extends CTabItem {
 			public void notifyModeChange(String modeName) {
 				TabPanel.this.notifyModeChange(modeName);
 			}
+			public void buildLocationPanel(TopPanel parent) {
+				TabPanel.this.buildLocationPanel(parent);
+			}
 		};
 		GridData gd_topPanel = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
 		topPanel.setLayoutData(gd_topPanel);
 		
 		setControl(area);
 	}
+
+	public void buildLocationPanel(TopPanel parent) {}
 
 	public Composite getContentParent() {
 		return area;
@@ -44,8 +50,8 @@ public abstract class TabPanel extends CTabItem {
 		return topPanel.getToolBar();
 	}
 	
-	public void addMode(String iconFileName, String toolTipText, String modeName) {
-		topPanel.addMode(iconFileName, toolTipText, modeName);
+	public void addMode(Image iconImage, String toolTipText, String modeName) {
+		topPanel.addMode(iconImage, toolTipText, modeName);
 	}
 		
 	public void setMode(int modeNumber) {

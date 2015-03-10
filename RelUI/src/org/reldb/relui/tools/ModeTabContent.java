@@ -5,9 +5,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 
 public interface ModeTabContent {
-
 	public Control getContent(Composite contentParent);
-
 	public void getToolBarItems(ToolBar toolBar);
-
 }
