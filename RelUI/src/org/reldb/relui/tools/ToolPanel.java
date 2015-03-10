@@ -65,8 +65,6 @@ public abstract class ToolPanel extends Composite {
 		fd_rightBar.right = new FormAttachment(100);
 		fd_rightBar.top = new FormAttachment(0);
 		rightBar.setLayoutData(fd_rightBar);
-		
-		new ToolItem(rightBar, SWT.SEPARATOR);
 	}
 	
 	public ToolBar getToolBar() {
@@ -74,13 +72,15 @@ public abstract class ToolPanel extends Composite {
 	}
 
 	public void addMode(Image iconImage, String toolTipText, String modeName) {
+		if (modes.isEmpty())			
+			new ToolItem(rightBar, SWT.SEPARATOR);
 		ToolItem item = new ToolItem(rightBar, SWT.RADIO);
 		item.setImage(iconImage);
 		item.setToolTipText(toolTipText);
 		item.addSelectionListener(listener);
 		modes.add(new Mode(item, modeName));
 	}
-		
+
 	public void setMode(int modeNumber) {
 		modes.get(modeNumber).toolItem.setSelection(true);
 		notifyModeChange(modes.get(modeNumber).modeName);

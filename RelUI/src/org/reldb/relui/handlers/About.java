@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 public class About {
 	
 	@Execute
-	public void execute(Shell shell) {		
+	public void execute(Shell shell) {
 		MessageDialog.openInformation(shell, "About", "Eclipse 4 Application example.");
 	}
 }

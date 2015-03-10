@@ -19,7 +19,7 @@ public class Main {
 		MainPanel mainPanel = new MainPanel(parent, SWT.None);
 		DbMain.setMainPanel(mainPanel);
 		(new DbTab()).setText("Default");
-		(new DbTab()).setText("New");
+		new DbTab();
 		DbMain.setSelection(0);
 	}
 

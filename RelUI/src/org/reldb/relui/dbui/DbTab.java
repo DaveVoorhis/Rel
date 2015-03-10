@@ -15,12 +15,20 @@ public class DbTab extends ModeTab {
 	public DbTab() {
 		super(DbMain.getMainPanel().getTabFolder(), SWT.None);
 		
-		addMode("ModeRelIcon.png", "Rel", new DbTabContentRel());
-		addMode("ModeRevIcon.png", "Rev", new DbTabContentRev());
-		addMode("ModeCmdIcon.png", "Command line", new DbTabContentCmd());
-
-		setMode(0);
-		setImage(ResourceManager.getPluginImage("RelUI", "icons/DatabaseIcon.png"));
+		setImage(ResourceManager.getPluginImage("RelUI", "icons/plusIcon.png"));
+		setToolTipText("New tab");
+	}
+	
+	public void setText(String s) {
+		super.setText(s);
+		if (countModes() == 0) {
+			setImage(ResourceManager.getPluginImage("RelUI", "icons/DatabaseIcon.png"));
+			setToolTipText(s);
+			addMode("ModeRelIcon.png", "Rel", new DbTabContentRel());
+			addMode("ModeRevIcon.png", "Rev", new DbTabContentRev());
+			addMode("ModeCmdIcon.png", "Command line", new DbTabContentCmd());
+			setMode(0);
+		}
 	}
 	
 	public void buildLocationPanel(TopPanel parent) {

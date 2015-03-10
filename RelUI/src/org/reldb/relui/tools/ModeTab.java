@@ -21,6 +21,10 @@ public class ModeTab extends TabPanel {
 		modes.put(modeName, content);
 	}
 	
+	public int countModes() {
+		return modes.size();
+	}
+	
 	public ModeTab(CTabFolder parent, int style) {
 		super(parent, style);
 	}
