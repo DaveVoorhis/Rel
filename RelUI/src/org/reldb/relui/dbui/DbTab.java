@@ -1,4 +1,4 @@
-package org.reldb.relui.ui;
+package org.reldb.relui.dbui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.wb.swt.ResourceManager;

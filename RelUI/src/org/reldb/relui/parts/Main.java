@@ -5,8 +5,8 @@ import javax.annotation.PostConstruct;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.reldb.relui.dbui.DbTab;
 import org.reldb.relui.tools.MainPanel;
-import org.reldb.relui.ui.DbTab;
 
 public class Main {
 	@Inject
