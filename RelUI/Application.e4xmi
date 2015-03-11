@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_1_XycKbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ide.application" bindingContexts="_1_XyeabsEeSFCpZI3OEurw">
-  <children xsi:type="basic:TrimmedWindow" xmi:id="_8rfnILaNEeSTFNGxwQXIhw" elementId="relui.trimmedwindow.rel" label="Rel">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_8rfnILaNEeSTFNGxwQXIhw" elementId="relui.trimmedwindow.rel" label="Rel" iconURI="platform:/plugin/RelUI/icons/RelLogo16x16.png">
     <children xsi:type="advanced:PerspectiveStack" xmi:id="_BV6u4LaOEeSTFNGxwQXIhw" elementId="relui.perspectivestack.0">
       <children xsi:type="advanced:Perspective" xmi:id="_CGugwLaOEeSTFNGxwQXIhw" elementId="relui.perspective.0">
         <children xsi:type="basic:Part" xmi:id="_Gcb8wLaOEeSTFNGxwQXIhw" elementId="relui.part.0" contributionURI="bundleclass://RelUI/org.reldb.relui.parts.Main"/>
@@ -12,6 +12,7 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_YysdELqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openLocalDatabase" label="Open local database" iconURI="platform:/plugin/RelUI/icons/OpenDBLocalIcon.png" mnemonics="M1+l" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_aF044LqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openRemoteDatabase" label="Open remote database" iconURI="platform:/plugin/RelUI/icons/OpenDBRemoteIcon.png" mnemonics="M1+r" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_4_VjsLqZEeSSsbhT1QHqRQ" elementId="relui.menuseparator.0"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_-x_hUMfrEeSqd4GfyFqaAQ" elementId="relui.handledmenuitem.about" label="About" command="_1_YZiqbsEeSFCpZI3OEurw"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_58XzsLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.exit" label="Exit" mnemonics="M1+x" command="_1_YZgKbsEeSFCpZI3OEurw"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_V4OQALqZEeSSsbhT1QHqRQ" elementId="relui.menu.tools" label="Tools">
