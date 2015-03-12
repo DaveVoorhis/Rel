@@ -82,6 +82,8 @@ public abstract class ToolPanel extends Composite {
 	}
 
 	public void setMode(int modeNumber) {
+		if (modeNumber >= modes.size() || modeNumber < 0)
+			return;
 		modes.get(modeNumber).toolItem.setSelection(true);
 		notifyModeChange(modes.get(modeNumber).modeName);
 	}

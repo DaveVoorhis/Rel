@@ -43,16 +43,19 @@ public class DbTab extends ModeTab {
 	}
 
 	public void newDatabase(String string) {
+		setMode(0);
 		locationPanel.setDatabaseURI("db://file:" + string);
 		System.out.println("DbTab: attempt to create database at " + locationPanel.getDatabaseURI());
 	}
 
 	public void openLocalDatabase(String string) {
+		setMode(0);
 		locationPanel.setDatabaseURI("db://file:" + string);
 		System.out.println("DbTab: attempt to open database at " + locationPanel.getDatabaseURI());
 	}
 
 	public void openRemoteDatabase(String string) {
+		setMode(0);
 		locationPanel.setDatabaseURI(string);
 		System.out.println("DbTab: attempt to open database at " + locationPanel.getDatabaseURI());		
 	}
