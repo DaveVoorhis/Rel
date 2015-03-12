@@ -63,15 +63,15 @@ public class RemoteDatabaseDialog extends Dialog {
 		
 		Label lblPort = new Label(shlOpenRemoteDatabase, SWT.NONE);
 		FormData fd_lblPort = new FormData();
-		fd_lblPort.left = new FormAttachment(lblDomain, 0, SWT.LEFT);
+		fd_lblPort.left = new FormAttachment(0, 10);
 		lblPort.setLayoutData(fd_lblPort);
 		lblPort.setText("Port:");
 		
 		domain = new Text(shlOpenRemoteDatabase, SWT.BORDER);
 		FormData fd_domain = new FormData();
-		fd_domain.right = new FormAttachment(lblDomain, 276, SWT.RIGHT);
-		fd_domain.top = new FormAttachment(0, 5);
+		fd_domain.right = new FormAttachment(100, -10);
 		fd_domain.left = new FormAttachment(lblDomain, 6);
+		fd_domain.top = new FormAttachment(0, 5);
 		domain.setLayoutData(fd_domain);
 		
 		port = new Text(shlOpenRemoteDatabase, SWT.BORDER);
@@ -85,13 +85,15 @@ public class RemoteDatabaseDialog extends Dialog {
 		FormData fd_btnCancel = new FormData();
 		fd_btnCancel.bottom = new FormAttachment(100, -10);
 		fd_btnCancel.right = new FormAttachment(domain, 0, SWT.RIGHT);
+		fd_btnCancel.left = new FormAttachment(100, -79);
 		btnCancel.setLayoutData(fd_btnCancel);
 		btnCancel.setText("Cancel");
 		
 		Button btnOk = new Button(shlOpenRemoteDatabase, SWT.NONE);
+		btnOk.setSelection(true);
 		FormData fd_btnOk = new FormData();
 		fd_btnOk.left = new FormAttachment(btnCancel, -73, SWT.LEFT);
-		fd_btnOk.bottom = new FormAttachment(100, -10);
+		fd_btnOk.top = new FormAttachment(btnCancel, 0, SWT.TOP);
 		fd_btnOk.right = new FormAttachment(btnCancel, -6);
 		btnOk.setLayoutData(fd_btnOk);
 		btnOk.setText("Ok");
