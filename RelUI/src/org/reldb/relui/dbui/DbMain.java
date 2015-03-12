@@ -13,10 +13,12 @@ public class DbMain {
 	private static void initialise() {
 		openDatabaseDialog = new DirectoryDialog(DbMain.getMainPanel().getShell());
 		openDatabaseDialog.setText("Open Database");
+		openDatabaseDialog.setMessage("Select the folder that contains a database.");
 		openDatabaseDialog.setFilterPath(System.getProperty("user.home"));
 		
 		newDatabaseDialog = new DirectoryDialog(DbMain.getMainPanel().getShell());
 		newDatabaseDialog.setText("Create Database");
+		newDatabaseDialog.setMessage("Select a folder to hold a new database.");
 		newDatabaseDialog.setFilterPath(System.getProperty("user.home"));
 		
 		remoteDatabaseDialog = new RemoteDatabaseDialog(DbMain.getMainPanel().getShell());
@@ -53,6 +55,5 @@ public class DbMain {
 
 	public static void options() {
 		// TODO Auto-generated method stub
-		
 	}
 }

@@ -84,6 +84,7 @@ public class AboutDialog extends Dialog {
 				shell.dispose();
 			}
 		});
+		shell.setDefaultButton(btnOk);
 		
 		Label lblImage = new Label(shell, SWT.NONE);
 		lblImage.setBackground(SWTResourceManager.getColor(SWT.COLOR_LIST_SELECTION));
