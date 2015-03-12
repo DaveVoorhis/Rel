@@ -32,12 +32,28 @@ public class DbTab extends ModeTab {
 			setMode(0);
 		}
 	}
+
+	public void openDatabaseAtURI(String uri, boolean canCreate) {
+		System.out.println("DbTab: attempt to open database at " + locationPanel.getDatabaseURI() + " with create==" + canCreate);
+		if (countModes() == 0)
+			new DbTab();
+		setText(uri);
+		setShowClose(true);
+	}
+
+	private void createDatabaseAtLocation() {
+		openDatabaseAtURI(locationPanel.getDatabaseURI(), true);
+	}
+	
+	private void openDatabaseAtLocation() {
+		openDatabaseAtURI(locationPanel.getDatabaseURI(), false);
+	}
 	
 	public void buildLocationPanel(TopPanel parent) {
 		locationPanel = new LocationPanel(parent, SWT.None) {
 			@Override
 			public void notifyDatabaseURIModified() {
-				System.out.println("DbTab: new URI");
+				openDatabaseAtLocation();
 			}
 		};
 	}
@@ -45,19 +61,19 @@ public class DbTab extends ModeTab {
 	public void newDatabase(String string) {
 		setMode(0);
 		locationPanel.setDatabaseURI("db://file:" + string);
-		System.out.println("DbTab: attempt to create database at " + locationPanel.getDatabaseURI());
+		createDatabaseAtLocation();
 	}
 
 	public void openLocalDatabase(String string) {
 		setMode(0);
 		locationPanel.setDatabaseURI("db://file:" + string);
-		System.out.println("DbTab: attempt to open database at " + locationPanel.getDatabaseURI());
+		openDatabaseAtLocation();
 	}
 
 	public void openRemoteDatabase(String string) {
 		setMode(0);
 		locationPanel.setDatabaseURI(string);
-		System.out.println("DbTab: attempt to open database at " + locationPanel.getDatabaseURI());		
+		openDatabaseAtLocation();
 	}
 
 }
