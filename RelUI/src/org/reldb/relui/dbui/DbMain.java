@@ -13,7 +13,7 @@ public class DbMain {
 	private static void initialise() {
 		openDatabaseDialog = new DirectoryDialog(DbMain.getMainPanel().getShell());
 		openDatabaseDialog.setText("Open Database");
-		openDatabaseDialog.setMessage("Select the folder that contains a database.");
+		openDatabaseDialog.setMessage("Select a folder that contains a database.");
 		openDatabaseDialog.setFilterPath(System.getProperty("user.home"));
 		
 		newDatabaseDialog = new DirectoryDialog(DbMain.getMainPanel().getShell());
@@ -42,15 +42,21 @@ public class DbMain {
 	}
 
 	public static void newDatabase() {
-		System.out.println("RESULT=" + newDatabaseDialog.open());
+		Object result = newDatabaseDialog.open();
+		if (result != null)
+			getCurrentDbTab().newDatabase(result.toString());
 	}
 
 	public static void openLocalDatabase() {
-		System.out.println("RESULT=" + openDatabaseDialog.open());
+		Object result = openDatabaseDialog.open();
+		if (result != null)
+			getCurrentDbTab().openLocalDatabase(result.toString());
 	}
 
 	public static void openRemoteDatabase() {
-		System.out.println("RESULT=" + remoteDatabaseDialog.open());
+		Object result = remoteDatabaseDialog.open();
+		if (result != null)
+			getCurrentDbTab().openRemoteDatabase(result.toString());
 	}
 
 	public static void options() {

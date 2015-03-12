@@ -8,6 +8,8 @@ import org.reldb.relui.tools.TopPanel;
 
 public class DbTab extends ModeTab {
 	
+	private LocationPanel locationPanel;
+	
 	public void addMode(String iconImageFilename, String toolTipText, ModeTabContent content) {
 		addMode(ResourceManager.getPluginImage("RelUI", "icons/" + iconImageFilename), toolTipText, content);
 	}
@@ -32,7 +34,27 @@ public class DbTab extends ModeTab {
 	}
 	
 	public void buildLocationPanel(TopPanel parent) {
-		new LocationPanel(parent, SWT.None);
+		locationPanel = new LocationPanel(parent, SWT.None) {
+			@Override
+			public void notifyDatabaseURIModified() {
+				System.out.println("DbTab: new URI");
+			}
+		};
+	}
+
+	public void newDatabase(String string) {
+		locationPanel.setDatabaseURI("db://file:" + string);
+		System.out.println("DbTab: attempt to create database at " + locationPanel.getDatabaseURI());
+	}
+
+	public void openLocalDatabase(String string) {
+		locationPanel.setDatabaseURI("db://file:" + string);
+		System.out.println("DbTab: attempt to open database at " + locationPanel.getDatabaseURI());
+	}
+
+	public void openRemoteDatabase(String string) {
+		locationPanel.setDatabaseURI(string);
+		System.out.println("DbTab: attempt to open database at " + locationPanel.getDatabaseURI());		
 	}
 
 }

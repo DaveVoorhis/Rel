@@ -1,6 +1,8 @@
 package org.reldb.relui.dbui;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormLayout;
@@ -17,6 +19,7 @@ import org.reldb.relui.handlers.OpenRemoteDatabase;
 
 public class LocationPanel extends Composite {
 	private Text textDatabase;
+	private String oldText = null;
 
 	/**
 	 * Create the composite.
@@ -70,5 +73,25 @@ public class LocationPanel extends Composite {
 		fd_textDatabase.top = new FormAttachment(0);
 		textDatabase.setLayoutData(fd_textDatabase);
 		textDatabase.setToolTipText("Local or remote database URI");
+		textDatabase.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.character == 0xD && !textDatabase.getText().trim().equals(oldText)) {
+					oldText = textDatabase.getText().trim();
+					notifyDatabaseURIModified();
+				}
+			}			
+		});
+	}
+	
+	/** Override to be notified when database URI is manually modified. */
+	public void notifyDatabaseURIModified() {}
+
+	public void setDatabaseURI(String url) {
+		textDatabase.setText(url);
+	}
+	
+	public String getDatabaseURI() {
+		return textDatabase.getText();
 	}
 }
