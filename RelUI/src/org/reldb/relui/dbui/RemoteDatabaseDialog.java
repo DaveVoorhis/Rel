@@ -13,9 +13,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Text;
+import org.reldb.rel.shared.Defaults;
 
 public class RemoteDatabaseDialog extends Dialog {
 
+	private final static int defaultPort = Defaults.getDefaultPort();
+	
 	public static class RemoteDatabaseDialogResponse {
 		private String domain;
 		private int port;
@@ -28,6 +31,9 @@ public class RemoteDatabaseDialog extends Dialog {
 		}
 		public int getPort() {
 			return port;
+		}
+		public String toString() {
+			return "db://" + domain + ((port != defaultPort) ? ":" + port : "");
 		}
 	}
 	
@@ -97,7 +103,7 @@ public class RemoteDatabaseDialog extends Dialog {
 		fd_port.top = new FormAttachment(lblDomain, 6);
 		fd_port.left = new FormAttachment(0, 48);
 		port.setLayoutData(fd_port);
-		port.setText("5514");
+		port.setText(String.valueOf(defaultPort));
 		
 		Button btnCancel = new Button(shlOpenRemoteDatabase, SWT.NONE);
 		FormData fd_btnCancel = new FormData();
