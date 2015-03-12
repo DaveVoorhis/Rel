@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: RelUI
 Bundle-SymbolicName: RelUI;singleton:=true
 Bundle-Version: 1.1.0.beta
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ swing2swt.jar
 Bundle-Activator: org.reldb.relui.Activator
 Bundle-Vendor: reldb.org
 Require-Bundle: javax.inject;bundle-version="1.0.0",

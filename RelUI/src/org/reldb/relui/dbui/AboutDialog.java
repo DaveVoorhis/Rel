@@ -50,22 +50,22 @@ public class AboutDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
-		shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		shell = new Shell(getParent(), SWT.APPLICATION_MODAL);
 		shell.setText("About Rel");
-		shell.setSize(500, 352);
+		shell.setSize(500, 330);
 		
 		Label lblVersion = new Label(shell, SWT.RIGHT);
 		lblVersion.setFont(SWTResourceManager.getFont("Arial", 18, SWT.BOLD));
-		lblVersion.setBounds(181, 169, 309, 28);
+		lblVersion.setBounds(182, 158, 309, 28);
 		lblVersion.setText(Version.getVersion());
 		
 		Label lblCopyright = new Label(shell, SWT.RIGHT);
-		lblCopyright.setBounds(191, 203, 299, 21);
+		lblCopyright.setBounds(192, 192, 299, 21);
 		lblCopyright.setText(Version.getCopyright());
 		
 		Label lblBrowse = new Label(shell, SWT.RIGHT);
 		lblBrowse.setForeground(SWTResourceManager.getColor(SWT.COLOR_LINK_FOREGROUND));
-		lblBrowse.setBounds(181, 223, 309, 21);
+		lblBrowse.setBounds(182, 212, 309, 21);
 		lblBrowse.setText(Version.getURL());
 		lblBrowse.addMouseListener(new MouseAdapter() {
 			@Override
@@ -91,13 +91,4 @@ public class AboutDialog extends Dialog {
 		lblImage.setBounds(0, 0, 500, 330);
 	}
 
-	public static void display() {
-		final Display display = new Display();
-		final Shell shell = new Shell(display);
-		(new AboutDialog(shell)).open();		
-	}
-	
-	public static void main(String args[]) {
-		display();
-	}
 }

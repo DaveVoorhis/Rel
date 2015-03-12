@@ -15,13 +15,6 @@ public class Main {
 	@Inject
 	public Main() {		
 	}
-		
-	public static boolean isMac() {
-        if (System.getProperty("os.name").equals("Mac OS X") ) {
-            return true;
-        }
-        return false;
-    }
 	
 	@PostConstruct
 	public void postConstruct(Composite parent) {
