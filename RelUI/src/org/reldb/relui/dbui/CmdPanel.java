@@ -22,7 +22,7 @@ public class CmdPanel extends Composite {
 		
 		SashForm sashForm = new SashForm(this, SWT.VERTICAL);
 		
-		Browser browser = new Browser(sashForm, SWT.BORDER);
+		new Browser(sashForm, SWT.BORDER);
 		
 		Composite panel = new Composite(sashForm, SWT.NONE);
 		panel.setLayout(new FormLayout());
@@ -35,5 +35,50 @@ public class CmdPanel extends Composite {
 		fd_entryArea.left = new FormAttachment(0);
 		entryArea.setLayoutData(fd_entryArea);
 		sashForm.setWeights(new int[] {3, 1});
+	}
+
+	public void clearOutput() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void saveOutputAsHtml() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void saveOutputAsText() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void copyOutputToInput() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setEnhancedOutput(boolean selection) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setShowOk(boolean selection) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setAutoclear(boolean selection) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setHeadingVisible(boolean selection) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setHeadingTypesVisible(boolean selection) {
+		// TODO Auto-generated method stub
+		
 	}
 }
