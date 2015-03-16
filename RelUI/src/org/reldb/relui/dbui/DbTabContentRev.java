@@ -20,29 +20,6 @@ public class DbTabContentRev implements ModeTabContent {
 
 	@Override
 	public void getToolBarItems(ToolBar toolBar) {
-		ToolItem item7 = new ToolItem(toolBar, SWT.PUSH);
-		item7.setImage(ResourceManager.getPluginImage("RelUI", "icons/loadIcon.png"));
-		item7.setToolTipText("Load");
-
-		ToolItem item8 = new ToolItem(toolBar, SWT.PUSH);
-		item8.setImage(ResourceManager.getPluginImage("RelUI", "icons/pathIcon.png"));
-		item8.setToolTipText("Insert file path");
-
-		ToolItem item9 = new ToolItem(toolBar, SWT.PUSH);
-		item9.setImage(ResourceManager.getPluginImage("RelUI", "icons/copyToInputIcon.png"));
-		item9.setToolTipText("Copy output to input");
-
-		new ToolItem(toolBar, SWT.SEPARATOR);
-		
-		ToolItem item10 = new ToolItem(toolBar, SWT.CHECK);
-		item10.setImage(ResourceManager.getPluginImage("RelUI", "icons/copyToOutputIcon.png"));
-		item10.setToolTipText("Copy input to output");
-		item10.setSelection(true);
-		
-		ToolItem item11 = new ToolItem(toolBar, SWT.CHECK);
-		item11.setImage(ResourceManager.getPluginImage("RelUI", "icons/wrapIcon.png"));
-		item11.setToolTipText("Wrap text");
-		item11.setSelection(true);
 	}
 
 }

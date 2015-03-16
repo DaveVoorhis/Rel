@@ -3,7 +3,6 @@ package org.reldb.relui.dbui;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.ResourceManager;
@@ -13,37 +12,53 @@ public class DbTabContentCmd implements ModeTabContent {
 	
 	@Override
 	public Control getContent(Composite contentParent) {
-		Label label = new Label(contentParent, SWT.None);
-		label.setText("This is the Command Line content.");
-		return label;
+		return new CmdPanel(contentParent, SWT.None);
 	}
 
 	@Override
 	public void getToolBarItems(ToolBar toolBar) {
-		ToolItem item12 = new ToolItem(toolBar, SWT.CHECK);
-		item12.setImage(ResourceManager.getPluginImage("RelUI", "icons/autoclearIcon.png"));
-		item12.setToolTipText("Automatically clear output");
-		item12.setSelection(true);
-				
-		ToolItem item13 = new ToolItem(toolBar, SWT.CHECK);
-		item13.setImage(ResourceManager.getPluginImage("RelUI", "icons/enhancedIcon.png"));
-		item13.setToolTipText("Display enhanced output");
-		item13.setSelection(true);
+		ToolItem clearBtn = new ToolItem(toolBar, SWT.PUSH);
+		clearBtn.setImage(ResourceManager.getPluginImage("RelUI", "icons/clearIcon.png"));
+		clearBtn.setToolTipText("Clear");
+
+		ToolItem saveAsHTMLBtn = new ToolItem(toolBar, SWT.PUSH);
+		saveAsHTMLBtn.setImage(ResourceManager.getPluginImage("RelUI", "icons/saveHTMLIcon.png"));
+		saveAsHTMLBtn.setToolTipText("Save as HTML");
+
+		ToolItem saveAsTextBtn = new ToolItem(toolBar, SWT.PUSH);
+		saveAsTextBtn.setImage(ResourceManager.getPluginImage("RelUI", "icons/saveTextIcon.png"));
+		saveAsTextBtn.setToolTipText("Save as text");
+
+		ToolItem copyToInputBtn = new ToolItem(toolBar, SWT.PUSH);
+		copyToInputBtn.setImage(ResourceManager.getPluginImage("RelUI", "icons/copyToInputIcon.png"));
+		copyToInputBtn.setToolTipText("Copy output to input");
+
+		new ToolItem(toolBar, SWT.SEPARATOR);
 		
-		ToolItem item14 = new ToolItem(toolBar, SWT.CHECK);
-		item14.setImage(ResourceManager.getPluginImage("RelUI", "icons/showOkIcon.png"));
-		item14.setToolTipText("Write 'Ok.' after execution");
-		item14.setSelection(true);
+		ToolItem enhancedOutputToggle = new ToolItem(toolBar, SWT.CHECK);
+		enhancedOutputToggle.setImage(ResourceManager.getPluginImage("RelUI", "icons/enhancedIcon.png"));
+		enhancedOutputToggle.setToolTipText("Display enhanced output");
+		enhancedOutputToggle.setSelection(true);
 		
-		ToolItem item15 = new ToolItem(toolBar, SWT.CHECK);
-		item15.setImage(ResourceManager.getPluginImage("RelUI", "icons/headingIcon.png"));
-		item15.setToolTipText("Show relation headings");
-		item15.setSelection(true);
+		ToolItem showOkToggle = new ToolItem(toolBar, SWT.CHECK);
+		showOkToggle.setImage(ResourceManager.getPluginImage("RelUI", "icons/showOkIcon.png"));
+		showOkToggle.setToolTipText("Write 'Ok.' after execution");
+		showOkToggle.setSelection(true);
+
+		ToolItem autoclearToggle = new ToolItem(toolBar, SWT.CHECK);
+		autoclearToggle.setImage(ResourceManager.getPluginImage("RelUI", "icons/autoclearIcon.png"));
+		autoclearToggle.setToolTipText("Automatically clear output");
+		autoclearToggle.setSelection(true);
 		
-		ToolItem item16 = new ToolItem(toolBar, SWT.CHECK);
-		item16.setImage(ResourceManager.getPluginImage("RelUI", "icons/typeSuppressIcon.png"));
-		item16.setToolTipText("Suppress attribute types in relation headings");
-		item16.setSelection(false);
+		ToolItem headingToggle = new ToolItem(toolBar, SWT.CHECK);
+		headingToggle.setImage(ResourceManager.getPluginImage("RelUI", "icons/headingIcon.png"));
+		headingToggle.setToolTipText("Show relation headings");
+		headingToggle.setSelection(true);
+		
+		ToolItem headingTypesToggle = new ToolItem(toolBar, SWT.CHECK);
+		headingTypesToggle.setImage(ResourceManager.getPluginImage("RelUI", "icons/typeSuppressIcon.png"));
+		headingTypesToggle.setToolTipText("Suppress attribute types in relation headings");
+		headingTypesToggle.setSelection(false);	
 	}
 
 }
