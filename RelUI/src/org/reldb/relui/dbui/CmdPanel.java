@@ -5,9 +5,6 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
 
 public class CmdPanel extends Composite {
 
@@ -24,16 +21,7 @@ public class CmdPanel extends Composite {
 		
 		new Browser(sashForm, SWT.BORDER);
 		
-		Composite panel = new Composite(sashForm, SWT.NONE);
-		panel.setLayout(new FormLayout());
-		
-		Composite entryArea = new Composite(panel, SWT.NONE);
-		FormData fd_entryArea = new FormData();
-		fd_entryArea.bottom = new FormAttachment(100);
-		fd_entryArea.top = new FormAttachment(0);
-		fd_entryArea.right = new FormAttachment(100);
-		fd_entryArea.left = new FormAttachment(0);
-		entryArea.setLayoutData(fd_entryArea);
+		new CmdPanelInput(sashForm, SWT.NONE);
 		sashForm.setWeights(new int[] {3, 1});
 	}
 
