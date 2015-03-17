@@ -4,10 +4,8 @@ import java.io.IOException;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.custom.CTabFolder2Adapter;
+import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.wb.swt.ResourceManager;
 import org.reldb.rel.client.string.ClientFromURL;
 import org.reldb.rel.client.string.StringReceiverClient;
@@ -49,23 +47,13 @@ public class DbTab extends ModeTab {
 			addMode("ModeCmdIcon.png", "Command line", new DbTabContentCmd());
 			setMode(0);
 		}
-		setShowClose(true);
         setStatus("Ok");
-        this.addListener(SWT.Close, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				// TODO - handle this so it works!!!!
-				System.out.println("DbTab: closing");
-				close();
+		DbMain.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
+			public void close(CTabFolderEvent event) {
+				if (event.item == DbTab.this)
+					DbTab.this.close();
 			}
-        }); 
-        /**
-        addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-			}
-        });
-        */
+		});
     }
     
     public String getStatus() {
@@ -151,6 +139,7 @@ public class DbTab extends ModeTab {
 	
 	public void openDatabaseAtURI(String uri, boolean canCreate) {
 		lastURI = uri;
+		setShowClose(true);
 		openConnection(uri, true, canCreate);
 	}
 	
