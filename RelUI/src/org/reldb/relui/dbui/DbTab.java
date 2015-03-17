@@ -1,12 +1,16 @@
 package org.reldb.relui.dbui;
 
+import java.io.IOException;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.wb.swt.ResourceManager;
-
 import org.reldb.rel.client.string.ClientFromURL;
 import org.reldb.rel.client.string.StringReceiverClient;
-
 import org.reldb.relui.tools.ModeTab;
 import org.reldb.relui.tools.ModeTabContent;
 import org.reldb.relui.tools.TopPanel;
@@ -14,6 +18,9 @@ import org.reldb.relui.tools.TopPanel;
 public class DbTab extends ModeTab {
 	
 	private LocationPanel locationPanel;
+	private String status = "";
+	private AttemptConnectionResult connection = null;	
+	private String lastURI = "";
     
     private static class AttemptConnectionResult {
     	Throwable exception;
@@ -28,24 +35,53 @@ public class DbTab extends ModeTab {
     	}
     }
     
-    private static String shortened(String s) {
+    private static String wrapped(String s) {
     	if (s.length() < 80)
     		return s;
     	return s.replace(": ",":\n");
     }
     
     private void doConnectionResultSuccess(StringReceiverClient client, String dbURL, boolean permanent) {
-		if (countModes() == 0)
-			new DbTab();
-		setText(dbURL);
+		if (countModes() == 0) {
+			setImage(ResourceManager.getPluginImage("RelUI", "icons/DatabaseIcon.png"));
+			addMode("ModeRelIcon.png", "Rel", new DbTabContentRel());
+			addMode("ModeRevIcon.png", "Rev", new DbTabContentRev());
+			addMode("ModeCmdIcon.png", "Command line", new DbTabContentCmd());
+			setMode(0);
+		}
 		setShowClose(true);
-        DbMain.setStatus("Ok");    	
+        setStatus("Ok");
+        this.addListener(SWT.Close, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				// TODO - handle this so it works!!!!
+				System.out.println("DbTab: closing");
+				close();
+			}
+        }); 
+        /**
+        addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+			}
+        });
+        */
+    }
+    
+    public String getStatus() {
+    	return status;
+    }
+    
+    public void setStatus(String s) {
+    	status = s;
+    	DbMain.setStatus(status);
     }
     
     private void doConnectionResultFailed(String reason, String dbURL) {
-    	String msg = "Unable to establish connection to " + dbURL + " - " + reason;
-        DbMain.setStatus(msg);
-        msg = shortened(msg);
+    	String shortMsg = "Unable to establish connection to " + dbURL;
+        setStatus(shortMsg);
+    	String msg = shortMsg + " - " + reason;
+        msg = wrapped(msg);
         if (msg.contains("The environment cannot be locked for single writer access. ENV_LOCKED")) {
         	MessageDialog.openError(DbMain.getShell(), "Unable to open local database",
         			"A copy of Rel is already accessing the database you're trying to open at " + dbURL);
@@ -67,25 +103,9 @@ public class DbTab extends ModeTab {
     	doConnectionResultFailed(exception.toString(), dbURL);
     }
     
-    /** Open a connection and associated panel. */
-    private boolean openConnection(String dbURL, boolean permanent, boolean canCreate) {
-    	if (DbMain.isNoLocalRel() && dbURL.startsWith("local:")) {
-    		doConnectionResultFailed("Local Rel server is not installed.", dbURL);
-    		return false;
-    	}
-    	AttemptConnectionResult result = attemptConnectionOpen(dbURL, canCreate);
-    	if (result.client != null) {
-    		doConnectionResultSuccess(result.client, dbURL, permanent);
-    		return true;
-    	} else {
-    		doConnectionResultFailed(result.exception, dbURL);
-    		return false;
-    	}
-    }
-    
     /** Attempt to open a connection.  Return null if succeeded (!) and exception if failed. */
     private AttemptConnectionResult attemptConnectionOpen(String dbURL, boolean createAllowed) {
-        DbMain.setStatus("Opening connection to " + dbURL);
+        setStatus("Opening connection to " + dbURL);
         try {
         	StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed);
             return new AttemptConnectionResult(client);
@@ -93,67 +113,89 @@ public class DbTab extends ModeTab {
         	return new AttemptConnectionResult(exception);
         }
     }
+    
+    /** Open a connection and associated panel. */
+    private boolean openConnection(String dbURL, boolean permanent, boolean canCreate) {
+		setText(dbURL);
+    	if (DbMain.isNoLocalRel() && dbURL.startsWith("local:")) {
+    		doConnectionResultFailed("Local Rel server is not installed.", dbURL);
+    		return false;
+    	}
+    	connection = attemptConnectionOpen(dbURL, canCreate);
+    	if (connection.client != null) {
+    		doConnectionResultSuccess(connection.client, dbURL, permanent);
+    		return true;
+    	} else {
+    		doConnectionResultFailed(connection.exception, dbURL);
+    		return false;
+    	}
+    }
 	
 	public void addMode(String iconImageFilename, String toolTipText, ModeTabContent content) {
 		addMode(ResourceManager.getPluginImage("RelUI", "icons/" + iconImageFilename), toolTipText, content);
 	}
 	
 	public DbTab() {
-		super(DbMain.getMainPanel().getTabFolder(), SWT.None);
+		super(DbMain.getTabFolder(), SWT.None);
 		
 		setImage(ResourceManager.getPluginImage("RelUI", "icons/plusIcon.png"));
 		setToolTipText("New tab");
 	}
 	
 	public void setText(String s) {
+		if (getText() == null || getText().length() == 0)
+			new DbTab();
 		super.setText(s);
-		if (countModes() == 0) {
-			setImage(ResourceManager.getPluginImage("RelUI", "icons/DatabaseIcon.png"));
-			setToolTipText(s);
-			addMode("ModeRelIcon.png", "Rel", new DbTabContentRel());
-			addMode("ModeRevIcon.png", "Rev", new DbTabContentRev());
-			addMode("ModeCmdIcon.png", "Command line", new DbTabContentCmd());
-			setMode(0);
-		}
+		setToolTipText(s);
 	}
 	
 	public void openDatabaseAtURI(String uri, boolean canCreate) {
+		lastURI = uri;
 		openConnection(uri, true, canCreate);
 	}
-
-	private void createDatabaseAtLocation() {
-		openDatabaseAtURI(locationPanel.getDatabaseURI(), true);
-	}
 	
-	private void openDatabaseAtLocation() {
-		openDatabaseAtURI(locationPanel.getDatabaseURI(), false);
+	public void close() {
+		if (connection != null && connection.client != null) {
+			try {
+				connection.client.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			clearModes();
+			setImage(ResourceManager.getPluginImage("RelUI", "icons/plusIcon.png"));
+		}
 	}
 	
 	public void buildLocationPanel(TopPanel parent) {
 		locationPanel = new LocationPanel(parent, SWT.None) {
 			@Override
 			public void notifyDatabaseURIModified() {
-				openDatabaseAtLocation();
+				if (locationPanel.getDatabaseURI().trim().length() == 0)
+					locationPanel.setDatabaseURI(lastURI);
+				else {
+					close();
+					openDatabaseAtURI(locationPanel.getDatabaseURI(), false);
+				}
 			}
 		};
 	}
 
 	public void newDatabase(String string) {
-		setMode(0);
+		close();
 		locationPanel.setDatabaseURI("local:" + string);
-		createDatabaseAtLocation();
+		openDatabaseAtURI(locationPanel.getDatabaseURI(), true);
 	}
 
 	public void openLocalDatabase(String string) {
-		setMode(0);
+		close();
 		locationPanel.setDatabaseURI("local:" + string);
-		openDatabaseAtLocation();
+		openDatabaseAtURI(locationPanel.getDatabaseURI(), false);
 	}
 
 	public void openRemoteDatabase(String string) {
-		setMode(0);
+		close();
 		locationPanel.setDatabaseURI(string);
-		openDatabaseAtLocation();
+		openDatabaseAtURI(locationPanel.getDatabaseURI(), false);
 	}
     
 }

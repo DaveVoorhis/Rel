@@ -1,9 +1,10 @@
 package org.reldb.relui.tools;
 
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
@@ -30,6 +31,12 @@ public class MainPanel extends Composite {
 		fd_tabFolder.right = new FormAttachment(100);
 		tabFolder.setLayoutData(fd_tabFolder);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+		tabFolder.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setStatus(((ModeTab)tabFolder.getSelection()).getStatus());
+			}
+		});
 		
 		statusPanel = new StatusPanel(this, SWT.NONE);
 		fd_tabFolder.bottom = new FormAttachment(statusPanel);
@@ -39,13 +46,13 @@ public class MainPanel extends Composite {
 		fd_statusPanel.bottom = new FormAttachment(100);
 		statusPanel.setLayoutData(fd_statusPanel);		
 	}
-		
+
 	public CTabFolder getTabFolder() {
 		return tabFolder;
 	}
 
-	public Label getStatusLabel() {
-		return statusPanel.getStatusLabel();
+	public void setStatus(String s) {
+		statusPanel.setStatus(s);
 	}
 	
 }

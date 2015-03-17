@@ -25,12 +25,19 @@ public class ModeTab extends TabPanel {
 		return modes.size();
 	}
 	
+	public void clearModes() {
+		super.clearModes();
+		modes.clear();
+	}
+	
 	public ModeTab(CTabFolder parent, int style) {
 		super(parent, style);
 	}
 	
 	public void buildLocationPanel(TopPanel parent) {}
-
+	
+	public String getStatus() {return "";}
+	
 	@Override
 	public void notifyModeChange(String modeName) {
 		if (displayed != null)

@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.ToolBar;
 public abstract class TabPanel extends CTabItem {
 
 	private Composite area;
+	private Control content;
 	private TopPanel topPanel;
 	
 	public TabPanel(CTabFolder parent, int style) {
@@ -50,6 +51,13 @@ public abstract class TabPanel extends CTabItem {
 		return topPanel.getToolBar();
 	}
 	
+	public void clearModes() {
+		topPanel.clearModes();
+		if (content != null)
+			content.dispose();
+		content = null;
+	}
+	
 	public void addMode(Image iconImage, String toolTipText, String modeName) {
 		topPanel.addMode(iconImage, toolTipText, modeName);
 	}
@@ -62,6 +70,7 @@ public abstract class TabPanel extends CTabItem {
 	public abstract void notifyModeChange(String modeName);
 	
 	public void setContent(Control comp) {
+		content = comp;
 		GridData centre = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
 		comp.setLayoutData(centre);
 		getContentParent().layout();

@@ -24,6 +24,7 @@ public abstract class ToolPanel extends Composite {
 	
 	private ToolBar toolBar;
 	private ToolBar rightBar;
+	private ToolItem separator;
 	private Mode lastSelected = null;
 	
 	private Vector<Mode> modes = new Vector<Mode>();
@@ -73,7 +74,7 @@ public abstract class ToolPanel extends Composite {
 
 	public void addMode(Image iconImage, String toolTipText, String modeName) {
 		if (modes.isEmpty())			
-			new ToolItem(rightBar, SWT.SEPARATOR);
+			separator = new ToolItem(rightBar, SWT.SEPARATOR);
 		ToolItem item = new ToolItem(rightBar, SWT.RADIO);
 		item.setImage(iconImage);
 		item.setToolTipText(toolTipText);
@@ -86,6 +87,13 @@ public abstract class ToolPanel extends Composite {
 			return;
 		modes.get(modeNumber).toolItem.setSelection(true);
 		notifyModeChange(modes.get(modeNumber).modeName);
+	}
+
+	public void clearModes() {
+		for (Mode mode: modes)
+			mode.toolItem.dispose();
+		modes.clear();
+		separator.dispose();
 	}
 
 }

@@ -50,4 +50,8 @@ public abstract class TopPanel extends Composite {
 		tools.setMode(modeNumber);
 	}
 
+	public void clearModes() {
+		tools.clearModes();
+	}
+
 }

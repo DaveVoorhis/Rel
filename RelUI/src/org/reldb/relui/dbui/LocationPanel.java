@@ -88,6 +88,7 @@ public class LocationPanel extends Composite {
 	public void notifyDatabaseURIModified() {}
 
 	public void setDatabaseURI(String url) {
+		oldText = url;
 		textDatabase.setText(url);
 	}
 	

@@ -33,7 +33,7 @@ public class RemoteDatabaseDialog extends Dialog {
 			return port;
 		}
 		public String toString() {
-			return "db://" + domain + ((port != defaultPort) ? ":" + port : "");
+			return domain + ":" + port;
 		}
 	}
 	

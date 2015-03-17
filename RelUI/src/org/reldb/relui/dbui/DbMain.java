@@ -1,6 +1,9 @@
 package org.reldb.relui.dbui;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.reldb.relui.tools.MainPanel;
@@ -15,13 +18,22 @@ public class DbMain {
 	private static boolean noLocalRel = true;
 
     public static Shell getShell() {
-    	return getMainPanel().getShell();
+    	return mainPanel.getShell();
     }
     
     public static boolean isNoLocalRel() {
     	return noLocalRel;
     }
+
+	public static void run(Composite parent) {
+		mainPanel = new MainPanel(parent, SWT.None);
+		initialise();
+	}
     
+	public static void setStatus(String s) {
+		mainPanel.setStatus(s);
+	}
+	
 	private static void initialise() {
 		openDatabaseDialog = new DirectoryDialog(getShell());
 		openDatabaseDialog.setText("Open Database");
@@ -60,7 +72,7 @@ public class DbMain {
 					System.err.println("Unknown error: " + t);
 					e.printStackTrace();
 					mainPanel.dispose();
-					MessageDialog.openError(getShell(),  "Unexpected Error", e.toString());
+					MessageDialog.openError(getShell(), "Unexpected Error", e.toString());
 				}
 				System.exit(1);						
 			}				
@@ -75,15 +87,6 @@ public class DbMain {
 		DbTab defaultDb = new DbTab();
 		defaultDb.openLocalDatabase(defaultDatabasePath);
 		DbMain.setSelection(0);
-	}
-	
-	public static void setMainPanel(MainPanel mainPanel) {
-		DbMain.mainPanel = mainPanel;
-		initialise();
-	}
-	
-	public static MainPanel getMainPanel() {
-		return mainPanel;
 	}
 	
 	public static DbTab getCurrentDbTab() {
@@ -115,10 +118,9 @@ public class DbMain {
 	public static void options() {
 		// TODO Auto-generated method stub
 	}
-	
-    /** Set status display. */
-    public static void setStatus(String s) {
-    	mainPanel.getStatusLabel().setText(s);
-    }
+
+	public static CTabFolder getTabFolder() {
+		return mainPanel.getTabFolder();
+	}
 	
 }
