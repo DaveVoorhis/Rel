@@ -64,6 +64,7 @@ public abstract class ToolPanel extends Composite {
 		rightBar = new ToolBar(this, SWT.NONE);
 		FormData fd_rightBar = new FormData();
 		fd_rightBar.right = new FormAttachment(100);
+		fd_toolBar.right = new FormAttachment(rightBar);
 		fd_rightBar.top = new FormAttachment(0);
 		rightBar.setLayoutData(fd_rightBar);
 	}
