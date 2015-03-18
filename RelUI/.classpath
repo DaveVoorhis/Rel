@@ -11,10 +11,10 @@
 	<classpathentry kind="lib" path="lib/httpcore-4.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/httpmime-4.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/je-6.2.31.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.jdt.core_3.10.0.jar"/>
 	<classpathentry kind="lib" path="lib/Rel.jar"/>
 	<classpathentry kind="lib" path="lib/rel0000.jar"/>
 	<classpathentry kind="lib" path="lib/relclient.jar"/>
 	<classpathentry kind="lib" path="lib/RelDBMS.jar"/>
+	<classpathentry kind="lib" path="lib/ecj-4.4.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
