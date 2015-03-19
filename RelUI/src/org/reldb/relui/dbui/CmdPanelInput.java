@@ -2,6 +2,8 @@ package org.reldb.relui.dbui;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.custom.CaretEvent;
+import org.eclipse.swt.custom.CaretListener;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
@@ -13,7 +15,51 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 public class CmdPanelInput extends Composite {
+	
+	private CmdPanelBottom cmdPanelBottom;
+	private StyledText inputText;
+	
+	private void showRunningStart() {
+		cmdPanelBottom.startBusyIndicator();
+		cmdPanelBottom.setEnabledRunButton(false);		
+	}
+	
+	private void showRunningStop() {
+		cmdPanelBottom.setEnabledRunButton(true);
+		cmdPanelBottom.stopBusyIndicator();
+	}
 
+	/** Override to receive notification that the run button has been pressed.  Must invoke done() when 
+	 * ready to receive another notification. */
+	public void notifyGo(String text) {}
+	
+	/** Must invoke this after processing invoked by run button has finished, and we're ready to receive another 'run' notification. */
+	public void done() {
+		showRunningStop();
+	}
+	
+	private static boolean isLastNonWhitespaceCharacter(String s, char c) {
+		int endPosn = s.length() - 1;
+		if (endPosn < 0)
+			return false;
+		while (endPosn >= 0 && Character.isWhitespace(s.charAt(endPosn)))
+			endPosn--;
+		if (endPosn < 0)
+			return false;
+		return (s.charAt(endPosn) == c);
+	}
+		
+	/** Override to receive notification of request to copy input text to output display. */
+	public void notifyCopyInputToOutput(String text) {}
+
+	public void setInputText(String string) {
+		inputText.setText(string);
+	}
+	
+	public String getInputText() {
+		return inputText.getText();
+	}
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -30,10 +76,30 @@ public class CmdPanelInput extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 		
-		StyledText inputText = new StyledText(this, SWT.BORDER);
+		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP);
 		FormData fd_inputText = new FormData();
-		fd_inputText.right = new FormAttachment(100);
+		fd_inputText.right = new FormAttachment(toolBar, 0, SWT.RIGHT);
 		fd_inputText.top = new FormAttachment(toolBar);
+		fd_inputText.left = new FormAttachment(toolBar, 0, SWT.LEFT);
+		inputText.setLayoutData(fd_inputText);
+		inputText.addCaretListener(new CaretListener() {
+			@Override
+			public void caretMoved(CaretEvent event) {
+				int offset = event.caretOffset;
+				try {
+					int line = inputText.getLineAtOffset(offset);
+					int column = offset - inputText.getOffsetAtLine(line);
+					cmdPanelBottom.setRowColDisplay("" + (line + 1) + ":" + (column + 1));
+				} catch (Exception ble) {
+					cmdPanelBottom.setRowColDisplay("?:?");
+				}
+				if (isLastNonWhitespaceCharacter(inputText.getText(), ';')) {
+					cmdPanelBottom.setRunButtonPrompt("Execute (F5)");
+				} else {
+					cmdPanelBottom.setRunButtonPrompt("Evaluate (F5)");
+				}
+			}
+		});
 		
 		ToolItem tlitmPrevHistory = new ToolItem(toolBar, SWT.NONE);
 		tlitmPrevHistory.addSelectionListener(new SelectionAdapter() {
@@ -57,6 +123,7 @@ public class CmdPanelInput extends Composite {
 		tlitmClear.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				inputText.setText("");
 			}
 		});
 		tlitmClear.setToolTipText("Clear");
@@ -103,6 +170,7 @@ public class CmdPanelInput extends Composite {
 		tlitmCopyToOutput.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				notifyCopyInputToOutput(inputText.getText());
 			}
 		});
 		tlitmCopyToOutput.setSelection(true);
@@ -112,26 +180,21 @@ public class CmdPanelInput extends Composite {
 		tlitmWrap.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				inputText.setWordWrap(tlitmWrap.getSelection());
 			}
 		});
 		tlitmWrap.setToolTipText("Wrap text");
 		tlitmWrap.setSelection(true);
 		tlitmWrap.setImage(ResourceManager.getPluginImage("RelUI", "icons/wrapIcon.png"));
 		
-		new ToolItem(toolBar, SWT.SEPARATOR);
-		
-		ToolItem tlitmBackup = new ToolItem(toolBar, SWT.NONE | SWT.RIGHT);
-		tlitmBackup.addSelectionListener(new SelectionAdapter() {
+		cmdPanelBottom = new CmdPanelBottom(this, SWT.NONE) {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void go() {
+				showRunningStart();
+				notifyGo(getInputText());
 			}
-		});
-		tlitmBackup.setToolTipText("Make backup");
-		tlitmBackup.setImage(ResourceManager.getPluginImage("RelUI", "icons/safeIcon.png"));
-		fd_inputText.left = new FormAttachment(0);
-		inputText.setLayoutData(fd_inputText);
-		
-		CmdPanelBottom cmdPanelBottom = new CmdPanelBottom(this, SWT.NONE);
+		};
+		fd_inputText.bottom = new FormAttachment(cmdPanelBottom, 191);
 		FormData fd_cmdPanelBottom = new FormData();
 		fd_cmdPanelBottom.left = new FormAttachment(0);
 		fd_cmdPanelBottom.right = new FormAttachment(100);
@@ -139,4 +202,6 @@ public class CmdPanelInput extends Composite {
 		fd_inputText.bottom = new FormAttachment(cmdPanelBottom);
 		cmdPanelBottom.setLayoutData(fd_cmdPanelBottom);
 	}
+	
+	
 }

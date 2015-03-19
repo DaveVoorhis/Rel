@@ -1,4 +1,4 @@
-package org.reldb.relui.monitors;
+package org.reldb.relui.widgets.monitors;
 
 import org.eclipse.swt.widgets.Composite;
 

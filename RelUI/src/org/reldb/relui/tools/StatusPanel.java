@@ -6,8 +6,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
-import org.reldb.relui.monitors.FreeCPUDisplay;
-import org.reldb.relui.monitors.FreeMemoryDisplay;
+import org.reldb.relui.widgets.monitors.FreeCPUDisplay;
+import org.reldb.relui.widgets.monitors.FreeMemoryDisplay;
 
 public class StatusPanel extends Composite {
 	private FreeCPUDisplay freeCPU;

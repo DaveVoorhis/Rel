@@ -8,21 +8,37 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.ResourceManager;
-import org.reldb.relui.tools.ModeTabContent;
 
-public class DbTabContentCmd implements ModeTabContent {
+public class DbTabContentCmd extends DbTabContent {
 
 	private ToolItem headingTypesToggle = null;
 	private CmdPanel cmdPanel;
 
+	public DbTabContentCmd(DbTab parentTab) {
+		super(parentTab);
+	}
+	
 	@Override
 	public Control getContent(Composite contentParent) {
-		cmdPanel = new CmdPanel(contentParent, SWT.None);
+		cmdPanel = new CmdPanel(getDbTab(), contentParent, SWT.None);
 		return cmdPanel;
 	}
 
 	@Override
 	public void getToolBarItems(ToolBar toolBar) {
+		
+		ToolItem tlitmBackup = new ToolItem(toolBar, SWT.NONE);
+		tlitmBackup.setToolTipText("Make backup");
+		tlitmBackup.setImage(ResourceManager.getPluginImage("RelUI", "icons/safeIcon.png"));
+		tlitmBackup.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				getDbTab().makeBackup();
+			}
+		});
+		
+		new ToolItem(toolBar, SWT.SEPARATOR);
+				
 		ToolItem clearOutputBtn = new ToolItem(toolBar, SWT.PUSH);
 		clearOutputBtn.setImage(ResourceManager.getPluginImage("RelUI", "icons/clearIcon.png"));
 		clearOutputBtn.setToolTipText("Clear");

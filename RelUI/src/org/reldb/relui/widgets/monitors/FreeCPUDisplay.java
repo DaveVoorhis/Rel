@@ -1,4 +1,4 @@
-package org.reldb.relui.monitors;
+package org.reldb.relui.widgets.monitors;
 
 import java.lang.management.ManagementFactory;
 

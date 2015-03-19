@@ -8,26 +8,37 @@ import org.eclipse.swt.browser.Browser;
 
 public class CmdPanel extends Composite {
 
+	private Browser browser;
+	private CmdPanelInput cmdPanelInput;
+	
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public CmdPanel(Composite parent, int style) {
+	public CmdPanel(DbTab dbTab, Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		SashForm sashForm = new SashForm(this, SWT.VERTICAL);
 		
-		new Browser(sashForm, SWT.BORDER);
+		browser = new Browser(sashForm, SWT.BORDER);
 		
-		new CmdPanelInput(sashForm, SWT.NONE);
+		cmdPanelInput = new CmdPanelInput(sashForm, SWT.NONE) {
+			public void notifyCopyInputToOutput(String content) {
+				browser.setText(browser.getText() + "<br>" + content);
+			}
+			public void notifyGo(String text) {
+				browser.setText(browser.getText() + "<br>" + text);
+				done();
+			}
+		};
+		
 		sashForm.setWeights(new int[] {3, 1});
 	}
 
 	public void clearOutput() {
-		// TODO Auto-generated method stub
-		
+		browser.setText("");
 	}
 
 	public void saveOutputAsHtml() {
@@ -41,8 +52,7 @@ public class CmdPanel extends Composite {
 	}
 
 	public void copyOutputToInput() {
-		// TODO Auto-generated method stub
-		
+		cmdPanelInput.setInputText("this is the text");
 	}
 
 	public void setEnhancedOutput(boolean selection) {

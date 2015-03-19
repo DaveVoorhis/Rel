@@ -42,9 +42,9 @@ public class DbTab extends ModeTab {
     private void doConnectionResultSuccess(StringReceiverClient client, String dbURL, boolean permanent) {
 		if (countModes() == 0) {
 			setImage(ResourceManager.getPluginImage("RelUI", "icons/DatabaseIcon.png"));
-			addMode("ModeRelIcon.png", "Rel", new DbTabContentRel());
-			addMode("ModeRevIcon.png", "Rev", new DbTabContentRev());
-			addMode("ModeCmdIcon.png", "Command line", new DbTabContentCmd());
+			addMode("ModeRelIcon.png", "Rel", new DbTabContentRel(this));
+			addMode("ModeRevIcon.png", "Rev", new DbTabContentRev(this));
+			addMode("ModeCmdIcon.png", "Command line", new DbTabContentCmd(this));
 			setMode(0);
 		}
         setStatus("Ok");
@@ -54,6 +54,12 @@ public class DbTab extends ModeTab {
 					DbTab.this.close();
 			}
 		});
+    }
+    
+    public StringReceiverClient getConnection() {
+    	if (connection != null)
+    		return connection.client;
+    	return null;
     }
     
     public String getStatus() {
@@ -185,6 +191,10 @@ public class DbTab extends ModeTab {
 		close();
 		locationPanel.setDatabaseURI(string);
 		openDatabaseAtURI(locationPanel.getDatabaseURI(), false);
+	}
+
+	public void makeBackup() {
+		System.out.println("DbTab: makeBackup");
 	}
     
 }
