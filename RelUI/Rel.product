@@ -228,6 +228,7 @@ END OF TERMS AND CONDITIONS
       <plugin id="org.eclipse.m2e.maven.runtime"/>
       <plugin id="org.eclipse.m2e.maven.runtime.slf4j.simple"/>
       <plugin id="org.eclipse.m2e.model.edit"/>
+      <plugin id="org.eclipse.nebula.widgets.grid"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.compatibility.state" fragment="true"/>
       <plugin id="org.eclipse.osgi.services"/>

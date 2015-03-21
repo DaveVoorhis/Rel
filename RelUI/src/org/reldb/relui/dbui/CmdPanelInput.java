@@ -38,7 +38,7 @@ public class CmdPanelInput extends Composite {
 		showRunningStop();
 	}
 	
-	private static boolean isLastNonWhitespaceCharacter(String s, char c) {
+	public static boolean isLastNonWhitespaceCharacter(String s, char c) {
 		int endPosn = s.length() - 1;
 		if (endPosn < 0)
 			return false;
@@ -48,9 +48,6 @@ public class CmdPanelInput extends Composite {
 			return false;
 		return (s.charAt(endPosn) == c);
 	}
-		
-	/** Override to receive notification of request to copy input text to output display. */
-	public void notifyCopyInputToOutput(String text) {}
 
 	public void setInputText(String string) {
 		inputText.setText(string);
@@ -59,7 +56,15 @@ public class CmdPanelInput extends Composite {
 	public String getInputText() {
 		return inputText.getText();
 	}
+
+	public StyledText getInputTextWidget() {
+		return inputText;
+	}
 	
+	/** Override to be notified that copyInputToOutput setting has changed. */
+	protected void setCopyInputToOutput(boolean selection) {
+	}
+		
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -170,7 +175,7 @@ public class CmdPanelInput extends Composite {
 		tlitmCopyToOutput.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				notifyCopyInputToOutput(inputText.getText());
+				setCopyInputToOutput(tlitmCopyToOutput.getSelection());
 			}
 		});
 		tlitmCopyToOutput.setSelection(true);
@@ -202,6 +207,5 @@ public class CmdPanelInput extends Composite {
 		fd_inputText.bottom = new FormAttachment(cmdPanelBottom);
 		cmdPanelBottom.setLayoutData(fd_cmdPanelBottom);
 	}
-	
 	
 }
