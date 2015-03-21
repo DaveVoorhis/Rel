@@ -1,6 +1,15 @@
 package org.reldb.relui.dbui;
 
+import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.io.IOException;
+
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.custom.SashForm;
@@ -10,7 +19,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.awt.SWT_AWT;
 import org.reldb.rel.client.crash.CrashTrap;
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.core.ParseException;
@@ -19,7 +30,8 @@ import org.reldb.relui.version.Version;
 
 public class CmdPanel extends Composite {
 
-	private Browser browser;
+	private Composite browserPanel;
+	private JTextPane browser;
 	private StyledText styledText;
 	private CmdPanelInput cmdPanelInput;
 	private StringReceiverClient connection;
@@ -60,17 +72,58 @@ public class CmdPanel extends Composite {
 		styledText.setStyleRange(styleRange);
 	}
 	
+	private static final String[] formattedStyle = {
+		"table {border-style: none; border-width: 0px;}",
+		"td, tr, th {border-style: solid; border-width: 1px;}",
+		".ok {color: green;}",
+	    ".bad {color: red;}",
+	    ".note {color: blue;}",
+	    ".user {color: gray;}"
+	};
+
+	private static String getBodyFontStyleString(Font font) {
+		FontData[] data = font.getFontData();
+		FontData datum = data[0];
+		return "body, td {font-family: arial, sans-serif; font-size: " + datum.getHeight() + "px;}";		
+	}
+
+	private static String getHTMLStyle(Font font) {
+		String out = "";
+		for (String styleLine: formattedStyle)
+			out += styleLine + '\n';
+		out += getBodyFontStyleString(font);
+		return out;
+	}
+
+	private String getEmptyHTMLDocument(Font font) {
+		String out = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" +
+				     "<html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"en-gb\" xml:lang=\"en-gb\">\n" +
+				     "<head>\n" +
+				     "<style type=\"text/css\">\n" +
+				     "<!--\n" +
+				     getHTMLStyle(font) + '\n' +
+					 "-->\n" +
+					 "</style>\n" +
+					 "</head>\n" +
+					 "<body>\n" +
+					 "<div id=\"ctnt\"></div>" +
+					 "</body>\n" +
+					 "</html>";
+		return out;
+	}
+
+	private String getEmptyHTMLDocument() {
+		return getEmptyHTMLDocument(styledText.getFont());
+	}
+	
 	private void outputHTML(String s) {
-		// TODO
-		/*
-		HTMLDocument doc = (HTMLDocument)jTextPaneOutputFormatted.getDocument();
-		HTMLEditorKit kit = (HTMLEditorKit)jTextPaneOutputFormatted.getEditorKit();
+		HTMLDocument doc = (HTMLDocument)browser.getDocument();
+		HTMLEditorKit kit = (HTMLEditorKit)browser.getEditorKit();
 	    try {
 	    	kit.insertHTML((HTMLDocument) doc, doc.getLength(), s, 0, 0, null);
 		} catch (BadLocationException | IOException e) {
 			e.printStackTrace();
-		}
-		*/		
+		}		
 	}
 	
 	/** Get formatted response. */
@@ -322,12 +375,25 @@ public class CmdPanel extends Composite {
 		outputStackLayout = new StackLayout();
 		outputStack.setLayout(outputStackLayout);
 		
-		browser = new Browser(outputStack, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-		
 		styledText = new StyledText(outputStack, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI | SWT.H_SCROLL);
 		styledText.setEditable(false);
 		
-		outputStackLayout.topControl = browser;
+	    browserPanel = new Composite(outputStack, SWT.EMBEDDED | SWT.NO_BACKGROUND);
+	    Frame frame = SWT_AWT.new_Frame(browserPanel);
+	    frame.setLayout(new BorderLayout());
+		browser = new JTextPane();
+		Style.setEnhancedOutputStyle(browser, styledText.getFont());
+		browser.setDoubleBuffered(true);
+		DefaultCaret caret = (DefaultCaret)browser.getCaret();
+	    caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+	 		
+		JScrollPane jScrollPaneOutput = new JScrollPane();
+		jScrollPaneOutput.setAutoscrolls(true);
+		jScrollPaneOutput.setViewportView(browser);
+		
+		frame.add(jScrollPaneOutput, BorderLayout.CENTER);
+		
+		outputStackLayout.topControl = browserPanel;
 		
 		cmdPanelInput = new CmdPanelInput(sashForm, SWT.NONE) {
 			boolean copyInputToOutput = true;
@@ -386,7 +452,7 @@ public class CmdPanel extends Composite {
 	}
 
 	public void clearOutput() {
-		browser.setText("");
+		browser.setText(getEmptyHTMLDocument());
 		styledText.setText("");
 	}
 
@@ -395,7 +461,7 @@ public class CmdPanel extends Composite {
 	}
 
 	public void setEnhancedOutput(boolean selection) {
-		outputStackLayout.topControl = (selection) ? browser : styledText;
+		outputStackLayout.topControl = (selection) ? browserPanel : styledText;
 		outputStack.layout();
 	}
 
