@@ -3,20 +3,23 @@ package org.reldb.relui.dbui;
 import java.io.IOException;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Color;
-
 import org.reldb.rel.client.crash.CrashTrap;
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.core.ParseException;
 import org.reldb.rel.client.string.StringReceiverClient;
 import org.reldb.relui.dbui.html.BrowserManager;
-
 import org.reldb.relui.version.Version;
 
 public class CmdPanel extends Composite {
@@ -307,6 +310,14 @@ public class CmdPanel extends Composite {
 	public CmdPanel(DbTab dbTab, Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
+		
+		this.addListener(SWT.Resize, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				System.out.println("CmdPanel: resized");
+				pack();
+			}
+		});
 		
 		connection = dbTab.getConnection();
 		
