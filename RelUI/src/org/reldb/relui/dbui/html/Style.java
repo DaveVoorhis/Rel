@@ -1,4 +1,4 @@
-package org.reldb.relui.dbui;
+package org.reldb.relui.dbui.html;
 
 import java.util.ArrayList;
 
