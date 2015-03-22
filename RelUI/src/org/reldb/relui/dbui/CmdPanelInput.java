@@ -11,6 +11,8 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.ResourceManager;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
@@ -64,7 +66,12 @@ public class CmdPanelInput extends Composite {
 	/** Override to be notified that copyInputToOutput setting has changed. */
 	protected void setCopyInputToOutput(boolean selection) {
 	}
-		
+	
+	private void run() {
+		showRunningStart();
+		notifyGo(getInputText());		
+	}
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -105,7 +112,15 @@ public class CmdPanelInput extends Composite {
 				}
 			}
 		});
-		
+		inputText.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				System.out.println("CmdPanelInput: inputText keyReleased: " + e.toString());
+				if (e.keyCode == 0x100000e)
+					run();
+			}
+		});
+
 		ToolItem tlitmPrevHistory = new ToolItem(toolBar, SWT.NONE);
 		tlitmPrevHistory.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -195,8 +210,7 @@ public class CmdPanelInput extends Composite {
 		cmdPanelBottom = new CmdPanelBottom(this, SWT.NONE) {
 			@Override
 			public void go() {
-				showRunningStart();
-				notifyGo(getInputText());
+				run();
 			}
 		};
 		fd_inputText.bottom = new FormAttachment(cmdPanelBottom, 191);
