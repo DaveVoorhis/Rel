@@ -315,7 +315,6 @@ public class CmdPanel extends Composite {
 			@Override
 			public void handleEvent(Event event) {
 				System.out.println("CmdPanel: resized");
-				pack();
 			}
 		});
 		
