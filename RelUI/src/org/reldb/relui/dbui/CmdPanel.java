@@ -315,10 +315,6 @@ public class CmdPanel extends Composite {
 			@Override
 			public void handleEvent(Event event) {
 				System.out.println("CmdPanel: resized");
-<<<<<<< HEAD
-=======
-				pack();
->>>>>>> branch 'master' of https://github.com/DaveVoorhis/Rel.git
 			}
 		});
 		

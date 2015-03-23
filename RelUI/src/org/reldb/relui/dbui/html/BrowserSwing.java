@@ -40,11 +40,7 @@ public class BrowserSwing implements HtmlBrowser {
 	    browserPanel = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
 	    Frame frame = SWT_AWT.new_Frame(browserPanel);
 	    
-<<<<<<< HEAD
 	    style = new Style(font, 0);
-=======
-	    style = new Style(font);
->>>>>>> branch 'master' of https://github.com/DaveVoorhis/Rel.git
 	    
 		browser = new JTextPane();		
 		setEnhancedOutputStyle(browser);
