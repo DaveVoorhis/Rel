@@ -17,7 +17,7 @@ public class BrowserNative implements HtmlBrowser {
 	
 	@Override
 	public boolean createWidget(Composite parent, Font font) {
-		style = new Style(font, -2);
+		style = new Style(font, -3);
 		try {
 			browser = new Browser(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 			browser.setJavascriptEnabled(true);

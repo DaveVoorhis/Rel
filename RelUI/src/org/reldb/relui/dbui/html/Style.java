@@ -16,6 +16,7 @@ public class Style {
 	}
 	
 	private static final String[] formattedStyle = {
+		"body {margin-top: 0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px}",
 		"table {border-style: none; border-width: 0px;}",
 		"td, tr, th {border-style: solid; border-width: 1px;}",
 		".ok {color: green;}",
