@@ -8,9 +8,11 @@ import org.eclipse.swt.graphics.FontData;
 public class Style {
 	
 	private Font font;
+	private int sizeAdjustment;
 	
-	public Style(Font font) {
+	public Style(Font font, int sizeAdjustment) {
 		this.font = font;
+		this.sizeAdjustment = sizeAdjustment;
 	}
 	
 	private static final String[] formattedStyle = {
@@ -25,32 +27,36 @@ public class Style {
 	public String getBodyFontStyleString() {
 		FontData[] data = font.getFontData();
 		FontData datum = data[0];
-		return "body, p, td {font-family: arial, helvetica, sans-serif; font-size: " + datum.getHeight() + "pt;}";
+		return "body, p, td {font-family: arial, helvetica, sans-serif; font-size: " + (datum.getHeight() + sizeAdjustment) + "pt;}";
 	}
 
 	private String getHTMLStyle() {
 		String out = "";
 		for (String styleLine: formattedStyle)
-			out += styleLine + '\n';
+			out += styleLine;
 		out += getBodyFontStyleString();
 		return out;
 	}
 
-	public String getEmptyHTMLDocument() {
-		String out = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" +
-				     "<html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"en-gb\" xml:lang=\"en-gb\">\n" +
-				     "<head>\n" +
-				     "<style type=\"text/css\">\n" +
-				     "<!--\n" +
-				     getHTMLStyle() + '\n' +
-					 "-->\n" +
-					 "</style>\n" +
-					 "</head>\n" +
-					 "<body>\n" +
-					 "Content" +
-					 "</body>\n" +
-					 "</html>";
+	public String getHTMLDocument(String content) {
+		String out = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" +
+			     "<html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"en-gb\" xml:lang=\"en-gb\">" +
+			     "<head>" +
+			     "<style type=\"text/css\">" +
+			     "<!--" +
+			     getHTMLStyle() +
+				 "-->" +
+				 "</style>" +
+				 "</head>" +
+				 "<body>" +
+				 content +
+				 "</body>" +
+				 "</html>";
 		return out;
+	}
+	
+	public String getEmptyHTMLDocument() {
+		return getHTMLDocument("");
 	}
 	
 	public String[] getFormattedStyle() {
