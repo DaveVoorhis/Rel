@@ -148,7 +148,7 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 		if (connected == null) {
 			return new PreservedState();
 		}
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateProject(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateProject(getRev().getConnection(), getName(), getRev().getCrashHandler());
 		if (tuples == null)
 			return new PreservedState();
 		Iterator<Tuple> tupleIterator = tuples.iterator();
@@ -159,7 +159,7 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 		//Refresh the preserved state when a new connection is made
 		String relvar = tuple.get("Relvar").toString();
 		if (!relvar.equals(connected.getName())) {
-			DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName());
+			DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName(), getRev().getCrashHandler());
 			return preservedState;
 		}
 		preservedState.setAllBut(tuple.get("AllBut").toBoolean());
@@ -195,7 +195,7 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 			}
 		}
 		selections += "}";
-		DatabaseAbstractionLayer.updatePreservedStateProject(getRev().getConnection(), getName(), connected.getName(), allBut, selections);
+		DatabaseAbstractionLayer.updatePreservedStateProject(getRev().getConnection(), getName(), connected.getName(), allBut, selections, getRev().getCrashHandler());
 	}
 	
 	protected JCheckBox addSelection(JPanel panel, String prompt, boolean selected, int id) {
@@ -337,7 +337,7 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName(), getRev().getCrashHandler());
 	}
 	
 }

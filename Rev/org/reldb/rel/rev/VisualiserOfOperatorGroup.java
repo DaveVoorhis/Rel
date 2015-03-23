@@ -130,9 +130,9 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 		String relvar = tuple.get("Relvar").toString();
 		if (!relvar.equals(connected.getName())) {
 			if (keyword.equals("GROUP")) {
-				DatabaseAbstractionLayer.removeOperator_Group(getRev().getConnection(), getName());
+				DatabaseAbstractionLayer.removeOperator_Group(getRev().getConnection(), getName(), getRev().getCrashHandler());
 			} else if (keyword.equals("WRAP")) {
-				DatabaseAbstractionLayer.removeOperator_Wrap(getRev().getConnection(), getName());
+				DatabaseAbstractionLayer.removeOperator_Wrap(getRev().getConnection(), getName(), getRev().getCrashHandler());
 			}
 			asText = "";
 			asBox.setText("");
@@ -174,7 +174,7 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 	}
 	
 	protected Tuples load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateGroup(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateGroup(getRev().getConnection(), getName(), getRev().getCrashHandler());
 		return tuples;
 	}
 	
@@ -183,7 +183,7 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 		if (connected == null) {
 			return;
 		}
-		DatabaseAbstractionLayer.updatePreservedStateGroup(getRev().getConnection(), getName(), connected.getName(), allBut, selections, asString);
+		DatabaseAbstractionLayer.updatePreservedStateGroup(getRev().getConnection(), getName(), connected.getName(), allBut, selections, asString, getRev().getCrashHandler());
 	}
 	
 	private JCheckBox addSelection(JPanel panel, String prompt, boolean selected) {
@@ -270,7 +270,7 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Group(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Group(getRev().getConnection(), getName(), getRev().getCrashHandler());
 	}
 	
 }

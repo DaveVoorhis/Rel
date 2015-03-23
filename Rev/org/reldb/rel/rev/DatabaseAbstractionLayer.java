@@ -11,18 +11,17 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
 import org.reldb.rel.client.Connection.HTMLReceiver;
-import org.reldb.rel.client.crash.CrashTrap;
+import org.reldb.rel.client.stream.CrashHandler;
 import org.reldb.rel.utilities.StringUtils;
-import org.reldb.rel.rev.version.Version;
 
 public class DatabaseAbstractionLayer {
 
 	public static final int EXPECTED_REV_VERSION = 0;
 	public static final int QUERY_WAIT_MILLISECONDS = 5000;
 	
-	private synchronized static boolean execute(Connection connection, String query) {
+	private synchronized static boolean execute(Connection connection, String query, CrashHandler crashHandler) {
 		try {
-			connection.execute(query, new CrashTrap(query, connection.getServerAnnouncement(), Version.getVersion()));
+			connection.execute(query, crashHandler);
 			return true;
 		} catch (IOException e1) {
 			System.out.println("DatabaseAbstraction: Error: " + e1);
@@ -31,10 +30,10 @@ public class DatabaseAbstractionLayer {
 		}
 	}
 
-	private synchronized static Tuples getTuples(Connection connection, String query) {
+	private synchronized static Tuples getTuples(Connection connection, String query, CrashHandler crashHandler) {
 		Value response;
 		try {
-			response = connection.evaluate(query, new CrashTrap(query, connection.getServerAnnouncement(), Version.getVersion())).awaitResult(QUERY_WAIT_MILLISECONDS);
+			response = connection.evaluate(query, crashHandler).awaitResult(QUERY_WAIT_MILLISECONDS);
 		} catch (IOException e) {
 			System.out.println("DatabaseAbstraction: Error: " + e);
 			e.printStackTrace();
@@ -51,13 +50,13 @@ public class DatabaseAbstractionLayer {
 		return (Tuples)response;		
 	}
 
-	public synchronized static void evaluate(Connection connection, String query, HTMLReceiver htmlReceiver) {
-		connection.evaluate(query, htmlReceiver, new CrashTrap(query, connection.getServerAnnouncement(), Version.getVersion()));
+	public synchronized static void evaluate(Connection connection, String query, HTMLReceiver htmlReceiver, CrashHandler crashHandler) {
+		connection.evaluate(query, htmlReceiver, crashHandler);
 	}
 
-	public synchronized static Tuples evaluate(Connection connection, String query) {
+	public synchronized static Tuples evaluate(Connection connection, String query, CrashHandler crashHandler) {
 		try {
-			Value result = connection.evaluate(query, new CrashTrap(query, connection.getServerAnnouncement(), Version.getVersion())).awaitResult(QUERY_WAIT_MILLISECONDS);
+			Value result = connection.evaluate(query, crashHandler).awaitResult(QUERY_WAIT_MILLISECONDS);
 			if (result instanceof Error) {
 				JOptionPane.showMessageDialog(null, result);
 				return new NullTuples();
@@ -69,10 +68,10 @@ public class DatabaseAbstractionLayer {
 		}
 	}
 
-	public synchronized static int hasRevExtensions(Connection connection) {
+	public synchronized static int hasRevExtensions(Connection connection, CrashHandler crashHandler) {
 		String query = "sys.rev.Version";
 		try {
-			Value response = (Value)connection.evaluate(query, new CrashTrap(query, connection.getServerAnnouncement(), Version.getVersion())).awaitResult(QUERY_WAIT_MILLISECONDS);
+			Value response = (Value)connection.evaluate(query, crashHandler).awaitResult(QUERY_WAIT_MILLISECONDS);
 			if (response instanceof Tuples) {
 				int version = -1;
 				for (Tuple tuple: (Tuples)response)
@@ -86,17 +85,17 @@ public class DatabaseAbstractionLayer {
 		}
 	}
 
-	public synchronized static long getUniqueNumber(Connection connection) {
+	public synchronized static long getUniqueNumber(Connection connection, CrashHandler crashHandler) {
 		String query = "GET_UNIQUE_NUMBER()";
 		try {
-			return connection.evaluate(query, new CrashTrap(query, connection.getServerAnnouncement(), Version.getVersion())).awaitResult(QUERY_WAIT_MILLISECONDS).toLong();
+			return connection.evaluate(query, crashHandler).awaitResult(QUERY_WAIT_MILLISECONDS).toLong();
 		} catch (Exception e) {
 			System.out.println("Rev failed to get a unique number: " + e);
 			return 0;
 		}
 	}
 	
-	public static boolean installRevExtensions(Connection connection) {
+	public static boolean installRevExtensions(Connection connection, CrashHandler crashHandler) {
 		String query = 
 				//Create a version relation
 				"var sys.rev.Version real relation {" +
@@ -231,10 +230,10 @@ public class DatabaseAbstractionLayer {
 				"   }" +
 				"} key {Name};" ;
 		
-		return execute(connection, query);
+		return execute(connection, query, crashHandler);
 	}
 
-	public static boolean removeRevExtensions(Connection connection) {
+	public static boolean removeRevExtensions(Connection connection, CrashHandler crashHandler) {
 		String query = 
 				"drop var sys.rev.Op_Restrict;" +
 				"drop var sys.rev.Op_Rename;" +
@@ -250,60 +249,62 @@ public class DatabaseAbstractionLayer {
 				"drop var sys.rev.Relvar;" +
 			    "drop var sys.rev.View;" +
 				"drop var sys.rev.Version;";
-		return execute(connection, query);
+		return execute(connection, query, crashHandler);
 	}
 
-	public static Tuples getRelvarsWithoutRevExtensions(Connection connection) {
-		return getRelvarsWithoutRevExtensions(connection, "");
+	public static Tuples getRelvarsWithoutRevExtensions(Connection connection, CrashHandler crashHandler) {
+		return getRelvarsWithoutRevExtensions(connection, "", crashHandler);
 	}
 	
-	public static Tuples getRelvarsWithoutRevExtensions(Connection connection, String where) {
+	public static Tuples getRelvarsWithoutRevExtensions(Connection connection, String where, CrashHandler crashHandler) {
 		String query = "sys.Catalog {Name, Owner} WHERE " + where;
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
 	
-	public static Tuples getRelvarsWithRevExtensions(Connection connection) {
+	public static Tuples getRelvarsWithRevExtensions(Connection connection, CrashHandler crashHandler) {
 		String query = 
 				"union {" + 
 				"   sys.rev.Relvar," +
 				"   extend sys.Catalog not matching sys.rev.Relvar : {xpos := -1, ypos := -1} {Name, xpos, ypos}" +
 				"} matching sys.Catalog";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
 	
-	public static Tuples getRelvars(Connection connection, String where) {
+	public static Tuples getRelvars(Connection connection, String where, CrashHandler crashHandler) {
 		String query = "sys.rev.Relvar";
 		if (where.length() > 0) {
 			query += " WHERE " + where;
 		}
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
 
-	public static Tuples getQueries(Connection connection, String where) {
+	public static Tuples getQueries(Connection connection, String where, CrashHandler crashHandler) {
 		String query = "sys.rev.Query";
 		if (where.length() > 0) {
 			query += " WHERE " + where;
 		}
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
 	
-	public static Tuples getViews(Connection connection, String where) {
+	public static Tuples getViews(Connection connection, String where, CrashHandler crashHandler) {
 		String query = "sys.rev.View";
 		if (where.length() > 0) {
 			query += " WHERE " + where;
 		}
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
+	
 	//Update the positions of the relvars and queries
 	//Update relvar position
-	public static void updateRelvarPosition(Connection connection, String name, int x, int y, String model) {
+	public static void updateRelvarPosition(Connection connection, String name, int x, int y, String model, CrashHandler crashHandler) {
 		String query = 
 				"DELETE sys.rev.Relvar where Name='" + name + "', " + 
                 "INSERT sys.rev.Relvar relation {tuple {Name '" + name + "', xpos " + x + ", ypos " + y + ", model '" + model + "'}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
+	
 	//Update query position
-	public static void updateQueryPosition(Connection connection, String name, int x, int y, String kind, String connections, String model) {
+	public static void updateQueryPosition(Connection connection, String name, int x, int y, String kind, String connections, String model, CrashHandler crashHandler) {
 		String query = 
 				"DELETE sys.rev.Query where Name='" + name + "', " + 
                 "INSERT sys.rev.Query relation {tuple {" +
@@ -314,10 +315,11 @@ public class DatabaseAbstractionLayer {
 						"connections " + connections + 
 						", model '" + model + "'" +
 					"}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
+	
 	//Update view position
-	public static void updateViewPosition(Connection connection, String name, int x, int y, int width, int height, boolean enabled, boolean stored) {
+	public static void updateViewPosition(Connection connection, String name, int x, int y, int width, int height, boolean enabled, boolean stored, CrashHandler crashHandler) {
 		String query = 
 				"DELETE sys.rev.View where Name='" + name + "', " + 
                 "INSERT sys.rev.View relation {tuple {" +
@@ -329,33 +331,37 @@ public class DatabaseAbstractionLayer {
 						"enabled " + enabled + ", " +
 						"stored " + stored +
 					"}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
 
 	//Preserved States
 	//Views
-	public static Tuples getPreservedView(Connection connection, String name) {
+	public static Tuples getPreservedView(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "sys.rev.View WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
+	
 	//updatePreservedView was the same as updateViewPosition, so therefore redundant
 	//Project
-	public static Tuples getPreservedStateProject(Connection connection, String name) {
+	public static Tuples getPreservedStateProject(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "sys.rev.Op_Project WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
-	public static void updatePreservedStateProject(Connection connection, String name, String relvar, String allBut, String selections) {
+	
+	public static void updatePreservedStateProject(Connection connection, String name, String relvar, String allBut, String selections, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Project WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Project RELATION {" +
 		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + allBut + ", " + selections + "}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
+	
 	//Restrict
-	public static Tuples getPreservedStateRestrict(Connection connection, String name) {
+	public static Tuples getPreservedStateRestrict(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "sys.rev.Op_Restrict WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
-	public static void updatePreservedStateRestrict(Connection connection, String name, String relvar, String[] expression, int[] attribute, int[] operators, int[] andOrOps, int count) {
+	
+	public static void updatePreservedStateRestrict(Connection connection, String name, String relvar, String[] expression, int[] attribute, int[] operators, int[] andOrOps, int count, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Restrict WHERE Name = '" + name + "', ";
         query += "INSERT sys.rev.Op_Restrict RELATION {";
 		query += " TUPLE {Name '" + name + "', Relvar '" + relvar + "', Panels RELATION {";
@@ -366,188 +372,223 @@ public class DatabaseAbstractionLayer {
 			query += "TUPLE {expression '" + StringUtils.quote(expression[i]) + "', Attribute " + attribute[i] + ", Operators " + operators[i] + ", AndOrOp " + andOrOps[i] + ", PanelID " + i + "}";
 		}
 		query += "}}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
+	
 	//Rename
-	public static Tuples getPreservedStateRename(Connection connection, String name) {
+	public static Tuples getPreservedStateRename(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "sys.rev.Op_Rename WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
-	public static void updatePreservedStateRename(Connection connection, String name, String relvar, String selections) {
+	
+	public static void updatePreservedStateRename(Connection connection, String name, String relvar, String selections, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Rename WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Rename RELATION {" +
 		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + selections + "}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
+	
 	//Order
-	public static Tuples getPreservedStateOrder(Connection connection, String name) {
+	public static Tuples getPreservedStateOrder(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "sys.rev.Op_Order WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
-	public static void updatePreservedStateOrder(Connection connection, String name, String relvar, String selections) {
+	
+	public static void updatePreservedStateOrder(Connection connection, String name, String relvar, String selections, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Order WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Order RELATION {" +
 		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + selections + "}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
+	
 	//Group
-	public static Tuples getPreservedStateGroup(Connection connection, String name) {
+	public static Tuples getPreservedStateGroup(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "sys.rev.Op_Group WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
-	public static void updatePreservedStateGroup(Connection connection, String name, String relvar, String allBut, String selections, String as) {
+	
+	public static void updatePreservedStateGroup(Connection connection, String name, String relvar, String allBut, String selections, String as, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Group WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Group RELATION {" +
 		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + allBut + ", " + selections + ", ASText '" + as + "'}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
+	
 	//Ungroup
-	public static Tuples getPreservedStateUngroup(Connection connection, String name) {
+	public static Tuples getPreservedStateUngroup(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "sys.rev.Op_Ungroup WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
-	public static void updatePreservedStateUngroup(Connection connection, String name, String relvar, String selections) {
+	
+	public static void updatePreservedStateUngroup(Connection connection, String name, String relvar, String selections, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Ungroup WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Ungroup RELATION {" +
 		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + selections + "}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
+	
 	//Wrap
-	public static Tuples getPreservedStateWrap(Connection connection, String name) {
+	public static Tuples getPreservedStateWrap(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "sys.rev.Op_Wrap WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
-	public static void updatePreservedStateWrap(Connection connection, String name, String relvar, String allBut, String selections, String as) {
+	
+	public static void updatePreservedStateWrap(Connection connection, String name, String relvar, String allBut, String selections, String as, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Wrap WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Wrap RELATION {" +
 		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + allBut + ", " + selections + ", ASText '" + as + "'}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
+	
 	//Unwrap
-	public static Tuples getPreservedStateUnwrap(Connection connection, String name) {
+	public static Tuples getPreservedStateUnwrap(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "sys.rev.Op_Unwrap WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
-	public static void updatePreservedStateUnwrap(Connection connection, String name, String relvar, String selections) {
+	
+	public static void updatePreservedStateUnwrap(Connection connection, String name, String relvar, String selections, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Unwrap WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Unwrap RELATION {" +
 		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + selections + "}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
+	
 	//Extend
-	public static Tuples getPreservedStateExtend(Connection connection, String name) {
+	public static Tuples getPreservedStateExtend(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "sys.rev.Op_Extend WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
-	public static void updatePreservedStateExtend(Connection connection, String name, String relvar, String subRelvar) {
+	
+	public static void updatePreservedStateExtend(Connection connection, String name, String relvar, String subRelvar, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Extend WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Extend RELATION {" +
 		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + subRelvar + "}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
 	//Summarize
-	public static Tuples getPreservedStateSummarize(Connection connection, String name) {
+	public static Tuples getPreservedStateSummarize(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "sys.rev.Op_Summarize WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(connection, query, crashHandler);
 	}
-	public static void updatePreservedStateSummarize(Connection connection, String name, String relvar, String subRelvar) {
+	public static void updatePreservedStateSummarize(Connection connection, String name, String relvar, String subRelvar, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Summarize WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Summarize RELATION {" +
 		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + subRelvar + "}};";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
 
-	public static void executeHandler(Connection connection, String query) {
-		execute(connection, query);
+	public static void executeHandler(Connection connection, String query, CrashHandler crashHandler) {
+		execute(connection, query, crashHandler);
 	}
 	
 	//Methods for removing operator visualisers
-	public static void removeOperator(Connection connection, String name) {
+	public static void removeOperator(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Query WHERE Name = '" + name + "';"; 
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeRelvar(Connection connection, String name) {
+	
+	public static void removeRelvar(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Relvar WHERE Name = '" + name + "';"; 
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeView(Connection connection, String name) {
+	
+	public static void removeView(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.View WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_Project(Connection connection, String name) {
+	
+	public static void removeOperator_Project(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Project WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_Restrict(Connection connection, String name) {
+	
+	public static void removeOperator_Restrict(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Restrict WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_Rename(Connection connection, String name) {
+	
+	public static void removeOperator_Rename(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Rename WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_Extend(Connection connection, String name) {
+	
+	public static void removeOperator_Extend(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Extend WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_INTERSECT(Connection connection, String name) {
+	
+	public static void removeOperator_INTERSECT(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_INTERSECT WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_UNION(Connection connection, String name) {
+	
+	public static void removeOperator_UNION(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_UNION WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_MINUS(Connection connection, String name) {
+	
+	public static void removeOperator_MINUS(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_MINUS WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_PRODUCT(Connection connection, String name) {
+	
+	public static void removeOperator_PRODUCT(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_PRODUCT WHERE Name = '" + name + "';";
-		execute(connection, query);
-	}	
-	public static void removeOperator_DIVIDEBY(Connection connection, String name) {
+		execute(connection, query, crashHandler);
+	}
+	
+	public static void removeOperator_DIVIDEBY(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_DIVIDEBY WHERE Name = '" + name + "';";
-		execute(connection, query);
-	} 
-	public static void removeOperator_JOIN(Connection connection, String name) {
+		execute(connection, query, crashHandler);
+	}
+	
+	public static void removeOperator_JOIN(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_DIVIDEBY WHERE Name = '" + name + "';";
-		execute(connection, query);
-	} 
-	public static void removeOperator_Compose(Connection connection, String name) {
+		execute(connection, query, crashHandler);
+	}
+	
+	public static void removeOperator_Compose(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_COMPOSE WHERE Name = '" + name + "';";
-		execute(connection, query);
-	} 
-	public static void removeOperator_MATCHING(Connection connection, String name) {
+		execute(connection, query, crashHandler);
+	}
+	
+	public static void removeOperator_MATCHING(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_MATCHING WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_NOTMATCHING(Connection connection, String name) {
+	
+	public static void removeOperator_NOTMATCHING(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_NOTMATCHING WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_Order(Connection connection, String name) {
+	
+	public static void removeOperator_Order(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Order WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_Group(Connection connection, String name) {
+	
+	public static void removeOperator_Group(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Group WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_Ungroup(Connection connection, String name) {
+	
+	public static void removeOperator_Ungroup(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Ungroup WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_Wrap(Connection connection, String name) {
+	
+	public static void removeOperator_Wrap(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Wrap WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_Unwrap(Connection connection, String name) {
+	
+	public static void removeOperator_Unwrap(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Unwrap WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
-	public static void removeOperator_Summarize(Connection connection, String name) {
+	
+	public static void removeOperator_Summarize(Connection connection, String name, CrashHandler crashHandler) {
 		String query = "DELETE sys.rev.Op_Summarize WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(connection, query, crashHandler);
 	}
 }

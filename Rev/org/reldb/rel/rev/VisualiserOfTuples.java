@@ -32,9 +32,9 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
 import org.reldb.rel.client.Connection.HTMLReceiver;
-import org.reldb.rel.client.crash.CrashTrap;
+import org.reldb.rel.client.stream.CrashHandler;
+
 import org.reldb.rel.rev.graphics.Parameter;
-import org.reldb.rel.rev.version.Version;
 
 class TextFieldRows
 {
@@ -237,13 +237,14 @@ public class VisualiserOfTuples extends JPanel {
 	private int textboxHeight = 20;
 	private int textboxWidth = 100;
 	private int addWidth = 30;
+	private CrashHandler crashHandler;
 	
-	public VisualiserOfTuples(Rev rev, String kind, String name, int xpos, int ypos) {
+	public VisualiserOfTuples(Rev rev, String kind, String name, int xpos, int ypos, CrashHandler crashHandler) {
 		this.rev = rev;
+		this.crashHandler = crashHandler;
 		setLocation(xpos, ypos);
 		populateCustom();
 	}
-	
 	
 	public static String addQuotes(String txt) {
 		if (!txt.startsWith("'") && !txt.endsWith("'")) {
@@ -499,7 +500,7 @@ public class VisualiserOfTuples extends JPanel {
 		//Commit the changes to the database
 		System.out.print(qry + "\n");
 		if (qry != null) {
-			DatabaseAbstractionLayer.executeHandler(rev.getConnection(), qry);
+			DatabaseAbstractionLayer.executeHandler(rev.getConnection(), qry, rev.getCrashHandler());
 			createNew();
 			scrollToEnd();
 		}
@@ -1102,7 +1103,7 @@ public class VisualiserOfTuples extends JPanel {
 		if (query == null)
 			return null;	
 		//Get the tuples
-		Tuples tuples = DatabaseAbstractionLayer.evaluate(rev.getConnection(), query);
+		Tuples tuples = DatabaseAbstractionLayer.evaluate(rev.getConnection(), query, rev.getCrashHandler());
 		//Just return the data
 		if (!createTable) {
 			return tuples;
@@ -1165,7 +1166,7 @@ public class VisualiserOfTuples extends JPanel {
 			@Override
 			public void endProgressiveHTMLRow() {
 			}
-		}, new CrashTrap(query, rev.getConnection().getServerAnnouncement(), Version.getVersion()));
+		}, crashHandler);
 		return lockedHTML;
 	}
 

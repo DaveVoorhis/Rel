@@ -84,19 +84,19 @@ public abstract class VisualiserOfOperator extends VisualiserOfRel {
 		String query = connected.getQuery();
 		if (query == null)
 			return null;
-		Tuples tuples = DatabaseAbstractionLayer.evaluate(getRev().getConnection(), query);
+		Tuples tuples = DatabaseAbstractionLayer.evaluate(getRev().getConnection(), query, getRev().getCrashHandler());
 		Heading heading = tuples.getHeading();
 		return heading.toArray();
 	}
 
 	protected void updatePositionInDatabase() {
-		DatabaseAbstractionLayer.updateQueryPosition(getRev().getConnection(), getName(), getX(), getY(), getKind(), getConnections(), getModel().getName());
+		DatabaseAbstractionLayer.updateQueryPosition(getRev().getConnection(), getName(), getX(), getY(), getKind(), getConnections(), getModel().getName(), getRev().getCrashHandler());
 	}
 	
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator(getRev().getConnection(), getName(), getRev().getCrashHandler());
 	}
 	
 	private void updatePositionInDatabaseEventHandler() {

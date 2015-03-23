@@ -47,7 +47,7 @@ public class VisualiserOfOperatorJoin extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_JOIN(getRev().getConnection(), getName()); /*replaced removeOperator_Restrict with removeOperator_JOIN and created method in DatabaseAbstractionLayer*/
+		DatabaseAbstractionLayer.removeOperator_JOIN(getRev().getConnection(), getName(), getRev().getCrashHandler()); /*replaced removeOperator_Restrict with removeOperator_JOIN and created method in DatabaseAbstractionLayer*/
 	}
 
 }

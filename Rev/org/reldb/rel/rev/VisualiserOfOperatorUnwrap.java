@@ -16,11 +16,11 @@ public class VisualiserOfOperatorUnwrap extends VisualiserOfOperatorUngroup {
 		if (connected == null) {
 			return;
 		}
-		DatabaseAbstractionLayer.updatePreservedStateUnwrap(getRev().getConnection(), getName(), connected.getName(), selections);
+		DatabaseAbstractionLayer.updatePreservedStateUnwrap(getRev().getConnection(), getName(), connected.getName(), selections, getRev().getCrashHandler());
 	}
 	
 	protected Tuples load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateUnwrap(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateUnwrap(getRev().getConnection(), getName(), getRev().getCrashHandler());
 		return tuples;
 	}
 	
@@ -35,6 +35,6 @@ public class VisualiserOfOperatorUnwrap extends VisualiserOfOperatorUngroup {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Unwrap(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Unwrap(getRev().getConnection(), getName(), getRev().getCrashHandler());
 	}
 }

@@ -257,7 +257,7 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 		if (connected == null) {
 			return true;
 		}
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateRestrict(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateRestrict(getRev().getConnection(), getName(), getRev().getCrashHandler());
 		Iterator<Tuple> tupleIterator = tuples.iterator();
 		deleteAll();
 		int count = 0;
@@ -266,7 +266,7 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 			//Refresh the preserved state when a new connection is made
 			String relvar = tuple.get("Relvar").toString();
 			if (!relvar.equals(connected.getName())) {
-				DatabaseAbstractionLayer.removeOperator_Restrict(getRev().getConnection(), getName());
+				DatabaseAbstractionLayer.removeOperator_Restrict(getRev().getConnection(), getName(), getRev().getCrashHandler());
 				return true;
 			}
 			Tuples panels = (Tuples)tuple.get("Panels");
@@ -304,7 +304,7 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 			operators[i] = controlPanel.get(i).getOperatorList().getSelectedIndex();
 			andOrOps[i] = controlPanel.get(i).getAndOrOp().getSelectedIndex();
 		}
-		DatabaseAbstractionLayer.updatePreservedStateRestrict(getRev().getConnection(), getName(), connected.getName(), expressions, attributes, operators, andOrOps, count);
+		DatabaseAbstractionLayer.updatePreservedStateRestrict(getRev().getConnection(), getName(), connected.getName(), expressions, attributes, operators, andOrOps, count, getRev().getCrashHandler());
 	}
 	
 	public Attribute[] getAttributes() {
@@ -322,7 +322,7 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 		if (query.length() == 0) {
 			return null;
 		}
-		Tuples tuples = DatabaseAbstractionLayer.evaluate(getRev().getConnection(), query);
+		Tuples tuples = DatabaseAbstractionLayer.evaluate(getRev().getConnection(), query, getRev().getCrashHandler());
 		Heading heading = tuples.getHeading();
 		return heading.toArray();
 	}
@@ -407,6 +407,6 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Restrict(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Restrict(getRev().getConnection(), getName(), getRev().getCrashHandler());
 	}
 }

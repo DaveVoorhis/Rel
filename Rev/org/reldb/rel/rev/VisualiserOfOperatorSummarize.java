@@ -16,11 +16,11 @@ public class VisualiserOfOperatorSummarize extends VisualiserOfOperatorExtend {
 		if (connected == null) {
 			return;
 		}
-		DatabaseAbstractionLayer.updatePreservedStateSummarize(getRev().getConnection(), getName(), connected.getName(), save);
+		DatabaseAbstractionLayer.updatePreservedStateSummarize(getRev().getConnection(), getName(), connected.getName(), save, getRev().getCrashHandler());
 	}
 	
 	protected Tuples load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateSummarize(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateSummarize(getRev().getConnection(), getName(), getRev().getCrashHandler());
 		return tuples;
 	}
 	
@@ -35,6 +35,6 @@ public class VisualiserOfOperatorSummarize extends VisualiserOfOperatorExtend {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Summarize(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Summarize(getRev().getConnection(), getName(), getRev().getCrashHandler());
 	}
 }

@@ -12,10 +12,8 @@ public class VisualiserOfOperatorIntersect extends VisualiserOfOperator {
 		super(rev, kind, name, xpos, ypos);
 		/*variable=method(name that shows on Operator, Comment that shows when mouse is over operand)*/
 		operand1 = addParameter("Operand 1", "First relation to be intersected"); 
-		operand2 = addParameter("Operand 2", "Second relation to be intersected");
-		
+		operand2 = addParameter("Operand 2", "Second relation to be intersected");	
 	}
-	
 	
 	/*method for creating the query*/
 	public String getQuery() {
@@ -47,7 +45,7 @@ public class VisualiserOfOperatorIntersect extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_INTERSECT(getRev().getConnection(), getName()); /*replaced removeOperator_Restrict with removeOperator_Intersect and created method in DatabaseAbstractionLayer*/
+		DatabaseAbstractionLayer.removeOperator_INTERSECT(getRev().getConnection(), getName(), getRev().getCrashHandler()); /*replaced removeOperator_Restrict with removeOperator_Intersect and created method in DatabaseAbstractionLayer*/
 	}
 
 }

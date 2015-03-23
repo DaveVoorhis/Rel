@@ -28,6 +28,7 @@ import javax.swing.JToolBar;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
+import org.reldb.rel.client.stream.CrashHandler;
 import org.reldb.rel.rev.graphics.*;
 
 public class Rev extends JPanel {
@@ -48,6 +49,7 @@ public class Rev extends JPanel {
 	private MouseListener popupListener;
 	private String[] queryOperators;
 	private LinkedList<VisualiserOfView> views;
+	private CrashHandler crashHandler;
 	
 	private int popupX;
 	private int popupY;
@@ -89,11 +91,15 @@ public class Rev extends JPanel {
 	}
 
 	private long getUniqueNumber() {
-		return DatabaseAbstractionLayer.getUniqueNumber(connection);
+		return DatabaseAbstractionLayer.getUniqueNumber(connection, crashHandler);
+	}
+	
+	public CrashHandler getCrashHandler() {
+		return crashHandler;
 	}
 	
 	public void createTuplesVisualiser(String query, String name) {
-		tuples = new VisualiserOfTuples(Rev.this, "VisTuples", "VisTuples" + getUniqueNumber(), 0, 0);
+		tuples = new VisualiserOfTuples(Rev.this, "VisTuples", "VisTuples" + getUniqueNumber(), 0, 0, crashHandler);
 		if (tuples != null) {
 			tuples.setSize(detailView.getSize());
 			tuples.setQuery(query, name);
@@ -158,8 +164,9 @@ public class Rev extends JPanel {
 		return visualiser;
 	}
 	
-	public Rev(String dbURL) {
+	public Rev(String dbURL, CrashHandler crashHandler) {
 		setLayout(new BorderLayout());
+		this.crashHandler = crashHandler;
 		model = new Model();
 		model.setRev(this);
 		try {
@@ -342,11 +349,11 @@ public class Rev extends JPanel {
 		Tuples tuples = null;
 		//Relvars
 		if (relvar.equals("sys.Catalog")) {
-			tuples = DatabaseAbstractionLayer.getRelvarsWithoutRevExtensions(connection, where);
+			tuples = DatabaseAbstractionLayer.getRelvarsWithoutRevExtensions(connection, where, crashHandler);
 		}
 		//Views
 		else if (relvar.equals("sys.rev.View")) {
-			tuples = DatabaseAbstractionLayer.getViews(connection, where);
+			tuples = DatabaseAbstractionLayer.getViews(connection, where, crashHandler);
 			relvarFlag = false;
 		}
 		//Iterate list
@@ -533,14 +540,14 @@ public class Rev extends JPanel {
 	private void presentRelvarsWithRevExtensions(String where) {
 		int nextX = 10;
 		int nextY = 10;
-		for (Tuple tuple: DatabaseAbstractionLayer.getRelvars(connection, where)) {
+		for (Tuple tuple: DatabaseAbstractionLayer.getRelvars(connection, where, crashHandler)) {
 			int xpos = tuple.get("xpos").toInt();
 			int ypos = tuple.get("ypos").toInt();
 			String modelName = tuple.get("model").toString();
 			//Reject any relvars which are contained within stored views
 			String rejectQuery = "sys.rev.View WHERE Name = '" + modelName + "'";
 			boolean stored = false;
-			for (Tuple view: DatabaseAbstractionLayer.evaluate(connection, rejectQuery)) {
+			for (Tuple view: DatabaseAbstractionLayer.evaluate(connection, rejectQuery, crashHandler)) {
 				stored = view.get("stored").toBoolean();
 			}
 			if (stored) {
@@ -567,7 +574,7 @@ public class Rev extends JPanel {
 	private void presentQueriesWithRevExtensions(String where) {
 		HashMap<String, LinkedList<Parameter>> unresolved = new HashMap<String, LinkedList<Parameter>>();
 		//Load in the regular query visualisers
-		for (Tuple tuple: DatabaseAbstractionLayer.getQueries(connection, where)) {
+		for (Tuple tuple: DatabaseAbstractionLayer.getQueries(connection, where, crashHandler)) {
 			String name = tuple.get("Name").toString();
 			int xpos = tuple.get("xpos").toInt();
 			int ypos = tuple.get("ypos").toInt();
@@ -576,7 +583,7 @@ public class Rev extends JPanel {
 			//Reject any queries which are contained within stored views
 			String rejectQuery = "sys.rev.View WHERE Name = '" + modelName + "'";
 			boolean stored = false;
-			for (Tuple view: DatabaseAbstractionLayer.evaluate(connection, rejectQuery)) {
+			for (Tuple view: DatabaseAbstractionLayer.evaluate(connection, rejectQuery, crashHandler)) {
 				stored = view.get("stored").toBoolean();
 			}
 			if (stored) {
@@ -634,7 +641,7 @@ public class Rev extends JPanel {
 			views = new LinkedList<VisualiserOfView>();
 		}
 		//Load in the view panels
-		for (Tuple tuple: DatabaseAbstractionLayer.getViews(connection, where)) {
+		for (Tuple tuple: DatabaseAbstractionLayer.getViews(connection, where, crashHandler)) {
 			String name = tuple.get("Name").toString();
 			int xpos = tuple.get("xpos").toInt();
 			int ypos = tuple.get("ypos").toInt();
@@ -678,11 +685,11 @@ public class Rev extends JPanel {
 	
 	// Return version number of Rev extensions.  Return -1 if not installed.
 	private int hasRevExtensions() {
-		return DatabaseAbstractionLayer.hasRevExtensions(connection);
+		return DatabaseAbstractionLayer.hasRevExtensions(connection, crashHandler);
 	}
 	
 	private boolean installRevExtensions() {
-		boolean pass = DatabaseAbstractionLayer.installRevExtensions(connection);
+		boolean pass = DatabaseAbstractionLayer.installRevExtensions(connection, crashHandler);
 		if (pass) {
 			updateComboBoxes();
 		}
@@ -690,7 +697,7 @@ public class Rev extends JPanel {
 	}
 
 	private boolean removeRevExtensions() {
-		boolean pass = DatabaseAbstractionLayer.removeRevExtensions(connection);
+		boolean pass = DatabaseAbstractionLayer.removeRevExtensions(connection, crashHandler);
 		if (pass) {
 			updateComboBoxes();
 		}

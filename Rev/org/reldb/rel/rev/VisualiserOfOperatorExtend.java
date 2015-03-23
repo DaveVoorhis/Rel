@@ -85,9 +85,9 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 				boolean skip = false;
 				if (!relvar.equals(connected.getName())) {
 					if (KeyWord.equals("EXTEND")) {
-						DatabaseAbstractionLayer.removeOperator_Extend(getRev().getConnection(), getName());
+						DatabaseAbstractionLayer.removeOperator_Extend(getRev().getConnection(), getName(), getRev().getCrashHandler());
 					} else if (KeyWord.equals("SUMMARIZE")) {
-						DatabaseAbstractionLayer.removeOperator_Summarize(getRev().getConnection(), getName());
+						DatabaseAbstractionLayer.removeOperator_Summarize(getRev().getConnection(), getName(), getRev().getCrashHandler());
 					}
 					skip = true;
 				}
@@ -133,7 +133,7 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 	}
 	
 	protected Tuples load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateExtend(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateExtend(getRev().getConnection(), getName(), getRev().getCrashHandler());
 		return tuples;
 	}
 	
@@ -142,7 +142,7 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 		if (connected == null) {
 			return;
 		}
-		DatabaseAbstractionLayer.updatePreservedStateExtend(getRev().getConnection(), getName(), connected.getName(), save);
+		DatabaseAbstractionLayer.updatePreservedStateExtend(getRev().getConnection(), getName(), connected.getName(), save, getRev().getCrashHandler());
 	}
 	
 	protected void createForm(int rows) {
@@ -231,6 +231,6 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Extend(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Extend(getRev().getConnection(), getName(), getRev().getCrashHandler());
 	}
 }

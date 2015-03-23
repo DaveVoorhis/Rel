@@ -67,12 +67,12 @@ public abstract class VisualiserOfRel extends Visualiser {
 
 	/** Evaluate and return Tuples. */
 	public Tuples evaluate(String query) {
-		return DatabaseAbstractionLayer.evaluate(getRev().getConnection(), query);
+		return DatabaseAbstractionLayer.evaluate(getRev().getConnection(), query, getRev().getCrashHandler());
 	}
 	
 	/** Evaluate and emit to Connection.HTMLReceiver. */
 	public void evaluate(String query, Connection.HTMLReceiver htmlReceiver) {
-		DatabaseAbstractionLayer.evaluate(getRev().getConnection(), query, htmlReceiver);
+		DatabaseAbstractionLayer.evaluate(getRev().getConnection(), query, htmlReceiver, getRev().getCrashHandler());
 	}
 	
     /** Return true if a given visualiser can be dropped on this one, with something
