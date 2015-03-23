@@ -1,4 +1,4 @@
-package org.reldb.rel.client.crash;
+package org.reldb.rel.dbrowser.crash;
 
 import javax.swing.tree.TreeNode;
 

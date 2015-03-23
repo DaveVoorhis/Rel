@@ -1,4 +1,4 @@
-package org.reldb.rel.client.crash;
+package org.reldb.rel.dbrowser.crash;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

@@ -417,6 +417,12 @@ public class Browser extends JFrame {
 			ClassPathHack.addFile("relshared.jar");
 			ClassPathHack.addFile("RelDBMS.jar");
 			ClassPathHack.addFile("rev.jar");
+			ClassPathHack.addFile("commons-codec-1.4.jar");
+			ClassPathHack.addFile("commons-logging-1.1.1.jar");
+			ClassPathHack.addFile("httpclient-4.1.3.jar");
+			ClassPathHack.addFile("httpclient-cache-4.1.3.jar");
+			ClassPathHack.addFile("httpcore-4.1.4.jar");
+			ClassPathHack.addFile("httpmime-4.1.3.jar");    		
 		} catch (IOException ioe) {
 			System.out.println(ioe.toString());
 			System.exit(1);

@@ -11,9 +11,9 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import org.reldb.rel.client.crash.CrashTrap;
 import org.reldb.rel.client.string.ClientFromURL;
 import org.reldb.rel.client.string.StringReceiverClient;
+import org.reldb.rel.dbrowser.crash.CrashTrap;
 import org.reldb.rel.dbrowser.version.Version;
 
 public class Backup {

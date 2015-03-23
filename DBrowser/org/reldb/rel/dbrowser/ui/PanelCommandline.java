@@ -6,9 +6,9 @@ import javax.swing.text.*;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
-import org.reldb.rel.client.crash.CrashTrap;
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.core.ParseException;
+import org.reldb.rel.dbrowser.crash.CrashTrap;
 import org.reldb.rel.dbrowser.style.DBrowserStyle;
 import org.reldb.rel.dbrowser.utilities.Preferences;
 import org.reldb.rel.dbrowser.version.Version;

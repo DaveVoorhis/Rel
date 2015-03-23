@@ -25,7 +25,7 @@ public class Style {
 	    ".user {color: gray;}"
 	};
 
-	public String getBodyFontStyleString() {
+	private String getBodyFontStyleString() {
 		FontData[] data = font.getFontData();
 		FontData datum = data[0];
 		return "body, p, td {font-family: arial, helvetica, sans-serif; font-size: " + (datum.getHeight() + sizeAdjustment) + "pt;}";
@@ -40,7 +40,7 @@ public class Style {
 	}
 
 	public String getHTMLDocument(String content) {
-		String out = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" +
+		return	 "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" +
 			     "<html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"en-gb\" xml:lang=\"en-gb\">" +
 			     "<head>" +
 			     "<style type=\"text/css\">" +
@@ -53,7 +53,6 @@ public class Style {
 				 content +
 				 "</body>" +
 				 "</html>";
-		return out;
 	}
 	
 	public String getEmptyHTMLDocument() {

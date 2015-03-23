@@ -115,7 +115,6 @@ public class CmdPanelInput extends Composite {
 		inputText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				System.out.println("CmdPanelInput: inputText keyReleased: " + e.toString());
 				if (e.keyCode == 0x100000e)
 					run();
 			}
