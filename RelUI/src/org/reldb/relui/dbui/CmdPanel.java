@@ -13,12 +13,10 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Color;
 
-import org.reldb.rel.client.crash.CrashTrap;
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.core.ParseException;
 import org.reldb.rel.client.string.StringReceiverClient;
 import org.reldb.relui.dbui.html.BrowserManager;
-import org.reldb.relui.version.Version;
 
 public class CmdPanel extends Composite {
 
@@ -347,10 +345,10 @@ public class CmdPanel extends Composite {
 				StringBuffer errorInformationBuffer = null;
 				try {
 					if (isLastNonWhitespaceCharacter(runMe, ';')) {
-						connection.sendExecute(runMe, new CrashTrap(runMe, serverInitialResponse.toString(), Version.getVersion()));
+						connection.sendExecute(runMe);
 						errorInformationBuffer = obtainClientResponse(false, null);
 					} else {
-						connection.sendEvaluate(runMe, new CrashTrap(runMe, serverInitialResponse.toString(), Version.getVersion()));
+						connection.sendEvaluate(runMe);
 						errorInformationBuffer = obtainClientResponse(true, null);
 					}
 					StyledText inputTextWidget = getInputTextWidget();
@@ -386,6 +384,7 @@ public class CmdPanel extends Composite {
 		
 		serverInitialResponse = new StringBuffer();
 		obtainClientResponse(false, serverInitialResponse);
+		dbTab.getCrashTrap().setServerInitialResponse(serverInitialResponse.toString());
 	}
 
 	public void clearOutput() {

@@ -28,10 +28,12 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import org.reldb.rel.client.string.*;
+import org.reldb.rel.dbrowser.crash.CrashTrap;
 import org.reldb.rel.dbrowser.ui.monitors.FreeCPUDisplay;
 import org.reldb.rel.dbrowser.ui.monitors.FreeMemoryDisplay;
 import org.reldb.rel.dbrowser.utilities.ClassPathHack;
 import org.reldb.rel.dbrowser.utilities.Preferences;
+import org.reldb.rel.dbrowser.version.Version;
 
 /**
  * A Rel browser.
@@ -227,7 +229,7 @@ public class Browser extends JFrame {
     private AttemptConnectionResult attemptConnectionOpen(String dbURL, boolean createAllowed) {
         setStatus("Opening connection to " + dbURL);
         try {
-        	StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed);
+        	StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed, new CrashTrap(Version.getVersion()));
             return new AttemptConnectionResult(client);
         } catch (Throwable exception) {
         	return new AttemptConnectionResult(exception);

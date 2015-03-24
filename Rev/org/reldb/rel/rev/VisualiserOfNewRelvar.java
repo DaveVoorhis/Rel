@@ -112,7 +112,7 @@ public class VisualiserOfNewRelvar extends JPanel {
 		if (rev == null)
 			return;
 		//Get the data from the tuples in sys.Types
-		Tuples tuples = DatabaseAbstractionLayer.evaluate(rev.getConnection(), query, rev.getCrashHandler());
+		Tuples tuples = DatabaseAbstractionLayer.evaluate(rev.getConnection(), query);
 		if (tuples != null) {
 			Iterator<Tuple> it = tuples.iterator();
 			LinkedList<String> operators = new LinkedList<String>();
@@ -412,10 +412,10 @@ public class VisualiserOfNewRelvar extends JPanel {
 		}
 		System.out.print(qry + "\n");
 		//Actually commit the query to the catalog
-		DatabaseAbstractionLayer.executeHandler(rev.getConnection(), qry, rev.getCrashHandler());
+		DatabaseAbstractionLayer.executeHandler(rev.getConnection(), qry);
 		//Create a temporary visualiser until refresh is called
 		//Confirm entry was successful
-		Tuples tuples = DatabaseAbstractionLayer.evaluate(rev.getConnection(), "sys.Catalog WHERE Name = '" + tableName + "'", rev.getCrashHandler());
+		Tuples tuples = DatabaseAbstractionLayer.evaluate(rev.getConnection(), "sys.Catalog WHERE Name = '" + tableName + "'");
 		if (tuples != null) {
 			if (tuples.iterator().hasNext()) {
 				rev.createNewRelvarVisualier(tableName);

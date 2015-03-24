@@ -134,7 +134,7 @@ public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 		if (connected == null) {
 			return new PreservedState();
 		}
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateOrder(getRev().getConnection(), getName(), getRev().getCrashHandler());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateOrder(getRev().getConnection(), getName());
 		if (tuples == null)
 			return new PreservedState();
 		Iterator<Tuple> tupleIterator = tuples.iterator();
@@ -145,7 +145,7 @@ public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 		//Refresh the preserved state when a new connection is made
 		String relvar = tuple.get("Relvar").toString();
 		if (!relvar.equals(connected.getName())) {
-			DatabaseAbstractionLayer.removeOperator_Order(getRev().getConnection(), getName(), getRev().getCrashHandler());
+			DatabaseAbstractionLayer.removeOperator_Order(getRev().getConnection(), getName());
 			return preservedState;
 		}
 		Tuples selections = (Tuples)tuple.get("selections");
@@ -186,7 +186,7 @@ public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 			}
 		}
 		selections += "}";
-		DatabaseAbstractionLayer.updatePreservedStateOrder(getRev().getConnection(), getName(), connected.getName(), selections, getRev().getCrashHandler());
+		DatabaseAbstractionLayer.updatePreservedStateOrder(getRev().getConnection(), getName(), connected.getName(), selections);
 	}
 	
 	protected void showAttributes() {
@@ -335,6 +335,6 @@ public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Order(getRev().getConnection(), getName(), getRev().getCrashHandler());
+		DatabaseAbstractionLayer.removeOperator_Order(getRev().getConnection(), getName());
 	}
 }

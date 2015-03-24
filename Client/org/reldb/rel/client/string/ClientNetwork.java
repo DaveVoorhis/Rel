@@ -4,7 +4,6 @@ import java.io.*;
 
 import org.reldb.rel.client.stream.Client;
 import org.reldb.rel.client.stream.ClientNetworkConnection;
-import org.reldb.rel.client.stream.CrashHandler;
 
 public class ClientNetwork extends Client implements StringReceiverClient {
 	
@@ -26,12 +25,12 @@ public class ClientNetwork extends Client implements StringReceiverClient {
 		return received;
 	}
 		
-	public void sendEvaluate(String source, CrashHandler errorHandler) throws IOException {
-		connection.sendEvaluate(source, errorHandler);
+	public void sendEvaluate(String source) throws IOException {
+		connection.sendEvaluate(source);
 	}
 	
-	public void sendExecute(String source, CrashHandler errorHandler) throws IOException {
-		connection.sendExecute(source, errorHandler);
+	public void sendExecute(String source) throws IOException {
+		connection.sendExecute(source);
 	}
 	
 	public void close() throws IOException {

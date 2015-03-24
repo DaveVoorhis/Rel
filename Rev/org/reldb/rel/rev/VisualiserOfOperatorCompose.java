@@ -46,7 +46,7 @@ public class VisualiserOfOperatorCompose extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Compose(getRev().getConnection(), getName(), getRev().getCrashHandler()); /*replaced removeOperator_Restrict with removeOperator_JOIN and created method in DatabaseAbstractionLayer*/
+		DatabaseAbstractionLayer.removeOperator_Compose(getRev().getConnection(), getName()); /*replaced removeOperator_Restrict with removeOperator_JOIN and created method in DatabaseAbstractionLayer*/
 	}
 
 }

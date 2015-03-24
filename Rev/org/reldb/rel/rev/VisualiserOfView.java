@@ -99,7 +99,7 @@ public class VisualiserOfView extends VisualiserOfRel {
 	
 	public void updatePositionInDatabase() {
 		if (!deleting && !maximized) {
-			DatabaseAbstractionLayer.updateViewPosition(getRev().getConnection(), getName(), this.location.x, this.location.y, this.size.width, this.size.height, enabled, stored, getRev().getCrashHandler());
+			DatabaseAbstractionLayer.updateViewPosition(getRev().getConnection(), getName(), this.location.x, this.location.y, this.size.width, this.size.height, enabled, stored);
 		}
 	}
 	
@@ -362,7 +362,7 @@ public class VisualiserOfView extends VisualiserOfRel {
 		//Remove the view
 		deleting = true;
 		super.removing();
-		DatabaseAbstractionLayer.removeView(getRev().getConnection(), getName(), getRev().getCrashHandler());
+		DatabaseAbstractionLayer.removeView(getRev().getConnection(), getName());
 		getRev().removeVisualiser(this, true);
 	}
 	

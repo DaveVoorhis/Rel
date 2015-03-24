@@ -26,7 +26,7 @@ public class VisualiserOfTableDum extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName(), getRev().getCrashHandler());
+		DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName());
 	}
 	
 }

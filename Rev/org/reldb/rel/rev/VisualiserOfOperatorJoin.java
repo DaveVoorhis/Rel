@@ -13,13 +13,10 @@ public class VisualiserOfOperatorJoin extends VisualiserOfOperator {
 		/*variable=method(name that shows on Operator, Comment that shows when mouse is over operand)*/
 		operand1 = addParameter("Operand 1", "First relation to be joined"); 
 		operand2 = addParameter("Operand 2", "Second relation to be joined");
-		
 	}
 	
-	
 	/*method for creating the query*/
-	public String getQuery() {
-		
+	public String getQuery() {	
 		if (operand1 == null || operand1.getConnection(0) == null)
 			return null;
 		if (operand1.getConnection(0).getVisualiser() instanceof VisualiserOfOperand)
@@ -47,7 +44,7 @@ public class VisualiserOfOperatorJoin extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_JOIN(getRev().getConnection(), getName(), getRev().getCrashHandler()); /*replaced removeOperator_Restrict with removeOperator_JOIN and created method in DatabaseAbstractionLayer*/
+		DatabaseAbstractionLayer.removeOperator_JOIN(getRev().getConnection(), getName()); /*replaced removeOperator_Restrict with removeOperator_JOIN and created method in DatabaseAbstractionLayer*/
 	}
 
 }

@@ -11,7 +11,6 @@ import org.reldb.rel.client.parser.core.ParseException;
 import org.reldb.rel.dbrowser.crash.CrashTrap;
 import org.reldb.rel.dbrowser.style.DBrowserStyle;
 import org.reldb.rel.dbrowser.utilities.Preferences;
-import org.reldb.rel.dbrowser.version.Version;
 
 import java.awt.Font;
 import java.awt.event.*;
@@ -48,6 +47,7 @@ public class PanelCommandline extends javax.swing.JPanel {
 	private boolean isShowHeadingTypes = true;
 	
 	private SessionPanel session;
+	private CrashTrap crashTrap;
 		
 	private static boolean isLastNonWhitespaceCharacter(String s, char c) {
 		int endPosn = s.length() - 1;
@@ -216,15 +216,18 @@ public class PanelCommandline extends javax.swing.JPanel {
 		jSplitPaneMain.setDividerLocation(0.75);
 	}
 	
-	/** Creates new form PanelCommandline to connect to Rel server. */
-	public PanelCommandline(SessionPanel session) {
+	/** Creates new form PanelCommandline to connect to Rel server. 
+	 * @param crashHandler */
+	public PanelCommandline(SessionPanel session, CrashTrap crashTrap) {
 		this.session = session;
+		this.crashTrap = crashTrap;
 		initialise();
 	}
 
 	public void go() {
 		startProcessingDisplay();
 		obtainClientResponse(false, serverInitialResponse);
+		crashTrap.setServerInitialResponse(serverInitialResponse.toString());
 		enableInput();
 		endProcessingDisplay();
 	}
@@ -1118,11 +1121,11 @@ public class PanelCommandline extends javax.swing.JPanel {
 				StringBuffer errorInformationBuffer = null;
 				try {
 					if (isLastNonWhitespaceCharacter(runMe, ';')) {
-						session.getClient().sendExecute(runMe, new CrashTrap(runMe, serverInitialResponse.toString(), Version.getVersion()));
+						session.getClient().sendExecute(runMe);
 						setProcessingDisplay("Receiving");
 						errorInformationBuffer = obtainClientResponse(false, null);
 					} else {
-						session.getClient().sendEvaluate(runMe, new CrashTrap(runMe, serverInitialResponse.toString(), Version.getVersion()));
+						session.getClient().sendEvaluate(runMe);
 						setProcessingDisplay("Receiving");
 						errorInformationBuffer = obtainClientResponse(true, null);
 					}

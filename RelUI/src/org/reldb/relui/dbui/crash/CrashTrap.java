@@ -1,4 +1,4 @@
-package org.reldb.rel.dbrowser.crash;
+package org.reldb.relui.dbui.crash;
 
 import org.reldb.rel.client.stream.CrashHandler;
 

@@ -22,7 +22,7 @@ public class VisualiserOfTableDee extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName(), getRev().getCrashHandler()); /*should we still remove Operator_Project although this is Table_DEE? same question for Table Dum*/
+		DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName()); /*should we still remove Operator_Project although this is Table_DEE? same question for Table Dum*/
 	}
 	
 }

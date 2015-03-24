@@ -12,7 +12,7 @@ public class VisualiserOfOperatorWrap extends VisualiserOfOperatorGroup {
 	}
 	
 	protected Tuples load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateWrap(getRev().getConnection(), getName(), getRev().getCrashHandler());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateWrap(getRev().getConnection(), getName());
 		return tuples;
 	}
 	
@@ -21,7 +21,7 @@ public class VisualiserOfOperatorWrap extends VisualiserOfOperatorGroup {
 		if (connected == null) {
 			return;
 		}
-		DatabaseAbstractionLayer.updatePreservedStateWrap(getRev().getConnection(), getName(), connected.getName(), allBut, selections, asString, getRev().getCrashHandler());
+		DatabaseAbstractionLayer.updatePreservedStateWrap(getRev().getConnection(), getName(), connected.getName(), allBut, selections, asString);
 	}
 	
 	public void populateCustom() {
@@ -35,6 +35,6 @@ public class VisualiserOfOperatorWrap extends VisualiserOfOperatorGroup {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Wrap(getRev().getConnection(), getName(), getRev().getCrashHandler());
+		DatabaseAbstractionLayer.removeOperator_Wrap(getRev().getConnection(), getName());
 	}
 }

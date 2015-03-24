@@ -14,8 +14,8 @@ public class ClientLocal extends Client implements StringReceiverClient {
 	private boolean receiverRunning;
 	
 	/** Establish a connection with a server. */
-	public ClientLocal(String databaseDir, boolean createDbAllowed) throws IOException {
-		connection = new ClientLocalConnection(databaseDir, createDbAllowed);
+	public ClientLocal(String databaseDir, boolean createDbAllowed, CrashHandler crashHandler) throws IOException {
+		connection = new ClientLocalConnection(databaseDir, createDbAllowed, crashHandler);
 		final BufferedReader input = new BufferedReader(new InputStreamReader(connection.getServerResponseInputStream()));
 		Thread receiver = new Thread() {
 			public void run() {
@@ -49,12 +49,12 @@ public class ClientLocal extends Client implements StringReceiverClient {
 		return received;
 	}
 	
-	public void sendEvaluate(String source, CrashHandler errorHandler) throws IOException {
-		connection.sendEvaluate(source, errorHandler);
+	public void sendEvaluate(String source) throws IOException {
+		connection.sendEvaluate(source);
 	}
 	
-	public void sendExecute(String source, CrashHandler errorHandler) throws IOException {
-		connection.sendExecute(source, errorHandler);
+	public void sendExecute(String source) throws IOException {
+		connection.sendExecute(source);
 	}
 	
 	public void close() throws IOException {

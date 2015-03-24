@@ -105,9 +105,9 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 		String relvar = tuple.get("Relvar").toString();
 		if (!relvar.equals(connected.getName())) {
 			if (keyword.equals("UNGROUP")) {
-				DatabaseAbstractionLayer.removeOperator_Ungroup(getRev().getConnection(), getName(), getRev().getCrashHandler());
+				DatabaseAbstractionLayer.removeOperator_Ungroup(getRev().getConnection(), getName());
 			} else if (keyword.equals("UNWRAP")) {
-				DatabaseAbstractionLayer.removeOperator_Unwrap(getRev().getConnection(), getName(), getRev().getCrashHandler());
+				DatabaseAbstractionLayer.removeOperator_Unwrap(getRev().getConnection(), getName());
 			}
 			return preservedState;
 		}
@@ -133,7 +133,7 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 	}
 	
 	protected Tuples load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateUngroup(getRev().getConnection(), getName(), getRev().getCrashHandler());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateUngroup(getRev().getConnection(), getName());
 		return tuples;
 	}
 	
@@ -142,7 +142,7 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 		if (connected == null) {
 			return;
 		}
-		DatabaseAbstractionLayer.updatePreservedStateUngroup(getRev().getConnection(), getName(), connected.getName(), selections, getRev().getCrashHandler());
+		DatabaseAbstractionLayer.updatePreservedStateUngroup(getRev().getConnection(), getName(), connected.getName(), selections);
 	}
 	
 	private JCheckBox addSelection(JPanel panel, String prompt, boolean selected) {
@@ -207,7 +207,7 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Ungroup(getRev().getConnection(), getName(), getRev().getCrashHandler());
+		DatabaseAbstractionLayer.removeOperator_Ungroup(getRev().getConnection(), getName());
 	}
 	
 }

@@ -13,9 +13,7 @@ public class VisualiserOfOperatorMinus extends VisualiserOfOperator {
 		/*variable=method(name that shows on Operator, Comment that shows when mouse is over operand)*/
 		operand1 = addParameter("Operand 1", "First relation of the minus operation"); 
 		operand2 = addParameter("Operand 2", "Second relation of the minus operation");
-		
 	}
-	
 	
 	/*method for creating the query*/
 	public String getQuery() {
@@ -47,7 +45,7 @@ public class VisualiserOfOperatorMinus extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_MINUS(getRev().getConnection(), getName(), getRev().getCrashHandler()); /*replaced removeOperator_Restrict with removeOperator_MINUS and created method in DatabaseAbstractionLayer*/
+		DatabaseAbstractionLayer.removeOperator_MINUS(getRev().getConnection(), getName()); /*replaced removeOperator_Restrict with removeOperator_MINUS and created method in DatabaseAbstractionLayer*/
 	}
 
 }

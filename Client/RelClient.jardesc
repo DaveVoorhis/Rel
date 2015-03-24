@@ -22,7 +22,6 @@
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{ResponseParserTokenManager.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{Token.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseProcessor.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.crash"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseHandler.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.utilities"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{TokenMgrError.java"/>

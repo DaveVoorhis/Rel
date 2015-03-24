@@ -9,10 +9,10 @@ import org.reldb.rel.shared.Defaults;
 public class ClientFromURL {
 
     /** Open a connection. */
-    public static StreamReceiverClient openConnection(String databaseURL, boolean createDbAllowed) throws NumberFormatException, IOException, MalformedURLException {
+    public static StreamReceiverClient openConnection(String databaseURL, boolean createDbAllowed, CrashHandler crashHandler) throws NumberFormatException, IOException, MalformedURLException {
     	if (databaseURL.toLowerCase().startsWith("local:"))
     		if (databaseURL.length() > 6)
-    			return new ClientLocalConnection(databaseURL.substring(6).trim(), createDbAllowed);
+    			return new ClientLocalConnection(databaseURL.substring(6).trim(), createDbAllowed, crashHandler);
     		else
     			throw new MalformedURLException("Please specify a local database as local:<directory>");
     	else {

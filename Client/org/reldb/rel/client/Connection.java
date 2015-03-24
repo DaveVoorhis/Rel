@@ -21,6 +21,7 @@ public class Connection {
 	private String dbURL;
 	private String serverAnnouncement = "";
 	private boolean createDbAllowed;
+	private CrashHandler crashHandler;
 	
 	private final static String errorPrefix = "ERROR:";
 	
@@ -46,9 +47,10 @@ public class Connection {
 	}
 	
 	/** Creates new connection */
-	public Connection(String dbURL, boolean createDbAllowed) {
+	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler) {
 		this.dbURL = dbURL;
 		this.createDbAllowed = createDbAllowed;
+		this.crashHandler = crashHandler;
 	}
 	
 	private void obtainServerAnnouncement(StreamReceiverClient client) {
@@ -140,7 +142,7 @@ public class Connection {
 		final Response response = new Response();
 		final StreamReceiverClient client;
 		try {
-			client = ClientFromURL.openConnection(dbURL, createDbAllowed);
+			client = ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler);
 		} catch (Exception e) {
 			response.setResult(new Error(e.toString()));
 			return response;
@@ -251,7 +253,7 @@ public class Connection {
 	private void launchParserToHTML(final Action action, final HTMLReceiver htmlReceiver) {
 		final StreamReceiverClient client;
 		try {
-			client = ClientFromURL.openConnection(dbURL, createDbAllowed);
+			client = ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler);
 		} catch (Exception e) {
 			htmlReceiver.emitInitialHTML("Unable to open connection: " + e.toString().replace(" ", "&nbsp;"));
 			return;
@@ -305,12 +307,12 @@ public class Connection {
 	}
 	
 	/** Execute query and return Response. */
-	public Response execute(final String input, final CrashHandler errorHandler) throws IOException {
+	public Response execute(final String input) throws IOException {
 		final Indicator finished = new Indicator();
 		Response response = launchParser(
 			new Action() {
 				public void run(StreamReceiverClient client) throws IOException {
-					client.sendExecute(input, errorHandler);
+					client.sendExecute(input);
 				}
 			}, 
 			new Action() {
@@ -339,19 +341,19 @@ public class Connection {
 	}
 	
 	/** Evaluate query and return Response. */
-	public Response evaluate(final String input, final CrashHandler errorHandler) throws IOException {
+	public Response evaluate(final String input) throws IOException {
 		return launchParser(new Action() {
 			public void run(StreamReceiverClient client) throws IOException {
-				client.sendEvaluate(input, errorHandler);
+				client.sendEvaluate(input);
 			}
 		}, null);
 	}
 	
 	/** Evaluate query and emit response as HTML. */
-	public void evaluate(final String input, final HTMLReceiver htmlReceiver, final CrashHandler errorHandler) {
+	public void evaluate(final String input, final HTMLReceiver htmlReceiver) {
 		launchParserToHTML(new Action() {
 			public void run(StreamReceiverClient client) throws IOException {
-				client.sendEvaluate(input, errorHandler);
+				client.sendEvaluate(input);
 			}
 		}, htmlReceiver);
 	}

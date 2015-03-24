@@ -56,13 +56,15 @@ public class Backup {
 		long linesWritten = 0;
 		StringReceiverClient client = null;
 		try {
-			client = ClientFromURL.openConnection(dbURL, false);
+			CrashTrap crashTrap = new CrashTrap(Version.getVersion());
+			client = ClientFromURL.openConnection(dbURL, false, crashTrap);
 			StringBuffer initialServerResponse = new StringBuffer();
 			String r;
 			while ((r = client.receive()) != null) {
 				initialServerResponse.append(r);
 			}
-			client.sendExecute(backupScript, new CrashTrap(backupScript, initialServerResponse.toString(), Version.getVersion()));
+			crashTrap.setServerInitialResponse(initialServerResponse.toString());
+			client.sendExecute(backupScript);
 			try {
 				while ((r = client.receive()) != null) {
 					if (r.equals("\n")) {

@@ -9,9 +9,11 @@ import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.wb.swt.ResourceManager;
 import org.reldb.rel.client.string.ClientFromURL;
 import org.reldb.rel.client.string.StringReceiverClient;
+import org.reldb.relui.dbui.crash.CrashTrap;
 import org.reldb.relui.tools.ModeTab;
 import org.reldb.relui.tools.ModeTabContent;
 import org.reldb.relui.tools.TopPanel;
+import org.reldb.relui.version.Version;
 
 public class DbTab extends ModeTab {
 	
@@ -19,7 +21,8 @@ public class DbTab extends ModeTab {
 	private String status = "";
 	private AttemptConnectionResult connection = null;	
 	private String lastURI = "";
-    
+    private CrashTrap crashTrap;
+	
     private static class AttemptConnectionResult {
     	Throwable exception;
     	StringReceiverClient client;
@@ -61,6 +64,10 @@ public class DbTab extends ModeTab {
     		return connection.client;
     	return null;
     }
+
+	public CrashTrap getCrashTrap() {
+		return crashTrap;
+	}
     
     public String getStatus() {
     	return status;
@@ -101,7 +108,7 @@ public class DbTab extends ModeTab {
     private AttemptConnectionResult attemptConnectionOpen(String dbURL, boolean createAllowed) {
         setStatus("Opening connection to " + dbURL);
         try {
-        	StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed);
+        	StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed, crashTrap);
             return new AttemptConnectionResult(client);
         } catch (Throwable exception) {
         	return new AttemptConnectionResult(exception);
@@ -134,6 +141,8 @@ public class DbTab extends ModeTab {
 		
 		setImage(ResourceManager.getPluginImage("RelUI", "icons/plusIcon.png"));
 		setToolTipText("New tab");
+		
+		crashTrap = new CrashTrap(Version.getVersion());
 	}
 	
 	public void setText(String s) {

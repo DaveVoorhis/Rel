@@ -12,7 +12,7 @@ public class VisualiserOfRelvar extends VisualiserOfRel {
 	}
 	
 	public void moved() {
-		DatabaseAbstractionLayer.updateRelvarPosition(getRev().getConnection(), getName(), getX(), getY(), getModel().getName(), getRev().getCrashHandler());
+		DatabaseAbstractionLayer.updateRelvarPosition(getRev().getConnection(), getName(), getX(), getY(), getModel().getName());
 	}
 	
 	public boolean isRemovable() {
@@ -27,7 +27,7 @@ public class VisualiserOfRelvar extends VisualiserOfRel {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeRelvar(getRev().getConnection(), getName(), getRev().getCrashHandler());
+		DatabaseAbstractionLayer.removeRelvar(getRev().getConnection(), getName());
 	}
 	
 }

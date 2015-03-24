@@ -47,7 +47,7 @@ public class VisualiserOfOperatorUnion extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_UNION(getRev().getConnection(), getName(), getRev().getCrashHandler()); /*replaced removeOperator_Restrict with removeOperator_Intersect and created method in DatabaseAbstractionLayer*/
+		DatabaseAbstractionLayer.removeOperator_UNION(getRev().getConnection(), getName()); /*replaced removeOperator_Restrict with removeOperator_Intersect and created method in DatabaseAbstractionLayer*/
 	}
 
 }

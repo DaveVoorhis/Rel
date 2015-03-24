@@ -74,7 +74,7 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 			return null;
 		}
 		//Actually commit the query to the catalog
-		DatabaseAbstractionLayer.executeHandler(getRev().getConnection(), qry, getRev().getCrashHandler());
+		DatabaseAbstractionLayer.executeHandler(getRev().getConnection(), qry);
 		//Delete the visualiser temporarily until refresh is called
 		if (deleteMethod == 2) {
 			getRev().deleteVisualiser(connected, this);
@@ -93,7 +93,7 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 		String query = connected.getQuery();
 		if (query == null)
 			return null;
-		Tuples tuples = DatabaseAbstractionLayer.evaluate(getRev().getConnection(), query, getRev().getCrashHandler());
+		Tuples tuples = DatabaseAbstractionLayer.evaluate(getRev().getConnection(), query);
 		Heading heading = tuples.getHeading();
 		return heading.toArray();
 	}
@@ -186,6 +186,6 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName(), getRev().getCrashHandler());
+		DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName());
 	}
 }

@@ -26,12 +26,12 @@ public class ClientNetworkConnection extends ClientConnection implements StreamR
 	}
 
 	// TODO - invoke CrashHandler on fatal crash.
-	public void sendEvaluate(String source, CrashHandler errorHandler) throws IOException {
+	public void sendEvaluate(String source) throws IOException {
 		send('E' + source + "<EOT>");
 	}
 	
 	// TODO - invoke CrashHandler on fatal crash.
-	public void sendExecute(String source, CrashHandler errorHandler) throws IOException {
+	public void sendExecute(String source) throws IOException {
 		send('X' + source + "<EOT>");
 	}
 	

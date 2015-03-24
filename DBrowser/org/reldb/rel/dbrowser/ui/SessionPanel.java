@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.reldb.rel.client.string.StringReceiverClient;
+import org.reldb.rel.dbrowser.crash.CrashTrap;
+import org.reldb.rel.dbrowser.version.Version;
 
 /** A UI to encapsulate a user's session with a database. */
 public class SessionPanel extends JPanel {
@@ -26,13 +28,14 @@ public class SessionPanel extends JPanel {
 	public SessionPanel(StringReceiverClient client, String dbURL) {
 		this.client = client;
 		this.dbURL = dbURL;
-		commandlinePanel = new PanelCommandline(this);
+		CrashTrap crashTrap = new CrashTrap(Version.getVersion());
+		commandlinePanel = new PanelCommandline(this, crashTrap);
 		setLayout(new BorderLayout());
 		try {
 			Class<?> revClass = Class.forName("org.reldb.rel.rev.Rev");
-    		Class<?> parms[] = new Class[] {new String().getClass()};
+    		Class<?> parms[] = new Class[] {new String().getClass(), CrashTrap.class};
     		Constructor<?> revCtor = revClass.getConstructor(parms);
-			rev = (JPanel)revCtor.newInstance(dbURL);
+			rev = (JPanel)revCtor.newInstance(dbURL, crashTrap);
 			revGo = revClass.getMethod("go");
 			System.out.println("Rev add-on is available.");
 			JTabbedPane tabpane = new JTabbedPane();
