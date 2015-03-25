@@ -1,6 +1,8 @@
 ** TO DO **
 
 Short term:
+	// TODO - Add a sequence generator built-in operator.  E.g., 
+	//        OPERATOR SEQUENCE(first INT, last INT) RELATION {n INT};
 	// TODO - Make sys.Catalog improvements.  Provide catalog relvar of relvar attributes
 	//        and keys.
 	// TODO - Re-introduce TYPE_OF(r)
