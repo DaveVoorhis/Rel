@@ -12,7 +12,7 @@ import org.eclipse.wb.swt.ResourceManager;
 public class DbTabContentCmd extends DbTabContent {
 
 	private ToolItem headingTypesToggle = null;
-	private CmdPanel cmdPanel;
+	private CmdPanel cmdPanel = null;
 
 	public DbTabContentCmd(DbTab parentTab) {
 		super(parentTab);
@@ -20,7 +20,8 @@ public class DbTabContentCmd extends DbTabContent {
 	
 	@Override
 	public Control getContent(Composite contentParent) {
-		cmdPanel = new CmdPanel(getDbTab(), contentParent, SWT.None);
+		if (cmdPanel == null)
+			cmdPanel = new CmdPanel(getDbTab(), contentParent, SWT.None);
 		return cmdPanel;
 	}
 
