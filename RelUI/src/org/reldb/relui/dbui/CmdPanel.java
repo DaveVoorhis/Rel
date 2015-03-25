@@ -31,6 +31,7 @@ public class CmdPanel extends Composite {
 	private StringBuffer serverInitialResponse;
 	
 	private boolean showOk = true;
+	private boolean isEnhancedOutput = true;
 	private boolean isShowHeadings = true;
 	private boolean isShowHeadingTypes = true;
 	private boolean isAutoclear = true;
@@ -394,22 +395,43 @@ public class CmdPanel extends Composite {
 	public void setEnhancedOutput(boolean selection) {
 		outputStackLayout.topControl = (selection) ? browser.getWidget() : styledText;
 		outputStack.layout();
+		isEnhancedOutput = selection;
+	}
+
+	public boolean getEnhancedOutput() {
+		return isEnhancedOutput;
 	}
 
 	public void setShowOk(boolean selection) {
 		showOk = selection;
 	}
 
+	public boolean getShowOk() {
+		return showOk;
+	}
+
 	public void setHeadingVisible(boolean selection) {
 		isShowHeadings = selection;
+	}
+
+	public boolean getHeadingVisible() {
+		return isShowHeadings;
 	}
 
 	public void setHeadingTypesVisible(boolean selection) {
 		isShowHeadingTypes = selection;
 	}
 
+	public boolean getHeadingTypesVisible() {
+		return isShowHeadingTypes;
+	}
+
 	public void setAutoclear(boolean selection) {
 		isAutoclear = selection;
+	}
+
+	public boolean getAutoclear() {
+		return isAutoclear;
 	}
 
 	public void saveOutputAsHtml() {

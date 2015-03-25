@@ -3,6 +3,7 @@ package org.reldb.relui.tools;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -12,14 +13,14 @@ import org.eclipse.swt.widgets.ToolBar;
 
 public abstract class TabPanel extends CTabItem {
 
-	private Composite area;
-	private Control content;
+	private StackLayout stack;
 	private TopPanel topPanel;
+	private Composite content;
 	
 	public TabPanel(CTabFolder parent, int style) {
 		super(parent, style);
 		
-		area = new Composite(parent, style);
+		Composite area = new Composite(parent, style);
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.verticalSpacing = 0;
 		gridLayout.marginWidth = 0;
@@ -37,6 +38,12 @@ public abstract class TabPanel extends CTabItem {
 		};
 		GridData gd_topPanel = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
 		topPanel.setLayoutData(gd_topPanel);
+
+		content = new Composite(area, SWT.None);
+		GridData centre = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
+		content.setLayoutData(centre);
+		stack = new StackLayout();
+		content.setLayout(stack);
 		
 		setControl(area);
 	}
@@ -44,7 +51,7 @@ public abstract class TabPanel extends CTabItem {
 	public void buildLocationPanel(TopPanel parent) {}
 
 	public Composite getContentParent() {
-		return area;
+		return content;
 	}
 
 	public ToolBar getToolBar() {
@@ -53,9 +60,6 @@ public abstract class TabPanel extends CTabItem {
 	
 	public void clearModes() {
 		topPanel.clearModes();
-		if (content != null)
-			content.dispose();
-		content = null;
 	}
 	
 	public void addMode(Image iconImage, String toolTipText, String modeName) {
@@ -70,10 +74,8 @@ public abstract class TabPanel extends CTabItem {
 	public abstract void notifyModeChange(String modeName);
 	
 	public void setContent(Control comp) {
-		content = comp;
-		GridData centre = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
-		comp.setLayoutData(centre);
-		getContentParent().layout();
+		stack.topControl = comp;
+		content.layout();
 	}
 	
 }

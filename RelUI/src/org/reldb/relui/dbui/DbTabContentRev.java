@@ -12,14 +12,18 @@ import org.eclipse.wb.swt.ResourceManager;
 
 public class DbTabContentRev extends DbTabContent {
 
+	private Label label = null;
+	
 	public DbTabContentRev(DbTab parentTab) {
 		super(parentTab);
 	}
 	
 	@Override
 	public Control getContent(Composite contentParent) {
-		Label label = new Label(contentParent, SWT.None);
-		label.setText("This is the Rev content.");
+		if (label == null) {
+			label = new Label(contentParent, SWT.None);
+			label.setText("This is the Rev content.");
+		}
 		return label;
 	}
 
@@ -34,6 +38,13 @@ public class DbTabContentRev extends DbTabContent {
 				getDbTab().makeBackup();
 			}
 		});
+	}
+
+	@Override
+	public void dispose() {
+		if (label != null)
+			label.dispose();
+		label = null;
 	}
 
 }

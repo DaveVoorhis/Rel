@@ -7,4 +7,5 @@ import org.eclipse.swt.widgets.ToolBar;
 public interface ModeTabContent {
 	public Control getContent(Composite contentParent);
 	public void getToolBarItems(ToolBar toolBar);
+	public void dispose();
 }

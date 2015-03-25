@@ -27,6 +27,8 @@ public class ModeTab extends TabPanel {
 	
 	public void clearModes() {
 		super.clearModes();
+		for (ModeTabContent content: modes.values())
+			content.dispose();
 		modes.clear();
 	}
 	
@@ -40,9 +42,6 @@ public class ModeTab extends TabPanel {
 	
 	@Override
 	public void notifyModeChange(String modeName) {
-		if (displayed != null)
-			displayed.dispose();
-		
 		ToolBar toolBar = getToolBar();
 		
 		for (ToolItem item: toolBar.getItems())

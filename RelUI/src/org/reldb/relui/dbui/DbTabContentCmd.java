@@ -11,9 +11,11 @@ import org.eclipse.wb.swt.ResourceManager;
 
 public class DbTabContentCmd extends DbTabContent {
 
+	private ToolItem headingToggle = null;
 	private ToolItem headingTypesToggle = null;
 	private CmdPanel cmdPanel = null;
 
+	
 	public DbTabContentCmd(DbTab parentTab) {
 		super(parentTab);
 	}
@@ -25,6 +27,13 @@ public class DbTabContentCmd extends DbTabContent {
 		return cmdPanel;
 	}
 
+	@Override
+	public void dispose() {
+		if (cmdPanel != null)
+			cmdPanel.dispose();
+		cmdPanel = null;
+	}
+	
 	@Override
 	public void getToolBarItems(ToolBar toolBar) {
 		
@@ -85,18 +94,22 @@ public class DbTabContentCmd extends DbTabContent {
 		ToolItem enhancedOutputToggle = new ToolItem(toolBar, SWT.CHECK);
 		enhancedOutputToggle.setImage(ResourceManager.getPluginImage("RelUI", "icons/enhancedIcon.png"));
 		enhancedOutputToggle.setToolTipText("Display enhanced output");
-		enhancedOutputToggle.setSelection(true);
+		enhancedOutputToggle.setSelection(cmdPanel.getEnhancedOutput());
 		enhancedOutputToggle.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				cmdPanel.setEnhancedOutput(enhancedOutputToggle.getSelection());
+				headingToggle.setEnabled(enhancedOutputToggle.getSelection());
+				headingToggle.setSelection(headingToggle.getEnabled() && cmdPanel.getHeadingVisible());
+				headingTypesToggle.setEnabled(enhancedOutputToggle.getSelection());
+				headingTypesToggle.setSelection(headingTypesToggle.getEnabled() && cmdPanel.getHeadingTypesVisible());
 			}
 		});
 		
 		ToolItem showOkToggle = new ToolItem(toolBar, SWT.CHECK);
 		showOkToggle.setImage(ResourceManager.getPluginImage("RelUI", "icons/showOkIcon.png"));
 		showOkToggle.setToolTipText("Write 'Ok.' after execution");
-		showOkToggle.setSelection(true);
+		showOkToggle.setSelection(cmdPanel.getShowOk());
 		showOkToggle.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -107,7 +120,7 @@ public class DbTabContentCmd extends DbTabContent {
 		ToolItem autoclearToggle = new ToolItem(toolBar, SWT.CHECK);
 		autoclearToggle.setImage(ResourceManager.getPluginImage("RelUI", "icons/autoclearIcon.png"));
 		autoclearToggle.setToolTipText("Automatically clear output");
-		autoclearToggle.setSelection(true);
+		autoclearToggle.setSelection(cmdPanel.getAutoclear());
 		autoclearToggle.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -115,14 +128,16 @@ public class DbTabContentCmd extends DbTabContent {
 			}
 		});
 		
-		ToolItem headingToggle = new ToolItem(toolBar, SWT.CHECK);
+		headingToggle = new ToolItem(toolBar, SWT.CHECK);
 		headingToggle.setImage(ResourceManager.getPluginImage("RelUI", "icons/headingIcon.png"));
 		headingToggle.setToolTipText("Show relation headings");
-		headingToggle.setSelection(true);
+		headingToggle.setEnabled(enhancedOutputToggle.getSelection());
+		headingToggle.setSelection(cmdPanel.getHeadingVisible() && headingToggle.getEnabled());
 		headingToggle.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				headingTypesToggle.setEnabled(headingToggle.getSelection());
+				headingTypesToggle.setSelection(headingTypesToggle.getEnabled() && cmdPanel.getHeadingTypesVisible());
 				cmdPanel.setHeadingVisible(headingToggle.getSelection());
 			}
 		});
@@ -130,7 +145,8 @@ public class DbTabContentCmd extends DbTabContent {
 		headingTypesToggle = new ToolItem(toolBar, SWT.CHECK);
 		headingTypesToggle.setImage(ResourceManager.getPluginImage("RelUI", "icons/typeSuppressIcon.png"));
 		headingTypesToggle.setToolTipText("Suppress attribute types in relation headings");
-		headingTypesToggle.setSelection(false);	
+		headingTypesToggle.setEnabled(headingToggle.getSelection() && enhancedOutputToggle.getSelection());
+		headingTypesToggle.setSelection(cmdPanel.getHeadingTypesVisible() && headingTypesToggle.getEnabled());	
 		headingTypesToggle.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

@@ -11,6 +11,8 @@ import org.eclipse.wb.swt.ResourceManager;
 
 public class DbTabContentRel extends DbTabContent {
 
+	private DemoContent demoContent = null;
+	
 	public DbTabContentRel(DbTab parentTab) {
 		super(parentTab);
 	}
@@ -30,7 +32,16 @@ public class DbTabContentRel extends DbTabContent {
 
 	@Override
 	public Control getContent(Composite contentParent) {
-		return new DemoContent(contentParent, SWT.None);
+		if (demoContent == null)
+			demoContent = new DemoContent(contentParent, SWT.None);
+		return demoContent;
+	}
+
+	@Override
+	public void dispose() {
+		if (demoContent != null)
+			demoContent.dispose();
+		demoContent = null;
 	}
 
 }
