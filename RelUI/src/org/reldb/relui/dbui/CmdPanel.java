@@ -202,10 +202,6 @@ public class CmdPanel extends Composite {
 		return errorBuffer;
 	}
 	
-	private void addHistoryItem(String s) {
-		// TODO
-	}
-	
 	private static class ErrorInformation {
 		private int line;
 		private int column;
@@ -338,7 +334,6 @@ public class CmdPanel extends Composite {
 			public void notifyGo(String text) {
 				if (isAutoclear)
 					clearOutput();
-				addHistoryItem(text);
 				if (copyInputToOutput)
 					userResponse(text);
 				String runMe = text.trim();

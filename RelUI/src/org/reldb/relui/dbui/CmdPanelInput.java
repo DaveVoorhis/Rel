@@ -1,5 +1,7 @@
 package org.reldb.relui.dbui;
 
+import java.util.Vector;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.custom.CaretEvent;
@@ -20,6 +22,12 @@ public class CmdPanelInput extends Composite {
 	
 	private CmdPanelBottom cmdPanelBottom;
 	private StyledText inputText;
+
+	private ToolItem tlitmPrevHistory;	
+	private ToolItem tlitmNextHistory;
+	
+	private Vector<String> entryHistory = new Vector<String>();
+	private int currentHistoryItem = 0;
 	
 	private void showRunningStart() {
 		cmdPanelBottom.startBusyIndicator();
@@ -66,10 +74,54 @@ public class CmdPanelInput extends Composite {
 	/** Override to be notified that copyInputToOutput setting has changed. */
 	protected void setCopyInputToOutput(boolean selection) {
 	}
-	
+
+	/** Get number of items in History. */
+	private int getHistorySize() {
+		return entryHistory.size();
+	}
+
+	/** Get history item. */
+	private String getHistoryItemAt(int index) {
+		if (index < 0 || index >= entryHistory.size())
+			return null;
+		return entryHistory.get(index);
+	}
+
+	/** Get previous history item. */
+	private String getPreviousHistoryItem() {
+		if (currentHistoryItem > 0)
+			currentHistoryItem--;
+		setButtons();
+		return getHistoryItemAt(currentHistoryItem);
+	}
+
+	/** Get next history item. */
+	private String getNextHistoryItem() {
+		currentHistoryItem++;
+		if (currentHistoryItem >= entryHistory.size())
+			currentHistoryItem = entryHistory.size() - 1;
+		setButtons();
+		return getHistoryItemAt(currentHistoryItem);
+	}
+
+	/** Add a history item. */
+	private void addHistoryItem(String s) {
+		entryHistory.add(s);
+		currentHistoryItem = entryHistory.size() - 1;
+		setButtons();
+	}
+
+	/** Set up history button status. */
+	private void setButtons() {
+		tlitmPrevHistory.setEnabled(currentHistoryItem > 0 && getHistorySize() > 1);
+		tlitmNextHistory.setEnabled(currentHistoryItem < getHistorySize() - 1 && getHistorySize() > 1);
+	}
+
 	private void run() {
 		showRunningStart();
-		notifyGo(getInputText());		
+		String text = getInputText();
+		addHistoryItem(text);
+		notifyGo(text);	
 	}
 	
 	/**
@@ -120,19 +172,25 @@ public class CmdPanelInput extends Composite {
 			}
 		});
 
-		ToolItem tlitmPrevHistory = new ToolItem(toolBar, SWT.NONE);
+		tlitmPrevHistory = new ToolItem(toolBar, SWT.NONE);
 		tlitmPrevHistory.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				inputText.setText(getPreviousHistoryItem());
+				inputText.setSelection(0, inputText.getText().length());
+				inputText.setFocus();
 			}
 		});
 		tlitmPrevHistory.setToolTipText("Load previous entry");
 		tlitmPrevHistory.setText("<");
 		
-		ToolItem tlitmNextHistory = new ToolItem(toolBar, SWT.NONE);
+		tlitmNextHistory = new ToolItem(toolBar, SWT.NONE);
 		tlitmNextHistory.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				inputText.setText(getNextHistoryItem());
+				inputText.setSelection(0, inputText.getText().length());
+				inputText.setFocus();
 			}
 		});
 		tlitmNextHistory.setToolTipText("Reload next entry");
@@ -143,6 +201,7 @@ public class CmdPanelInput extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				inputText.setText("");
+				inputText.setFocus();
 			}
 		});
 		tlitmClear.setToolTipText("Clear");
@@ -219,6 +278,8 @@ public class CmdPanelInput extends Composite {
 		fd_cmdPanelBottom.bottom = new FormAttachment(100);
 		fd_inputText.bottom = new FormAttachment(cmdPanelBottom);
 		cmdPanelBottom.setLayoutData(fd_cmdPanelBottom);
+		
+		setButtons();
 	}
 	
 }
