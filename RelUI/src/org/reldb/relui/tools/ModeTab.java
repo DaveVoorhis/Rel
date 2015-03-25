@@ -27,6 +27,7 @@ public class ModeTab extends TabPanel {
 	
 	public void clearModes() {
 		super.clearModes();
+		clearToolBar();
 		for (ModeTabContent content: modes.values())
 			content.dispose();
 		modes.clear();
@@ -35,6 +36,13 @@ public class ModeTab extends TabPanel {
 	public ModeTab(CTabFolder parent, int style) {
 		super(parent, style);
 	}
+
+	private ToolBar clearToolBar() {
+		ToolBar toolBar = getToolBar();
+		for (ToolItem item: toolBar.getItems())
+			item.dispose();	
+		return toolBar;
+	}
 	
 	public void buildLocationPanel(TopPanel parent) {}
 	
@@ -42,10 +50,7 @@ public class ModeTab extends TabPanel {
 	
 	@Override
 	public void notifyModeChange(String modeName) {
-		ToolBar toolBar = getToolBar();
-		
-		for (ToolItem item: toolBar.getItems())
-			item.dispose();
+		ToolBar toolBar = clearToolBar();
 
 		ModeTabContent content = modes.get(modeName);
 		displayed = content.getContent(getContentParent());
