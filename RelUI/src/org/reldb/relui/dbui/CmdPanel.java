@@ -122,7 +122,8 @@ public class CmdPanel extends Composite {
 		};
 		sashForm.setWeights(new int[] {2, 1});
 		
-		response(dbTab.getInitialServerResponse(), true);
+		outputPlain(dbTab.getInitialServerResponse(), black);
+		outputHTML(ResponseToHTML.textToHTML(dbTab.getInitialServerResponse()));
 	}
 	
 	public void dispose() {

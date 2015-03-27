@@ -235,6 +235,7 @@ public class DbTab extends CTabItem {
 		try {
 			while ((r = client.receive()) != null) {
 				initialServerResponse.append(r);
+				initialServerResponse.append('\n');
 			}
 		} catch (IOException e) {
         	MessageDialog.openError(DbMain.getShell(), "Database Access Problem",
