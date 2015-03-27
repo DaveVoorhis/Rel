@@ -4,24 +4,193 @@ import java.io.IOException;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CBanner;
 import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.ResourceManager;
+
 import org.reldb.rel.client.string.ClientFromURL;
 import org.reldb.rel.client.string.StringReceiverClient;
+
 import org.reldb.relui.dbui.crash.CrashTrap;
-import org.reldb.relui.tools.ModeTab;
-import org.reldb.relui.tools.ModeTabContent;
-import org.reldb.relui.tools.TopPanel;
 import org.reldb.relui.version.Version;
 
-public class DbTab extends ModeTab {
+public class DbTab extends CTabItem {
 	
-	private LocationPanel locationPanel;
+	private Text textDbLocation;
 	private String status = "";
 	private AttemptConnectionResult connection = null;	
 	private String lastURI = "";
+	private String oldText = "";
     private CrashTrap crashTrap;
+    private StringBuffer initialServerResponse = new StringBuffer();
+    
+    private DbTabContentCmd contentCmd = null;
+    private DbTabContentRel contentRel = null;
+    private DbTabContentRev contentRev = null;
+    
+    private ToolBar toolBarMode;
+    private ToolItem tltmModeRel;
+    private ToolItem tltmModeRev;
+    private ToolItem tltmModeCmd;
+    
+    private Composite modeContent;
+    private StackLayout contentStack;
+    
+	public DbTab() {
+		super(DbMain.getTabFolder(), SWT.None);
+		
+		setImage(ResourceManager.getPluginImage("RelUI", "icons/plusIcon.png"));
+		
+		Composite core = new Composite(DbMain.getTabFolder(), SWT.None);
+		core.setLayout(new FormLayout());
+		
+		CBanner bannerDbLocationMode = new CBanner(core, SWT.NONE);
+		FormData fd_bannerDbLocationMode = new FormData();
+		fd_bannerDbLocationMode.right = new FormAttachment(100);
+		fd_bannerDbLocationMode.top = new FormAttachment(0);
+		fd_bannerDbLocationMode.left = new FormAttachment(0);
+		bannerDbLocationMode.setLayoutData(fd_bannerDbLocationMode);
+		
+		Composite compDbLocation = new Composite(bannerDbLocationMode, SWT.NONE);
+		bannerDbLocationMode.setLeft(compDbLocation);
+		GridLayout gl_compDbLocation = new GridLayout(2, false);
+		gl_compDbLocation.verticalSpacing = 0;
+		gl_compDbLocation.marginWidth = 0;
+		gl_compDbLocation.marginHeight = 0;
+		compDbLocation.setLayout(gl_compDbLocation);
+		
+		ToolBar toolBarDatabase = new ToolBar(compDbLocation, SWT.None);
+		
+		ToolItem tltmNewLocalDb = new ToolItem(toolBarDatabase, SWT.NONE);
+		tltmNewLocalDb.setToolTipText("New local database");
+		tltmNewLocalDb.setImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
+		tltmNewLocalDb.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				DbMain.newDatabase();
+			}
+		});
+		
+		ToolItem tltmOpenLocalDb = new ToolItem(toolBarDatabase, SWT.NONE);
+		tltmOpenLocalDb.setToolTipText("Open local database");
+		tltmOpenLocalDb.setImage(ResourceManager.getPluginImage("RelUI", "icons/OpenDBLocalIcon.png"));
+		tltmOpenLocalDb.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				DbMain.openLocalDatabase();
+			}
+		});
+		
+		ToolItem tltmOpenRemoteDb = new ToolItem(toolBarDatabase, SWT.NONE);
+		tltmOpenRemoteDb.setToolTipText("Open remote database");
+		tltmOpenRemoteDb.setImage(ResourceManager.getPluginImage("RelUI", "icons/OpenDBRemoteIcon.png"));
+		tltmOpenRemoteDb.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				DbMain.openRemoteDatabase();
+			}
+		});
+		
+		textDbLocation = new Text(compDbLocation, SWT.BORDER);
+		textDbLocation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
+		textDbLocation.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.character == 0xD && !textDbLocation.getText().trim().equals(oldText)) {
+					oldText = textDbLocation.getText().trim();
+					if (textDbLocation.getText().trim().length() == 0)
+						textDbLocation.setText(lastURI);
+					else {
+						close();
+						openDatabaseAtURI(textDbLocation.getText(), false);
+					}
+				}
+			}	
+		});
+		
+		toolBarMode = new ToolBar(bannerDbLocationMode, SWT.None);
+		toolBarMode.setEnabled(false);
+		bannerDbLocationMode.setRight(toolBarMode);
+		
+		modeContent = new Composite(core, SWT.NONE);
+		contentStack = new StackLayout();
+		modeContent.setLayout(contentStack);
+		FormData fd_modeContent = new FormData();
+		fd_modeContent.bottom = new FormAttachment(100);
+		fd_modeContent.top = new FormAttachment(bannerDbLocationMode);
+		fd_modeContent.right = new FormAttachment(100);
+		fd_modeContent.left = new FormAttachment(0);
+		modeContent.setLayoutData(fd_modeContent);
+		
+		tltmModeRel = new ToolItem(toolBarMode, SWT.RADIO);
+		tltmModeRel.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeRelIcon.png"));
+		tltmModeRel.setToolTipText("Rel");
+		tltmModeRel.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				showRel();
+			}
+		});
+		
+		tltmModeRev = new ToolItem(toolBarMode, SWT.RADIO);
+		tltmModeRev.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeRevIcon.png"));
+		tltmModeRev.setToolTipText("Rev");
+		tltmModeRev.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				showRev();
+			}
+		});
+		
+		tltmModeCmd = new ToolItem(toolBarMode, SWT.RADIO);
+		tltmModeCmd.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeCmdIcon.png"));
+		tltmModeCmd.setToolTipText("Command line");
+		tltmModeCmd.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				showCmd();
+			}
+		});
+		
+		setControl(core);
+	}
+
+	private void showRel() {
+		if (contentRel == null)
+			contentRel = new DbTabContentRel(DbTab.this, modeContent);
+		contentStack.topControl = contentRel;
+		modeContent.layout();
+	}
+
+	private void showRev() {
+		if (contentRev == null)
+			contentRev = new DbTabContentRev(DbTab.this, modeContent);
+		contentStack.topControl = contentRev;
+		modeContent.layout();		
+	}
+	
+	private void showCmd() {
+		if (contentCmd == null) 
+			contentCmd = new DbTabContentCmd(DbTab.this, modeContent);
+		contentStack.topControl = contentCmd;
+		modeContent.layout();		
+	}
 	
     private static class AttemptConnectionResult {
     	Throwable exception;
@@ -36,6 +205,22 @@ public class DbTab extends ModeTab {
     	}
     }
     
+    private void clearModes() {
+    	if (contentCmd != null) {
+    		contentCmd.dispose();
+    		contentCmd = null;
+    	}
+    	if (contentRel != null) {
+    		contentRel.dispose();
+    		contentRel = null;
+    	}
+    	if (contentRev != null) {
+    		contentRev.dispose();
+    		contentRev = null;
+    	}
+    	toolBarMode.setEnabled(false);
+    }
+    
     private static String wrapped(String s) {
     	if (s.length() < 80)
     		return s;
@@ -43,14 +228,36 @@ public class DbTab extends ModeTab {
     }
     
     private void doConnectionResultSuccess(StringReceiverClient client, String dbURL, boolean permanent) {
-		if (countModes() == 0) {
-			setImage(ResourceManager.getPluginImage("RelUI", "icons/DatabaseIcon.png"));
-			addMode("ModeRelIcon.png", "Rel", new DbTabContentRel(this));
-			addMode("ModeRevIcon.png", "Rev", new DbTabContentRev(this));
-			addMode("ModeCmdIcon.png", "Command line", new DbTabContentCmd(this));
-			setMode(0);
+		setImage(ResourceManager.getPluginImage("RelUI", "icons/DatabaseIcon.png"));
+		
+		initialServerResponse = new StringBuffer();
+		String r;
+		try {
+			while ((r = client.receive()) != null) {
+				initialServerResponse.append(r);
+			}
+		} catch (IOException e) {
+        	MessageDialog.openError(DbMain.getShell(), "Database Access Problem",
+        		wrapped("An error occured whilst establishing contact with " + dbURL + ":" + e));
 		}
+		
+		crashTrap.setServerInitialResponse(initialServerResponse.toString());
+
         setStatus("Ok");
+        toolBarMode.setEnabled(true);
+
+        if (tltmModeRel.getSelection())
+        	showRel();
+        else if (tltmModeRev.getSelection())
+        	showRev();
+        else if (tltmModeCmd.getSelection())
+        	showCmd();
+        else {
+        	// default mode
+        	tltmModeRel.setSelection(true);
+        	showRel();
+        }
+
 		DbMain.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
 			public void close(CTabFolderEvent event) {
 				if (event.item == DbTab.this)
@@ -59,15 +266,9 @@ public class DbTab extends ModeTab {
 		});
     }
     
-    public StringReceiverClient getConnection() {
-    	if (connection != null)
-    		return connection.client;
-    	return null;
+    public String getInitialServerResponse() {
+    	return initialServerResponse.toString();
     }
-
-	public CrashTrap getCrashTrap() {
-		return crashTrap;
-	}
     
     public String getStatus() {
     	return status;
@@ -77,7 +278,7 @@ public class DbTab extends ModeTab {
     	status = s;
     	DbMain.setStatus(status);
     }
-    
+        
     private void doConnectionResultFailed(String reason, String dbURL) {
     	String shortMsg = "Unable to establish connection to " + dbURL;
         setStatus(shortMsg);
@@ -108,13 +309,14 @@ public class DbTab extends ModeTab {
     private AttemptConnectionResult attemptConnectionOpen(String dbURL, boolean createAllowed) {
         setStatus("Opening connection to " + dbURL);
         try {
-        	StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed, crashTrap);
+    		crashTrap = new CrashTrap(this.getParent().getShell(), Version.getVersion());
+    		StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed, crashTrap);
             return new AttemptConnectionResult(client);
         } catch (Throwable exception) {
         	return new AttemptConnectionResult(exception);
         }
     }
-    
+	
     /** Open a connection and associated panel. */
     private boolean openConnection(String dbURL, boolean permanent, boolean canCreate) {
 		setText(dbURL);
@@ -131,26 +333,6 @@ public class DbTab extends ModeTab {
     		return false;
     	}
     }
-	
-	public void addMode(String iconImageFilename, String toolTipText, ModeTabContent content) {
-		addMode(ResourceManager.getPluginImage("RelUI", "icons/" + iconImageFilename), toolTipText, content);
-	}
-	
-	public DbTab() {
-		super(DbMain.getTabFolder(), SWT.None);
-		
-		setImage(ResourceManager.getPluginImage("RelUI", "icons/plusIcon.png"));
-		setToolTipText("New tab");
-		
-		crashTrap = new CrashTrap(Version.getVersion());
-	}
-	
-	public void setText(String s) {
-		if (getText() == null || getText().length() == 0)
-			new DbTab();
-		super.setText(s);
-		setToolTipText(s);
-	}
 	
 	public void openDatabaseAtURI(String uri, boolean canCreate) {
 		lastURI = uri;
@@ -170,40 +352,36 @@ public class DbTab extends ModeTab {
 		}
 	}
 	
-	public void buildLocationPanel(TopPanel parent) {
-		locationPanel = new LocationPanel(parent, SWT.None) {
-			@Override
-			public void notifyDatabaseURIModified() {
-				if (locationPanel.getDatabaseURI().trim().length() == 0)
-					locationPanel.setDatabaseURI(lastURI);
-				else {
-					close();
-					openDatabaseAtURI(locationPanel.getDatabaseURI(), false);
-				}
-			}
-		};
+	public StringReceiverClient getConnection() {
+		return connection.client;
 	}
-
+	
 	public void newDatabase(String string) {
 		close();
-		locationPanel.setDatabaseURI("local:" + string);
-		openDatabaseAtURI(locationPanel.getDatabaseURI(), true);
+		textDbLocation.setText("local:" + string);
+		openDatabaseAtURI(textDbLocation.getText(), true);
 	}
 
 	public void openLocalDatabase(String string) {
 		close();
-		locationPanel.setDatabaseURI("local:" + string);
-		openDatabaseAtURI(locationPanel.getDatabaseURI(), false);
+		textDbLocation.setText("local:" + string);
+		openDatabaseAtURI(textDbLocation.getText(), false);
 	}
 
 	public void openRemoteDatabase(String string) {
 		close();
-		locationPanel.setDatabaseURI(string);
-		openDatabaseAtURI(locationPanel.getDatabaseURI(), false);
+		textDbLocation.setText(string);
+		openDatabaseAtURI(textDbLocation.getText(), false);
+	}
+
+	public void openDefaultDatabase(String string) {
+		close();
+		textDbLocation.setText("local:" + string);
+		openDatabaseAtURI(textDbLocation.getText(), true);		
 	}
 
 	public void makeBackup() {
 		System.out.println("DbTab: makeBackup");
 	}
-    
+
 }

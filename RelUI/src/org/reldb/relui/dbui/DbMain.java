@@ -6,7 +6,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.reldb.relui.tools.MainPanel;
+import org.reldb.relui.dbui.MainPanel;
 
 /** Root of RelUI. */
 public class DbMain {
@@ -84,9 +84,12 @@ public class DbMain {
     		noLocalRel = true;
         }
     	String defaultDatabasePath = System.getProperty("user.home");
-		DbTab defaultDb = new DbTab();
-		defaultDb.openLocalDatabase(defaultDatabasePath);
+		(new DbTab()).openDefaultDatabase(defaultDatabasePath);
 		DbMain.setSelection(0);
+	}
+
+	public static CTabFolder getTabFolder() {
+		return mainPanel.getTabFolder();
 	}
 	
 	public static DbTab getCurrentDbTab() {
@@ -117,10 +120,6 @@ public class DbMain {
 
 	public static void options() {
 		// TODO Auto-generated method stub
-	}
-
-	public static CTabFolder getTabFolder() {
-		return mainPanel.getTabFolder();
 	}
 	
 }

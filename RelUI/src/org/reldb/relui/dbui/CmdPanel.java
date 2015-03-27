@@ -12,7 +12,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Color;
-
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.core.ParseException;
 import org.reldb.rel.client.string.StringReceiverClient;
@@ -27,8 +26,6 @@ public class CmdPanel extends Composite {
 	
 	private Composite outputStack;
 	private StackLayout outputStackLayout;
-
-	private StringBuffer serverInitialResponse;
 	
 	private boolean showOk = true;
 	private boolean isEnhancedOutput = true;
@@ -41,6 +38,92 @@ public class CmdPanel extends Composite {
 	private Color blue = new Color(getDisplay(), 0, 0, 128);
 	private Color black = new Color(getDisplay(), 0, 0, 0);
 	private Color grey = new Color(getDisplay(), 128, 128, 128);
+	
+	/**
+	 * Create the composite.
+	 * @param parent
+	 * @param style
+	 */
+	public CmdPanel(DbTab dbTab, Composite parent, int style) {
+		super(parent, style);
+		setLayout(new FillLayout(SWT.HORIZONTAL));
+		
+		this.addListener(SWT.Resize, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				System.out.println("CmdPanel: resized");
+			}
+		});
+		
+		connection = dbTab.getConnection();
+		
+		SashForm sashForm = new SashForm(this, SWT.VERTICAL);
+		
+		outputStack = new Composite(sashForm, SWT.NONE);
+		outputStackLayout = new StackLayout();
+		outputStack.setLayout(outputStackLayout);
+		
+		styledText = new StyledText(outputStack, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI | SWT.H_SCROLL);
+		styledText.setEditable(false);
+		
+		browser = new BrowserManager();
+		browser.createWidget(outputStack, styledText.getFont());
+		
+		outputStackLayout.topControl = browser.getWidget();
+		
+		cmdPanelInput = new CmdPanelInput(sashForm, SWT.NONE) {
+			boolean copyInputToOutput = true;
+			protected void setCopyInputToOutput(boolean selection) {
+				copyInputToOutput = selection;
+			}
+			public void notifyGo(String text) {
+				if (isAutoclear)
+					clearOutput();
+				if (copyInputToOutput)
+					userResponse(text);
+				String runMe = text.trim();
+				StringBuffer errorInformationBuffer = null;
+				try {
+					if (isLastNonWhitespaceCharacter(runMe, ';')) {
+						connection.sendExecute(runMe);
+						errorInformationBuffer = obtainClientResponse(false, null);
+					} else {
+						connection.sendEvaluate(runMe);
+						errorInformationBuffer = obtainClientResponse(true, null);
+					}
+					StyledText inputTextWidget = getInputTextWidget();
+					if (errorInformationBuffer != null) {
+						ErrorInformation eInfo = parseErrorInformationFrom(errorInformationBuffer.toString());
+						if (eInfo != null) {
+							int startOffset = 0;
+							try {
+								if (eInfo.getLine() > 0) {
+									startOffset = inputTextWidget.getOffsetAtLine(eInfo.getLine() - 1);
+									if (eInfo.getColumn() > 0)
+										startOffset += eInfo.getColumn() - 1;
+								}
+								inputTextWidget.setCaretOffset(startOffset);
+								if (eInfo.getBadToken() != null)
+									inputTextWidget.setSelection(startOffset, startOffset + eInfo.getBadToken().length());
+							} catch (Exception e) {
+								System.out.println("CmdPanel: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
+							}
+						} else
+							System.out.println("CmdPanel: Unable to locate error in " + errorInformationBuffer.toString());
+					} else {
+						inputTextWidget.selectAll();
+					}
+					inputTextWidget.setFocus();
+					done();
+				} catch (Throwable ioe) {
+					badResponse(ioe.getMessage());
+				}
+			}
+		};
+		sashForm.setWeights(new int[] {2, 1});
+		
+		response(dbTab.getInitialServerResponse(), true);
+	}
 	
 	public void dispose() {
 		clearOutput();
@@ -293,94 +376,6 @@ public class CmdPanel extends Composite {
 			t.printStackTrace();
 		}
 		return null;
-	}
-	
-	/**
-	 * Create the composite.
-	 * @param parent
-	 * @param style
-	 */
-	public CmdPanel(DbTab dbTab, Composite parent, int style) {
-		super(parent, style);
-		setLayout(new FillLayout(SWT.HORIZONTAL));
-		
-		this.addListener(SWT.Resize, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				System.out.println("CmdPanel: resized");
-			}
-		});
-		
-		connection = dbTab.getConnection();
-		
-		SashForm sashForm = new SashForm(this, SWT.VERTICAL);
-		
-		outputStack = new Composite(sashForm, SWT.NONE);
-		outputStackLayout = new StackLayout();
-		outputStack.setLayout(outputStackLayout);
-		
-		styledText = new StyledText(outputStack, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI | SWT.H_SCROLL);
-		styledText.setEditable(false);
-		
-		browser = new BrowserManager();
-		browser.createWidget(outputStack, styledText.getFont());
-		
-		outputStackLayout.topControl = browser.getWidget();
-		
-		cmdPanelInput = new CmdPanelInput(sashForm, SWT.NONE) {
-			boolean copyInputToOutput = true;
-			protected void setCopyInputToOutput(boolean selection) {
-				copyInputToOutput = selection;
-			}
-			public void notifyGo(String text) {
-				if (isAutoclear)
-					clearOutput();
-				if (copyInputToOutput)
-					userResponse(text);
-				String runMe = text.trim();
-				StringBuffer errorInformationBuffer = null;
-				try {
-					if (isLastNonWhitespaceCharacter(runMe, ';')) {
-						connection.sendExecute(runMe);
-						errorInformationBuffer = obtainClientResponse(false, null);
-					} else {
-						connection.sendEvaluate(runMe);
-						errorInformationBuffer = obtainClientResponse(true, null);
-					}
-					StyledText inputTextWidget = getInputTextWidget();
-					if (errorInformationBuffer != null) {
-						ErrorInformation eInfo = parseErrorInformationFrom(errorInformationBuffer.toString());
-						if (eInfo != null) {
-							int startOffset = 0;
-							try {
-								if (eInfo.getLine() > 0) {
-									startOffset = inputTextWidget.getOffsetAtLine(eInfo.getLine() - 1);
-									if (eInfo.getColumn() > 0)
-										startOffset += eInfo.getColumn() - 1;
-								}
-								inputTextWidget.setCaretOffset(startOffset);
-								if (eInfo.getBadToken() != null)
-									inputTextWidget.setSelection(startOffset, startOffset + eInfo.getBadToken().length());
-							} catch (Exception e) {
-								System.out.println("CmdPanel: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
-							}
-						} else
-							System.out.println("CmdPanel: Unable to locate error in " + errorInformationBuffer.toString());
-					} else {
-						inputTextWidget.selectAll();
-					}
-					inputTextWidget.setFocus();
-					done();
-				} catch (Throwable ioe) {
-					badResponse(ioe.getMessage());
-				}
-			}
-		};
-		sashForm.setWeights(new int[] {2, 1});
-		
-		serverInitialResponse = new StringBuffer();
-		obtainClientResponse(false, serverInitialResponse);
-		dbTab.getCrashTrap().setServerInitialResponse(serverInitialResponse.toString());
 	}
 
 	public void clearOutput() {

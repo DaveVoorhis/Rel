@@ -1,4 +1,4 @@
-package org.reldb.relui.tools;
+package org.reldb.relui.dbui;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FormLayout;

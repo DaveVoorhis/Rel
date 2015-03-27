@@ -93,11 +93,10 @@ public class CrashDialog extends Dialog {
 	
 	/**
 	 * Launch the dialog.
+	 * @param shell2 
 	 */
-	public static void launch(Throwable t, String lastQuery, String serverInitialResponse, String clientVersion) {
+	public static void launch(Throwable t, String lastQuery, String serverInitialResponse, Shell shell, String clientVersion) {
 		try {
-			Display display = new Display();
-			Shell shell = new Shell(display);
 			new CrashDialog(shell, SWT.None, t, lastQuery, serverInitialResponse, clientVersion);
 		} catch (Exception e) {
 			e.printStackTrace();
