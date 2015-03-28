@@ -69,8 +69,17 @@ public class CmdPanel extends Composite {
 		
 		cmdPanelInput = new CmdPanelInput(sashForm, SWT.NONE) {
 			boolean copyInputToOutput = true;
+			@Override
 			protected void setCopyInputToOutput(boolean selection) {
 				copyInputToOutput = selection;
+			}
+			@Override
+			protected void announcement(String msg) {
+				systemResponse(msg);
+			}
+			@Override
+			protected void announceError(String msg, Throwable t) {
+				badResponse(msg);
 			}
 			public void notifyGo(String text) {
 				if (isAutoclear)
@@ -431,7 +440,7 @@ public class CmdPanel extends Composite {
 		return isAutoclear;
 	}
 
-	private void makeSureSaveDialogExists() {
+	private void ensureSaveDialogExists() {
 		if (saveDialog == null) {
 			saveDialog = new FileDialog(getShell(), SWT.SAVE);
 			saveDialog.setFilterPath(System.getProperty("user.home"));
@@ -441,7 +450,7 @@ public class CmdPanel extends Composite {
 	}
 	
 	public void saveOutputAsHtml() {
-		makeSureSaveDialogExists();
+		ensureSaveDialogExists();
 		saveDialog.setFileName("output.html");
 		saveDialog.setFilterExtensions(new String[] {"*.html", "*.*"});
 		saveDialog.setFilterNames(new String[] {"HTML", "All Files"});
@@ -459,7 +468,7 @@ public class CmdPanel extends Composite {
 	}
 
 	public void saveOutputAsText() {
-		makeSureSaveDialogExists();
+		ensureSaveDialogExists();
 		saveDialog.setFileName("output.txt");
 		saveDialog.setFilterExtensions(new String[] {"*.txt", "*.*"});
 		saveDialog.setFilterNames(new String[] {"ASCII text", "All Files"});
