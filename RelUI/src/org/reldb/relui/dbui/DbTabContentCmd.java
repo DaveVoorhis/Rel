@@ -57,7 +57,7 @@ public class DbTabContentCmd extends Composite {
 				cmdPanel.clearOutput();
 			}			
 		});		
-
+				
 		ToolItem saveOutputAsHTMLBtn = new ToolItem(toolBar, SWT.PUSH);
 		saveOutputAsHTMLBtn.setImage(ResourceManager.getPluginImage("RelUI", "icons/saveHTMLIcon.png"));
 		saveOutputAsHTMLBtn.setToolTipText("Save as HTML");
@@ -81,6 +81,7 @@ public class DbTabContentCmd extends Composite {
 		ToolItem copyOutputToInputBtn = new ToolItem(toolBar, SWT.PUSH);
 		copyOutputToInputBtn.setImage(ResourceManager.getPluginImage("RelUI", "icons/copyToInputIcon.png"));
 		copyOutputToInputBtn.setToolTipText("Copy output to input");
+		copyOutputToInputBtn.setEnabled(!cmdPanel.getEnhancedOutput());
 		copyOutputToInputBtn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -98,6 +99,7 @@ public class DbTabContentCmd extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				cmdPanel.setEnhancedOutput(enhancedOutputToggle.getSelection());
+				copyOutputToInputBtn.setEnabled(!enhancedOutputToggle.getSelection());
 				headingToggle.setEnabled(enhancedOutputToggle.getSelection());
 				headingToggle.setSelection(headingToggle.getEnabled() && cmdPanel.getHeadingVisible());
 				headingTypesToggle.setEnabled(enhancedOutputToggle.getSelection());

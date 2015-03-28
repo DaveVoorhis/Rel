@@ -3,8 +3,6 @@ package org.reldb.relui.dbui;
 import java.io.IOException;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -47,13 +45,6 @@ public class CmdPanel extends Composite {
 	public CmdPanel(DbTab dbTab, Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
-		
-		this.addListener(SWT.Resize, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				System.out.println("CmdPanel: resized");
-			}
-		});
 		
 		connection = dbTab.getConnection();
 		
@@ -124,6 +115,7 @@ public class CmdPanel extends Composite {
 		
 		outputPlain(dbTab.getInitialServerResponse(), black);
 		outputHTML(ResponseToHTML.textToHTML(dbTab.getInitialServerResponse()));
+		goodResponse("Ok.");
 	}
 	
 	public void dispose() {
@@ -385,7 +377,11 @@ public class CmdPanel extends Composite {
 	}
 
 	public void copyOutputToInput() {
-		cmdPanelInput.setInputText("this is the text");
+		String selection = styledText.getSelectionText();
+		if (selection.length() == 0)
+			cmdPanelInput.setInputText(cmdPanelInput.getInputText() + styledText.getText());
+		else
+			cmdPanelInput.setInputText(cmdPanelInput.getInputText() + selection);
 	}
 
 	public void setEnhancedOutput(boolean selection) {

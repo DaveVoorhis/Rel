@@ -78,7 +78,7 @@ public class DbTab extends CTabItem {
 		ToolBar toolBarDatabase = new ToolBar(compDbLocation, SWT.None);
 		
 		ToolItem tltmNewLocalDb = new ToolItem(toolBarDatabase, SWT.NONE);
-		tltmNewLocalDb.setToolTipText("New local database");
+		tltmNewLocalDb.setToolTipText("Create or open local database");
 		tltmNewLocalDb.setImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
 		tltmNewLocalDb.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -266,6 +266,8 @@ public class DbTab extends CTabItem {
 					DbTab.this.close();
 			}
 		});
+		
+		DbMain.createNewTabIfNeeded();
     }
     
     public String getInitialServerResponse() {
@@ -341,7 +343,13 @@ public class DbTab extends CTabItem {
 		setShowClose(true);
 		openConnection(uri, true, canCreate);
 	}
-	
+
+	public boolean isOpenOnADatabase() {
+		if (connection == null)
+			return false;
+		return (connection.client != null);
+	}
+
 	public void close() {
 		if (connection != null && connection.client != null) {
 			try {
@@ -383,6 +391,7 @@ public class DbTab extends CTabItem {
 	}
 
 	public void makeBackup() {
+		// TODO
 		System.out.println("DbTab: makeBackup");
 	}
 

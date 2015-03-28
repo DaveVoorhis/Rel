@@ -3,6 +3,7 @@ package org.reldb.relui.dbui;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -42,7 +43,7 @@ public class DbMain {
 		
 		newDatabaseDialog = new DirectoryDialog(getShell());
 		newDatabaseDialog.setText("Create Database");
-		newDatabaseDialog.setMessage("Select a folder to hold a new database.");
+		newDatabaseDialog.setMessage("Select a folder to hold a new database.  If a database already exists there, it will be opened.");
 		newDatabaseDialog.setFilterPath(System.getProperty("user.home"));
 		
 		remoteDatabaseDialog = new RemoteDatabaseDialog(getShell());
@@ -116,6 +117,12 @@ public class DbMain {
 		Object result = remoteDatabaseDialog.open();
 		if (result != null)
 			getCurrentDbTab().openRemoteDatabase(result.toString());
+	}
+
+	public static void createNewTabIfNeeded() {
+		CTabItem[] tabs = mainPanel.getTabFolder().getItems();
+		if (tabs.length == 0 || ((DbTab)tabs[tabs.length - 1]).isOpenOnADatabase())
+			new DbTab();
 	}
 
 	public static void options() {

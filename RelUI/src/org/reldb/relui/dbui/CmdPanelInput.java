@@ -211,6 +211,7 @@ public class CmdPanelInput extends Composite {
 		tlitmLoad.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// TODO
 			}
 		});
 		tlitmLoad.setToolTipText("Load file");
@@ -220,6 +221,7 @@ public class CmdPanelInput extends Composite {
 		tlitmGetPath.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// TODO
 			}
 		});
 		tlitmGetPath.setToolTipText("Get file path");
@@ -229,6 +231,7 @@ public class CmdPanelInput extends Composite {
 		tlitmSave.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// TODO
 			}
 		});
 		tlitmSave.setToolTipText("Save");
@@ -238,6 +241,7 @@ public class CmdPanelInput extends Composite {
 		tlitmSaveHistory.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// TODO
 			}
 		});
 		tlitmSaveHistory.setToolTipText("Save history");
