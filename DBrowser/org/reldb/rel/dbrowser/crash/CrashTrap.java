@@ -1,6 +1,6 @@
 package org.reldb.rel.dbrowser.crash;
 
-import org.reldb.rel.client.stream.CrashHandler;
+import org.reldb.rel.client.connection.CrashHandler;
 
 public class CrashTrap implements CrashHandler {
 	private String serverInitialResponse = "";

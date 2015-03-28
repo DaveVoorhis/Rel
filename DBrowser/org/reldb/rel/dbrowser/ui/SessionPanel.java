@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import org.reldb.rel.client.string.StringReceiverClient;
+import org.reldb.rel.client.connection.string.StringReceiverClient;
 import org.reldb.rel.dbrowser.crash.CrashTrap;
 import org.reldb.rel.dbrowser.version.Version;
 

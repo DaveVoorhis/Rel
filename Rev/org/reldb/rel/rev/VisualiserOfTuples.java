@@ -32,7 +32,6 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
 import org.reldb.rel.client.Connection.HTMLReceiver;
-
 import org.reldb.rel.rev.graphics.Parameter;
 
 class TextFieldRows

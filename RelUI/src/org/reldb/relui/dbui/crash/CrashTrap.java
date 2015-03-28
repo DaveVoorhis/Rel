@@ -2,7 +2,7 @@ package org.reldb.relui.dbui.crash;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.reldb.rel.client.stream.CrashHandler;
+import org.reldb.rel.client.connection.CrashHandler;
 
 public class CrashTrap implements CrashHandler {
 	private String serverInitialResponse = "";

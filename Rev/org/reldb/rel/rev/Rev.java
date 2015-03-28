@@ -28,7 +28,7 @@ import javax.swing.JToolBar;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
-import org.reldb.rel.client.stream.CrashHandler;
+import org.reldb.rel.client.connection.CrashHandler;
 import org.reldb.rel.rev.graphics.*;
 
 public class Rev extends JPanel {

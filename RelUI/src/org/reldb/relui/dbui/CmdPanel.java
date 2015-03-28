@@ -14,7 +14,7 @@ import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Color;
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.core.ParseException;
-import org.reldb.rel.client.string.StringReceiverClient;
+import org.reldb.rel.client.connection.string.StringReceiverClient;
 import org.reldb.relui.dbui.html.BrowserManager;
 
 public class CmdPanel extends Composite {

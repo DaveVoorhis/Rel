@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.ResourceManager;
 
-import org.reldb.rel.client.string.ClientFromURL;
-import org.reldb.rel.client.string.StringReceiverClient;
+import org.reldb.rel.client.connection.string.ClientFromURL;
+import org.reldb.rel.client.connection.string.StringReceiverClient;
 
 import org.reldb.relui.dbui.crash.CrashTrap;
 import org.reldb.relui.version.Version;
@@ -233,10 +233,11 @@ public class DbTab extends CTabItem {
 		initialServerResponse = new StringBuffer();
 		String r;
 		try {
-			while ((r = client.receive()) != null) {
-				initialServerResponse.append(r);
-				initialServerResponse.append('\n');
-			}
+			while ((r = client.receive()) != null)
+				if (!r.equals("Ok.")) {
+					initialServerResponse.append(r);
+					initialServerResponse.append('\n');
+				}
 		} catch (IOException e) {
         	MessageDialog.openError(DbMain.getShell(), "Database Access Problem",
         		wrapped("An error occured whilst establishing contact with " + dbURL + ":" + e));
