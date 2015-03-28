@@ -1,8 +1,11 @@
 package org.reldb.relui.dbui;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -36,6 +39,8 @@ public class CmdPanel extends Composite {
 	private Color blue = new Color(getDisplay(), 0, 0, 128);
 	private Color black = new Color(getDisplay(), 0, 0, 0);
 	private Color grey = new Color(getDisplay(), 128, 128, 128);
+
+	private FileDialog saveDialog;
 	
 	/**
 	 * Create the composite.
@@ -426,14 +431,49 @@ public class CmdPanel extends Composite {
 		return isAutoclear;
 	}
 
+	private void makeSureSaveDialogExists() {
+		if (saveDialog == null) {
+			saveDialog = new FileDialog(getShell(), SWT.SAVE);
+			saveDialog.setFilterPath(System.getProperty("user.home"));
+			saveDialog.setText("Save Output");
+			saveDialog.setOverwrite(true);
+		}		
+	}
+	
 	public void saveOutputAsHtml() {
-		// TODO Auto-generated method stub
-		
+		makeSureSaveDialogExists();
+		saveDialog.setFileName("output.html");
+		saveDialog.setFilterExtensions(new String[] {"*.html", "*.*"});
+		saveDialog.setFilterNames(new String[] {"HTML", "All Files"});
+		String fname = saveDialog.open();
+		if (fname == null)
+			return;
+		try {
+			BufferedWriter f = new BufferedWriter(new FileWriter(fname));
+			f.write(browser.getText());
+			f.close();
+			systemResponse("Saved " + fname);
+		} catch (IOException ioe) {
+			badResponse(ioe.toString());
+		}
 	}
 
 	public void saveOutputAsText() {
-		// TODO Auto-generated method stub
-		
+		makeSureSaveDialogExists();
+		saveDialog.setFileName("output.txt");
+		saveDialog.setFilterExtensions(new String[] {"*.txt", "*.*"});
+		saveDialog.setFilterNames(new String[] {"ASCII text", "All Files"});
+		String fname = saveDialog.open();
+		if (fname == null)
+			return;
+		try {
+			BufferedWriter f = new BufferedWriter(new FileWriter(fname));
+			f.write(styledText.getText());
+			f.close();
+			systemResponse("Saved " + fname);
+		} catch (IOException ioe) {
+			badResponse(ioe.toString());
+		}
 	}
 
 }

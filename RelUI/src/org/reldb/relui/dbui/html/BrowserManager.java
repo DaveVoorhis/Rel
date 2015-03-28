@@ -37,4 +37,24 @@ public class BrowserManager implements HtmlBrowser {
 	public Control getWidget() {
 		return browser.getWidget();
 	}
+
+	@Override
+	public String getText() {
+		return browser.getText();
+	}
+
+	@Override
+	public String getSelectedText() {
+		return browser.getSelectedText();
+	}
+
+	@Override
+	public boolean isSelectedTextSupported() {
+		return browser.isSelectedTextSupported();
+	}
+
+	@Override
+	public Style getStyle() {
+		return browser.getStyle();
+	}
 }

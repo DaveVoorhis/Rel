@@ -1,7 +1,10 @@
 package org.reldb.relui.dbui.html;
 
 import java.awt.Frame;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -81,6 +84,51 @@ public class BrowserSwing implements HtmlBrowser {
 	@Override
 	public Control getWidget() {
 		return browserPanel;
+	}
+
+	@Override
+	public String getText() {
+		BufferedReader htmlStreamed = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(getText().getBytes())));
+		StringBuffer output = new StringBuffer();
+		String line;
+		try {
+			while ((line = htmlStreamed.readLine()) != null) {
+				if (line.trim().equalsIgnoreCase("<head>")) {
+					output.append("<head>\n");
+					output.append("<style type=\"text/css\">\n");
+					output.append("<!--\n");
+					for (String entry: getStyle().getFormattedStyle()) {
+						output.append(entry);
+						output.append('\n');
+					}
+					output.append("-->\n");
+					output.append("</style>\n");
+					output.append("</head>\n");
+				} else if (!line.trim().equalsIgnoreCase("</head>")) {
+					output.append(line);
+					output.append('\n');
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("This cannot possibly have happened.  The universe has collapsed.");
+			return getText();
+		}
+		return output.toString();
+	}
+
+	@Override
+	public String getSelectedText() {
+		return browser.getSelectedText();
+	}
+
+	@Override
+	public boolean isSelectedTextSupported() {
+		return true;
+	}
+
+	@Override
+	public Style getStyle() {
+		return style;
 	}
 
 }

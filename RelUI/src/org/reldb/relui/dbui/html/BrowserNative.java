@@ -10,6 +10,7 @@ public class BrowserNative implements HtmlBrowser {
 
 	private Browser browser;
 	private Style style;
+	private StringBuffer text = new StringBuffer();
 	
 	private static String cleanForJavascriptInsertion(String s) {
 		return s.replace("\\", "\\\\").replace("'", "\\'").replace("\"", "\\\"").replace("\n", "");
@@ -31,11 +32,13 @@ public class BrowserNative implements HtmlBrowser {
 	@Override
 	public void clear() {
 		browser.setText(style.getEmptyHTMLDocument());
+		text = new StringBuffer();
 	}
 	
 	@Override
 	public void appendHtml(String s) {
 		browser.execute(String.format("document.write('%s');", cleanForJavascriptInsertion(style.getHTMLDocument(s))));
+		text.append(s);
 	}
 
 	@Override
@@ -46,6 +49,26 @@ public class BrowserNative implements HtmlBrowser {
 	@Override
 	public Control getWidget() {
 		return browser;
+	}
+
+	@Override
+	public String getText() {
+		return style.getHTMLDocument(text.toString());
+	}
+
+	@Override
+	public String getSelectedText() {
+		return null;
+	}
+
+	@Override
+	public boolean isSelectedTextSupported() {
+		return false;
+	}
+
+	@Override
+	public Style getStyle() {
+		return style;
 	}
 
 }

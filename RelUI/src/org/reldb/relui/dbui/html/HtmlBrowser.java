@@ -10,4 +10,8 @@ public interface HtmlBrowser {
 	public void clear();
 	public void appendHtml(String s);
 	public void scrollToBottom();
+	public String getText();
+	public String getSelectedText();
+	public boolean isSelectedTextSupported();
+	public Style getStyle();
 }
