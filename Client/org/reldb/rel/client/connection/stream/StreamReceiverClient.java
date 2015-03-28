@@ -1,4 +1,4 @@
-package org.reldb.rel.client.stream;
+package org.reldb.rel.client.connection.stream;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,9 +1,9 @@
-package org.reldb.rel.client.stream;
+package org.reldb.rel.client.connection.stream;
 
 import java.net.*;
 import java.io.*;
 
-public class ClientNetworkConnection extends ClientConnection implements StreamReceiverClient {
+public class ClientNetworkConnection implements StreamReceiverClient {
 	
 	private Socket socket;
 	private PrintStream outputToServer;

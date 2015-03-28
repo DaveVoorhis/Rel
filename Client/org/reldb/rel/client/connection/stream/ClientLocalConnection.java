@@ -1,11 +1,12 @@
-package org.reldb.rel.client.stream;
+package org.reldb.rel.client.connection.stream;
 
 import java.io.*;
 
+import org.reldb.rel.client.connection.CrashHandler;
 import org.reldb.rel.client.utilities.ClassPathHack;
 import org.reldb.rel.Rel;
 
-public class ClientLocalConnection extends ClientConnection implements StreamReceiverClient {
+public class ClientLocalConnection implements StreamReceiverClient {
 	
 	private Rel rel;
 	private CrashHandler errorHandler;

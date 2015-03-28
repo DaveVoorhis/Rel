@@ -1,6 +1,8 @@
-package org.reldb.rel.client.string;
+package org.reldb.rel.client.connection.string;
 
 import java.io.IOException;
+
+import org.reldb.rel.client.connection.Client;
 
 /* Usage:
  
@@ -28,7 +30,7 @@ public class Tester {
 }
 */
 
-public interface StringReceiverClient {
+public interface StringReceiverClient extends Client {
 	public String receive() throws IOException;
 	public void sendEvaluate(String src) throws IOException;
 	public void sendExecute(String src) throws IOException;

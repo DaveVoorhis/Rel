@@ -1,9 +1,9 @@
-package org.reldb.rel.client.string;
+package org.reldb.rel.client.connection.string;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import org.reldb.rel.client.stream.CrashHandler;
+import org.reldb.rel.client.connection.CrashHandler;
 import org.reldb.rel.client.utilities.ClassPathHack;
 import org.reldb.rel.shared.Defaults;
 

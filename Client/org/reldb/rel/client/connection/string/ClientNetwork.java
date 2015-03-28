@@ -1,11 +1,10 @@
-package org.reldb.rel.client.string;
+package org.reldb.rel.client.connection.string;
 
 import java.io.*;
 
-import org.reldb.rel.client.stream.Client;
-import org.reldb.rel.client.stream.ClientNetworkConnection;
+import org.reldb.rel.client.connection.stream.ClientNetworkConnection;
 
-public class ClientNetwork extends Client implements StringReceiverClient {
+public class ClientNetwork implements StringReceiverClient {
 	
 	private BufferedReader input;
 	private ClientNetworkConnection connection;

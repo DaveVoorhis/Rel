@@ -4,12 +4,15 @@ import java.io.*;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.reldb.rel.client.connection.CrashHandler;
+import org.reldb.rel.client.connection.stream.ClientFromURL;
+import org.reldb.rel.client.connection.stream.InputStreamInterceptor;
+import org.reldb.rel.client.connection.stream.StreamReceiverClient;
 import org.reldb.rel.client.parser.ResponseAdapter;
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.ResponseToHTMLProgressive;
 import org.reldb.rel.client.parser.core.ParseException;
 import org.reldb.rel.client.parser.core.ResponseParser;
-import org.reldb.rel.client.stream.*;
 
 /**
  * Connection to a Rel database.

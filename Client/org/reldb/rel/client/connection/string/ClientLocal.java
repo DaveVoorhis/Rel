@@ -1,13 +1,12 @@
-package org.reldb.rel.client.string;
+package org.reldb.rel.client.connection.string;
 
 import java.io.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.reldb.rel.client.stream.Client;
-import org.reldb.rel.client.stream.ClientLocalConnection;
-import org.reldb.rel.client.stream.CrashHandler;
+import org.reldb.rel.client.connection.CrashHandler;
+import org.reldb.rel.client.connection.stream.ClientLocalConnection;
 
-public class ClientLocal extends Client implements StringReceiverClient {
+public class ClientLocal implements StringReceiverClient {
 	
 	private ClientLocalConnection connection;
 	private LinkedBlockingQueue<String> outputStringQueue = new LinkedBlockingQueue<String>();

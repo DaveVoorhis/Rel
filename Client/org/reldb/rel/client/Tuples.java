@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import org.reldb.rel.client.stream.StreamReceiverClient;
+import org.reldb.rel.client.connection.stream.StreamReceiverClient;
 
 public class Tuples extends Value implements Iterable<Tuple>{
 
