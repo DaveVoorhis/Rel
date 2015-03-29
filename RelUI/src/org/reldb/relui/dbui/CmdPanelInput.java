@@ -40,15 +40,16 @@ public class CmdPanelInput extends Composite {
 	private FileDialog saveDialog = null;
 	
 	private void showRunningStart() {
-		cmdPanelBottom.startBusyIndicator();
 		cmdPanelBottom.setEnabledRunButton(false);		
 	}
 	
 	private void showRunningStop() {
 		cmdPanelBottom.setEnabledRunButton(true);
-		cmdPanelBottom.stopBusyIndicator();
 	}
 
+	/** Override to receive notification that the cancel button has been pressed. */
+	public void notifyStop() {}
+	
 	/** Override to receive notification that the run button has been pressed.  Must invoke done() when 
 	 * ready to receive another notification. */
 	public void notifyGo(String text) {}
@@ -154,6 +155,10 @@ public class CmdPanelInput extends Composite {
 		notifyGo(text);	
 	}
 
+	private void stop() {
+		notifyStop();
+	}
+	
 	private void ensureSaveDialogExists() {
 		if (saveDialog == null) {
 			saveDialog = new FileDialog(getShell(), SWT.SAVE);
@@ -223,6 +228,9 @@ public class CmdPanelInput extends Composite {
 			@Override
 			public void go() {
 				run();
+			}
+			public void cancel() {
+				stop();
 			}
 		};
 		fd_inputText.bottom = new FormAttachment(cmdPanelBottom, 191);

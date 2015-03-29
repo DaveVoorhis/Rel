@@ -9,13 +9,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Button;
-import org.reldb.relui.widgets.BusyBar;
 
 public class CmdPanelBottom extends Composite {
 
 	private Label lblRowCol;
-	private BusyBar busyBar;
 	private Button btnGo;
+	private Button btnCancel;
 	
 	/**
 	 * Create the composite.
@@ -32,19 +31,9 @@ public class CmdPanelBottom extends Composite {
 		fd_lblRowCol.left = new FormAttachment(0);
 		lblRowCol.setLayoutData(fd_lblRowCol);
 		lblRowCol.setText("0000:0000");
-		
-		busyBar = new BusyBar(this, SWT.NONE);
-		fd_lblRowCol.top = new FormAttachment(busyBar, 0, SWT.TOP);
-		FormData fd_progressBarBusy = new FormData();
-		fd_progressBarBusy.width = 80;
-		fd_progressBarBusy.right = new FormAttachment(100);
-		fd_progressBarBusy.left = new FormAttachment(100, -71);
-		busyBar.setLayoutData(fd_progressBarBusy);
-		
+				
 		btnGo = new Button(this, SWT.BORDER);
-		fd_progressBarBusy.top = new FormAttachment(btnGo, 0, SWT.TOP);
 		FormData fd_btnGo = new FormData();
-		fd_btnGo.right = new FormAttachment(busyBar);
 		fd_btnGo.left = new FormAttachment(lblRowCol);
 		fd_btnGo.top = new FormAttachment(0);
 		btnGo.setLayoutData(fd_btnGo);
@@ -55,15 +44,37 @@ public class CmdPanelBottom extends Composite {
 				go();
 			}
 		});
+		
+		btnCancel = new Button(this, SWT.NONE);
+		btnCancel.setEnabled(false);
+		btnCancel.setLayoutData(new FormData());
+		btnCancel.setText("Cancel");
+		FormData fd_btnCancel = new FormData();
+		fd_btnCancel.width = 80;		
+		fd_btnCancel.right = new FormAttachment(100);
+		fd_btnCancel.top = new FormAttachment(0);
+		btnCancel.setLayoutData(fd_btnCancel);
+		btnCancel.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				cancel();
+			}
+		});
+		
+		fd_btnGo.right = new FormAttachment(btnCancel);
 	}
 	
 	public void go() {}
 	
+	public void cancel() {}
+	
 	public void setEnabledRunButton(boolean b) {
 		final Runnable update = new Runnable() {
 			public void run() {
-				if (!isDisposed())
+				if (!isDisposed()) {
 					btnGo.setEnabled(b);
+					btnCancel.setEnabled(!b);
+				}
 			}
 		};
 		if (!isDisposed())
@@ -76,13 +87,5 @@ public class CmdPanelBottom extends Composite {
 	
 	public void setRowColDisplay(String s) {
 		lblRowCol.setText(s);
-	}
-	
-	public void startBusyIndicator() {
-		busyBar.startBusyIndicator();
-	}
-	
-	public void stopBusyIndicator() {
-		busyBar.stopBusyIndicator();
 	}
 }

@@ -66,6 +66,7 @@ public class CmdPanel extends Composite {
 		cmdPanelInput = new CmdPanelInput(sashForm, SWT.NONE) {
 			boolean copyInputToOutput = true;
 			boolean responseFormatted = false;
+			ConcurrentStringReceiverClient connection;
 			@Override
 			protected void setCopyInputToOutput(boolean selection) {
 				copyInputToOutput = selection;
@@ -78,13 +79,14 @@ public class CmdPanel extends Composite {
 			protected void announceError(String msg, Throwable t) {
 				badResponse(msg);
 			}
+			@Override
 			public void notifyGo(String text) {
 				if (isAutoclear)
 					clearOutput();
 				if (copyInputToOutput)
 					userResponse(text);
 				try {
-					ConcurrentStringReceiverClient connection = new ConcurrentStringReceiverClient(dbTab) {
+					connection = new ConcurrentStringReceiverClient(dbTab) {
 						StringBuffer errorBuffer = null;
 						StringBuffer reply = new StringBuffer();
 						@Override
@@ -132,7 +134,6 @@ public class CmdPanel extends Composite {
 							if (responseFormatted && reply.length() > 0) {
 								String content = reply.toString();
 								outputHTML(getResponseFormatted(content, responseFormatted));
-								responseText(content, black);
 								outputUpdated();
 							}
 							StyledText inputTextWidget = getInputTextWidget();
@@ -171,6 +172,10 @@ public class CmdPanel extends Composite {
 				} catch (Throwable ioe) {
 					badResponse(ioe.getMessage());
 				}
+			}
+			@Override
+			public void notifyStop() {
+				connection.reset();				
 			}
 		};
 		sashForm.setWeights(new int[] {2, 1});
@@ -230,10 +235,18 @@ public class CmdPanel extends Composite {
 		}
 	}
 
-	private void outputUpdated() {
+	private void outputTextUpdated() {
 		styledText.setCaretOffset(styledText.getCharCount());
-		styledText.setSelection(styledText.getCaretOffset(), styledText.getCaretOffset());
-		browser.scrollToBottom();
+		styledText.setSelection(styledText.getCaretOffset(), styledText.getCaretOffset());		
+	}
+	
+	private void outputHtmlUpdated() {
+		browser.scrollToBottom();		
+	}
+	
+	private void outputUpdated() {
+		outputTextUpdated();
+		outputHtmlUpdated();
 	}
 	
 	/** Record text responses. */
