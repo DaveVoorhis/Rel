@@ -15,7 +15,6 @@ import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Color;
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.core.ParseException;
-import org.reldb.rel.client.connection.string.StringReceiverClient;
 import org.reldb.relui.dbui.html.BrowserManager;
 
 public class CmdPanel extends Composite {
@@ -23,7 +22,6 @@ public class CmdPanel extends Composite {
 	private BrowserManager browser;
 	private StyledText styledText;
 	private CmdPanelInput cmdPanelInput;
-	private StringReceiverClient connection;
 	
 	private Composite outputStack;
 	private StackLayout outputStackLayout;
@@ -51,8 +49,6 @@ public class CmdPanel extends Composite {
 		super(parent, style);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		connection = dbTab.getConnection();
-		
 		SashForm sashForm = new SashForm(this, SWT.VERTICAL);
 		
 		outputStack = new Composite(sashForm, SWT.NONE);
@@ -69,6 +65,7 @@ public class CmdPanel extends Composite {
 		
 		cmdPanelInput = new CmdPanelInput(sashForm, SWT.NONE) {
 			boolean copyInputToOutput = true;
+			boolean responseFormatted = false;
 			@Override
 			protected void setCopyInputToOutput(boolean selection) {
 				copyInputToOutput = selection;
@@ -86,40 +83,87 @@ public class CmdPanel extends Composite {
 					clearOutput();
 				if (copyInputToOutput)
 					userResponse(text);
-				String runMe = text.trim();
-				StringBuffer errorInformationBuffer = null;
 				try {
-					if (isLastNonWhitespaceCharacter(runMe, ';')) {
-						connection.sendExecute(runMe);
-						errorInformationBuffer = obtainClientResponse(false, null);
-					} else {
-						connection.sendEvaluate(runMe);
-						errorInformationBuffer = obtainClientResponse(true, null);
-					}
-					StyledText inputTextWidget = getInputTextWidget();
-					if (errorInformationBuffer != null) {
-						ErrorInformation eInfo = parseErrorInformationFrom(errorInformationBuffer.toString());
-						if (eInfo != null) {
-							int startOffset = 0;
-							try {
-								if (eInfo.getLine() > 0) {
-									startOffset = inputTextWidget.getOffsetAtLine(eInfo.getLine() - 1);
-									if (eInfo.getColumn() > 0)
-										startOffset += eInfo.getColumn() - 1;
+					ConcurrentStringReceiverClient connection = new ConcurrentStringReceiverClient(dbTab) {
+						StringBuffer errorBuffer = null;
+						StringBuffer reply = new StringBuffer();
+						@Override
+						public void received(String r) {
+							if (r.equals("\n")) {
+								return;
+							} else if (r.equals("Ok.")) {
+								String content = reply.toString();
+								response(content, false);
+								if (showOk)
+									goodResponse(r);
+								reply = new StringBuffer();
+							} else if (r.startsWith("ERROR:")) {
+								String content = reply.toString();
+								response(content, false);
+								badResponse(r);
+								reply = new StringBuffer();
+								errorBuffer = new StringBuffer();
+								if (r.contains(", column")) {
+									errorBuffer.append(r);
+									errorBuffer.append('\n');
 								}
-								inputTextWidget.setCaretOffset(startOffset);
-								if (eInfo.getBadToken() != null)
-									inputTextWidget.setSelection(startOffset, startOffset + eInfo.getBadToken().length());
-							} catch (Exception e) {
-								System.out.println("CmdPanel: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
+							} else if (r.startsWith("NOTICE")) {
+								String content = reply.toString();
+								response(content, false);
+								noticeResponse(r);
+								reply = new StringBuffer();
+							} else {
+								reply.append(r);
+								reply.append("\n");
+								if (errorBuffer != null) {
+									errorBuffer.append(r);
+									errorBuffer.append('\n');
+								}
 							}
-						} else
-							System.out.println("CmdPanel: Unable to locate error in " + errorInformationBuffer.toString());
+						}
+						@Override
+						public void received(Exception e) {
+							badResponse(e.toString());
+						}
+						@Override
+						public void finished() {
+							if (reply.length() > 0) {
+								String content = reply.toString();
+								response(content, responseFormatted);
+							}							
+							StyledText inputTextWidget = getInputTextWidget();
+							if (errorBuffer != null) {
+								ErrorInformation eInfo = parseErrorInformationFrom(errorBuffer.toString());
+								if (eInfo != null) {
+									int startOffset = 0;
+									try {
+										if (eInfo.getLine() > 0) {
+											startOffset = inputTextWidget.getOffsetAtLine(eInfo.getLine() - 1);
+											if (eInfo.getColumn() > 0)
+												startOffset += eInfo.getColumn() - 1;
+										}
+										inputTextWidget.setCaretOffset(startOffset);
+										if (eInfo.getBadToken() != null)
+											inputTextWidget.setSelection(startOffset, startOffset + eInfo.getBadToken().length());
+									} catch (Exception e) {
+										System.out.println("CmdPanel: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
+									}
+								} else
+									System.out.println("CmdPanel: Unable to locate error in " + errorBuffer.toString());
+							} else {
+								inputTextWidget.selectAll();
+							}
+							inputTextWidget.setFocus();
+							done();
+						}
+					};
+					if (isLastNonWhitespaceCharacter(text.trim(), ';')) {
+						responseFormatted = false;
+						connection.sendExecute(text);
 					} else {
-						inputTextWidget.selectAll();
+						responseFormatted = true;
+						connection.sendEvaluate(text);
 					}
-					inputTextWidget.setFocus();
-					done();
 				} catch (Throwable ioe) {
 					badResponse(ioe.getMessage());
 				}
@@ -183,7 +227,6 @@ public class CmdPanel extends Composite {
 	}
 
 	private void outputUpdated() {
-		cmdPanelInput.done();
 		styledText.setCaretOffset(styledText.getCharCount());
 		styledText.setSelection(styledText.getCaretOffset(), styledText.getCaretOffset());
 		browser.scrollToBottom();
@@ -234,63 +277,6 @@ public class CmdPanel extends Composite {
 		outputHTML(getResponseFormatted(s, interpretResponse));
 		responseText(s, black);
 		outputUpdated();
-	}
-
-	// Handle received response.  Return null if ok, or return error location information
-	private StringBuffer obtainClientResponse(boolean responseFormatted, StringBuffer captureBuffer) {
-		StringBuffer reply = new StringBuffer();
-		StringBuffer errorBuffer = null;
-		try {
-			String r;
-			while ((r = connection.receive()) != null) {
-				if (r.equals("\n")) {
-					continue;
-				} else if (r.equals("Ok.")) {
-					String content = reply.toString();
-					response(content, false);
-					if (showOk)
-						goodResponse(r);
-					reply = new StringBuffer();
-					if (captureBuffer != null)
-						captureBuffer.append(content);
-				} else if (r.startsWith("ERROR:")) {
-					String content = reply.toString();
-					response(content, false);
-					badResponse(r);
-					reply = new StringBuffer();
-					if (captureBuffer != null)
-						captureBuffer.append(content);
-					errorBuffer = new StringBuffer();
-					if (r.contains(", column")) {
-						errorBuffer.append(r);
-						errorBuffer.append('\n');
-					}
-				} else if (r.startsWith("NOTICE")) {
-					String content = reply.toString();
-					response(content, false);
-					noticeResponse(r);
-					reply = new StringBuffer();
-					if (captureBuffer != null)
-						captureBuffer.append(content);
-				} else {
-					reply.append(r);
-					reply.append("\n");
-					if (errorBuffer != null) {
-						errorBuffer.append(r);
-						errorBuffer.append('\n');
-					}
-				}
-			}
-			if (reply.length() > 0) {
-				String content = reply.toString();
-				response(content, responseFormatted);
-				if (captureBuffer != null)
-					captureBuffer.append(content);
-			}
-		} catch (IOException ioe) {
-			badResponse(ioe.toString());
-		}
-		return errorBuffer;
 	}
 	
 	private static class ErrorInformation {
@@ -393,9 +379,9 @@ public class CmdPanel extends Composite {
 	public void copyOutputToInput() {
 		String selection = styledText.getSelectionText();
 		if (selection.length() == 0)
-			cmdPanelInput.setInputText(cmdPanelInput.getInputText() + styledText.getText());
+			cmdPanelInput.insertInputText(cmdPanelInput.getInputText() + styledText.getText());
 		else
-			cmdPanelInput.setInputText(cmdPanelInput.getInputText() + selection);
+			cmdPanelInput.insertInputText(cmdPanelInput.getInputText() + selection);
 	}
 
 	public void setEnhancedOutput(boolean selection) {
@@ -451,7 +437,6 @@ public class CmdPanel extends Composite {
 	
 	public void saveOutputAsHtml() {
 		ensureSaveDialogExists();
-		saveDialog.setFileName("output.html");
 		saveDialog.setFilterExtensions(new String[] {"*.html", "*.*"});
 		saveDialog.setFilterNames(new String[] {"HTML", "All Files"});
 		String fname = saveDialog.open();
@@ -469,7 +454,6 @@ public class CmdPanel extends Composite {
 
 	public void saveOutputAsText() {
 		ensureSaveDialogExists();
-		saveDialog.setFileName("output.txt");
 		saveDialog.setFilterExtensions(new String[] {"*.txt", "*.*"});
 		saveDialog.setFilterNames(new String[] {"ASCII text", "All Files"});
 		String fname = saveDialog.open();

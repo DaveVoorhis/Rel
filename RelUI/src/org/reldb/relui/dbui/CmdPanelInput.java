@@ -1,6 +1,8 @@
 package org.reldb.relui.dbui;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
@@ -21,6 +23,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 
 public class CmdPanelInput extends Composite {
 	
@@ -66,8 +69,20 @@ public class CmdPanelInput extends Composite {
 		return (s.charAt(endPosn) == c);
 	}
 
-	public void setInputText(String string) {
-		inputText.setText(string);
+	public void insertInputText(String newText) {
+		int insertionStart;
+		int insertionEnd;
+		Point selectionRange = inputText.getSelectionRange();
+		if (selectionRange == null) {
+			insertionStart = insertionEnd = inputText.getCaretOffset();
+		} else {
+			insertionStart = selectionRange.x;
+			insertionEnd = selectionRange.y + insertionStart;
+		}
+		String before = inputText.getText().substring(0, insertionStart);
+		String after = inputText.getText().substring(insertionEnd, inputText.getText().length());
+		inputText.setText(before + newText + after);
+		inputText.setCaretOffset(before.length() + newText.length());
 	}
 	
 	public String getInputText() {
@@ -259,7 +274,29 @@ public class CmdPanelInput extends Composite {
 		tlitmLoad.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO
+				ensureLoadDialogExists();
+				loadDialog.setFileName("");
+				loadDialog.setText("Load File");
+				loadDialog.setFilterExtensions(new String[] {"*.rel", "*.*"});
+				loadDialog.setFilterNames(new String[] {"Rel script", "All Files"});
+				String fname = loadDialog.open();
+				if (fname == null)
+					return;
+				try {
+					BufferedReader f = new BufferedReader(new FileReader(fname));
+					StringBuffer fileImage = new StringBuffer();
+					String line;
+					while ((line = f.readLine()) != null) {
+						if (fileImage.length() > 0)
+							fileImage.append('\n');
+						fileImage.append(line);
+					}
+					f.close();
+					insertInputText(fileImage.toString());
+					announcement("Loaded " + fname);
+				} catch (Exception ioe) {
+					announceError(ioe.toString(), ioe);
+				}
 			}
 		});
 		
@@ -269,7 +306,15 @@ public class CmdPanelInput extends Composite {
 		tlitmGetPath.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO
+				ensureLoadDialogExists();
+				loadDialog.setFileName("");
+				loadDialog.setText("Get File Path");
+				loadDialog.setFilterExtensions(new String[] {"*.*"});
+				loadDialog.setFilterNames(new String[] {"All Files"});
+				String fname = loadDialog.open();
+				if (fname == null)
+					return;
+				insertInputText('"' + fname + '"');
 			}
 		});
 		
@@ -280,7 +325,7 @@ public class CmdPanelInput extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				ensureSaveDialogExists();
-				saveDialog.setFileName("input.rel");
+				saveDialog.setText("Save Input");
 				saveDialog.setFilterExtensions(new String[] {"*.rel", "*.*"});
 				saveDialog.setFilterNames(new String[] {"Rel script", "All Files"});
 				String fname = saveDialog.open();
@@ -290,7 +335,7 @@ public class CmdPanelInput extends Composite {
 					BufferedWriter f = new BufferedWriter(new FileWriter(fname));
 					f.write(inputText.getText());
 					f.close();
-					announcement("File " + fname + " saved.");
+					announcement("Saved " + fname);
 				} catch (IOException ioe) {
 					announceError(ioe.toString(), ioe);
 				}
@@ -303,7 +348,27 @@ public class CmdPanelInput extends Composite {
 		tlitmSaveHistory.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO
+				ensureSaveDialogExists();
+				saveDialog.setText("Save History");
+				saveDialog.setFilterExtensions(new String[] {"*.rel", "*.*"});
+				saveDialog.setFilterNames(new String[] {"Rel script", "All Files"});
+				String fname = saveDialog.open();
+				if (fname == null)
+					return;
+				try {
+					BufferedWriter f = new BufferedWriter(new FileWriter(fname));
+					for (int i = 0; i < getHistorySize(); i++) {
+						f.write("// History item #" + (i + 1) + "\n");
+						f.write(getHistoryItemAt(i));
+						f.write("\n\n");
+					}
+					f.write("// Current entry" + "\n");
+					f.write(inputText.getText());
+					f.close();
+					announcement("Saved " + fname);
+				} catch (IOException ioe) {
+					announceError(ioe.toString(), ioe);
+				}
 			}
 		});
 		
