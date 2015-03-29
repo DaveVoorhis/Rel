@@ -92,14 +92,10 @@ public class CmdPanel extends Composite {
 							if (r.equals("\n")) {
 								return;
 							} else if (r.equals("Ok.")) {
-								String content = reply.toString();
-								response(content, false);
 								if (showOk)
 									goodResponse(r);
 								reply = new StringBuffer();
 							} else if (r.startsWith("ERROR:")) {
-								String content = reply.toString();
-								response(content, false);
 								badResponse(r);
 								reply = new StringBuffer();
 								errorBuffer = new StringBuffer();
@@ -108,13 +104,15 @@ public class CmdPanel extends Composite {
 									errorBuffer.append('\n');
 								}
 							} else if (r.startsWith("NOTICE")) {
-								String content = reply.toString();
-								response(content, false);
 								noticeResponse(r);
 								reply = new StringBuffer();
 							} else {
-								reply.append(r);
-								reply.append("\n");
+								if (responseFormatted) {
+									reply.append(r);
+									reply.append("\n");
+								} else
+									outputHTML(getResponseFormatted(r, responseFormatted));
+								responseText(r, black);
 								if (errorBuffer != null) {
 									errorBuffer.append(r);
 									errorBuffer.append('\n');
@@ -126,11 +124,17 @@ public class CmdPanel extends Composite {
 							badResponse(e.toString());
 						}
 						@Override
+						public void update() {
+							outputUpdated();
+						}
+						@Override
 						public void finished() {
-							if (reply.length() > 0) {
+							if (responseFormatted && reply.length() > 0) {
 								String content = reply.toString();
-								response(content, responseFormatted);
-							}							
+								outputHTML(getResponseFormatted(content, responseFormatted));
+								responseText(content, black);
+								outputUpdated();
+							}
 							StyledText inputTextWidget = getInputTextWidget();
 							if (errorBuffer != null) {
 								ErrorInformation eInfo = parseErrorInformationFrom(errorBuffer.toString());
@@ -268,13 +272,6 @@ public class CmdPanel extends Composite {
 	/** Handle a notice. */
 	private void noticeResponse(String s) {
 		outputHTML("<font color=\"black\"><b>" + getResponseFormatted(s, false) + "</b></font>");
-		responseText(s, black);
-		outputUpdated();
-	}
-	
-	/** Handle received data. */
-	private void response(String s, boolean interpretResponse) {
-		outputHTML(getResponseFormatted(s, interpretResponse));
 		responseText(s, black);
 		outputUpdated();
 	}

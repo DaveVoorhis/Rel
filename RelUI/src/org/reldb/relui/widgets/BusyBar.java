@@ -45,15 +45,17 @@ public class BusyBar extends ProgressBar {
 					};
 					if (!isDisposed()) {
 						getDisplay().asyncExec(update);
-						try {sleep(15);} catch (InterruptedException e) {}
+						try {sleep(1000);} catch (InterruptedException e) {}
 					}
 				}
 				busyIndicatorRunning = false;
-				getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						setVisible(false);						
-					}
-				});
+				if (!isDisposed())
+					getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							if (!isDisposed())
+								setVisible(false);						
+						}
+					});
 			}
 		}).start();
 	}

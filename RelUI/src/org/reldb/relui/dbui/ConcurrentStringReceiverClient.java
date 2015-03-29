@@ -1,17 +1,24 @@
 package org.reldb.relui.dbui;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import org.eclipse.swt.widgets.Display;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
 
 public abstract class ConcurrentStringReceiverClient {
 
+	private static final int cachedLineMaximum = 100;
+	
 	private StringReceiverClient connection;
 	private Display display;
+	private DbTab tab;
+//	private ConcurrentQueue<String> queue = new ConcurrentLinkedQueue<String>();
 	
 	public ConcurrentStringReceiverClient(DbTab dbTab) {
 		this.connection = dbTab.getConnection();
+		tab = dbTab;
 		display = dbTab.getDisplay();
 	}
 
@@ -21,29 +28,59 @@ public abstract class ConcurrentStringReceiverClient {
 				@Override
 				public void run() {
 					try {
+						Integer clearedSemaphore = 0;
 						doQuery();
 						String r;
+						Collection<String> rcache = new LinkedList<String>();
 						while ((r = connection.receive()) != null) {
-							final String rcvd = r;
-							display.asyncExec(new Runnable() {
-								@Override
-								public void run() {
-									received(rcvd);
+							boolean cacheFilled = false;
+							synchronized(rcache) {
+								rcache.add(r);
+								cacheFilled = (rcache.size() > cachedLineMaximum);
+							}
+							if (cacheFilled) {
+								display.asyncExec(new Runnable() {
+									@Override
+									public void run() {
+										if (!tab.isDisposed()) {
+											synchronized(rcache) {
+												for (String r: rcache)
+													received(r);
+												rcache.clear();
+												clearedSemaphore.notify();
+											}
+											update();
+										}
+									}
+								});
+								try {
+									clearedSemaphore.wait();
+								} catch (InterruptedException e) {
 								}
-							});
+							}
 						}
 						display.asyncExec(new Runnable() {
 							@Override
 							public void run() {
-								finished();
+								if (!tab.isDisposed()) {
+									synchronized(rcache) {
+										for (String r: rcache)
+											received(r);
+									}
+									update();
+									finished();
+								}
 							}
 						});
 					} catch (IOException e) {
 						display.asyncExec(new Runnable() {
 							@Override
 							public void run() {
-								received(e);
-								finished();
+								if (!tab.isDisposed()) {
+									received(e);
+									update();
+									finished();
+								}
 							}
 						});
 					}
@@ -77,5 +114,8 @@ public abstract class ConcurrentStringReceiverClient {
 	
 	/** Override to be notified that processing has finished.  This will run in the SWT widget thread so is safe to update SWT widgets. */
 	public abstract void finished();
+	
+	/** Override to perform expensive periodic display updates after having received multiple strings.  Safe to update SWT widgets. */
+	public abstract void update();
 	
 }
