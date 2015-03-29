@@ -40,4 +40,8 @@ public class ClientLocalConnection implements StreamReceiverClient {
 	
 	public void close() throws IOException {
 	}
+
+	public void reset() throws IOException {
+		rel.reset();
+	}
 }

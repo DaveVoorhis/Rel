@@ -1,6 +1,7 @@
 ** TO DO **
 
 Short term:
+	// TODO - test client connection reset() on remote databases.
 	// TODO - In RelUI, fix error highlighting when the source text is preceded with blank lines
 	// TODO - Disallow recursive definitions like TYPE blah IS {blat CONSTRAINT p POSSREP {x = THE_x(blat)}}
 	// TODO - under RelUI, failing to autocreate a local database, then manually creating one,

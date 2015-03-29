@@ -10,7 +10,7 @@ public class ClientNetwork implements StringReceiverClient {
 	private ClientNetworkConnection connection;
 	
 	/** Establish a connection with a server. */
-	public ClientNetwork(String serverName, int port) throws IOException {
+	public ClientNetwork(String serverName, int port) throws IOException {		
 		connection = new ClientNetworkConnection(serverName, port);
 		input = new BufferedReader(new InputStreamReader(connection.getServerResponseInputStream())); 
 	}
@@ -36,4 +36,10 @@ public class ClientNetwork implements StringReceiverClient {
 		input.close();
 		connection.close();
 	}
+	
+	public void reset() throws IOException {
+		connection.reset();
+		input.reset();
+	}
+
 }

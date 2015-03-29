@@ -48,8 +48,12 @@ public class Session {
 								interpreter.interpret(socket.getInputStream());
 								output.println("\nOk.");
 							} 
+							else if (prefix == 'R') {
+								interpreter.reset();
+								output.println();
+							}
 							else
-								output.println("ERROR: Rel server protocol error: expected 'E' or 'X', but got '" + (char)prefix + "'.");
+								output.println("ERROR: Rel server protocol error: expected 'R', 'E' or 'X', but got '" + (char)prefix + "'.");
 						} catch (SocketException se) {
 							break;
 						} catch (Throwable t) {

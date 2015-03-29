@@ -25,12 +25,14 @@ public class ClientNetworkConnection implements StreamReceiverClient {
 			throw new IOException("Lost connection to server.");
 	}
 
-	// TODO - invoke CrashHandler on fatal crash.
+	public void reset() throws IOException {
+		send('R' + "<EOT>");
+	}
+
 	public void sendEvaluate(String source) throws IOException {
 		send('E' + source + "<EOT>");
 	}
 	
-	// TODO - invoke CrashHandler on fatal crash.
 	public void sendExecute(String source) throws IOException {
 		send('X' + source + "<EOT>");
 	}
@@ -39,4 +41,5 @@ public class ClientNetworkConnection implements StreamReceiverClient {
 		outputToServer.close();
 		socket.close();
 	}
+	
 }

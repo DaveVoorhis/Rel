@@ -102,5 +102,9 @@ public class Rel {
 			}
 		});
 	}
+
+	public void reset() {
+		interpreter.reset();
+	}
 	
 }

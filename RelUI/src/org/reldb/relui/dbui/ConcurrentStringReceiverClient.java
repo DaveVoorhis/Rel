@@ -1,88 +1,131 @@
 package org.reldb.relui.dbui;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.eclipse.swt.widgets.Display;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
 
 public abstract class ConcurrentStringReceiverClient {
 
-	private static final int cachedLineMaximum = 100;
+	private static final int threadLoadMax = 10;
+	
+	private static class QueueEntry {
+		Exception exception;
+		String string;
+		QueueEntry(Exception exception) {this.exception = exception; this.string = null;}
+		QueueEntry(String string) {this.string = string; this.exception = null;}
+		QueueEntry() {this.string = null; this.exception = null;}
+		public String toString() {
+			if (string != null)
+				return string;
+			else if (exception != null)
+				return "Exception: " + exception.toString();
+			else
+				return "EOL";
+		}
+		public boolean isEOL() {
+			return (string == null && exception == null);
+		}
+	}
 	
 	private StringReceiverClient connection;
 	private Display display;
 	private DbTab tab;
-//	private ConcurrentQueue<String> queue = new ConcurrentLinkedQueue<String>();
+	
+	private ConcurrentLinkedQueue<QueueEntry> rcache;
 	
 	public ConcurrentStringReceiverClient(DbTab dbTab) {
 		this.connection = dbTab.getConnection();
 		tab = dbTab;
 		display = dbTab.getDisplay();
 	}
-
+	
 	private abstract class Runner {
+		private boolean running;
+		private int updateCount = 0;
+		private int updateMax = 0;
 		public Runner() {
+			rcache = new ConcurrentLinkedQueue<QueueEntry>();
+			running = true;
+			// UI updater thread
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					updateCount = 0;
+					updateMax = 0;
+					while (running) {
+						if (display.isDisposed()) {
+							running = false;
+							return;
+						}
+						display.syncExec(new Runnable() {
+							@Override
+							public void run() {
+								if (!tab.isDisposed()) {
+									if (!rcache.isEmpty()) {
+										QueueEntry r;
+										int threadLoadCount = 0;
+										while ((r = rcache.poll()) != null) {
+											if (r.isEOL()) {
+												running = false;
+												finished();
+												return;
+											} 
+											else if (r.string != null) {
+												received(r.string);
+												if (++updateCount > updateMax) {
+													update();
+													updateCount = 0;
+													updateMax++;
+												}
+												if (++threadLoadCount > threadLoadMax) {
+													// exit every so often, because staying in syncExec too long causes UI lag
+													break;
+												}
+											}
+											else if (r.exception != null) {
+												running = false;
+												received(r.exception);
+												finished();
+												return;
+											}
+										}
+										if (++updateCount > updateMax) {
+											update();
+											updateCount = 0;
+											updateMax++;
+										}
+									}
+								}
+							}
+						});
+					}
+				}
+			}).start();
+			// Query runner thread
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
 					try {
-						Integer clearedSemaphore = 0;
 						doQuery();
-						String r;
-						Collection<String> rcache = new LinkedList<String>();
-						while ((r = connection.receive()) != null) {
-							boolean cacheFilled = false;
-							synchronized(rcache) {
-								rcache.add(r);
-								cacheFilled = (rcache.size() > cachedLineMaximum);
-							}
-							if (cacheFilled) {
-								display.asyncExec(new Runnable() {
-									@Override
-									public void run() {
-										if (!tab.isDisposed()) {
-											synchronized(rcache) {
-												for (String r: rcache)
-													received(r);
-												rcache.clear();
-												clearedSemaphore.notify();
-											}
-											update();
-										}
-									}
-								});
-								try {
-									clearedSemaphore.wait();
-								} catch (InterruptedException e) {
-								}
-							}
-						}
-						display.asyncExec(new Runnable() {
-							@Override
-							public void run() {
-								if (!tab.isDisposed()) {
-									synchronized(rcache) {
-										for (String r: rcache)
-											received(r);
-									}
-									update();
-									finished();
-								}
-							}
-						});
 					} catch (IOException e) {
-						display.asyncExec(new Runnable() {
-							@Override
-							public void run() {
-								if (!tab.isDisposed()) {
-									received(e);
-									update();
-									finished();
-								}
-							}
-						});
+						rcache.add(new QueueEntry(e));
+					}
+				}
+			}).start();
+			// Query processor thread
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						String r;
+						while ((r = connection.receive()) != null) {
+							rcache.add(new QueueEntry(r));
+						}
+						rcache.add(new QueueEntry());
+					} catch (IOException e) {
+						rcache.add(new QueueEntry(e));
 					}
 				}
 			}).start();
@@ -104,6 +147,17 @@ public abstract class ConcurrentStringReceiverClient {
 				connection.sendEvaluate(s);
 			}
 		};
+	}
+
+	public void reset() {
+		try {
+			rcache.clear();
+			rcache.add(new QueueEntry());
+			connection.reset();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/** Override to be notified that a string was received.  This will run in the SWT widget thread so is safe to update SWT widgets. */

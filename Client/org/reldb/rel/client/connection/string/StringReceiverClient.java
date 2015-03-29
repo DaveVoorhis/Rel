@@ -35,4 +35,5 @@ public interface StringReceiverClient extends Client {
 	public void sendEvaluate(String src) throws IOException;
 	public void sendExecute(String src) throws IOException;
 	public void close() throws IOException;
+	public void reset() throws IOException;
 }

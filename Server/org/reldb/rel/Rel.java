@@ -38,5 +38,9 @@ public class Rel {
 	public void sendExecute(String source) throws IOException {
 		rel.sendExecute(source);
 	}
+
+	public void reset() {
+		rel.reset();
+	}
 	
 }

@@ -60,4 +60,8 @@ public class ClientLocal implements StringReceiverClient {
 		connection.close();
 		receiverRunning = false;
 	}
+	
+	public void reset() throws IOException {
+		connection.reset();
+	}
 }
