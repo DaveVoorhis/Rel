@@ -18,5 +18,6 @@ public class OpOutput extends Instruction {
 		PrintStream output = context.getVirtualMachine().getPrintStream();
 		context.pop().toStream(context, type, output, 1);
 		output.println();
+		output.flush();
 	}
 }

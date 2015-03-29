@@ -18,5 +18,6 @@ public class OpWriteln extends Instruction {
 		PrintStream output = context.getVirtualMachine().getPrintStream();
 		context.pop().toStream(context, type, output, 0);
 		output.println();
+		output.flush();
 	}
 }

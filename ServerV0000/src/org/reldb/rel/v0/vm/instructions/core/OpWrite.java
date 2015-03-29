@@ -1,5 +1,7 @@
 package org.reldb.rel.v0.vm.instructions.core;
 
+import java.io.PrintStream;
+
 import org.reldb.rel.v0.types.Type;
 import org.reldb.rel.v0.vm.Context;
 import org.reldb.rel.v0.vm.Instruction;
@@ -13,6 +15,8 @@ public class OpWrite extends Instruction {
 	}
 	
 	public final void execute(Context context) {
-		context.pop().toStream(context, type, context.getVirtualMachine().getPrintStream(), 0);
+		PrintStream output = context.getVirtualMachine().getPrintStream();
+		context.pop().toStream(context, type, output, 0);
+		output.flush();
 	}
 }
