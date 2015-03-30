@@ -26,6 +26,7 @@ public class ClientLocalConnection implements StreamReceiverClient {
 		try {
 			rel.sendEvaluate(source);
 		} catch (Throwable t) {
+			rel.reset();
 			errorHandler.process(t, source);
 		}
 	}
@@ -34,6 +35,7 @@ public class ClientLocalConnection implements StreamReceiverClient {
 		try {
 			rel.sendExecute(source);
 		} catch (Throwable t) {
+			rel.reset();
 			errorHandler.process(t, source);
 		}
 	}

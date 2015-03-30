@@ -1,7 +1,9 @@
 package org.reldb.relui.dbui;
 
 import java.io.IOException;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.widgets.Display;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
@@ -33,20 +35,20 @@ public abstract class ConcurrentStringReceiverClient {
 	private Display display;
 	private DbTab tab;
 	
-	private ConcurrentLinkedQueue<QueueEntry> rcache;
+	private BlockingQueue<QueueEntry> rcache;
 	
 	public ConcurrentStringReceiverClient(DbTab dbTab) {
 		this.connection = dbTab.getConnection();
 		tab = dbTab;
 		display = dbTab.getDisplay();
 	}
-	
+		
 	private abstract class Runner {
 		private boolean running;
 		private int updateCount = 0;
 		private int updateMax = 0;
 		public Runner() {
-			rcache = new ConcurrentLinkedQueue<QueueEntry>();
+			rcache = new LinkedBlockingQueue<QueueEntry>();
 			running = true;
 			// UI updater thread
 			new Thread(new Runnable() {
@@ -63,10 +65,10 @@ public abstract class ConcurrentStringReceiverClient {
 							@Override
 							public void run() {
 								if (!tab.isDisposed()) {
-									if (!rcache.isEmpty()) {
-										QueueEntry r;
-										int threadLoadCount = 0;
-										while ((r = rcache.poll()) != null) {
+									QueueEntry r;
+									int threadLoadCount = 0;
+									try {
+										while ((r = rcache.poll(100, TimeUnit.MILLISECONDS)) != null) {
 											if (r.isEOL()) {
 												running = false;
 												finished();
@@ -91,11 +93,9 @@ public abstract class ConcurrentStringReceiverClient {
 												return;
 											}
 										}
-										if (++updateCount > updateMax) {
-											update();
-											updateCount = 0;
-											updateMax++;
-										}
+									} catch (InterruptedException e) {
+										finished();
+										return;
 									}
 								}
 							}
@@ -120,9 +120,8 @@ public abstract class ConcurrentStringReceiverClient {
 				public void run() {
 					try {
 						String r;
-						while ((r = connection.receive()) != null) {
+						while ((r = connection.receive()) != null)
 							rcache.add(new QueueEntry(r));
-						}
 						rcache.add(new QueueEntry());
 					} catch (IOException e) {
 						rcache.add(new QueueEntry(e));
@@ -155,8 +154,7 @@ public abstract class ConcurrentStringReceiverClient {
 			rcache.add(new QueueEntry());
 			connection.reset();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("ConcurrentStringReceiverClient: Exception during reset(): " + e);
 		}
 	}
 

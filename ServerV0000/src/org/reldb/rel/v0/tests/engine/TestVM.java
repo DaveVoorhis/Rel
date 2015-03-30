@@ -27,7 +27,7 @@ public class TestVM {
 	
 	@Test
 	public void testVMSimple() {
-		machine.resetVM();
+		machine.reset();
 		Operator code = new Operator(0);
 		code.compile(new OpPushLiteral(ValueInteger.select(generator, 60)));		// PUSH 60
 		code.compile(new OpPushLiteral(ValueInteger.select(generator, 45)));		// PUSH 45
@@ -40,7 +40,7 @@ public class TestVM {
 
 	@Test
 	public void testVMComplex() {
-		machine.resetVM();
+		machine.reset();
 		Operator code = new Operator(0, 1);
 		code.compile(new OpPushLiteral(ValueInteger.select(generator, 200)));			// PUSH 200
 		code.compile(new OpVariableInitialise(0, 0, cellGenerator));	// assign to COUNTER
@@ -66,7 +66,7 @@ public class TestVM {
 
 	@Test
 	public void testVMFnCall() {
-		machine.resetVM();
+		machine.reset();
 		
 		// void writeInt(int x)
 		Operator writeInt = new Operator(1);

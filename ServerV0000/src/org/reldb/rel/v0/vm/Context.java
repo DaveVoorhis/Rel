@@ -31,6 +31,8 @@ public class Context {
     
     private int depth;							// static scope depth    
     
+    private boolean running = false;
+    
     /** Create a non-executable root (depth=0) context. */
     public Context(Generator generator, VirtualMachine vm) {
     	this.generator = generator;
@@ -79,6 +81,8 @@ public class Context {
     	// Initialise the instruction and stack pointers.
         instructionPointer = 0;
         stackPointer = 0;
+        // Allow it to run
+        running = true;        
     }
     
     /** Create a context for an operator invocation. */
@@ -149,10 +153,14 @@ public class Context {
     
     private final void execute() {
     	vm.setCurrentContext(this);
-		while (instructionPointer < code.length)
+		while (instructionPointer < code.length && running)
 			code[instructionPointer++].execute(this);
 		vm.setCurrentContext(caller);
     }
+
+	public void halt() {
+		running = false;
+	}
     
     // Invoke user-defined operator in its own context, i.e., call it.
     public final void call(Operator operator) {

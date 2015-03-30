@@ -39,6 +39,7 @@ public class Interpreter {
 	
 	public void reset() {
 		generator.reset();
+		vm.reset();
 	}
 	
 	public Generator getGenerator() {

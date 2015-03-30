@@ -33,16 +33,16 @@ public class VirtualMachine {
 	private long inserts;
 	private long updates;
 	private long deletes;
-	boolean inserted;
-	boolean updated;
-	boolean deleted;
+	private boolean inserted;
+	private boolean updated;
+	private boolean deleted;
 	
 	/** Create a virtual machine. */
 	public VirtualMachine(Generator generator, RelDatabase database, PrintStream printStream) {
 		this.generator = generator;
 		this.database = database;
 		this.printStream = printStream;
-		resetVM();
+		reset();
 	}
 	
 	/** Clear tuple update notices. */
@@ -93,7 +93,12 @@ public class VirtualMachine {
 	}
 	
 	/** Reset the VM. */
-	public void resetVM() {
+	public void reset() {
+		Context halting = currentContext;
+		while (halting != null) {
+			halting.halt();
+			halting = halting.getCaller();
+		}
 		rootContext = new Context(generator, this);
 		clearTupleUpdateNotices();
 	}
@@ -124,6 +129,6 @@ public class VirtualMachine {
 	/** Get the number of items on the stack in the root Context. */
 	public final int getStackCount() {
 		return rootContext.getStackCount();
-	};
+	}
 
 }
