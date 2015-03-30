@@ -120,8 +120,9 @@ public abstract class ConcurrentStringReceiverClient {
 				public void run() {
 					try {
 						String r;
-						while ((r = connection.receive()) != null)
+						while ((r = connection.receive()) != null) {
 							rcache.add(new QueueEntry(r));
+						}
 						rcache.add(new QueueEntry());
 					} catch (IOException e) {
 						rcache.add(new QueueEntry(e));
@@ -151,6 +152,7 @@ public abstract class ConcurrentStringReceiverClient {
 	public void reset() {
 		try {
 			rcache.clear();
+			rcache.add(new QueueEntry("Cancel."));
 			rcache.add(new QueueEntry());
 			connection.reset();
 		} catch (IOException e) {

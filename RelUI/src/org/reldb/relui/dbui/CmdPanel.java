@@ -37,6 +37,7 @@ public class CmdPanel extends Composite {
 	private Color blue = new Color(getDisplay(), 0, 0, 128);
 	private Color black = new Color(getDisplay(), 0, 0, 0);
 	private Color grey = new Color(getDisplay(), 128, 128, 128);
+	private Color yellow = new Color(getDisplay(), 255, 215, 0);
 
 	private FileDialog saveDialog;
 	
@@ -97,7 +98,11 @@ public class CmdPanel extends Composite {
 								if (showOk)
 									goodResponse(r);
 								reply = new StringBuffer();
-							} else if (r.startsWith("ERROR:")) {
+							} else if (r.equals("Cancel.")) {
+								System.out.println("CmdPanel: Warning response");
+								warningResponse(r);
+								reply = new StringBuffer();
+						 	} else if (r.startsWith("ERROR:")) {
 								badResponse(r);
 								reply = new StringBuffer();
 								errorBuffer = new StringBuffer();
@@ -192,6 +197,7 @@ public class CmdPanel extends Composite {
 		blue.dispose();
 		black.dispose();
 		grey.dispose();
+		yellow.dispose();
 		super.dispose();
 	}
 	
@@ -258,6 +264,13 @@ public class CmdPanel extends Composite {
 	private void goodResponse(String s) {
 		outputHTML("<div class=\"ok\">" + getResponseFormatted(s, false) + "</div>");
 		responseText(s, green);
+		outputUpdated();
+	}
+	
+	/** Handle a received line of 'warning' content. */
+	private void warningResponse(String s) {
+		outputHTML("<div class=\"warn\"><b>" + getResponseFormatted(s, false) + "</b></div>");
+		responseText(s, yellow);
 		outputUpdated();
 	}
 

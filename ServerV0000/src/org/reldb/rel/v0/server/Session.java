@@ -50,7 +50,7 @@ public class Session {
 							} 
 							else if (prefix == 'R') {
 								interpreter.reset();
-								output.println();
+								output.println("\nCancel.");
 							}
 							else
 								output.println("ERROR: Rel server protocol error: expected 'R', 'E' or 'X', but got '" + (char)prefix + "'.");

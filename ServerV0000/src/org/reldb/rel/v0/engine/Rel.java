@@ -105,6 +105,8 @@ public class Rel {
 
 	public void reset() {
 		interpreter.reset();
+		output.println();
+		output.println("Cancel.");
 	}
 	
 }
