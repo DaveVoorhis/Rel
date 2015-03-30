@@ -2,11 +2,8 @@
 
 Short term:
 	// TODO - test client connection reset() on remote databases.
-	// TODO - test client connection reset() with slow operations, like repeated
-	//        recursive fibonacci sequences and the like.  May be race conditions on reset().
 	// TODO - In RelUI, fix error highlighting when the source text has tabs
 	// TODO - Disallow recursive definitions like TYPE blah IS {blat CONSTRAINT p POSSREP {x = THE_x(blat)}}
-	// TODO - check crash handler in RelUI
 	// TODO - Fix toolbar button enabled/selected states in RelUI.
 	// TODO - Add a sequence generator built-in operator.  E.g., 
 	//        OPERATOR SEQUENCE(first INT, last INT, step INT) RELATION {n INT};
