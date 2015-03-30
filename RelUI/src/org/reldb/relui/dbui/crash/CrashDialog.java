@@ -97,7 +97,12 @@ public class CrashDialog extends Dialog {
 	 */
 	public static void launch(Throwable t, String lastQuery, String serverInitialResponse, Shell shell, String clientVersion) {
 		try {
-			new CrashDialog(shell, SWT.None, t, lastQuery, serverInitialResponse, clientVersion);
+			shell.getDisplay().syncExec(new Runnable() {
+				@Override
+				public void run() {
+					new CrashDialog(shell, SWT.None, t, lastQuery, serverInitialResponse, clientVersion);
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
