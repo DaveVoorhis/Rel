@@ -99,7 +99,6 @@ public class CmdPanel extends Composite {
 									goodResponse(r);
 								reply = new StringBuffer();
 							} else if (r.equals("Cancel.")) {
-								System.out.println("CmdPanel: Warning response");
 								warningResponse(r);
 								reply = new StringBuffer();
 						 	} else if (r.startsWith("ERROR:")) {

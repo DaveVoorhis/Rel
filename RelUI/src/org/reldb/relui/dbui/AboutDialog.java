@@ -28,7 +28,7 @@ public class AboutDialog extends Dialog {
 		super(parent, SWT.None);
 		setText("About Rel");
 	}
-
+	
 	/**
 	 * Open the dialog.
 	 * @return the result

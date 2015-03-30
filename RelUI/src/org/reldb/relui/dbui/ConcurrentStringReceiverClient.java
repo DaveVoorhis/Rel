@@ -68,7 +68,7 @@ public abstract class ConcurrentStringReceiverClient {
 									QueueEntry r;
 									int threadLoadCount = 0;
 									try {
-										while ((r = rcache.poll(100, TimeUnit.MILLISECONDS)) != null) {
+										while ((r = rcache.poll(10, TimeUnit.MILLISECONDS)) != null) {
 											if (r.isEOL()) {
 												running = false;
 												finished();
@@ -92,6 +92,11 @@ public abstract class ConcurrentStringReceiverClient {
 												finished();
 												return;
 											}
+										}
+										if (++updateCount > updateMax) {
+											update();
+											updateCount = 0;
+											updateMax++;
 										}
 									} catch (InterruptedException e) {
 										finished();
