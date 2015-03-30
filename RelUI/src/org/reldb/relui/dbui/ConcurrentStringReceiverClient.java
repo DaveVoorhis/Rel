@@ -12,6 +12,8 @@ public abstract class ConcurrentStringReceiverClient {
 
 	private static final int threadLoadMax = 10;
 	
+	private static final int nullUpdateMax = 10;
+	
 	private static class QueueEntry {
 		Exception exception;
 		String string;
@@ -47,6 +49,7 @@ public abstract class ConcurrentStringReceiverClient {
 		private boolean running;
 		private int updateCount = 0;
 		private int updateMax = 0;
+		private int nullUpdateCount = 0;
 		public Runner() {
 			rcache = new LinkedBlockingQueue<QueueEntry>();
 			running = true;
@@ -69,6 +72,7 @@ public abstract class ConcurrentStringReceiverClient {
 									int threadLoadCount = 0;
 									try {
 										while ((r = rcache.poll(10, TimeUnit.MILLISECONDS)) != null) {
+											nullUpdateCount = 0;
 											if (r.isEOL()) {
 												running = false;
 												finished();
@@ -93,10 +97,9 @@ public abstract class ConcurrentStringReceiverClient {
 												return;
 											}
 										}
-										if (++updateCount > updateMax) {
+										if (++nullUpdateCount > nullUpdateMax) {
 											update();
-											updateCount = 0;
-											updateMax++;
+											nullUpdateCount = 0;
 										}
 									} catch (InterruptedException e) {
 										finished();
