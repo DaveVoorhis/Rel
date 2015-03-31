@@ -45,6 +45,8 @@ public class CmdPanel extends Composite {
 	private boolean responseFormatted = false;
 
 	private ConcurrentStringReceiverClient connection;
+
+	private StringBuffer reply = new StringBuffer();
 			
 	/**
 	 * Create the composite.
@@ -71,10 +73,9 @@ public class CmdPanel extends Composite {
 		browser.createWidget(outputStack, styledText.getFont());
 		
 		outputStackLayout.topControl = browser.getWidget();
-
+		
 		connection = new ConcurrentStringReceiverClient(this, dbTab.getURL(), false) {
 			StringBuffer errorBuffer = null;
-			StringBuffer reply = new StringBuffer();
 			@Override
 			public void received(String r) {
 				if (r.equals("\n")) {
@@ -167,6 +168,7 @@ public class CmdPanel extends Composite {
 			}
 			@Override
 			public void notifyGo(String text) {
+				reply = new StringBuffer();
 				if (isAutoclear)
 					clearOutput();
 				if (copyInputToOutput)
