@@ -20,7 +20,7 @@ public class BrowserNative implements HtmlBrowser {
 	public boolean createWidget(Composite parent, Font font) {
 		style = new Style(font, -3);
 		try {
-			browser = new Browser(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+			browser = new Browser(parent, SWT.BORDER);
 			browser.setJavascriptEnabled(true);
 		} catch (Throwable t) {
 			return false;
