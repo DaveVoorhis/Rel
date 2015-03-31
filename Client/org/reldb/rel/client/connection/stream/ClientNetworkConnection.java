@@ -3,7 +3,7 @@ package org.reldb.rel.client.connection.stream;
 import java.net.*;
 import java.io.*;
 
-public class ClientNetworkConnection implements StreamReceiverClient {
+public class ClientNetworkConnection extends ClientConnection {
 	
 	private Socket socket;
 	private PrintStream outputToServer;
@@ -12,6 +12,7 @@ public class ClientNetworkConnection implements StreamReceiverClient {
 	public ClientNetworkConnection(String serverName, int port) throws IOException {
 		socket = new Socket(serverName, port);
 		outputToServer = new PrintStream(socket.getOutputStream());
+		obtainInitialServerResponse();
 	}
 
 	public InputStream getServerResponseInputStream() throws IOException {
@@ -41,5 +42,4 @@ public class ClientNetworkConnection implements StreamReceiverClient {
 		outputToServer.close();
 		socket.close();
 	}
-	
 }

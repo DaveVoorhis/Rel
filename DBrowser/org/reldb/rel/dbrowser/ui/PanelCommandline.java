@@ -8,7 +8,6 @@ import javax.swing.text.html.HTMLEditorKit;
 
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.core.ParseException;
-import org.reldb.rel.dbrowser.crash.CrashTrap;
 import org.reldb.rel.dbrowser.style.DBrowserStyle;
 import org.reldb.rel.dbrowser.utilities.Preferences;
 
@@ -39,15 +38,12 @@ public class PanelCommandline extends javax.swing.JPanel {
 	private Vector<String> entryHistory = new Vector<String>();
 	private int currentHistoryItem = 0;
 
-	private StringBuffer serverInitialResponse = new StringBuffer();
-
 	private boolean inputEnabled = false;
 
 	private boolean isShowHeadings = true;
 	private boolean isShowHeadingTypes = true;
 	
 	private SessionPanel session;
-	private CrashTrap crashTrap;
 		
 	private static boolean isLastNonWhitespaceCharacter(String s, char c) {
 		int endPosn = s.length() - 1;
@@ -218,16 +214,24 @@ public class PanelCommandline extends javax.swing.JPanel {
 	
 	/** Creates new form PanelCommandline to connect to Rel server. 
 	 * @param crashHandler */
-	public PanelCommandline(SessionPanel session, CrashTrap crashTrap) {
+	public PanelCommandline(SessionPanel session) {
 		this.session = session;
-		this.crashTrap = crashTrap;
 		initialise();
 	}
 
 	public void go() {
 		startProcessingDisplay();
-		obtainClientResponse(false, serverInitialResponse);
-		crashTrap.setServerInitialResponse(serverInitialResponse.toString());
+		String msg;
+		try {
+			msg = session.getClient().getServerAnnouncement();
+			outputPlain(msg);
+			outputHTML(ResponseToHTML.textToHTML(msg));
+			goodResponse("Ok.");
+		} catch (IOException e) {
+			msg = "Unable to obtain initial server response.";
+			outputPlain(msg);
+			outputHTML(ResponseToHTML.textToHTML(msg));
+		}
 		enableInput();
 		endProcessingDisplay();
 	}

@@ -1,5 +1,7 @@
 package org.reldb.relui.dbui;
 
+import java.io.IOException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -17,7 +19,7 @@ public class DbTabContentCmd extends Composite {
 	private ToolItem headingTypesToggle = null;
 	private CmdPanel cmdPanel = null;
 
-	public DbTabContentCmd(DbTab parentTab, Composite contentParent) {
+	public DbTabContentCmd(DbTab parentTab, Composite contentParent) throws NumberFormatException, ClassNotFoundException, IOException {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 				

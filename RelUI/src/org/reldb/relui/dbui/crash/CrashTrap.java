@@ -13,8 +13,9 @@ public class CrashTrap implements CrashHandler {
 		this.shell = shell;
 		this.clientVersion = clientVersion;
 	}
-	
-	public void setServerInitialResponse(String s) {
+
+	@Override
+	public void setInitialServerResponse(String s) {
 		this.serverInitialResponse = s;
 	}
 	

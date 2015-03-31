@@ -5,8 +5,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.reldb.rel.client.connection.string.ClientFromURL;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
+import org.reldb.relui.dbui.crash.CrashTrap;
+import org.reldb.relui.version.Version;
 
 public abstract class ConcurrentStringReceiverClient {
 
@@ -33,16 +37,17 @@ public abstract class ConcurrentStringReceiverClient {
 	
 	private StringReceiverClient connection;
 	private Display display;
-	private DbTab tab;
+	private Composite parent;
 	
 	private BlockingQueue<QueueEntry> rcache;
 	
-	public ConcurrentStringReceiverClient(DbTab dbTab) {
-		this.connection = dbTab.getConnection();
-		tab = dbTab;
-		display = dbTab.getDisplay();
+	public ConcurrentStringReceiverClient(Composite parent, String dbURL, boolean createAllowed) throws IOException, NumberFormatException, ClassNotFoundException {
+		this.parent = parent;
+		display = parent.getDisplay();
+		CrashTrap crashTrap = new CrashTrap(parent.getShell(), Version.getVersion());
+		connection = ClientFromURL.openConnection(dbURL, createAllowed, crashTrap);
 	}
-		
+
 	private abstract class Runner {
 		private boolean running;
 		private int updateCount = 0;
@@ -71,7 +76,7 @@ public abstract class ConcurrentStringReceiverClient {
 						display.syncExec(new Runnable() {
 							@Override
 							public void run() {
-								if (!tab.isDisposed()) {
+								if (!parent.isDisposed()) {
 									try {
 										QueueEntry r = awaitedEntry;
 										int threadLoadCount = 0;
@@ -146,6 +151,14 @@ public abstract class ConcurrentStringReceiverClient {
 		public abstract void doQuery() throws IOException;
 	}
 	
+	public String getInitialServerResponse() {
+		try {
+			return connection.getServerAnnouncement();
+		} catch (IOException e) {
+			return "Unable to obtain server announcement.";
+		}
+	}
+	
 	public void sendExecute(final String s) {
 		new Runner() {
 			public void doQuery() throws IOException {
@@ -175,6 +188,15 @@ public abstract class ConcurrentStringReceiverClient {
 		}
 	}
 
+	public void close() {
+		try {
+			connection.reset();
+			connection.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/** Override to be notified that a string was received.  This will run in the SWT widget thread so is safe to update SWT widgets. */
 	public abstract void received(String s);
 	

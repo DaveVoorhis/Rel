@@ -28,14 +28,13 @@ public class SessionPanel extends JPanel {
 	public SessionPanel(StringReceiverClient client, String dbURL) {
 		this.client = client;
 		this.dbURL = dbURL;
-		CrashTrap crashTrap = new CrashTrap(Version.getVersion());
-		commandlinePanel = new PanelCommandline(this, crashTrap);
+		commandlinePanel = new PanelCommandline(this);
 		setLayout(new BorderLayout());
 		try {
 			Class<?> revClass = Class.forName("org.reldb.rel.rev.Rev");
     		Class<?> parms[] = new Class[] {new String().getClass(), CrashTrap.class};
     		Constructor<?> revCtor = revClass.getConstructor(parms);
-			rev = (JPanel)revCtor.newInstance(dbURL, crashTrap);
+			rev = (JPanel)revCtor.newInstance(dbURL, new CrashTrap(Version.getVersion()));
 			revGo = revClass.getMethod("go");
 			System.out.println("Rev add-on is available.");
 			JTabbedPane tabpane = new JTabbedPane();

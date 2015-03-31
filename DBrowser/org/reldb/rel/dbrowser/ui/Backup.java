@@ -58,12 +58,7 @@ public class Backup {
 		try {
 			CrashTrap crashTrap = new CrashTrap(Version.getVersion());
 			client = ClientFromURL.openConnection(dbURL, false, crashTrap);
-			StringBuffer initialServerResponse = new StringBuffer();
 			String r;
-			while ((r = client.receive()) != null) {
-				initialServerResponse.append(r);
-			}
-			crashTrap.setServerInitialResponse(initialServerResponse.toString());
 			client.sendExecute(backupScript);
 			try {
 				while ((r = client.receive()) != null) {

@@ -64,4 +64,9 @@ public class ClientLocal implements StringReceiverClient {
 	public void reset() throws IOException {
 		connection.reset();
 	}
+
+	@Override
+	public String getServerAnnouncement() throws IOException {
+		return connection.getServerAnnouncement();
+	}
 }

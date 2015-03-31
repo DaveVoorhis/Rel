@@ -41,12 +41,18 @@ public class CmdPanel extends Composite {
 
 	private FileDialog saveDialog;
 	
+	private boolean copyInputToOutput = true;
+	private boolean responseFormatted = false;
+	
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
 	 */
-	public CmdPanel(DbTab dbTab, Composite parent, int style) {
+	public CmdPanel(DbTab dbTab, Composite parent, int style) throws NumberFormatException, ClassNotFoundException, IOException {
 		super(parent, style);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
@@ -63,11 +69,88 @@ public class CmdPanel extends Composite {
 		browser.createWidget(outputStack, styledText.getFont());
 		
 		outputStackLayout.topControl = browser.getWidget();
-		
+
+		ConcurrentStringReceiverClient connection = new ConcurrentStringReceiverClient(this, dbTab.getURL(), false) {
+			StringBuffer errorBuffer = null;
+			StringBuffer reply = new StringBuffer();
+			@Override
+			public void received(String r) {
+				if (r.equals("\n")) {
+					return;
+				} else if (r.equals("Ok.")) {
+					if (showOk)
+						goodResponse(r);
+					reply = new StringBuffer();
+				} else if (r.equals("Cancel.")) {
+					warningResponse(r);
+					reply = new StringBuffer();
+			 	} else if (r.startsWith("ERROR:")) {
+					badResponse(r);
+					reply = new StringBuffer();
+					errorBuffer = new StringBuffer();
+					if (r.contains(", column")) {
+						errorBuffer.append(r);
+						errorBuffer.append('\n');
+					}
+				} else if (r.startsWith("NOTICE")) {
+					noticeResponse(r);
+					reply = new StringBuffer();
+				} else {
+					if (responseFormatted) {
+						reply.append(r);
+						reply.append("\n");
+					} else
+						outputHTML(getResponseFormatted(r, responseFormatted));
+					responseText(r, black);
+					if (errorBuffer != null) {
+						errorBuffer.append(r);
+						errorBuffer.append('\n');
+					}
+				}
+			}
+			@Override
+			public void received(Exception e) {
+				badResponse(e.toString());
+			}
+			@Override
+			public void update() {
+				outputUpdated();
+			}
+			@Override
+			public void finished() {
+				if (responseFormatted && reply.length() > 0) {
+					String content = reply.toString();
+					outputHTML(getResponseFormatted(content, responseFormatted));
+					outputUpdated();
+				}
+				StyledText inputTextWidget = cmdPanelInput.getInputTextWidget();
+				if (errorBuffer != null) {
+					ErrorInformation eInfo = parseErrorInformationFrom(errorBuffer.toString());
+					if (eInfo != null) {
+						int startOffset = 0;
+						try {
+							if (eInfo.getLine() > 0) {
+								startOffset = inputTextWidget.getOffsetAtLine(eInfo.getLine() - 1);
+								if (eInfo.getColumn() > 0)
+									startOffset += eInfo.getColumn() - 1;
+							}
+							inputTextWidget.setCaretOffset(startOffset);
+							if (eInfo.getBadToken() != null)
+								inputTextWidget.setSelection(startOffset, startOffset + eInfo.getBadToken().length());
+						} catch (Exception e) {
+							System.out.println("CmdPanel: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
+						}
+					} else
+						System.out.println("CmdPanel: Unable to locate error in " + errorBuffer.toString());
+				} else {
+					inputTextWidget.selectAll();
+				}
+				inputTextWidget.setFocus();
+				cmdPanelInput.done();
+			}
+		};
+			
 		cmdPanelInput = new CmdPanelInput(sashForm, SWT.NONE) {
-			boolean copyInputToOutput = true;
-			boolean responseFormatted = false;
-			ConcurrentStringReceiverClient connection;
 			@Override
 			protected void setCopyInputToOutput(boolean selection) {
 				copyInputToOutput = selection;
@@ -87,85 +170,6 @@ public class CmdPanel extends Composite {
 				if (copyInputToOutput)
 					userResponse(text);
 				try {
-					connection = new ConcurrentStringReceiverClient(dbTab) {
-						StringBuffer errorBuffer = null;
-						StringBuffer reply = new StringBuffer();
-						@Override
-						public void received(String r) {
-							if (r.equals("\n")) {
-								return;
-							} else if (r.equals("Ok.")) {
-								if (showOk)
-									goodResponse(r);
-								reply = new StringBuffer();
-							} else if (r.equals("Cancel.")) {
-								warningResponse(r);
-								reply = new StringBuffer();
-						 	} else if (r.startsWith("ERROR:")) {
-								badResponse(r);
-								reply = new StringBuffer();
-								errorBuffer = new StringBuffer();
-								if (r.contains(", column")) {
-									errorBuffer.append(r);
-									errorBuffer.append('\n');
-								}
-							} else if (r.startsWith("NOTICE")) {
-								noticeResponse(r);
-								reply = new StringBuffer();
-							} else {
-								if (responseFormatted) {
-									reply.append(r);
-									reply.append("\n");
-								} else
-									outputHTML(getResponseFormatted(r, responseFormatted));
-								responseText(r, black);
-								if (errorBuffer != null) {
-									errorBuffer.append(r);
-									errorBuffer.append('\n');
-								}
-							}
-						}
-						@Override
-						public void received(Exception e) {
-							badResponse(e.toString());
-						}
-						@Override
-						public void update() {
-							outputUpdated();
-						}
-						@Override
-						public void finished() {
-							if (responseFormatted && reply.length() > 0) {
-								String content = reply.toString();
-								outputHTML(getResponseFormatted(content, responseFormatted));
-								outputUpdated();
-							}
-							StyledText inputTextWidget = getInputTextWidget();
-							if (errorBuffer != null) {
-								ErrorInformation eInfo = parseErrorInformationFrom(errorBuffer.toString());
-								if (eInfo != null) {
-									int startOffset = 0;
-									try {
-										if (eInfo.getLine() > 0) {
-											startOffset = inputTextWidget.getOffsetAtLine(eInfo.getLine() - 1);
-											if (eInfo.getColumn() > 0)
-												startOffset += eInfo.getColumn() - 1;
-										}
-										inputTextWidget.setCaretOffset(startOffset);
-										if (eInfo.getBadToken() != null)
-											inputTextWidget.setSelection(startOffset, startOffset + eInfo.getBadToken().length());
-									} catch (Exception e) {
-										System.out.println("CmdPanel: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
-									}
-								} else
-									System.out.println("CmdPanel: Unable to locate error in " + errorBuffer.toString());
-							} else {
-								inputTextWidget.selectAll();
-							}
-							inputTextWidget.setFocus();
-							done();
-						}
-					};
 					if (isLastNonWhitespaceCharacter(text.trim(), ';')) {
 						responseFormatted = false;
 						connection.sendExecute(text);
@@ -182,10 +186,11 @@ public class CmdPanel extends Composite {
 				connection.reset();				
 			}
 		};
+		
 		sashForm.setWeights(new int[] {2, 1});
 		
-		outputPlain(dbTab.getInitialServerResponse(), black);
-		outputHTML(ResponseToHTML.textToHTML(dbTab.getInitialServerResponse()));
+		outputPlain(connection.getInitialServerResponse(), black);
+		outputHTML(ResponseToHTML.textToHTML(connection.getInitialServerResponse()));
 		goodResponse("Ok.");
 	}
 

@@ -10,7 +10,7 @@ public class CrashTrap implements CrashHandler {
 		this.clientVersion = clientVersion;
 	}
 	
-	public void setServerInitialResponse(String s) {
+	public void setInitialServerResponse(String s) {
 		this.serverInitialResponse = s;
 	}
 	

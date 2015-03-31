@@ -23,10 +23,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.ResourceManager;
-
 import org.reldb.rel.client.connection.string.ClientFromURL;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
-
 import org.reldb.relui.dbui.crash.CrashTrap;
 import org.reldb.relui.version.Version;
 
@@ -37,8 +35,6 @@ public class DbTab extends CTabItem {
 	private AttemptConnectionResult connection = null;	
 	private String lastURI = "";
 	private String oldText = "";
-    private CrashTrap crashTrap;
-    private StringBuffer initialServerResponse = new StringBuffer();
     
     private DbTabContentCmd contentCmd = null;
     private DbTabContentRel contentRel = null;
@@ -186,8 +182,14 @@ public class DbTab extends CTabItem {
 	}
 	
 	private void showCmd() {
-		if (contentCmd == null) 
-			contentCmd = new DbTabContentCmd(DbTab.this, modeContent);
+		if (contentCmd == null)
+			try {
+				contentCmd = new DbTabContentCmd(DbTab.this, modeContent);
+			} catch (NumberFormatException | ClassNotFoundException | IOException e) {
+	        	MessageDialog.openError(DbMain.getShell(), "Unable to open local database",
+	        			wrapped("Unable to open command line due to error: " + e.toString()));
+	        	return;
+			}
 		contentStack.topControl = contentCmd;
 		modeContent.layout();		
 	}
@@ -195,13 +197,16 @@ public class DbTab extends CTabItem {
     private static class AttemptConnectionResult {
     	Throwable exception;
     	StringReceiverClient client;
+    	String dbURL;
     	public AttemptConnectionResult(Throwable exception) {
     		this.exception = exception;
     		this.client = null;
+    		this.dbURL = null;
     	}
-    	public AttemptConnectionResult(StringReceiverClient client) {
+    	public AttemptConnectionResult(String dbURL, StringReceiverClient client) {
     		this.exception = null;
     		this.client = client;
+    		this.dbURL = dbURL;
     	}
     }
     
@@ -221,7 +226,7 @@ public class DbTab extends CTabItem {
     	toolBarMode.setEnabled(false);
     }
     
-    private static String wrapped(String s) {
+    static String wrapped(String s) {
     	if (s.length() < 80)
     		return s;
     	return s.replace(": ",":\n");
@@ -229,21 +234,6 @@ public class DbTab extends CTabItem {
     
     private void doConnectionResultSuccess(StringReceiverClient client, String dbURL, boolean permanent) {
 		setImage(ResourceManager.getPluginImage("RelUI", "icons/DatabaseIcon.png"));
-		
-		initialServerResponse = new StringBuffer();
-		String r;
-		try {
-			while ((r = client.receive()) != null)
-				if (!r.equals("Ok.")) {
-					initialServerResponse.append(r);
-					initialServerResponse.append('\n');
-				}
-		} catch (IOException e) {
-        	MessageDialog.openError(DbMain.getShell(), "Database Access Problem",
-        		wrapped("An error occured whilst establishing contact with " + dbURL + ":" + e));
-		}
-		
-		crashTrap.setServerInitialResponse(initialServerResponse.toString());
 
         setStatus("Ok");
         toolBarMode.setEnabled(true);
@@ -268,10 +258,6 @@ public class DbTab extends CTabItem {
 		});
 		
 		DbMain.createNewTabIfNeeded();
-    }
-    
-    public String getInitialServerResponse() {
-    	return initialServerResponse.toString();
     }
     
     public String getStatus() {
@@ -309,16 +295,20 @@ public class DbTab extends CTabItem {
     	doConnectionResultFailed(exception.toString(), dbURL);
     }
     
-    /** Attempt to open a connection.  Return null if succeeded (!) and exception if failed. */
-    private AttemptConnectionResult attemptConnectionOpen(String dbURL, boolean createAllowed) {
-        setStatus("Opening connection to " + dbURL);
+    private AttemptConnectionResult openConnection(String dbURL, boolean createAllowed) {
         try {
-    		crashTrap = new CrashTrap(this.getParent().getShell(), Version.getVersion());
+    		CrashTrap crashTrap = new CrashTrap(this.getParent().getShell(), Version.getVersion());
     		StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed, crashTrap);
-            return new AttemptConnectionResult(client);
+    		return new AttemptConnectionResult(dbURL, client);
         } catch (Throwable exception) {
         	return new AttemptConnectionResult(exception);
         }
+    }
+    
+    /** Attempt to open a connection. */
+    private AttemptConnectionResult attemptConnectionOpen(String dbURL, boolean createAllowed) {
+        setStatus("Opening connection to " + dbURL);
+        return openConnection(dbURL, createAllowed);
     }
 	
     /** Open a connection and associated panel. */
@@ -350,6 +340,12 @@ public class DbTab extends CTabItem {
 		return (connection.client != null);
 	}
 
+	public String getURL() {
+		if (isOpenOnADatabase())
+			return connection.dbURL;
+		return null;
+	}
+	
 	public void close() {
 		if (connection != null && connection.client != null) {
 			try {
@@ -360,10 +356,6 @@ public class DbTab extends CTabItem {
 			clearModes();
 			setImage(ResourceManager.getPluginImage("RelUI", "icons/plusIcon.png"));
 		}
-	}
-	
-	public StringReceiverClient getConnection() {
-		return connection.client;
 	}
 	
 	public void newDatabase(String string) {

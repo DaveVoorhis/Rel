@@ -42,4 +42,8 @@ public class ClientNetwork implements StringReceiverClient {
 		input.reset();
 	}
 
+	public String getServerAnnouncement() throws IOException {
+		return connection.getServerAnnouncement();
+	}
+
 }

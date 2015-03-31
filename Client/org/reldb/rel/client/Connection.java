@@ -56,27 +56,6 @@ public class Connection {
 		this.crashHandler = crashHandler;
 	}
 	
-	private void obtainServerAnnouncement(StreamReceiverClient client) {
-		// Get server announcement.
-		BufferedReader reader;
-		try {
-			reader = new BufferedReader(new InputStreamReader(client.getServerResponseInputStream()));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			return;
-		}
-		String line;
-		try {
-			while ((line = reader.readLine()) != null) {
-				serverAnnouncement += line + "\n";
-				if (line.equals("<EOT>"))
-					break;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	private abstract class Action {
 		public abstract void run(StreamReceiverClient client) throws IOException;
 	};
@@ -150,7 +129,6 @@ public class Connection {
 			response.setResult(new Error(e.toString()));
 			return response;
 		}
-		obtainServerAnnouncement(client);
 		Thread parseRunner = new Thread() {
 			public void run() {
 				ErrorMessageTrap errorMessageTrap;
@@ -261,7 +239,6 @@ public class Connection {
 			htmlReceiver.emitInitialHTML("Unable to open connection: " + e.toString().replace(" ", "&nbsp;"));
 			return;
 		}
-		obtainServerAnnouncement(client);
 		Thread parseRunner = new Thread() {
 			public void run() {
 				ErrorMessageTrap errorMessageTrap;
