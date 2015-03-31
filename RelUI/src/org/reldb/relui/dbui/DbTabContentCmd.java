@@ -158,4 +158,9 @@ public class DbTabContentCmd extends Composite {
 		});
 	}
 
+	public void dispose() {
+		cmdPanel.dispose();
+		super.dispose();
+	}
+	
 }

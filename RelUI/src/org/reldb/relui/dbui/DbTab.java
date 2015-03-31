@@ -328,6 +328,16 @@ public class DbTab extends CTabItem {
     	}
     }
 	
+    public void dispose() {
+    	if (connection != null && connection.client != null)
+			try {
+				connection.client.close();
+			} catch (IOException e) {
+			}
+    	clearModes();
+    	super.dispose();
+    }
+    
 	public void openDatabaseAtURI(String uri, boolean canCreate) {
 		lastURI = uri;
 		setShowClose(true);
