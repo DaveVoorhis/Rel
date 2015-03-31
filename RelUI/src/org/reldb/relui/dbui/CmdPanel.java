@@ -289,7 +289,7 @@ public class CmdPanel extends Composite {
 
 	/** Handle a received line of 'bad' content. */
 	void badResponse(String s) {
-		outputHTML("<div class=\"bad\"><pre><b>" + getResponseFormatted(s, false) + "</b></pre></div>");
+		outputHTML("<div class=\"bad\"><b>" + getResponseFormatted(s, false) + "</b></div>");
 		responseText(s, red);
 		outputUpdated();
 	}
