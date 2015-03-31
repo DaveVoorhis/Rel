@@ -18,7 +18,11 @@ public class BrowserNative implements HtmlBrowser {
 	
 	@Override
 	public boolean createWidget(Composite parent, Font font) {
-		style = new Style(font, -3);
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.equals("mac os x"))
+			style = new Style(font, -3);
+		else
+			style = new Style(font, 0);
 		try {
 			browser = new Browser(parent, SWT.BORDER);
 			browser.setJavascriptEnabled(true);
