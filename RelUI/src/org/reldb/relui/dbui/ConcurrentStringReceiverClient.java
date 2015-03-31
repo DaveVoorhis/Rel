@@ -57,6 +57,13 @@ public abstract class ConcurrentStringReceiverClient {
 					updateCount = 0;
 					updateMax = 0;
 					while (running) {
+						// wait for data to show up
+						QueueEntry awaitedEntry;
+						try {
+							awaitedEntry = rcache.take();
+						} catch (InterruptedException e1) {
+							continue;
+						}
 						if (display.isDisposed()) {
 							running = false;
 							return;
@@ -65,12 +72,11 @@ public abstract class ConcurrentStringReceiverClient {
 							@Override
 							public void run() {
 								if (!tab.isDisposed()) {
-									QueueEntry r;
-									int threadLoadCount = 0;
 									try {
+										QueueEntry r = awaitedEntry;
+										int threadLoadCount = 0;
 										boolean nullUpdate = false;
-										while ((r = rcache.poll(10, TimeUnit.MILLISECONDS)) != null) {
-											nullUpdate = true;
+										do {
 											if (r.isEOL()) {
 												running = false;
 												finished();
@@ -79,11 +85,13 @@ public abstract class ConcurrentStringReceiverClient {
 											else if (r.string != null) {
 												received(r.string);
 												if (++updateCount > updateMax) {
+													// update every so often, so we can see what's going on
 													update();
 													updateCount = 0;
 													updateMax++;
 													nullUpdate = false;
-												}
+												} else
+													nullUpdate = true;
 												if (++threadLoadCount > threadLoadMax) {
 													// exit every so often, because staying in syncExec too long causes UI lag
 													break;
@@ -95,11 +103,9 @@ public abstract class ConcurrentStringReceiverClient {
 												finished();
 												return;
 											}
-										}
-										if (nullUpdate) {
+										} while ((r = rcache.poll(10, TimeUnit.MILLISECONDS)) != null);
+										if (nullUpdate)
 											update();
-											nullUpdate = false;
-										}
 									} catch (InterruptedException e) {
 										finished();
 										return;
@@ -158,10 +164,12 @@ public abstract class ConcurrentStringReceiverClient {
 
 	public void reset() {
 		try {
+			connection.reset();
+			rcache.add(new QueueEntry("Cancel."));
+			rcache.add(new QueueEntry());
 			rcache.clear();
 			rcache.add(new QueueEntry("Cancel."));
 			rcache.add(new QueueEntry());
-			connection.reset();
 		} catch (IOException e) {
 			System.out.println("ConcurrentStringReceiverClient: Exception during reset(): " + e);
 		}

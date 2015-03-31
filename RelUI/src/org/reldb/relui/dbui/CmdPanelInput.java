@@ -39,143 +39,6 @@ public class CmdPanelInput extends Composite {
 	private FileDialog loadDialog = null;
 	private FileDialog saveDialog = null;
 	
-	private void showRunningStart() {
-		cmdPanelBottom.setEnabledRunButton(false);		
-	}
-	
-	private void showRunningStop() {
-		cmdPanelBottom.setEnabledRunButton(true);
-	}
-
-	/** Override to receive notification that the cancel button has been pressed. */
-	public void notifyStop() {}
-	
-	/** Override to receive notification that the run button has been pressed.  Must invoke done() when 
-	 * ready to receive another notification. */
-	public void notifyGo(String text) {}
-	
-	/** Must invoke this after processing invoked by run button has finished, and we're ready to receive another 'run' notification. */
-	public void done() {
-		showRunningStop();
-	}
-	
-	public static boolean isLastNonWhitespaceCharacter(String s, char c) {
-		int endPosn = s.length() - 1;
-		if (endPosn < 0)
-			return false;
-		while (endPosn >= 0 && Character.isWhitespace(s.charAt(endPosn)))
-			endPosn--;
-		if (endPosn < 0)
-			return false;
-		return (s.charAt(endPosn) == c);
-	}
-
-	public void insertInputText(String newText) {
-		int insertionStart;
-		int insertionEnd;
-		Point selectionRange = inputText.getSelectionRange();
-		if (selectionRange == null) {
-			insertionStart = insertionEnd = inputText.getCaretOffset();
-		} else {
-			insertionStart = selectionRange.x;
-			insertionEnd = selectionRange.y + insertionStart;
-		}
-		String before = inputText.getText().substring(0, insertionStart);
-		String after = inputText.getText().substring(insertionEnd, inputText.getText().length());
-		inputText.setText(before + newText + after);
-		inputText.setCaretOffset(before.length() + newText.length());
-	}
-	
-	public String getInputText() {
-		return inputText.getText();
-	}
-
-	public StyledText getInputTextWidget() {
-		return inputText;
-	}
-	
-	/** Override to be notified that copyInputToOutput setting has changed. */
-	protected void setCopyInputToOutput(boolean selection) {
-	}
-
-	/** Override to be notified that an announcement has been raised. */
-	protected void announcement(String msg) {
-	}
-	
-	/** Override to be notified about an error. */
-	protected void announceError(String msg, Throwable t) {
-	}
-	
-	/** Get number of items in History. */
-	private int getHistorySize() {
-		return entryHistory.size();
-	}
-
-	/** Get history item. */
-	private String getHistoryItemAt(int index) {
-		if (index < 0 || index >= entryHistory.size())
-			return null;
-		return entryHistory.get(index);
-	}
-
-	/** Get previous history item. */
-	private String getPreviousHistoryItem() {
-		if (currentHistoryItem > 0)
-			currentHistoryItem--;
-		setButtons();
-		return getHistoryItemAt(currentHistoryItem);
-	}
-
-	/** Get next history item. */
-	private String getNextHistoryItem() {
-		currentHistoryItem++;
-		if (currentHistoryItem >= entryHistory.size())
-			currentHistoryItem = entryHistory.size() - 1;
-		setButtons();
-		return getHistoryItemAt(currentHistoryItem);
-	}
-
-	/** Add a history item. */
-	private void addHistoryItem(String s) {
-		entryHistory.add(s);
-		currentHistoryItem = entryHistory.size() - 1;
-		setButtons();
-	}
-
-	/** Set up history button status. */
-	private void setButtons() {
-		tlitmPrevHistory.setEnabled(currentHistoryItem > 0 && getHistorySize() > 1);
-		tlitmNextHistory.setEnabled(currentHistoryItem < getHistorySize() - 1 && getHistorySize() > 1);
-	}
-
-	private void run() {
-		showRunningStart();
-		String text = getInputText();
-		addHistoryItem(text);
-		notifyGo(text);	
-	}
-
-	private void stop() {
-		notifyStop();
-	}
-	
-	private void ensureSaveDialogExists() {
-		if (saveDialog == null) {
-			saveDialog = new FileDialog(getShell(), SWT.SAVE);
-			saveDialog.setFilterPath(System.getProperty("user.home"));
-			saveDialog.setText("Save");
-			saveDialog.setOverwrite(true);
-		}		
-	}
-
-	private void ensureLoadDialogExists() {
-		if (loadDialog == null) {
-			loadDialog = new FileDialog(getShell(), SWT.OPEN);
-			loadDialog.setFilterPath(System.getProperty("user.home"));
-			loadDialog.setText("Load");
-		}
-	}
-	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -219,7 +82,7 @@ public class CmdPanelInput extends Composite {
 		inputText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (e.keyCode == 0x100000e)
+				if (e.keyCode == 0x100000e && inputText.isEnabled())
 					run();
 			}
 		});
@@ -290,21 +153,7 @@ public class CmdPanelInput extends Composite {
 				String fname = loadDialog.open();
 				if (fname == null)
 					return;
-				try {
-					BufferedReader f = new BufferedReader(new FileReader(fname));
-					StringBuffer fileImage = new StringBuffer();
-					String line;
-					while ((line = f.readLine()) != null) {
-						if (fileImage.length() > 0)
-							fileImage.append('\n');
-						fileImage.append(line);
-					}
-					f.close();
-					insertInputText(fileImage.toString());
-					announcement("Loaded " + fname);
-				} catch (Exception ioe) {
-					announceError(ioe.toString(), ioe);
-				}
+				loadFile(fname);
 			}
 		});
 		
@@ -403,6 +252,161 @@ public class CmdPanelInput extends Composite {
 		});
 		
 		setButtons();
+	}
+
+	/** Override to receive notification that the cancel button has been pressed. */
+	public void notifyStop() {}
+	
+	/** Override to receive notification that the run button has been pressed.  Must invoke done() when 
+	 * ready to receive another notification. */
+	public void notifyGo(String text) {}
+	
+	/** Must invoke this after processing invoked by run button has finished, and we're ready to receive another 'run' notification. */
+	public void done() {
+		showRunningStop();
+	}
+	
+	public static boolean isLastNonWhitespaceCharacter(String s, char c) {
+		int endPosn = s.length() - 1;
+		if (endPosn < 0)
+			return false;
+		while (endPosn >= 0 && Character.isWhitespace(s.charAt(endPosn)))
+			endPosn--;
+		if (endPosn < 0)
+			return false;
+		return (s.charAt(endPosn) == c);
+	}
+
+	public void insertInputText(String newText) {
+		int insertionStart;
+		int insertionEnd;
+		Point selectionRange = inputText.getSelectionRange();
+		if (selectionRange == null) {
+			insertionStart = insertionEnd = inputText.getCaretOffset();
+		} else {
+			insertionStart = selectionRange.x;
+			insertionEnd = selectionRange.y + insertionStart;
+		}
+		String before = inputText.getText().substring(0, insertionStart);
+		String after = inputText.getText().substring(insertionEnd, inputText.getText().length());
+		inputText.setText(before + newText + after);
+		inputText.setCaretOffset(before.length() + newText.length());
+	}
+	
+	public String getInputText() {
+		return inputText.getText();
+	}
+
+	public StyledText getInputTextWidget() {
+		return inputText;
+	}
+	
+	public void loadFile(String fname) {
+		try {
+			BufferedReader f = new BufferedReader(new FileReader(fname));
+			StringBuffer fileImage = new StringBuffer();
+			String line;
+			while ((line = f.readLine()) != null) {
+				if (fileImage.length() > 0)
+					fileImage.append('\n');
+				fileImage.append(line);
+			}
+			f.close();
+			insertInputText(fileImage.toString());
+			announcement("Loaded " + fname);
+		} catch (Exception ioe) {
+			announceError(ioe.toString(), ioe);
+		}
+	}
+		
+	private void showRunningStart() {
+		cmdPanelBottom.setEnabledRunButton(false);		
+	}
+	
+	private void showRunningStop() {
+		cmdPanelBottom.setEnabledRunButton(true);
+	}
+	
+	/** Override to be notified that copyInputToOutput setting has changed. */
+	protected void setCopyInputToOutput(boolean selection) {
+	}
+
+	/** Override to be notified that an announcement has been raised. */
+	protected void announcement(String msg) {
+	}
+	
+	/** Override to be notified about an error. */
+	protected void announceError(String msg, Throwable t) {
+	}
+	
+	/** Get number of items in History. */
+	private int getHistorySize() {
+		return entryHistory.size();
+	}
+
+	/** Get history item. */
+	private String getHistoryItemAt(int index) {
+		if (index < 0 || index >= entryHistory.size())
+			return null;
+		return entryHistory.get(index);
+	}
+
+	/** Get previous history item. */
+	private String getPreviousHistoryItem() {
+		if (currentHistoryItem > 0)
+			currentHistoryItem--;
+		setButtons();
+		return getHistoryItemAt(currentHistoryItem);
+	}
+
+	/** Get next history item. */
+	private String getNextHistoryItem() {
+		currentHistoryItem++;
+		if (currentHistoryItem >= entryHistory.size())
+			currentHistoryItem = entryHistory.size() - 1;
+		setButtons();
+		return getHistoryItemAt(currentHistoryItem);
+	}
+
+	/** Add a history item. */
+	private void addHistoryItem(String s) {
+		entryHistory.add(s);
+		currentHistoryItem = entryHistory.size() - 1;
+		setButtons();
+	}
+
+	/** Set up history button status. */
+	private void setButtons() {
+		tlitmPrevHistory.setEnabled(currentHistoryItem > 0 && getHistorySize() > 1);
+		tlitmNextHistory.setEnabled(currentHistoryItem < getHistorySize() - 1 && getHistorySize() > 1);
+	}
+
+	private void run() {
+		showRunningStart();
+		String text = getInputText();
+		addHistoryItem(text);
+		notifyGo(text);	
+	}
+
+	private void stop() {
+		notifyStop();
+	}
+	
+	private void ensureSaveDialogExists() {
+		if (saveDialog == null) {
+			saveDialog = new FileDialog(getShell(), SWT.SAVE);
+			saveDialog.setFilterPath(System.getProperty("user.home"));
+			saveDialog.setText("Save");
+			saveDialog.setOverwrite(true);
+		}		
+	}
+
+	private void ensureLoadDialogExists() {
+		if (loadDialog == null) {
+			loadDialog = new FileDialog(getShell(), SWT.OPEN);
+			loadDialog.setFilterPath(System.getProperty("user.home"));
+			loadDialog.setText("Load");
+		}
 	}
 	
 }
