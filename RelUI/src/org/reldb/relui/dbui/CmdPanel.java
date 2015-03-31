@@ -188,6 +188,95 @@ public class CmdPanel extends Composite {
 		outputHTML(ResponseToHTML.textToHTML(dbTab.getInitialServerResponse()));
 		goodResponse("Ok.");
 	}
+
+	public void clearOutput() {
+		browser.clear();
+		styledText.setText("");
+	}
+
+	public void copyOutputToInput() {
+		String selection = styledText.getSelectionText();
+		if (selection.length() == 0)
+			cmdPanelInput.insertInputText(cmdPanelInput.getInputText() + styledText.getText());
+		else
+			cmdPanelInput.insertInputText(cmdPanelInput.getInputText() + selection);
+	}
+
+	public void setEnhancedOutput(boolean selection) {
+		outputStackLayout.topControl = (selection) ? browser.getWidget() : styledText;
+		outputStack.layout();
+		isEnhancedOutput = selection;
+	}
+
+	public boolean getEnhancedOutput() {
+		return isEnhancedOutput;
+	}
+
+	public void setShowOk(boolean selection) {
+		showOk = selection;
+	}
+
+	public boolean getShowOk() {
+		return showOk;
+	}
+
+	public void setHeadingVisible(boolean selection) {
+		isShowHeadings = selection;
+	}
+
+	public boolean getHeadingVisible() {
+		return isShowHeadings;
+	}
+
+	public void setHeadingTypesVisible(boolean selection) {
+		isShowHeadingTypes = selection;
+	}
+
+	public boolean getHeadingTypesVisible() {
+		return isShowHeadingTypes;
+	}
+
+	public void setAutoclear(boolean selection) {
+		isAutoclear = selection;
+	}
+
+	public boolean getAutoclear() {
+		return isAutoclear;
+	}
+	
+	public void saveOutputAsHtml() {
+		ensureSaveDialogExists();
+		saveDialog.setFilterExtensions(new String[] {"*.html", "*.*"});
+		saveDialog.setFilterNames(new String[] {"HTML", "All Files"});
+		String fname = saveDialog.open();
+		if (fname == null)
+			return;
+		try {
+			BufferedWriter f = new BufferedWriter(new FileWriter(fname));
+			f.write(browser.getText());
+			f.close();
+			systemResponse("Saved " + fname);
+		} catch (IOException ioe) {
+			badResponse(ioe.toString());
+		}
+	}
+
+	public void saveOutputAsText() {
+		ensureSaveDialogExists();
+		saveDialog.setFilterExtensions(new String[] {"*.txt", "*.*"});
+		saveDialog.setFilterNames(new String[] {"ASCII text", "All Files"});
+		String fname = saveDialog.open();
+		if (fname == null)
+			return;
+		try {
+			BufferedWriter f = new BufferedWriter(new FileWriter(fname));
+			f.write(styledText.getText());
+			f.close();
+			systemResponse("Saved " + fname);
+		} catch (IOException ioe) {
+			badResponse(ioe.toString());
+		}
+	}
 	
 	public void dispose() {
 		clearOutput();
@@ -198,6 +287,15 @@ public class CmdPanel extends Composite {
 		grey.dispose();
 		yellow.dispose();
 		super.dispose();
+	}
+
+	private void ensureSaveDialogExists() {
+		if (saveDialog == null) {
+			saveDialog = new FileDialog(getShell(), SWT.SAVE);
+			saveDialog.setFilterPath(System.getProperty("user.home"));
+			saveDialog.setText("Save Output");
+			saveDialog.setOverwrite(true);
+		}		
 	}
 	
 	private void outputPlain(String s, Color color) {
@@ -259,46 +357,49 @@ public class CmdPanel extends Composite {
 		outputPlain(s + '\n', color);
 	}
 
+	private void response(String msg, String htmlClass, Color colour, boolean bold) {
+		String msgPrefixTag;
+		String msgSuffixTag;
+		if (bold) {
+			msgPrefixTag = "<b>";
+			msgSuffixTag = "</b>";
+		} else {
+			msgPrefixTag = "";
+			msgSuffixTag = "";			
+		}
+		outputHTML("<div class=\"" + htmlClass + "\">" + msgPrefixTag + getResponseFormatted(msg, false) + msgSuffixTag + "</div>");
+		responseText(msg, colour);
+		outputUpdated();		
+	}
+	
 	/** Handle a received line of 'good' content. */
 	private void goodResponse(String s) {
-		outputHTML("<div class=\"ok\">" + getResponseFormatted(s, false) + "</div>");
-		responseText(s, green);
-		outputUpdated();
+		response(s, "ok", green, false);
 	}
 	
 	/** Handle a received line of 'warning' content. */
 	private void warningResponse(String s) {
-		outputHTML("<div class=\"warn\"><b>" + getResponseFormatted(s, false) + "</b></div>");
-		responseText(s, yellow);
-		outputUpdated();
+		response(s, "warn", yellow, true);
 	}
 
 	/** Handle user entry. */
 	private void userResponse(String s) {
-		outputHTML("<div class=\"user\"><b>" + getResponseFormatted(s, false) + "</b></div>");
-		responseText(s, grey);
-		outputUpdated();
+		response(s, "user", grey, true);
 	}
 
 	/** Handle a received line of system notice. */
 	private void systemResponse(String s) {
-		outputHTML("<div class=\"note\">" + getResponseFormatted(s, false) + "</div>");
-		responseText(s, blue);
-		outputUpdated();
+		response(s, "note", blue, false);
 	}
 
 	/** Handle a received line of 'bad' content. */
 	void badResponse(String s) {
-		outputHTML("<div class=\"bad\"><b>" + getResponseFormatted(s, false) + "</b></div>");
-		responseText(s, red);
-		outputUpdated();
+		response(s, "bad", red, true);
 	}
 		
 	/** Handle a notice. */
 	private void noticeResponse(String s) {
-		outputHTML("<font color=\"black\"><b>" + getResponseFormatted(s, false) + "</b></font>");
-		responseText(s, black);
-		outputUpdated();
+		response(s, "notice", black, true);
 	}
 	
 	private static class ErrorInformation {
@@ -391,104 +492,6 @@ public class CmdPanel extends Composite {
 			t.printStackTrace();
 		}
 		return null;
-	}
-
-	public void clearOutput() {
-		browser.clear();
-		styledText.setText("");
-	}
-
-	public void copyOutputToInput() {
-		String selection = styledText.getSelectionText();
-		if (selection.length() == 0)
-			cmdPanelInput.insertInputText(cmdPanelInput.getInputText() + styledText.getText());
-		else
-			cmdPanelInput.insertInputText(cmdPanelInput.getInputText() + selection);
-	}
-
-	public void setEnhancedOutput(boolean selection) {
-		outputStackLayout.topControl = (selection) ? browser.getWidget() : styledText;
-		outputStack.layout();
-		isEnhancedOutput = selection;
-	}
-
-	public boolean getEnhancedOutput() {
-		return isEnhancedOutput;
-	}
-
-	public void setShowOk(boolean selection) {
-		showOk = selection;
-	}
-
-	public boolean getShowOk() {
-		return showOk;
-	}
-
-	public void setHeadingVisible(boolean selection) {
-		isShowHeadings = selection;
-	}
-
-	public boolean getHeadingVisible() {
-		return isShowHeadings;
-	}
-
-	public void setHeadingTypesVisible(boolean selection) {
-		isShowHeadingTypes = selection;
-	}
-
-	public boolean getHeadingTypesVisible() {
-		return isShowHeadingTypes;
-	}
-
-	public void setAutoclear(boolean selection) {
-		isAutoclear = selection;
-	}
-
-	public boolean getAutoclear() {
-		return isAutoclear;
-	}
-
-	private void ensureSaveDialogExists() {
-		if (saveDialog == null) {
-			saveDialog = new FileDialog(getShell(), SWT.SAVE);
-			saveDialog.setFilterPath(System.getProperty("user.home"));
-			saveDialog.setText("Save Output");
-			saveDialog.setOverwrite(true);
-		}		
-	}
-	
-	public void saveOutputAsHtml() {
-		ensureSaveDialogExists();
-		saveDialog.setFilterExtensions(new String[] {"*.html", "*.*"});
-		saveDialog.setFilterNames(new String[] {"HTML", "All Files"});
-		String fname = saveDialog.open();
-		if (fname == null)
-			return;
-		try {
-			BufferedWriter f = new BufferedWriter(new FileWriter(fname));
-			f.write(browser.getText());
-			f.close();
-			systemResponse("Saved " + fname);
-		} catch (IOException ioe) {
-			badResponse(ioe.toString());
-		}
-	}
-
-	public void saveOutputAsText() {
-		ensureSaveDialogExists();
-		saveDialog.setFilterExtensions(new String[] {"*.txt", "*.*"});
-		saveDialog.setFilterNames(new String[] {"ASCII text", "All Files"});
-		String fname = saveDialog.open();
-		if (fname == null)
-			return;
-		try {
-			BufferedWriter f = new BufferedWriter(new FileWriter(fname));
-			f.write(styledText.getText());
-			f.close();
-			systemResponse("Saved " + fname);
-		} catch (IOException ioe) {
-			badResponse(ioe.toString());
-		}
 	}
 
 }
