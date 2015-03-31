@@ -106,7 +106,7 @@ public class CmdPanelInput extends Composite {
 
 		tlitmPrevHistory = new ToolItem(toolBar, SWT.NONE);
 		tlitmPrevHistory.setToolTipText("Load previous historical entry");
-		tlitmPrevHistory.setText("<");
+		tlitmPrevHistory.setImage(ResourceManager.getPluginImage("RelUI", "icons/previousIcon.png"));
 		tlitmPrevHistory.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -118,7 +118,7 @@ public class CmdPanelInput extends Composite {
 		
 		tlitmNextHistory = new ToolItem(toolBar, SWT.NONE);
 		tlitmNextHistory.setToolTipText("Load next historical entry");
-		tlitmNextHistory.setText(">");
+		tlitmNextHistory.setImage(ResourceManager.getPluginImage("RelUI", "icons/nextIcon.png"));
 		tlitmNextHistory.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -370,6 +370,8 @@ public class CmdPanelInput extends Composite {
 
 	/** Add a history item. */
 	private void addHistoryItem(String s) {
+		if (entryHistory.size() > 0 && s.equals(entryHistory.get(entryHistory.size() - 1)))
+			return;
 		entryHistory.add(s);
 		currentHistoryItem = entryHistory.size() - 1;
 		setButtons();
