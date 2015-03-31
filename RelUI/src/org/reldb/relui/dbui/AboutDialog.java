@@ -51,6 +51,7 @@ public class AboutDialog extends Dialog {
 	 */
 	private void createContents() {
 		shell = new Shell(getParent(), SWT.APPLICATION_MODAL);
+		shell.setBackgroundMode(SWT.INHERIT_FORCE);
 		shell.setText("About Rel");
 		shell.setSize(500, 330);
 		
