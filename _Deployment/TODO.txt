@@ -1,7 +1,6 @@
 ** TO DO **
 
 Short term:
-	// TODO - test crash handling (again) and make sure it doesn't cause undue CPU load.
 	// TODO - test client connection reset() on remote databases.
 	// TODO - In RelUI, fix error highlighting when the source text has tabs
 	// TODO - Disallow recursive definitions like TYPE blah IS {blat CONSTRAINT p POSSREP {x = THE_x(blat)}}
