@@ -47,8 +47,6 @@ public class DbTabContentCmd extends Composite {
 				parentTab.makeBackup();
 			}
 		});
-		
-		new ToolItem(toolBar, SWT.SEPARATOR);
 				
 		ToolItem clearOutputBtn = new ToolItem(toolBar, SWT.PUSH);
 		clearOutputBtn.setImage(ResourceManager.getPluginImage("RelUI", "icons/clearIcon.png"));
