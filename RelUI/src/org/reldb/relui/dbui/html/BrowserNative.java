@@ -31,6 +31,8 @@ public class BrowserNative implements HtmlBrowser {
 	
 	@Override
 	public void clear() {
+		browser.stop();
+		browser.setText("");
 		browser.setText(style.getEmptyHTMLDocument());
 		text = new StringBuffer();
 	}
