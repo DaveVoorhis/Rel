@@ -39,7 +39,8 @@ public class CmdPanel extends Composite {
 	private Color grey = new Color(getDisplay(), 128, 128, 128);
 	private Color yellow = new Color(getDisplay(), 255, 215, 0);
 
-	private FileDialog saveDialog;
+	private FileDialog saveHtmlDialog;
+	private FileDialog saveTextDialog;
 	
 	private boolean copyInputToOutput = true;
 	private boolean responseFormatted = false;
@@ -254,10 +255,8 @@ public class CmdPanel extends Composite {
 	}
 	
 	public void saveOutputAsHtml() {
-		ensureSaveDialogExists();
-		saveDialog.setFilterExtensions(new String[] {"*.html", "*.*"});
-		saveDialog.setFilterNames(new String[] {"HTML", "All Files"});
-		String fname = saveDialog.open();
+		ensureSaveHtmlDialogExists();
+		String fname = saveHtmlDialog.open();
 		if (fname == null)
 			return;
 		try {
@@ -271,10 +270,8 @@ public class CmdPanel extends Composite {
 	}
 
 	public void saveOutputAsText() {
-		ensureSaveDialogExists();
-		saveDialog.setFilterExtensions(new String[] {"*.txt", "*.*"});
-		saveDialog.setFilterNames(new String[] {"ASCII text", "All Files"});
-		String fname = saveDialog.open();
+		ensureSaveTextDialogExists();
+		String fname = saveTextDialog.open();
 		if (fname == null)
 			return;
 		try {
@@ -299,12 +296,25 @@ public class CmdPanel extends Composite {
 		super.dispose();
 	}
 
-	private void ensureSaveDialogExists() {
-		if (saveDialog == null) {
-			saveDialog = new FileDialog(getShell(), SWT.SAVE);
-			saveDialog.setFilterPath(System.getProperty("user.home"));
-			saveDialog.setText("Save Output");
-			saveDialog.setOverwrite(true);
+	private void ensureSaveHtmlDialogExists() {
+		if (saveHtmlDialog == null) {
+			saveHtmlDialog = new FileDialog(getShell(), SWT.SAVE);
+			saveHtmlDialog.setFilterPath(System.getProperty("user.home"));
+			saveHtmlDialog.setFilterExtensions(new String[] {"*.html", "*.*"});
+			saveHtmlDialog.setFilterNames(new String[] {"HTML", "All Files"});
+			saveHtmlDialog.setText("Save Output");
+			saveHtmlDialog.setOverwrite(true);
+		}		
+	}
+	
+	private void ensureSaveTextDialogExists() {
+		if (saveTextDialog == null) {
+			saveTextDialog = new FileDialog(getShell(), SWT.SAVE);
+			saveTextDialog.setFilterPath(System.getProperty("user.home"));
+			saveTextDialog.setFilterExtensions(new String[] {"*.txt", "*.*"});
+			saveTextDialog.setFilterNames(new String[] {"Text", "All Files"});
+			saveTextDialog.setText("Save Output");
+			saveTextDialog.setOverwrite(true);
 		}		
 	}
 	
