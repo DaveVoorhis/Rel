@@ -25,7 +25,6 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 public class AboutDialog extends Dialog {
 
-	protected Object result;
 	protected Shell shell;
 
 	/**
@@ -40,9 +39,8 @@ public class AboutDialog extends Dialog {
 	
 	/**
 	 * Open the dialog.
-	 * @return the result
 	 */
-	public Object open() {
+	public void open() {
 		createContents();
 		shell.open();
 		shell.layout();
@@ -52,7 +50,6 @@ public class AboutDialog extends Dialog {
 				display.sleep();
 			}
 		}
-		return result;
 	}
 
 	private boolean isPointInText(Control control, String s, int rightPosn, int topPosn, Point p) {
