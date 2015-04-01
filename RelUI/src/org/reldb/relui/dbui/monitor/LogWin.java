@@ -9,9 +9,11 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.ResourceManager;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.graphics.Color;
 
 public class LogWin {
 	
@@ -20,7 +22,12 @@ public class LogWin {
 	protected static Shell shell;
 	
 	private StyledText textLog;
+	
+	private Color red;
+	private Color black;
 
+	private static String criticalSection = "";
+	
 	protected LogWin() {
 		createContents();
 	}
@@ -62,6 +69,9 @@ public class LogWin {
 				shell.setVisible(false);
 			}
 		});
+
+		red = new Color(shell.getDisplay(), 128, 0, 0);
+		black = new Color(shell.getDisplay(), 0, 0, 0);
 		
 		ToolBar toolBar = new ToolBar(shell, SWT.FLAT | SWT.RIGHT);
 		FormData fd_toolBar = new FormData();
@@ -87,16 +97,69 @@ public class LogWin {
 		textLog.setLayoutData(fd_textLog);
 	}
 	
-	private void output(String s) {
-		if (textLog.getText().length() > 1000000)
-	    	textLog.setText("[...]\n" + textLog.getText().substring(10000));
-		textLog.append(s);
+	public void dispose() {
+		red.dispose();
+		black.dispose();
+		shell.dispose();
 	}
 	
-	public static synchronized void log(String s) {
+	private void output(String s, Color color) {
+		StyleRange styleRange = new StyleRange();
+		styleRange.start = textLog.getCharCount();
+		styleRange.length = s.length();
+		styleRange.fontStyle = SWT.NORMAL;
+		styleRange.foreground = color;		
+		textLog.append(s);
+		textLog.setStyleRange(styleRange);
+	}
+	
+	private void cull() {
+		if (textLog.getText().length() > 1000000)
+	    	textLog.setText("[...]\n" + textLog.getText().substring(10000));		
+	}
+	
+	private void outputMessage(String s) {
+		cull();
+		output(s, black);
+	}
+	
+	private void outputError(String s) {
+		cull();
+		output(s, red);
+	}
+	
+	private static void ensureWindowExists() {
 		if (window == null)
-			window = new LogWin();
-		window.output(s);
+			window = new LogWin();		
+	}
+	
+	public static void logMessage(String s) {
+		synchronized (criticalSection) {
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					ensureWindowExists();
+					window.outputMessage(s);
+				}
+			});
+		}
+	}
+	
+	public static void logError(String s) {
+		synchronized (criticalSection) {
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					ensureWindowExists();
+					window.outputError(s);
+				}
+			});
+		}
+	}
+
+	public static void remove() {
+		if (window != null)
+			window.dispose();
 	}
 	
 }
