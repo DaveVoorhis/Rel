@@ -29,10 +29,12 @@ public class CmdPanelBottom extends Composite {
 		FormData fd_lblRowCol = new FormData();
 		fd_lblRowCol.width = 80;
 		fd_lblRowCol.left = new FormAttachment(0);
+		fd_lblRowCol.top = new FormAttachment(0);
+		fd_lblRowCol.bottom = new FormAttachment(100);
 		lblRowCol.setLayoutData(fd_lblRowCol);
 		lblRowCol.setText("0000:0000");
 				
-		btnGo = new Button(this, SWT.BORDER);
+		btnGo = new Button(this, SWT.NONE);
 		FormData fd_btnGo = new FormData();
 		fd_btnGo.left = new FormAttachment(lblRowCol);
 		fd_btnGo.top = new FormAttachment(0);

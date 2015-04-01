@@ -42,8 +42,17 @@ public class BrowserNative implements HtmlBrowser {
 		text = new StringBuffer();
 	}
 	
+	private boolean appendTested = false;
+	private boolean appendSupported = false;
+	
 	@Override
 	public void appendHtml(String s) {
+		if (!appendTested || appendSupported) {
+			appendSupported = browser.execute("document.getElementById(\"body\").innerHTML += '" + cleanForJavascriptInsertion(s) + "'");
+			appendTested = true;
+			if (appendSupported)
+				return;
+		}
 		browser.execute(String.format("document.write('%s');", cleanForJavascriptInsertion(style.getHTMLDocument(s))));
 		text.append(s);
 	}
