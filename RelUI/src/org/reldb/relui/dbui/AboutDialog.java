@@ -82,7 +82,7 @@ public class AboutDialog extends Dialog {
 		});
 		shell.setDefaultButton(btnOk);
 		
-		int urlTop = 212;
+		int urlTop = 220;
     	int rightPos = 491;
 
 		Label lblImage = new Label(shell, SWT.NONE);
