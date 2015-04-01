@@ -38,6 +38,7 @@ public class BrowserNative implements HtmlBrowser {
 		browser.stop();
 		browser.setText("");
 		browser.setText(style.getEmptyHTMLDocument());
+		browser.refresh();
 		text = new StringBuffer();
 	}
 	
