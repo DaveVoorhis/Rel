@@ -22,7 +22,7 @@ public class DbTabContentCmd extends Composite {
 	public DbTabContentCmd(DbTab parentTab, Composite contentParent) throws NumberFormatException, ClassNotFoundException, IOException {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
-				
+
 		ToolBar toolBar = new ToolBar(this, SWT.None);
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);

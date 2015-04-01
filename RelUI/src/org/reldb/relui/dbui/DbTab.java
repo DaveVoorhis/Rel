@@ -13,6 +13,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -168,28 +169,51 @@ public class DbTab extends CTabItem {
 	}
 
 	private void showRel() {
-		if (contentRel == null)
-			contentRel = new DbTabContentRel(DbTab.this, modeContent);
-		contentStack.topControl = contentRel;
-		modeContent.layout();
+			if (contentRel == null) {
+				Cursor oldCursor = getParent().getCursor();
+				getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
+				try {
+					contentRel = new DbTabContentRel(DbTab.this, modeContent);
+				} finally {
+					getParent().getCursor().dispose();
+					getParent().setCursor(oldCursor);
+				}
+			}
+			contentStack.topControl = contentRel;
+			modeContent.layout();
 	}
 
 	private void showRev() {
-		if (contentRev == null)
-			contentRev = new DbTabContentRev(DbTab.this, modeContent);
-		contentStack.topControl = contentRev;
-		modeContent.layout();		
+			if (contentRev == null) {
+				Cursor oldCursor = getParent().getCursor();
+				getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
+				try {
+					contentRev = new DbTabContentRev(DbTab.this, modeContent);
+				} finally {
+					getParent().getCursor().dispose();
+					getParent().setCursor(oldCursor);
+				}
+			}
+			contentStack.topControl = contentRev;
+			modeContent.layout();		
 	}
 	
 	private void showCmd() {
-		if (contentCmd == null)
+		if (contentCmd == null) {
+			Cursor oldCursor = getParent().getCursor();
+			getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
 			try {
 				contentCmd = new DbTabContentCmd(DbTab.this, modeContent);
-			} catch (NumberFormatException | ClassNotFoundException | IOException e) {
+				getParent().getCursor().dispose();
+				getParent().setCursor(oldCursor);
+			} catch (Exception e) {
+				getParent().getCursor().dispose();
+				getParent().setCursor(oldCursor);
 	        	MessageDialog.openError(DbMain.getShell(), "Unable to open local database",
 	        			wrapped("Unable to open command line due to error: " + e.toString()));
 	        	return;
 			}
+		}
 		contentStack.topControl = contentCmd;
 		modeContent.layout();		
 	}
@@ -313,18 +337,25 @@ public class DbTab extends CTabItem {
 	
     /** Open a connection and associated panel. */
     private boolean openConnection(String dbURL, boolean permanent, boolean canCreate) {
-		setText(dbURL);
-    	if (DbMain.isNoLocalRel() && dbURL.startsWith("local:")) {
-    		doConnectionResultFailed("Local Rel server is not installed.", dbURL);
-    		return false;
-    	}
-    	connection = attemptConnectionOpen(dbURL, canCreate);
-    	if (connection.client != null) {
-    		doConnectionResultSuccess(connection.client, dbURL, permanent);
-    		return true;
-    	} else {
-    		doConnectionResultFailed(connection.exception, dbURL);
-    		return false;
+		Cursor oldCursor = getParent().getCursor();
+		getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
+    	try {
+			setText(dbURL);
+	    	if (DbMain.isNoLocalRel() && dbURL.startsWith("local:")) {
+	    		doConnectionResultFailed("Local Rel server is not installed.", dbURL);
+	    		return false;
+	    	}
+	    	connection = attemptConnectionOpen(dbURL, canCreate);
+	    	if (connection.client != null) {
+	    		doConnectionResultSuccess(connection.client, dbURL, permanent);
+	    		return true;
+	    	} else {
+	    		doConnectionResultFailed(connection.exception, dbURL);
+	    		return false;
+	    	}
+    	} finally {
+			getParent().getCursor().dispose();
+			getParent().setCursor(oldCursor);
     	}
     }
 	
