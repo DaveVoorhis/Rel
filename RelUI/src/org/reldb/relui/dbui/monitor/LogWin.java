@@ -98,9 +98,9 @@ public class LogWin {
 	}
 	
 	public void dispose() {
+		close();
 		red.dispose();
 		black.dispose();
-		shell.dispose();
 	}
 	
 	private void output(String s, Color color) {
