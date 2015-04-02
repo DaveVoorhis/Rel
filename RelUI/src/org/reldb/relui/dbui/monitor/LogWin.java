@@ -1,10 +1,14 @@
 package org.reldb.relui.dbui.monitor;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.ToolBar;
@@ -15,6 +19,8 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Color;
@@ -30,6 +36,7 @@ public class LogWin {
 	
 	private Color red;
 	private Color black;
+	private Color blue;
 	
 	private static class Message {
 		String msg;
@@ -50,6 +57,8 @@ public class LogWin {
 	private BlockingQueue<Message> messageQueue;
 	private boolean running = true;
 	
+	private FileDialog saveTextDialog;
+	
 	protected LogWin(Composite parent) {
 		messageQueue = new LinkedBlockingQueue<Message>();
 
@@ -67,6 +76,7 @@ public class LogWin {
 
 		red = new Color(shell.getDisplay(), 200, 0, 0);
 		black = new Color(shell.getDisplay(), 0, 0, 0);
+		blue = new Color(shell.getDisplay(), 0, 0, 128);
 		
 		ToolBar toolBar = new ToolBar(shell, SWT.FLAT | SWT.RIGHT);
 		FormData fd_toolBar = new FormData();
@@ -77,10 +87,40 @@ public class LogWin {
 		ToolItem tltmClear = new ToolItem(toolBar, SWT.NONE);
 		tltmClear.setToolTipText("Clear");
 		tltmClear.setImage(ResourceManager.getPluginImage("RelUI", "icons/clearIcon.png"));
+		tltmClear.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				textLog.setText("");
+			}
+		});
 		
 		ToolItem tltmSave = new ToolItem(toolBar, SWT.NONE);
 		tltmSave.setToolTipText("Save");
 		tltmSave.setImage(ResourceManager.getPluginImage("RelUI", "icons/saveIcon.png"));
+		tltmSave.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (saveTextDialog == null) {
+					saveTextDialog = new FileDialog(shell, SWT.SAVE);
+					saveTextDialog.setFilterPath(System.getProperty("user.home"));
+					saveTextDialog.setFilterExtensions(new String[] {"*.txt", "*.*"});
+					saveTextDialog.setFilterNames(new String[] {"Text", "All Files"});
+					saveTextDialog.setText("Save Output");
+					saveTextDialog.setOverwrite(true);
+				}
+				String fname = saveTextDialog.open();
+				if (fname == null)
+					return;
+				try {
+					BufferedWriter f = new BufferedWriter(new FileWriter(fname));
+					f.write(textLog.getText());
+					f.close();
+					output("Saved " + fname, blue);
+				} catch (IOException ioe) {
+					output(ioe.toString(), red);
+				}
+			}
+		});	
 		
 		textLog = new StyledText(shell, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI | SWT.H_SCROLL);
 		textLog.setEditable(false);
@@ -109,7 +149,7 @@ public class LogWin {
 					parent.getDisplay().syncExec(new Runnable() {
 						@Override
 						public void run() {
-							if (!parent.isDisposed()) {
+							if (!textLog.isDisposed()) {
 								try {
 									Message message = awaitedEntry;
 									int threadLoadCount = 0;
@@ -167,6 +207,7 @@ public class LogWin {
 		close();
 		red.dispose();
 		black.dispose();
+		blue.dispose();
 	}
 	
 	private void cull() {
