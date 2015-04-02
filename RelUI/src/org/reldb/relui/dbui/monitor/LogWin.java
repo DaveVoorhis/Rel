@@ -1,7 +1,8 @@
 package org.reldb.relui.dbui.monitor;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -19,46 +20,39 @@ import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Color;
 
 public class LogWin {
-	
+
+	private static final int threadLoadMax = 10;
+
 	private static LogWin window;
 	protected static Shell shell;
-
-	private Composite parent;
 		
 	private StyledText textLog;
 	
 	private Color red;
 	private Color black;
 	
-	private boolean disposable = false;
+	private static class Message {
+		String msg;
+		Color color;
+		public Message(String msg, Color color) {
+			this.msg = msg;
+			this.color = color;
+		}
+		public Message() {
+			this.msg = null;
+			this.color = null;
+		}
+		public boolean isNull() {
+			return this.msg == null && this.color == null;
+		}
+	}
+	
+	private BlockingQueue<Message> messageQueue;
+	private boolean running = true;
 	
 	protected LogWin(Composite parent) {
-		this.parent = parent;
-		createContents();
-	}
-	
-	/**
-	 * Open the window.
-	 * @param parent 
-	 */
-	public static void open() {
-		if (shell.isVisible())
-			return;
-		shell.open();
-		shell.layout();
-	}
+		messageQueue = new LinkedBlockingQueue<Message>();
 
-	/**
-	 * Close the window.
-	 */
-	private void close() {
-		shell.close();
-	}
-	
-	/**
-	 * Create contents of the window.
-	 */
-	protected void createContents() {
 		shell = new Shell(parent.getDisplay());
 		shell.setSize(450, 300);
 		shell.setText("Rel System Log");
@@ -66,14 +60,12 @@ public class LogWin {
 		shell.addShellListener(new ShellAdapter() {
 			@Override
 			public void shellClosed(ShellEvent e) {
-				if (!disposable) {
-					e.doit = false;
-					shell.setVisible(false);
-				}
+				e.doit = false;
+				shell.setVisible(false);
 			}
 		});
 
-		red = new Color(shell.getDisplay(), 128, 0, 0);
+		red = new Color(shell.getDisplay(), 200, 0, 0);
 		black = new Color(shell.getDisplay(), 0, 0, 0);
 		
 		ToolBar toolBar = new ToolBar(shell, SWT.FLAT | SWT.RIGHT);
@@ -98,6 +90,77 @@ public class LogWin {
 		fd_textLog.top = new FormAttachment(toolBar);
 		fd_textLog.left = new FormAttachment(0);
 		textLog.setLayoutData(fd_textLog);
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (running) {
+					// wait for data to show up
+					Message awaitedEntry;
+					try {
+						awaitedEntry = messageQueue.take();
+					} catch (InterruptedException e1) {
+						continue;
+					}
+					if (parent.isDisposed() || parent.getDisplay().isDisposed()) {
+						running = false;
+						return;
+					}
+					parent.getDisplay().syncExec(new Runnable() {
+						@Override
+						public void run() {
+							if (!parent.isDisposed()) {
+								try {
+									Message message = awaitedEntry;
+									int threadLoadCount = 0;
+									do {
+										if (message.isNull()) {
+											running = false;
+											return;
+										} else {
+											cull();
+											StyleRange styleRange = new StyleRange();
+											styleRange.start = textLog.getCharCount();
+											styleRange.length = message.msg.length();
+											styleRange.fontStyle = SWT.NORMAL;
+											styleRange.foreground = message.color;
+											textLog.append(message.msg);
+											textLog.setStyleRange(styleRange);
+										}
+										if (++threadLoadCount > threadLoadMax) {
+											// exit every so often, because staying in syncExec too long causes UI lag
+											return;
+										}
+									} while ((message = messageQueue.poll(100, TimeUnit.MILLISECONDS)) != null);
+									textLog.setCaretOffset(textLog.getCharCount());
+									textLog.setSelection(textLog.getCaretOffset(), textLog.getCaretOffset());		
+								} catch (InterruptedException e) {
+									return;
+								}
+							}
+						}
+					});
+				}
+			}
+		}).start();
+	}
+	
+	/**
+	 * Open the window.
+	 * @param parent 
+	 */
+	public static void open() {
+		if (shell.isVisible())
+			return;
+		shell.open();
+		shell.layout();
+	}
+
+	/**
+	 * Close the window.
+	 */
+	private void close() {
+		shell.close();
 	}
 	
 	public void dispose() {
@@ -111,38 +174,8 @@ public class LogWin {
 	    	textLog.setText("[...]\n" + textLog.getText().substring(10000));		
 	}
 	
-	private Timer updateTimer = null;
-	
 	private void output(String s, Color color) {
-		if (!shell.isDisposed() && !shell.getDisplay().isDisposed() && !shell.isDisposed())
-			shell.getDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					cull();
-					StyleRange styleRange = new StyleRange();
-					styleRange.start = textLog.getCharCount();
-					styleRange.length = s.length();
-					styleRange.fontStyle = SWT.NORMAL;
-					styleRange.foreground = color;		
-					textLog.append(s);
-					textLog.setStyleRange(styleRange);
-					if (updateTimer != null)
-						updateTimer.cancel();
-					updateTimer = new Timer();
-					updateTimer.schedule(new TimerTask() {
-						@Override
-						public void run() {
-							shell.getDisplay().asyncExec(new Runnable() {
-								@Override
-								public void run() {
-									textLog.setCaretOffset(textLog.getCharCount());
-									textLog.setSelection(textLog.getCaretOffset(), textLog.getCaretOffset());		
-								}
-							});
-						}
-					}, 250);
-				}
-			});
+		messageQueue.add(new Message(s, color));
 	}
 	
 	private static Interceptor outInterceptor;
@@ -168,10 +201,12 @@ public class LogWin {
 	}
 
 	public static void remove() {
-		if (!shell.isVisible())
-			window.dispose();
-		else
-			window.disposable = true;
+		outInterceptor.detachOut();
+		errInterceptor.detachErr();
+		window.messageQueue.add(new Message());
+		window.messageQueue.clear();
+		window.messageQueue.add(new Message());
+		window.dispose();
 	}
 	
 }

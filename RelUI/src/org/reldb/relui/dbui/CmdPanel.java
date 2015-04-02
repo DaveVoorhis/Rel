@@ -32,7 +32,7 @@ public class CmdPanel extends Composite {
 	private boolean isShowHeadingTypes = true;
 	private boolean isAutoclear = true;
 	
-	private Color red = new Color(getDisplay(), 128, 0, 0);
+	private Color red = new Color(getDisplay(), 200, 0, 0);
 	private Color green = new Color(getDisplay(), 0, 128, 0);
 	private Color blue = new Color(getDisplay(), 0, 0, 128);
 	private Color black = new Color(getDisplay(), 0, 0, 0);
