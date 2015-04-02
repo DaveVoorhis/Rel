@@ -6,17 +6,13 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.reldb.relui.dbui.StatusPanel;
-import org.reldb.relui.dbui.monitor.Interceptor;
 import org.reldb.relui.dbui.monitor.LogWin;
-import org.reldb.relui.dbui.monitor.Logger;
 
 public class MainPanel extends Composite {
 	
@@ -28,7 +24,6 @@ public class MainPanel extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	@SuppressWarnings("resource")
 	public MainPanel(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FormLayout());
@@ -38,21 +33,8 @@ public class MainPanel extends Composite {
 				LogWin.remove();
 			}
 		});
-		
-    	class LogMessages implements Logger {
-			public void log(String s) {
-				LogWin.logMessage(s);
-			}
-    	};
-    	class LogErrors implements Logger {
-			public void log(String s) {
-				LogWin.logError(s);
-			}
-    	};
-		Interceptor outInterceptor = new Interceptor(System.out, new LogMessages());
-		outInterceptor.attachOut();
-		Interceptor errInterceptor = new Interceptor(System.err, new LogErrors());
-		errInterceptor.attachErr();
+
+		LogWin.install(parent);
 		
 		tabFolder = new CTabFolder(this, SWT.None);
 		FormData fd_tabFolder = new FormData();

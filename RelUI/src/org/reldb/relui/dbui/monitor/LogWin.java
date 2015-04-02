@@ -1,6 +1,9 @@
 package org.reldb.relui.dbui.monitor;
 
-import org.eclipse.swt.widgets.Display;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.ToolBar;
@@ -18,17 +21,19 @@ import org.eclipse.swt.graphics.Color;
 public class LogWin {
 	
 	private static LogWin window;
-
 	protected static Shell shell;
-	
+
+	private Composite parent;
+		
 	private StyledText textLog;
 	
 	private Color red;
 	private Color black;
-
-	private static String criticalSection = "";
 	
-	protected LogWin() {
+	private boolean disposable = false;
+	
+	protected LogWin(Composite parent) {
+		this.parent = parent;
 		createContents();
 	}
 	
@@ -37,20 +42,16 @@ public class LogWin {
 	 * @param parent 
 	 */
 	public static void open() {
-		Display display = Display.getDefault();
+		if (shell.isVisible())
+			return;
 		shell.open();
 		shell.layout();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
 	}
 
 	/**
 	 * Close the window.
 	 */
-	public void close() {
+	private void close() {
 		shell.close();
 	}
 	
@@ -58,15 +59,17 @@ public class LogWin {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shell = new Shell();
+		shell = new Shell(parent.getDisplay());
 		shell.setSize(450, 300);
 		shell.setText("Rel System Log");
 		shell.setLayout(new FormLayout());
 		shell.addShellListener(new ShellAdapter() {
 			@Override
 			public void shellClosed(ShellEvent e) {
-				e.doit = false;
-				shell.setVisible(false);
+				if (!disposable) {
+					e.doit = false;
+					shell.setVisible(false);
+				}
 			}
 		});
 
@@ -103,63 +106,72 @@ public class LogWin {
 		black.dispose();
 	}
 	
-	private void output(String s, Color color) {
-		StyleRange styleRange = new StyleRange();
-		styleRange.start = textLog.getCharCount();
-		styleRange.length = s.length();
-		styleRange.fontStyle = SWT.NORMAL;
-		styleRange.foreground = color;		
-		textLog.append(s);
-		textLog.setStyleRange(styleRange);
-	}
-	
 	private void cull() {
 		if (textLog.getText().length() > 1000000)
 	    	textLog.setText("[...]\n" + textLog.getText().substring(10000));		
 	}
 	
-	private void outputMessage(String s) {
-		cull();
-		output(s, black);
-	}
+	private Timer updateTimer = null;
 	
-	private void outputError(String s) {
-		cull();
-		output(s, red);
-	}
-	
-	private static void ensureWindowExists() {
-		if (window == null)
-			window = new LogWin();		
-	}
-	
-	public static void logMessage(String s) {
-		synchronized (criticalSection) {
-			Display.getDefault().asyncExec(new Runnable() {
+	private void output(String s, Color color) {
+		if (!shell.isDisposed() && !shell.getDisplay().isDisposed() && !shell.isDisposed())
+			shell.getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					ensureWindowExists();
-					window.outputMessage(s);
+					cull();
+					StyleRange styleRange = new StyleRange();
+					styleRange.start = textLog.getCharCount();
+					styleRange.length = s.length();
+					styleRange.fontStyle = SWT.NORMAL;
+					styleRange.foreground = color;		
+					textLog.append(s);
+					textLog.setStyleRange(styleRange);
+					if (updateTimer != null)
+						updateTimer.cancel();
+					updateTimer = new Timer();
+					updateTimer.schedule(new TimerTask() {
+						@Override
+						public void run() {
+							shell.getDisplay().asyncExec(new Runnable() {
+								@Override
+								public void run() {
+									textLog.setCaretOffset(textLog.getCharCount());
+									textLog.setSelection(textLog.getCaretOffset(), textLog.getCaretOffset());		
+								}
+							});
+						}
+					}, 250);
 				}
 			});
-		}
 	}
 	
-	public static void logError(String s) {
-		synchronized (criticalSection) {
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					ensureWindowExists();
-					window.outputError(s);
-				}
-			});
-		}
+	private static Interceptor outInterceptor;
+	private static Interceptor errInterceptor;
+	
+	public static void install(Composite parent) {
+		window = new LogWin(parent);
+		
+    	class LogMessages implements Logger {
+			public void log(String s) {
+				window.output(s, window.black);
+			}
+    	};
+    	class LogErrors implements Logger {
+			public void log(String s) {
+				window.output(s, window.red);
+			}
+    	};
+		outInterceptor = new Interceptor(System.out, new LogMessages());
+		outInterceptor.attachOut();
+		errInterceptor = new Interceptor(System.err, new LogErrors());
+		errInterceptor.attachErr();
 	}
 
 	public static void remove() {
-		if (window != null)
+		if (!shell.isVisible())
 			window.dispose();
+		else
+			window.disposable = true;
 	}
 	
 }
