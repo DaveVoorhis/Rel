@@ -1,7 +1,7 @@
 ** TO DO **
 
 Short term:
-	// TODO - create tab in RelUI as replacement for DBrowser monitor window
+	// TODO - Refactor LogWin to simplify close logic?
 	// TODO - test client connection reset() on remote databases.
 	// TODO - In RelUI, fix error highlighting when the source text has tabs
 	// TODO - Disallow recursive definitions like TYPE blah IS {blat CONSTRAINT p POSSREP {x = THE_x(blat)}}
