@@ -114,7 +114,9 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 	}
 
 	private Point preferredSize() {
-		return new Point(75, 25);
+		GC gc = new GC(this);
+		int txtHeight = gc.textExtent("100%").y;
+		return new Point(75, txtHeight + 10);
 	}
 	
 	public Point computeSize(int h, int w) {
@@ -169,7 +171,8 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 					lastY = barY;
 				}
 				gc.setForeground(black);
-				gc.drawText(emitText, 2, 5, true);
+				int txtHeight = gc.textExtent(emitText).y;
+				gc.drawText(emitText, 2, (rect.height - txtHeight) / 2, true);
 			}
 		});
 		
