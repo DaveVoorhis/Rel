@@ -32,7 +32,7 @@ public class Preferences {
 		try {
 			preferences.load();
 		} catch (IOException e) {
-			System.out.println("Preferences: Unable to load preferences: " + e);
+			System.out.println("Preferences: Creating new preferences.");
 		}
 		preferenceDialog.open();
 		try {

@@ -10,7 +10,6 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 
 /**
  * This class creates a preference page
@@ -90,23 +89,6 @@ public class PreferencePageGeneral extends PreferencePage {
 
 		// Add two columns to the parent's layout
 		((GridLayout) parent.getLayout()).numColumns += 2;
-	}
-
-	/**
-	 * Change the description label
-	 */
-	protected Label createDescriptionLabel(Composite parent) {
-		Label label = null;
-		String description = getDescription();
-		if (description != null) {
-			// Upper case the description
-			description = description.toUpperCase();
-
-			// Right-align the label
-			label = new Label(parent, SWT.RIGHT);
-			label.setText(description);
-		}
-		return label;
 	}
 
 	/**
