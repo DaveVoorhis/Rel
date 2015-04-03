@@ -51,7 +51,7 @@ public class Style {
 				 "-->" +
 				 "</style>" +
 				 "</head>" +
-				 "<body>" +
+				 "<body id=\"body\">" +
 				 content +
 				 "</body>" +
 				 "</html>";
