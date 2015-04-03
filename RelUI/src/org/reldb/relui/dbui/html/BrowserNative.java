@@ -3,6 +3,7 @@ package org.reldb.relui.dbui.html;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.ProgressAdapter;
@@ -35,8 +36,7 @@ public class BrowserNative implements HtmlBrowser {
 	
 	@Override
 	public boolean createWidget(Composite parent, Font font) {
-		String os = System.getProperty("os.name").toLowerCase();
-		if (os.equals("mac os x"))
+		if (Util.isMac())
 			style = new Style(font, -3);
 		else
 			style = new Style(font, 0);
