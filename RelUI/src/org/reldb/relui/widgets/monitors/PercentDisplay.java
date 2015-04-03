@@ -148,6 +148,10 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 				Integer[] percentages = getPercentages();
 				int lastX = rect.x;
 				int lastY = rect.y;
+				Point txtExtent = gc.textExtent(emitText);
+				int textX = rect.width - txtExtent.x - 5;
+				int textY = (rect.height - txtExtent.y) / 2;
+				Rectangle txtRect = new Rectangle(textX, textY, txtExtent.x, txtExtent.y);
 				for (int index=0; index<percentages.length; index++) {
 					int barY = (100 - percentages[index]) * rect.height / 100 + 2;
 					int barX = rect.x + index;
@@ -161,19 +165,17 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 						gc.setForeground(goodColor);
 					gc.drawLine(barX, rect.height, barX, barY);
 					if (index > 0) {
-						int dontDrawLineBelow = 5;
-						if (lastY < dontDrawLineBelow && barY < dontDrawLineBelow)
-							gc.setForeground(black);
-						else
+						if (txtRect.contains(barX, barY) || txtRect.contains(lastX, lastY))
 							gc.setForeground(lightGray);
+						else
+							gc.setForeground(black);
 						gc.drawLine(lastX, lastY, barX, barY);
 					}
 					lastX = barX;
 					lastY = barY;
 				}
 				gc.setForeground(black);
-				Point txtExtent = gc.textExtent(emitText);
-				gc.drawText(emitText, rect.width - txtExtent.x - 2, (rect.height - txtExtent.y) / 2, true);
+				gc.drawText(emitText, textX, textY, true);
 			}
 		});
 		
