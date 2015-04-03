@@ -1,7 +1,8 @@
 ** TO DO **
 
 Short term:
-	// TODO - Refactor LogWin to simplify close logic?
+	// TODO - install fix for https://bugs.eclipse.org/bugs/show_bug.cgi?id=426062
+	//		  workaround: take focus away from Rel, then give it back
 	// TODO - test client connection reset() on remote databases.
 	// TODO - In RelUI, fix error highlighting when the source text has tabs
 	// TODO - Disallow recursive definitions like TYPE blah IS {blat CONSTRAINT p POSSREP {x = THE_x(blat)}}
