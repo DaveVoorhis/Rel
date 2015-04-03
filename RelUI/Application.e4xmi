@@ -16,7 +16,7 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_58XzsLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.exit" label="Exit" mnemonics="M1+x" command="_1_YZgKbsEeSFCpZI3OEurw"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_V4OQALqZEeSSsbhT1QHqRQ" elementId="relui.menu.tools" label="Tools">
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_giqZcLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.options" label="Options" iconURI="platform:/plugin/RelUI/icons/settingsIcon.png" mnemonics="M1+o" command="_BmWNELqrEeSSsbhT1QHqRQ"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_giqZcLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.options" label="Preferences" iconURI="platform:/plugin/RelUI/icons/settingsIcon.png" mnemonics="M1+p" command="_85hu4No2EeSw-PA_k-Gusw"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_68AVkNiyEeSgZfqMAYQ1XA" elementId="relui.handledmenuitem.viewLog" label="View log" tooltip="View system log" command="_sr9-cNiyEeSgZfqMAYQ1XA"/>
       </children>
     </mainMenu>
@@ -26,8 +26,9 @@
   <handlers xmi:id="_Up7doLqpEeSSsbhT1QHqRQ" elementId="relui.handler.newdatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.NewDatabase" command="_eqs_ALqpEeSSsbhT1QHqRQ"/>
   <handlers xmi:id="_vSU4kLqpEeSSsbhT1QHqRQ" elementId="relui.handler.openlocaldatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.OpenLocalDatabase" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
   <handlers xmi:id="_4xZbELqpEeSSsbhT1QHqRQ" elementId="relui.handler.openremotedatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.OpenRemoteDatabase" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
-  <handlers xmi:id="_G4n_ALqrEeSSsbhT1QHqRQ" elementId="relui.handler.0" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.Options" command="_BmWNELqrEeSSsbhT1QHqRQ"/>
+  <handlers xmi:id="_G4n_ALqrEeSSsbhT1QHqRQ" elementId="relui.handler.0" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.Options"/>
   <handlers xmi:id="_ziLoUNiyEeSgZfqMAYQ1XA" elementId="relui.handler.1" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.ViewLog" command="_sr9-cNiyEeSgZfqMAYQ1XA"/>
+  <handlers xmi:id="_CkUugNo3EeSw-PA_k-Gusw" elementId="relui.handler.preferences" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.OpenPreferences" command="_85hu4No2EeSw-PA_k-Gusw"/>
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
     <bindings xmi:id="_1_YZg6bsEeSFCpZI3OEurw" keySequence="M1+Q" command="_1_YZgKbsEeSFCpZI3OEurw"/>
     <bindings xmi:id="_1_YZhqbsEeSFCpZI3OEurw" keySequence="M1+O" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
@@ -47,8 +48,8 @@
   <commands xmi:id="_eqs_ALqpEeSSsbhT1QHqRQ" elementId="relui.command.newdatabase" commandName="newdatabaseCommand" description="New database"/>
   <commands xmi:id="_hYmvsLqpEeSSsbhT1QHqRQ" elementId="relui.command.openLocalDatabase" commandName="openlocaldatabaseCommand" description="Open local database"/>
   <commands xmi:id="_mkgz4LqpEeSSsbhT1QHqRQ" elementId="relui.command.openremotedatabase" commandName="openremotedatabaseCommand" description="Open remote database"/>
-  <commands xmi:id="_BmWNELqrEeSSsbhT1QHqRQ" elementId="relui.command.optionsCommand" commandName="optionsCommand" description="Options"/>
   <commands xmi:id="_sr9-cNiyEeSgZfqMAYQ1XA" elementId="relui.command.viewlogcommand" commandName="viewLogCommand" description="View system log"/>
+  <commands xmi:id="_85hu4No2EeSw-PA_k-Gusw" elementId="org.eclipse.ui.window.preferences" commandName="preferencesCommand" description="Preferences"/>
   <addons xmi:id="_1_XycqbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_1_Xyc6bsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_1_XydKbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

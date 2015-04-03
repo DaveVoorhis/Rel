@@ -124,9 +124,5 @@ public class DbMain {
 		if (tabs.length == 0 || ((DbTab)tabs[tabs.length - 1]).isOpenOnADatabase())
 			new DbTab();
 	}
-
-	public static void options() {
-		// TODO Auto-generated method stub
-	}
 	
 }

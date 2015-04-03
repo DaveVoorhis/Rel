@@ -12,4 +12,9 @@ public class Version {
 	public static String getURL() {
 		return "http://reldb.org";
 	}
+	
+	public static String getPreferencesRepositoryName() {
+		return "rel.reldb.org";
+	}
+	
 }
