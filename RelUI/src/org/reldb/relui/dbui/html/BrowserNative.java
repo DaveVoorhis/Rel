@@ -50,6 +50,7 @@ public class BrowserNative implements HtmlBrowser {
 				}
 			});
 		} catch (Throwable t) {
+			System.out.println("BrowserNative: Native browser not available: " + t);
 			return false;
 		}
 		clear();

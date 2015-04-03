@@ -45,7 +45,7 @@ public class BrowserSwing implements HtmlBrowser {
 	    
 	    style = new Style(font, 0);
 	    
-		browser = new JTextPane();		
+		browser = new JTextPane();
 		setEnhancedOutputStyle(browser);
 		browser.setDoubleBuffered(true);
 		DefaultCaret caret = (DefaultCaret)browser.getCaret();
@@ -88,7 +88,7 @@ public class BrowserSwing implements HtmlBrowser {
 
 	@Override
 	public String getText() {
-		BufferedReader htmlStreamed = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(getText().getBytes())));
+		BufferedReader htmlStreamed = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(browser.getText().getBytes())));
 		StringBuffer output = new StringBuffer();
 		String line;
 		try {
@@ -111,7 +111,6 @@ public class BrowserSwing implements HtmlBrowser {
 			}
 		} catch (IOException e) {
 			System.out.println("This cannot possibly have happened.  The universe has collapsed.");
-			return getText();
 		}
 		return output.toString();
 	}
