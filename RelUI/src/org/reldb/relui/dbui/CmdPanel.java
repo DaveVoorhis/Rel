@@ -287,6 +287,7 @@ public class CmdPanel extends Composite {
 	public void dispose() {
 		connection.close();
 		clearOutput();
+		cmdPanelInput.dispose();
 		red.dispose();
 		green.dispose();
 		blue.dispose();

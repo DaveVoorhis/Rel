@@ -53,7 +53,11 @@ public class Preferences {
 		if (listeners == null)
 			return;
 		for (PreferenceChangeListener listener: listeners)
-			listener.preferenceChange(new PreferenceChangeEvent(name, newValue.toString()));
+			try {
+				listener.preferenceChange(new PreferenceChangeEvent(name, newValue.toString()));
+			} catch (Exception e) {
+				System.out.println("Preferences: exception notifying listener " + listener.toString() + ": " + e);
+			}
 	}
 	
 	public static void addPreferenceChangeListener(String name, PreferenceChangeListener listener) {

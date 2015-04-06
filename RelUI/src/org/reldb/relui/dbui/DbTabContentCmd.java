@@ -11,6 +11,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
 import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
@@ -160,7 +161,7 @@ public class DbTabContentCmd extends Composite {
 		
 		setupIcons();
 		
-		preferenceChangeListener = new PreferenceChangeListener() {
+		preferenceChangeListener = new PreferenceChangeAdapter("DbTabContentCmd") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
 				setupIcons();

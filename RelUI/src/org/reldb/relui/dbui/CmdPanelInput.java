@@ -23,6 +23,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
 import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
@@ -249,7 +250,7 @@ public class CmdPanelInput extends Composite {
 		setupButtons();
 		setupIcons();
 		
-		preferenceChangeListener = new PreferenceChangeListener() {
+		preferenceChangeListener = new PreferenceChangeAdapter("CmdPanelInput") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
 				setupIcons();

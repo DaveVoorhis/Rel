@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.rel.client.connection.string.ClientFromURL;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
 import org.reldb.relui.dbui.crash.CrashTrap;
+import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
 import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
@@ -171,7 +172,7 @@ public class DbTab extends CTabItem {
 		
 		setupIcons();
 		
-		preferenceChangeListener = new PreferenceChangeListener() {
+		preferenceChangeListener = new PreferenceChangeAdapter("DbTab") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
 				setupIcons();
