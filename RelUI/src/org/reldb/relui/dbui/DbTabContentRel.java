@@ -10,10 +10,16 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.wb.swt.ResourceManager;
 import org.reldb.relui.dbui.monitor.LogWin;
+import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
+import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
+import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
 
 public class DbTabContentRel extends Composite {
+
+	private ToolItem tlitmBackup;
+    
+    private PreferenceChangeListener preferenceChangeListener;
 	
 	public DbTabContentRel(DbTab parentTab, Composite contentParent) {
 		super(contentParent, SWT.None);
@@ -41,15 +47,38 @@ public class DbTabContentRel extends Composite {
 		fd_composite.bottom = new FormAttachment(100);
 		viewLog.setLayoutData(fd_composite);
 	
-		ToolItem tlitmBackup = new ToolItem(toolBar, SWT.None);
+		tlitmBackup = new ToolItem(toolBar, SWT.None);
 		tlitmBackup.setToolTipText("Make backup");
-		tlitmBackup.setImage(ResourceManager.getPluginImage("RelUI", "icons/safeIcon.png"));
+		tlitmBackup.setImage(IconLoader.loadIcon("safeIcon"));
 		tlitmBackup.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				parentTab.makeBackup();
 			}
 		});
+		
+		setupIcons();
+		
+		preferenceChangeListener = new PreferenceChangeListener() {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent evt) {
+				setupIcons();
+			}
+		};		
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);
+	}
+
+	public void dispose() {
+		Preferences.removePreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);
+		super.dispose();
+	}
+	
+	private void setupIcons() {
+		tlitmBackup.setImage(IconLoader.loadIcon("safeIcon"));		
+	}
+
+	public void notifyIconSizeChange() {
+		setupIcons();
 	}
 
 }

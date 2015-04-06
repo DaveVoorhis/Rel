@@ -23,10 +23,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.wb.swt.ResourceManager;
 import org.reldb.rel.client.connection.string.ClientFromURL;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
 import org.reldb.relui.dbui.crash.CrashTrap;
+import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
+import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
+import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
 import org.reldb.relui.version.Version;
 
 public class DbTab extends CTabItem {
@@ -42,6 +44,10 @@ public class DbTab extends CTabItem {
     private DbTabContentRev contentRev = null;
     
     private ToolBar toolBarMode;
+    
+	private ToolItem tltmOpenRemoteDb;
+	private ToolItem tltmOpenLocalDb;
+	private ToolItem tltmNewLocalDb;
     private ToolItem tltmModeRel;
     private ToolItem tltmModeRev;
     private ToolItem tltmModeCmd;
@@ -49,10 +55,12 @@ public class DbTab extends CTabItem {
     private Composite modeContent;
     private StackLayout contentStack;
     
+    private PreferenceChangeListener preferenceChangeListener;
+    
 	public DbTab() {
 		super(DbMain.getTabFolder(), SWT.None);
 		
-		setImage(ResourceManager.getPluginImage("RelUI", "icons/plusIcon.png"));
+		setImage(IconLoader.loadIcon("plusIcon"));
 		
 		Composite core = new Composite(DbMain.getTabFolder(), SWT.None);
 		core.setLayout(new FormLayout());
@@ -74,9 +82,8 @@ public class DbTab extends CTabItem {
 		
 		ToolBar toolBarDatabase = new ToolBar(compDbLocation, SWT.None);
 		
-		ToolItem tltmNewLocalDb = new ToolItem(toolBarDatabase, SWT.NONE);
+		tltmNewLocalDb = new ToolItem(toolBarDatabase, SWT.NONE);
 		tltmNewLocalDb.setToolTipText("Create or open local database");
-		tltmNewLocalDb.setImage(ResourceManager.getPluginImage("RelUI", "icons/NewDBIcon.png"));
 		tltmNewLocalDb.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -84,9 +91,8 @@ public class DbTab extends CTabItem {
 			}
 		});
 		
-		ToolItem tltmOpenLocalDb = new ToolItem(toolBarDatabase, SWT.NONE);
+		tltmOpenLocalDb = new ToolItem(toolBarDatabase, SWT.NONE);
 		tltmOpenLocalDb.setToolTipText("Open local database");
-		tltmOpenLocalDb.setImage(ResourceManager.getPluginImage("RelUI", "icons/OpenDBLocalIcon.png"));
 		tltmOpenLocalDb.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -94,9 +100,8 @@ public class DbTab extends CTabItem {
 			}
 		});
 		
-		ToolItem tltmOpenRemoteDb = new ToolItem(toolBarDatabase, SWT.NONE);
+		tltmOpenRemoteDb = new ToolItem(toolBarDatabase, SWT.NONE);
 		tltmOpenRemoteDb.setToolTipText("Open remote database");
-		tltmOpenRemoteDb.setImage(ResourceManager.getPluginImage("RelUI", "icons/OpenDBRemoteIcon.png"));
 		tltmOpenRemoteDb.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -136,7 +141,6 @@ public class DbTab extends CTabItem {
 		modeContent.setLayoutData(fd_modeContent);
 		
 		tltmModeRel = new ToolItem(toolBarMode, SWT.RADIO);
-		tltmModeRel.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeRelIcon.png"));
 		tltmModeRel.setToolTipText("Rel");
 		tltmModeRel.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -146,7 +150,6 @@ public class DbTab extends CTabItem {
 		});
 		
 		tltmModeRev = new ToolItem(toolBarMode, SWT.RADIO);
-		tltmModeRev.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeRevIcon.png"));
 		tltmModeRev.setToolTipText("Rev");
 		tltmModeRev.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -156,7 +159,6 @@ public class DbTab extends CTabItem {
 		});
 		
 		tltmModeCmd = new ToolItem(toolBarMode, SWT.RADIO);
-		tltmModeCmd.setImage(ResourceManager.getPluginImage("RelUI", "icons/ModeCmdIcon.png"));
 		tltmModeCmd.setToolTipText("Command line");
 		tltmModeCmd.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -166,36 +168,59 @@ public class DbTab extends CTabItem {
 		});
 		
 		setControl(core);
+		
+		setupIcons();
+		
+		preferenceChangeListener = new PreferenceChangeListener() {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent evt) {
+				setupIcons();
+				if (connection != null && connection.client != null)
+					setImage(IconLoader.loadIcon("DatabaseIcon"));
+				else
+					setImage(IconLoader.loadIcon("plusIcon"));
+			}
+		};		
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);
+	}
+
+    private void setupIcons() {
+		tltmNewLocalDb.setImage(IconLoader.loadIcon("NewDBIcon"));
+		tltmOpenLocalDb.setImage(IconLoader.loadIcon("OpenDBLocalIcon"));
+		tltmOpenRemoteDb.setImage(IconLoader.loadIcon("OpenDBRemoteIcon"));
+		tltmModeRel.setImage(IconLoader.loadIcon("ModeRelIcon"));
+		tltmModeRev.setImage(IconLoader.loadIcon("ModeRevIcon"));
+		tltmModeCmd.setImage(IconLoader.loadIcon("ModeCmdIcon"));
 	}
 
 	private void showRel() {
-			if (contentRel == null) {
-				Cursor oldCursor = getParent().getCursor();
-				getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
-				try {
-					contentRel = new DbTabContentRel(DbTab.this, modeContent);
-				} finally {
-					getParent().getCursor().dispose();
-					getParent().setCursor(oldCursor);
-				}
+		if (contentRel == null) {
+			Cursor oldCursor = getParent().getCursor();
+			getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
+			try {
+				contentRel = new DbTabContentRel(DbTab.this, modeContent);
+			} finally {
+				getParent().getCursor().dispose();
+				getParent().setCursor(oldCursor);
 			}
-			contentStack.topControl = contentRel;
-			modeContent.layout();
+		}
+		contentStack.topControl = contentRel;
+		modeContent.layout();
 	}
 
 	private void showRev() {
-			if (contentRev == null) {
-				Cursor oldCursor = getParent().getCursor();
-				getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
-				try {
-					contentRev = new DbTabContentRev(DbTab.this, modeContent);
-				} finally {
-					getParent().getCursor().dispose();
-					getParent().setCursor(oldCursor);
-				}
+		if (contentRev == null) {
+			Cursor oldCursor = getParent().getCursor();
+			getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
+			try {
+				contentRev = new DbTabContentRev(DbTab.this, modeContent);
+			} finally {
+				getParent().getCursor().dispose();
+				getParent().setCursor(oldCursor);
 			}
-			contentStack.topControl = contentRev;
-			modeContent.layout();		
+		}
+		contentStack.topControl = contentRev;
+		modeContent.layout();		
 	}
 	
 	private void showCmd() {
@@ -257,7 +282,7 @@ public class DbTab extends CTabItem {
     }
     
     private void doConnectionResultSuccess(StringReceiverClient client, String dbURL, boolean permanent) {
-		setImage(ResourceManager.getPluginImage("RelUI", "icons/DatabaseIcon.png"));
+		setImage(IconLoader.loadIcon("DatabaseIcon"));
 
         setStatus("Ok");
         toolBarMode.setEnabled(true);
@@ -358,17 +383,18 @@ public class DbTab extends CTabItem {
 			getParent().setCursor(oldCursor);
     	}
     }
-	
-    public void dispose() {
+
+	public void dispose() {
     	if (connection != null && connection.client != null)
 			try {
 				connection.client.close();
 			} catch (IOException e) {
 			}
     	clearModes();
+		Preferences.removePreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);
     	super.dispose();
     }
-    
+
 	public void openDatabaseAtURI(String uri, boolean canCreate) {
 		lastURI = uri;
 		setShowClose(true);
@@ -395,7 +421,7 @@ public class DbTab extends CTabItem {
 				e.printStackTrace();
 			}
 			clearModes();
-			setImage(ResourceManager.getPluginImage("RelUI", "icons/plusIcon.png"));
+			setImage(IconLoader.loadIcon("plusIcon"));
 		}
 	}
 	

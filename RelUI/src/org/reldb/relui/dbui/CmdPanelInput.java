@@ -18,12 +18,14 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
+import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
+import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
 
 public class CmdPanelInput extends Composite {
 	
@@ -32,6 +34,13 @@ public class CmdPanelInput extends Composite {
 
 	private ToolItem tlitmPrevHistory;	
 	private ToolItem tlitmNextHistory;
+	private ToolItem tlitmClear;
+	private ToolItem tlitmLoad;
+	private ToolItem tlitmGetPath;
+	private ToolItem tlitmSave;
+	private ToolItem tlitmSaveHistory;
+	private ToolItem tlitmCopyToOutput;
+	private ToolItem tlitmWrap;
 	
 	private Vector<String> entryHistory = new Vector<String>();
 	private int currentHistoryItem = 0;
@@ -39,6 +48,8 @@ public class CmdPanelInput extends Composite {
 	private FileDialog loadDialog = null;
 	private FileDialog loadPathDialog = null;
 	private FileDialog saveDialog = null;
+    
+    private PreferenceChangeListener preferenceChangeListener;
 	
 	/**
 	 * Create the composite.
@@ -107,7 +118,6 @@ public class CmdPanelInput extends Composite {
 
 		tlitmPrevHistory = new ToolItem(toolBar, SWT.NONE);
 		tlitmPrevHistory.setToolTipText("Load previous historical entry");
-		tlitmPrevHistory.setImage(ResourceManager.getPluginImage("RelUI", "icons/previousIcon.png"));
 		tlitmPrevHistory.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -119,7 +129,6 @@ public class CmdPanelInput extends Composite {
 		
 		tlitmNextHistory = new ToolItem(toolBar, SWT.NONE);
 		tlitmNextHistory.setToolTipText("Load next historical entry");
-		tlitmNextHistory.setImage(ResourceManager.getPluginImage("RelUI", "icons/nextIcon.png"));
 		tlitmNextHistory.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -129,9 +138,8 @@ public class CmdPanelInput extends Composite {
 			}
 		});
 		
-		ToolItem tlitmClear = new ToolItem(toolBar, SWT.NONE);
+		tlitmClear = new ToolItem(toolBar, SWT.NONE);
 		tlitmClear.setToolTipText("Clear");
-		tlitmClear.setImage(ResourceManager.getPluginImage("RelUI", "icons/clearIcon.png"));
 		tlitmClear.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -140,9 +148,8 @@ public class CmdPanelInput extends Composite {
 			}
 		});
 		
-		ToolItem tlitmLoad = new ToolItem(toolBar, SWT.NONE);
+		tlitmLoad = new ToolItem(toolBar, SWT.NONE);
 		tlitmLoad.setToolTipText("Load file");
-		tlitmLoad.setImage(ResourceManager.getPluginImage("RelUI", "icons/loadIcon.png"));
 		tlitmLoad.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -156,9 +163,8 @@ public class CmdPanelInput extends Composite {
 			}
 		});
 		
-		ToolItem tlitmGetPath = new ToolItem(toolBar, SWT.NONE);
+		tlitmGetPath = new ToolItem(toolBar, SWT.NONE);
 		tlitmGetPath.setToolTipText("Get file path");
-		tlitmGetPath.setImage(ResourceManager.getPluginImage("RelUI", "icons/pathIcon.png"));
 		tlitmGetPath.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -172,9 +178,8 @@ public class CmdPanelInput extends Composite {
 			}
 		});
 		
-		ToolItem tlitmSave = new ToolItem(toolBar, SWT.NONE);
+		tlitmSave = new ToolItem(toolBar, SWT.NONE);
 		tlitmSave.setToolTipText("Save");
-		tlitmSave.setImage(ResourceManager.getPluginImage("RelUI", "icons/saveIcon.png"));
 		tlitmSave.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -194,9 +199,8 @@ public class CmdPanelInput extends Composite {
 			}
 		});
 		
-		ToolItem tlitmSaveHistory = new ToolItem(toolBar, SWT.NONE);
+		tlitmSaveHistory = new ToolItem(toolBar, SWT.NONE);
 		tlitmSaveHistory.setToolTipText("Save history");
-		tlitmSaveHistory.setImage(ResourceManager.getPluginImage("RelUI", "icons/saveHistoryIcon.png"));
 		tlitmSaveHistory.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -222,10 +226,9 @@ public class CmdPanelInput extends Composite {
 			}
 		});
 		
-		ToolItem tlitmCopyToOutput = new ToolItem(toolBar, SWT.CHECK);
+		tlitmCopyToOutput = new ToolItem(toolBar, SWT.CHECK);
 		tlitmCopyToOutput.setToolTipText("Copy input to output");
 		tlitmCopyToOutput.setSelection(true);
-		tlitmCopyToOutput.setImage(ResourceManager.getPluginImage("RelUI", "icons/copyToOutputIcon.png"));
 		tlitmCopyToOutput.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -233,10 +236,9 @@ public class CmdPanelInput extends Composite {
 			}
 		});
 		
-		ToolItem tlitmWrap = new ToolItem(toolBar, SWT.CHECK);
+		tlitmWrap = new ToolItem(toolBar, SWT.CHECK);
 		tlitmWrap.setToolTipText("Wrap text");
 		tlitmWrap.setSelection(true);
-		tlitmWrap.setImage(ResourceManager.getPluginImage("RelUI", "icons/wrapIcon.png"));
 		tlitmWrap.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -244,9 +246,35 @@ public class CmdPanelInput extends Composite {
 			}
 		});
 		
-		setButtons();
+		setupButtons();
+		setupIcons();
+		
+		preferenceChangeListener = new PreferenceChangeListener() {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent evt) {
+				setupIcons();
+			}
+		};		
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);
 	}
 
+	private void setupIcons() {
+		tlitmPrevHistory.setImage(IconLoader.loadIcon("previousIcon"));
+		tlitmNextHistory.setImage(IconLoader.loadIcon("nextIcon"));
+		tlitmClear.setImage(IconLoader.loadIcon("clearIcon"));
+		tlitmLoad.setImage(IconLoader.loadIcon("loadIcon"));
+		tlitmGetPath.setImage(IconLoader.loadIcon("pathIcon"));
+		tlitmSave.setImage(IconLoader.loadIcon("saveIcon"));
+		tlitmSaveHistory.setImage(IconLoader.loadIcon("saveHistoryIcon"));
+		tlitmCopyToOutput.setImage(IconLoader.loadIcon("copyToOutputIcon"));
+		tlitmWrap.setImage(IconLoader.loadIcon("wrapIcon"));		
+	}
+
+	public void dispose() {
+		Preferences.removePreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);		
+		super.dispose();
+	}
+	
 	/** Override to receive notification that the cancel button has been pressed. */
 	public void notifyStop() {}
 	
@@ -348,7 +376,7 @@ public class CmdPanelInput extends Composite {
 	private String getPreviousHistoryItem() {
 		if (currentHistoryItem > 0)
 			currentHistoryItem--;
-		setButtons();
+		setupButtons();
 		return getHistoryItemAt(currentHistoryItem);
 	}
 
@@ -357,7 +385,7 @@ public class CmdPanelInput extends Composite {
 		currentHistoryItem++;
 		if (currentHistoryItem >= entryHistory.size())
 			currentHistoryItem = entryHistory.size() - 1;
-		setButtons();
+		setupButtons();
 		return getHistoryItemAt(currentHistoryItem);
 	}
 
@@ -367,11 +395,11 @@ public class CmdPanelInput extends Composite {
 			return;
 		entryHistory.add(s);
 		currentHistoryItem = entryHistory.size() - 1;
-		setButtons();
+		setupButtons();
 	}
 
 	/** Set up history button status. */
-	private void setButtons() {
+	private void setupButtons() {
 		tlitmPrevHistory.setEnabled(currentHistoryItem > 0 && getHistorySize() > 1);
 		tlitmNextHistory.setEnabled(currentHistoryItem < getHistorySize() - 1 && getHistorySize() > 1);
 	}

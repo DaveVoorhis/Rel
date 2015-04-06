@@ -16,7 +16,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -24,6 +23,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Color;
+import org.reldb.relui.dbui.IconLoader;
 
 public class LogWin {
 
@@ -86,7 +86,7 @@ public class LogWin {
 		
 		ToolItem tltmClear = new ToolItem(toolBar, SWT.NONE);
 		tltmClear.setToolTipText("Clear");
-		tltmClear.setImage(ResourceManager.getPluginImage("RelUI", "icons/clearIcon.png"));
+		tltmClear.setImage(IconLoader.loadIcon("clearIcon"));
 		tltmClear.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -96,7 +96,7 @@ public class LogWin {
 		
 		ToolItem tltmSave = new ToolItem(toolBar, SWT.NONE);
 		tltmSave.setToolTipText("Save");
-		tltmSave.setImage(ResourceManager.getPluginImage("RelUI", "icons/saveIcon.png"));
+		tltmSave.setImage(IconLoader.loadIcon("saveIcon"));
 		tltmSave.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

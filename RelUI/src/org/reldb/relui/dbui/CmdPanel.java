@@ -198,7 +198,7 @@ public class CmdPanel extends Composite {
 		outputHTML(ResponseToHTML.textToHTML(connection.getInitialServerResponse()));
 		goodResponse("Ok.");
 	}
-
+	
 	public void clearOutput() {
 		browser.clear();
 		styledText.setText("");
