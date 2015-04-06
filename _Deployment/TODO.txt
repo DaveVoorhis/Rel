@@ -1,6 +1,7 @@
 ** TO DO **
 
 Short term:
+	// TODO - implement preference handling for command-line browser type and font.
 	// TODO - check setting icon size preference after closing a DbTab...  Blows up with isDisposed() error.
 	// TODO - install fix for https://bugs.eclipse.org/bugs/show_bug.cgi?id=426062
 	//		  workaround: take focus away from Rel, then give it back
