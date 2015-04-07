@@ -1,10 +1,7 @@
 package org.reldb.relui.dbui.html;
 
 import java.awt.Frame;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -16,7 +13,6 @@ import javax.swing.text.html.StyleSheet;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -25,7 +21,8 @@ public class BrowserSwing implements HtmlBrowser {
 	private Composite browserPanel;
 	private JTextPane browser;
 	private Style style;
-		
+	private StringBuffer text;
+
 	private void setEnhancedOutputStyle(JTextPane pane) {
 		pane.setContentType("text/html");
 		pane.setEditable(false);
@@ -39,11 +36,11 @@ public class BrowserSwing implements HtmlBrowser {
 	}
 
 	@Override
-	public boolean createWidget(Composite parent, Font font) {
+	public boolean createWidget(Composite parent) {
 	    browserPanel = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
 	    Frame frame = SWT_AWT.new_Frame(browserPanel);
 	    
-	    style = new Style(font, 0);
+	    style = new Style(0);
 	    
 		browser = new JTextPane();
 		setEnhancedOutputStyle(browser);
@@ -64,6 +61,7 @@ public class BrowserSwing implements HtmlBrowser {
 
 	@Override
 	public void clear() {
+		text = new StringBuffer();
 		browser.setText(style.getEmptyHTMLDocument());
 	}
 
@@ -75,7 +73,8 @@ public class BrowserSwing implements HtmlBrowser {
 	    	kit.insertHTML((HTMLDocument) doc, doc.getLength(), s, 0, 0, null);
 		} catch (BadLocationException | IOException e) {
 			e.printStackTrace();
-		}		
+		}
+	    text.append(s);
 	}
 
 	@Override
@@ -88,31 +87,7 @@ public class BrowserSwing implements HtmlBrowser {
 
 	@Override
 	public String getText() {
-		BufferedReader htmlStreamed = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(browser.getText().getBytes())));
-		StringBuffer output = new StringBuffer();
-		String line;
-		try {
-			while ((line = htmlStreamed.readLine()) != null) {
-				if (line.trim().equalsIgnoreCase("<head>")) {
-					output.append("<head>\n");
-					output.append("<style type=\"text/css\">\n");
-					output.append("<!--\n");
-					for (String entry: getStyle().getFormattedStyle()) {
-						output.append(entry);
-						output.append('\n');
-					}
-					output.append("-->\n");
-					output.append("</style>\n");
-					output.append("</head>\n");
-				} else if (!line.trim().equalsIgnoreCase("</head>")) {
-					output.append(line);
-					output.append('\n');
-				}
-			}
-		} catch (IOException e) {
-			System.out.println("This cannot possibly have happened.  The universe has collapsed.");
-		}
-		return output.toString();
+		return style.getHTMLDocument(text.toString());
 	}
 
 	@Override
@@ -128,6 +103,21 @@ public class BrowserSwing implements HtmlBrowser {
 	@Override
 	public Style getStyle() {
 		return style;
+	}
+
+	@Override
+	public void dispose() {
+	}
+
+	@Override
+	public void setContent(String content) {
+		text = new StringBuffer(content);
+		browser.setText(style.getHTMLDocument(content));
+	}
+	
+	@Override
+	public String getContent() {
+		return text.toString();
 	}
 
 }

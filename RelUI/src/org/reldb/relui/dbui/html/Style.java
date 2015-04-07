@@ -2,16 +2,15 @@ package org.reldb.relui.dbui.html;
 
 import java.util.ArrayList;
 
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.reldb.relui.dbui.Preferences;
+import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
 
 public class Style {
 	
-	private Font font;
 	private int sizeAdjustment;
 	
-	public Style(Font font, int sizeAdjustment) {
-		this.font = font;
+	public Style(int sizeAdjustment) {
 		this.sizeAdjustment = sizeAdjustment;
 	}
 	
@@ -26,11 +25,12 @@ public class Style {
 	    ".warn {color: gold;}",
 	    ".notice {color: black;}"
 	};
-
+	
 	private String getBodyFontStyleString() {
-		FontData[] data = font.getFontData();
+		FontData[] data = Preferences.getPreferenceFont(PreferencePageGeneral.GENERAL_FONT);
 		FontData datum = data[0];
-		return "body, p, td {font-family: arial, helvetica, sans-serif; font-size: " + (datum.getHeight() + sizeAdjustment) + "pt;}";
+		String bodyStyle = "body, p, td {font-family: " + datum.getName() + ", sans-serif; font-size: " + (datum.getHeight() + sizeAdjustment) + "pt;}";
+		return bodyStyle;
 	}
 
 	private String getHTMLStyle() {

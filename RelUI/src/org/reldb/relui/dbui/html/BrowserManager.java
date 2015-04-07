@@ -1,23 +1,50 @@
 package org.reldb.relui.dbui.html;
 
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.reldb.relui.dbui.Preferences;
+import org.reldb.relui.dbui.preferences.PreferencePageCmd;
 
 public class BrowserManager implements HtmlBrowser {
 
-	private HtmlBrowser browser;
+	private HtmlBrowser browser = null;
 	
 	@Override
-	public boolean createWidget(Composite parent, Font font) {
-		browser = new BrowserNative();
-		if (browser.createWidget(parent, font))
+	public boolean createWidget(Composite parent) {
+		if (browser != null)
 			return true;
+		return changeWidget(parent);
+	}
+
+	public boolean changeWidget(Composite parent) {
+		String content = null;
+		if (browser != null) {
+			content = browser.getContent();
+			browser.dispose();
+		}
+		if (!Preferences.getPreferenceBoolean(PreferencePageCmd.CMD_BROWSER_SWING)) {
+			browser = new BrowserNative();
+			if (browser.createWidget(parent)) {
+				if (content != null)
+					browser.setContent(content);
+				System.out.println("BrowserManager: Using native browser.");
+				return true;
+			} else
+				System.out.println("BrowserManager: Native browser is not available on this platform.");
+		}
 		browser = new BrowserSwing();
-		browser.createWidget(parent, font);
+		browser.createWidget(parent);
+		if (content != null)
+			browser.setContent(content);
+		System.out.println("BrowserManager: Using built-in (limited) browser.");
 		return true;
 	}
 
+	@Override
+	public void dispose() {
+		browser.dispose();
+	}
+	
 	@Override
 	public void clear() {
 		browser.clear();
@@ -56,5 +83,15 @@ public class BrowserManager implements HtmlBrowser {
 	@Override
 	public Style getStyle() {
 		return browser.getStyle();
+	}
+
+	@Override
+	public void setContent(String content) {
+		browser.setContent(content);
+	}
+	
+	@Override
+	public String getContent() {
+		return browser.getContent();
 	}
 }

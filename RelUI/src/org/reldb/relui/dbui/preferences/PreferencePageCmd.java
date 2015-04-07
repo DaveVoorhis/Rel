@@ -14,7 +14,7 @@ public class PreferencePageCmd extends FieldEditorPreferencePage {
 	 */
 	public PreferencePageCmd() {
 		setTitle("Command line");
-		setDescription("Command-line mode settings.\n\nChanges will affect all new command-line tabs. Already-open command-line tabs will not be affected.");
+		setDescription("Command-line mode settings.");
 	}
 
 	protected void createFieldEditors() {

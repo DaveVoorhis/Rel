@@ -21,7 +21,7 @@ public class PreferencePageGeneral extends FieldEditorPreferencePage {
 	}
 
 	protected void createFieldEditors() {
-		addField(new FontFieldEditor(GENERAL_FONT, "&Font:", getFieldEditorParent()));
+		addField(new FontFieldEditor(GENERAL_FONT, "&Font:", "ABCDEFG\nabcdefg", getFieldEditorParent()));
 		addField(new BooleanFieldEditor(DBL_ICONS, "&Double-sized icons.", getFieldEditorParent()));
 	}
 

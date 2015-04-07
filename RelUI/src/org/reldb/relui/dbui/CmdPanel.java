@@ -16,6 +16,9 @@ import org.eclipse.swt.graphics.Color;
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.core.ParseException;
 import org.reldb.relui.dbui.html.BrowserManager;
+import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
+import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
+import org.reldb.relui.dbui.preferences.PreferencePageCmd;
 
 public class CmdPanel extends Composite {
 
@@ -71,7 +74,14 @@ public class CmdPanel extends Composite {
 		styledText.setEditable(false);
 		
 		browser = new BrowserManager();
-		browser.createWidget(outputStack, styledText.getFont());
+		browser.createWidget(outputStack);
+		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_BROWSER_SWING, new PreferenceChangeAdapter("BrowserManager") {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent preferenceChangeEvent) {
+				browser.changeWidget(outputStack);
+				setEnhancedOutput(getEnhancedOutput());
+			}
+		});
 		
 		outputStackLayout.topControl = browser.getWidget();
 		

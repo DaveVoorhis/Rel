@@ -8,7 +8,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.ProgressAdapter;
 import org.eclipse.swt.browser.ProgressEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -35,11 +34,11 @@ public class BrowserNative implements HtmlBrowser {
 	}
 	
 	@Override
-	public boolean createWidget(Composite parent, Font font) {
+	public boolean createWidget(Composite parent) {
 		if (Util.isMac())
-			style = new Style(font, -3);
+			style = new Style(-3);
 		else
-			style = new Style(font, 0);
+			style = new Style(0);
 		try {
 			browser = new Browser(parent, SWT.BORDER);
 			browser.setJavascriptEnabled(true);
@@ -143,4 +142,20 @@ public class BrowserNative implements HtmlBrowser {
 		return style;
 	}
 
+	@Override
+	public void dispose() {
+		browser.dispose();
+	}
+
+	@Override
+	public void setContent(String content) {
+		text = new StringBuffer(content);
+		browser.setText(style.getHTMLDocument(content));
+	}
+
+	@Override
+	public String getContent() {
+		return text.toString();
+	}
+	
 }
