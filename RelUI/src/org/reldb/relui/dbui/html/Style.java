@@ -29,7 +29,9 @@ public class Style {
 	private String getBodyFontStyleString() {
 		FontData[] data = Preferences.getPreferenceFont(PreferencePageCmd.CMD_FONT);
 		FontData datum = data[0];
-		return "body, p, td {font-family: " + datum.getName() + ", sans-serif; font-size: " + (datum.getHeight() + sizeAdjustment) + "pt;}";
+		// eliminate leading '.', if there is one
+		String fontName = (datum.getName().startsWith(".") ? datum.getName().substring(1) : datum.getName());
+		return "body, p, td {font-family: " + fontName + ", sans-serif; font-size: " + (datum.getHeight() + sizeAdjustment) + "pt;}";
 	}
 
 	private String getHTMLStyle() {

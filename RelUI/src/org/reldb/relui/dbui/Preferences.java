@@ -55,10 +55,7 @@ public class Preferences {
 	}
 
 	public static FontData[] getPreferenceFont(String name) {
-		String fontspec = getPreferences().getString(name);
-		if (fontspec.startsWith("."))
-			fontspec = fontspec.substring(1);
-		return PreferenceConverter.basicGetFontData(fontspec);
+		return PreferenceConverter.basicGetFontData(getPreferences().getString(name));
 	}
 	
 	public static Font getPreferenceFont(Display display, String name) {
