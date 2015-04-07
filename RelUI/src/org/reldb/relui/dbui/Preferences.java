@@ -55,7 +55,10 @@ public class Preferences {
 	}
 
 	public static FontData[] getPreferenceFont(String name) {
-		return PreferenceConverter.basicGetFontData(getPreferences().getString(name));
+		String fontspec = getPreferences().getString(name);
+		if (fontspec.startsWith("."))
+			fontspec = fontspec.substring(1);
+		return PreferenceConverter.basicGetFontData(fontspec);
 	}
 	
 	public static Font getPreferenceFont(Display display, String name) {
@@ -72,9 +75,10 @@ public class Preferences {
 			return;
 		for (PreferenceChangeListener listener: listeners)
 			try {
-				listener.preferenceChange(new PreferenceChangeEvent(name, newValue.toString()));
+				listener.preferenceChange(new PreferenceChangeEvent(name));
 			} catch (Exception e) {
 				System.out.println("Preferences: exception notifying listener " + listener.toString() + ": " + e);
+				e.printStackTrace();
 			}
 	}
 	
