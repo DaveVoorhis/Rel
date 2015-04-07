@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.graphics.FontData;
 import org.reldb.relui.dbui.Preferences;
-import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
+import org.reldb.relui.dbui.preferences.PreferencePageCmd;
 
 public class Style {
 	
@@ -27,7 +27,7 @@ public class Style {
 	};
 	
 	private String getBodyFontStyleString() {
-		FontData[] data = Preferences.getPreferenceFont(PreferencePageGeneral.GENERAL_FONT);
+		FontData[] data = Preferences.getPreferenceFont(PreferencePageCmd.CMD_FONT);
 		FontData datum = data[0];
 		return "body, p, td {font-family: " + datum.getName() + ", sans-serif; font-size: " + (datum.getHeight() + sizeAdjustment) + "pt;}";
 	}

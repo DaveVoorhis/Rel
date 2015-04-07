@@ -18,6 +18,7 @@ import org.reldb.rel.client.parser.core.ParseException;
 import org.reldb.relui.dbui.html.BrowserManager;
 import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
+import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
 import org.reldb.relui.dbui.preferences.PreferencePageCmd;
 
 public class CmdPanel extends Composite {
@@ -52,6 +53,9 @@ public class CmdPanel extends Composite {
 
 	private StringBuffer reply = new StringBuffer();
 			
+	private PreferenceChangeListener browserPreferenceChangeListener;
+	private PreferenceChangeListener fontPreferenceChangeListener;
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -75,14 +79,27 @@ public class CmdPanel extends Composite {
 		
 		browser = new BrowserManager();
 		browser.createWidget(outputStack);
-		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_BROWSER_SWING, new PreferenceChangeAdapter("BrowserManager") {
+		
+		browserPreferenceChangeListener = new PreferenceChangeAdapter("CmdPanel_browser") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent preferenceChangeEvent) {
 				browser.changeWidget(outputStack);
 				setEnhancedOutput(getEnhancedOutput());
 			}
-		});
+		};
 		
+		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_BROWSER_SWING, browserPreferenceChangeListener);
+
+		styledText.setFont(Preferences.getPreferenceFont(getDisplay(), PreferencePageCmd.CMD_FONT));
+		fontPreferenceChangeListener = new PreferenceChangeAdapter("CmdPanel_font") {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent preferenceChangeEvent) {
+				styledText.setFont(Preferences.getPreferenceFont(getDisplay(), PreferencePageCmd.CMD_FONT));
+				browser.setContent(browser.getContent());
+			}
+		};
+		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
+				
 		outputStackLayout.topControl = browser.getWidget();
 		
 		connection = new ConcurrentStringReceiverClient(this, dbTab.getURL(), false) {
@@ -295,6 +312,8 @@ public class CmdPanel extends Composite {
 	}
 	
 	public void dispose() {
+		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_BROWSER_SWING, browserPreferenceChangeListener);
+		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
 		connection.close();
 		clearOutput();
 		cmdPanelInput.dispose();

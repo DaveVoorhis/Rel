@@ -9,9 +9,13 @@ import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.jface.resource.FontRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
@@ -52,6 +56,14 @@ public class Preferences {
 
 	public static FontData[] getPreferenceFont(String name) {
 		return PreferenceConverter.basicGetFontData(getPreferences().getString(name));
+	}
+	
+	public static Font getPreferenceFont(Display display, String name) {
+		FontRegistry fontRegistry = JFaceResources.getFontRegistry();
+		FontData[] fonts = fontRegistry.filterData(getPreferenceFont(name), display);
+		if (fonts == null)
+			return fontRegistry.defaultFont();
+		return new Font(display, fonts);
 	}
 	
 	private static void dispatchPreferenceChangeEvent(String name, Object newValue) {

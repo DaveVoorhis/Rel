@@ -26,6 +26,7 @@ import org.eclipse.swt.graphics.Point;
 import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
+import org.reldb.relui.dbui.preferences.PreferencePageCmd;
 import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
 
 public class CmdPanelInput extends Composite {
@@ -50,7 +51,8 @@ public class CmdPanelInput extends Composite {
 	private FileDialog loadPathDialog = null;
 	private FileDialog saveDialog = null;
     
-    private PreferenceChangeListener preferenceChangeListener;
+    private PreferenceChangeListener iconPreferenceChangeListener;
+    private PreferenceChangeListener fontPreferenceChangeListener;
 	
 	/**
 	 * Create the composite.
@@ -248,17 +250,26 @@ public class CmdPanelInput extends Composite {
 		});
 		
 		setupButtons();
-		setupIcons();
 		
-		preferenceChangeListener = new PreferenceChangeAdapter("CmdPanelInput") {
+		setupIcons();		
+		iconPreferenceChangeListener = new PreferenceChangeAdapter("CmdPanelInput_icon") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
 				setupIcons();
 			}
 		};		
-		Preferences.addPreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);
-	}
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, iconPreferenceChangeListener);
 
+		setupFont();
+		fontPreferenceChangeListener = new PreferenceChangeAdapter("CmdPanelInput_font") {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent preferenceChangeEvent) {
+				setupFont();
+			}
+		};
+		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
+	}
+	
 	private void setupIcons() {
 		tlitmPrevHistory.setImage(IconLoader.loadIcon("previousIcon"));
 		tlitmNextHistory.setImage(IconLoader.loadIcon("nextIcon"));
@@ -271,8 +282,13 @@ public class CmdPanelInput extends Composite {
 		tlitmWrap.setImage(IconLoader.loadIcon("wrapIcon"));		
 	}
 
+	private void setupFont() {
+		inputText.setFont(Preferences.getPreferenceFont(getDisplay(), PreferencePageCmd.CMD_FONT));
+	}
+	
 	public void dispose() {
-		Preferences.removePreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);		
+		Preferences.removePreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, iconPreferenceChangeListener);
+		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
 		super.dispose();
 	}
 	
