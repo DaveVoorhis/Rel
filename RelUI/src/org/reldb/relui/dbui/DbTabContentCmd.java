@@ -167,11 +167,11 @@ public class DbTabContentCmd extends Composite {
 				setupIcons();
 			}
 		};		
-		Preferences.addPreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.HALFRES_ICONS, preferenceChangeListener);
 	}
 
 	public void dispose() {
-		Preferences.removePreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);
+		Preferences.removePreferenceChangeListener(PreferencePageGeneral.HALFRES_ICONS, preferenceChangeListener);
 		cmdPanel.dispose();
 		super.dispose();
 	}

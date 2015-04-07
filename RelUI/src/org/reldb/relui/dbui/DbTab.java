@@ -61,7 +61,7 @@ public class DbTab extends CTabItem {
 	public DbTab() {
 		super(DbMain.getTabFolder(), SWT.None);
 		
-		setImage(IconLoader.loadIcon("plusIcon"));
+		setImage(IconLoader.loadIconSmall("plusIcon"));
 		
 		Composite core = new Composite(DbMain.getTabFolder(), SWT.None);
 		core.setLayout(new FormLayout());
@@ -176,13 +176,9 @@ public class DbTab extends CTabItem {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
 				setupIcons();
-				if (connection != null && connection.client != null)
-					setImage(IconLoader.loadIcon("DatabaseIcon"));
-				else
-					setImage(IconLoader.loadIcon("plusIcon"));
 			}
 		};		
-		Preferences.addPreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.HALFRES_ICONS, preferenceChangeListener);
 	}
 
     private void setupIcons() {
@@ -283,7 +279,7 @@ public class DbTab extends CTabItem {
     }
     
     private void doConnectionResultSuccess(StringReceiverClient client, String dbURL, boolean permanent) {
-		setImage(IconLoader.loadIcon("DatabaseIcon"));
+		setImage(IconLoader.loadIconSmall("DatabaseIcon"));
 
         setStatus("Ok");
         toolBarMode.setEnabled(true);
@@ -392,7 +388,7 @@ public class DbTab extends CTabItem {
 			} catch (IOException e) {
 			}
     	clearModes();
-		Preferences.removePreferenceChangeListener(PreferencePageGeneral.DBL_ICONS, preferenceChangeListener);
+		Preferences.removePreferenceChangeListener(PreferencePageGeneral.HALFRES_ICONS, preferenceChangeListener);
     	super.dispose();
     }
 
@@ -422,7 +418,7 @@ public class DbTab extends CTabItem {
 				e.printStackTrace();
 			}
 			clearModes();
-			setImage(IconLoader.loadIcon("plusIcon"));
+			setImage(IconLoader.loadIconSmall("plusIcon"));
 		}
 	}
 	

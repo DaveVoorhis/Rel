@@ -7,7 +7,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
  * This class creates a preference page
  */
 public class PreferencePageGeneral extends FieldEditorPreferencePage {
-	public static final String DBL_ICONS = "general.doublesize_icons";
+	public static final String HALFRES_ICONS = "general.halfres_icons";
 
 	/**
 	 * Constructor
@@ -18,7 +18,7 @@ public class PreferencePageGeneral extends FieldEditorPreferencePage {
 	}
 
 	protected void createFieldEditors() {
-		addField(new BooleanFieldEditor(DBL_ICONS, "&Double-sized icons.", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(HALFRES_ICONS, "&Half-resolution icons.  On some platforms, this will show smaller icons.", getFieldEditorParent()));
 	}
 
 }

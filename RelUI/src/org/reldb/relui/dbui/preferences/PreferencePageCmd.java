@@ -21,7 +21,7 @@ public class PreferencePageCmd extends FieldEditorPreferencePage {
 	}
 
 	protected void createFieldEditors() {
-		addField(new FontFieldEditor(CMD_FONT, "&Font:", "ABCDEFG\nabcdefg", getFieldEditorParent()));
+		addField(new FontFieldEditor(CMD_FONT, "&Font:", "ABCabc0123", getFieldEditorParent()));
 		addField(new BooleanFieldEditor(CMD_BROWSER_SWING, "Use an alternative output display to try to fix output problems.", getFieldEditorParent()));
 	}
 
