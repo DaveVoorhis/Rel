@@ -117,6 +117,7 @@ public class CmdPanel extends Composite {
 					reply = new StringBuffer();
 			 	} else if (r.startsWith("ERROR:")) {
 					badResponse(r);
+					outputPlain("\n", black);
 					reply = new StringBuffer();
 					errorBuffer = new StringBuffer();
 					if (r.contains(", column")) {
@@ -418,8 +419,8 @@ public class CmdPanel extends Composite {
 			msgSuffixTag = "";			
 		}
 		outputHTML("<div class=\"" + htmlClass + "\">" + msgPrefixTag + getResponseFormatted(msg, false) + msgSuffixTag + "</div>");
-		responseText(msg, colour);
-		outputUpdated();		
+		responseText("\n" + msg, colour);
+		outputUpdated();	
 	}
 	
 	/** Handle a received line of 'good' content. */
