@@ -10,7 +10,7 @@ import org.eclipse.jface.preference.FontFieldEditor;
 public class PreferencePageCmd extends FieldEditorPreferencePage {
 	// Names for preferences
 	public static final String CMD_BROWSER_SWING = "browser.swing";
-	public static final String CMD_FONT = "font";
+	public static final String CMD_FONT = "browser.font";
 
 	/**
 	 * Constructor

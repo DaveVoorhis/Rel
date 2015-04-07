@@ -7,14 +7,14 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
  * This class creates a preference page
  */
 public class PreferencePageGeneral extends FieldEditorPreferencePage {
-	public static final String DBL_ICONS = "dbl_size_icons";
+	public static final String DBL_ICONS = "general.doublesize_icons";
 
 	/**
 	 * Constructor
 	 */
 	public PreferencePageGeneral() {
 		setTitle("General");
-		setDescription("General settings");
+		setDescription("General settings.");
 	}
 
 	protected void createFieldEditors() {
