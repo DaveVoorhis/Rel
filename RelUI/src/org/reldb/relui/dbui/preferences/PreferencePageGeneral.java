@@ -18,7 +18,7 @@ public class PreferencePageGeneral extends FieldEditorPreferencePage {
 	}
 
 	protected void createFieldEditors() {
-		addField(new BooleanFieldEditor(HALFRES_ICONS, "&Half-resolution icons.  On some platforms, this will show smaller icons.", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(HALFRES_ICONS, "&Smaller icons.  You should restart to see the full effect.", getFieldEditorParent()));
 	}
 
 }
