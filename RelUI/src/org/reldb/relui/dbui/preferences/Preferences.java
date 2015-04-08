@@ -1,4 +1,4 @@
-package org.reldb.relui.dbui;
+package org.reldb.relui.dbui.preferences;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,10 +18,6 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
-import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
-import org.reldb.relui.dbui.preferences.PreferencePageCmd;
-import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
 import org.reldb.relui.version.Version;
 
 public class Preferences {

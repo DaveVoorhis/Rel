@@ -14,6 +14,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.reldb.relui.dbui.StatusPanel;
 import org.reldb.relui.dbui.monitor.LogWin;
+import org.reldb.relui.dbui.preferences.Preferences;
 
 public class MainPanel extends Composite {
 	

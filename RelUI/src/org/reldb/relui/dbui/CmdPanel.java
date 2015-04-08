@@ -20,6 +20,7 @@ import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
 import org.reldb.relui.dbui.preferences.PreferencePageCmd;
+import org.reldb.relui.dbui.preferences.Preferences;
 
 public class CmdPanel extends Composite {
 

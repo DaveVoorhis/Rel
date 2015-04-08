@@ -14,6 +14,7 @@ import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
 import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
+import org.reldb.relui.dbui.preferences.Preferences;
 
 public class DbTabContentRev extends Composite {
 

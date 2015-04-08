@@ -27,7 +27,7 @@ import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.reldb.relui.dbui.IconLoader;
-import org.reldb.relui.dbui.Preferences;
+import org.reldb.relui.dbui.preferences.Preferences;
 
 public class LogWin {
 

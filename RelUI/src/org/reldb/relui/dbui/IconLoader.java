@@ -3,6 +3,7 @@ package org.reldb.relui.dbui;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.wb.swt.ResourceManager;
 import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
+import org.reldb.relui.dbui.preferences.Preferences;
 
 public class IconLoader {
 	public static Image loadIcon(String name) {

@@ -3,8 +3,8 @@ package org.reldb.relui.dbui.html;
 import java.util.ArrayList;
 
 import org.eclipse.swt.graphics.FontData;
-import org.reldb.relui.dbui.Preferences;
 import org.reldb.relui.dbui.preferences.PreferencePageCmd;
+import org.reldb.relui.dbui.preferences.Preferences;
 
 public class Style {
 	

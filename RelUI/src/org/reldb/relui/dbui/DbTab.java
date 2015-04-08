@@ -30,6 +30,7 @@ import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
 import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
+import org.reldb.relui.dbui.preferences.Preferences;
 import org.reldb.relui.version.Version;
 
 public class DbTab extends CTabItem {

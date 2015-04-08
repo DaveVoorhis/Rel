@@ -2,8 +2,8 @@ package org.reldb.relui.dbui.html;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.reldb.relui.dbui.Preferences;
 import org.reldb.relui.dbui.preferences.PreferencePageCmd;
+import org.reldb.relui.dbui.preferences.Preferences;
 
 public class BrowserManager implements HtmlBrowser {
 
