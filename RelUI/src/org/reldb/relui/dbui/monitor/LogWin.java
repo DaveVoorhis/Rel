@@ -8,7 +8,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.ToolBar;
@@ -23,7 +25,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Rectangle;
 import org.reldb.relui.dbui.IconLoader;
+import org.reldb.relui.dbui.Preferences;
 
 public class LogWin {
 
@@ -58,12 +62,13 @@ public class LogWin {
 	private boolean running = true;
 	
 	private FileDialog saveTextDialog;
+
+	private static final String rectPrefName = "logwin.rect";
 	
 	protected LogWin(Composite parent) {
 		messageQueue = new LinkedBlockingQueue<Message>();
 
 		shell = new Shell(parent.getDisplay());
-		shell.setSize(450, 300);
 		shell.setText("Rel System Log");
 		shell.setLayout(new FormLayout());
 		shell.addShellListener(new ShellAdapter() {
@@ -71,6 +76,20 @@ public class LogWin {
 			public void shellClosed(ShellEvent e) {
 				e.doit = false;
 				shell.setVisible(false);
+			}
+		});
+
+		shell.addListener(SWT.Move, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				Preferences.setPreference(rectPrefName, shell.getBounds());
+			}
+		});
+		
+		shell.addListener(SWT.Resize, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				Preferences.setPreference(rectPrefName, shell.getBounds());
 			}
 		});
 
@@ -192,6 +211,11 @@ public class LogWin {
 	public static void open() {
 		if (shell.isVisible())
 			return;
+
+		Rectangle rect = Preferences.getPreferenceRectangle(rectPrefName);
+		if (rect.height > 0 && rect.width > 0)
+			shell.setBounds(rect);
+		
 		shell.open();
 		shell.layout();
 	}

@@ -8,6 +8,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -19,6 +20,8 @@ public class MainPanel extends Composite {
 	private CTabFolder tabFolder;
 	private StatusPanel statusPanel;
 	
+	private final String rectPrefName = "mainpanel.rect";
+
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -27,14 +30,33 @@ public class MainPanel extends Composite {
 	public MainPanel(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FormLayout());
-		addListener(SWT.Close, new Listener() {
+		
+		getShell().addListener(SWT.Close, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				LogWin.remove();
 			}
 		});
 
+		getShell().addListener(SWT.Move, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				Preferences.setPreference(rectPrefName, getShell().getBounds());
+			}
+		});
+		
+		getShell().addListener(SWT.Resize, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				Preferences.setPreference(rectPrefName, getShell().getBounds());
+			}
+		});
+		
 		LogWin.install(parent);
+
+		Rectangle rect = Preferences.getPreferenceRectangle(rectPrefName);
+		if (rect.height > 0 && rect.width > 0)
+			getShell().setBounds(rect);
 		
 		tabFolder = new CTabFolder(this, SWT.None);
 		FormData fd_tabFolder = new FormData();

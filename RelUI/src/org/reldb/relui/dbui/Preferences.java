@@ -15,6 +15,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
@@ -46,12 +47,49 @@ public class Preferences {
 		return preferences;
 	}
 
+	public static void setPreference(String name, Rectangle rect) {
+		PreferenceStore prefs = getPreferences();
+		prefs.setValue(name + "_x", rect.x);
+		prefs.setValue(name + "_y", rect.y);
+		prefs.setValue(name + "_width", rect.width);
+		prefs.setValue(name + "_height", rect.height);
+		save();
+	}
+	
+	public static void setPreference(String name, String value) {
+		getPreferences().setValue(name, value);
+		save();
+	}
+	
+	public static void setPreference(String name, boolean value) {
+		getPreferences().setValue(name, value);
+		save();		
+	}
+	
+	public static void setPreference(String name, int value) {
+		getPreferences().setValue(name, value);
+		save();		
+	}
+
+	public static Rectangle getPreferenceRectangle(String name) {
+		PreferenceStore prefs = getPreferences();
+		int x = prefs.getInt(name + "_x");
+		int y = prefs.getInt(name + "_y");
+		int width = prefs.getInt(name + "_width");
+		int height = prefs.getInt(name + "_height");
+		return new Rectangle(x, y, width, height);
+	}
+	
 	public static String getPreferenceString(String name) {
 		return getPreferences().getString(name);
 	}
 	
 	public static boolean getPreferenceBoolean(String name) {
 		return getPreferences().getBoolean(name);
+	}
+	
+	public static int getPreferenceInteger(String name) {
+		return getPreferences().getInt(name);
 	}
 
 	public static FontData[] getPreferenceFont(String name) {
@@ -112,12 +150,16 @@ public class Preferences {
 		preferenceDialog.setPreferenceStore(preferences);
  	}
 
-	public void show() {
-		preferenceDialog.open();
+	private static void save() {
 		try {
 			preferences.save();
 		} catch (IOException e) {
 			System.out.println("Preferences: Unable to save preferences: " + e);
-		}
+		}		
+	}
+	
+	public void show() {
+		preferenceDialog.open();
+		save();
 	}
 }
