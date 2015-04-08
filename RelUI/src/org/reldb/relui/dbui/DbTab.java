@@ -182,7 +182,7 @@ public class DbTab extends CTabItem {
 					setImage(IconLoader.loadIcon("plusIcon"));
 			}
 		};		
-		Preferences.addPreferenceChangeListener(PreferencePageGeneral.HALFRES_ICONS, preferenceChangeListener);
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 	}
 
     private void setupIcons() {
@@ -392,7 +392,7 @@ public class DbTab extends CTabItem {
 			} catch (IOException e) {
 			}
     	clearModes();
-		Preferences.removePreferenceChangeListener(PreferencePageGeneral.HALFRES_ICONS, preferenceChangeListener);
+		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
     	super.dispose();
     }
 

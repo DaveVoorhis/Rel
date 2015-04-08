@@ -6,8 +6,8 @@ import org.reldb.relui.dbui.preferences.PreferencePageGeneral;
 
 public class IconLoader {
 	public static Image loadIcon(String name) {
-		boolean halfSizedIcons = Preferences.getPreferenceBoolean(PreferencePageGeneral.HALFRES_ICONS);
-		return (halfSizedIcons) ? loadIconSmall(name) : loadIconLarge(name);
+		boolean largeIcons = Preferences.getPreferenceBoolean(PreferencePageGeneral.LARGE_ICONS);
+		return (largeIcons) ? loadIconLarge(name) : loadIconSmall(name);
 	}
 	
 	public static Image loadIconSmall(String name) {

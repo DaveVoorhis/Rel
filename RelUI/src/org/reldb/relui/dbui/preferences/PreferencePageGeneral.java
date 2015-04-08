@@ -2,12 +2,13 @@ package org.reldb.relui.dbui.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.util.Util;
 
 /**
  * This class creates a preference page
  */
 public class PreferencePageGeneral extends FieldEditorPreferencePage {
-	public static final String HALFRES_ICONS = "general.halfres_icons";
+	public static final String LARGE_ICONS = "general.halfres_icons";
 
 	/**
 	 * Constructor
@@ -18,7 +19,10 @@ public class PreferencePageGeneral extends FieldEditorPreferencePage {
 	}
 
 	protected void createFieldEditors() {
-		addField(new BooleanFieldEditor(HALFRES_ICONS, "&Smaller icons.  You should restart to see the full effect.", getFieldEditorParent()));
+		String reloadPrompt = "";
+		if (!Util.isMac())
+			reloadPrompt = "  Restart after changing to see the full effect.";
+		addField(new BooleanFieldEditor(LARGE_ICONS, "&Larger icons." + reloadPrompt, getFieldEditorParent()));
 	}
 
 }

@@ -258,7 +258,7 @@ public class CmdPanelInput extends Composite {
 				setupIcons();
 			}
 		};		
-		Preferences.addPreferenceChangeListener(PreferencePageGeneral.HALFRES_ICONS, iconPreferenceChangeListener);
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, iconPreferenceChangeListener);
 
 		setupFont();
 		fontPreferenceChangeListener = new PreferenceChangeAdapter("CmdPanelInput_font") {
@@ -287,7 +287,7 @@ public class CmdPanelInput extends Composite {
 	}
 	
 	public void dispose() {
-		Preferences.removePreferenceChangeListener(PreferencePageGeneral.HALFRES_ICONS, iconPreferenceChangeListener);
+		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, iconPreferenceChangeListener);
 		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
 		super.dispose();
 	}
