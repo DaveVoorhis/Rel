@@ -61,7 +61,7 @@ public class DbTab extends CTabItem {
 	public DbTab() {
 		super(DbMain.getTabFolder(), SWT.None);
 		
-		setImage(IconLoader.loadIconSmall("plusIcon"));
+		setImage(IconLoader.loadIcon("plusIcon"));
 		
 		Composite core = new Composite(DbMain.getTabFolder(), SWT.None);
 		core.setLayout(new FormLayout());
@@ -176,6 +176,10 @@ public class DbTab extends CTabItem {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
 				setupIcons();
+				if (connection != null && connection.client != null)
+					setImage(IconLoader.loadIcon("DatabaseIcon"));
+				else
+					setImage(IconLoader.loadIcon("plusIcon"));
 			}
 		};		
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.HALFRES_ICONS, preferenceChangeListener);
@@ -279,7 +283,7 @@ public class DbTab extends CTabItem {
     }
     
     private void doConnectionResultSuccess(StringReceiverClient client, String dbURL, boolean permanent) {
-		setImage(IconLoader.loadIconSmall("DatabaseIcon"));
+		setImage(IconLoader.loadIcon("DatabaseIcon"));
 
         setStatus("Ok");
         toolBarMode.setEnabled(true);
@@ -418,7 +422,7 @@ public class DbTab extends CTabItem {
 				e.printStackTrace();
 			}
 			clearModes();
-			setImage(IconLoader.loadIconSmall("plusIcon"));
+			setImage(IconLoader.loadIcon("plusIcon"));
 		}
 	}
 	
