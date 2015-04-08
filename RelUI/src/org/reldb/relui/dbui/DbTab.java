@@ -297,8 +297,13 @@ public class DbTab extends CTabItem {
         	showCmd();
         else {
         	// default mode
-        	tltmModeRel.setSelection(true);
-        	showRel();
+        	if (Preferences.getPreferenceBoolean(PreferencePageGeneral.DEFAULT_CMD_MODE)) {
+        		tltmModeCmd.setSelection(true);
+        		showCmd();
+        	} else {
+	        	tltmModeRel.setSelection(true);
+	        	showRel();
+        	}
         }
 
 		DbMain.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
