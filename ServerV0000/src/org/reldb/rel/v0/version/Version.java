@@ -62,7 +62,7 @@ public class Version {
         return "Rel version " + getVersion() + "\n" +
             "Copyright (c) 2004 - 2015 Dave Voorhis\n" +
             "All Rights Reserved\n" +
-            "For further information, please see http://dbappbuilder.sourceforge.net";
+            "For further information, please see http://reldb.org";
     }
     
     /** Get in-software license information. */
