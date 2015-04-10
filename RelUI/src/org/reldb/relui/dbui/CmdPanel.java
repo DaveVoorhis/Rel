@@ -175,6 +175,7 @@ public class CmdPanel extends Composite {
 						}
 					} else
 						System.out.println("CmdPanel: Unable to locate error in " + errorBuffer.toString());
+					errorBuffer = null;
 				} else {
 					inputTextWidget.selectAll();
 				}
