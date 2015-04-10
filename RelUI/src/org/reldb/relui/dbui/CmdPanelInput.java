@@ -87,6 +87,7 @@ public class CmdPanelInput extends Composite {
 					String line = inputText.getLine(row);
 					int tabSize = inputText.getTabs();
 					int displayColumn = 0;
+					// TODO - fix
 					for (int i=0; i<characterColumn; i++)
 						if (line.charAt(i) == '\t')
 							displayColumn += tabSize - (i % tabSize);

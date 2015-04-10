@@ -169,6 +169,7 @@ public class CmdPanel extends Composite {
 									int outputTabSize = 8;
 									String inputLine = inputTextWidget.getLine(row);
 									// allow for tabs
+									// TODO - fix
 									int outputColumn = 0;
 									int index = 0;
 									while (index < eInfo.getColumn() - 1) {
