@@ -85,10 +85,11 @@ public class CmdPanelInput extends Composite {
 					int row = inputText.getLineAtOffset(offset);
 					int characterColumn = offset - inputText.getOffsetAtLine(row);
 					String line = inputText.getLine(row);
+					int tabSize = inputText.getTabs();
 					int displayColumn = 0;
 					for (int i=0; i<characterColumn; i++)
 						if (line.charAt(i) == '\t')
-							displayColumn += inputText.getTabs();
+							displayColumn += tabSize - (i % tabSize);
 						else
 							displayColumn++;
 					cmdPanelBottom.setRowColDisplay("" + (row + 1) + ":" + (displayColumn + 1));

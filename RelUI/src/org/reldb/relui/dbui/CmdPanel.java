@@ -160,16 +160,28 @@ public class CmdPanel extends Composite {
 				if (errorBuffer != null) {
 					ErrorInformation eInfo = parseErrorInformationFrom(errorBuffer.toString());
 					if (eInfo != null) {
-						int startOffset = 0;
+						int offset = 0;
 						try {
 							if (eInfo.getLine() > 0) {
-								startOffset = inputTextWidget.getOffsetAtLine(eInfo.getLine() - 1);
-								if (eInfo.getColumn() > 0)
-									startOffset += eInfo.getColumn() - 1;
+								int row = eInfo.getLine() - 1;
+								offset = inputTextWidget.getOffsetAtLine(row);
+								if (eInfo.getColumn() > 0) {
+									int outputTabSize = 8;
+									String inputLine = inputTextWidget.getLine(row);
+									// allow for tabs
+									int outputColumn = 0;
+									int index = 0;
+									while (index < eInfo.getColumn() - 1) {
+										if (inputLine.charAt(outputColumn) == '\t')
+											index += outputTabSize - (index % outputTabSize);
+										outputColumn++;
+									}
+									offset = outputColumn + inputTextWidget.getOffsetAtLine(row);
+								}
 							}
-							inputTextWidget.setCaretOffset(startOffset);
+							inputTextWidget.setCaretOffset(offset);
 							if (eInfo.getBadToken() != null)
-								inputTextWidget.setSelection(startOffset, startOffset + eInfo.getBadToken().length());
+								inputTextWidget.setSelection(offset, offset + eInfo.getBadToken().length());
 						} catch (Exception e) {
 							System.out.println("CmdPanel: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
 						}
