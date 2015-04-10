@@ -82,9 +82,16 @@ public class CmdPanelInput extends Composite {
 			public void caretMoved(CaretEvent event) {
 				int offset = event.caretOffset;
 				try {
-					int line = inputText.getLineAtOffset(offset);
-					int column = offset - inputText.getOffsetAtLine(line);
-					cmdPanelBottom.setRowColDisplay("" + (line + 1) + ":" + (column + 1));
+					int row = inputText.getLineAtOffset(offset);
+					int characterColumn = offset - inputText.getOffsetAtLine(row);
+					String line = inputText.getLine(row);
+					int displayColumn = 0;
+					for (int i=0; i<characterColumn; i++)
+						if (line.charAt(i) == '\t')
+							displayColumn += inputText.getTabs();
+						else
+							displayColumn++;
+					cmdPanelBottom.setRowColDisplay("" + (row + 1) + ":" + (displayColumn + 1));
 				} catch (Exception ble) {
 					cmdPanelBottom.setRowColDisplay("?:?");
 				}
