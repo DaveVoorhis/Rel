@@ -22,7 +22,7 @@ options {
   SANITY_CHECK = true;
   FORCE_LA_CHECK = false;
   OUTPUT_DIRECTORY = "core";
-  JDK_VERSION = "1.6";
+  JDK_VERSION = "1.8";
 }
 
 PARSER_BEGIN(ResponseParser)
@@ -30,6 +30,7 @@ package org.reldb.rel.client.parser.core;
 import org.reldb.rel.client.parser.ResponseHandler;
 import org.reldb.rel.client.parser.ResponseAdapter;
 import org.reldb.rel.utilities.StringUtils;
+@SuppressWarnings("all")
 public class ResponseParser {
 	private ResponseHandler responseHandler = new ResponseAdapter();
 	public void setResponseHandler(ResponseHandler handler) {

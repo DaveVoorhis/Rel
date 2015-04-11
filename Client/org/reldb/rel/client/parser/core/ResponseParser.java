@@ -3,6 +3,7 @@ package org.reldb.rel.client.parser.core;
 import org.reldb.rel.client.parser.ResponseHandler;
 import org.reldb.rel.client.parser.ResponseAdapter;
 import org.reldb.rel.utilities.StringUtils;
+@SuppressWarnings("all")
 public class ResponseParser implements ResponseParserConstants {
         private ResponseHandler responseHandler = new ResponseAdapter();
         public void setResponseHandler(ResponseHandler handler) {
@@ -411,17 +412,6 @@ public class ResponseParser implements ResponseParserConstants {
     finally { jj_save(2, xla); }
   }
 
-  private boolean jj_3R_20() {
-    if (jj_3R_18()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_14() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
   private boolean jj_3R_24() {
     if (jj_3R_25()) return true;
     return false;
@@ -615,6 +605,17 @@ public class ResponseParser implements ResponseParserConstants {
 
   private boolean jj_3R_15() {
     if (jj_3R_20()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_20() {
+    if (jj_3R_18()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_14() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_13()) return true;
     return false;
   }
 
