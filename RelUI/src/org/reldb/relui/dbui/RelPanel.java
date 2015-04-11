@@ -41,7 +41,6 @@ public class RelPanel extends Composite {
 		xpndtmNewExpanditem.setHeight(xpndtmNewExpanditem.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
 		
 		ExpandItem xpndtmNewExpanditem_1 = new ExpandItem(expandBar, SWT.NONE);
-		xpndtmNewExpanditem_1.setExpanded(true);
 		xpndtmNewExpanditem_1.setText("Views");
 		
 		table_1 = new Table(expandBar, SWT.BORDER | SWT.FULL_SELECTION);
@@ -51,7 +50,6 @@ public class RelPanel extends Composite {
 		xpndtmNewExpanditem_1.setHeight(xpndtmNewExpanditem_1.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
 		
 		ExpandItem xpndtmForms = new ExpandItem(expandBar, SWT.NONE);
-		xpndtmForms.setExpanded(true);
 		xpndtmForms.setText("Forms");
 		
 		table_2 = new Table(expandBar, SWT.BORDER | SWT.FULL_SELECTION);
@@ -61,7 +59,6 @@ public class RelPanel extends Composite {
 		xpndtmForms.setHeight(xpndtmForms.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
 		
 		ExpandItem xpndtmReports = new ExpandItem(expandBar, SWT.NONE);
-		xpndtmReports.setExpanded(true);
 		xpndtmReports.setText("Reports");
 		
 		table_3 = new Table(expandBar, SWT.BORDER | SWT.FULL_SELECTION);
