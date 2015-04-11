@@ -33,6 +33,8 @@ options {
 
 PARSER_BEGIN(TutorialD)
 package org.reldb.rel.v0.languages.tutoriald.parser;
+
+@SuppressWarnings("all")
 public class TutorialD {
   void jjtreeOpenNodeScope( Node node )
   {
@@ -42,6 +44,14 @@ public class TutorialD {
   void jjtreeCloseNodeScope( Node node )
   {
     ((org.reldb.rel.v0.languages.tutoriald.BaseASTNode)node).last_token = getToken(0);
+  }
+
+  public void setTabSize(int size) {
+       jj_input_stream.setTabSize(size);
+  }
+
+  public int getTabSize() {
+       return jj_input_stream.getTabSize(0);
   }
 }
 PARSER_END(TutorialD)

@@ -97,6 +97,7 @@ public class Interpreter {
 	public Evaluation evaluate(TutorialDVisitor parser, InputStream input) throws ParseException {
 		beginCompile();
 		TutorialD parseEngine = new TutorialD(input);
+		parseEngine.setTabSize(4);
 		OperatorDefinitionRel mainOperatorDefinition = null;
 		try {
 			mainOperatorDefinition = (OperatorDefinitionRel)(parseEngine.evaluate().jjtAccept(parser, null));
@@ -120,6 +121,7 @@ public class Interpreter {
 	public void compileStatement(TutorialDVisitor parser, InputStream input) throws ParseException {
 		beginCompile();
 		TutorialD parseEngine = new TutorialD(input);
+		parseEngine.setTabSize(4);
 		try {
 			parseEngine.statement().jjtAccept(parser, null);
 		} catch (ExceptionSemantic es) {
@@ -161,6 +163,7 @@ public class Interpreter {
 		beginCompile();
 		parser.endOperatorsNonStorable();
 		TutorialD parseEngine = new TutorialD(new ByteArrayInputStream(input.getBytes()));
+		parseEngine.setTabSize(4);
 		try {
 			return (Type)parseEngine.getoperatorreturntype().jjtAccept(parser, null);
 		} catch (ExceptionSemantic es) {
@@ -175,6 +178,7 @@ public class Interpreter {
 		TutorialDParser parser = new TutorialDParser(generator);
 		beginCompile();
 		TutorialD parseEngine = new TutorialD(new ByteArrayInputStream(input.getBytes()));
+		parseEngine.setTabSize(4);
 		try {
 			return (Heading)parseEngine.getheading().jjtAccept(parser, null);
 		} catch (ExceptionSemantic es) {
@@ -189,6 +193,7 @@ public class Interpreter {
 		TutorialDParser parser = new TutorialDParser(generator);
 		beginCompile();
 		TutorialD parseEngine = new TutorialD(new ByteArrayInputStream(input.getBytes()));
+		parseEngine.setTabSize(4);
 		try {
 			return (OperatorSignature)parseEngine.getsignature().jjtAccept(parser, null);
 		} catch (ExceptionSemantic es) {
@@ -201,6 +206,7 @@ public class Interpreter {
 	public void interpret(TutorialDVisitor parser, InputStream input) throws ParseException {
 		beginCompile();
 		TutorialD parseEngine = new TutorialD(input);
+		parseEngine.setTabSize(4);
 		OperatorDefinitionRel mainOperatorDefinition;
 		try {
 			mainOperatorDefinition = (OperatorDefinitionRel)(parseEngine.code().jjtAccept(parser, null));
