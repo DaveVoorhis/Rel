@@ -20,8 +20,11 @@ public class Tabs {
 				if (tabOver == 0)
 					tabOver = tabSize;
 				column += tabOver;
-			}
+			} else
+				column++;
 			characterIndex++;
+			if (characterIndex >= s.length())
+				break;
 		}
 		return characterIndex;
 	}
