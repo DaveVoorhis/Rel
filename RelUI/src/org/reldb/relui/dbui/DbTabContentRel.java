@@ -6,11 +6,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.reldb.relui.dbui.monitor.LogWin;
 import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.relui.dbui.preferences.PreferenceChangeListener;
@@ -34,20 +32,13 @@ public class DbTabContentRel extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 		
-		Button viewLog = new Button(this, SWT.None);
-		viewLog.setText("Click here to view system log window.");
-		viewLog.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				LogWin.open();
-			}
-		});
+		RelPanel rel = new RelPanel(parentTab, this, SWT.None);
 		FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
 		fd_composite.top = new FormAttachment(toolBar);
 		fd_composite.right = new FormAttachment(100);
 		fd_composite.bottom = new FormAttachment(100);
-		viewLog.setLayoutData(fd_composite);
+		rel.setLayoutData(fd_composite);
 	
 		tlitmBackup = new ToolItem(toolBar, SWT.None);
 		tlitmBackup.setToolTipText("Make backup");
