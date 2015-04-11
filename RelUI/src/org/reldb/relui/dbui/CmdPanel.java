@@ -168,16 +168,8 @@ public class CmdPanel extends Composite {
 								if (eInfo.getColumn() > 0) {
 									int outputTabSize = 8;
 									String inputLine = inputTextWidget.getLine(row);
-									// allow for tabs
-									// TODO - fix
-									int outputColumn = 0;
-									int index = 0;
-									while (index < eInfo.getColumn() - 1) {
-										if (inputLine.charAt(outputColumn) == '\t')
-											index += outputTabSize - (index % outputTabSize);
-										outputColumn++;
-									}
-									offset = outputColumn + inputTextWidget.getOffsetAtLine(row);
+									int characterIndex = Tabs.displayColumnToCharacterIndex(outputTabSize, inputLine, eInfo.getColumn() - 1);
+									offset = characterIndex + inputTextWidget.getOffsetAtLine(row);
 								}
 							}
 							inputTextWidget.setCaretOffset(offset);
