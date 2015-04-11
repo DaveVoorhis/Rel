@@ -166,7 +166,7 @@ public class CmdPanel extends Composite {
 								int row = eInfo.getLine() - 1;
 								offset = inputTextWidget.getOffsetAtLine(row);
 								if (eInfo.getColumn() > 0) {
-									int outputTabSize = 8;
+									int outputTabSize = 4;	// should match parserEngine.setTabSize() in org.reldb.rel.v<n>.interpreter.Interpreter
 									String inputLine = inputTextWidget.getLine(row);
 									int characterIndex = Tabs.displayColumnToCharacterIndex(outputTabSize, inputLine, eInfo.getColumn() - 1);
 									offset = characterIndex + inputTextWidget.getOffsetAtLine(row);
