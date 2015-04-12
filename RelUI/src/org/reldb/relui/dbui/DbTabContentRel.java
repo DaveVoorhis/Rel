@@ -18,6 +18,9 @@ import org.reldb.relui.dbui.preferences.Preferences;
 public class DbTabContentRel extends Composite {
 
 	private ToolItem tlitmBackup;
+	private ToolItem tlitmNew;
+	private ToolItem tlitmDrop;
+	private ToolItem tlitmShowSystem;
     
     private PreferenceChangeListener preferenceChangeListener;
 	
@@ -42,11 +45,38 @@ public class DbTabContentRel extends Composite {
 	
 		tlitmBackup = new ToolItem(toolBar, SWT.None);
 		tlitmBackup.setToolTipText("Make backup");
-		tlitmBackup.setImage(IconLoader.loadIcon("safeIcon"));
 		tlitmBackup.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				parentTab.makeBackup();
+			}
+		});
+		
+		tlitmNew = new ToolItem(toolBar, SWT.None);
+		tlitmNew.setToolTipText("New");
+		tlitmNew.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				rel.NewItem();
+			}
+		});
+		
+		tlitmDrop = new ToolItem(toolBar, SWT.None);
+		tlitmDrop.setToolTipText("Drop");
+		tlitmDrop.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				rel.DropItem();
+			}
+		});
+		
+		tlitmShowSystem = new ToolItem(toolBar, SWT.CHECK);
+		tlitmShowSystem.setToolTipText("Show system objects");
+		tlitmShowSystem.setSelection(rel.getShowSystemObjects());
+		tlitmShowSystem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				rel.setShowSystemObjects(tlitmShowSystem.getSelection());
 			}
 		});
 		
@@ -68,6 +98,9 @@ public class DbTabContentRel extends Composite {
 	
 	private void setupIcons() {
 		tlitmBackup.setImage(IconLoader.loadIcon("safeIcon"));		
+		tlitmNew.setImage(IconLoader.loadIcon("plusIcon"));
+		tlitmDrop.setImage(IconLoader.loadIcon("plusIcon"));
+		tlitmShowSystem.setImage(IconLoader.loadIcon("plusIcon"));
 	}
 
 	public void notifyIconSizeChange() {

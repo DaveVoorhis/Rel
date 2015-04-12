@@ -1,5 +1,7 @@
 package org.reldb.relui.dbui;
 
+import java.util.HashMap;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.SWT;
@@ -14,6 +16,10 @@ import org.reldb.rel.client.Tuples;
 public class RelPanel extends Composite {
 	
 	private DbConnection connection;
+	private boolean showSystemObjects = false;
+
+	private Tree tree;
+	private HashMap<String, TreeItem> treeRoots;
 	
 	/**
 	 * Create the composite.
@@ -29,64 +35,68 @@ public class RelPanel extends Composite {
 		
 		SashForm sashForm = new SashForm(this, SWT.NONE);
 		
-		Tree tree = new Tree(sashForm, SWT.NONE);
-		
-		TreeItem trtmVariables = new TreeItem(tree, SWT.NONE);
-		trtmVariables.setText("Variables");
-		Tuples relvarNames = connection.getTuples("(sys.Catalog WHERE NOT isVirtual) {Name} ORDER (ASC Name)");
-		if (relvarNames != null)
-			for (Tuple tuple: relvarNames) {
-				TreeItem relvar = new TreeItem(trtmVariables, SWT.NONE);
-				relvar.setText(tuple.getAttributeValue("Name").toString());
-			}
+		tree = new Tree(sashForm, SWT.NONE);
 
-		TreeItem trtmViews = new TreeItem(tree, SWT.NONE);
-		trtmViews.setText("Views");
-		Tuples viewNames = connection.getTuples("(sys.Catalog WHERE isVirtual) {Name} ORDER (ASC Name)");
-		if (viewNames != null)
-			for (Tuple tuple: viewNames) {
-				TreeItem view = new TreeItem(trtmViews, SWT.NONE);
-				view.setText(tuple.getAttributeValue("Name").toString());
-			}
-		
-		TreeItem trtmOperators = new TreeItem(tree, SWT.NONE);
-		trtmOperators.setText("Operators");
-		Tuples opSignatures = connection.getTuples("EXTEND sys.Operators UNGROUP Implementations: {opName := Signature || ' RETURNS ' || ReturnsType} {opName} ORDER (ASC opName)");
-		if (opSignatures != null)
-			for (Tuple tuple: opSignatures) {
-				TreeItem opSignature = new TreeItem(trtmOperators, SWT.NONE);
-				opSignature.setText(tuple.getAttributeValue("opName").toString());
-			}
-		
-		TreeItem trtmTypes = new TreeItem(tree, SWT.NONE);
-		trtmTypes.setText("Types");
-		Tuples typeNames = connection.getTuples("sys.Types {Name} ORDER (ASC Name)");
-		if (typeNames != null)
-			for (Tuple tuple: typeNames) {
-				TreeItem type = new TreeItem(trtmTypes, SWT.NONE);
-				type.setText(tuple.getAttributeValue("Name").toString());
-			}
-		
-		TreeItem trtmConstraints = new TreeItem(tree, SWT.NONE);
-		trtmConstraints.setText("Constraints");
-		Tuples constraintNames = connection.getTuples("sys.Constraints {Name} ORDER (ASC Name)");
-		if (constraintNames != null)
-			for (Tuple tuple: constraintNames) {
-				TreeItem constraint = new TreeItem(trtmConstraints, SWT.NONE);
-				constraint.setText(tuple.getAttributeValue("Name").toString());
-			}
-
-		TreeItem trtmForms = new TreeItem(tree, SWT.NONE);
-		trtmForms.setText("Forms");
-		
-		TreeItem trtmReports = new TreeItem(tree, SWT.NONE);
-		trtmReports.setText("Reports");
-		
-		TreeItem trtmScripts = new TreeItem(tree, SWT.NONE);
-		trtmScripts.setText("Scripts");
+		treeRoots = new HashMap<String, TreeItem>();
 		
 		CTabFolder tabFolder = new CTabFolder(sashForm, SWT.BORDER);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		sashForm.setWeights(new int[] {1, 4});
+		
+		buildDbTree();
+	}
+
+	public void NewItem() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void DropItem() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean getShowSystemObjects() {
+		return showSystemObjects;
+	}
+
+	public void setShowSystemObjects(boolean selection) {
+		showSystemObjects = selection;
+		buildDbTree();
+	}
+	
+	private void buildSubtree(String section, String query, String displayAttributeName) {
+		TreeItem root = treeRoots.get(section);
+		if (root == null) {
+			root = new TreeItem(tree, SWT.NONE);
+			root.setText(section);
+			treeRoots.put(section, root);
+		}
+		if (query != null) {
+			Tuples relvarNames = connection.getTuples(query);
+			if (relvarNames != null)
+				for (Tuple tuple: relvarNames) {
+					TreeItem relvar = new TreeItem(root, SWT.NONE);
+					relvar.setText(tuple.getAttributeValue(displayAttributeName).toString());
+				}
+		}
+	}
+	
+	private void buildDbTree() {
+		for (TreeItem root: treeRoots.values())
+			root.removeAll();
+
+		String sysStr = (showSystemObjects) ? null : "Owner <> 'Rel'";
+		String andSysStr = ((sysStr != null) ? (" AND " + sysStr) : "");
+		String whereSysStr = ((sysStr != null) ? (" WHERE " + sysStr) : "");
+		
+		buildSubtree("Variables", "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name");
+		buildSubtree("Views", "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name");
+		buildSubtree("Operators", "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName");
+		buildSubtree("Types", "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name");
+		buildSubtree("Constraints", "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name");
+		buildSubtree("Forms", null, null);
+		buildSubtree("Reports", null, null);
+		buildSubtree("Scripts", null, null);
 	}
 }
