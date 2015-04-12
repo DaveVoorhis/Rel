@@ -1,6 +1,7 @@
 ** TO DO **
 
 Short term:
+	// TODO - fix Java compiler integration
 	// TODO - test client connection reset() on remote databases.
 	// TODO - Disallow recursive definitions like TYPE blah IS {blat CONSTRAINT p POSSREP {x = THE_x(blat)}}
 	// TODO - Fix toolbar button enabled/selected states in RelUI.
