@@ -6,17 +6,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.ExpandBar;
-import org.eclipse.swt.widgets.ExpandItem;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
+import org.reldb.rel.client.Tuple;
+import org.reldb.rel.client.Tuples;
 
 public class RelPanel extends Composite {
-	private Table table;
-	private Table table_1;
-	private Table table_2;
-	private Table table_3;
-	private Table table_4;
-
+	
+	private DbConnection connection;
+	
 	/**
 	 * Create the composite.
 	 * @param parentTab 
@@ -27,58 +25,68 @@ public class RelPanel extends Composite {
 		super(parent, style);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
+		connection = parentTab.getConnection();
+		
 		SashForm sashForm = new SashForm(this, SWT.NONE);
 		
-		ExpandBar expandBar = new ExpandBar(sashForm, SWT.NONE);
+		Tree tree = new Tree(sashForm, SWT.NONE);
 		
-		ExpandItem xpndtmNewExpanditem = new ExpandItem(expandBar, SWT.NONE);
-		xpndtmNewExpanditem.setText("Variables");
+		TreeItem trtmVariables = new TreeItem(tree, SWT.NONE);
+		trtmVariables.setText("Variables");
+		Tuples relvarNames = connection.getTuples("(sys.Catalog WHERE NOT isVirtual) {Name} ORDER (ASC Name)");
+		if (relvarNames != null)
+			for (Tuple tuple: relvarNames) {
+				TreeItem relvar = new TreeItem(trtmVariables, SWT.NONE);
+				relvar.setText(tuple.getAttributeValue("Name").toString());
+			}
+
+		TreeItem trtmViews = new TreeItem(tree, SWT.NONE);
+		trtmViews.setText("Views");
+		Tuples viewNames = connection.getTuples("(sys.Catalog WHERE isVirtual) {Name} ORDER (ASC Name)");
+		if (viewNames != null)
+			for (Tuple tuple: viewNames) {
+				TreeItem view = new TreeItem(trtmViews, SWT.NONE);
+				view.setText(tuple.getAttributeValue("Name").toString());
+			}
 		
-		table = new Table(expandBar, SWT.BORDER | SWT.FULL_SELECTION);
-		xpndtmNewExpanditem.setControl(table);
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-		xpndtmNewExpanditem.setHeight(xpndtmNewExpanditem.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+		TreeItem trtmOperators = new TreeItem(tree, SWT.NONE);
+		trtmOperators.setText("Operators");
+		Tuples opSignatures = connection.getTuples("EXTEND sys.Operators UNGROUP Implementations: {opName := Signature || ' RETURNS ' || ReturnsType} {opName} ORDER (ASC opName)");
+		if (opSignatures != null)
+			for (Tuple tuple: opSignatures) {
+				TreeItem opSignature = new TreeItem(trtmOperators, SWT.NONE);
+				opSignature.setText(tuple.getAttributeValue("opName").toString());
+			}
 		
-		ExpandItem xpndtmNewExpanditem_1 = new ExpandItem(expandBar, SWT.NONE);
-		xpndtmNewExpanditem_1.setText("Views");
+		TreeItem trtmTypes = new TreeItem(tree, SWT.NONE);
+		trtmTypes.setText("Types");
+		Tuples typeNames = connection.getTuples("sys.Types {Name} ORDER (ASC Name)");
+		if (typeNames != null)
+			for (Tuple tuple: typeNames) {
+				TreeItem type = new TreeItem(trtmTypes, SWT.NONE);
+				type.setText(tuple.getAttributeValue("Name").toString());
+			}
 		
-		table_1 = new Table(expandBar, SWT.BORDER | SWT.FULL_SELECTION);
-		xpndtmNewExpanditem_1.setControl(table_1);
-		table_1.setHeaderVisible(true);
-		table_1.setLinesVisible(true);
-		xpndtmNewExpanditem_1.setHeight(xpndtmNewExpanditem_1.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+		TreeItem trtmConstraints = new TreeItem(tree, SWT.NONE);
+		trtmConstraints.setText("Constraints");
+		Tuples constraintNames = connection.getTuples("sys.Constraints {Name} ORDER (ASC Name)");
+		if (constraintNames != null)
+			for (Tuple tuple: constraintNames) {
+				TreeItem constraint = new TreeItem(trtmConstraints, SWT.NONE);
+				constraint.setText(tuple.getAttributeValue("Name").toString());
+			}
+
+		TreeItem trtmForms = new TreeItem(tree, SWT.NONE);
+		trtmForms.setText("Forms");
 		
-		ExpandItem xpndtmForms = new ExpandItem(expandBar, SWT.NONE);
-		xpndtmForms.setText("Forms");
+		TreeItem trtmReports = new TreeItem(tree, SWT.NONE);
+		trtmReports.setText("Reports");
 		
-		table_2 = new Table(expandBar, SWT.BORDER | SWT.FULL_SELECTION);
-		xpndtmForms.setControl(table_2);
-		table_2.setHeaderVisible(true);
-		table_2.setLinesVisible(true);
-		xpndtmForms.setHeight(xpndtmForms.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
-		
-		ExpandItem xpndtmReports = new ExpandItem(expandBar, SWT.NONE);
-		xpndtmReports.setText("Reports");
-		
-		table_3 = new Table(expandBar, SWT.BORDER | SWT.FULL_SELECTION);
-		xpndtmReports.setControl(table_3);
-		table_3.setHeaderVisible(true);
-		table_3.setLinesVisible(true);
-		xpndtmReports.setHeight(xpndtmReports.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
-		
-		ExpandItem xpndtmScripts = new ExpandItem(expandBar, SWT.NONE);
-		xpndtmScripts.setText("Scripts");
-		
-		table_4 = new Table(expandBar, SWT.BORDER | SWT.FULL_SELECTION);
-		xpndtmScripts.setControl(table_4);
-		table_4.setHeaderVisible(true);
-		table_4.setLinesVisible(true);
-		xpndtmReports.setHeight(xpndtmReports.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+		TreeItem trtmScripts = new TreeItem(tree, SWT.NONE);
+		trtmScripts.setText("Scripts");
 		
 		CTabFolder tabFolder = new CTabFolder(sashForm, SWT.BORDER);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
-		sashForm.setWeights(new int[] {1, 3});
-
+		sashForm.setWeights(new int[] {1, 4});
 	}
 }

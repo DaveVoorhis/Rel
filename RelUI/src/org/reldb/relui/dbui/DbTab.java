@@ -23,8 +23,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+
 import org.reldb.rel.client.connection.string.ClientFromURL;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
+
 import org.reldb.relui.dbui.crash.CrashTrap;
 import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
@@ -40,6 +42,8 @@ public class DbTab extends CTabItem {
 	private AttemptConnectionResult connection = null;	
 	private String lastURI = "";
 	private String oldText = "";
+	
+	private CrashTrap crashTrap;
     
     private DbTabContentCmd contentCmd = null;
     private DbTabContentRel contentRel = null;
@@ -61,6 +65,8 @@ public class DbTab extends CTabItem {
     
 	public DbTab() {
 		super(DbMain.getTabFolder(), SWT.None);
+		
+		crashTrap = new CrashTrap(this.getParent().getShell(), Version.getVersion());
 		
 		setImage(IconLoader.loadIcon("plusIcon"));
 		
@@ -185,7 +191,7 @@ public class DbTab extends CTabItem {
 		};		
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 	}
-
+	
     private void setupIcons() {
 		tltmNewLocalDb.setImage(IconLoader.loadIcon("NewDBIcon"));
 		tltmOpenLocalDb.setImage(IconLoader.loadIcon("OpenDBLocalIcon"));
@@ -353,7 +359,6 @@ public class DbTab extends CTabItem {
     
     private AttemptConnectionResult openConnection(String dbURL, boolean createAllowed) {
         try {
-    		CrashTrap crashTrap = new CrashTrap(this.getParent().getShell(), Version.getVersion());
     		StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed, crashTrap);
     		return new AttemptConnectionResult(dbURL, client);
         } catch (Throwable exception) {
@@ -418,6 +423,12 @@ public class DbTab extends CTabItem {
 		if (isOpenOnADatabase())
 			return connection.dbURL;
 		return null;
+	}
+	
+	public DbConnection getConnection() {
+		if (!isOpenOnADatabase())
+			return null;
+		return new DbConnection(connection.dbURL, crashTrap);
 	}
 	
 	public void close() {
