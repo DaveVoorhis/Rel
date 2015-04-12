@@ -13,8 +13,6 @@ import java.util.Calendar;
 
 import org.reldb.rel.client.connection.string.ClientFromURL;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
-import org.reldb.rel.dbrowser.crash.CrashTrap;
-import org.reldb.rel.dbrowser.version.Version;
 
 public class Backup {
 
@@ -56,8 +54,8 @@ public class Backup {
 		long linesWritten = 0;
 		StringReceiverClient client = null;
 		try {
-			CrashTrap crashTrap = new CrashTrap(Version.getVersion());
-			client = ClientFromURL.openConnection(dbURL, false, crashTrap);
+			// TODO - third parameter should be a CrashTrap!!!
+			client = ClientFromURL.openConnection(dbURL, false, null);
 			String r;
 			client.sendExecute(backupScript);
 			try {
