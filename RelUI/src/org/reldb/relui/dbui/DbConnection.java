@@ -27,11 +27,11 @@ public class DbConnection {
 			try {
 				Bundle bundle = FrameworkUtil.getBundle(klass);
 				if (bundle == null) {
-					System.out.println("DbConnection: Unable to retrieve bundle with '" + klass + "' so some functionality might be unavailable.");
+					System.out.println("DbConnection: Unable to retrieve bundle containing '" + klass + "', so some functionality might be unavailable.");
 					return null;
 				}
 				Vector<String> jarPaths = new Vector<String>();
-				System.out.println("DbConnection: searching for Rel core JAR files.");
+				System.out.println("DbConnection: Search for Rel core JAR files...");
 				Enumeration<URL> urls = bundle.findEntries("/lib", "rel0*", true);
 				if (urls != null)
 					while (urls.hasMoreElements()) {
