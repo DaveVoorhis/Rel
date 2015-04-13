@@ -12,9 +12,9 @@ public class ClientLocalConnection extends ClientConnection {
 	protected CrashHandler errorHandler;
 
 	/** Establish a connection with a server. */
-	public ClientLocalConnection(String databaseDir, boolean createDbAllowed, CrashHandler errorHandler) throws IOException {
+	public ClientLocalConnection(String databaseDir, boolean createDbAllowed, CrashHandler errorHandler, String[] additionalJars) throws IOException {
 		ClassPathHack.addFile("RelDBMS.jar");
-		rel = new Rel(databaseDir, createDbAllowed);
+		rel = new Rel(databaseDir, createDbAllowed, additionalJars);
 		this.errorHandler = errorHandler;
 		obtainInitialServerResponse();
 		errorHandler.setInitialServerResponse(initialServerResponse.toString());

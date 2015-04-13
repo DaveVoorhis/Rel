@@ -35,10 +35,12 @@ public class ForeignCompilerJava {
 	
 	private Generator generator;
 	private boolean verbose;
+	private String[] additionalJarsForClasspath;
 	
-	public ForeignCompilerJava(Generator generator, boolean verbose) {
+	public ForeignCompilerJava(Generator generator, boolean verbose, String[] additionalJarsForClasspath) {
 		this.generator = generator;
 		this.verbose = verbose;
+		this.additionalJarsForClasspath = additionalJarsForClasspath;
 	}
 
 	private static final String MANIFEST = "META-INF/MANIFEST.MF";
@@ -148,12 +150,22 @@ public class ForeignCompilerJava {
     }
 	
 	/** Return classpath to the Rel core. */
-    private static String getLocalClasspath(RelDatabase database) {
-        return System.getProperty("user.dir") + java.io.File.pathSeparatorChar + Version.getCoreJarFilename() + 
+    private String getLocalClasspath(RelDatabase database) {
+        String classPath = System.getProperty("user.dir") + 
+        	   java.io.File.pathSeparatorChar + Version.getCoreJarFilename() + 
         	   java.io.File.pathSeparatorChar + database.getJavaUserSourcePath() +
         	   java.io.File.pathSeparatorChar + database.getHomeDir();
+        if (additionalJarsForClasspath != null)
+        	for (String path: additionalJarsForClasspath) {
+       			notify("ForeignCompilerJava: extra jar for classpath: " + path);
+	    		classPath += java.io.File.pathSeparator + path;
+        	}
+        else
+       		notify("ForeignCompilerJava: no extra jars for classpath");
+       	notify("ForeignCompilerJava: raw classpath is " + classPath);
+        return classPath;
     }
-    
+
     /** Given a Type, return the name of the equivalent Java type. */
     private final static String getJavaTypeForType(Generator generator, Type t) {
         if (t == null)
@@ -218,6 +230,8 @@ public class ForeignCompilerJava {
     		throw new ExceptionFatal("RS0293: Unable to save Java source: " + ioe.toString());
     	}
 
+   		notify("ForeignCompilerJava: classpath = " + classpath);
+    	
     	// Start compilation using JDT
     	boolean compiled = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile("-1.8 -source 1.8 -warn:" + 
     			warningSetting + " " + 
@@ -274,7 +288,7 @@ public class ForeignCompilerJava {
     	}
 
     	if (!compiled)
-        	throw new ExceptionSemantic("RS0005: Java compilation failed due to errors: " + compilerMessages);    		    
+        	throw new ExceptionSemantic("RS0005: Compilation failed due to errors: \n" + compilerMessages + "\n");    		    
     }
     
     /** Get a stripped name.  Only return text after the final '.' */

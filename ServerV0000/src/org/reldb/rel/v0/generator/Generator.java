@@ -179,6 +179,9 @@ public class Generator {
 	// True if verbose external operator/type generation is enabled
 	private boolean verboseExternalOperatorTypeGeneration = false;
     
+	// Additional JAR files for the Java compiler to include in the classpath when compiling.
+	private String[] additionalJarsForJavaCompilerClasspath = null;
+	
 	public Generator(RelDatabase database, PrintStream outputStream) {
 		this.database = database;
 		this.parser = null;
@@ -215,6 +218,10 @@ public class Generator {
 	
 	public void setParser(TutorialDParser parser) {
 		this.parser = parser;
+	}
+
+	public void setAdditionalJarsForJavaCompilerClasspath(String[] additionalJars) {
+		additionalJarsForJavaCompilerClasspath = additionalJars;
 	}
 	
 	public PrintStream getPrintStream() {
@@ -415,7 +422,7 @@ public class Generator {
 	public void createTypeExternal(String typeName, String language, String source, References references) {
 		if (database.isTypeExists(this, typeName))
 			throw new ExceptionSemantic("RS0032: TYPE " + typeName + " already exists.");
-		(new ForeignCompilerJava(this, verboseExternalOperatorTypeGeneration)).compileForeignType(typeName, language, source);
+		(new ForeignCompilerJava(this, verboseExternalOperatorTypeGeneration, additionalJarsForJavaCompilerClasspath)).compileForeignType(typeName, language, source);
 		source = "TYPE " + typeName + " Java FOREIGN " + source + "\nEND TYPE;";
 		beginAssignment();
 		compileInstruction(new OpCreateType(typeName, source, userRelvarOwner, "Java", references, null));
@@ -850,7 +857,7 @@ public class Generator {
 		public void endExternalOperator(String externalLanguage, String sourcecode) {
 			if (operator.getDeclaredReturnType() != null)
 				operator.setDefinedReturnValue(true);
-			operator = (new ForeignCompilerJava(Generator.this, verboseExternalOperatorTypeGeneration)).compileForeignOperator(getCurrentOperatorDefinition().getSignature(), externalLanguage, sourcecode);
+			operator = (new ForeignCompilerJava(Generator.this, verboseExternalOperatorTypeGeneration, additionalJarsForJavaCompilerClasspath)).compileForeignOperator(getCurrentOperatorDefinition().getSignature(), externalLanguage, sourcecode);
 			endOperator();
 			// Need to remove and redefine, because operator was initially an OperatorDefinitionRel but is now an OperatorDefinitionNative derivative.
 			currentOperatorDefinition.removeOperator(operator.getSignature());

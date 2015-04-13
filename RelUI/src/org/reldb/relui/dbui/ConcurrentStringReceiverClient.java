@@ -45,7 +45,7 @@ public abstract class ConcurrentStringReceiverClient {
 		this.parent = parent;
 		display = parent.getDisplay();
 		CrashTrap crashTrap = new CrashTrap(parent.getShell(), Version.getVersion());
-		connection = ClientFromURL.openConnection(dbURL, createAllowed, crashTrap);
+		connection = ClientFromURL.openConnection(dbURL, createAllowed, crashTrap, DbConnection.getBundleJarPath(getClass()));
 	}
 
 	private abstract class Runner {

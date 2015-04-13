@@ -13,8 +13,8 @@ public class ClientLocal implements StringReceiverClient {
 	private boolean receiverRunning;
 	
 	/** Establish a connection with a server. */
-	public ClientLocal(String databaseDir, boolean createDbAllowed, CrashHandler crashHandler) throws IOException {
-		connection = new ClientLocalConnection(databaseDir, createDbAllowed, crashHandler);
+	public ClientLocal(String databaseDir, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws IOException {
+		connection = new ClientLocalConnection(databaseDir, createDbAllowed, crashHandler, additionalJars);
 		final BufferedReader input = new BufferedReader(new InputStreamReader(connection.getServerResponseInputStream()));
 		Thread receiver = new Thread() {
 			public void run() {

@@ -359,7 +359,7 @@ public class DbTab extends CTabItem {
     
     private AttemptConnectionResult openConnection(String dbURL, boolean createAllowed) {
         try {
-    		StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed, crashTrap);
+    		StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed, crashTrap, DbConnection.getBundleJarPath(getClass()));
     		return new AttemptConnectionResult(dbURL, client);
         } catch (Throwable exception) {
         	return new AttemptConnectionResult(exception);

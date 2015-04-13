@@ -25,6 +25,7 @@ public class Connection {
 	private String serverAnnouncement = "";
 	private boolean createDbAllowed;
 	private CrashHandler crashHandler;
+	private String[] additionalJars;
 	
 	private final static String errorPrefix = "ERROR:";
 	
@@ -50,10 +51,11 @@ public class Connection {
 	}
 	
 	/** Creates new connection */
-	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler) {
+	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) {
 		this.dbURL = dbURL;
 		this.createDbAllowed = createDbAllowed;
 		this.crashHandler = crashHandler;
+		this.additionalJars = additionalJars;
 	}
 	
 	private abstract class Action {
@@ -124,7 +126,7 @@ public class Connection {
 		final Response response = new Response();
 		final StreamReceiverClient client;
 		try {
-			client = ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler);
+			client = ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler, additionalJars);
 		} catch (Exception e) {
 			response.setResult(new Error(e.toString()));
 			return response;
@@ -234,7 +236,7 @@ public class Connection {
 	private void launchParserToHTML(final Action action, final HTMLReceiver htmlReceiver) {
 		final StreamReceiverClient client;
 		try {
-			client = ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler);
+			client = ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler, additionalJars);
 		} catch (Exception e) {
 			htmlReceiver.emitInitialHTML("Unable to open connection: " + e.toString().replace(" ", "&nbsp;"));
 			return;

@@ -55,7 +55,8 @@ public class Backup {
 		StringReceiverClient client = null;
 		try {
 			// TODO - third parameter should be a CrashTrap!!!
-			client = ClientFromURL.openConnection(dbURL, false, null);
+			// TODO - fourth can be additional jar file locations 
+			client = ClientFromURL.openConnection(dbURL, false, null, null);
 			String r;
 			client.sendExecute(backupScript);
 			try {

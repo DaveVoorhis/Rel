@@ -37,14 +37,16 @@ public class Rel {
 		org.reldb.rel.v0.interpreter.Instance.main(args);
 	}
 
-	/** Establish a connection with this server. */
-	public Rel(String databaseDir, boolean createDbAllowed) throws IOException {
+	/** Establish a connection with this server. 
+	 * @param additionalJars */
+	public Rel(String databaseDir, boolean createDbAllowed, String[] additionalJars) throws IOException {
 		buildClasspath();
 		input = new PipedInputStream();
 		PipedOutputStream pipeOutput = new PipedOutputStream(input);
 		output = new PrintStream(pipeOutput, true);		
 		Instance instance = new Instance(databaseDir, createDbAllowed, output);
 		interpreter = new Interpreter(instance.getDatabase(), output);
+		interpreter.setAdditionalJarsForJavaCompilerClasspath(additionalJars);
 		instance.announceActive(output);
 		output.println("<EOT>");
 	}

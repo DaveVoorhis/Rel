@@ -21,10 +21,11 @@ public class Rel {
 		org.reldb.rel.v0.engine.Rel.main(args);
 	}
 	
-	/** Establish a connection with this server. */
-	public Rel(String databaseDir, boolean createDbAllowed) throws IOException {
+	/** Establish a connection with this server. 
+	 * @param additionalJars */
+	public Rel(String databaseDir, boolean createDbAllowed, String[] additionalJars) throws IOException {
 		buildClasspath();
-		rel = new org.reldb.rel.v0.engine.Rel(databaseDir, createDbAllowed);
+		rel = new org.reldb.rel.v0.engine.Rel(databaseDir, createDbAllowed, additionalJars);
 	}
 	
 	public InputStream getServerResponseInputStream() throws IOException {
