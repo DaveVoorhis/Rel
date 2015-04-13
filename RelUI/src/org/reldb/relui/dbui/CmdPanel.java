@@ -105,6 +105,7 @@ public class CmdPanel extends Composite {
 		
 		connection = new ConcurrentStringReceiverClient(this, dbTab.getURL(), false) {
 			StringBuffer errorBuffer = null;
+			StringBuffer compilerErrorBuffer = null;
 			@Override
 			public void received(String r) {
 				if (r.equals("\n")) {
@@ -119,21 +120,27 @@ public class CmdPanel extends Composite {
 			 	} else if (r.startsWith("ERROR:")) {
 					badResponse(r);
 					outputPlain("\n", black);
+			 		if (r.startsWith("ERROR: RS0005"))
+			 			compilerErrorBuffer = new StringBuffer();
 					reply = new StringBuffer();
 					errorBuffer = new StringBuffer();
 					if (r.contains(", column")) {
 						errorBuffer.append(r);
 						errorBuffer.append('\n');
 					}
-				} else if (r.startsWith("NOTICE")) {
+			 	} else if (r.startsWith("NOTICE")) {
 					noticeResponse(r);
 					reply = new StringBuffer();
 				} else {
 					if (responseFormatted) {
 						reply.append(r);
 						reply.append("\n");
-					} else
+					} else if (compilerErrorBuffer == null) {
 						outputHTML(getResponseFormatted(r, responseFormatted));
+					} else {
+						compilerErrorBuffer.append(r);
+						compilerErrorBuffer.append("<br>");
+					}
 					responseText(r, black);
 					if (errorBuffer != null) {
 						errorBuffer.append(r);
@@ -151,11 +158,15 @@ public class CmdPanel extends Composite {
 			}
 			@Override
 			public void finished() {
+				if (compilerErrorBuffer != null) {
+					outputHTML("<pre>" + compilerErrorBuffer.toString() + "</pre>");
+					compilerErrorBuffer = null;
+				}
 				if (responseFormatted && reply.length() > 0) {
 					String content = reply.toString();
 					outputHTML(getResponseFormatted(content, responseFormatted));
-					outputUpdated();
 				}
+				outputUpdated();
 				StyledText inputTextWidget = cmdPanelInput.getInputTextWidget();
 				if (errorBuffer != null) {
 					ErrorInformation eInfo = parseErrorInformationFrom(errorBuffer.toString());
@@ -392,7 +403,7 @@ public class CmdPanel extends Composite {
 				return "<br>" + ResponseToHTML.textToHTML(s);
 			}
 		} else {
-			return "<br>" + ResponseToHTML.textToHTML(s).replace(" ", "&nbsp;");
+			return "<br>" + ResponseToHTML.textToHTML(s); // .replace(" ", "&nbsp;");
 		}
 	}
 

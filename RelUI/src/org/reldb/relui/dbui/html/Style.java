@@ -23,7 +23,7 @@ public class Style {
 	    ".note {color: blue;}",
 	    ".user {color: gray;}",
 	    ".warn {color: gold;}",
-	    ".notice {color: black;}"
+	    ".notice {color: black;}",
 	};
 	
 	private String getBodyFontStyleString() {
