@@ -8,12 +8,12 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Argument;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Parameter;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuples;
-import org.reldb.rel.rev.graphics.Argument;
-import org.reldb.rel.rev.graphics.Parameter;
-import org.reldb.rel.rev.graphics.Visualiser;
 
 public abstract class VisualiserOfOperator extends VisualiserOfRel {
 	

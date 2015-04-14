@@ -17,10 +17,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
-import org.reldb.rel.rev.graphics.Visualiser;
 
 public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 	private static final long serialVersionUID = 1L;

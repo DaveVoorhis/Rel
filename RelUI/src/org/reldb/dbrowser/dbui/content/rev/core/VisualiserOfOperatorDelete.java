@@ -13,11 +13,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Parameter;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuples;
-import org.reldb.rel.rev.graphics.Parameter;
-import org.reldb.rel.rev.graphics.Visualiser;
 
 public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 	private static final long serialVersionUID = 1L;

@@ -1,6 +1,6 @@
 package org.reldb.dbrowser.dbui.content.rev.core;
 
-import org.reldb.rel.rev.graphics.Parameter;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Parameter;
 
 public class VisualiserOfOperatorJoin extends VisualiserOfOperator { 
 	private static final long serialVersionUID = 1L;

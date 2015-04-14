@@ -26,13 +26,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Parameter;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.NullTuples;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
 import org.reldb.rel.client.Connection.HTMLReceiver;
-import org.reldb.rel.rev.graphics.Parameter;
 
 class TextFieldRows
 {

@@ -1,7 +1,7 @@
 package org.reldb.dbrowser.dbui.content.rev.core;
 
-import org.reldb.rel.rev.graphics.Model;
-import org.reldb.rel.rev.graphics.Visualiser;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Model;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Visualiser;
 
 public class VisualiserOfOperand extends Visualiser {
 	private static final long serialVersionUID = 1L;

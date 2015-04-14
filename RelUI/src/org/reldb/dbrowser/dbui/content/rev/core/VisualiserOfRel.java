@@ -11,11 +11,11 @@ import javax.swing.JTextPane;
 import javax.swing.text.Element;
 import javax.swing.text.html.HTMLDocument;
 
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Argument;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Parameter;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Tuples;
-import org.reldb.rel.rev.graphics.Argument;
-import org.reldb.rel.rev.graphics.Parameter;
-import org.reldb.rel.rev.graphics.Visualiser;
 
 /** Visualiser of anything that produces a relation. */
 public abstract class VisualiserOfRel extends Visualiser {

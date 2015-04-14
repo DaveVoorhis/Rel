@@ -16,11 +16,11 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Parameter;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
-import org.reldb.rel.rev.graphics.Parameter;
-import org.reldb.rel.rev.graphics.Visualiser;
 
 public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 	private static final long serialVersionUID = 1L;

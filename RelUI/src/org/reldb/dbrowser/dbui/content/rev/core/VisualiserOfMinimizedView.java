@@ -1,6 +1,6 @@
 package org.reldb.dbrowser.dbui.content.rev.core;
 
-import org.reldb.rel.rev.graphics.Visualiser;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Visualiser;
 
 public class VisualiserOfMinimizedView extends VisualiserOfRelvar {
 	private static final long serialVersionUID = 1L;

@@ -1,6 +1,6 @@
 package org.reldb.dbrowser.dbui.content.rev.core;
 
-import org.reldb.rel.rev.graphics.Parameter;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Parameter;
 
 public class VisualiserOfOperatorNotMatching extends VisualiserOfOperator { 
 	private static final long serialVersionUID = 1L;
@@ -13,7 +13,6 @@ public class VisualiserOfOperatorNotMatching extends VisualiserOfOperator {
 		/*variable=method(name that shows on Operator, Comment that shows when mouse is over operand)*/
 		operand1 = addParameter("Operand 1", "First relation for not matching operation"); 
 		operand2 = addParameter("Operand 2", "Second relation not matching operation");
-		
 	}
 	
 	

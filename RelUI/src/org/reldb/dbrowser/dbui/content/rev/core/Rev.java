@@ -25,11 +25,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Argument;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Model;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Parameter;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.connection.CrashHandler;
-import org.reldb.rel.rev.graphics.*;
 
 public class Rev extends JPanel {
 	private static final long serialVersionUID = 1L;

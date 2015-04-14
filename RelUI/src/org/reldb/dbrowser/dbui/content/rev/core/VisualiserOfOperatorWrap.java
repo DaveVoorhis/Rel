@@ -1,7 +1,7 @@
 package org.reldb.dbrowser.dbui.content.rev.core;
 
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Tuples;
-import org.reldb.rel.rev.graphics.Visualiser;
 
 public class VisualiserOfOperatorWrap extends VisualiserOfOperatorGroup {
 	private static final long serialVersionUID = 1L;

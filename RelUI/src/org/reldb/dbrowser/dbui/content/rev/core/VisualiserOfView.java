@@ -15,10 +15,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 
-import org.reldb.rel.rev.graphics.Argument;
-import org.reldb.rel.rev.graphics.Model;
-import org.reldb.rel.rev.graphics.Parameter;
-import org.reldb.rel.rev.graphics.Visualiser;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Argument;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Model;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Parameter;
+import org.reldb.dbrowser.dbui.content.rev.core.graphics.Visualiser;
 
 public class VisualiserOfView extends VisualiserOfRel {
 	private static final long serialVersionUID = 1L;
