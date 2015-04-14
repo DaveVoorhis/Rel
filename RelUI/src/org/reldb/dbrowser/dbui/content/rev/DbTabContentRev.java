@@ -77,4 +77,7 @@ public class DbTabContentRev extends Composite {
 		setupIcons();
 	}
 
+	public void redisplayed() {
+	}
+
 }

@@ -213,7 +213,8 @@ public class DbTab extends CTabItem {
 				getParent().getCursor().dispose();
 				getParent().setCursor(oldCursor);
 			}
-		}
+		} else
+			contentRel.redisplayed();
 		contentStack.topControl = contentRel;
 		modeContent.layout();
 	}
@@ -228,7 +229,8 @@ public class DbTab extends CTabItem {
 				getParent().getCursor().dispose();
 				getParent().setCursor(oldCursor);
 			}
-		}
+		} else
+			contentRev.redisplayed();
 		contentStack.topControl = contentRev;
 		modeContent.layout();		
 	}
@@ -248,9 +250,10 @@ public class DbTab extends CTabItem {
 	        			wrapped("Unable to open command line due to error: " + e.toString()));
 	        	return;
 			}
-		}
+		} else
+			contentCmd.redisplayed();
 		contentStack.topControl = contentCmd;
-		modeContent.layout();		
+		modeContent.layout();	
 	}
 	
     private static class AttemptConnectionResult {

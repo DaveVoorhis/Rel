@@ -195,5 +195,8 @@ public class DbTabContentCmd extends Composite {
 	public void notifyIconSizeChange() {
 		setupIcons();
 	}
+
+	public void redisplayed() {
+	}
 	
 }

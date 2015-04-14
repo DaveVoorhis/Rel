@@ -24,6 +24,8 @@ public class DbTabContentRel extends Composite {
 	private ToolItem tlitmDrop;
 	private ToolItem tlitmShowSystem;
     
+	private RelPanel rel;
+	
     private PreferenceChangeListener preferenceChangeListener;
 	
 	public DbTabContentRel(DbTab parentTab, Composite contentParent) {
@@ -37,7 +39,7 @@ public class DbTabContentRel extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 		
-		RelPanel rel = new RelPanel(parentTab, this, SWT.None);
+		rel = new RelPanel(parentTab, this, SWT.None);
 		FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
 		fd_composite.top = new FormAttachment(toolBar);
@@ -107,6 +109,10 @@ public class DbTabContentRel extends Composite {
 
 	public void notifyIconSizeChange() {
 		setupIcons();
+	}
+
+	public void redisplayed() {
+		rel.redisplayed();
 	}
 
 }

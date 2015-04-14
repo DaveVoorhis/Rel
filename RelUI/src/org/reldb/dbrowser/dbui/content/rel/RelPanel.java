@@ -101,4 +101,8 @@ public class RelPanel extends Composite {
 		buildSubtree("Reports", null, null);
 		buildSubtree("Scripts", null, null);
 	}
+
+	public void redisplayed() {
+		buildDbTree();
+	}
 }
