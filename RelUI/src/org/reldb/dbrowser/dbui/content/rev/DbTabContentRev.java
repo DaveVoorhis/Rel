@@ -6,7 +6,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -40,7 +39,6 @@ public class DbTabContentRev extends Composite {
 		toolBar.setLayoutData(fd_toolBar);
 
 	    Composite content = new Composite(this, SWT.EMBEDDED | SWT.NO_BACKGROUND);
-	    content.setLayout(new FillLayout());
 	    Frame frame = SWT_AWT.new_Frame(content);
 	    Rev rev = new Rev(parentTab.getURL(), parentTab.getCrashHandler());
 	    frame.add(rev);
