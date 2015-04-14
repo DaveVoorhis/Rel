@@ -1,8 +1,6 @@
 package org.reldb.relui.dbui;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -27,6 +25,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.rel.client.connection.string.ClientFromURL;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
+import org.reldb.relui.dbui.backup.Backup;
 import org.reldb.relui.dbui.crash.CrashTrap;
 import org.reldb.relui.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.relui.dbui.preferences.PreferenceChangeEvent;
@@ -467,22 +466,8 @@ public class DbTab extends CTabItem {
 		openDatabaseAtURI(textDbLocation.getText(), true);		
 	}
 
-	private String getSuggestedBackupFileName(String dbURL) {
-		String fname;
-		if (dbURL.startsWith("local:"))
-			fname = dbURL.substring(6).replace('.', '_').replace('/', '_').replace('\\', '_').replace(':', '_').replace(' ', '_');
-		else
-			fname = dbURL.replace('.', '_').replace('/', '_').replace('\\', '_').replace(':', '_').replace(' ', '_');
-		fname = fname.replace("__", "_");
-	    Calendar cal = Calendar.getInstance();
-	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MMMMM_dd_hh_mm_aaa");
-		String timestamp = sdf.format(cal.getTime());
-		return "relbackup_" + fname + "_" + timestamp + ".rel";
-	}
-		
 	public void makeBackup() {
-		// TODO
-		System.out.println("DbTab: makeBackup");
+		Backup.makeBackup(connection.dbURL, crashTrap);
 	}
 
 }
