@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.dbui;
+package org.reldb.dbrowser.dbui.content.cmd;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.events.SelectionAdapter;

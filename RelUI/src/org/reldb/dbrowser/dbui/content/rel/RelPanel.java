@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.dbui;
+package org.reldb.dbrowser.dbui.content.rel;
 
 import java.util.HashMap;
 
@@ -10,6 +10,8 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.reldb.dbrowser.dbui.DbConnection;
+import org.reldb.dbrowser.dbui.DbTab;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 

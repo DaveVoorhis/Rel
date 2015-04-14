@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.dbui;
+package org.reldb.dbrowser.dbui.content.cmd;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -13,6 +13,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Color;
+import org.reldb.dbrowser.dbui.ConcurrentStringReceiverClient;
+import org.reldb.dbrowser.dbui.DbTab;
+import org.reldb.dbrowser.dbui.Tabs;
 import org.reldb.dbrowser.dbui.html.BrowserManager;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeEvent;

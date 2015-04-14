@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.dbui;
+package org.reldb.dbrowser.dbui.content.rel;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -7,22 +7,26 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.dbrowser.dbui.DbTab;
+import org.reldb.dbrowser.dbui.IconLoader;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeListener;
 import org.reldb.dbrowser.dbui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.dbui.preferences.Preferences;
 
-public class DbTabContentRev extends Composite {
+public class DbTabContentRel extends Composite {
 
 	private ToolItem tlitmBackup;
+	private ToolItem tlitmNew;
+	private ToolItem tlitmDrop;
+	private ToolItem tlitmShowSystem;
     
     private PreferenceChangeListener preferenceChangeListener;
 	
-	public DbTabContentRev(DbTab parentTab, Composite contentParent) {
+	public DbTabContentRel(DbTab parentTab, Composite contentParent) {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 
@@ -33,14 +37,13 @@ public class DbTabContentRev extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 		
-		Label content = new Label(this, SWT.None);
-		content.setText("This is Rev.");
+		RelPanel rel = new RelPanel(parentTab, this, SWT.None);
 		FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
 		fd_composite.top = new FormAttachment(toolBar);
 		fd_composite.right = new FormAttachment(100);
 		fd_composite.bottom = new FormAttachment(100);
-		content.setLayoutData(fd_composite);
+		rel.setLayoutData(fd_composite);
 	
 		tlitmBackup = new ToolItem(toolBar, SWT.None);
 		tlitmBackup.setToolTipText("Make backup");
@@ -48,6 +51,34 @@ public class DbTabContentRev extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				parentTab.makeBackup();
+			}
+		});
+		
+		tlitmNew = new ToolItem(toolBar, SWT.None);
+		tlitmNew.setToolTipText("New");
+		tlitmNew.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				rel.NewItem();
+			}
+		});
+		
+		tlitmDrop = new ToolItem(toolBar, SWT.None);
+		tlitmDrop.setToolTipText("Drop");
+		tlitmDrop.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				rel.DropItem();
+			}
+		});
+		
+		tlitmShowSystem = new ToolItem(toolBar, SWT.CHECK);
+		tlitmShowSystem.setToolTipText("Show system objects");
+		tlitmShowSystem.setSelection(rel.getShowSystemObjects());
+		tlitmShowSystem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				rel.setShowSystemObjects(tlitmShowSystem.getSelection());
 			}
 		});
 		
@@ -66,11 +97,14 @@ public class DbTabContentRev extends Composite {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 		super.dispose();
 	}
-
+	
 	private void setupIcons() {
 		tlitmBackup.setImage(IconLoader.loadIcon("safeIcon"));		
+		tlitmNew.setImage(IconLoader.loadIcon("plusIcon"));
+		tlitmDrop.setImage(IconLoader.loadIcon("plusIcon"));
+		tlitmShowSystem.setImage(IconLoader.loadIcon("plusIcon"));
 	}
-	
+
 	public void notifyIconSizeChange() {
 		setupIcons();
 	}

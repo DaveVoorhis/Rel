@@ -11,7 +11,7 @@ public class Tabs {
 	 * @param displayColumn - 0-based display column
 	 * @return character index - 0-based index into s
 	 */
-	static int displayColumnToCharacterIndex(int tabSize, String s, int displayColumn) {
+	public static int displayColumnToCharacterIndex(int tabSize, String s, int displayColumn) {
 		int characterIndex = 0;
 		int column = 0;
 		while (column < displayColumn) {
@@ -38,7 +38,7 @@ public class Tabs {
 	 * @param characterIndex - 0-based index into s
 	 * @return display column
 	 */
-	static int characterIndexToDisplayColumn(int tabSize, String s, int characterIndex) {
+	public static int characterIndexToDisplayColumn(int tabSize, String s, int characterIndex) {
 		int displayColumn = 0;
 		for (int i=0; i<characterIndex; i++)
 			if (s.charAt(i) == '\t') {

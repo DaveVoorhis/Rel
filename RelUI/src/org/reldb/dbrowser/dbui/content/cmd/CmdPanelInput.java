@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.dbui;
+package org.reldb.dbrowser.dbui.content.cmd;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -23,6 +23,8 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.reldb.dbrowser.dbui.IconLoader;
+import org.reldb.dbrowser.dbui.Tabs;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeListener;

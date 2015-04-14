@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.dbui;
+package org.reldb.dbrowser.dbui.content.cmd;
 
 import java.io.IOException;
 
@@ -11,6 +11,8 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.dbrowser.dbui.DbTab;
+import org.reldb.dbrowser.dbui.IconLoader;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeListener;
