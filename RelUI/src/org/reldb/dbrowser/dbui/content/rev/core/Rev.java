@@ -222,7 +222,6 @@ public class Rev extends JPanel {
 					insertOperator(arg0);
 				}
 			});
-		
 		}
 		insOperators.setBorder(BorderFactory.createBevelBorder(0));
 		menuBar.add(insOperators);

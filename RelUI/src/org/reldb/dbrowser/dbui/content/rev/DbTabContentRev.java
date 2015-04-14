@@ -1,17 +1,21 @@
 package org.reldb.dbrowser.dbui.content.rev;
 
+import java.awt.Frame;
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+
 import org.reldb.dbrowser.dbui.DbTab;
 import org.reldb.dbrowser.dbui.IconLoader;
+import org.reldb.dbrowser.dbui.content.rev.core.Rev;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.dbui.preferences.PreferenceChangeListener;
@@ -34,10 +38,13 @@ public class DbTabContentRev extends Composite {
 		fd_toolBar.top = new FormAttachment(0);
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
-		
-		Label content = new Label(this, SWT.None);
-		content.setText("This is Rev.");
-		FormData fd_composite = new FormData();
+
+	    Composite content = new Composite(parentTab.getParent(), SWT.EMBEDDED | SWT.NO_BACKGROUND);
+	    Frame frame = SWT_AWT.new_Frame(content);
+	    Rev rev = new Rev(parentTab.getURL(), parentTab.getCrashHandler());
+	    frame.add(rev);
+
+	    FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
 		fd_composite.top = new FormAttachment(toolBar);
 		fd_composite.right = new FormAttachment(100);

@@ -34,6 +34,7 @@ import org.reldb.dbrowser.dbui.preferences.PreferenceChangeListener;
 import org.reldb.dbrowser.dbui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.dbui.preferences.Preferences;
 import org.reldb.dbrowser.version.Version;
+import org.reldb.rel.client.connection.CrashHandler;
 import org.reldb.rel.client.connection.string.ClientFromURL;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
 
@@ -474,6 +475,10 @@ public class DbTab extends CTabItem {
 
 	public void makeBackup() {
 		Backup.makeBackup(connection.dbURL, crashTrap);
+	}
+
+	public CrashHandler getCrashHandler() {
+		return crashTrap;
 	}
 
 }
