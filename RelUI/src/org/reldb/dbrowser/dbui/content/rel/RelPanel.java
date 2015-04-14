@@ -104,5 +104,6 @@ public class RelPanel extends Composite {
 
 	public void redisplayed() {
 		buildDbTree();
+		tree.setFocus();
 	}
 }

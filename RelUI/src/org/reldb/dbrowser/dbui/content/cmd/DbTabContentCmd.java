@@ -197,6 +197,7 @@ public class DbTabContentCmd extends Composite {
 	}
 
 	public void redisplayed() {
+		cmdPanel.redisplayed();
 	}
 	
 }

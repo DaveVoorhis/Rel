@@ -566,4 +566,8 @@ public class CmdPanel extends Composite {
 		return null;
 	}
 
+	public void redisplayed() {
+		cmdPanelInput.getInputTextWidget().setFocus();
+	}
+
 }

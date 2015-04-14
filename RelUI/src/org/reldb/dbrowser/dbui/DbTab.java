@@ -205,7 +205,9 @@ public class DbTab extends CTabItem {
 	}
 
 	private void showRel() {
+		boolean existing = true;
 		if (contentRel == null) {
+			existing = false;
 			Cursor oldCursor = getParent().getCursor();
 			getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
 			try {
@@ -214,14 +216,17 @@ public class DbTab extends CTabItem {
 				getParent().getCursor().dispose();
 				getParent().setCursor(oldCursor);
 			}
-		} else
-			contentRel.redisplayed();
+		}		
 		contentStack.topControl = contentRel;
 		modeContent.layout();
+		if (existing)
+			contentRel.redisplayed();
 	}
 
 	private void showRev() {
+		boolean existing = true;
 		if (contentRev == null) {
+			existing = false;
 			Cursor oldCursor = getParent().getCursor();
 			getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
 			try {
@@ -230,14 +235,17 @@ public class DbTab extends CTabItem {
 				getParent().getCursor().dispose();
 				getParent().setCursor(oldCursor);
 			}
-		} else
-			contentRev.redisplayed();
+		}
 		contentStack.topControl = contentRev;
 		modeContent.layout();		
+		if (existing)
+			contentRev.redisplayed();
 	}
 	
 	private void showCmd() {
+		boolean existing = true;
 		if (contentCmd == null) {
+			existing = false;
 			Cursor oldCursor = getParent().getCursor();
 			getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
 			try {
@@ -251,10 +259,11 @@ public class DbTab extends CTabItem {
 	        			wrapped("Unable to open command line due to error: " + e.toString()));
 	        	return;
 			}
-		} else
-			contentCmd.redisplayed();
+		}
 		contentStack.topControl = contentCmd;
 		modeContent.layout();	
+		if (existing)
+			contentCmd.redisplayed();	
 	}
 	
     private static class AttemptConnectionResult {
