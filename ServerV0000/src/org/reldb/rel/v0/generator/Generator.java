@@ -111,6 +111,7 @@ import org.reldb.rel.v0.vm.instructions.relvar.OpRelvarInsertNoDuplicates;
 import org.reldb.rel.v0.vm.instructions.relvar.OpRelvarPurge;
 import org.reldb.rel.v0.vm.instructions.relvar.OpRelvarUpdate;
 import org.reldb.rel.v0.vm.instructions.relvar.OpRelvarUpdateWhere;
+import org.reldb.rel.v0.vm.instructions.system.OpBackup;
 import org.reldb.rel.v0.vm.instructions.system.OpCheckConstraintsAndCommitOrRollback;
 import org.reldb.rel.v0.vm.instructions.system.OpCreateConstraint;
 import org.reldb.rel.v0.vm.instructions.system.OpCreateExternalRelvar;
@@ -2689,6 +2690,11 @@ public class Generator {
 	// SET <attribute> <value>
 	public void set(String attribute, String value) {
 		EnvironmentSettings.set(this, attribute, value);
+	}
+
+	// Compile: make a backup
+	public void backup() {
+		compileInstruction(new OpBackup());
 	}
 	
 	// Compile: write value on top of stack to console.  For debugging purposes.

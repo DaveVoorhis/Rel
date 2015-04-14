@@ -157,6 +157,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTGetSignature node, Object data) {
 		return dump(node, data);
 	}
+
+	@Override
+	public Object visit(ASTBackup node, Object data) {
+		return dump(node, data);
+	}
 	
 	public Object visit(ASTWrite node, Object data) {
 		return dump(node, data);

@@ -90,6 +90,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < AVG: "AVG" >
 | < AVGD: "AVGD" >
 | < BASE: "BASE" >
+| < BACKUP: "BACKUP" >
 | < BEGIN: "BEGIN" >
 | < BUT: "BUT" >
 | < BY: "BY" >
@@ -393,7 +394,14 @@ void statement_body() :
 	|	announce()
 	|	execute()
 	|   set()
+	| 	backup()
 }
+
+/* Rel extension - non-TTM */
+void backup() #Backup :
+{}
+{
+  <BACKUP>}
 
 /* Rel extension - non-TTM */
 void write() #Write :

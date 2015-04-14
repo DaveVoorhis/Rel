@@ -411,6 +411,11 @@ public class TutorialDParser implements TutorialDVisitor {
 			generator.setCompilingOn();
 		}
 	}
+
+	public Object visit(ASTBackup node, Object data) {
+		generator.backup();
+		return null;
+	}
 	
 	public Object visit(ASTWrite node, Object data) {
 		// Child 0 - expression
