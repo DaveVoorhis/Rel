@@ -26,7 +26,6 @@
   <handlers xmi:id="_Up7doLqpEeSSsbhT1QHqRQ" elementId="relui.handler.newdatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.NewDatabase" command="_eqs_ALqpEeSSsbhT1QHqRQ"/>
   <handlers xmi:id="_vSU4kLqpEeSSsbhT1QHqRQ" elementId="relui.handler.openlocaldatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.OpenLocalDatabase" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
   <handlers xmi:id="_4xZbELqpEeSSsbhT1QHqRQ" elementId="relui.handler.openremotedatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.OpenRemoteDatabase" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
-  <handlers xmi:id="_G4n_ALqrEeSSsbhT1QHqRQ" elementId="relui.handler.0" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.Options"/>
   <handlers xmi:id="_ziLoUNiyEeSgZfqMAYQ1XA" elementId="relui.handler.1" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.ViewLog" command="_sr9-cNiyEeSgZfqMAYQ1XA"/>
   <handlers xmi:id="_CkUugNo3EeSw-PA_k-Gusw" elementId="relui.handler.preferences" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.OpenPreferences" command="_85hu4No2EeSw-PA_k-Gusw"/>
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
@@ -37,12 +36,6 @@
     <children xmi:id="_1_XyeqbsEeSFCpZI3OEurw" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
     <children xmi:id="_1_Xye6bsEeSFCpZI3OEurw" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
   </rootContext>
-  <descriptors xmi:id="_mK_5oK1hEeSOtbblMyKyoQ" elementId="relui.partdescriptor.partdescriptor" label="PartDescriptor" tooltip="this is a tooltip" allowMultiple="true" closeable="true" dirtyable="true">
-    <toolbar xmi:id="_n82RwK1hEeSOtbblMyKyoQ" elementId="relui.toolbar.0"/>
-  </descriptors>
-  <descriptors xmi:id="_rH1nEK1hEeSOtbblMyKyoQ" elementId="relui.partdescriptor.anotherPartDescriptor" label="Another part descriptor" tooltip="this is another part descriptor" allowMultiple="true" closeable="true" dirtyable="true">
-    <toolbar xmi:id="_tOvCIK1hEeSOtbblMyKyoQ" elementId="relui.toolbar.1"/>
-  </descriptors>
   <commands xmi:id="_1_YZgKbsEeSFCpZI3OEurw" elementId="org.eclipse.ui.file.exit" commandName="quitCommand"/>
   <commands xmi:id="_1_YZiqbsEeSFCpZI3OEurw" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
   <commands xmi:id="_eqs_ALqpEeSSsbhT1QHqRQ" elementId="relui.command.newdatabase" commandName="newdatabaseCommand" description="New database"/>
