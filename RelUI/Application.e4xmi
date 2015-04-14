@@ -3,7 +3,7 @@
   <children xsi:type="basic:TrimmedWindow" xmi:id="_8rfnILaNEeSTFNGxwQXIhw" elementId="relui.trimmedwindow.rel" label="Rel" iconURI="platform:/plugin/RelUI/icons/RelAppIcon/32x32.png">
     <children xsi:type="advanced:PerspectiveStack" xmi:id="_BV6u4LaOEeSTFNGxwQXIhw" elementId="relui.perspectivestack.0">
       <children xsi:type="advanced:Perspective" xmi:id="_CGugwLaOEeSTFNGxwQXIhw" elementId="relui.perspective.0">
-        <children xsi:type="basic:Part" xmi:id="_Gcb8wLaOEeSTFNGxwQXIhw" elementId="relui.part.0" contributionURI="bundleclass://RelUI/org.reldb.relui.parts.Main"/>
+        <children xsi:type="basic:Part" xmi:id="_Gcb8wLaOEeSTFNGxwQXIhw" elementId="relui.part.0" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.parts.Main"/>
       </children>
     </children>
     <mainMenu xmi:id="_36hGILqYEeSSsbhT1QHqRQ" elementId="relui.menu.0">
@@ -21,14 +21,14 @@
       </children>
     </mainMenu>
   </children>
-  <handlers xmi:id="_1_YZgabsEeSFCpZI3OEurw" elementId="RelUI.handler.quitCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.Quit" command="_1_YZgKbsEeSFCpZI3OEurw"/>
-  <handlers xmi:id="_1_YZi6bsEeSFCpZI3OEurw" elementId="RelUI.handler.aboutCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.About" command="_1_YZiqbsEeSFCpZI3OEurw"/>
-  <handlers xmi:id="_Up7doLqpEeSSsbhT1QHqRQ" elementId="relui.handler.newdatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.NewDatabase" command="_eqs_ALqpEeSSsbhT1QHqRQ"/>
-  <handlers xmi:id="_vSU4kLqpEeSSsbhT1QHqRQ" elementId="relui.handler.openlocaldatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.OpenLocalDatabase" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
-  <handlers xmi:id="_4xZbELqpEeSSsbhT1QHqRQ" elementId="relui.handler.openremotedatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.OpenRemoteDatabase" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
-  <handlers xmi:id="_G4n_ALqrEeSSsbhT1QHqRQ" elementId="relui.handler.0" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.Options"/>
-  <handlers xmi:id="_ziLoUNiyEeSgZfqMAYQ1XA" elementId="relui.handler.1" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.ViewLog" command="_sr9-cNiyEeSgZfqMAYQ1XA"/>
-  <handlers xmi:id="_CkUugNo3EeSw-PA_k-Gusw" elementId="relui.handler.preferences" contributionURI="bundleclass://RelUI/org.reldb.relui.handlers.OpenPreferences" command="_85hu4No2EeSw-PA_k-Gusw"/>
+  <handlers xmi:id="_1_YZgabsEeSFCpZI3OEurw" elementId="RelUI.handler.quitCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.Quit" command="_1_YZgKbsEeSFCpZI3OEurw"/>
+  <handlers xmi:id="_1_YZi6bsEeSFCpZI3OEurw" elementId="RelUI.handler.aboutCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.About" command="_1_YZiqbsEeSFCpZI3OEurw"/>
+  <handlers xmi:id="_Up7doLqpEeSSsbhT1QHqRQ" elementId="relui.handler.newdatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.NewDatabase" command="_eqs_ALqpEeSSsbhT1QHqRQ"/>
+  <handlers xmi:id="_vSU4kLqpEeSSsbhT1QHqRQ" elementId="relui.handler.openlocaldatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.OpenLocalDatabase" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
+  <handlers xmi:id="_4xZbELqpEeSSsbhT1QHqRQ" elementId="relui.handler.openremotedatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.OpenRemoteDatabase" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
+  <handlers xmi:id="_G4n_ALqrEeSSsbhT1QHqRQ" elementId="relui.handler.0" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.Options"/>
+  <handlers xmi:id="_ziLoUNiyEeSgZfqMAYQ1XA" elementId="relui.handler.1" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.ViewLog" command="_sr9-cNiyEeSgZfqMAYQ1XA"/>
+  <handlers xmi:id="_CkUugNo3EeSw-PA_k-Gusw" elementId="relui.handler.preferences" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.OpenPreferences" command="_85hu4No2EeSw-PA_k-Gusw"/>
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
     <bindings xmi:id="_1_YZg6bsEeSFCpZI3OEurw" keySequence="M1+Q" command="_1_YZgKbsEeSFCpZI3OEurw"/>
     <bindings xmi:id="_1_YZhqbsEeSFCpZI3OEurw" keySequence="M1+O" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>

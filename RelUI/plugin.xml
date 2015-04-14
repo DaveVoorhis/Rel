@@ -9,7 +9,7 @@
             application="org.eclipse.e4.ui.workbench.swt.E4Application">
          <property
                name="lifeCycleURI"
-               value="bundleclass://RelUI/org.reldb.relui.E4LifeCycle">
+               value="bundleclass://RelUI/org.reldb.dbrowser.E4LifeCycle">
          </property>
          <property
                name="applicationCSS"
