@@ -6,13 +6,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-
 import org.reldb.dbrowser.dbui.DbTab;
 import org.reldb.dbrowser.dbui.IconLoader;
 import org.reldb.dbrowser.dbui.content.rev.core.Rev;
@@ -39,7 +39,8 @@ public class DbTabContentRev extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 
-	    Composite content = new Composite(parentTab.getParent(), SWT.EMBEDDED | SWT.NO_BACKGROUND);
+	    Composite content = new Composite(this, SWT.EMBEDDED | SWT.NO_BACKGROUND);
+	    content.setLayout(new FillLayout());
 	    Frame frame = SWT_AWT.new_Frame(content);
 	    Rev rev = new Rev(parentTab.getURL(), parentTab.getCrashHandler());
 	    frame.add(rev);
