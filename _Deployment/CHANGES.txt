@@ -4,7 +4,7 @@ Version 1.0.13:
 
   - enhancement: All: now requires Java 8
   - enhancement: All: source now on GitHub; trivial to load into Eclipse.
-  - enhancement: All: major code package rebasing from ca.mb.armchair.rel3 to org.reldb.rel
+  - enhancement: All: major package rebasing from ca.mb.armchair.rel3 to org.reldb.rel
   - enhancement: DBrowser: rewritten for better native look and feel, and smoother, faster output and better display.
   - enhancement: DBrowser: Default database now found in getProperty("user.home")
   - enhancement: DBrowser: "DBrowser" name now strictly internal; externally known as Rel or Rel UI.
