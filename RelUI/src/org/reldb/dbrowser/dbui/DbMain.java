@@ -16,7 +16,11 @@ public class DbMain {
 	private static DirectoryDialog newDatabaseDialog;
 	private static RemoteDatabaseDialog remoteDatabaseDialog;
 
+	private static OpenDocumentEventProcessor openDocProcessor = new OpenDocumentEventProcessor();
+	
 	private static boolean noLocalRel = true;
+
+	private static String defaultDatabasePath = System.getProperty("user.home");
 
     public static Shell getShell() {
     	return mainPanel.getShell();
@@ -27,6 +31,7 @@ public class DbMain {
     }
 
 	public static void run(Composite parent) {
+		parent.getDisplay().addListener(SWT.OpenDocument, openDocProcessor);		
 		mainPanel = new MainPanel(parent, SWT.None);
 		initialise();
 	}
@@ -78,14 +83,21 @@ public class DbMain {
 				System.exit(1);						
 			}				
 		});
+		
     	try {
     		Class.forName("org.reldb.rel.Rel");
     		noLocalRel = false;
     	} catch (ClassNotFoundException cnfe) {
     		noLocalRel = true;
         }
-    	String defaultDatabasePath = System.getProperty("user.home");
-		(new DbTab()).openDefaultDatabase(defaultDatabasePath);
+    	
+    	DbTab tab = new DbTab();
+ 		if (tab.openDefaultDatabase(defaultDatabasePath)) {
+			String[] filesToOpen = openDocProcessor.retrieveFilesToOpen();
+			for (String fname: filesToOpen)
+				openFile(fname);
+		}
+		
 		DbMain.setSelection(0);
 	}
 
@@ -98,7 +110,7 @@ public class DbMain {
 	}
 
 	public static void setSelection(int i) {
-		mainPanel.getTabFolder().setSelection(0);
+		mainPanel.getTabFolder().setSelection(i);
 	}
 
 	public static void newDatabase() {
@@ -123,6 +135,16 @@ public class DbMain {
 		CTabItem[] tabs = mainPanel.getTabFolder().getItems();
 		if (tabs.length == 0 || ((DbTab)tabs[tabs.length - 1]).isOpenOnADatabase())
 			new DbTab();
+	}
+
+	public static void openFile(String fname) {
+		if (!fname.toLowerCase().endsWith(".rel"))
+			return;
+		CTabItem[] tabs = mainPanel.getTabFolder().getItems();
+		DbTab fileTab = (DbTab)tabs[tabs.length - 1];
+		DbMain.setSelection(tabs.length - 1);
+		if (fileTab.openDefaultDatabase(defaultDatabasePath))
+			fileTab.openFile(fname);
 	}
 	
 }

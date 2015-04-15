@@ -570,4 +570,8 @@ public class CmdPanel extends Composite {
 		cmdPanelInput.getInputTextWidget().setFocus();
 	}
 
+	public void load(String fname) {
+		cmdPanelInput.loadFile(fname);
+	}
+
 }

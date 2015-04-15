@@ -31,7 +31,7 @@ public class MainPanel extends Composite {
 	public MainPanel(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FormLayout());
-		
+
 		getShell().addListener(SWT.Close, new Listener() {
 			@Override
 			public void handleEvent(Event event) {

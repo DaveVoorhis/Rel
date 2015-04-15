@@ -199,5 +199,9 @@ public class DbTabContentCmd extends Composite {
 	public void redisplayed() {
 		cmdPanel.redisplayed();
 	}
+
+	public void load(String fname) {
+		cmdPanel.load(fname);
+	}
 	
 }

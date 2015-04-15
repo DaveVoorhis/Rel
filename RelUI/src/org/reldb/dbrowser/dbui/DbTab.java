@@ -422,10 +422,10 @@ public class DbTab extends CTabItem {
     	super.dispose();
     }
 
-	public void openDatabaseAtURI(String uri, boolean canCreate) {
+	public boolean openDatabaseAtURI(String uri, boolean canCreate) {
 		lastURI = uri;
 		setShowClose(true);
-		openConnection(uri, true, canCreate);
+		return openConnection(uri, true, canCreate);
 	}
 
 	public boolean isOpenOnADatabase() {
@@ -458,28 +458,28 @@ public class DbTab extends CTabItem {
 		}
 	}
 	
-	public void newDatabase(String string) {
+	public boolean newDatabase(String string) {
 		close();
 		textDbLocation.setText("local:" + string);
-		openDatabaseAtURI(textDbLocation.getText(), true);
+		return openDatabaseAtURI(textDbLocation.getText(), true);
 	}
 
-	public void openLocalDatabase(String string) {
+	public boolean openLocalDatabase(String string) {
 		close();
 		textDbLocation.setText("local:" + string);
-		openDatabaseAtURI(textDbLocation.getText(), false);
+		return openDatabaseAtURI(textDbLocation.getText(), false);
 	}
 
-	public void openRemoteDatabase(String string) {
+	public boolean openRemoteDatabase(String string) {
 		close();
 		textDbLocation.setText(string);
-		openDatabaseAtURI(textDbLocation.getText(), false);
+		return openDatabaseAtURI(textDbLocation.getText(), false);
 	}
 
-	public void openDefaultDatabase(String string) {
+	public boolean openDefaultDatabase(String string) {
 		close();
 		textDbLocation.setText("local:" + string);
-		openDatabaseAtURI(textDbLocation.getText(), true);		
+		return openDatabaseAtURI(textDbLocation.getText(), true);		
 	}
 
 	public void makeBackup() {
@@ -488,6 +488,11 @@ public class DbTab extends CTabItem {
 
 	public CrashHandler getCrashHandler() {
 		return crashTrap;
+	}
+
+	public void openFile(String fname) {
+		showCmd();
+		contentCmd.load(fname);
 	}
 
 }

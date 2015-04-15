@@ -15,6 +15,10 @@
 
    <launcherArgs>
       <programArgs>-clearPersistedState
+--launcher.defaultAction
+openFile
+-name
+REL Rel
       </programArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
