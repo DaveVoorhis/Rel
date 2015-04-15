@@ -13,7 +13,7 @@ package org.reldb.dbrowser.handlers;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.swt.widgets.Shell;
-import org.reldb.dbrowser.dbui.AboutDialog;
+import org.reldb.dbrowser.ui.AboutDialog;
 
 public class About {
 	

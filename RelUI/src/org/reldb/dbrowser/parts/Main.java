@@ -4,7 +4,7 @@ import javax.inject.Inject;
 import javax.annotation.PostConstruct;
 
 import org.eclipse.swt.widgets.Composite;
-import org.reldb.dbrowser.dbui.DbMain;
+import org.reldb.dbrowser.DBrowser;
 
 public class Main {
 	@Inject
@@ -13,7 +13,7 @@ public class Main {
 	
 	@PostConstruct
 	public void postConstruct(Composite parent) {
-		DbMain.run(parent);
+		DBrowser.run(parent);
 	}
 
 }

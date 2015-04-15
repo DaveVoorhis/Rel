@@ -13,7 +13,7 @@ package org.reldb.dbrowser.handlers;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.swt.widgets.Shell;
-import org.reldb.dbrowser.dbui.monitor.LogWin;
+import org.reldb.dbrowser.ui.monitor.LogWin;
 
 public class ViewLog {
 	@Execute
