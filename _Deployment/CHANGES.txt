@@ -6,17 +6,15 @@ Version 1.0.13:
   - enhancement: Source now on GitHub; trivial to load into Eclipse.
   - enhancement: DBrowser: Default database now found in getProperty("user.dir") + "Reldb".
   - enhancement: Rel: Default database now refers to explicit path
-  - enhancement: Rel: -f command line option description a bit clearer
   - enhancement: Rel: System startup announcement now provides more information about runtime platform.
-  - enhancement: DBrowser: Backup script embedded in DBrowser; no longer relies on Scripts folder.
+  - enhancement: DBrowser/Rel: Backup script embedded in Rel; no longer relies on Scripts folder.
   - enhancement: DBrowser: improved database new/open dialog boxes.
   - enhancement: Rel: Updated storage engine to Oracle Berkeley DB JE version 6.2.31
-  - enhancement: DBrowser: smoother, faster output and display options now provide live update of font change.
+  - enhancement: DBrowser: smoother, faster output and better display.
   - enhancement: All: major code rebasing from ca.mb.armchair.rel3 to org.reldb.rel
   - enhancement: Rel: External Java compilation integrated; no longer requires JDK.
   - enhancement: DBrowser name deprecated in favour of Rel in general, 
                  or Rel graphical user interface in particular.
-  - enhancement: DBrowser can load source files from command line.  E.g., java -jar Rel.jar myfile.rel
 
 Version 1.0.12:
 
