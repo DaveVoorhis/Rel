@@ -18,10 +18,7 @@ Short term:
 	// TODO - UNION (RELATION {x RELATION {y INT}} {}, x) returns error.
 	//        It should give RELATION {y INT}} {}.
 	// TODO - Complete database versioning, particularly handling updates.
-	// TODO - Build backup mechanism into Rel.jar, so that backup can be invoked on a specified database.
     // TODO - DBrowser: Examine how large volume and/or continuous Rel output is handled
-    // TODO - DBrowser: Holding down F5 on (say) sys.Catalog so keyboard repeat takes effect
-    //        crashes DBrowser, sooner or later.  Fix it.
 	// TODO - Currently, it seems that Rel does not fully support the parallel execution of individual renamings 
 	//        which is specified in Tutorial D. For instance,
 	//        TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x}
