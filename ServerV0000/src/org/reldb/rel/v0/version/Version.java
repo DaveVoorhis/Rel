@@ -27,9 +27,14 @@ public class Version {
         return DATABASE_VERSION;
     }
 
+    /** Name of the jar file of a particular version. */
+    public static String getCoreJarFilename(int dbVersion) {
+		return String.format("rel%04d.jar", dbVersion);    	
+    }
+    
     /** Name of the jar file that contains this class. */
 	public static String getCoreJarFilename() {
-		return String.format("rel%04d.jar", getDatabaseVersion());
+		return getCoreJarFilename(getDatabaseVersion());
 	}
 
 	/** Name of the jar file that contains the Berkeley Java DB. */

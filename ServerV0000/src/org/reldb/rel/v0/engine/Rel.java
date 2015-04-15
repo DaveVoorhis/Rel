@@ -36,9 +36,18 @@ public class Rel {
 		buildClasspath();
 		org.reldb.rel.v0.interpreter.Instance.main(args);
 	}
+	
+	/** Open this database and back it up to the named file. */
+	public static void backup(String databaseDir, String backupFileName) throws IOException, ParseException {
+		buildClasspath();
+		PrintStream output = new PrintStream(backupFileName);
+		Instance instance = new Instance(databaseDir, false, output);
+		Interpreter interpreter = new Interpreter(instance.getDatabase(), output);
+		interpreter.interpret("BACKUP;");
+		output.close();
+	}
 
-	/** Establish a connection with this server. 
-	 * @param additionalJars */
+	/** Establish a connection with this server. */
 	public Rel(String databaseDir, boolean createDbAllowed, String[] additionalJars) throws IOException {
 		buildClasspath();
 		input = new PipedInputStream();
@@ -50,7 +59,7 @@ public class Rel {
 		instance.announceActive(output);
 		output.println("<EOT>");
 	}
-	
+
 	public InputStream getServerResponseInputStream() throws IOException {
 		return input;
 	}

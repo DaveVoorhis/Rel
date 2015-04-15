@@ -1,9 +1,18 @@
 package org.reldb.rel.v0.interpreter;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.reldb.rel.exceptions.*;
 import org.reldb.rel.shared.Defaults;
@@ -75,16 +84,31 @@ public class Instance {
 			try {
 				database.open(databasePath, createDbAllowed, output);
 			} catch (DatabaseConversionException e) {
-				throw new ExceptionSemantic("RS0411: Database conversion from format v" + e.getOldVersion() + 
-						" to v" + Version.getDatabaseVersion() + " not implemented yet.");
-				// TODO - finish database conversion code - announce progress via 'output' stream.
-				// Load detected version's .jar file
-				// Instantiate old version as oldRel
-				// Backup oldRel's database
-				// Close oldRel
-				// Rename Reldb to Reldb_old<n> where <n> is its detected version
-				// Create new database
-				// Import oldRel's database script into new database
+				output.println("Database conversion from format v" + e.getOldVersion() + 
+						" to v" + Version.getDatabaseVersion() + " launched...");
+				try {
+					// Load detected version's .jar file (should already be done externally if run as Eclipse RCP app.)
+					ClassPathHack.addFile(Version.getCoreJarFilename(e.getOldVersion()));
+					// TODO - finish database conversion code
+					// Instantiate old version as oldRel
+					Class<?> oldRelEngine = Class.forName("org.reldb.rel.v" + e.getOldVersion() + ".engine.Rel");
+					Method oldRelEngineBackup = oldRelEngine.getMethod("backup", String.class, String.class);
+					// Backup oldRel's database
+					output.println("Running backup...");
+					Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rw-------");
+			        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
+			        Path fPath = Files.createTempFile(Paths.get(databasePath.getAbsolutePath()), "relbackup" + e.getOldVersion(), ".rel", attr);
+					oldRelEngineBackup.invoke(null, databasePath, fPath.toString());
+					// Close oldRel
+					// Rename Reldb to Reldb_old<n> where <n> is its detected version
+					// Create new database
+					// Import oldRel's database script into new database
+					throw new ExceptionSemantic("RS0411: Database conversion from format v" + e.getOldVersion() + 
+							" to v" + Version.getDatabaseVersion() + " not implemented yet.");
+				} catch (Throwable e1) {
+					System.out.println("Unable to complete database conversion due to " + e1);
+					e1.printStackTrace();
+				}
 			}
 			openDatabases.put(databasePath, database);
 		}
