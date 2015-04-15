@@ -1,6 +1,7 @@
 ** TO DO **
 
 Short term:
+	// TODO - Complete database versioning, particularly handling updates.
 	// TODO - test client connection reset() on remote databases.
 	// TODO - Disallow recursive definitions like TYPE blah IS {blat CONSTRAINT p POSSREP {x = THE_x(blat)}}
 	// TODO - Fix toolbar button enabled/selected states in RelUI.
@@ -17,8 +18,6 @@ Short term:
     //        Produces bogus result, apparently due to GROUP.  Fix!
 	// TODO - UNION (RELATION {x RELATION {y INT}} {}, x) returns error.
 	//        It should give RELATION {y INT}} {}.
-	// TODO - Complete database versioning, particularly handling updates.
-    // TODO - DBrowser: Examine how large volume and/or continuous Rel output is handled
 	// TODO - Currently, it seems that Rel does not fully support the parallel execution of individual renamings 
 	//        which is specified in Tutorial D. For instance,
 	//        TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x}
