@@ -104,7 +104,7 @@ public class Instance {
 	}
     
 	private void usage(File databasePath) {
-		System.out.println("Usage: Rel [-f<database>] [-D[port] | [-e] [-v0 | -v1]] < <source>");
+		System.out.println("Usage: RelDBMS [-f<database>] [-D[port] | [-e] [-v0 | -v1]] < <source>");
 		System.out.println(" -f<database>    -- database - default is " + databasePath);
 		System.out.println(" -D[port]        -- run as server (port optional - default is " + Defaults.getDefaultPort() + ")");
 		System.out.println(" -e              -- evaluate expression");
