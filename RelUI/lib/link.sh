@@ -10,4 +10,3 @@ ln -s ~/git/Rel/_Deployment/je-6.2.31.jar .
 ln -s ~/git/Rel/_Deployment/rel0000.jar .
 ln -s ~/git/Rel/_Deployment/relclient.jar .
 ln -s ~/git/Rel/_Deployment/relshared.jar .
-ln -s ~/git/Rel/_Deployment/rev.jar .
