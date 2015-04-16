@@ -83,14 +83,15 @@ public class Instance {
 			database = new RelDatabase();
 			try {
 				database.open(databasePath, createDbAllowed, output);
-			} catch (DatabaseConversionException e) {
-				output.println("Database conversion from format v" + e.getOldVersion() + 
+			} catch (DatabaseConversionException exc) {
+				output.println("Database conversion from format v" + exc.getOldVersion() + 
 						" to v" + Version.getDatabaseVersion() + " launched...");
 				try {
+					int oldVersion = exc.getOldVersion();
 					// Load detected version's .jar file (should already be done externally if run as Eclipse RCP app.)
-					ClassPathHack.addFile(Version.getCoreJarFilename(e.getOldVersion()));
+					ClassPathHack.addFile(Version.getCoreJarFilename(oldVersion));
 					// Instantiate old version as oldRel
-					Class<?> oldRelEngine = Class.forName("org.reldb.rel.v" + e.getOldVersion() + ".engine.Rel");
+					Class<?> oldRelEngine = Class.forName("org.reldb.rel.v" + oldVersion + ".engine.Rel");
 					Method oldRelEngineBackup = oldRelEngine.getMethod("backup", String.class, String.class);
 					// Backup oldRel's database
 					output.println("Running backup...");
@@ -99,20 +100,21 @@ public class Instance {
 			        String backupFileName = "relbackup.rel";
 			        Path fPath = Files.createFile(Paths.get(databasePath.getAbsolutePath(), backupFileName), attr);
 					oldRelEngineBackup.invoke(null, databasePath, fPath.toString());
-					
-					/** Consider creating new database in new location, then moving original only after successful conversion. */
-					
-					// Close oldRel
-					// Move Reldb to Backup_Reldb_v<n>/Reldb where <n> is its detected version
-					Path target = Paths.get(databasePath.toString(), "Backup_Reldb_v" + e.getOldVersion(), "Reldb");
-					Files.move(Paths.get(databasePath.toString(), "Reldb"), target, StandardCopyOption.REPLACE_EXISTING);
 					// Create new database
 					output.println("Creating new database...");
-					database.open(databasePath, true, output);
+					Path newDbPath = Files.createTempDirectory(databasePath.toString(), attr);
+					database.open(newDbPath.toFile(), true, output);
 					// Import oldRel's database script into new database
 					output.println("Importing backup from old database...");
-					Interpreter interpreter = new Interpreter(database, System.out);
-					interpreter.interpret(new FileInputStream(Paths.get(target.toString(), backupFileName).toFile()));
+					Interpreter interpreter = new Interpreter(database, output);
+					interpreter.interpret(new FileInputStream(fPath.toFile()));
+					database.close();
+					// Move Reldb to Backup_Reldb_v<n>/Reldb where <n> is its detected version
+					Files.move(Paths.get(newDbPath.toString(), "Reldb"), Paths.get(databasePath.toString(), "Backup_RelDb_v" + oldVersion), StandardCopyOption.REPLACE_EXISTING);
+					// Move new database directory to Reldb
+					Files.move(newDbPath, Paths.get(databasePath.toString(), "Reldb"), StandardCopyOption.COPY_ATTRIBUTES);
+					// Open new database
+					database.open(databasePath, false, output);
 					output.println("Database conversion complete.");
 				} catch (Throwable e1) {
 					System.out.println("Unable to complete database conversion due to " + e1);
@@ -199,6 +201,10 @@ public class Instance {
 			else
 				System.out.println(e.getMessage());
 		}		
+	}
+
+	public void close() {
+		database.close();
 	}
 	
 	public static void main(String args[]) {

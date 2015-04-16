@@ -45,6 +45,7 @@ public class Rel {
 		Interpreter interpreter = new Interpreter(instance.getDatabase(), output);
 		interpreter.interpret("BACKUP;");
 		output.close();
+		instance.close();
 	}
 
 	/** Establish a connection with this server. */
