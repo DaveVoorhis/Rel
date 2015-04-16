@@ -1,13 +1,13 @@
 package org.reldb.rel.v0.interpreter;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -89,7 +89,6 @@ public class Instance {
 				try {
 					// Load detected version's .jar file (should already be done externally if run as Eclipse RCP app.)
 					ClassPathHack.addFile(Version.getCoreJarFilename(e.getOldVersion()));
-					// TODO - finish database conversion code
 					// Instantiate old version as oldRel
 					Class<?> oldRelEngine = Class.forName("org.reldb.rel.v" + e.getOldVersion() + ".engine.Rel");
 					Method oldRelEngineBackup = oldRelEngine.getMethod("backup", String.class, String.class);
@@ -97,14 +96,21 @@ public class Instance {
 					output.println("Running backup...");
 					Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rw-------");
 			        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
-			        Path fPath = Files.createTempFile(Paths.get(databasePath.getAbsolutePath()), "relbackup" + e.getOldVersion(), ".rel", attr);
+			        String backupFileName = "relbackup.rel";
+			        Path fPath = Files.createFile(Paths.get(databasePath.getAbsolutePath(), backupFileName), attr);
 					oldRelEngineBackup.invoke(null, databasePath, fPath.toString());
 					// Close oldRel
-					// Rename Reldb to Reldb_old<n> where <n> is its detected version
+					// Move Reldb to Backup_Reldb_v<n>/Reldb where <n> is its detected version
+					Path target = Paths.get(databasePath.toString(), "Backup_Reldb_v" + e.getOldVersion(), "Reldb");
+					Files.move(Paths.get(databasePath.toString(), "Reldb"), target, StandardCopyOption.REPLACE_EXISTING);
 					// Create new database
+					output.println("Creating new database...");
+					database.open(databasePath, true, output);
 					// Import oldRel's database script into new database
-					throw new ExceptionSemantic("RS0411: Database conversion from format v" + e.getOldVersion() + 
-							" to v" + Version.getDatabaseVersion() + " not implemented yet.");
+					output.println("Importing backup from old database...");
+					Interpreter interpreter = new Interpreter(database, System.out);
+					interpreter.interpret(new FileInputStream(Paths.get(target.toString(), backupFileName).toFile()));
+					output.println("Database conversion complete.");
 				} catch (Throwable e1) {
 					System.out.println("Unable to complete database conversion due to " + e1);
 					e1.printStackTrace();
