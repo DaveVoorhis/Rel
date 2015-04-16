@@ -99,6 +99,9 @@ public class Instance {
 			        String backupFileName = "relbackup.rel";
 			        Path fPath = Files.createFile(Paths.get(databasePath.getAbsolutePath(), backupFileName), attr);
 					oldRelEngineBackup.invoke(null, databasePath, fPath.toString());
+					
+					/** Consider creating new database in new location, then moving original only after successful conversion. */
+					
 					// Close oldRel
 					// Move Reldb to Backup_Reldb_v<n>/Reldb where <n> is its detected version
 					Path target = Paths.get(databasePath.toString(), "Backup_Reldb_v" + e.getOldVersion(), "Reldb");
