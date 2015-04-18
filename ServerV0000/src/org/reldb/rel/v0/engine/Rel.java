@@ -23,6 +23,7 @@ import org.reldb.rel.v0.version.Version;
 public class Rel {
 	
 	private Interpreter interpreter;
+	private Instance instance;
 	private PipedInputStream input;
 	private PrintStream output;
 	
@@ -63,7 +64,7 @@ public class Rel {
 		input = new PipedInputStream();
 		PipedOutputStream pipeOutput = new PipedOutputStream(input);
 		output = new PrintStream(pipeOutput, true);		
-		Instance instance = new Instance(databaseDir, createDbAllowed, output, additionalJars);
+		instance = new Instance(databaseDir, createDbAllowed, output, additionalJars);
 		interpreter = new Interpreter(instance.getDatabase(), output);
 		instance.announceActive(output);
 		output.println("<EOT>");
@@ -127,6 +128,11 @@ public class Rel {
 		interpreter.reset();
 		output.println();
 		output.println("Cancel.");
+	}
+
+	public void close() {
+		instance.close();
+		output.close();
 	}
 	
 }

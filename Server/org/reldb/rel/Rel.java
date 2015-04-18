@@ -52,5 +52,8 @@ public class Rel {
 	public void reset() {
 		rel.reset();
 	}
-	
+
+	public void close() {
+		rel.close();
+	}
 }

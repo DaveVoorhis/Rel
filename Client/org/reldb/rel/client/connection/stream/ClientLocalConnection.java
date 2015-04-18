@@ -44,7 +44,7 @@ public class ClientLocalConnection extends ClientConnection {
 	}
 	
 	public void close() throws IOException {
-		rel.reset();
+		rel.close();
 	}
 
 	public void reset() throws IOException {
