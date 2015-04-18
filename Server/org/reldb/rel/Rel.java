@@ -2,6 +2,7 @@ package org.reldb.rel;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
@@ -21,6 +22,13 @@ public class Rel {
 	public static void main(String[] args) throws IOException {
 		buildClasspath();
 		org.reldb.rel.v0.engine.Rel.main(args);
+	}
+	
+	/** Convert this database to the latest format, if necessary.  Throw exception if not necessary.  Normally only needed if invoking
+	 * the constructor throws DatabaseFormatVersionException. */
+	public static void convertToLatestFormat(String databaseDir, PrintStream conversionOutput, String[] additionalJars) throws DatabaseFormatVersionException, IOException {
+		buildClasspath();
+		org.reldb.rel.v0.engine.Rel.convertToLatestFormat(databaseDir, conversionOutput, additionalJars);
 	}
 	
 	/** Establish a connection with this server. */
