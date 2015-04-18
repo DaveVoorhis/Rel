@@ -24,6 +24,7 @@ import org.reldb.dbrowser.ui.preferences.PreferencePageCmd;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.core.ParseException;
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class CmdPanel extends Composite {
 
@@ -67,8 +68,9 @@ public class CmdPanel extends Composite {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 * @throws NumberFormatException 
+	 * @throws DatabaseFormatVersionException 
 	 */
-	public CmdPanel(DbTab dbTab, Composite parent, int style) throws NumberFormatException, ClassNotFoundException, IOException {
+	public CmdPanel(DbTab dbTab, Composite parent, int style) throws NumberFormatException, ClassNotFoundException, IOException, DatabaseFormatVersionException {
 		super(parent, style);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		

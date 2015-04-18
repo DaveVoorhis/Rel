@@ -1,6 +1,7 @@
 package org.reldb.rel.v0.tests.engine;
 
 import org.junit.Test;
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.interpreter.Instance;
 import org.reldb.rel.v0.interpreter.Interpreter;
@@ -15,7 +16,7 @@ public class TestVM {
 	private Generator generator;
 	private VirtualMachine machine;
 	
-	public TestVM() {
+	public TestVM() throws DatabaseFormatVersionException {
 		instance = new Instance("./", true, System.out);
 		RelDatabase database = instance.getDatabase();
 		Interpreter interpreter = new Interpreter(database, System.out);

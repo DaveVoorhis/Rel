@@ -11,6 +11,7 @@ import org.reldb.dbrowser.ui.crash.CrashTrap;
 import org.reldb.dbrowser.ui.version.Version;
 import org.reldb.rel.client.connection.string.ClientFromURL;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public abstract class ConcurrentStringReceiverClient {
 
@@ -41,7 +42,7 @@ public abstract class ConcurrentStringReceiverClient {
 	
 	private BlockingQueue<QueueEntry> rcache;
 	
-	public ConcurrentStringReceiverClient(Composite parent, String dbURL, boolean createAllowed) throws IOException, NumberFormatException, ClassNotFoundException {
+	public ConcurrentStringReceiverClient(Composite parent, String dbURL, boolean createAllowed) throws IOException, NumberFormatException, ClassNotFoundException, DatabaseFormatVersionException {
 		this.parent = parent;
 		display = parent.getDisplay();
 		CrashTrap crashTrap = new CrashTrap(parent.getShell(), Version.getVersion());

@@ -36,10 +36,6 @@ public class Interpreter {
 	public void setDebugAST(boolean flag) {
 		debugAST = flag;
 	}
-
-	public void setAdditionalJarsForJavaCompilerClasspath(String[] additionalJars) {
-		generator.setAdditionalJarsForJavaCompilerClasspath(additionalJars);
-	}
 	
 	public void reset() {
 		generator.reset();

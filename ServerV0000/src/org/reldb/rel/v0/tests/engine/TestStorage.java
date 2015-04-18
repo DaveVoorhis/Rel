@@ -1,6 +1,7 @@
 package org.reldb.rel.v0.tests.engine;
 
 import org.junit.Test;
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.generator.References;
 import org.reldb.rel.v0.generator.SelectAttributes;
@@ -21,7 +22,7 @@ public class TestStorage {
 	private Instance instance;
 	private RelDatabase database;
 	
-	public TestStorage() {
+	public TestStorage() throws DatabaseFormatVersionException {
 		instance = new Instance("./", true, System.out);
 		database = instance.getDatabase();
 	}

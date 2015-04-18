@@ -35,12 +35,10 @@ public class ForeignCompilerJava {
 	
 	private Generator generator;
 	private boolean verbose;
-	private String[] additionalJarsForClasspath;
 	
-	public ForeignCompilerJava(Generator generator, boolean verbose, String[] additionalJarsForClasspath) {
+	public ForeignCompilerJava(Generator generator, boolean verbose) {
 		this.generator = generator;
 		this.verbose = verbose;
-		this.additionalJarsForClasspath = additionalJarsForClasspath;
 	}
 
 	private static final String MANIFEST = "META-INF/MANIFEST.MF";
@@ -155,8 +153,8 @@ public class ForeignCompilerJava {
         	   java.io.File.pathSeparatorChar + Version.getCoreJarFilename() + 
         	   java.io.File.pathSeparatorChar + database.getJavaUserSourcePath() +
         	   java.io.File.pathSeparatorChar + database.getHomeDir();
-        if (additionalJarsForClasspath != null)
-        	for (String path: additionalJarsForClasspath) {
+        if (database.getAdditionalJarsForJavaCompilerClasspath() != null)
+        	for (String path: database.getAdditionalJarsForJavaCompilerClasspath()) {
        			notify("ForeignCompilerJava: extra jar for classpath: " + path);
 	    		classPath += java.io.File.pathSeparator + path;
         	}

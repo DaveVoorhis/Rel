@@ -4,6 +4,7 @@ import java.io.*;
 
 import org.reldb.rel.client.connection.CrashHandler;
 import org.reldb.rel.client.utilities.ClassPathHack;
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 import org.reldb.rel.Rel;
 
 public class ClientLocalConnection extends ClientConnection {
@@ -12,7 +13,7 @@ public class ClientLocalConnection extends ClientConnection {
 	protected CrashHandler errorHandler;
 
 	/** Establish a connection with a server. */
-	public ClientLocalConnection(String databaseDir, boolean createDbAllowed, CrashHandler errorHandler, String[] additionalJars) throws IOException {
+	public ClientLocalConnection(String databaseDir, boolean createDbAllowed, CrashHandler errorHandler, String[] additionalJars) throws IOException, DatabaseFormatVersionException {
 		ClassPathHack.addFile("RelDBMS.jar");
 		rel = new Rel(databaseDir, createDbAllowed, additionalJars);
 		this.errorHandler = errorHandler;

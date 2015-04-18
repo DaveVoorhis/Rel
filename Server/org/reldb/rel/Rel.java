@@ -3,6 +3,8 @@ package org.reldb.rel;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
+
 /** Convenient access point for running an embedded or stand-alone interpreter. */
 
 public class Rel {
@@ -21,9 +23,8 @@ public class Rel {
 		org.reldb.rel.v0.engine.Rel.main(args);
 	}
 	
-	/** Establish a connection with this server. 
-	 * @param additionalJars */
-	public Rel(String databaseDir, boolean createDbAllowed, String[] additionalJars) throws IOException {
+	/** Establish a connection with this server. */
+	public Rel(String databaseDir, boolean createDbAllowed, String[] additionalJars) throws IOException, DatabaseFormatVersionException {
 		buildClasspath();
 		rel = new org.reldb.rel.v0.engine.Rel(databaseDir, createDbAllowed, additionalJars);
 	}

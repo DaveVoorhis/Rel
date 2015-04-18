@@ -18,6 +18,7 @@ import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
 import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class DbTabContentCmd extends Composite {
 
@@ -36,7 +37,7 @@ public class DbTabContentCmd extends Composite {
     
     private PreferenceChangeListener preferenceChangeListener;
 
-	public DbTabContentCmd(DbTab parentTab, Composite contentParent) throws NumberFormatException, ClassNotFoundException, IOException {
+	public DbTabContentCmd(DbTab parentTab, Composite contentParent) throws NumberFormatException, ClassNotFoundException, IOException, DatabaseFormatVersionException {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 

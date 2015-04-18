@@ -6,6 +6,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
 
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 import org.reldb.rel.exceptions.ExceptionFatal;
 import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.v0.interpreter.ClassPathHack;
@@ -38,7 +39,7 @@ public class Rel {
 	}
 	
 	/** Open this database and back it up to the named file. */
-	public static void backup(String databaseDir, String backupFileName) throws IOException, ParseException {
+	public static void backup(String databaseDir, String backupFileName) throws IOException, ParseException, DatabaseFormatVersionException {
 		buildClasspath();
 		PrintStream output = new PrintStream(backupFileName);
 		Instance instance = new Instance(databaseDir, false, output);
@@ -49,14 +50,13 @@ public class Rel {
 	}
 
 	/** Establish a connection with this server. */
-	public Rel(String databaseDir, boolean createDbAllowed, String[] additionalJars) throws IOException {
+	public Rel(String databaseDir, boolean createDbAllowed, String[] additionalJars) throws IOException, DatabaseFormatVersionException {
 		buildClasspath();
 		input = new PipedInputStream();
 		PipedOutputStream pipeOutput = new PipedOutputStream(input);
 		output = new PrintStream(pipeOutput, true);		
-		Instance instance = new Instance(databaseDir, createDbAllowed, output);
+		Instance instance = new Instance(databaseDir, createDbAllowed, output, additionalJars);
 		interpreter = new Interpreter(instance.getDatabase(), output);
-		interpreter.setAdditionalJarsForJavaCompilerClasspath(additionalJars);
 		instance.announceActive(output);
 		output.println("<EOT>");
 	}

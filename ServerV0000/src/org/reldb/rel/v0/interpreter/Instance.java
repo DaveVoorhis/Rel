@@ -17,9 +17,11 @@ import java.util.Set;
 import org.reldb.rel.exceptions.*;
 import org.reldb.rel.shared.Defaults;
 import org.reldb.rel.v0.server.Server;
-import org.reldb.rel.v0.storage.*;
-import org.reldb.rel.v0.storage.RelDatabase.DatabaseConversionException;
 import org.reldb.rel.v0.version.Version;
+import org.reldb.rel.v0.interpreter.ClassPathHack;
+import org.reldb.rel.v0.interpreter.Interpreter;
+import org.reldb.rel.v0.storage.RelDatabase;
+import org.reldb.rel.v0.interpreter.Instance;
 
 /** A self-contained instance of the Rel system. */
 public class Instance {
@@ -39,7 +41,8 @@ public class Instance {
 		output.println(Version.getCopyright());
 		output.println("Rel is running on " + localHostName);
 		output.println("using " + System.getProperty("java.vendor") + "'s Java version " + System.getProperty("java.version") + " from " + System.getProperty("java.vendor.url"));
-		output.println("on " + System.getProperty("os.name") + " version " + System.getProperty("os.version") + " for " + System.getProperty("os.arch") + ".");
+		output.println("on " + System.getProperty("os.name") + " version " + System.getProperty("os.version") + " for " + System.getProperty("os.arch"));
+		output.println("with database format v" + Version.getDatabaseVersion() + ".");
 		output.println("Persistence is provided by " + database.getNativeDBVersion());
 		output.println(Version.getLicense());
 		output.println("Ok.");
@@ -54,8 +57,20 @@ public class Instance {
     public RelDatabase getDatabase() {
     	return database;
     }
-	
-	private void initDb(File databasePath, boolean createDbAllowed, PrintStream output) {
+    
+    private static boolean deleteRecursive(File path) throws FileNotFoundException {
+        if (!path.exists()) 
+        	return true;
+        boolean ret = true;
+        if (path.isDirectory()) {
+            for (File f: path.listFiles()) {
+                ret = ret && deleteRecursive(f);
+            }
+        }
+        return ret && path.delete();
+    }
+    
+	private void initDb(File databasePath, boolean createDbAllowed, PrintStream output, String[] additionalJarsForClasspath) throws DatabaseFormatVersionException {
 		Thread serverShutdownHook = new Thread() {
 			public void run() {
 				if (server != null)
@@ -81,50 +96,70 @@ public class Instance {
 		database = openDatabases.get(databasePath);
 		if (database == null) {
 			database = new RelDatabase();
-			try {
-				database.open(databasePath, createDbAllowed, output);
-			} catch (DatabaseConversionException exc) {
-				output.println("Database conversion from format v" + exc.getOldVersion() + 
-						" to v" + Version.getDatabaseVersion() + " launched...");
-				try {
-					int oldVersion = exc.getOldVersion();
-					// Load detected version's .jar file (should already be done externally if run as Eclipse RCP app.)
-					ClassPathHack.addFile(Version.getCoreJarFilename(oldVersion));
-					// Instantiate old version as oldRel
-					Class<?> oldRelEngine = Class.forName("org.reldb.rel.v" + oldVersion + ".engine.Rel");
-					Method oldRelEngineBackup = oldRelEngine.getMethod("backup", String.class, String.class);
-					// Backup oldRel's database
-					output.println("Running backup...");
-					Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rw-------");
-			        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
-			        String backupFileName = "relbackup.rel";
-			        Path fPath = Files.createFile(Paths.get(databasePath.getAbsolutePath(), backupFileName), attr);
-					oldRelEngineBackup.invoke(null, databasePath, fPath.toString());
-					// Create new database
-					output.println("Creating new database...");
-					Path newDbPath = Files.createTempDirectory(databasePath.toString(), attr);
-					database.open(newDbPath.toFile(), true, output);
-					// Import oldRel's database script into new database
-					output.println("Importing backup from old database...");
-					Interpreter interpreter = new Interpreter(database, output);
-					interpreter.interpret(new FileInputStream(fPath.toFile()));
-					database.close();
-					// Move Reldb to Backup_Reldb_v<n>/Reldb where <n> is its detected version
-					Files.move(Paths.get(newDbPath.toString(), "Reldb"), Paths.get(databasePath.toString(), "Backup_RelDb_v" + oldVersion), StandardCopyOption.REPLACE_EXISTING);
-					// Move new database directory to Reldb
-					Files.move(newDbPath, Paths.get(databasePath.toString(), "Reldb"), StandardCopyOption.COPY_ATTRIBUTES);
-					// Open new database
-					database.open(databasePath, false, output);
-					output.println("Database conversion complete.");
-				} catch (Throwable e1) {
-					System.out.println("Unable to complete database conversion due to " + e1);
-					e1.printStackTrace();
-				}
-			}
+			database.setAdditionalJarsForJavaCompilerClasspath(additionalJarsForClasspath);
+			database.open(databasePath, createDbAllowed, output);
 			openDatabases.put(databasePath, database);
 		}
 	}
 
+	public static void convertToLatestFormat(File databasePath, PrintStream conversionOutput, String[] additionalJarsForClasspath) throws DatabaseFormatVersionException {
+		RelDatabase database = new RelDatabase();
+		int oldVersion = -1;
+		try {
+			database.open(databasePath, false, conversionOutput);
+			database.close();
+		} catch (DatabaseFormatVersionException dce) {
+			oldVersion = dce.getOldVersion();			
+		}
+		if (oldVersion == -1)
+			throw new DatabaseFormatVersionException("RS0415: Database is already the latest format.");
+		try {
+			String launchMsg = "Database conversion from format v" + oldVersion + " to v" + Version.getDatabaseVersion() + " launched...";
+			conversionOutput.println(launchMsg);
+			// Load detected version's .jar file (should already be done externally if run as Eclipse RCP app.)
+			ClassPathHack.addFile(Version.getCoreJarFilename(oldVersion));
+			// Instantiate old version as oldRel
+			Class<?> oldRelEngine = Class.forName("org.reldb.rel.v" + oldVersion + ".engine.Rel");
+			Method oldRelEngineBackup = oldRelEngine.getMethod("backup", new Class[] {String.class, String.class});
+			// Backup oldRel's database
+			conversionOutput.println("Running backup...");
+	        Path backupScriptPath = Paths.get(databasePath.getAbsolutePath(), "relbackup_v" + oldVersion + ".rel");
+			oldRelEngineBackup.invoke(null, databasePath.toString(), backupScriptPath.toString());
+			// Create new database
+			conversionOutput.println("Creating new database...");
+			Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwx------");
+	        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
+			Path newDbDirectory = Files.createDirectory(Paths.get(databasePath.toString(), "_new_Reldb" + Double.toString(Math.random())),  attr);
+			database.open(newDbDirectory.toFile(), true, conversionOutput);
+			database.setAdditionalJarsForJavaCompilerClasspath(additionalJarsForClasspath);
+			// Import oldRel's database script into new database
+			conversionOutput.println("Importing backup from old database...");
+			Interpreter interpreter = new Interpreter(database, conversionOutput);
+			interpreter.interpret(new FileInputStream(backupScriptPath.toFile()));
+			database.close();
+			conversionOutput.println("Import done");
+			Path oldReldbPath = Paths.get(databasePath.toString(), "Reldb");
+			Path newReldbPath = Paths.get(newDbDirectory.toString(), "Reldb");
+			Path backupReldbPath = Paths.get(databasePath.toString(), "Backup_Reldb_v" + oldVersion);
+			// Move Reldb to Backup_Reldb_v<n>/Reldb where <n> is its detected version
+			conversionOutput.println("Move " + oldReldbPath + " to " + backupReldbPath);
+			deleteRecursive(backupReldbPath.toFile());
+			Files.move(oldReldbPath, backupReldbPath, StandardCopyOption.REPLACE_EXISTING);
+			// Move new database directory to Reldb
+			conversionOutput.println("Move " + newReldbPath + " to " + oldReldbPath);
+			deleteRecursive(oldReldbPath.toFile());
+			Files.move(newReldbPath, oldReldbPath, StandardCopyOption.REPLACE_EXISTING);
+			deleteRecursive(newReldbPath.toFile());
+			conversionOutput.println("Database conversion complete.");
+			conversionOutput.close();
+		} catch (Throwable e1) {
+			e1.printStackTrace();
+			String msg = "Unable to complete database conversion due to " + e1;
+			conversionOutput.close();
+			throw new ExceptionSemantic(msg);
+		}
+	}
+	
 	private File obtaindatabasePath(String databasePath) {
 		File f = new File(databasePath);
 		if (!f.exists())
@@ -134,10 +169,14 @@ public class Instance {
 		return f;
 	}
 	
-	public Instance(String databasePath, boolean createDbAllowed, PrintStream output) {
-		initDb(obtaindatabasePath(databasePath), createDbAllowed, output);
+	public Instance(String databasePath, boolean createDbAllowed, PrintStream output, String[] additionalJarsForJavaClasspath) throws DatabaseFormatVersionException {
+		initDb(obtaindatabasePath(databasePath), createDbAllowed, output, additionalJarsForJavaClasspath);
 	}
     
+	public Instance(String databasePath, boolean createDbAllowed, PrintStream output) throws DatabaseFormatVersionException {
+		initDb(obtaindatabasePath(databasePath), createDbAllowed, output, null);
+	}
+	
 	private void usage(File databasePath) {
 		System.out.println("Usage: RelDBMS [-f<database>] [-D[port] | [-e] [-v0 | -v1]] < <source>");
 		System.out.println(" -f<database>    -- database - default is " + databasePath);
@@ -162,7 +201,17 @@ public class Instance {
 							return;
 						}
 					}
-					initDb(databasePath, true, System.out);
+					try {
+						initDb(databasePath, true, System.out, null);
+					} catch (DatabaseFormatVersionException e) {
+						try {
+							convertToLatestFormat(databasePath, System.out, null);
+							initDb(databasePath, true, System.out, null);
+						} catch (DatabaseFormatVersionException e1) {
+							System.out.println("Error: unable to convert database to latest version.");
+							return;
+						}
+					}
 					server = new Server(this, portnum);
 					return;
 				}
@@ -185,7 +234,17 @@ public class Instance {
 				}
 			}
 		}
-		initDb(databasePath, true, System.out);
+		try {
+			initDb(databasePath, true, System.out, null);
+		} catch (DatabaseFormatVersionException e) {
+			try {
+				convertToLatestFormat(databasePath, System.out, null);
+				initDb(databasePath, true, System.out, null);
+			} catch (DatabaseFormatVersionException e1) {
+				System.out.println("Error: unable to convert database to latest version.");
+				return;
+			}
+		}
 		Interpreter interpreter = new Interpreter(database, System.out);
 		interpreter.setDebugOnRun(debugOnRun);
 		interpreter.setDebugAST(debugAST);

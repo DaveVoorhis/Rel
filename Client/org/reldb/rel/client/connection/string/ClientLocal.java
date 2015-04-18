@@ -5,6 +5,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.reldb.rel.client.connection.CrashHandler;
 import org.reldb.rel.client.connection.stream.ClientLocalConnection;
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class ClientLocal implements StringReceiverClient {
 	
@@ -13,7 +14,7 @@ public class ClientLocal implements StringReceiverClient {
 	private boolean receiverRunning;
 	
 	/** Establish a connection with a server. */
-	public ClientLocal(String databaseDir, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws IOException {
+	public ClientLocal(String databaseDir, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws IOException, DatabaseFormatVersionException {
 		connection = new ClientLocalConnection(databaseDir, createDbAllowed, crashHandler, additionalJars);
 		final BufferedReader input = new BufferedReader(new InputStreamReader(connection.getServerResponseInputStream()));
 		Thread receiver = new Thread() {

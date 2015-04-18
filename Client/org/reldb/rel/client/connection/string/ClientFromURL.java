@@ -5,12 +5,13 @@ import java.net.MalformedURLException;
 
 import org.reldb.rel.client.connection.CrashHandler;
 import org.reldb.rel.client.utilities.ClassPathHack;
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 import org.reldb.rel.shared.Defaults;
 
 public class ClientFromURL {
 	
     /** Open a connection. */
-    public static StringReceiverClient openConnection(String databaseURL, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws NumberFormatException, IOException, MalformedURLException, ClassNotFoundException {
+    public static StringReceiverClient openConnection(String databaseURL, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws NumberFormatException, IOException, MalformedURLException, ClassNotFoundException, DatabaseFormatVersionException {
     	if (databaseURL.toLowerCase().startsWith("local:")) {
     		if (databaseURL.length() > 6)
     			return new ClientLocal(databaseURL.substring(6).trim(), createDbAllowed, crashHandler, additionalJars);

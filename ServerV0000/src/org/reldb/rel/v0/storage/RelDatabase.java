@@ -116,7 +116,18 @@ public class RelDatabase {
     private String customRelvarsDatabase;
     private String customRelvarsHome;
     private ArrayList<String> customRelvars;
-        
+    
+	// Additional JAR files for the Java compiler to include in the classpath when compiling.
+	private String[] additionalJarsForJavaCompilerClasspath = null;
+
+	public void setAdditionalJarsForJavaCompilerClasspath(String[] additionalJarsForClasspath) {
+		this.additionalJarsForJavaCompilerClasspath = additionalJarsForClasspath;
+	}
+
+	public String[] getAdditionalJarsForJavaCompilerClasspath() {
+		return additionalJarsForJavaCompilerClasspath;
+	}
+	
     /*
      * This class is used to set up custom Comparator used by the Berkeley DB for data (not needed for metadata).
      */
@@ -186,20 +197,7 @@ public class RelDatabase {
 	    }
     }
 
-    public static class DatabaseConversionException extends Exception {
-		private static final long serialVersionUID = 1L;
-		private int oldVersion;
-    	private String homeDir;
-    	public DatabaseConversionException(int oldVersion, String homeDir) {
-    		super("RS0410: Database requires conversion from v" + oldVersion + " in " + homeDir);
-    		this.oldVersion = oldVersion;
-    		this.homeDir = homeDir;
-    	}
-    	public int getOldVersion() {return oldVersion;}
-    	public String getHomeDir() {return homeDir;}
-    }
-    
-    public void open(File envHome, boolean canCreateDb, PrintStream outputStream) throws DatabaseConversionException {
+    public void open(File envHome, boolean canCreateDb, PrintStream outputStream) throws DatabaseFormatVersionException {
     	String usingBerkeleyJavaDBVersion = getBerkeleyJavaDBVersion(); 
     	if (!usingBerkeleyJavaDBVersion.equals(Version.expectedBerkeleyDBVersion))
     		throw new ExceptionFatal("RS0323: Expected to find Berkeley Java DB version " + Version.expectedBerkeleyDBVersion + " but found version " + usingBerkeleyJavaDBVersion + ".\nAn attempted update or re-installation has probably failed.\nPlease make sure " + Version.getBerkeleyDbJarFilename() + " is not read-only, then try the update or re-installation again.");
@@ -227,7 +225,8 @@ public class RelDatabase {
 			if (detectedVersion < 0) {
 				throw new ExceptionSemantic("RS0407: Database in " + homeDir + " has no version information, or it's invalid.  The database must be upgraded manually.\nBack it up with the version of Rel used to create it and load the backup into a new database.");
 			} else if (detectedVersion < Version.getDatabaseVersion()) {
-				throw new DatabaseConversionException(detectedVersion, homeDir);
+				String msg = "RS0410: Database requires conversion from format v" + detectedVersion + " to format v" + Version.getDatabaseVersion();
+				throw new DatabaseFormatVersionException(msg, detectedVersion);
 			} else if (detectedVersion > Version.getDatabaseVersion()) {
 				throw new ExceptionSemantic("RS0409: Database in " + homeDir + " appears to have been created by a newer version of Rel than this one.\nOpen it with the latest version of Rel.");
 			}

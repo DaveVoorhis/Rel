@@ -12,7 +12,15 @@ import org.reldb.rel.v0.values.Value;
 
 public class BaseOfTest {
 	
-	protected static Instance instance = new Instance("./", true, System.out);
+	protected static Instance getInstance() {
+		try {
+			return new Instance("./", true, System.out);
+		} catch (DatabaseFormatVersionException e) {
+			throw new ExceptionFatal("Database already exists and is in an older format.");
+		}
+	}
+	
+	protected static Instance instance = getInstance();
 	protected static Interpreter interpreter = new Interpreter(instance.getDatabase(), System.out);
 	protected static Generator generator = interpreter.getGenerator();
 	
