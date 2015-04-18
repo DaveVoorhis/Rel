@@ -1,5 +1,6 @@
 package org.reldb.rel.v0.engine;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
@@ -49,6 +50,13 @@ public class Rel {
 		instance.close();
 	}
 
+	/** Convert this database to the latest format, if necessary.  Throw exception if not necessary.  Normally only needed if invoking
+	 * the constructor throws DatabaseFormatVersionException. */
+	public static void convertToLatestFormat(String databaseDir, PrintStream conversionOutput, String[] additionalJars) throws DatabaseFormatVersionException, IOException {
+		buildClasspath();
+		Instance.convertToLatestFormat(new File(databaseDir), conversionOutput, additionalJars);
+	}
+	
 	/** Establish a connection with this server. */
 	public Rel(String databaseDir, boolean createDbAllowed, String[] additionalJars) throws IOException, DatabaseFormatVersionException {
 		buildClasspath();
