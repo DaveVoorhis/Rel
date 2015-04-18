@@ -1,5 +1,7 @@
 package org.reldb.dbrowser;
 
+import java.nio.file.Paths;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -23,7 +25,7 @@ public class DBrowser {
 	
 	private static boolean noLocalRel = true;
 
-	private static String defaultDatabasePath = System.getProperty("user.home");
+	private static String defaultDatabasePath = Paths.get(System.getProperty("user.home"), "DefaultRelDb").toString();
 
     public static Shell getShell() {
     	return mainPanel.getShell();
