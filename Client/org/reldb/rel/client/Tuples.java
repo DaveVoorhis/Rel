@@ -1,38 +1,25 @@
 package org.reldb.rel.client;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
-
-import org.reldb.rel.client.connection.stream.StreamReceiverClient;
 
 public class Tuples extends Value implements Iterable<Tuple>{
 
 	private ArrayBlockingQueue<Tuple> tuples = new ArrayBlockingQueue<Tuple>(50);
 	private ArrayBlockingQueue<Heading> headingQueue = new ArrayBlockingQueue<Heading>(1);
 	private Heading heading = null;
-	private StreamReceiverClient client = null;
 	private boolean cacheable = false;
 	private LinkedList<Tuple> cache = null;
-
-	Tuples(StreamReceiverClient client) {
-		this.client = client;
-	}
 	
 	Tuples(Heading heading) {
 		this.heading = heading;
 		cacheable = true;
 	}
 	
-	protected void finalize() throws Throwable {
-	    try {
-	        close();
-	    } finally {
-	        super.finalize();
-	    }
+	public Tuples() {
 	}
-	
+
 	void setHeading(Heading heading) {
 		try {
 			headingQueue.put(heading);
@@ -49,20 +36,6 @@ public class Tuples extends Value implements Iterable<Tuple>{
 		try {
 			tuples.put((Tuple)value);
 		} catch (InterruptedException e) {
-		}
-	}
-	
-	/** If you're not going to iterate Tuples to the end, you should explicitly invoke close() to close the connection
-	 * to the DBMS. */
-	public void close() {
-		if (client != null) {
-			try {
-				client.close();
-			} catch (IOException e) {
-				System.out.println("Tuples: close failed: " + e);				
-				e.printStackTrace();
-			}
-			client = null;
 		}
 	}
 	
@@ -125,7 +98,6 @@ public class Tuples extends Value implements Iterable<Tuple>{
 					while (tuple == null);
 					if (tuple.isNull()) {
 						done = true;
-						close();
 						return false;
 					}
 				}

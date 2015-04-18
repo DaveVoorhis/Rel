@@ -29,10 +29,11 @@ public class Instance {
 	// Static cache of open databases ensures each database is open once, 
 	// even if there are multiple InstancesS.
 	private static HashMap<File, RelDatabase> openDatabases = null;
+
+	private static String localHostName;
+	private static Server server = null;
 	
 	private RelDatabase database;
-	private Server server = null;
-	private String localHostName;
 	private boolean evaluate = false;
 	private boolean debugOnRun = false;
 	private boolean debugAST = false;
@@ -69,8 +70,12 @@ public class Instance {
         }
         return ret && path.delete();
     }
+
+    private boolean shutdownHookSetup = false;
     
-	private void initDb(File databasePath, boolean createDbAllowed, PrintStream output, String[] additionalJarsForClasspath) throws DatabaseFormatVersionException {
+    private void setupShutdownHook() {
+    	if (shutdownHookSetup)
+    		return;
 		Thread serverShutdownHook = new Thread() {
 			public void run() {
 				if (server != null)
@@ -92,7 +97,12 @@ public class Instance {
 			localHostName = InetAddress.getLocalHost().getCanonicalHostName();
 		} catch (UnknownHostException uhe) {
 			localHostName = "<unknown>";
-		}
+		}    	
+    	shutdownHookSetup = true;
+    }
+    
+	private void initDb(File databasePath, boolean createDbAllowed, PrintStream output, String[] additionalJarsForClasspath) throws DatabaseFormatVersionException {
+		setupShutdownHook();
 		database = openDatabases.get(databasePath);
 		if (database == null) {
 			database = new RelDatabase();

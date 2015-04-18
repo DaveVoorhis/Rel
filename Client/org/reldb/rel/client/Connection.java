@@ -185,7 +185,7 @@ public class Connection {
 					}
 					public void beginContainer(int depth) {
 						if (depth == 0) {
-							Tuples tuples = new Tuples(client);
+							Tuples tuples = new Tuples();
 							valueReceiver.push(tuples);
 							response.setResult(tuples);
 						} else {
@@ -214,9 +214,9 @@ public class Connection {
 				try {
 					if (receiveComplete != null)
 						receiveComplete.run(client);
-					client.close();
+//					client.close();
 				} catch (IOException e) {
-					System.out.println("Connection: close failed: " + e);
+					System.out.println("Connection: run failed: " + e);
 					e.printStackTrace();
 				}
 			}
