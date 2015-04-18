@@ -361,37 +361,33 @@ public class Rev extends JPanel {
 		//Iterate list
 		if (tuples != null) {
 			Iterator<Tuple> it = tuples.iterator();
-			try {
-				while (it.hasNext()) {
-					Tuple tuple = it.next();
-					if (tuple != null) {
-						JMenuItem item = new JMenuItem(tuple.get("Name").toString());
-						//Event handler
-						ActionListener listener;
-						//Relvars
-						if (relvarFlag) {
-							listener = new ActionListener() {
-								@Override
-								public void actionPerformed(ActionEvent arg0) {
-									menuAction(arg0);
-								}
-							};
-						}
-						//Views
-						else {
-							listener = new ActionListener() {
-								@Override
-								public void actionPerformed(ActionEvent arg0) {
-									viewCombo(arg0);
-								}
-							};
-						}
-						item.addActionListener(listener);
-						box.add(item);
+			while (it.hasNext()) {
+				Tuple tuple = it.next();
+				if (tuple != null) {
+					JMenuItem item = new JMenuItem(tuple.get("Name").toString());
+					//Event handler
+					ActionListener listener;
+					//Relvars
+					if (relvarFlag) {
+						listener = new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent arg0) {
+								menuAction(arg0);
+							}
+						};
 					}
+					//Views
+					else {
+						listener = new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent arg0) {
+								viewCombo(arg0);
+							}
+						};
+					}
+					item.addActionListener(listener);
+					box.add(item);
 				}
-			} finally {
-				tuples.close();
 			}
 		}
 	}
