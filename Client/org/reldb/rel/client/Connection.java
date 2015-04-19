@@ -214,7 +214,7 @@ public class Connection {
 				try {
 					if (receiveComplete != null)
 						receiveComplete.run(client);
-//					client.close();
+					client.close();
 				} catch (IOException e) {
 					System.out.println("Connection: run failed: " + e);
 					e.printStackTrace();
