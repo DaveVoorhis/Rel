@@ -273,7 +273,6 @@ public class Instance {
 	}
 
 	public void close() {
-		database.close();
 	}
 	
 	public static void main(String args[]) {

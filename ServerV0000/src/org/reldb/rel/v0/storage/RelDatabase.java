@@ -353,81 +353,85 @@ public class RelDatabase {
     
     // Close the environment
     public void close() {
-        if (environment != null) {
-        	System.out.println("Closing database in " + homeDir);
-    		System.out.println("\tClosing active tuple iterators in " + homeDir);
-    		int activeTupleIterators = 0;
-    		try {
-    			for (RegisteredTupleIterator tupleIterator: registeredTupleIterators)
-    				if (tupleIterator.forceClose())
-    					activeTupleIterators++;
-    		} catch (Exception e) {
-    			System.err.println("\tError closing active tuple iterators: " + homeDir + ": " + e.toString());
-    		}
-    		if (activeTupleIterators == 1)
-    			System.err.println("\t" + activeTupleIterators + " active tuple iterator was closed.");
-    		else if (activeTupleIterators > 1)
-    			System.err.println("\t" + activeTupleIterators + " active tuple iterators were closed.");
-            System.out.println("\tCommitting open transactions in " + homeDir);
-            int openTransactions = 0;
-        	for (RelTransaction transaction: transactions.values())
-        		while (transaction.getReferenceCount() > 0)
-        			try {
-        				commitTransaction(transaction);
-        				openTransactions++;
-		            } catch(DatabaseException dbe) {
-		                System.err.println("\tError committing active transactions " + homeDir + ": " + dbe.toString());
-		            } catch (Exception e) {
-		            	System.err.println("\tUnknown shutdown error 1: " + e);
-		            }
-    		if (openTransactions == 1)
-    			System.err.println("\t" + openTransactions + " open transaction was closed.");
-    		else if (openTransactions > 1)
-    			System.err.println("\t" + openTransactions + " open transactions were closed.");       	
-	        System.out.println("\tClosing relvars in " + homeDir);
-            try {
-            	for (Database table: openTables.values())
-            		table.close();
-            } catch(DatabaseException dbe) {
-                System.err.println("\tError closing internal tables " + homeDir + ": " + dbe.toString());
-            } catch (Exception e) {
-            	System.err.println("\tUnknown shutdown error 2: " + e);
-            }
-        	System.out.println("\tPurging temporary data in " + homeDir);
-            try {
-            	for (String tableName: tempTables)
-            		environment.removeDatabase(null, tableName);
-            } catch(DatabaseException dbe) {
-                System.err.println("\tError removing temporary data storage " + homeDir + ": " + dbe.toString());
-            } catch (Exception e) {
-            	System.err.println("\tUnknown shutdown error 3: " + e);
-            }
-        	System.out.println("\tTemporary data purged in " + homeDir);
-            try {
-            	relvarDb.close();
-            } catch(DatabaseException dbe) {
-                System.err.println("\tError closing the relvarDb " + homeDir + ": " + dbe.toString());
-            } catch (Exception e) {
-            	System.err.println("\tUnknown shutdown error 4: " + e);
-            }
-			System.out.println("\tClosing environment in " + homeDir);
-            try {
-            	environment.close();
-            } catch(DatabaseException dbe) {
-                System.err.println("\tError closing the environment " + homeDir + ": " + dbe.toString());
-            } catch (Exception e) {
-            	System.err.println("\tUnknown shutdown error 5: " + e);
-            }
-            environment = null;
-            try {
-            	classCatalog.close();
-            } catch(DatabaseException dbe) {
-                System.err.println("\tError closing the ClassCatalog in " + homeDir + ": " + dbe.toString());
-            } catch (Exception e) {
-            	System.err.println("\tUnknown shutdown error 6: " + e);
-            }
-	        System.out.println("Database " + homeDir + " is closed.");
+    	if (environment == null) {
+    		System.out.println("WARNING: Attempting to re-close a closed database!");
+    		System.out.println("It's not a problem, but we'll tell you where it's coming from so maybe you can fix it:");
+    		(new Throwable()).printStackTrace();
+    		return;
+    	}
+    	System.out.println("Closing database in " + homeDir);
+		System.out.println("\tClosing active tuple iterators in " + homeDir);
+		int activeTupleIterators = 0;
+		try {
+			for (RegisteredTupleIterator tupleIterator: registeredTupleIterators)
+				if (tupleIterator.forceClose())
+					activeTupleIterators++;
+		} catch (Exception e) {
+			System.err.println("\tError closing active tuple iterators: " + homeDir + ": " + e.toString());
+		}
+		if (activeTupleIterators == 1)
+			System.err.println("\t" + activeTupleIterators + " active tuple iterator was closed.");
+		else if (activeTupleIterators > 1)
+			System.err.println("\t" + activeTupleIterators + " active tuple iterators were closed.");
+        System.out.println("\tCommitting open transactions in " + homeDir);
+        int openTransactions = 0;
+    	for (RelTransaction transaction: transactions.values())
+    		while (transaction.getReferenceCount() > 0)
+    			try {
+    				commitTransaction(transaction);
+    				openTransactions++;
+	            } catch(DatabaseException dbe) {
+	                System.err.println("\tError committing active transactions " + homeDir + ": " + dbe.toString());
+	            } catch (Exception e) {
+	            	System.err.println("\tUnknown shutdown error 1: " + e);
+	            }
+		if (openTransactions == 1)
+			System.err.println("\t" + openTransactions + " open transaction was closed.");
+		else if (openTransactions > 1)
+			System.err.println("\t" + openTransactions + " open transactions were closed.");       	
+        System.out.println("\tClosing relvars in " + homeDir);
+        try {
+        	for (Database table: openTables.values())
+        		table.close();
+        } catch(DatabaseException dbe) {
+            System.err.println("\tError closing internal tables " + homeDir + ": " + dbe.toString());
+        } catch (Exception e) {
+        	System.err.println("\tUnknown shutdown error 2: " + e);
         }
+    	System.out.println("\tPurging temporary data in " + homeDir);
+        try {
+        	for (String tableName: tempTables)
+        		environment.removeDatabase(null, tableName);
+        } catch(DatabaseException dbe) {
+            System.err.println("\tError removing temporary data storage " + homeDir + ": " + dbe.toString());
+        } catch (Exception e) {
+        	System.err.println("\tUnknown shutdown error 3: " + e);
+        }
+    	System.out.println("\tTemporary data purged in " + homeDir);
+        try {
+        	relvarDb.close();
+        } catch(DatabaseException dbe) {
+            System.err.println("\tError closing the relvarDb " + homeDir + ": " + dbe.toString());
+        } catch (Exception e) {
+        	System.err.println("\tUnknown shutdown error 4: " + e);
+        }
+		System.out.println("\tClosing environment in " + homeDir);
+        try {
+        	environment.close();
+        } catch(DatabaseException dbe) {
+            System.err.println("\tError closing the environment " + homeDir + ": " + dbe.toString());
+        } catch (Exception e) {
+        	System.err.println("\tUnknown shutdown error 5: " + e);
+        }
+        environment = null;
+        try {
+        	classCatalog.close();
+        } catch(DatabaseException dbe) {
+            System.err.println("\tError closing the ClassCatalog in " + homeDir + ": " + dbe.toString());
+        } catch (Exception e) {
+        	System.err.println("\tUnknown shutdown error 6: " + e);
+        }
+        System.out.println("Database " + homeDir + " is closed.");
     }
     
     public void reset() {
