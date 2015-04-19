@@ -198,7 +198,7 @@ public class RelDatabase {
     }
 
     public void open(File envHome, boolean canCreateDb, PrintStream outputStream) throws DatabaseFormatVersionException {
-    	System.out.println("Opening database in " + envHome);
+    	System.out.println("Opening database in " + envHome + ".  If it doesn't exist, we'll " + ((canCreateDb) ? "try to create it" : "cause an error") + ".");
     	
     	String usingBerkeleyJavaDBVersion = getBerkeleyJavaDBVersion(); 
     	if (!usingBerkeleyJavaDBVersion.equals(Version.expectedBerkeleyDBVersion))

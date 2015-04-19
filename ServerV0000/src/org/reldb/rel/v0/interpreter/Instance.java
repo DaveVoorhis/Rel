@@ -101,20 +101,22 @@ public class Instance {
     	shutdownHookSetup = true;
     }
     
-	private void initDb(File databasePath, boolean createDbAllowed, PrintStream output, String[] additionalJarsForClasspath) throws DatabaseFormatVersionException {
+	private void initDb(String databasePath, boolean createDbAllowed, PrintStream output, String[] additionalJarsForClasspath) throws DatabaseFormatVersionException {
 		setupShutdownHook();
-		database = openDatabases.get(databasePath);
+		File dbPath = new File(databasePath);
+		database = openDatabases.get(dbPath);
 		if (database == null) {
 			database = new RelDatabase();
 			database.setAdditionalJarsForJavaCompilerClasspath(additionalJarsForClasspath);
-			database.open(databasePath, createDbAllowed, output);
-			openDatabases.put(databasePath, database);
+			database.open(dbPath, createDbAllowed, output);
+			openDatabases.put(dbPath, database);
 		}
 	}
 
-	public static void convertToLatestFormat(File databasePath, PrintStream conversionOutput, String[] additionalJarsForClasspath) throws DatabaseFormatVersionException {
+	public static void convertToLatestFormat(String dbPath, PrintStream conversionOutput, String[] additionalJarsForClasspath) throws DatabaseFormatVersionException {
 		RelDatabase database = new RelDatabase();
 		int oldVersion = -1;
+		File databasePath = new File(dbPath);
 		try {
 			database.open(databasePath, false, conversionOutput);
 			database.close();
@@ -170,24 +172,15 @@ public class Instance {
 		}
 	}
 	
-	private File obtaindatabasePath(String databasePath) {
-		File f = new File(databasePath);
-		if (!f.exists())
-			throw new ExceptionFatal("RS0307: Directory " + f + " does not exist.");
-		if (!f.isDirectory())
-			throw new ExceptionFatal("RS0308: " + f.toString() + " is not a directory.");
-		return f;
-	}
-	
 	public Instance(String databasePath, boolean createDbAllowed, PrintStream output, String[] additionalJarsForJavaClasspath) throws DatabaseFormatVersionException {
-		initDb(obtaindatabasePath(databasePath), createDbAllowed, output, additionalJarsForJavaClasspath);
+		initDb(databasePath, createDbAllowed, output, additionalJarsForJavaClasspath);
 	}
     
 	public Instance(String databasePath, boolean createDbAllowed, PrintStream output) throws DatabaseFormatVersionException {
-		initDb(obtaindatabasePath(databasePath), createDbAllowed, output, null);
+		initDb(databasePath, createDbAllowed, output, null);
 	}
 	
-	private void usage(File databasePath) {
+	private void usage(String databasePath) {
 		System.out.println("Usage: RelDBMS [-f<database>] [-D[port] | [-e] [-v0 | -v1]] < <source>");
 		System.out.println(" -f<database>    -- database - default is " + databasePath);
 		System.out.println(" -D[port]        -- run as server (port optional - default is " + Defaults.getDefaultPort() + ")");
@@ -197,7 +190,7 @@ public class Instance {
 	}
 	
 	private Instance(String args[]) {
-		File databasePath = new File("./");
+		String databasePath = "./";
 		if (args.length >= 1) {
 			for (int i=0; i<args.length; i++) {
 				if (args[i].startsWith("-D")) {
@@ -236,7 +229,7 @@ public class Instance {
 						usage(databasePath);
 						return;
 					}
-					databasePath = obtaindatabasePath(args[i].substring(2));
+					databasePath = args[i].substring(2);
 				}
 				else {
 					usage(databasePath);
