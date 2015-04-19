@@ -25,7 +25,6 @@ public class Connection {
 		
 	private String dbURL;
 	private String serverAnnouncement = "";
-	private boolean createDbAllowed;
 	private CrashHandler crashHandler;
 	private String[] additionalJars;
 	
@@ -55,11 +54,22 @@ public class Connection {
 	/** Creates new connection. */
 	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
 		this.dbURL = dbURL;
-		this.createDbAllowed = createDbAllowed;
 		this.crashHandler = crashHandler;
 		this.additionalJars = additionalJars;
 		// Make sure it exists.
 		ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler, additionalJars).close();
+	}
+	
+	public String getDbURL() {
+		return dbURL;
+	}
+	
+	public CrashHandler getCrashHandler() {
+		return crashHandler;
+	}
+	
+	public String[] getAdditionalJars() {
+		return additionalJars;
 	}
 	
 	private abstract class Action {
@@ -130,7 +140,7 @@ public class Connection {
 		final Response response = new Response();
 		final StreamReceiverClient client;
 		try {
-			client = ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler, additionalJars);
+			client = ClientFromURL.openConnection(dbURL, false, crashHandler, additionalJars);
 		} catch (Exception e) {
 			response.setResult(new Error(e.toString()));
 			return response;
@@ -240,7 +250,7 @@ public class Connection {
 	private void launchParserToHTML(final Action action, final HTMLReceiver htmlReceiver) {
 		final StreamReceiverClient client;
 		try {
-			client = ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler, additionalJars);
+			client = ClientFromURL.openConnection(dbURL, false, crashHandler, additionalJars);
 		} catch (Exception e) {
 			htmlReceiver.emitInitialHTML("Unable to open connection: " + e.toString().replace(" ", "&nbsp;"));
 			return;
