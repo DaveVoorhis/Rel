@@ -198,6 +198,8 @@ public class RelDatabase {
     }
 
     public void open(File envHome, boolean canCreateDb, PrintStream outputStream) throws DatabaseFormatVersionException {
+    	System.out.println("Opening database in " + envHome);
+    	
     	String usingBerkeleyJavaDBVersion = getBerkeleyJavaDBVersion(); 
     	if (!usingBerkeleyJavaDBVersion.equals(Version.expectedBerkeleyDBVersion))
     		throw new ExceptionFatal("RS0323: Expected to find Berkeley Java DB version " + Version.expectedBerkeleyDBVersion + " but found version " + usingBerkeleyJavaDBVersion + ".\nAn attempted update or re-installation has probably failed.\nPlease make sure " + Version.getBerkeleyDbJarFilename() + " is not read-only, then try the update or re-installation again.");
@@ -326,6 +328,8 @@ public class RelDatabase {
 			loadPaths(new File(customRelvarsDatabase), new File(customRelvarsHome));
 			loadConstraints(outputStream);
 
+		   	System.out.println("Database " + envHome + " is open.");
+		    			
         } catch (DatabaseException db) {
         	String msg = "Unable to open database: " + db.getMessage();
         	outputStream.println(msg);
