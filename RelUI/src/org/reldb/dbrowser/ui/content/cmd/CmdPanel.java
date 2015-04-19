@@ -108,7 +108,7 @@ public class CmdPanel extends Composite {
 				
 		outputStackLayout.topControl = browser.getWidget();
 		
-		connection = new ConcurrentStringReceiverClient(this, dbTab.getURL(), false) {
+		connection = new ConcurrentStringReceiverClient(this, dbTab.getConnection().obtainStringReceiverClient()) {
 			StringBuffer errorBuffer = null;
 			StringBuffer compilerErrorBuffer = null;
 			@Override

@@ -1,7 +1,5 @@
 package org.reldb.dbrowser.ui;
 
-import java.io.IOException;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CBanner;
@@ -36,8 +34,6 @@ import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 import org.reldb.dbrowser.ui.version.Version;
 import org.reldb.rel.client.connection.CrashHandler;
-import org.reldb.rel.client.connection.string.ClientFromURL;
-import org.reldb.rel.client.connection.string.StringReceiverClient;
 
 public class DbTab extends CTabItem {
 	
@@ -269,14 +265,14 @@ public class DbTab extends CTabItem {
 	
     private static class AttemptConnectionResult {
     	Throwable exception;
-    	StringReceiverClient client;
+    	DbConnection client;
     	String dbURL;
     	public AttemptConnectionResult(Throwable exception) {
     		this.exception = exception;
     		this.client = null;
     		this.dbURL = null;
     	}
-    	public AttemptConnectionResult(String dbURL, StringReceiverClient client) {
+    	public AttemptConnectionResult(String dbURL, DbConnection client) {
     		this.exception = null;
     		this.client = client;
     		this.dbURL = dbURL;
@@ -305,7 +301,7 @@ public class DbTab extends CTabItem {
     	return s.replace(": ",":\n");
     }
     
-    private void doConnectionResultSuccess(StringReceiverClient client, String dbURL, boolean permanent) {
+    private void doConnectionResultSuccess(DbConnection client, String dbURL, boolean permanent) {
 		setImage(IconLoader.loadIcon("DatabaseIcon"));
 
         setStatus("Ok");
@@ -360,7 +356,7 @@ public class DbTab extends CTabItem {
     				"A Rel server doesn't appear to be running or available at " + dbURL);
     	} else if (msg.contains("RS0406:")) {
     		MessageDialog.openError(DBrowser.getShell(), "Unable to open local database",
-    				dbURL + " doesn't contain a Rel database.");
+    				dbURL + " either doesn't exist or doesn't contain a Rel database.");
     	} else if (msg.contains("RS0307:")) {
     		MessageDialog.openError(DBrowser.getShell(), "Unable to open local database",
     				dbURL + " doesn't exist.");    		
@@ -375,7 +371,7 @@ public class DbTab extends CTabItem {
     
     private AttemptConnectionResult openConnection(String dbURL, boolean createAllowed) {
         try {
-    		StringReceiverClient client = ClientFromURL.openConnection(dbURL, createAllowed, crashTrap, DbConnection.getBundleJarPath(getClass()));
+    		DbConnection client = new DbConnection(dbURL, createAllowed, crashTrap);
     		return new AttemptConnectionResult(dbURL, client);
         } catch (Throwable exception) {
         	return new AttemptConnectionResult(exception);
@@ -413,11 +409,6 @@ public class DbTab extends CTabItem {
     }
 
 	public void dispose() {
-    	if (connection != null && connection.client != null)
-			try {
-				connection.client.close();
-			} catch (IOException e) {
-			}
     	clearModes();
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
     	super.dispose();
@@ -444,16 +435,11 @@ public class DbTab extends CTabItem {
 	public DbConnection getConnection() {
 		if (!isOpenOnADatabase())
 			return null;
-		return new DbConnection(connection.dbURL, crashTrap);
+		return connection.client;
 	}
 	
 	public void close() {
 		if (connection != null && connection.client != null) {
-			try {
-				connection.client.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 			clearModes();
 			setImage(IconLoader.loadIcon("plusIcon"));
 		}
@@ -484,7 +470,7 @@ public class DbTab extends CTabItem {
 	}
 
 	public void makeBackup() {
-		Backup.makeBackup(connection.dbURL, crashTrap);
+		Backup.makeBackup(connection.client);
 	}
 
 	public CrashHandler getCrashHandler() {

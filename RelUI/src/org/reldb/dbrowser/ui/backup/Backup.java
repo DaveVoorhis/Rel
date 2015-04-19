@@ -12,8 +12,7 @@ import java.util.Calendar;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.reldb.dbrowser.DBrowser;
-import org.reldb.dbrowser.ui.crash.CrashTrap;
-import org.reldb.rel.client.connection.string.ClientFromURL;
+import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
 
 public class Backup {
@@ -33,7 +32,7 @@ public class Backup {
 		return "relbackup_" + fname + "_" + timestamp + ".rel";
 	}
 	
-	static BackupResponse backupToFile(String dbURL, File outputFile, CrashTrap crashTrap) {
+	static BackupResponse backupToFile(StringReceiverClient client, File outputFile) {
 		BufferedWriter outf;
 		try {
 			outf = new BufferedWriter(new FileWriter(outputFile));
@@ -42,10 +41,7 @@ public class Backup {
 		}
 		boolean receivedOk = false;
 		long linesWritten = 0;
-		StringReceiverClient client = null;
 		try {
-			// Fourth parameter can be additional jar file locations used by embedded Java compiler in Rel.  Not needed here.
-			client = ClientFromURL.openConnection(dbURL, false, crashTrap, null);
 			String r;
 			client.sendExecute("BACKUP;");
 			try {
@@ -121,7 +117,7 @@ public class Backup {
 			return new BackupResponse("The backup may be incomplete.  Please examine the backup!", "Backup Incomplete", BackupResponse.ResponseType.ERROR, false);
 	}
 
-	public static void makeBackup(String dbURL, CrashTrap crashTrap) {
+	public static void makeBackup(DbConnection connection) {
 		if (backupDialog == null) {
 			backupDialog = new FileDialog(DBrowser.getShell(), SWT.SAVE);
 			backupDialog.setFilterPath(System.getProperty("user.home"));
@@ -130,11 +126,11 @@ public class Backup {
 			backupDialog.setText("Save Backup");
 			backupDialog.setOverwrite(true);
 		}
-		backupDialog.setFileName(getSuggestedBackupFileName(dbURL));
+		backupDialog.setFileName(getSuggestedBackupFileName(connection.getDbURL()));
 		String fname = backupDialog.open();
 		if (fname == null)
 			return;
-		BackupResponse response = backupToFile(dbURL, new File(fname), crashTrap);
+		BackupResponse response = backupToFile(connection.obtainStringReceiverClient(), new File(fname));
 		response.showMessage();
 	}
 

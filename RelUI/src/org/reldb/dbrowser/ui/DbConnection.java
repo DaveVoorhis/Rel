@@ -2,6 +2,7 @@ package org.reldb.dbrowser.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -14,6 +15,9 @@ import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
 import org.reldb.rel.client.Connection.HTMLReceiver;
 import org.reldb.rel.client.connection.CrashHandler;
+import org.reldb.rel.client.connection.string.ClientFromURL;
+import org.reldb.rel.client.connection.string.StringReceiverClient;
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class DbConnection {
 	public static final int QUERY_WAIT_MILLISECONDS = 5000;
@@ -22,7 +26,7 @@ public class DbConnection {
 
 	private static String[] bundleJarPath = null;
 	
-	public static String[] getBundleJarPath(Class<?> klass) {
+	private static String[] getBundleJarPath(Class<?> klass) {
 		if (bundleJarPath == null)
 			try {
 				Bundle bundle = FrameworkUtil.getBundle(klass);
@@ -51,8 +55,25 @@ public class DbConnection {
 		return bundleJarPath;
 	}
 	
-	public DbConnection(String dbURL, CrashHandler crashHandler) {
-		connection = new Connection(dbURL, false, crashHandler, getBundleJarPath(getClass()));
+	public DbConnection(String dbURL, boolean createDatabaseIfNotExists, CrashHandler crashHandler) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+		connection = new Connection(dbURL, createDatabaseIfNotExists, crashHandler, getBundleJarPath(getClass()));		
+	}
+	
+	public DbConnection(String dbURL, CrashHandler crashHandler) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+		this(dbURL, false, crashHandler);
+	}
+
+	public String getDbURL() {
+		return connection.getDbURL();
+	}
+
+	public StringReceiverClient obtainStringReceiverClient() {
+		try {
+			return ClientFromURL.openConnection(connection.getDbURL(), false, connection.getCrashHandler(), connection.getAdditionalJars());
+		} catch (Exception e) {
+			System.out.println("DbConnection: Unable to obtain StringReceiverClient for a live DbConnection: " + e);
+			return null;
+		}
 	}
 	
 	public boolean execute(String query) {
