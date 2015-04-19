@@ -1,6 +1,7 @@
 package org.reldb.rel.client;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -13,6 +14,7 @@ import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.ResponseToHTMLProgressive;
 import org.reldb.rel.client.parser.core.ParseException;
 import org.reldb.rel.client.parser.core.ResponseParser;
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 /**
  * Connection to a Rel database.
@@ -50,12 +52,14 @@ public class Connection {
 		}
 	}
 	
-	/** Creates new connection */
-	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) {
+	/** Creates new connection. */
+	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
 		this.dbURL = dbURL;
 		this.createDbAllowed = createDbAllowed;
 		this.crashHandler = crashHandler;
 		this.additionalJars = additionalJars;
+		// Make sure it exists.
+		ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler, additionalJars).close();
 	}
 	
 	private abstract class Action {
