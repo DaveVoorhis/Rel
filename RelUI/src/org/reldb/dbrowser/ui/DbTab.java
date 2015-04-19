@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.DBrowser;
 import org.reldb.dbrowser.ui.backup.Backup;
 import org.reldb.dbrowser.ui.content.cmd.DbTabContentCmd;
+import org.reldb.dbrowser.ui.content.conversion.DbTabContentConversion;
 import org.reldb.dbrowser.ui.content.rel.DbTabContentRel;
 import org.reldb.dbrowser.ui.content.rev.DbTabContentRev;
 import org.reldb.dbrowser.ui.crash.CrashTrap;
@@ -34,6 +35,7 @@ import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 import org.reldb.dbrowser.ui.version.Version;
 import org.reldb.rel.client.connection.CrashHandler;
+import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class DbTab extends CTabItem {
 	
@@ -48,6 +50,7 @@ public class DbTab extends CTabItem {
     private DbTabContentCmd contentCmd = null;
     private DbTabContentRel contentRel = null;
     private DbTabContentRev contentRev = null;
+    private DbTabContentConversion contentConversion = null;
     
     private ToolBar toolBarMode;
     
@@ -263,6 +266,19 @@ public class DbTab extends CTabItem {
 			contentCmd.redisplayed();	
 	}
 	
+	private void showConversion(String dbURL) {
+		Cursor oldCursor = getParent().getCursor();
+		getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
+		try {
+			contentConversion = new DbTabContentConversion(DbTab.this, dbURL, modeContent);
+		} finally {
+			getParent().getCursor().dispose();
+			getParent().setCursor(oldCursor);
+		}
+		contentStack.topControl = contentConversion;
+		modeContent.layout();
+	}
+	
     private static class AttemptConnectionResult {
     	Throwable exception;
     	DbConnection client;
@@ -292,6 +308,10 @@ public class DbTab extends CTabItem {
     		contentRev.dispose();
     		contentRev = null;
     	}
+    	if (contentConversion != null) {
+    		contentConversion.dispose();
+    		contentConversion = null;
+    	}
     	toolBarMode.setEnabled(false);
     }
     
@@ -299,6 +319,23 @@ public class DbTab extends CTabItem {
     	if (s.length() < 80)
     		return s;
     	return s.replace(": ",":\n");
+    }
+    
+    private void doConnectionResultConversion(String dbURL) {
+		setImage(IconLoader.loadIcon("DatabaseIcon"));
+
+        setStatus("Conversion to latest database format required.");
+
+        showConversion(dbURL);
+        
+		DBrowser.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
+			public void close(CTabFolderEvent event) {
+				if (event.item == DbTab.this)
+					DbTab.this.close();
+			}
+		});
+		
+		DBrowser.createNewTabIfNeeded();    	
     }
     
     private void doConnectionResultSuccess(DbConnection client, String dbURL, boolean permanent) {
@@ -343,7 +380,7 @@ public class DbTab extends CTabItem {
     	DBrowser.setStatus(status);
     }
         
-    private void doConnectionResultFailed(String reason, String dbURL) {
+    private void doConnectionResultFailed(Throwable reason, String dbURL) {
     	String shortMsg = "Unable to establish connection to " + dbURL;
         setStatus(shortMsg);
     	String msg = shortMsg + " - " + reason;
@@ -358,15 +395,25 @@ public class DbTab extends CTabItem {
     		MessageDialog.openError(DBrowser.getShell(), "Unable to open local database",
     				dbURL + " either doesn't exist or doesn't contain a Rel database.");
     	} else if (msg.contains("RS0307:")) {
-    		MessageDialog.openError(DBrowser.getShell(), "Unable to open local database",
-    				dbURL + " doesn't exist.");    		
+    		MessageDialog.openError(DBrowser.getShell(), "Unable to open local database", dbURL + " doesn't exist.");    		
+    	} else if (msg.contains("RS0410:")) {
+    		if (reason instanceof DatabaseFormatVersionException) {
+    			DatabaseFormatVersionException dfve = (DatabaseFormatVersionException)reason;
+    			if (dfve.getOldVersion() >= 0) {
+    				MessageDialog.openError(DBrowser.getShell(), "Unable to open local database", 
+    					"The database at " + dbURL + " needs to be converted to the latest format.");
+    				doConnectionResultConversion(dbURL);
+    			}
+    			else
+    				MessageDialog.openError(DBrowser.getShell(), "Unable to open local database", 
+        				"The database at " + dbURL + " appears to be a newer format than that supported by this version of Rel.");
+    		}
+    		else
+    			MessageDialog.openError(DBrowser.getShell(), "Unable to open local database", 
+    					"You'll need to open " + dbURL + 
+    					" in the version of Rel last used to access it, back it up, and import the backup into a new database.");
     	} else
-    		MessageDialog.openError(DBrowser.getShell(), "Unable to open database",
-    				msg);
-    }
-    
-    private void doConnectionResultFailed(Throwable exception, String dbURL) {
-    	doConnectionResultFailed(exception.toString(), dbURL);
+    		MessageDialog.openError(DBrowser.getShell(), "Unable to open database", msg);
     }
     
     private AttemptConnectionResult openConnection(String dbURL, boolean createAllowed) {
@@ -391,7 +438,7 @@ public class DbTab extends CTabItem {
     	try {
 			setText(dbURL);
 	    	if (DBrowser.isNoLocalRel() && dbURL.startsWith("local:")) {
-	    		doConnectionResultFailed("Local Rel server is not installed.", dbURL);
+	    		doConnectionResultFailed(new Throwable("Local Rel server is not installed."), dbURL);
 	    		return false;
 	    	}
 	    	connection = attemptConnectionOpen(dbURL, canCreate);
@@ -423,7 +470,7 @@ public class DbTab extends CTabItem {
 	public boolean isOpenOnADatabase() {
 		if (connection == null)
 			return false;
-		return (connection.client != null);
+		return (connection.client != null || (connection.exception != null && connection.exception instanceof DatabaseFormatVersionException));
 	}
 
 	public String getURL() {
