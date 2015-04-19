@@ -63,7 +63,4 @@ public class DbTabContentConversion extends Composite {
 		setupIcons();
 	}
 
-	public void redisplayed() {
-	}
-
 }
