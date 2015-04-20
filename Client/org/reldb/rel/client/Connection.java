@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import org.reldb.rel.client.connection.CrashHandler;
 import org.reldb.rel.client.connection.stream.ClientFromURL;
+import org.reldb.rel.client.connection.stream.ClientLocalConnection;
 import org.reldb.rel.client.connection.stream.InputStreamInterceptor;
 import org.reldb.rel.client.connection.stream.StreamReceiverClient;
 import org.reldb.rel.client.parser.ResponseAdapter;
@@ -58,6 +59,13 @@ public class Connection {
 		this.additionalJars = additionalJars;
 		// Make sure it exists.
 		ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler, additionalJars).close();
+	}
+	
+	/** Attempts update of a database. 
+	 * @throws IOException 
+	 * @throws DatabaseFormatVersionException */
+	public static void convertToLatestFormat(String dbURL, PrintStream conversionOutput, String[] additionalJars) throws DatabaseFormatVersionException, IOException {
+		ClientLocalConnection.convertToLatestFormat(dbURL, conversionOutput, additionalJars);
 	}
 	
 	public String getDbURL() {

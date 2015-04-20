@@ -50,4 +50,8 @@ public class ClientLocalConnection extends ClientConnection {
 	public void reset() throws IOException {
 		rel.reset();
 	}
+
+	public static void convertToLatestFormat(String dbURL, PrintStream conversionOutput, String[] additionalJars) throws DatabaseFormatVersionException, IOException {
+		Rel.convertToLatestFormat(dbURL, conversionOutput, additionalJars);
+	}
 }
