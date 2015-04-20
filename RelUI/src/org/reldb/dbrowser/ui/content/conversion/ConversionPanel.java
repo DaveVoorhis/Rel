@@ -62,7 +62,7 @@ public class ConversionPanel extends Composite {
 			}
 		});
 		
-		textOutput = new StyledText(this, SWT.BORDER | SWT.READ_ONLY);
+		textOutput = new StyledText(this, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL);
 		textOutput.setEditable(false);
 		FormData fd_textOutput = new FormData();
 		fd_textOutput.top = new FormAttachment(btnConvert);
