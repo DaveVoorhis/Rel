@@ -72,8 +72,18 @@ public class ConversionPanel extends Composite {
 		textOutput.setLayoutData(fd_textOutput);
 	}
 	
+	private void output(String s) {
+		getDisplay().syncExec(new Runnable() {
+			public void run() {
+				textOutput.append(s);
+				textOutput.append("\n");
+				textOutput.setCaretOffset(textOutput.getCharCount());
+			}
+		});
+	}
+	
 	private boolean outputRunning = true;
-
+	
 	private void performConversion(String dbDir) {
 		PipedInputStream input = new PipedInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -83,16 +93,13 @@ public class ConversionPanel extends Composite {
 				while (outputRunning) {
 					try {
 						String in = reader.readLine();
-						ConversionPanel.this.getDisplay().syncExec(new Runnable() {
-							public void run() {
-								textOutput.append(in);
-								textOutput.append("\n");
-							}
-						});
+						if (in == null)
+							break;
+						output(in);
 					} catch (IOException e) {
 						break;
 					}
-				}		
+				}
 			}
 		};
 		outputter.start();
@@ -100,7 +107,7 @@ public class ConversionPanel extends Composite {
 		try {
 			pipeOutput = new PipedOutputStream(input);
 		} catch (IOException e1) {
-			textOutput.append(e1.toString());
+			output(e1.toString());
 			return;
 		}
 		PrintStream conversionOutput = new PrintStream(pipeOutput, true);
@@ -110,8 +117,8 @@ public class ConversionPanel extends Composite {
 					DbConnection.convertToLatestFormat(dbDir, conversionOutput);
 				} catch (Throwable e) {
 					outputRunning = false;
-					textOutput.append(e.toString() + "\n");
-				}					
+					output(e.toString());
+				}
 			}
 		};
 		converter.start();
