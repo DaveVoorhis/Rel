@@ -266,11 +266,11 @@ public class DbTab extends CTabItem {
 			contentCmd.redisplayed();	
 	}
 	
-	private void showConversion(String dbURL) {
+	private void showConversion(String message, String dbURL) {
 		Cursor oldCursor = getParent().getCursor();
 		getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
 		try {
-			contentConversion = new DbTabContentConversion(DbTab.this, dbURL, modeContent);
+			contentConversion = new DbTabContentConversion(DbTab.this, message, dbURL, modeContent);
 		} finally {
 			getParent().getCursor().dispose();
 			getParent().setCursor(oldCursor);
@@ -321,12 +321,12 @@ public class DbTab extends CTabItem {
     	return s.replace(": ",":\n");
     }
     
-    private void doConnectionResultConversion(String dbURL) {
+    private void doConnectionResultConversion(String message, String dbURL) {
 		setImage(IconLoader.loadIcon("DatabaseIcon"));
 
-        setStatus("Conversion to latest database format required.");
+        setStatus("Requires conversion to the current database format.");
 
-        showConversion(dbURL);
+        showConversion(message, dbURL.substring("local:".length()));
         
 		DBrowser.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
 			public void close(CTabFolderEvent event) {
@@ -399,11 +399,8 @@ public class DbTab extends CTabItem {
     	} else if (msg.contains("RS0410:")) {
     		if (reason instanceof DatabaseFormatVersionException) {
     			DatabaseFormatVersionException dfve = (DatabaseFormatVersionException)reason;
-    			if (dfve.getOldVersion() >= 0) {
-    				MessageDialog.openError(DBrowser.getShell(), "Unable to open local database", 
-    					"The database at " + dbURL + " needs to be converted to the latest format.");
-    				doConnectionResultConversion(dbURL);
-    			}
+    			if (dfve.getOldVersion() >= 0)
+    				doConnectionResultConversion("Database " + dbURL + " needs to be converted to the current format.", dbURL);
     			else
     				MessageDialog.openError(DBrowser.getShell(), "Unable to open local database", 
         				"The database at " + dbURL + " appears to be a newer format than that supported by this version of Rel.");

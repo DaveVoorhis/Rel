@@ -2,6 +2,7 @@ package org.reldb.dbrowser.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -61,6 +62,13 @@ public class DbConnection {
 	
 	public DbConnection(String dbURL, CrashHandler crashHandler) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
 		this(dbURL, false, crashHandler);
+	}
+
+	private static class Bundler {
+	}
+	
+	public static void convertToLatestFormat(String dbURL, PrintStream conversionOutput) throws DatabaseFormatVersionException, IOException {
+		Connection.convertToLatestFormat(dbURL, conversionOutput, getBundleJarPath((new Bundler()).getClass()));
 	}
 
 	public String getDbURL() {

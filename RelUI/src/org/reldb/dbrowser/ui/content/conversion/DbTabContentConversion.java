@@ -5,7 +5,6 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
@@ -16,11 +15,11 @@ import org.reldb.dbrowser.ui.preferences.Preferences;
 
 public class DbTabContentConversion extends Composite {
     
-	private Label conversion;
+	private ConversionPanel conversion;
 	
     private PreferenceChangeListener preferenceChangeListener;
 	
-	public DbTabContentConversion(DbTab parentTab, String dbURL, Composite contentParent) {
+	public DbTabContentConversion(DbTab parentTab, String message, String dbDir, Composite contentParent) {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 
@@ -31,8 +30,7 @@ public class DbTabContentConversion extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 		
-		conversion = new Label(this, SWT.None);
-		conversion.setText("Conversion content goes here.");
+		conversion = new ConversionPanel(this, message, dbDir, SWT.None);
 		FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
 		fd_composite.top = new FormAttachment(toolBar);
