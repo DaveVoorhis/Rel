@@ -47,7 +47,7 @@ public class Rel {
 		Interpreter interpreter = new Interpreter(instance.getDatabase(), output);
 		interpreter.interpret("BACKUP;");
 		output.close();
-		instance.close();
+		instance.dbclose();
 	}
 
 	/** Convert this database to the latest format, if necessary.  Throw exception if not necessary.  Normally only needed if invoking
@@ -130,7 +130,6 @@ public class Rel {
 	}
 
 	public void close() {
-		instance.close();
 		output.close();
 	}
 	

@@ -88,7 +88,8 @@ public class Instance {
 			Thread dbShutdownHook = new Thread() {
 				public void run() {
 					for (RelDatabase database: openDatabases.values())
-						database.close();
+						if (database.isOpen())
+							database.close();
 				}
 			};
 	        Runtime.getRuntime().addShutdownHook(dbShutdownHook);			
@@ -161,9 +162,13 @@ public class Instance {
 			conversionOutput.println("Move " + newReldbPath + " to " + oldReldbPath);
 			deleteRecursive(oldReldbPath.toFile());
 			Files.move(newReldbPath, oldReldbPath, StandardCopyOption.REPLACE_EXISTING);
-			deleteRecursive(newReldbPath.toFile());
+			deleteRecursive(newDbDirectory.toFile());
 			conversionOutput.println("Database conversion complete.");
 			conversionOutput.close();
+			// Re-open, if possible
+			database = new RelDatabase();
+			database.open(databasePath, false, conversionOutput);
+			database.close();
 		} catch (Throwable e1) {
 			e1.printStackTrace();
 			String msg = "Unable to complete database conversion due to " + e1;
@@ -265,7 +270,9 @@ public class Instance {
 		}		
 	}
 
-	public void close() {
+	public void dbclose() {
+		if (database != null)
+			database.close();
 	}
 	
 	public static void main(String args[]) {

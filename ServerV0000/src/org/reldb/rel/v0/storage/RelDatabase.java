@@ -350,6 +350,10 @@ public class RelDatabase {
 	public void unregisterTupleIterator(RegisteredTupleIterator registeredTupleIterator) {
 		registeredTupleIterators.remove(registeredTupleIterator);
 	}
+
+	public boolean isOpen() {
+		return environment != null;
+	}
     
     // Close the environment
     public void close() {
