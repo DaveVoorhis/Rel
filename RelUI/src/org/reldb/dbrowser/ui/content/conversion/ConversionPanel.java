@@ -20,24 +20,29 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.reldb.dbrowser.DBrowser;
 import org.reldb.dbrowser.ui.DbConnection;
+import org.reldb.dbrowser.ui.DbTab;
 
 public class ConversionPanel extends Composite {
 	
 	private StyledText textOutput;
+	private Label lblConvert;
+	private Button btnConvert;
+	
+	private boolean converted = false;
 	
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public ConversionPanel(Composite parent, String message, String dbDir, int style) {
+	public ConversionPanel(Composite parent, DbTab dbTab, String message, String dbDir, int style) {
 		super(parent, style);
 		FormLayout formLayout = new FormLayout();
 		formLayout.marginWidth = 5;
 		formLayout.marginHeight = 5;
 		setLayout(formLayout);
 		
-		Label lblConvert = new Label(this, SWT.NONE);
+		lblConvert = new Label(this, SWT.NONE);
 		FormData fd_lblConvert = new FormData();
 		fd_lblConvert.top = new FormAttachment(0);
 		fd_lblConvert.left = new FormAttachment(0);
@@ -45,7 +50,7 @@ public class ConversionPanel extends Composite {
 		lblConvert.setLayoutData(fd_lblConvert);
 		lblConvert.setText(message);
 		
-		Button btnConvert = new Button(this, SWT.NONE);
+		btnConvert = new Button(this, SWT.NONE);
 		FormData fd_btnConvert = new FormData();
 		fd_btnConvert.top = new FormAttachment(lblConvert);
 		fd_btnConvert.left = new FormAttachment(0);
@@ -55,10 +60,14 @@ public class ConversionPanel extends Composite {
 		btnConvert.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-	    		if (MessageDialog.openConfirm(DBrowser.getShell(), "Convert Database to the Current Format?", 
-	    				"Are you sure you wish to convert database " + dbDir + " to the current format?")) {
-	    			performConversion(dbDir);
-	    		}
+				if (converted) {
+					dbTab.openLocalDatabase(dbDir);
+				} else {
+		    		if (MessageDialog.openConfirm(DBrowser.getShell(), "Convert Database to the Current Format?", 
+		    				"Are you sure you wish to convert database " + dbDir + " to the current format?")) {
+		    			performConversion(dbDir);
+		    		}
+				}
 			}
 		});
 		
@@ -78,6 +87,7 @@ public class ConversionPanel extends Composite {
 				textOutput.append(s);
 				textOutput.append("\n");
 				textOutput.setCaretOffset(textOutput.getCharCount());
+				textOutput.setSelection(textOutput.getCaretOffset(), textOutput.getCaretOffset());		
 			}
 		});
 	}
@@ -115,6 +125,14 @@ public class ConversionPanel extends Composite {
 			public void run() {
 				try {
 					DbConnection.convertToLatestFormat(dbDir, conversionOutput);
+					converted = true;
+					getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							lblConvert.setText("Conversion complete.");
+							btnConvert.setText("Open database " + dbDir);
+							DBrowser.setStatus("Conversion complete.");
+						}
+					});
 				} catch (Throwable e) {
 					outputRunning = false;
 					output(e.toString());

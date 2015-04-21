@@ -30,7 +30,7 @@ public class DbTabContentConversion extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 		
-		conversion = new ConversionPanel(this, message, dbDir, SWT.None);
+		conversion = new ConversionPanel(this, parentTab, message, dbDir, SWT.None);
 		FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
 		fd_composite.top = new FormAttachment(toolBar);
