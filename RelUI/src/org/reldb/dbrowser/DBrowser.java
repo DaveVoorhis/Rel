@@ -142,20 +142,23 @@ public class DBrowser {
 			new DbTab();
 	}
 
+	public static DbTab selectEmptyTab() {
+		CTabItem[] tabs = mainPanel.getTabFolder().getItems();
+		DbTab lastTab = (DbTab)tabs[tabs.length - 1];
+		DBrowser.setSelection(tabs.length - 1);
+		return lastTab;
+	}
+	
 	public static void openFile(String fname) {
 		if (fname.toLowerCase().endsWith(".rel")) {
-			CTabItem[] tabs = mainPanel.getTabFolder().getItems();
-			DbTab fileTab = (DbTab)tabs[tabs.length - 1];
-			DBrowser.setSelection(tabs.length - 1);
-			if (fileTab.openDefaultDatabase(defaultDatabasePath))
-				fileTab.openFile(fname);
+			DbTab dbTab = selectEmptyTab();
+			if (dbTab.openDefaultDatabase(defaultDatabasePath))
+				dbTab.openFile(fname);
 		} else {
-			int fnamePos = fname.toLowerCase().indexOf("ClickToOpen.rdb");
+			int fnamePos = fname.toLowerCase().indexOf("ClickToOpen.rdb".toLowerCase());
 			if (fnamePos >= 0) {
-				DbTab tab = new DbTab();
-				tab.openLocalDatabase(fname.substring(0, fnamePos));
-				CTabItem[] tabs = mainPanel.getTabFolder().getItems();
-				DBrowser.setSelection(tabs.length - 1);
+				DbTab dbTab = selectEmptyTab();
+				dbTab.openLocalDatabase(fname.substring(0, fnamePos));
 			}
 		}
 	}
