@@ -166,6 +166,21 @@ public class RelDatabase {
 		}
     }
 
+    private String getClickerFileName() {
+    	return homeDir + File.separator + "ClickToOpen.rdb";
+    }
+    
+    private void writeClicker() {
+    	FileWriter writer = null;
+    	try {
+	    	writer = new FileWriter(getClickerFileName(), false);
+    		if (writer != null)
+    	    	writer.close();
+    	} catch (Exception e) {
+	    	System.out.println("WARNING: Unable to create " + getClickerFileName());
+    	}
+    }
+    
     private String getVersionFileName() {
     	return databaseHome + File.separator + "version";
     }
@@ -198,7 +213,7 @@ public class RelDatabase {
     }
 
     public void open(File envHome, boolean canCreateDb, PrintStream outputStream) throws DatabaseFormatVersionException {
-    	System.out.println("Opening database in " + envHome + ".  If it doesn't exist, we'll " + ((canCreateDb) ? "try to create it" : "cause an error") + ".");
+    	System.out.println("Opening database in " + envHome + "\nIf it doesn't exist, we'll " + ((canCreateDb) ? "try to create it" : "cause an error") + ".");
     	
     	String usingBerkeleyJavaDBVersion = getBerkeleyJavaDBVersion(); 
     	if (!usingBerkeleyJavaDBVersion.equals(Version.expectedBerkeleyDBVersion))
@@ -233,6 +248,8 @@ public class RelDatabase {
 				throw new ExceptionSemantic("RS0409: Database in " + homeDir + " appears to have been created by a newer version of Rel than this one.\nOpen it with the latest version of Rel.");
 			}
 		}
+		
+		writeClicker();
     	
     	userCodeHome = databaseHome + java.io.File.separator + userCodeHomeRelative;
     

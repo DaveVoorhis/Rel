@@ -1,6 +1,7 @@
 ** TO DO **
 
 Short term:
+	// TODO - Provide clickable file within every Rel database to automatically launch Rel on that database.	
 	// TODO - Examine org.reldb.rel.client.  Should tuple iteration close the tuple iterator?
 	// TODO - Complete and test database versioning, particularly handling updates.
 	// TODO - test client connection reset() on remote databases.

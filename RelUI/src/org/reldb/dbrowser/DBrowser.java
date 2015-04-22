@@ -143,13 +143,21 @@ public class DBrowser {
 	}
 
 	public static void openFile(String fname) {
-		if (!fname.toLowerCase().endsWith(".rel"))
-			return;
-		CTabItem[] tabs = mainPanel.getTabFolder().getItems();
-		DbTab fileTab = (DbTab)tabs[tabs.length - 1];
-		DBrowser.setSelection(tabs.length - 1);
-		if (fileTab.openDefaultDatabase(defaultDatabasePath))
-			fileTab.openFile(fname);
+		if (fname.toLowerCase().endsWith(".rel")) {
+			CTabItem[] tabs = mainPanel.getTabFolder().getItems();
+			DbTab fileTab = (DbTab)tabs[tabs.length - 1];
+			DBrowser.setSelection(tabs.length - 1);
+			if (fileTab.openDefaultDatabase(defaultDatabasePath))
+				fileTab.openFile(fname);
+		} else {
+			int fnamePos = fname.toLowerCase().indexOf("ClickToOpen.rdb");
+			if (fnamePos >= 0) {
+				DbTab tab = new DbTab();
+				tab.openLocalDatabase(fname.substring(0, fnamePos));
+				CTabItem[] tabs = mainPanel.getTabFolder().getItems();
+				DBrowser.setSelection(tabs.length - 1);
+			}
+		}
 	}
 	
 }
