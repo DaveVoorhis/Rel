@@ -330,8 +330,8 @@ public class RelDatabase {
 			reset();
 
 			// Set up plugin directories
-			File homePlugins = new File(homeDir + "Relplugins");
-			File databasePlugins = new File(databaseHome + java.io.File.separator + "Relplugins");
+			File homePlugins = new File(System.getProperty("user.home") + java.io.File.separator + "Relplugins");
+			File databasePlugins = new File(homeDir + java.io.File.separator + "Relplugins");
 			
 			if (!homePlugins.exists())
 				homePlugins.mkdir();
@@ -812,7 +812,7 @@ public class RelDatabase {
     		}
     		ArrayList<String> homeTypes = getFoldersAt(home);
     		if(homeTypes.isEmpty())
-    			System.out.println("No custom relvars found in the home directory");
+    			System.out.println("No custom relvars were found in " + home);
     		for(String folder : homeTypes) {
     			File typeFolder = new File(home.getAbsolutePath() + java.io.File.separator + folder);
     			if(typeFolder.list().length > 0) {
@@ -826,7 +826,7 @@ public class RelDatabase {
     		
     		ArrayList<String> databaseTypes = getFoldersAt(database);
     		if(databaseTypes.isEmpty())
-    			System.out.println("No custom relvars found in the database directory");
+    			System.out.println("No custom relvars were found in " + database);
     		for(String folder : databaseTypes)
     			if(!homeTypes.contains(folder)) {
     				File typeFolder = new File(database.getAbsolutePath() + java.io.File.separator + folder);
