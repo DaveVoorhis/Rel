@@ -61,7 +61,7 @@ public class DbTabContentRel extends Composite {
 		tlitmNew.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				rel.NewItem();
+				rel.newItem();
 			}
 		});
 		
@@ -70,7 +70,7 @@ public class DbTabContentRel extends Composite {
 		tlitmDrop.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				rel.DropItem();
+				rel.dropItem();
 			}
 		});
 		

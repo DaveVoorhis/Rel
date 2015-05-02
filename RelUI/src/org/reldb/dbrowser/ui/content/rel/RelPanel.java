@@ -48,12 +48,12 @@ public class RelPanel extends Composite {
 		buildDbTree();
 	}
 
-	public void NewItem() {
+	public void newItem() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void DropItem() {
+	public void dropItem() {
 		// TODO Auto-generated method stub
 		
 	}
