@@ -6,17 +6,17 @@ import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operand;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.Relation;
 
-public class Diyadic extends Operator { 
+public class Diadic extends Operator { 
 	private Parameter operand1;
 	private Parameter operand2;
 
-	public Diyadic(Rev rev, String operatorName) {
+	public Diadic(Rev rev, String operatorName) {
 		super(rev, operatorName);
 		operand1 = addParameter("Operand 1", "First relation passed to " + operatorName); 
 		operand2 = addParameter("Operand 2", "Second relation passed to " + operatorName);		
 	}
 	
-	public Diyadic(Rev rev, String visualiserName, String operatorName) {
+	public Diadic(Rev rev, String visualiserName, String operatorName) {
 		super(rev, operatorName, visualiserName);
 		operand1 = addParameter("Operand 1", "First relation passed to " + operatorName); 
 		operand2 = addParameter("Operand 2", "Second relation passed to " + operatorName);		

@@ -28,7 +28,7 @@ import org.reldb.dbrowser.ui.content.rev.core.visualisers.TableDum;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.TuplesVisualiser;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.View;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Delete;
-import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Diyadic;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Diadic;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Extend;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Group;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Order;
@@ -80,25 +80,25 @@ public class Rev extends Composite {
 		} else if (kind.equals("Restrict")) {
 			visualiser = new Restrict(this, name);
 		} else if (kind.equals("UNION")) {
-			visualiser = new Diyadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind);
 		} else if (kind.equals("RENAME")) {
 			visualiser = new Rename(this, name);
 		} else if (kind.equals("INTERSECT")) {
-			visualiser = new Diyadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind);
 		} else if (kind.equals("MINUS")) {
-			visualiser = new Diyadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind);
 		} /*else if (kind.equals("PRODUCT")) {
 			visualiser = new VisualiserOfOperatorProduct(this, name);
 		} else if (kind.equals("DIVIDEBY")) {
 			visualiser = new VisualiserOfOperatorDivideby(this, name);
 		}*/ else if (kind.equals("JOIN")) {
-			visualiser = new Diyadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind);
 		} else if (kind.equals("COMPOSE")) {
-			visualiser = new Diyadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind);
 		} else if (kind.equals("MATCHING")) {
-			visualiser = new Diyadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind);
 		} else if (kind.equals("NOT MATCHING")) {
-			visualiser = new Diyadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind);
 		} else if (kind.equals("ORDER")) {
 			visualiser = new Order(this, name);
 		} else if (kind.equals("GROUP")) {
@@ -427,27 +427,27 @@ public class Rev extends Composite {
 			case "Restrict WHERE":
 				return new Restrict(this);
 			case "UNION":
-				return new Diyadic(this, id);
+				return new Diadic(this, id);
 			case "RENAME":
 				return new Rename(this);
 			case "D_UNION":
 				return null;
 			case "INTERSECT":
-				return new Diyadic(this, id);
+				return new Diadic(this, id);
 			case "MINUS":
-				return new Diyadic(this, id);
+				return new Diadic(this, id);
 			case "PRODUCT":
 				return null;
 			case "DIVIDEBY":
 				return null;
 			case "JOIN":
-				return new Diyadic(this, id);
+				return new Diadic(this, id);
 			case "COMPOSE":
-				return new Diyadic(this, id);
+				return new Diadic(this, id);
 			case "MATCHING (SEMIJOIN)":
-				return new Diyadic(this, "MATCHING");
+				return new Diadic(this, "MATCHING");
 			case "NOT MATCHING (SEMIMINUS)":
-				return new Diyadic(this, "NOT MATCHING");
+				return new Diadic(this, "NOT MATCHING");
 			case "EXTEND":
 				return new Extend(this);
 			case "GROUP":
