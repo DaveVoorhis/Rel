@@ -4,7 +4,7 @@
  * Created on October 4, 2002, 3:20 AM
  */
 
-package org.reldb.dbrowser.ui.content.rev.core.utilities.visualisation.glyphs;
+package org.reldb.dbrowser.ui.content.rev.core.graphics.glyphs;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;

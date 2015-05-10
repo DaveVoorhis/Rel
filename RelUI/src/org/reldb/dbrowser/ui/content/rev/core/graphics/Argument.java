@@ -11,9 +11,9 @@ import java.util.TimerTask;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.reldb.dbrowser.ui.content.rev.core.utilities.visualisation.glyphs.Arrow;
-import org.reldb.dbrowser.ui.content.rev.core.utilities.visualisation.lines.LineHorizontal;
-import org.reldb.dbrowser.ui.content.rev.core.utilities.visualisation.lines.LineVertical;
+import org.reldb.dbrowser.ui.content.rev.core.graphics.glyphs.Arrow;
+import org.reldb.dbrowser.ui.content.rev.core.graphics.lines.LineHorizontal;
+import org.reldb.dbrowser.ui.content.rev.core.graphics.lines.LineVertical;
 
 /**
  * Establishes and displays an argument to a parameter.

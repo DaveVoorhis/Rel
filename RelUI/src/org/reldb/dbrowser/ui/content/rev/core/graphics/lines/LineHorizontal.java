@@ -4,7 +4,7 @@
  * Created on July 18, 2002, 3:56 PM
  */
 
-package org.reldb.dbrowser.ui.content.rev.core.utilities.visualisation.lines;
+package org.reldb.dbrowser.ui.content.rev.core.graphics.lines;
 
 import org.eclipse.swt.widgets.Composite;
 
