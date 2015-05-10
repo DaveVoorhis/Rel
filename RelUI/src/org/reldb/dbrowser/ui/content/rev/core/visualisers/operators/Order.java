@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers.operators;
 
 import java.awt.GridBagConstraints;
 import java.awt.event.ItemEvent;
@@ -17,19 +17,23 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operand;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelation;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
-public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
+public class Order extends Project {
 	private LinkedList<Option> options = new LinkedList<Option>();
 	
-	public VisualiserOfOperatorOrder(Rev rev) {
+	public Order(Rev rev) {
 		super(rev);
 	}
 	
-	public VisualiserOfOperatorOrder(Rev rev, String name) {
+	public Order(Rev rev, String name) {
 		super(rev, name);
 	}
 
@@ -51,7 +55,7 @@ public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 	
 	public String getQuery() {
 		Visualiser connect = getConnected(operand);
-		if (connect instanceof VisualiserOfOperand) {
+		if (connect instanceof Operand) {
 			return null;
 		}
 		if (connect == null) {

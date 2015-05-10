@@ -19,6 +19,26 @@ import org.reldb.dbrowser.ui.content.rev.core.graphics.Argument;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Model;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.MinimizedView;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.NewRelvar;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelvar;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfTableDee;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfTableDum;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfTuples;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfView;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Delete;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Diyadic;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Extend;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Group;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Order;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Project;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Rename;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Restrict;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Summarize;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Ungroup;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Unwrap;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Wrap;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
@@ -53,46 +73,46 @@ public class Rev extends Composite {
 		}
 	}
 	
-	private VisualiserOfOperator getVisualiserForKind(String kind, String name, int xpos, int ypos) {
-		VisualiserOfOperator visualiser = null;
+	private Operator getVisualiserForKind(String kind, String name, int xpos, int ypos) {
+		Operator visualiser = null;
 		if (kind.equals("Project")) {
-			visualiser = new VisualiserOfOperatorProject(this, name);
+			visualiser = new Project(this, name);
 		} else if (kind.equals("Restrict")) {
-			visualiser = new VisualiserOfOperatorRestrict(this, name);
+			visualiser = new Restrict(this, name);
 		} else if (kind.equals("UNION")) {
-			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
+			visualiser = new Diyadic(this, name, kind);
 		} else if (kind.equals("RENAME")) {
-			visualiser = new VisualiserOfOperatorRename(this, name);
+			visualiser = new Rename(this, name);
 		} else if (kind.equals("INTERSECT")) {
-			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
+			visualiser = new Diyadic(this, name, kind);
 		} else if (kind.equals("MINUS")) {
-			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
+			visualiser = new Diyadic(this, name, kind);
 		} /*else if (kind.equals("PRODUCT")) {
 			visualiser = new VisualiserOfOperatorProduct(this, name);
 		} else if (kind.equals("DIVIDEBY")) {
 			visualiser = new VisualiserOfOperatorDivideby(this, name);
 		}*/ else if (kind.equals("JOIN")) {
-			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
+			visualiser = new Diyadic(this, name, kind);
 		} else if (kind.equals("COMPOSE")) {
-			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
+			visualiser = new Diyadic(this, name, kind);
 		} else if (kind.equals("MATCHING")) {
-			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
+			visualiser = new Diyadic(this, name, kind);
 		} else if (kind.equals("NOT MATCHING")) {
-			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
+			visualiser = new Diyadic(this, name, kind);
 		} else if (kind.equals("ORDER")) {
-			visualiser = new VisualiserOfOperatorOrder(this, name);
+			visualiser = new Order(this, name);
 		} else if (kind.equals("GROUP")) {
-			visualiser = new VisualiserOfOperatorGroup(this, name);
+			visualiser = new Group(this, name);
 		} else if (kind.equals("UNGROUP")) {
-			visualiser = new VisualiserOfOperatorUngroup(this, name);
+			visualiser = new Ungroup(this, name);
 		} else if (kind.equals("WRAP")) {
-			visualiser = new VisualiserOfOperatorWrap(this, name);
+			visualiser = new Wrap(this, name);
 		} else if (kind.equals("UNWRAP")) {
-			visualiser = new VisualiserOfOperatorUnwrap(this, name);
+			visualiser = new Unwrap(this, name);
 		} else if (kind.equals("EXTEND")) {
-			visualiser = new VisualiserOfOperatorExtend(this, name);
+			visualiser = new Extend(this, name);
 		} else if (kind.equals("SUMMARIZE")) {
-			visualiser = new VisualiserOfOperatorSummarize(this, name);
+			visualiser = new Summarize(this, name);
 		} else {
 			System.out.println("Query kind '" + kind + "' not recognised.");
 		}
@@ -171,7 +191,7 @@ public class Rev extends Composite {
 		addNewRelvar.addSelectionListener(new SelectionAdapter() {	
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				new VisualiserOfNewRelvar(Rev.this);
+				new NewRelvar(Rev.this);
 			}
 		});
 		
@@ -358,7 +378,7 @@ public class Rev extends Composite {
 		}
 		//Create a normal and a small view
 		VisualiserOfView visualiser = new VisualiserOfView(this, "View", uniqueNumber, x, y, size.x, size.y, true);
-		VisualiserOfMinimizedView small = new VisualiserOfMinimizedView(this, uniqueNumber);
+		MinimizedView small = new MinimizedView(this, uniqueNumber);
 		small.setVisible(false);
 		//Link to each other
 		visualiser.setMinimized(small);
@@ -403,53 +423,53 @@ public class Rev extends Composite {
 		}
 		switch (id) {
 			case "Project":
-				return new VisualiserOfOperatorProject(this);
+				return new Project(this);
 			case "Restrict WHERE":
-				return new VisualiserOfOperatorRestrict(this);
+				return new Restrict(this);
 			case "UNION":
-				return new VisualiserOfOperatorDiyadic(this, id);
+				return new Diyadic(this, id);
 			case "RENAME":
-				return new VisualiserOfOperatorRename(this);
+				return new Rename(this);
 			case "D_UNION":
 				return null;
 			case "INTERSECT":
-				return new VisualiserOfOperatorDiyadic(this, id);
+				return new Diyadic(this, id);
 			case "MINUS":
-				return new VisualiserOfOperatorDiyadic(this, id);
+				return new Diyadic(this, id);
 			case "PRODUCT":
 				return null;
 			case "DIVIDEBY":
 				return null;
 			case "JOIN":
-				return new VisualiserOfOperatorDiyadic(this, id);
+				return new Diyadic(this, id);
 			case "COMPOSE":
-				return new VisualiserOfOperatorDiyadic(this, id);
+				return new Diyadic(this, id);
 			case "MATCHING (SEMIJOIN)":
-				return new VisualiserOfOperatorDiyadic(this, "MATCHING");
+				return new Diyadic(this, "MATCHING");
 			case "NOT MATCHING (SEMIMINUS)":
-				return new VisualiserOfOperatorDiyadic(this, "NOT MATCHING");
+				return new Diyadic(this, "NOT MATCHING");
 			case "EXTEND":
-				return new VisualiserOfOperatorExtend(this);
+				return new Extend(this);
 			case "GROUP":
-				return new VisualiserOfOperatorGroup(this);
+				return new Group(this);
 			case "UNGROUP":
-				return new VisualiserOfOperatorUngroup(this);
+				return new Ungroup(this);
 			case "WRAP":
-				return new VisualiserOfOperatorWrap(this);
+				return new Wrap(this);
 			case "UNWRAP":
-				return new VisualiserOfOperatorUnwrap(this);
+				return new Unwrap(this);
 			case "TCLOSE":
 				return null;
 			case "ORDER":
-				return new VisualiserOfOperatorOrder(this);
+				return new Order(this);
 			case "SUMMARIZE":
-				return new VisualiserOfOperatorSummarize(this);
+				return new Summarize(this);
 			case "DEE (TABLE_DEE)":
 				return new VisualiserOfTableDee(this);
 			case "DUM (TABLE_DUM)":
 				return new VisualiserOfTableDum(this);
 			case "DELETE / DROP":
-				return new VisualiserOfOperatorDelete(this); 
+				return new Delete(this); 
 		}
 		return null;
 	}
@@ -524,7 +544,7 @@ public class Rev extends Composite {
 			if (stored) {
 				continue;
 			}
-			VisualiserOfOperator visualiser = getVisualiserForKind(kind, name, xpos, ypos);
+			Operator visualiser = getVisualiserForKind(kind, name, xpos, ypos);
 			if (visualiser == null)
 				continue;
 			//Add the query to the view model
@@ -587,7 +607,7 @@ public class Rev extends Composite {
 			VisualiserOfView visualiser = new VisualiserOfView(this, "View", name, xpos, ypos, width, height, enabled);
 			views.add(visualiser);
 			//Create minimized view
-			VisualiserOfMinimizedView small = new VisualiserOfMinimizedView(this, name);
+			MinimizedView small = new MinimizedView(this, name);
 			//Give each other a reference
 			visualiser.setMinimized(small);
 			small.setView(visualiser);

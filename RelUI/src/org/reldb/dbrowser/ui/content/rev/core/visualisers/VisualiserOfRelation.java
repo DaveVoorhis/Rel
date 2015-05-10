@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -8,6 +8,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.reldb.dbrowser.ui.IconLoader;
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Argument;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
@@ -71,7 +73,7 @@ public abstract class VisualiserOfRelation extends Visualiser {
     public boolean isDropCandidateFor(Visualiser draggedVisualiser) {
     	if (draggedVisualiser.getArgumentCount() > 0 && draggedVisualiser.getArgument(0).getConnector().getVisualiser() == this)
     		return false;
-    	if (draggedVisualiser instanceof VisualiserOfOperand) {
+    	if (draggedVisualiser instanceof Operand) {
     		return true;
     	}
     	if (draggedVisualiser instanceof VisualiserOfView) {
@@ -87,7 +89,7 @@ public abstract class VisualiserOfRelation extends Visualiser {
 		return browsermgr.getWidget();
 	}
 	
-	protected abstract String getQuery();
+	public abstract String getQuery();
 
 	public void evaluateAndDisplay(String query) {
 		/*

@@ -1,16 +1,18 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers.operators;
 
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Tuples;
 
-public class VisualiserOfOperatorWrap extends VisualiserOfOperatorGroup {
+public class Wrap extends Group {
 	
-	public VisualiserOfOperatorWrap(Rev rev) {
+	public Wrap(Rev rev) {
 		super(rev);
 		keyword = "WRAP";
 	}
 	
-	public VisualiserOfOperatorWrap(Rev rev, String name) {
+	public Wrap(Rev rev, String name) {
 		super(rev, name);
 		keyword = "WRAP";
 	}

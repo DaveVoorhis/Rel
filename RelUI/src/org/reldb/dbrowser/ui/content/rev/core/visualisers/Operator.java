@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -6,6 +6,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Argument;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
@@ -13,16 +15,16 @@ import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuples;
 
-public abstract class VisualiserOfOperator extends VisualiserOfRelation {
+public abstract class Operator extends VisualiserOfRelation {
 	
 	private String kind;
 		
-	public VisualiserOfOperator(Rev rev, String kind) {
+	public Operator(Rev rev, String kind) {
 		super(rev, kind);
 		this.kind = kind;
 	}
 	
-	public VisualiserOfOperator(Rev rev, String kind, String name) {
+	public Operator(Rev rev, String kind, String name) {
 		super(rev, kind, name);
 		this.kind = kind;
 	}
@@ -35,13 +37,13 @@ public abstract class VisualiserOfOperator extends VisualiserOfRelation {
 		this.kind = kind;
 	}
 	
-	protected String getQuery() {
+	public String getQuery() {
 		return "";
 	}
 
 	private Argument createDefaultOperand(final Parameter parameter) {
 		String operandName = getVisualiserName() + parameter.getConnectorName();
-		Visualiser operand = new VisualiserOfOperand(getRev(), operandName, Math.max(0, getBounds().x - 140), getBounds().y);
+		Visualiser operand = new Operand(getRev(), operandName, Math.max(0, getBounds().x - 140), getBounds().y);
 		getRev().getModel().refresh();
 		return new Argument(parameter, operand, Argument.ARROW_FROM_VISUALISER);
 	}
@@ -56,7 +58,7 @@ public abstract class VisualiserOfOperator extends VisualiserOfRelation {
 					out += ", ";
 				out += " tuple {";
 				out += "parameter " + i + ", ";
-				if (parameter.getConnection(0).getVisualiser() instanceof VisualiserOfOperand)
+				if (parameter.getConnection(0).getVisualiser() instanceof Operand)
 					out += "Name ''";
 				else
 					out += "Name '" + parameter.getConnection(0).getVisualiser().getVisualiserName() + "'";
@@ -73,7 +75,7 @@ public abstract class VisualiserOfOperator extends VisualiserOfRelation {
 		if (operand.getConnection(0) == null)
 			return null;
 		Visualiser connected = operand.getConnection(0).getVisualiser();
-		if (connected instanceof VisualiserOfOperand) {
+		if (connected instanceof Operand) {
 			return null;
 		}
 		return connected;

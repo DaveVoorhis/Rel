@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers.operators;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -19,24 +19,28 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.eclipse.swt.graphics.Point;
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelation;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
-public class VisualiserOfOperatorProject extends VisualiserOfOperator {
+public class Project extends Operator {
 	protected Parameter operand;	
 	protected JPanel controlPanel;
 	protected GridBagConstraints con = new GridBagConstraints();
 	private LinkedList<Option> options = new LinkedList<Option>();
 	
-	public VisualiserOfOperatorProject(Rev rev) {
+	public Project(Rev rev) {
 		super(rev, "Project");
 		operand = addParameter("Operand", "Relation to be projected");
 	}
 
-	public VisualiserOfOperatorProject(Rev rev, String name) {
+	public Project(Rev rev, String name) {
 		super(rev, "Project", name);
 		operand = addParameter("Operand", "Relation to be projected");
 	}

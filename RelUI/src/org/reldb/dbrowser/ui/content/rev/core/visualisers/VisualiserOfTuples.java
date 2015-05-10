@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,6 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.NullTuples;
@@ -1091,7 +1093,7 @@ public class VisualiserOfTuples extends JPanel {
 				return null;
 			if (operand.getConnection(0) == null)
 				return null;
-			if (operand.getConnection(0).getVisualiser() instanceof VisualiserOfOperand)
+			if (operand.getConnection(0).getVisualiser() instanceof Operand)
 				return null;
 			VisualiserOfRelation connected = (VisualiserOfRelation)operand.getConnection(0).getVisualiser();
 			query = connected.getQuery();

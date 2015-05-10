@@ -1,16 +1,17 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers;
 
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 
-public class VisualiserOfMinimizedView extends VisualiserOfRelvar {
+public class MinimizedView extends VisualiserOfRelvar {
 	
 	private VisualiserOfView view;
 	
-	public VisualiserOfMinimizedView(Rev rev, String name) {
+	public MinimizedView(Rev rev, String name) {
 		super(rev, name);
 	}
 	
-	protected String getQuery() {
+	public String getQuery() {
 		restore();
 		return getVisualiserName();
 	}

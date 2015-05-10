@@ -1,18 +1,22 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers.operators;
 
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operand;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelation;
 
-public class VisualiserOfOperatorDiyadic extends VisualiserOfOperator { 
+public class Diyadic extends Operator { 
 	private Parameter operand1;
 	private Parameter operand2;
 
-	public VisualiserOfOperatorDiyadic(Rev rev, String operatorName) {
+	public Diyadic(Rev rev, String operatorName) {
 		super(rev, operatorName);
 		operand1 = addParameter("Operand 1", "First relation passed to " + operatorName); 
 		operand2 = addParameter("Operand 2", "Second relation passed to " + operatorName);		
 	}
 	
-	public VisualiserOfOperatorDiyadic(Rev rev, String visualiserName, String operatorName) {
+	public Diyadic(Rev rev, String visualiserName, String operatorName) {
 		super(rev, operatorName, visualiserName);
 		operand1 = addParameter("Operand 1", "First relation passed to " + operatorName); 
 		operand2 = addParameter("Operand 2", "Second relation passed to " + operatorName);		
@@ -21,7 +25,7 @@ public class VisualiserOfOperatorDiyadic extends VisualiserOfOperator {
 	public String getQuery() {		
 		if (operand1 == null || operand1.getConnection(0) == null)
 			return null;
-		if (operand1.getConnection(0).getVisualiser() instanceof VisualiserOfOperand)
+		if (operand1.getConnection(0).getVisualiser() instanceof Operand)
 			return null;
 		VisualiserOfRelation connected1 = (VisualiserOfRelation)operand1.getConnection(0).getVisualiser();
 		if (connected1 == null)
@@ -29,7 +33,7 @@ public class VisualiserOfOperatorDiyadic extends VisualiserOfOperator {
 		
 		if (operand2 == null || operand2.getConnection(0) == null)
 			return null;
-		if (operand2.getConnection(0).getVisualiser() instanceof VisualiserOfOperand)
+		if (operand2.getConnection(0).getVisualiser() instanceof Operand)
 			return null;
 		VisualiserOfRelation connected2 = (VisualiserOfRelation)operand2.getConnection(0).getVisualiser();
 		if (connected2 == null)

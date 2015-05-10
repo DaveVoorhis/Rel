@@ -1,6 +1,8 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers;
 
 import org.eclipse.swt.graphics.Rectangle;
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 
 public class VisualiserOfRelvar extends VisualiserOfRelation {
 	
@@ -11,7 +13,7 @@ public class VisualiserOfRelvar extends VisualiserOfRelation {
 		relvarName = name;
 	}
 	
-	protected String getQuery() {
+	public String getQuery() {
 		return relvarName;
 	}
 

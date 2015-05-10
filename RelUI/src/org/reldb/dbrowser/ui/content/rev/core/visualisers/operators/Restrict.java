@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers.operators;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -18,8 +18,13 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import org.eclipse.swt.graphics.Point;
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operand;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelation;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuple;
@@ -28,7 +33,7 @@ import org.reldb.rel.client.Tuples;
 class QueryElementPanel extends JPanel
 {
 	private static final long serialVersionUID = 1L;
-	private VisualiserOfOperatorRestrict visualiser;
+	private Restrict visualiser;
 	private JTextField expValue;
 	private JComboBox<String> attributeList;
 	private JComboBox<String> operatorList;
@@ -36,7 +41,7 @@ class QueryElementPanel extends JPanel
 	private boolean callOnce = true;
 	private boolean doNotUpdate = false;
 	
-	public QueryElementPanel(VisualiserOfOperatorRestrict vis)
+	public QueryElementPanel(Restrict vis)
 	{
 		visualiser = vis;
 		//Add the value box to the restrict visualiser
@@ -201,19 +206,19 @@ class QueryElementPanel extends JPanel
 	}
 }
 
-public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
+public class Restrict extends Operator {
 	private Parameter operand;
 	private JPanel container;
 	private LinkedList<QueryElementPanel> controlPanel;
 	private Point initialSize;
 	private Visualiser connect = null;
 
-	public VisualiserOfOperatorRestrict(Rev rev) {
+	public Restrict(Rev rev) {
 		super(rev, "Restrict");
 		operand = addParameter("Operand", "Relation to be restricted. Condition example: AttributeName='text' or AttributeName>2 ");
 	}
 	
-	public VisualiserOfOperatorRestrict(Rev rev, String name) {
+	public Restrict(Rev rev, String name) {
 		super(rev, "Restrict", name);
 		operand = addParameter("Operand", "Relation to be restricted. Condition example: AttributeName='text' or AttributeName>2 ");
 	}
@@ -311,7 +316,7 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 	
 	public Attribute[] getAttributes() {
 		Visualiser connect = getConnected(operand);
-		if (connect instanceof VisualiserOfOperand) {
+		if (connect instanceof Operand) {
 			return null;
 		}
 		VisualiserOfRelation connected = (VisualiserOfRelation)connect;

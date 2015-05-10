@@ -1,16 +1,18 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers.operators;
 
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Tuples;
 
-public class VisualiserOfOperatorSummarize extends VisualiserOfOperatorExtend {
+public class Summarize extends Extend {
 	
-	public VisualiserOfOperatorSummarize(Rev rev) {
+	public Summarize(Rev rev) {
 		super(rev);
 		KeyWord = "SUMMARIZE";
 	}
 	
-	public VisualiserOfOperatorSummarize(Rev rev, String name) {
+	public Summarize(Rev rev, String name) {
 		super(rev, name);
 		KeyWord = "SUMMARIZE";
 	}

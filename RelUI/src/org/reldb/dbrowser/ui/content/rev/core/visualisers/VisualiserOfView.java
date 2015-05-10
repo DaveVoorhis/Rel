@@ -1,10 +1,12 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers;
 
 import java.util.LinkedList;
 
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.ToolBar;
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Argument;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Model;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
@@ -19,7 +21,7 @@ public class VisualiserOfView extends VisualiserOfRelation {
 	private Model controlPanel;
 	private static boolean nestable = false;
 	private LinkedList<Visualiser> tempList = new LinkedList<Visualiser>();
-	private VisualiserOfMinimizedView minimizedView;
+	private MinimizedView minimizedView;
 	private MouseListener popupListener;
 	private ToolBar toolBar;
 	private int toolbarOffset = 28;
@@ -82,7 +84,7 @@ public class VisualiserOfView extends VisualiserOfRelation {
 	    }
 	}
 	
-	public void setMinimized(VisualiserOfMinimizedView view) {
+	public void setMinimized(MinimizedView view) {
 		minimizedView = view;
 	}
 	
@@ -137,7 +139,7 @@ public class VisualiserOfView extends VisualiserOfRelation {
 	    	controlPanel.addVisualiser(visualiser);
 	    	visualiser.visualiserMoved();
 	    	//Move the arguments to the model
-	    	if (visualiser instanceof VisualiserOfOperator) {
+	    	if (visualiser instanceof Operator) {
 	    		moveArgumentToModel(visualiser);
 	    	}
     	}
@@ -152,7 +154,7 @@ public class VisualiserOfView extends VisualiserOfRelation {
 	    	getModel().addVisualiser(visualiser);
 	    	visualiser.visualiserMoved();
 	    	//Move the arguments to the model
-	    	if (visualiser instanceof VisualiserOfOperator) {
+	    	if (visualiser instanceof Operator) {
 	    		moveArgumentToModel(visualiser);
 	    	}
     	}
@@ -186,7 +188,7 @@ public class VisualiserOfView extends VisualiserOfRelation {
     		return false;
     	}
     	//Don't allow the minimized view to be dragged onto itself
-    	if (draggedVisualiser instanceof VisualiserOfMinimizedView) {
+    	if (draggedVisualiser instanceof MinimizedView) {
     		return false;
     	}
     	//Don't allow nested views

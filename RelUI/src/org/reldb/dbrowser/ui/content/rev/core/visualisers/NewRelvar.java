@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,6 +22,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
@@ -84,7 +86,7 @@ class TableAttribute {
 	}
 }
 
-public class VisualiserOfNewRelvar extends JPanel {
+public class NewRelvar extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private Rev rev;
@@ -98,7 +100,7 @@ public class VisualiserOfNewRelvar extends JPanel {
 	private int tempParent;
 	private int insert;
 	
-	public VisualiserOfNewRelvar(Rev rev) {	
+	public NewRelvar(Rev rev) {	
 		//super(rev, kind, name, xpos, ypos);
 		this.rev = rev;
 	//	setLocation(xpos, ypos);

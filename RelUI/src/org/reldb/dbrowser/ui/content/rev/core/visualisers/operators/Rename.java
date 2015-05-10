@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers.operators;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -18,24 +18,28 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.eclipse.swt.graphics.Point;
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelation;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
-public class VisualiserOfOperatorRename extends VisualiserOfOperator {
+public class Rename extends Operator {
 	private Parameter operand;	
 	private JPanel controlPanel;
 	private LinkedList<Option> options = new LinkedList<Option>();
 	private LinkedList<JTextField> newNames = null;
 	
-	public VisualiserOfOperatorRename(Rev rev) {
+	public Rename(Rev rev) {
 		super(rev, "RENAME");
 		operand = addParameter("Operand", "Relation to be renamed");
 	}
 	
-	public VisualiserOfOperatorRename(Rev rev, String name) {
+	public Rename(Rev rev, String name) {
 		super(rev, "RENAME", name);
 		operand = addParameter("Operand", "Relation to be renamed");
 	}

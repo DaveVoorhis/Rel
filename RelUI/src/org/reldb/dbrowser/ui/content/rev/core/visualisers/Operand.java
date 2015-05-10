@@ -1,10 +1,11 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers;
 
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 
-public class VisualiserOfOperand extends Visualiser {
+public class Operand extends Visualiser {
 	
-	protected VisualiserOfOperand(Rev rev, String name, int xpos, int ypos) {
+	protected Operand(Rev rev, String name, int xpos, int ypos) {
 		super(rev);
 		setVisualiserName(name);
 		setLocation(xpos, ypos);
@@ -25,7 +26,7 @@ public class VisualiserOfOperand extends Visualiser {
 		}
 		if (getArgument(0).getVisualiser() == draggedVisualiser)
 			return false;
-		return (!(draggedVisualiser instanceof VisualiserOfOperand));
+		return (!(draggedVisualiser instanceof Operand));
 	}
     
     /** Drop a visualiser on this one.  Return true if succeeded. */

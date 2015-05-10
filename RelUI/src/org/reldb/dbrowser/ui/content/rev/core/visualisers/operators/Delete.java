@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers.operators;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -6,13 +6,18 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.eclipse.swt.graphics.Point;
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operand;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelation;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuples;
 
-public class VisualiserOfOperatorDelete extends VisualiserOfOperator {	
+public class Delete extends Operator {	
 	private Parameter operand;
 	private JPanel controlPanel;
 	private Point initialSize;
@@ -20,7 +25,7 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 	private JComboBox<String> attList;
 	private JTextField condition;
 	
-	public VisualiserOfOperatorDelete(Rev rev) {
+	public Delete(Rev rev) {
 		super(rev, "DELETE");
 		operand = addParameter("Operand", "Relation to be restricted. Condition example: AttributeName='text' or AttributeName>2 ");
 	}
@@ -78,7 +83,7 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 			return null;
 		if (operand.getConnection(0) == null)
 			return null;
-		if (operand.getConnection(0).getVisualiser() instanceof VisualiserOfOperand)
+		if (operand.getConnection(0).getVisualiser() instanceof Operand)
 			return null;
 		VisualiserOfRelation connected = (VisualiserOfRelation)operand.getConnection(0).getVisualiser();
 		String query = connected.getQuery();
@@ -102,7 +107,7 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 		if (operand.getConnection(0) == null) {
 			return;
 		}
-		if (operand.getConnection(0).getVisualiser() instanceof VisualiserOfOperand) {
+		if (operand.getConnection(0).getVisualiser() instanceof Operand) {
 			return;
 		}
 		

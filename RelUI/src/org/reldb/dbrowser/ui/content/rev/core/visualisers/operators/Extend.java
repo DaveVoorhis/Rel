@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rev.core;
+package org.reldb.dbrowser.ui.content.rev.core.visualisers.operators;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,12 +17,16 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import org.eclipse.swt.graphics.Point;
+import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelation;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
-public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
+public class Extend extends Operator {
 	protected Parameter operand;
 	protected JPanel controlPanel;
 	protected LinkedList<JTextField> attributeList;
@@ -30,12 +34,12 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 	protected String KeyWord = "EXTEND";
 	protected Point initialSize;
 	
-	public VisualiserOfOperatorExtend(Rev rev) {
+	public Extend(Rev rev) {
 		super(rev, "EXTEND");
 		operand = addParameter("Operand", "Relation to be extended.");
 	}
 	
-	public VisualiserOfOperatorExtend(Rev rev, String name) {
+	public Extend(Rev rev, String name) {
 		super(rev, "EXTEND", name);
 		operand = addParameter("Operand", "Relation to be extended.");
 	}

@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.reldb.dbrowser.ui.content.rev.core.Rev;
-import org.reldb.dbrowser.ui.content.rev.core.VisualiserOfView;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfView;
 
 /**
  * Defines a layered pane in which visualised classes may be manipulated.
