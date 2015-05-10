@@ -237,7 +237,7 @@ public class DbTab extends CTabItem {
 			}
 		}
 		contentStack.topControl = contentRev;
-		modeContent.layout();		
+		modeContent.layout();
 		if (existing)
 			contentRev.redisplayed();
 	}

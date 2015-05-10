@@ -1,8 +1,6 @@
 package org.reldb.dbrowser.ui.content.rev.core;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -19,6 +17,7 @@ import javax.swing.SwingWorker;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
+import org.eclipse.swt.graphics.Point;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Attribute;
@@ -203,16 +202,19 @@ class QueryElementPanel extends JPanel
 }
 
 public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
-	private static final long serialVersionUID = 1L;
-	
 	private Parameter operand;
 	private JPanel container;
 	private LinkedList<QueryElementPanel> controlPanel;
-	private Dimension initialSize;
+	private Point initialSize;
 	private Visualiser connect = null;
 
-	public VisualiserOfOperatorRestrict(Rev rev, String kind, String name, int xpos, int ypos) {
-		super(rev, kind, name, xpos, ypos);
+	public VisualiserOfOperatorRestrict(Rev rev) {
+		super(rev, "Restrict");
+		operand = addParameter("Operand", "Relation to be restricted. Condition example: AttributeName='text' or AttributeName>2 ");
+	}
+	
+	public VisualiserOfOperatorRestrict(Rev rev, String name) {
+		super(rev, "Restrict", name);
 		operand = addParameter("Operand", "Relation to be restricted. Condition example: AttributeName='text' or AttributeName>2 ");
 	}
 
@@ -241,7 +243,7 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 		if (connect == null) {
 			return null;
 		}
-		VisualiserOfRel connected = (VisualiserOfRel)connect;
+		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
 		String connectedQuery = connected.getQuery();
 		if (connectedQuery == null)
 			return null;
@@ -257,7 +259,7 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 		if (connected == null) {
 			return true;
 		}
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateRestrict(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateRestrict(getRev().getConnection(), getVisualiserName());
 		Iterator<Tuple> tupleIterator = tuples.iterator();
 		deleteAll();
 		int count = 0;
@@ -265,8 +267,8 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 			Tuple tuple = tupleIterator.next();
 			//Refresh the preserved state when a new connection is made
 			String relvar = tuple.get("Relvar").toString();
-			if (!relvar.equals(connected.getName())) {
-				DatabaseAbstractionLayer.removeOperator_Restrict(getRev().getConnection(), getName());
+			if (!relvar.equals(connected.getVisualiserName())) {
+				DatabaseAbstractionLayer.removeOperator_Restrict(getRev().getConnection(), getVisualiserName());
 				return true;
 			}
 			Tuples panels = (Tuples)tuple.get("Panels");
@@ -304,7 +306,7 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 			operators[i] = controlPanel.get(i).getOperatorList().getSelectedIndex();
 			andOrOps[i] = controlPanel.get(i).getAndOrOp().getSelectedIndex();
 		}
-		DatabaseAbstractionLayer.updatePreservedStateRestrict(getRev().getConnection(), getName(), connected.getName(), expressions, attributes, operators, andOrOps, count);
+		DatabaseAbstractionLayer.updatePreservedStateRestrict(getRev().getConnection(), getVisualiserName(), connected.getVisualiserName(), expressions, attributes, operators, andOrOps, count);
 	}
 	
 	public Attribute[] getAttributes() {
@@ -312,7 +314,7 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 		if (connect instanceof VisualiserOfOperand) {
 			return null;
 		}
-		VisualiserOfRel connected = (VisualiserOfRel)connect;
+		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
 		if (connected == null) {
 			return null;
 		}
@@ -340,7 +342,8 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 			controlPanel = new LinkedList<QueryElementPanel>();
 		}
 		initialSize = getSize();
-		add(container, BorderLayout.SOUTH);
+		/** TODO Fixme 
+		add(container, BorderLayout.SOUTH); */
 	}
 	
 	public void updateVisualiser() {
@@ -353,7 +356,7 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 				if (operand.getConnection(0) != null) {
 					Visualiser temp = operand.getConnection(0).getVisualiser();
 					//When connected
-					if (temp instanceof VisualiserOfRel && connect == null) {
+					if (temp instanceof VisualiserOfRelation && connect == null) {
 						//Load the panels from data or create a blank one
 						if (getPreservedState()) {
 							createNewPanel(false);
@@ -407,6 +410,6 @@ public class VisualiserOfOperatorRestrict extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Restrict(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Restrict(getRev().getConnection(), getVisualiserName());
 	}
 }

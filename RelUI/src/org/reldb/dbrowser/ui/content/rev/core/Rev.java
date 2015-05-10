@@ -1,30 +1,20 @@
 package org.reldb.dbrowser.ui.content.rev.core;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
-
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Argument;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Model;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
@@ -34,66 +24,19 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.connection.CrashHandler;
 
-public class Rev extends JPanel {
-	private static final long serialVersionUID = 1L;
-	
+import swing2swt.layout.BorderLayout;
+
+public class Rev extends Composite {
 	private Connection connection;
 	private Model model;
-	private JPanel detailView;
+	private Composite detailView;
 	private VisualiserOfTuples tuples;
-	private VisualiserOfNewRelvar newRelvar;
-	private JSplitPane revPane;
-	private JToolBar controlPanel;
-	private JMenuBar menuBar;
-	private JMenu systemRelvars;
-	private JMenu customRelvars;
-	private JMenu viewMenu;
-	private JPopupMenu popup;
-	private MouseListener popupListener;
+	private SashForm revPane;
 	private String[] queryOperators;
 	private LinkedList<VisualiserOfView> views;
 	private CrashHandler crashHandler;
-	
-	private int popupX;
-	private int popupY;
-	
-	private class PopupListener extends MouseAdapter {
-	    public void mousePressed(MouseEvent e) {
-	        maybeShowPopup(e);
-	    }
-	    public void mouseReleased(MouseEvent e) {
-	        maybeShowPopup(e);
-	    }
-	    private void maybeShowPopup(MouseEvent e) {
-			if (getModel().getVisualiserUnderMouse(e) == null) {
-				return;
-			}
-	        if (e.isPopupTrigger()) {
-	        	popupX = e.getX();
-	        	popupY = e.getY();
-	            popup.show(e.getComponent(), popupX, popupY);
-	        }
-	    }
-	}
-	
-	private static abstract class Item {
-		public Item(JPopupMenu parent, String title) {
-			JMenuItem menuItem = new JMenuItem(title);
-			menuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					run();
-				}
-			});
-			parent.add(menuItem);
-		}
-		public abstract void run();
-	}
-	
-	public JPopupMenu getPopup() {
-		return popup;
-	}
 
-	private long getUniqueNumber() {
+	public long getUniqueNumber() {
 		return DatabaseAbstractionLayer.getUniqueNumber(connection);
 	}
 	
@@ -102,205 +45,200 @@ public class Rev extends JPanel {
 	}
 	
 	public void createTuplesVisualiser(String query, String name) {
-		tuples = new VisualiserOfTuples(Rev.this, "VisTuples", "VisTuples" + getUniqueNumber(), 0, 0);
+		tuples = new VisualiserOfTuples(this, "VisTuples", "VisTuples" + getUniqueNumber(), 0, 0);
 		if (tuples != null) {
-			tuples.setSize(detailView.getSize());
+//			tuples.setSize(detailView.getSize());
 			tuples.setQuery(query, name);
 			tuples.createNew();
 		}
 	}
 	
-	private JPopupMenu getPopupMenu() {
-	    final JPopupMenu popup = new JPopupMenu();
-	    new Item(popup, "Delete Selected") {
-	    	public void run() {
-	    		getModel().doSelectedDelete();
-	    	}
-	    };
-	    return popup;
-	}
-	
 	private VisualiserOfOperator getVisualiserForKind(String kind, String name, int xpos, int ypos) {
 		VisualiserOfOperator visualiser = null;
 		if (kind.equals("Project")) {
-			visualiser = new VisualiserOfOperatorProject(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorProject(this, name);
 		} else if (kind.equals("Restrict")) {
-			visualiser = new VisualiserOfOperatorRestrict(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorRestrict(this, name);
 		} else if (kind.equals("UNION")) {
-			visualiser = new VisualiserOfOperatorUnion(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
 		} else if (kind.equals("RENAME")) {
-			visualiser = new VisualiserOfOperatorRename(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorRename(this, name);
 		} else if (kind.equals("INTERSECT")) {
-			visualiser = new VisualiserOfOperatorIntersect(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
 		} else if (kind.equals("MINUS")) {
-			visualiser = new VisualiserOfOperatorMinus(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
 		} /*else if (kind.equals("PRODUCT")) {
-			visualiser = new VisualiserOfOperatorProduct(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorProduct(this, name);
 		} else if (kind.equals("DIVIDEBY")) {
-			visualiser = new VisualiserOfOperatorDivideby(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorDivideby(this, name);
 		}*/ else if (kind.equals("JOIN")) {
-			visualiser = new VisualiserOfOperatorJoin(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
 		} else if (kind.equals("COMPOSE")) {
-			visualiser = new VisualiserOfOperatorCompose(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
 		} else if (kind.equals("MATCHING")) {
-			visualiser = new VisualiserOfOperatorMatching(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
 		} else if (kind.equals("NOT MATCHING")) {
-			visualiser = new VisualiserOfOperatorNotMatching(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorDiyadic(this, name, kind);
 		} else if (kind.equals("ORDER")) {
-			visualiser = new VisualiserOfOperatorOrder(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorOrder(this, name);
 		} else if (kind.equals("GROUP")) {
-			visualiser = new VisualiserOfOperatorGroup(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorGroup(this, name);
 		} else if (kind.equals("UNGROUP")) {
-			visualiser = new VisualiserOfOperatorUngroup(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorUngroup(this, name);
 		} else if (kind.equals("WRAP")) {
-			visualiser = new VisualiserOfOperatorWrap(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorWrap(this, name);
 		} else if (kind.equals("UNWRAP")) {
-			visualiser = new VisualiserOfOperatorUnwrap(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorUnwrap(this, name);
 		} else if (kind.equals("EXTEND")) {
-			visualiser = new VisualiserOfOperatorExtend(this, kind, name, xpos, ypos);
+			visualiser = new VisualiserOfOperatorExtend(this, name);
 		} else if (kind.equals("SUMMARIZE")) {
-			visualiser = new VisualiserOfOperatorSummarize(this, kind, name, xpos, ypos);
-		}
-		else {
+			visualiser = new VisualiserOfOperatorSummarize(this, name);
+		} else {
 			System.out.println("Query kind '" + kind + "' not recognised.");
 		}
+		visualiser.setLocation(xpos, ypos);
 		return visualiser;
 	}
 	
-	public Rev(String dbURL, CrashHandler crashHandler) {
-		setLayout(new BorderLayout());
+	public Rev(Composite parent, String dbURL, CrashHandler crashHandler) {
+		super(parent, SWT.None);
 		this.crashHandler = crashHandler;
-		model = new Model();
-		model.setRev(this);
+		
 		try {
 			connection = new Connection(dbURL, false, crashHandler, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		revPane = new JSplitPane(); 
-		revPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		revPane.setTopComponent(model);
-		controlPanel = new JToolBar();
-		controlPanel.setFloatable(false);
-		detailView = new JPanel();
-		detailView.setLayout(new BorderLayout());
-		detailView.add(new JPanel(), BorderLayout.CENTER);
-		revPane.setBottomComponent(detailView);
-		revPane.setResizeWeight(0.8);
-		add(controlPanel, BorderLayout.NORTH);
-		add(revPane, BorderLayout.CENTER);
-		popup = getPopupMenu();
-		popupListener = new PopupListener();
-		model.getModelPane().addMouseListener(popupListener);
-		setupControlPanel();
+		
+		setLayout(new FillLayout());
+				
+		revPane = new SashForm(this, SWT.NONE);
+		revPane.setOrientation(SWT.VERTICAL);
+
+		model = new Model(revPane);
+		model.setRev(this);
+
+		detailView = new Composite(revPane, SWT.BORDER);
+
+		revPane.setWeights(new int[] {8, 2});
+
+		setupMenus();
 	}
-	
-	public void setupControlPanel() {
-		controlPanel.removeAll();
-		JPanel menus = new JPanel();
-		//menus.setSize(new Dimension(controlPanel.getWidth(), 32));
-		menuBar = new JMenuBar();
+
+	public void setupMenus() {
+		if (getMenu() != null)
+			getMenu().dispose();
+		
+		Menu menuBar = new Menu(getShell(), SWT.POP_UP);
+		
+		// Custom relvars
+		MenuItem customRelvarsItem = new MenuItem(menuBar, SWT.CASCADE);
+		customRelvarsItem.setText("Variables");
+		customRelvarsItem.setMenu(obtainMenu(menuBar, "sys.Catalog", "Owner = 'User'"));
+		
 		//System relvars
-		systemRelvars = new JMenu("Insert System Relvar");
-		updateComboBox(systemRelvars, "sys.Catalog", "Owner = 'Rel'");
-		menuBar.add(systemRelvars);
-		systemRelvars.setBorder(BorderFactory.createBevelBorder(0));
-		//Custom relvars
-		customRelvars = new JMenu("Insert Custom Relvar");
-		updateComboBox(customRelvars, "sys.Catalog", "Owner = 'User'");
-		menuBar.add(customRelvars);
-		customRelvars.setBorder(BorderFactory.createBevelBorder(0));
-		//Operators
+		MenuItem systemRelvarsItem = new MenuItem(menuBar, SWT.CASCADE);
+		systemRelvarsItem.setText("System variables");
+		systemRelvarsItem.setMenu(obtainMenu(menuBar, "sys.Catalog", "Owner = 'Rel'"));
+		
+		// Operators
 		queryOperators = getOperators();
-		JMenu insOperators = new JMenu("Insert Operator");
+		MenuItem insOperatorsItem = new MenuItem(menuBar, SWT.CASCADE);
+		insOperatorsItem.setText("Operators");
+		Menu insOperatorsMenu = new Menu(menuBar);
 		for (int i=0; i < queryOperators.length; i++) {
-			JMenuItem item = new JMenuItem(queryOperators[i]);
-			insOperators.add(item);
-			item.addActionListener(new ActionListener() {
+			MenuItem item = new MenuItem(insOperatorsMenu, SWT.PUSH);
+			item.setText(queryOperators[i]);
+			item.addSelectionListener(new SelectionAdapter() {
 				@Override
-				public void actionPerformed(ActionEvent arg0) {
+				public void widgetSelected(SelectionEvent arg0) {
 					insertOperator(arg0);
 				}
 			});
 		}
-		insOperators.setBorder(BorderFactory.createBevelBorder(0));
-		menuBar.add(insOperators);
-		//Views
-		viewMenu = new JMenu("Insert View");
-		if (hasRevExtensions() != -1) {
-			updateComboBox(viewMenu, "sys.rev.View", "stored = true");
-		}
-		menuBar.add(viewMenu);
-		viewMenu.setBorder(BorderFactory.createBevelBorder(0));
-		//Add the drop downs to the menu bar
-		menus.add(menuBar);
+		insOperatorsItem.setMenu(insOperatorsMenu);
 		
-		//Create relvar
-		JButton addNewRelation = addButton("Create Relvar");
-		menus.add(addNewRelation);
-		addNewRelation.addActionListener(new ActionListener() {	
+		// Views
+		MenuItem viewMenuItem = new MenuItem(menuBar, SWT.CASCADE);
+		viewMenuItem.setText("Views");
+		if (hasRevExtensions() != -1) {
+			viewMenuItem.setMenu(obtainMenu(menuBar, "sys.rev.View", "stored = true"));
+		}
+		
+		// Create relvar
+		MenuItem addNewRelvar = new MenuItem(menuBar, SWT.PUSH);
+		addNewRelvar.setText("Create Relvar");
+		addNewRelvar.addSelectionListener(new SelectionAdapter() {	
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				newRelvar = new VisualiserOfNewRelvar(Rev.this, "NewRelvar", "NewRelvar" + getUniqueNumber(), 0, 0);
-				newRelvar.setSize(detailView.getSize());
+			public void widgetSelected(SelectionEvent arg0) {
+				new VisualiserOfNewRelvar(Rev.this);
 			}
 		});
-		//Refresh button
-		JButton refreshRev = addButton("Refresh");
-		menus.add(refreshRev);
-		refreshRev.addActionListener(new ActionListener() {
+		
+		// Refresh
+		MenuItem refreshRev = new MenuItem(menuBar, SWT.PUSH);
+		refreshRev.setText("Refresh");
+		refreshRev.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void widgetSelected(SelectionEvent arg0) {
 				refresh();
 			}
 		});
-		//Clear button
-		JButton clearRev = addButton("Clear");
-		menus.add(clearRev);
-		clearRev.addActionListener(new ActionListener() {
+		
+		// Clear
+		MenuItem clearRev = new MenuItem(menuBar, SWT.PUSH);
+		clearRev.setText("Clear");
+		clearRev.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				//Remove the visualisers
+			public void widgetSelected(SelectionEvent arg0) {
+				// Remove the visualisers
+				model.removeEverything();	//This line twice to make sure views with content get removed correctly
 				model.removeEverything();
-				model.removeEverything();	//This line twice to make sure views with content
-											//get removed correctly
-				//Refresh combo boxes
-				updateComboBoxes();
+				// Refresh combo boxes
+				updateMenus();
 			}
 		});
-		//Uninstall button
-		JButton uninstallRev = addButton("Uninstall");
-		menus.add(uninstallRev );
-		uninstallRev.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				uninstall();
-			}
-		});
-		//Add the menu panel to the system
-		controlPanel.add(menus);
+
+		int version = hasRevExtensions();
+		if (version < 0) {
+			System.out.println("Rev: extensions are not present.");
+			MenuItem installRev = new MenuItem(menuBar, SWT.PUSH);
+			installRev.setText("Install Rev extensions");
+			installRev.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					installRevExtensions();
+					refresh();
+				}
+			});
+		} else if (version < DatabaseAbstractionLayer.EXPECTED_REV_VERSION) {
+			upgrade(version);
+		} else {
+			System.out.println("Rev: extensions are present.");
+			presentWithRevExtensions();
+			
+			// Uninstall
+			MenuItem uninstallRev = new MenuItem(menuBar, SWT.PUSH);
+			uninstallRev.setText("Uninstall Rev extensions");
+			uninstallRev.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					uninstall();
+				}
+			});			
+		}
+				
+		setMenu(menuBar);
 	}
 	
-	private JButton addButton(String name) {
-		JButton button = new JButton(name);
-		Color bgColor = new Color(238, 238, 238);
-		int boxHeight = 50;
-		button.setBackground(bgColor);
-		button.setBorder(BorderFactory.createBevelBorder(0));
-		button.setMinimumSize(new Dimension(button.getWidth() + 20, boxHeight));
-		return button;
-	}
-	
-	private void insertOperator(ActionEvent e) {
-		JMenuItem caller = (JMenuItem)e.getSource();
+	private void insertOperator(SelectionEvent e) {
+		MenuItem caller = (MenuItem)e.getSource();
 		getVisualiserForOperator(caller.getText());
 	}
 	
-	private void menuAction(ActionEvent e) {
-		JMenuItem caller = (JMenuItem)e.getSource();
+	private void menuAction(SelectionEvent e) {
+		MenuItem caller = (MenuItem)e.getSource();
 		String name = caller.getText();
-		Visualiser relvar = new VisualiserOfRelvar(Rev.this, name);
-		relvar.setLocation(50, 50);
+		Visualiser relvar = new VisualiserOfRelvar(this, name);
 		//Find out whether to insert the visualiser into the default model
 		//or a view model
 		Visualiser[] selected = getModel().getSelected();
@@ -316,8 +254,8 @@ public class Rev extends JPanel {
 		}
 	}
 	
-	private void viewCombo(ActionEvent e) {
-		JMenuItem caller = (JMenuItem)e.getSource();
+	private void viewCombo(SelectionEvent e) {
+		MenuItem caller = (MenuItem)e.getSource();
 		String name = caller.getText();
 		//Create view
 		presentViewsWithRevExtensions("Name = '" + name + "'");
@@ -327,26 +265,21 @@ public class Rev extends JPanel {
 		presentQueriesWithRevExtensions("model = '" + name + "'");
 		//Update view with relvars
 		for (VisualiserOfView view: views) {
-			if (view.getName().equals(name)) {
+			if (view.getVisualiserName().equals(name)) {
 				view.commitTempList();
 			}
 		}
 	}
 	
-	private void updateComboBoxes() {
-		updateComboBox(systemRelvars, "sys.Catalog", "Owner = 'Rel'");
-		updateComboBox(customRelvars, "sys.Catalog", "Owner = 'User'");
-		if (hasRevExtensions() != -1) {
-			updateComboBox(viewMenu, "sys.rev.View", "stored = true");
-		}
+	private void updateMenus() {
+		setupMenus();
 	}
 	
-	private void updateComboBox(JMenu box, String relvar, String where) {
-		if (box == null) {
-			return;
-		}
+	private Menu obtainMenu(Menu parent, String relvar, String where) {
 		boolean relvarFlag = true;
-		box.removeAll();
+
+		Menu subMenu = new Menu(parent);
+		
 		//Add the relvars from the database
 		Tuples tuples = null;
 		//Relvars
@@ -364,38 +297,39 @@ public class Rev extends JPanel {
 			while (it.hasNext()) {
 				Tuple tuple = it.next();
 				if (tuple != null) {
-					JMenuItem item = new JMenuItem(tuple.get("Name").toString());
+					MenuItem item = new MenuItem(subMenu, SWT.PUSH);
+					item.setText(tuple.get("Name").toString());
 					//Event handler
-					ActionListener listener;
+					SelectionListener listener;
 					//Relvars
 					if (relvarFlag) {
-						listener = new ActionListener() {
+						listener = new SelectionAdapter() {
 							@Override
-							public void actionPerformed(ActionEvent arg0) {
+							public void widgetSelected(SelectionEvent arg0) {
 								menuAction(arg0);
 							}
 						};
 					}
 					//Views
 					else {
-						listener = new ActionListener() {
+						listener = new SelectionAdapter() {
 							@Override
-							public void actionPerformed(ActionEvent arg0) {
+							public void widgetSelected(SelectionEvent arg0) {
 								viewCombo(arg0);
 							}
 						};
 					}
-					item.addActionListener(listener);
-					box.add(item);
+					item.addSelectionListener(listener);
 				}
 			}
 		}
+		return subMenu;
 	}
 	
 	public void createNewRelvarVisualier(String name) {
-		Visualiser relvar = new VisualiserOfRelvar(Rev.this, name);
+		Visualiser relvar = new VisualiserOfRelvar(this, name);
 		relvar.setLocation(50, 50);
-		updateComboBoxes();
+		updateMenus();
 	}
 	
 	public void deleteVisualiser(Visualiser connected, Visualiser deleteOperator) {
@@ -404,16 +338,16 @@ public class Rev extends JPanel {
 		}
 		model.removeVisualiser(connected);
 		model.removeVisualiser(deleteOperator);
-		updateComboBoxes();
+		updateMenus();
 	}
 	
 	public void removeVisualiser(Visualiser visualiser, boolean transfer) {
 		visualiser.setVisible(false);
 		model.removeVisualiser(visualiser, transfer);
-		updateComboBoxes();
+		updateMenus();
 	}
 	
-	public VisualiserOfView createView(int x, int y, Dimension size, String uniqueNumber) {
+	public VisualiserOfView createView(int x, int y, Point size, String uniqueNumber) {
 		//Don't create view visualiser when rev extension are not installed
 		if (hasRevExtensions() == -1) {
 			return null;
@@ -423,18 +357,19 @@ public class Rev extends JPanel {
 			uniqueNumber = "View" + Long.toString(getUniqueNumber());
 		}
 		//Create a normal and a small view
-		VisualiserOfView visualiser = new VisualiserOfView(Rev.this, "View", uniqueNumber, x, y, size.width, size.height, true);
-		VisualiserOfMinimizedView small = new VisualiserOfMinimizedView(Rev.this, uniqueNumber);
+		VisualiserOfView visualiser = new VisualiserOfView(this, "View", uniqueNumber, x, y, size.x, size.y, true);
+		VisualiserOfMinimizedView small = new VisualiserOfMinimizedView(this, uniqueNumber);
 		small.setVisible(false);
 		//Link to each other
 		visualiser.setMinimized(small);
 		small.setView(visualiser);
-		updateComboBoxes();
+		updateMenus();
 		return visualiser;
 	}
 	
 	private String[] getOperators() {
-		String[] operators = { "Project",
+		String[] operators = { 
+				"Project",
 				"Restrict WHERE",
 				"UNION",
 				"RENAME",
@@ -466,57 +401,55 @@ public class Rev extends JPanel {
 		if (queryOperators.length == 0) {
 			return null;
 		}
-		popupX = 400;
-		popupY = 50;
 		switch (id) {
-		case "Project":
-			return new VisualiserOfOperatorProject(Rev.this, "Project", "Project" + getUniqueNumber(), popupX, popupY);
-		case "Restrict WHERE":
-			return new VisualiserOfOperatorRestrict(Rev.this, "Restrict", "Restrict" + getUniqueNumber(), popupX, popupY);
-		case "UNION":
-			return new VisualiserOfOperatorUnion(Rev.this, "UNION", "UNION" + getUniqueNumber(), popupX, popupY);
-		case "RENAME":
-			return new VisualiserOfOperatorRename(Rev.this, "RENAME", "RENAME" + getUniqueNumber(), popupX, popupY);
-		case "D_UNION":
-			return null;
-		case "INTERSECT":
-			return new VisualiserOfOperatorIntersect(Rev.this, "INTERSECT", "INTERSECT" + getUniqueNumber(), popupX, popupY);
-		case "MINUS":
-			return new VisualiserOfOperatorMinus(Rev.this, "MINUS", "MINUS" + getUniqueNumber(), popupX, popupY);
-		case "PRODUCT":
-			return null;
-		case "DIVIDEBY":
-			return null;
-		case "JOIN":
-			return new VisualiserOfOperatorJoin(Rev.this, "JOIN", "JOIN" + getUniqueNumber(), popupX, popupY);
-		case "COMPOSE":
-			return new VisualiserOfOperatorCompose(Rev.this, "COMPOSE", "COMPOSE" + getUniqueNumber(), popupX, popupY);
-		case "MATCHING (SEMIJOIN)":
-			return new VisualiserOfOperatorMatching(Rev.this, "MATCHING", "MATCHING" + getUniqueNumber(), popupX, popupY);
-		case "NOT MATCHING (SEMIMINUS)":
-			return new VisualiserOfOperatorNotMatching(Rev.this, "NOT MATCHING", "NOT MATCHING" + getUniqueNumber(), popupX, popupY);
-		case "EXTEND":
-			return new VisualiserOfOperatorExtend(Rev.this, "EXTEND", "EXTEND" + getUniqueNumber(), popupX, popupY);
-		case "GROUP":
-			return new VisualiserOfOperatorGroup(Rev.this, "GROUP", "GROUP" + getUniqueNumber(), popupX, popupY);
-		case "UNGROUP":
-			return new VisualiserOfOperatorUngroup(Rev.this, "UNGROUP", "UNGROUP" + getUniqueNumber(), popupX, popupY);
-		case "WRAP":
-			return new VisualiserOfOperatorWrap(Rev.this, "WRAP", "WRAP" + getUniqueNumber(), popupX, popupY);
-		case "UNWRAP":
-			return new VisualiserOfOperatorUnwrap(Rev.this, "UNWRAP", "UNWRAP" + getUniqueNumber(), popupX, popupY);
-		case "TCLOSE":
-			return null;
-		case "ORDER":
-			return new VisualiserOfOperatorOrder(Rev.this, "ORDER", "ORDER" + getUniqueNumber(), popupX, popupY);
-		case "SUMMARIZE":
-			return new VisualiserOfOperatorSummarize(Rev.this, "SUMMARIZE", "SUMMARIZE" + getUniqueNumber(), popupX, popupY);
-		case "DEE (TABLE_DEE)":
-			return new VisualiserOfTableDee(Rev.this, "DEE", "DEE" + getUniqueNumber(), popupX, popupY);
-		case "DUM (TABLE_DUM)":
-			return new VisualiserOfTableDum(Rev.this, "DUM", "DUM" + getUniqueNumber(), popupX, popupY);
-		case "DELETE / DROP":
-			return new VisualiserOfOperatorDelete(Rev.this, "DELETE", "DELETE" + getUniqueNumber(), popupX, popupY); 
+			case "Project":
+				return new VisualiserOfOperatorProject(this);
+			case "Restrict WHERE":
+				return new VisualiserOfOperatorRestrict(this);
+			case "UNION":
+				return new VisualiserOfOperatorDiyadic(this, id);
+			case "RENAME":
+				return new VisualiserOfOperatorRename(this);
+			case "D_UNION":
+				return null;
+			case "INTERSECT":
+				return new VisualiserOfOperatorDiyadic(this, id);
+			case "MINUS":
+				return new VisualiserOfOperatorDiyadic(this, id);
+			case "PRODUCT":
+				return null;
+			case "DIVIDEBY":
+				return null;
+			case "JOIN":
+				return new VisualiserOfOperatorDiyadic(this, id);
+			case "COMPOSE":
+				return new VisualiserOfOperatorDiyadic(this, id);
+			case "MATCHING (SEMIJOIN)":
+				return new VisualiserOfOperatorDiyadic(this, "MATCHING");
+			case "NOT MATCHING (SEMIMINUS)":
+				return new VisualiserOfOperatorDiyadic(this, "NOT MATCHING");
+			case "EXTEND":
+				return new VisualiserOfOperatorExtend(this);
+			case "GROUP":
+				return new VisualiserOfOperatorGroup(this);
+			case "UNGROUP":
+				return new VisualiserOfOperatorUngroup(this);
+			case "WRAP":
+				return new VisualiserOfOperatorWrap(this);
+			case "UNWRAP":
+				return new VisualiserOfOperatorUnwrap(this);
+			case "TCLOSE":
+				return null;
+			case "ORDER":
+				return new VisualiserOfOperatorOrder(this);
+			case "SUMMARIZE":
+				return new VisualiserOfOperatorSummarize(this);
+			case "DEE (TABLE_DEE)":
+				return new VisualiserOfTableDee(this);
+			case "DUM (TABLE_DUM)":
+				return new VisualiserOfTableDum(this);
+			case "DELETE / DROP":
+				return new VisualiserOfOperatorDelete(this); 
 		}
 		return null;
 	}
@@ -529,16 +462,19 @@ public class Rev extends JPanel {
 		return model;
 	}
 	
-	public void setDetailView(JComponent detail) {
-		detailView.removeAll();
-		detailView.add(detail, BorderLayout.CENTER);
-		detailView.validate();
+	public void setDetailView(Composite detail) {
+//		detailView.removeAll();
+		detailView.setLayoutData(BorderLayout.CENTER);
+		detailView.redraw();
 	}
 	
 	private void presentRelvarsWithRevExtensions(String where) {
 		int nextX = 10;
 		int nextY = 10;
-		for (Tuple tuple: DatabaseAbstractionLayer.getRelvars(connection, where)) {
+		Tuples tuples = DatabaseAbstractionLayer.getRelvars(connection, where);
+		if (tuples == null)
+			return;
+		for (Tuple tuple: tuples) {
 			int xpos = tuple.get("xpos").toInt();
 			int ypos = tuple.get("ypos").toInt();
 			String modelName = tuple.get("model").toString();
@@ -551,18 +487,19 @@ public class Rev extends JPanel {
 			if (stored) {
 				continue;
 			}
-			//Create a new relvar
-			Visualiser relvar = new VisualiserOfRelvar(this, tuple.get("Name").toString());
-			//Set up its position
+			// Create a new relvar
+			Visualiser relvar = new VisualiserOfRelvar(this, tuple.get("relvarName").toString());
+			relvar.setVisualiserName(tuple.get("Name").toString());
+			// Set up its position
 			if (xpos == -1 && ypos == -1) {
 				relvar.setLocation(nextX, nextY);
-				nextY += relvar.getHeight() + 10;
+				nextY += relvar.getBounds().height + 10;
 			} else {
 				relvar.setLocation(xpos, ypos);
 			}
-			//Find a list of relvars to move
+			// Find a list of relvars to move
 			for (VisualiserOfView vis: views) {
-				if (modelName.equals(vis.getName())) {
+				if (modelName.equals(vis.getVisualiserName())) {
 					vis.addTemp(relvar);
 				}
 			}
@@ -592,7 +529,7 @@ public class Rev extends JPanel {
 				continue;
 			//Add the query to the view model
 			for (VisualiserOfView vis: views) {
-				if (modelName.equals(vis.getName())) {
+				if (modelName.equals(vis.getVisualiserName())) {
 					vis.addTemp(visualiser);
 				}
 			}
@@ -665,7 +602,7 @@ public class Rev extends JPanel {
 			//Update
 			if (update) {
 				visualiser.updatePositionInDatabase();
-				updateComboBoxes();
+				updateMenus();
 			}
 		}
 	}
@@ -678,7 +615,7 @@ public class Rev extends JPanel {
 		for (VisualiserOfView vis: views) {
 			vis.commitTempList();
 		}
-		validate();
+		redraw();
 	}
 	
 	// Return version number of Rev extensions.  Return -1 if not installed.
@@ -689,7 +626,7 @@ public class Rev extends JPanel {
 	private boolean installRevExtensions() {
 		boolean pass = DatabaseAbstractionLayer.installRevExtensions(connection);
 		if (pass) {
-			updateComboBoxes();
+			updateMenus();
 		}
 		return pass;
 	}
@@ -697,16 +634,16 @@ public class Rev extends JPanel {
 	private boolean removeRevExtensions() {
 		boolean pass = DatabaseAbstractionLayer.removeRevExtensions(connection);
 		if (pass) {
-			updateComboBoxes();
+			updateMenus();
 		}
 		return pass;
 	}
 	
 	private void uninstall() {
 		if (hasRevExtensions() < 0) {
-			JOptionPane.showMessageDialog(this, "Rev is not installed.", "Rev", JOptionPane.INFORMATION_MESSAGE);
+        	MessageDialog.openInformation(getShell(), "Rev", "Rev is not installed.");
 		}
-		if (JOptionPane.showConfirmDialog(this, "Uninstall Rev?", "Rev", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
+		if (!MessageDialog.openConfirm(getShell(), "Rev", "Uninstall Rev?"))
 			return;
 		if (removeRevExtensions()) {
 			refresh();
@@ -715,50 +652,11 @@ public class Rev extends JPanel {
 		}
 	}
 	
-	private void setup() {
-		model.removeEverything();
-		int version = hasRevExtensions();
-		if (version < 0) {
-			add(getRevExtensionInstallPanel(), BorderLayout.EAST);
-			//presentWithoutRevExtensions();
-			return;
-		} else if (version < DatabaseAbstractionLayer.EXPECTED_REV_VERSION) {
-			upgrade(version);
-		}
-		presentWithRevExtensions();
-	}
-	
 	public void refresh() {
-		//Refresh the model
+		// Refresh the model
 		model.refresh();
-		//Refresh the combo boxes
-		updateComboBoxes();
-	}
-	
-	public void go() {
-		setup();
-	}
-	
-	private JPanel getRevExtensionInstallPanel() {
-		final JPanel installationControlPanel = new JPanel();
-		installationControlPanel.setLayout(new FlowLayout());
-		JButton installBtn = new JButton("Install Rev extensions");
-		installBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (installRevExtensions())
-					installationControlPanel.setVisible(false);
-				refresh();
-			}
-		});
-		installationControlPanel.add(installBtn);
-		JButton noinstallBtn = new JButton("Do not install Rev extensions");
-		noinstallBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				installationControlPanel.setVisible(false);
-			}
-		});
-		installationControlPanel.add(noinstallBtn);
-		return installationControlPanel;
+		// Refresh the combo boxes
+		updateMenus();
 	}
 	
 	private void upgrade(int currentVersionOfRevFromDatabase) {

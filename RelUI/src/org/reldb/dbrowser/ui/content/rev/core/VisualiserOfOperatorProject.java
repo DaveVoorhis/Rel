@@ -1,8 +1,6 @@
 package org.reldb.dbrowser.ui.content.rev.core;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.HashMap;
@@ -20,6 +18,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.eclipse.swt.graphics.Point;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Attribute;
@@ -27,15 +26,18 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
 public class VisualiserOfOperatorProject extends VisualiserOfOperator {
-	private static final long serialVersionUID = 1L;
-	
 	protected Parameter operand;	
 	protected JPanel controlPanel;
 	protected GridBagConstraints con = new GridBagConstraints();
 	private LinkedList<Option> options = new LinkedList<Option>();
 	
-	public VisualiserOfOperatorProject(Rev rev, String kind, String name, int xpos, int ypos) {
-		super(rev, kind, name, xpos, ypos);
+	public VisualiserOfOperatorProject(Rev rev) {
+		super(rev, "Project");
+		operand = addParameter("Operand", "Relation to be projected");
+	}
+
+	public VisualiserOfOperatorProject(Rev rev, String name) {
+		super(rev, "Project", name);
 		operand = addParameter("Operand", "Relation to be projected");
 	}
 
@@ -61,7 +63,7 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 		if (connect == null) {
 			return null;
 		}
-		VisualiserOfRel connected = (VisualiserOfRel)connect;
+		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
 		String connectedQuery = connected.getQuery();
 		//Don't try to project a null object
 		if (connectedQuery == null)
@@ -148,7 +150,7 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 		if (connected == null) {
 			return new PreservedState();
 		}
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateProject(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateProject(getRev().getConnection(), getVisualiserName());
 		if (tuples == null)
 			return new PreservedState();
 		Iterator<Tuple> tupleIterator = tuples.iterator();
@@ -158,8 +160,8 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 		PreservedState preservedState = new PreservedState();
 		//Refresh the preserved state when a new connection is made
 		String relvar = tuple.get("Relvar").toString();
-		if (!relvar.equals(connected.getName())) {
-			DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName());
+		if (!relvar.equals(connected.getVisualiserName())) {
+			DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getVisualiserName());
 			return preservedState;
 		}
 		preservedState.setAllBut(tuple.get("AllBut").toBoolean());
@@ -195,7 +197,7 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 			}
 		}
 		selections += "}";
-		DatabaseAbstractionLayer.updatePreservedStateProject(getRev().getConnection(), getName(), connected.getName(), allBut, selections);
+		DatabaseAbstractionLayer.updatePreservedStateProject(getRev().getConnection(), getVisualiserName(), connected.getVisualiserName(), allBut, selections);
 	}
 	
 	protected JCheckBox addSelection(JPanel panel, String prompt, boolean selected, int id) {
@@ -211,7 +213,7 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 				}
 			}
 		});
-		box.setFont(Visualiser.LabelFont);
+//		box.setFont(Visualiser.LabelFont);
 		con.gridx = 0;
 		con.gridy = id;
 		con.anchor = GridBagConstraints.WEST;
@@ -288,7 +290,7 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 		options.set(id, new Option(addSelection(panel, prompt, selected, id), attribute, addSpinner(count, id), id));
 	}
 	
-	protected Dimension initialSize;
+	protected Point initialSize;
 	
 	protected void showAttributes() {
 		controlPanel.removeAll();
@@ -325,7 +327,8 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 		GridBagLayout layout = new GridBagLayout();
 		controlPanel.setLayout(layout);
 		controlPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		add(controlPanel, BorderLayout.SOUTH);
+		/** TODO Fixme 
+		add(controlPanel, BorderLayout.SOUTH); */
 		showAttributes();
 	}
 	
@@ -337,7 +340,7 @@ public class VisualiserOfOperatorProject extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getVisualiserName());
 	}
 	
 }

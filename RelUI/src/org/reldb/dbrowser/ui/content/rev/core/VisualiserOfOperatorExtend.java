@@ -1,6 +1,5 @@
 package org.reldb.dbrowser.ui.content.rev.core;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -17,23 +16,27 @@ import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
+import org.eclipse.swt.graphics.Point;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
 public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
-	private static final long serialVersionUID = 1L;
-	
 	protected Parameter operand;
 	protected JPanel controlPanel;
 	protected LinkedList<JTextField> attributeList;
 	protected LinkedList<JTextField> initialValues;
 	protected String KeyWord = "EXTEND";
-	protected Dimension initialSize;
+	protected Point initialSize;
 	
-	public VisualiserOfOperatorExtend(Rev rev, String kind, String name, int xpos, int ypos) {
-		super(rev, kind, name, xpos, ypos);
+	public VisualiserOfOperatorExtend(Rev rev) {
+		super(rev, "EXTEND");
+		operand = addParameter("Operand", "Relation to be extended.");
+	}
+	
+	public VisualiserOfOperatorExtend(Rev rev, String name) {
+		super(rev, "EXTEND", name);
 		operand = addParameter("Operand", "Relation to be extended.");
 	}
 	
@@ -42,13 +45,13 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 		if (connect == null) {
 			return null;
 		}
-		VisualiserOfRel connected = (VisualiserOfRel)connect;
+		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
 		String connectedQuery = connected.getQuery();
 		if (connectedQuery == null)
 			return null;
 		String qry = "";
 		if (attributeList.size() > 0) {
-			qry = KeyWord + " " + connected.getName() + " : { ";
+			qry = KeyWord + " " + connected.getVisualiserName() + " : { ";
 			int count = 0;
 			for (int i=0; i < attributeList.size(); i++) {
 				String attribute = attributeList.get(i).getText();
@@ -83,11 +86,11 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 				//Refresh the preserved state when a new connection is made
 				String relvar = tuple.get("Relvar").toString();
 				boolean skip = false;
-				if (!relvar.equals(connected.getName())) {
+				if (!relvar.equals(connected.getVisualiserName())) {
 					if (KeyWord.equals("EXTEND")) {
-						DatabaseAbstractionLayer.removeOperator_Extend(getRev().getConnection(), getName());
+						DatabaseAbstractionLayer.removeOperator_Extend(getRev().getConnection(), getVisualiserName());
 					} else if (KeyWord.equals("SUMMARIZE")) {
-						DatabaseAbstractionLayer.removeOperator_Summarize(getRev().getConnection(), getName());
+						DatabaseAbstractionLayer.removeOperator_Summarize(getRev().getConnection(), getVisualiserName());
 					}
 					skip = true;
 				}
@@ -133,7 +136,7 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 	}
 	
 	protected Tuples load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateExtend(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateExtend(getRev().getConnection(), getVisualiserName());
 		return tuples;
 	}
 	
@@ -142,7 +145,7 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 		if (connected == null) {
 			return;
 		}
-		DatabaseAbstractionLayer.updatePreservedStateExtend(getRev().getConnection(), getName(), connected.getName(), save);
+		DatabaseAbstractionLayer.updatePreservedStateExtend(getRev().getConnection(), getVisualiserName(), connected.getVisualiserName(), save);
 	}
 	
 	protected void createForm(int rows) {
@@ -153,7 +156,7 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				addRow();
-				getRev().validate();
+				getRev().update();
 				updatePreservedState();
 			}
 		});
@@ -216,7 +219,8 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 		createForm(3);
 		controlPanel.setLayout(new GridLayout(0, 2));
 		controlPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		add(controlPanel, BorderLayout.SOUTH);
+		/** TODO Fixme 
+		add(controlPanel, BorderLayout.SOUTH); */
 	}
 	
 	public void updateVisualiser() {
@@ -231,6 +235,6 @@ public class VisualiserOfOperatorExtend extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Extend(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Extend(getRev().getConnection(), getVisualiserName());
 	}
 }

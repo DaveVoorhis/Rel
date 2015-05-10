@@ -1,36 +1,27 @@
 package org.reldb.dbrowser.ui.content.rev.core;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
-import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.eclipse.swt.graphics.Point;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuples;
 
-public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
-	private static final long serialVersionUID = 1L;
-	
+public class VisualiserOfOperatorDelete extends VisualiserOfOperator {	
 	private Parameter operand;
 	private JPanel controlPanel;
-	private Dimension initialSize;
+	private Point initialSize;
 	private JComboBox<String> deleteState;
 	private JComboBox<String> attList;
 	private JTextField condition;
 	
-	public VisualiserOfOperatorDelete(Rev rev, String kind, String name, int xpos, int ypos) {
-		super(rev, kind, name, xpos, ypos);
+	public VisualiserOfOperatorDelete(Rev rev) {
+		super(rev, "DELETE");
 		operand = addParameter("Operand", "Relation to be restricted. Condition example: AttributeName='text' or AttributeName>2 ");
 	}
 	
@@ -39,7 +30,7 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 		if (connect == null) {
 			return null;
 		}
-		VisualiserOfRel connected = (VisualiserOfRel)connect;
+		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
 		String connectedQuery = connected.getQuery();
 		if (connectedQuery == null)
 			return null;
@@ -51,7 +42,7 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 		boolean valid = true;
 		switch (deleteMethod) {
 		case 0:
-			qry = "DELETE " + connected.getName() + " WHERE ";
+			qry = "DELETE " + connected.getVisualiserName() + " WHERE ";
 			qry += attList.getSelectedItem().toString() + " = ";
 			if (condition != null) {
 				String conditionText = condition.getText();
@@ -64,10 +55,10 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 			qry += ";";
 			break;
 		case 1:
-			qry = "DELETE " + connected.getName() + ";";
+			qry = "DELETE " + connected.getVisualiserName() + ";";
 			break;
 		case 2:
-			qry = "DROP VAR " + connected.getName() + ";";
+			qry = "DROP VAR " + connected.getVisualiserName() + ";";
 			break;
 		}
 		if (!valid) {
@@ -89,7 +80,7 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 			return null;
 		if (operand.getConnection(0).getVisualiser() instanceof VisualiserOfOperand)
 			return null;
-		VisualiserOfRel connected = (VisualiserOfRel)operand.getConnection(0).getVisualiser();
+		VisualiserOfRelation connected = (VisualiserOfRelation)operand.getConnection(0).getVisualiser();
 		String query = connected.getQuery();
 		if (query == null)
 			return null;
@@ -161,6 +152,7 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 		if (condition == null) {
 			condition = new JTextField();
 		}
+		/** TODO Fixme
 		deleteState.addItemListener(new ItemListener() {
 			
 			@Override
@@ -173,6 +165,7 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 		controlPanel.setLayout(new GridLayout(0, 2));
 		controlPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		add(controlPanel, BorderLayout.SOUTH);
+		*/
 	}
 	
 	public void updatePositionInDatabase() {
@@ -181,11 +174,5 @@ public class VisualiserOfOperatorDelete extends VisualiserOfOperator {
 	public void updateVisualiser() {
 		super.updateVisualiser();
 		createForm();
-	}
-	
-	/** Override to be notified that this Visualiser is being removed from the Model. */
-	public void removing() {
-		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Project(getRev().getConnection(), getName());
 	}
 }

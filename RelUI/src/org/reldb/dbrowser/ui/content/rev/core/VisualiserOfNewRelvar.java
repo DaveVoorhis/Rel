@@ -98,10 +98,10 @@ public class VisualiserOfNewRelvar extends JPanel {
 	private int tempParent;
 	private int insert;
 	
-	public VisualiserOfNewRelvar(Rev rev, String kind, String name, int xpos, int ypos) {	
+	public VisualiserOfNewRelvar(Rev rev) {	
 		//super(rev, kind, name, xpos, ypos);
 		this.rev = rev;
-		setLocation(xpos, ypos);
+	//	setLocation(xpos, ypos);
 		populateCustom();
 		getOperators(0, true);
 	}
@@ -508,6 +508,7 @@ public class VisualiserOfNewRelvar extends JPanel {
 		add(controlPanel, BorderLayout.SOUTH);	
 		//Set scroll pane
 		scrollPane = new JScrollPane(this);
-		rev.setDetailView(scrollPane);
+		/** TODO fixme */
+		// rev.setDetailView(scrollPane);
 	}
 }

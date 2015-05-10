@@ -4,15 +4,19 @@ import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Tuples;
 
 public class VisualiserOfOperatorWrap extends VisualiserOfOperatorGroup {
-	private static final long serialVersionUID = 1L;
 	
-	public VisualiserOfOperatorWrap(Rev rev, String kind, String name, int xpos, int ypos) {
-		super(rev, kind, name, xpos, ypos);
+	public VisualiserOfOperatorWrap(Rev rev) {
+		super(rev);
+		keyword = "WRAP";
+	}
+	
+	public VisualiserOfOperatorWrap(Rev rev, String name) {
+		super(rev, name);
 		keyword = "WRAP";
 	}
 	
 	protected Tuples load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateWrap(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateWrap(getRev().getConnection(), getVisualiserName());
 		return tuples;
 	}
 	
@@ -21,7 +25,7 @@ public class VisualiserOfOperatorWrap extends VisualiserOfOperatorGroup {
 		if (connected == null) {
 			return;
 		}
-		DatabaseAbstractionLayer.updatePreservedStateWrap(getRev().getConnection(), getName(), connected.getName(), allBut, selections, asString);
+		DatabaseAbstractionLayer.updatePreservedStateWrap(getRev().getConnection(), getVisualiserName(), connected.getVisualiserName(), allBut, selections, asString);
 	}
 	
 	public void populateCustom() {
@@ -35,6 +39,6 @@ public class VisualiserOfOperatorWrap extends VisualiserOfOperatorGroup {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Wrap(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Wrap(getRev().getConnection(), getVisualiserName());
 	}
 }

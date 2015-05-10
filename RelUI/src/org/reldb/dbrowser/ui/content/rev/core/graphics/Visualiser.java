@@ -6,49 +6,56 @@
 
 package org.reldb.dbrowser.ui.content.rev.core.graphics;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ActionListener;
+import swing2swt.layout.BorderLayout;
 
-import javax.swing.Timer;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.reldb.dbrowser.ui.content.rev.core.Rev;
 
 /**
  * A Visualiser represents a thing in a Model.
  *
  * @author  Dave Voorhis
  */
-public class Visualiser extends javax.swing.JPanel {
-	
-    public final static java.awt.Font LabelFont = new java.awt.Font("sans-serif", java.awt.Font.PLAIN, 10);
-
-	private static final long serialVersionUID = 1L;
+public class Visualiser extends Composite {
     
-    private final static java.awt.Color MessageColor = new java.awt.Color(153, 175, 175);
-    private final static java.awt.Color BaseColor = new java.awt.Color(153, 153, 255);
-    private final static java.awt.Color SelectedColor = new java.awt.Color(100, 100, 255);
-    private final static java.awt.Color DropCandidateColor = new java.awt.Color(100, 255, 100);
-    private final static java.awt.Color PulseColor = new java.awt.Color(255, 255, 75);
-    private final static java.awt.Color BackgroundColor = new java.awt.Color(198, 198, 198);
+    private final static Color MessageColor = new Color(Display.getDefault(), 153, 175, 175);
+    private final static Color BaseColor = new Color(Display.getDefault(), 153, 153, 255);
+    private final static Color SelectedColor = new Color(Display.getDefault(), 100, 100, 255);
+    private final static Color DropCandidateColor = new Color(Display.getDefault(), 100, 255, 100);
+    private final static Color PulseColor = new Color(Display.getDefault(), 255, 255, 75);
+    private final static Color BackgroundColor = new Color(Display.getDefault(), 198, 198, 198);
+
     private final static int PulseDuration = 250;
 
     private final static int DEFAULT_EXTENSION_STEP_LENGTH = 3;
     private final static int DEFAULT_EXTENSION_BASE_LENGTH = 15;
 
     // display widgets
-    private javax.swing.JPanel jPanelLeft;
-    private javax.swing.JPanel jPanelRight;
-    private javax.swing.JPanel jPanelMain;
-    private javax.swing.JLabel jLabelTitle;
+    private Composite jPanelLeft;
+    private Composite jPanelRight;
+    private Composite jPanelMain;
+    private Label jLabelTitle;
     
     // Parameters on this visualiser
     private java.util.Vector<Parameter> parameters = new java.util.Vector<Parameter>();
     
     // Arguments to this visualiser
     private java.util.Vector<Argument> arguments = new java.util.Vector<Argument>();
-    
-    // Model in which this visualiser lives
-    private Model theModel;
     
     // Unique visualiser ID stamp
     private static long IDNumberStamp = 1;
@@ -71,41 +78,54 @@ public class Visualiser extends javax.swing.JPanel {
     // Movement timer
     private Timer movementTimer;
     
+    // Rev
+    private Rev rev;
+    
     /** Ctor */
-    protected Visualiser(Model model) {
+    protected Visualiser(Rev rev) {
+    	super(rev.getModel(), SWT.None);
+    	this.rev = rev;
         IDNumber = IDNumberStamp++;
         nextParameterID = 0;
-        theModel = model;
         Selected = false;
         DropCandidate = false;
         buildWidgets();
-        model.addVisualiser(this);
-        movementTimer = new Timer(250, new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			moved();
-    		}
+        rev.getModel().addVisualiser(this);
+        movementTimer = new Timer();
+        addControlListener(new ControlAdapter() {
+			@Override
+			public void controlMoved(ControlEvent e) {
+				dispatchMovement();
+			}
         });
-        movementTimer.setRepeats(false);
-        addComponentListener(new ComponentAdapter() {
-			public void componentMoved(ComponentEvent e) {
-				movementTimer.restart();
-				movement();
-			}        	
-        });
+        dispatchMovement();
     }
 
+    private void dispatchMovement() {
+        movementTimer.schedule(new TimerTask() {
+        	public void run() {
+        		getDisplay().asyncExec(new Runnable() {
+        			public void run() {
+		    			visualiserMoved();		        				
+        			}
+        		});
+        	}
+        }, 250);
+		movement();    	
+    }
+    
     /** Override to be notified of every movement.  This can receive a cascade of movements. */
     public void movement() {}
     
     /** Override to be notified 250 milliseconds after movement has stopped. */
-    public void moved() {}
+    public void visualiserMoved() {}
     
     /** Establish a connection. The 'throwMeAway' visualiser vanishes, and the connection remains to 'attachToMe'.  Return true if succeeded. */
     public static boolean attachAndDelete(Visualiser attachToMe, Visualiser throwMeAway) {
         if (attachToMe.isDropCandidateFor(throwMeAway)) {
             while (throwMeAway.getArgumentCount() > 0)
                 throwMeAway.getArgument(0).setVisualiser(attachToMe);
-            throwMeAway.getModel().removeVisualiser(throwMeAway);
+            throwMeAway.getRev().getModel().removeVisualiser(throwMeAway);
             return true;
         }
         return false;    	
@@ -122,22 +142,21 @@ public class Visualiser extends javax.swing.JPanel {
     	return attachAndDelete(this, draggedVisualiser);
     }
     
-    private javax.swing.Timer pulseTimer = null;
+    private Timer pulseTimer = null;
     
     /** Pulse the visualiser with a given color for a moment.  Used to indicate
      * activity, instance changes, thrown exceptions, etc. */
-    public void pulse(java.awt.Color theColor) {
+    public void pulse(Color theColor) {
         if (pulseTimer!=null)
             return;
         setVisualiserColor(theColor);
-        pulseTimer = new javax.swing.Timer(PulseDuration, new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        pulseTimer = new Timer();
+        pulseTimer.schedule(new TimerTask() {
+        	public void run() {
                 setVisualiserColor();
-                pulseTimer = null;
-            }
-        });
-        pulseTimer.setRepeats(false);
-        pulseTimer.start();
+                pulseTimer = null;        		
+        	}
+        }, PulseDuration);
     }
     
     /** Pulse the visualiser, i.e., set background to pulse color for a moment. */
@@ -146,7 +165,7 @@ public class Visualiser extends javax.swing.JPanel {
     }
 
     // set visualiser to given color
-    private void setVisualiserColor(java.awt.Color theColor) {
+    private void setVisualiserColor(Color theColor) {
         jLabelTitle.setBackground(theColor);
     }
     
@@ -220,7 +239,7 @@ public class Visualiser extends javax.swing.JPanel {
     /** Get the named parameter. Return null if not found. */
     public Parameter getParameter(String name) {
         for (Parameter parameter: parameters)
-            if (parameter.getName().equals(name))
+            if (parameter.getConnectorName().equals(name))
             	return parameter;
         return null;
     }
@@ -283,14 +302,8 @@ public class Visualiser extends javax.swing.JPanel {
             IDNumberStamp = IDNumber + 1;
     }
 
-    /** Set the Model to which this visualiser belongs. */
-    public void setModel(Model w) {
-        theModel = w;
-    }
-    
-    /** Get the Model that may be accessed by this Visualiser.  Null if none. */
-    public Model getModel() {
-        return theModel;
+    public Rev getRev() {
+    	return rev;
     }
     
     /** True if this Visualiser is wholly owned by its parameter and should 
@@ -309,28 +322,33 @@ public class Visualiser extends javax.swing.JPanel {
         redrawArguments();
     }
     
+    private String name = "";
+    
+    public String getVisualiserName() {
+    	return name;
+    }
+    
+    public void setVisualiserName(String name) {
+    	this.name = name;
+        setLabel();
+    }
+    
     /** Set label (blue bar at top of every Visualiser). */
     public void setLabel() {
-        jLabelTitle.setText(getName());
+        jLabelTitle.setText(getVisualiserName());
     }
     
     /** Get long title, for use in control panel, etc. */
     public String getLongTitle() {
-        String out = getName() + ": ";
+        String out = getVisualiserName() + ": ";
         return out;
-    }
-    
-    /** Set name and set label to name. */
-    public void setName(String name) {
-        super.setName(name);
-        setLabel();
     }
     
     /** Set title.  Set name to title if it hasn't been set yet. */
     public void setTitle(String title) {
         Title = title;
-        if (getName()==null || getName().length()==0)
-            setName(Title + getID());       // auto-naming via title
+        if (getVisualiserName()==null || getVisualiserName().length()==0)
+            setVisualiserName(Title + getID());       // auto-naming via title
         setLabel();
     }
     
@@ -346,28 +364,30 @@ public class Visualiser extends javax.swing.JPanel {
     
     /** Get argument attachment point in Model coordinates. */
     public int getArgumentX(Argument c) {
+    	Rectangle bounds = getBounds();
         int indexOfArgument = arguments.indexOf(c);
         if (indexOfArgument==-1)
-            return getX() + getWidth() / 2;
-        int marginWidth = getWidth() / 5;               // 5%
-        int drawWidth = getWidth() - marginWidth;
+            return bounds.x + bounds.width / 2;
+        int marginWidth = bounds.width / 5;               // 5%
+        int drawWidth = bounds.width - marginWidth;
         int drawStep = drawWidth / (int)getArgumentCount();
         if (drawStep<0)
-            return getX() + getWidth() / 2;
-        return getX() + (getWidth() - drawWidth) / 2 + drawStep / 2 + indexOfArgument * drawStep;
+            return bounds.x + bounds.width / 2;
+        return bounds.x + (bounds.width - drawWidth) / 2 + drawStep / 2 + indexOfArgument * drawStep;
     }
     
     /** Return true if attachment point should be at bottom of Visualiser. */
     public boolean isConnectionAtBottom(Argument c) {
-    	return (c.getConnector().getConnectionY() > getY());
+    	return (c.getConnector().getConnectionY() > getBounds().y);
     }
     
     /** Get argument attachment point in Model coordinates. */
     public int getArgumentY(Argument c) {
+    	Rectangle bounds = getBounds();
     	if (isConnectionAtBottom(c))
-    		return getY() + getHeight();
+    		return bounds.y + bounds.height;
     	else
-    		return getY();
+    		return bounds.y;
     }
     
     /** Get appropriate parameter connection extension length given argument. */
@@ -378,30 +398,52 @@ public class Visualiser extends javax.swing.JPanel {
         return DEFAULT_EXTENSION_BASE_LENGTH + indexOfConnection * DEFAULT_EXTENSION_STEP_LENGTH;
     }
     
+    private int mouseOffsetX;
+    private int mouseOffsetY;
+    private boolean dragging = false;
+    
     // build widgets
-    protected void buildWidgets() {    
-        setLayout(new java.awt.BorderLayout());
+    protected void buildWidgets() {   
+        setLayout(new BorderLayout(0, 0));
         setBackground(BackgroundColor);
         
-        jPanelLeft = new javax.swing.JPanel();
-        jPanelLeft.setLayout(new java.awt.GridBagLayout());
-        jPanelLeft.setOpaque(false);
-        add(jPanelLeft, java.awt.BorderLayout.WEST);
+        jPanelLeft = new Composite(this, SWT.None);
+        jPanelLeft.setLayout(new GridLayout());
+        jPanelLeft.setLayoutData(BorderLayout.WEST);
         
-        jPanelRight = new javax.swing.JPanel();
-        jPanelRight.setLayout(new java.awt.GridBagLayout());
-        jPanelRight.setOpaque(false);
-        add(jPanelRight, java.awt.BorderLayout.EAST);
-        
+        jPanelRight = new Composite(this, SWT.None);
+        jPanelRight.setLayout(new GridLayout());
+        jPanelRight.setLayoutData(BorderLayout.EAST);
+
         // Visualiser customisations
         populateCustom();
         
-        jLabelTitle = new javax.swing.JLabel();
-        jLabelTitle.setOpaque(true);
+        jLabelTitle = new Label(this, SWT.None);
         jLabelTitle.setBackground(BaseColor);
-        jLabelTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelTitle.setFont(LabelFont);
-        add(jLabelTitle, java.awt.BorderLayout.NORTH);
+        jLabelTitle.setAlignment(SWT.CENTER);
+        jLabelTitle.setLayoutData(BorderLayout.NORTH);
+        
+        jLabelTitle.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				mouseOffsetX = e.x;
+				mouseOffsetY = e.y;
+				dragging = true;
+			}
+			@Override
+			public void mouseUp(MouseEvent e) {
+				dragging = false;
+			}
+        });
+        jLabelTitle.addMouseMoveListener(new MouseMoveListener() {
+			@Override
+			public void mouseMove(MouseEvent e) {
+				if (dragging) {
+					Point location = getLocation();
+					setLocation(location.x + e.x - mouseOffsetX, location.y + e.y - mouseOffsetY);
+				}
+			}
+        });
     }
     
     /** Populate custom section. */
@@ -414,7 +456,7 @@ public class Visualiser extends javax.swing.JPanel {
     }
     
     /** Get main panel. */
-    public javax.swing.JPanel getMainPanel() {
+    public Composite getMainPanel() {
         return jPanelMain;
     }
    
@@ -423,36 +465,30 @@ public class Visualiser extends javax.swing.JPanel {
         if (c.isExposed())
             return;
         
-        c.setAlignmentY(0.0F);
-        c.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        c.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.gridx = 0;
+//        c.setAlignmentY(0.0F);
+//        c.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+//        c.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         
         // Position of parameter
-        if (c.getLayoutDirection()==Parameter.EASTTOWEST) {
-            gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-            jPanelLeft.add(c, gridBagConstraints);
-            c.setExtensionLength(jPanelLeft.getComponentCount() * getConnectorExtensionStepLength() + getConnectorExtensionBaseLength());
+        if (c.getLayoutDirection() == Parameter.EASTTOWEST) {
+            c.setParent(jPanelLeft);
+            c.setExtensionLength(jPanelLeft.getChildren().length * getConnectorExtensionStepLength() + getConnectorExtensionBaseLength());
         } else {
-            gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-            jPanelRight.add(c, gridBagConstraints);
-            c.setExtensionLength(jPanelRight.getComponentCount() * getConnectorExtensionStepLength() + getConnectorExtensionBaseLength());
+        	c.setParent(jPanelRight);
+            c.setExtensionLength(jPanelRight.getChildren().length * getConnectorExtensionStepLength() + getConnectorExtensionBaseLength());
         }
         c.setExposed(true);
                 
         // Redraw arguments to this visualiser.  
         redrawArguments();
-        if (theModel != null)
-            theModel.refresh();
+        rev.getModel().refresh();
     }
 
     // Temporarily unexposes a parameter (while leaving its connections in visual limbo)
     // so that it can shortly be re-exposed, possibly on a new side of the whazzit.
     private void unexposeTemporary(Parameter c) {
         c.setExposed(false);
-        c.getParent().remove(c);
+ //       c.getParent().remove(c);
     }
     
     /** Unexpose a parameter.  Will only work if the parameter has no arguments. */
@@ -463,7 +499,7 @@ public class Visualiser extends javax.swing.JPanel {
             return;
         unexposeTemporary(c);
         redrawArguments();
-        theModel.refresh();
+        rev.getModel().refresh();
     }
     
     /** Make a connector switch sides.  Only works if connector is exposed. */

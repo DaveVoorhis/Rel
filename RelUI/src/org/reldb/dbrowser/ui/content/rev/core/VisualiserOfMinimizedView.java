@@ -3,7 +3,6 @@ package org.reldb.dbrowser.ui.content.rev.core;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 
 public class VisualiserOfMinimizedView extends VisualiserOfRelvar {
-	private static final long serialVersionUID = 1L;
 	
 	private VisualiserOfView view;
 	
@@ -13,7 +12,7 @@ public class VisualiserOfMinimizedView extends VisualiserOfRelvar {
 	
 	protected String getQuery() {
 		restore();
-		return getName();
+		return getVisualiserName();
 	}
 	
 	public void setView(VisualiserOfView view) {
@@ -35,24 +34,19 @@ public class VisualiserOfMinimizedView extends VisualiserOfRelvar {
     	return false;
     }
 	
-	public void moved() {
+	public void visualiserMoved() {
 		//Don't allow it to be moved by in restored mode
 		if (!this.isVisible()) {
 			return;
 		}
 		//Move the main views when in minimized mode
 		if (view != null) {
-			view.setLocation(this.getLocation());
-			view.setCacheLocation(this.getLocation());
+			view.setLocation(getLocation());
+			view.setCacheLocation(getLocation());
 		}
 	}
 	
 	public void populateCustom() {
 		addInvokeButton();
 	}
-	
-	/** Override to be notified that this Visualiser is being removed from the Model. */
-	public void removing() {
-		super.removing();
-	}	
 }

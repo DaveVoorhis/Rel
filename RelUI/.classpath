@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="lib/relclient.jar" sourcepath="/Client"/>
 	<classpathentry kind="lib" path="lib/RelDBMS.jar" sourcepath="/Server"/>
 	<classpathentry kind="lib" path="lib/ecj-4.4.2.jar"/>
+	<classpathentry kind="lib" path="swing2swt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

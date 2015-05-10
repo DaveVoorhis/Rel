@@ -1,30 +1,18 @@
 package org.reldb.dbrowser.ui.content.rev.core;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.LinkedList;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JToolBar;
-
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.ToolBar;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Argument;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Model;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 
-public class VisualiserOfView extends VisualiserOfRel {
-	private static final long serialVersionUID = 1L;
-	
+public class VisualiserOfView extends VisualiserOfRelation {
 	private Point location;
-	private Dimension size;
+	private Point size;
 	private boolean enabled;
 	private boolean stored;
 	private boolean deleting = false;
@@ -33,7 +21,7 @@ public class VisualiserOfView extends VisualiserOfRel {
 	private LinkedList<Visualiser> tempList = new LinkedList<Visualiser>();
 	private VisualiserOfMinimizedView minimizedView;
 	private MouseListener popupListener;
-	private JToolBar toolBar;
+	private ToolBar toolBar;
 	private int toolbarOffset = 28;
 	private int scrollbarWidth = 40;
 	private boolean maximized = false;
@@ -50,10 +38,11 @@ public class VisualiserOfView extends VisualiserOfRel {
 	public VisualiserOfView(Rev rev, String kind, String name, int xpos, int ypos) {
 		this(rev, kind, name, xpos, ypos, 300, 300, true);
 	}
+	
 	public VisualiserOfView(Rev rev, String kind, String name, int xpos, int ypos, int width, int height, boolean enabled) {
 		super(rev, name);
 		//Set size
-		this.size = new Dimension(width, height);
+		this.size = new Point(width, height);
 		this.setSize(this.size);
 		//Set location
 		this.location = new Point(xpos, ypos);
@@ -62,7 +51,7 @@ public class VisualiserOfView extends VisualiserOfRel {
 		this.enabled = enabled;
 		this.stored = false;
 		controlPanel.setResizable(false);
-		controlPanel.setName(name);
+		controlPanel.setVisualiserName(name);
 		int modelWidth = size.width - controlPanel.getWidth();
 		int modelHeight = size.height - toolbarOffset;
 		controlPanel.setModelDimensions(modelWidth, modelHeight);
@@ -99,7 +88,7 @@ public class VisualiserOfView extends VisualiserOfRel {
 	
 	public void updatePositionInDatabase() {
 		if (!deleting && !maximized) {
-			DatabaseAbstractionLayer.updateViewPosition(getRev().getConnection(), getName(), this.location.x, this.location.y, this.size.width, this.size.height, enabled, stored);
+			DatabaseAbstractionLayer.updateViewPosition(getRev().getConnection(), getVisualiserName(), this.location.x, this.location.y, this.size.width, this.size.height, enabled, stored);
 		}
 	}
 	
@@ -146,7 +135,7 @@ public class VisualiserOfView extends VisualiserOfRel {
     		}
 	    	getModel().removeVisualiser(visualiser, true);
 	    	controlPanel.addVisualiser(visualiser);
-	    	visualiser.moved();
+	    	visualiser.visualiserMoved();
 	    	//Move the arguments to the model
 	    	if (visualiser instanceof VisualiserOfOperator) {
 	    		moveArgumentToModel(visualiser);
@@ -161,7 +150,7 @@ public class VisualiserOfView extends VisualiserOfRel {
 	    	visualiser.setLocation(offSetX, offsetY);
 	    	controlPanel.removeVisualiser(visualiser, true);
 	    	getModel().addVisualiser(visualiser);
-	    	visualiser.moved();
+	    	visualiser.visualiserMoved();
 	    	//Move the arguments to the model
 	    	if (visualiser instanceof VisualiserOfOperator) {
 	    		moveArgumentToModel(visualiser);
@@ -210,7 +199,7 @@ public class VisualiserOfView extends VisualiserOfRel {
 	public void populateCustom() {
 		//Set up the model
 		if (controlPanel == null) {
-			controlPanel = new Model(getName());
+			controlPanel = new Model(getVisualiserName());
 			controlPanel.setViewOwner(this);
 		}
 		//Add a toolbar
@@ -362,7 +351,7 @@ public class VisualiserOfView extends VisualiserOfRel {
 		//Remove the view
 		deleting = true;
 		super.removing();
-		DatabaseAbstractionLayer.removeView(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeView(getRev().getConnection(), getVisualiserName());
 		getRev().removeVisualiser(this, true);
 	}
 	
@@ -370,8 +359,8 @@ public class VisualiserOfView extends VisualiserOfRel {
 		this.location = point;
 	}
 
- 	public void moved() {
-		super.moved();
+ 	public void visualiserMoved() {
+		super.visualiserMoved();
 		if (!maximized) {
 			this.location = getLocation();
 			updatePositionInDatabase();

@@ -6,6 +6,13 @@
 
 package org.reldb.dbrowser.ui.content.rev.core.graphics;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+
 /**
  * A Parameter is a widget bound to a Visualiser that represents
  * some attribute of the Visualiser.
@@ -15,13 +22,11 @@ package org.reldb.dbrowser.ui.content.rev.core.graphics;
  *
  * @author  Dave Voorhis
  */
-public class Parameter extends javax.swing.JLabel {
-    
-	private static final long serialVersionUID = 1L;
+public class Parameter extends Label {
 	
 	// Fonts
 //    private final static java.awt.Font LabelFontBold = new java.awt.Font("sans-serif", java.awt.Font.BOLD, 9);
-    private final static java.awt.Font LabelFontPlain = new java.awt.Font("sans-serif", java.awt.Font.PLAIN, 9);
+//    private final static java.awt.Font LabelFontPlain = new java.awt.Font("sans-serif", java.awt.Font.PLAIN, 9);
     
     // Sizes
     private final static int distance = 20;    // starting distance for connection extension
@@ -48,24 +53,24 @@ public class Parameter extends javax.swing.JLabel {
 
     /** Create an invisible, null connector */
     public Parameter(Visualiser v) {
+    	super(v, SWT.None);
         name = "";
         visualiser = v;
         id = visualiser.getNextParameterID();
         setLayoutDirection();
-        setOpaque(true);
         addConnector(" ");
         setVisible(false);
     }
     
     /** Create a connector. */
     public Parameter(Visualiser visualiser, String name, String Tip) {
+    	super(visualiser, SWT.None);
         this.visualiser = visualiser;
         this.name = name;
         id = visualiser.getNextParameterID();
         setLayoutDirection();
-        setOpaque(true);
         setToolTipText(Tip);
-        setBorder(new javax.swing.border.EtchedBorder());
+//        setBorder(new javax.swing.border.EtchedBorder());
         addConnector(Tip);
         addConnectorLabel();
         configureMouse();
@@ -142,12 +147,12 @@ public class Parameter extends javax.swing.JLabel {
     
     /** Change the ranking of this Connector in the Visualiser's display */
     public void changeRank(int n) {
-        java.awt.Container container = this.getParent();
-        container.remove(this);
-        container.add(this, n);
+//        java.awt.Container container = this.getParent();
+//        container.remove(this);
+//        container.add(this, n);
         getVisualiser().updateVisualiser();
         redrawConnections();
-        getVisualiser().getModel().refresh();
+        getVisualiser().getRev().getModel().refresh();
     }
     
     /** Redraw all Connections that argument this Connector */
@@ -161,7 +166,7 @@ public class Parameter extends javax.swing.JLabel {
         while (getConnectionCount()>0) {
             Visualiser Source = getConnection(0).getVisualiser();
             if (Source!=null && Source.isOwnedByParameter())
-                Source.getModel().removeVisualiser(Source);
+                Source.getRev().getModel().removeVisualiser(Source);
             else
                 getConnection(0).disconnect();
         }
@@ -210,27 +215,39 @@ public class Parameter extends javax.swing.JLabel {
     }
     
     /** Get the Connector's name */
-    public String getName() {
+    public String getConnectorName() {
         return name;
     }
     
     /** get attachment point in Model coordinates */
     public int getConnectionX() {
-        if (getLayoutDirection()==EASTTOWEST)
-            return getParent().getParent().getX() + getParent().getX() + getX();
+    	Rectangle bounds = getBounds();
+    	Composite parent = getParent();
+    	Rectangle parentbounds = parent.getBounds();
+    	Composite grandparent = parent.getParent();
+    	Rectangle grandparentbounds = grandparent.getBounds();
+    	int x = grandparentbounds.x + parentbounds.x + bounds.x;
+        if (getLayoutDirection() == EASTTOWEST)
+            return x;
         else
-            return getParent().getParent().getX() + getParent().getX() + getX() + getWidth();
+            return x + bounds.width;
     }
     
     /** get attachment point in Model coordinates */
     public int getConnectionY() {
-        return getParent().getParent().getY() + getParent().getY() + getY() + getHeight() / 2;
+    	Rectangle bounds = getBounds();
+    	Composite parent = getParent();
+    	Rectangle parentbounds = parent.getBounds();
+    	Composite grandparent = parent.getParent();
+    	Rectangle grandparentbounds = grandparent.getBounds();
+    	int y = grandparentbounds.y + parentbounds.y + bounds.y;
+        return y + getBounds().height / 2;
     }
-    
+
     // Set up label
     private void addConnectorLabel() {
-        setFont(LabelFontPlain);
-        setText(getText() + getName());
+//        setFont(LabelFontPlain);
+        setText(getText() + getConnectorName());
     }
     
     /** implement a connector with associated tip */
@@ -245,20 +262,15 @@ public class Parameter extends javax.swing.JLabel {
     }
 
     /** Override to receive mouse click. */
-    public void handleMouseClick(java.awt.event.MouseEvent evt) {}
+    public void handleMouseClick(MouseEvent evt) {}
     
     // Set up mouse handler
     private void configureMouse() {
-        for (int i=0; i<this.getComponentCount(); i++)
-            getComponent(i).addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                   	handleMouseClick(evt);
-                }
-            });
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-               	handleMouseClick(evt);
-            }
+        addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				handleMouseClick(e);
+			}
         });
     }
     
@@ -270,4 +282,10 @@ public class Parameter extends javax.swing.JLabel {
         else
             nextLayoutDirection=EASTTOWEST;
     }
+    
+	@Override
+	protected void checkSubclass() {
+		// Disable the check that prevents subclassing of SWT components
+	}
+
 }

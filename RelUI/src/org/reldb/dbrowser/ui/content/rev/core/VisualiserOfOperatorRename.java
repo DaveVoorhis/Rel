@@ -1,8 +1,6 @@
 package org.reldb.dbrowser.ui.content.rev.core;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,6 +17,7 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.eclipse.swt.graphics.Point;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Attribute;
@@ -26,15 +25,18 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
 public class VisualiserOfOperatorRename extends VisualiserOfOperator {
-	private static final long serialVersionUID = 1L;
-	
 	private Parameter operand;	
 	private JPanel controlPanel;
 	private LinkedList<Option> options = new LinkedList<Option>();
 	private LinkedList<JTextField> newNames = null;
 	
-	public VisualiserOfOperatorRename(Rev rev, String kind, String name, int xpos, int ypos) {
-		super(rev, kind, name, xpos, ypos);
+	public VisualiserOfOperatorRename(Rev rev) {
+		super(rev, "RENAME");
+		operand = addParameter("Operand", "Relation to be renamed");
+	}
+	
+	public VisualiserOfOperatorRename(Rev rev, String name) {
+		super(rev, "RENAME", name);
 		operand = addParameter("Operand", "Relation to be renamed");
 	}
 
@@ -58,7 +60,7 @@ public class VisualiserOfOperatorRename extends VisualiserOfOperator {
 		if (connect == null) {
 			return null;
 		}
-		VisualiserOfRel connected = (VisualiserOfRel)connect;
+		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
 		String connectedQuery = connected.getQuery();
 		if (connectedQuery == null)
 			return null;	
@@ -100,7 +102,7 @@ public class VisualiserOfOperatorRename extends VisualiserOfOperator {
 		if (connected == null) {
 			return new PreservedState();
 		}
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateRename(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateRename(getRev().getConnection(), getVisualiserName());
 		if (tuples == null)
 			return new PreservedState();
 		Iterator<Tuple> tupleIterator = tuples.iterator();
@@ -110,8 +112,8 @@ public class VisualiserOfOperatorRename extends VisualiserOfOperator {
 		PreservedState preservedState = new PreservedState();
 		//Refresh the preserved state when a new connection is made
 		String relvar = tuple.get("Relvar").toString();
-		if (!relvar.equals(connected.getName())) {
-			DatabaseAbstractionLayer.removeOperator_Rename(getRev().getConnection(), getName());
+		if (!relvar.equals(connected.getVisualiserName())) {
+			DatabaseAbstractionLayer.removeOperator_Rename(getRev().getConnection(), getVisualiserName());
 			return preservedState;
 		}
 		Tuples selections = (Tuples)tuple.get("selections");
@@ -141,7 +143,7 @@ public class VisualiserOfOperatorRename extends VisualiserOfOperator {
 			count2++;
 		}
 		selections += "}";
-		DatabaseAbstractionLayer.updatePreservedStateRename(getRev().getConnection(), getName(), connected.getName(), selections);
+		DatabaseAbstractionLayer.updatePreservedStateRename(getRev().getConnection(), getVisualiserName(), connected.getVisualiserName(), selections);
 	}
 	
 	private JCheckBox addSelection(JPanel panel, String prompt, boolean selected) {
@@ -156,7 +158,7 @@ public class VisualiserOfOperatorRename extends VisualiserOfOperator {
 				}).execute();
 			}
 		});
-		box.setFont(Visualiser.LabelFont);
+//		box.setFont(Visualiser.LabelFont);
 		controlPanel.add(box);
 		return box;
 	}
@@ -166,7 +168,7 @@ public class VisualiserOfOperatorRename extends VisualiserOfOperator {
 		options.add(new Option(addSelection(panel, prompt, selected), attribute.getName()));
 	}
 	
-	private Dimension initialSize;
+	private Point initialSize;
 	
 	private void showAttributes() {
 		controlPanel.removeAll();
@@ -216,7 +218,8 @@ public class VisualiserOfOperatorRename extends VisualiserOfOperator {
 			controlPanel = new JPanel();
 		controlPanel.setLayout(new GridLayout(0, 2));
 		controlPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		add(controlPanel, BorderLayout.SOUTH);
+		/** TODO Fixme 
+		add(controlPanel, BorderLayout.SOUTH); */
 		showAttributes();
 	}
 	
@@ -228,7 +231,7 @@ public class VisualiserOfOperatorRename extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Rename(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Rename(getRev().getConnection(), getVisualiserName());
 	}
 	
 }

@@ -1,9 +1,6 @@
 package org.reldb.dbrowser.ui.content.rev;
 
-import java.awt.Frame;
-
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
@@ -12,6 +9,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.content.rev.core.Rev;
@@ -38,17 +36,14 @@ public class DbTabContentRev extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 
-	    Composite content = new Composite(this, SWT.EMBEDDED | SWT.NO_BACKGROUND);
-	    Frame frame = SWT_AWT.new_Frame(content);
-	    Rev rev = new Rev(parentTab.getURL(), parentTab.getCrashHandler());
-	    frame.add(rev);
+	    Rev rev = new Rev(this, parentTab.getURL(), parentTab.getCrashHandler());
 
 	    FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
 		fd_composite.top = new FormAttachment(toolBar);
 		fd_composite.right = new FormAttachment(100);
 		fd_composite.bottom = new FormAttachment(100);
-		content.setLayoutData(fd_composite);
+		rev.setLayoutData(fd_composite);
 	
 		tlitmBackup = new ToolItem(toolBar, SWT.None);
 		tlitmBackup.setToolTipText("Make backup");

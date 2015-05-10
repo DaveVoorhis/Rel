@@ -102,10 +102,11 @@ public class DatabaseAbstractionLayer {
 				"} INIT(relation {tuple {ver " + EXPECTED_REV_VERSION + "}}) key {ver};" +
 				//Create a relvar relation
 			    "var sys.rev.Relvar real relation {" +
-			    "	Name CHAR, " +
-			    "	xpos INTEGER, " +
-			    "	ypos INTEGER, " +
-			    "	model CHAR" +
+			    "	    Name CHAR, " +
+			    " relvarName CHAR, " +
+			    "	    xpos INTEGER, " +
+			    "	    ypos INTEGER, " +
+			    "	   model CHAR" +
 			    "} key {Name};" +
 				//Create a query relation
 			    "var sys.rev.Query real relation {" +
@@ -295,10 +296,10 @@ public class DatabaseAbstractionLayer {
 	
 	//Update the positions of the relvars and queries
 	//Update relvar position
-	public static void updateRelvarPosition(Connection connection, String name, int x, int y, String model) {
+	public static void updateRelvarPosition(Connection connection, String name, String relvarName, int x, int y, String model) {
 		String query = 
 				"DELETE sys.rev.Relvar where Name='" + name + "', " + 
-                "INSERT sys.rev.Relvar relation {tuple {Name '" + name + "', xpos " + x + ", ypos " + y + ", model '" + model + "'}};";
+                "INSERT sys.rev.Relvar relation {tuple {Name '" + name + "', relvarName '" + relvarName + "', xpos " + x + ", ypos " + y + ", model '" + model + "'}};";
 		execute(connection, query);
 	}
 	
@@ -317,7 +318,7 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	//Update view position
+	// Update view position
 	public static void updateViewPosition(Connection connection, String name, int x, int y, int width, int height, boolean enabled, boolean stored) {
 		String query = 
 				"DELETE sys.rev.View where Name='" + name + "', " + 
@@ -354,7 +355,7 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	//Restrict
+	// Restrict
 	public static Tuples getPreservedStateRestrict(Connection connection, String name) {
 		String query = "sys.rev.Op_Restrict WHERE Name = '" + name + "'";
 		return getTuples(connection, query);
@@ -374,7 +375,7 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	//Rename
+	// Rename
 	public static Tuples getPreservedStateRename(Connection connection, String name) {
 		String query = "sys.rev.Op_Rename WHERE Name = '" + name + "'";
 		return getTuples(connection, query);
@@ -387,7 +388,7 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	//Order
+	// Order
 	public static Tuples getPreservedStateOrder(Connection connection, String name) {
 		String query = "sys.rev.Op_Order WHERE Name = '" + name + "'";
 		return getTuples(connection, query);
@@ -400,7 +401,7 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	//Group
+	// Group
 	public static Tuples getPreservedStateGroup(Connection connection, String name) {
 		String query = "sys.rev.Op_Group WHERE Name = '" + name + "'";
 		return getTuples(connection, query);
@@ -413,7 +414,7 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	//Ungroup
+	// Ungroup
 	public static Tuples getPreservedStateUngroup(Connection connection, String name) {
 		String query = "sys.rev.Op_Ungroup WHERE Name = '" + name + "'";
 		return getTuples(connection, query);
@@ -426,7 +427,7 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	//Wrap
+	// Wrap
 	public static Tuples getPreservedStateWrap(Connection connection, String name) {
 		String query = "sys.rev.Op_Wrap WHERE Name = '" + name + "'";
 		return getTuples(connection, query);
@@ -439,7 +440,7 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	//Unwrap
+	// Unwrap
 	public static Tuples getPreservedStateUnwrap(Connection connection, String name) {
 		String query = "sys.rev.Op_Unwrap WHERE Name = '" + name + "'";
 		return getTuples(connection, query);
@@ -464,11 +465,13 @@ public class DatabaseAbstractionLayer {
 		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + subRelvar + "}};";
 		execute(connection, query);
 	}
+	
 	//Summarize
 	public static Tuples getPreservedStateSummarize(Connection connection, String name) {
 		String query = "sys.rev.Op_Summarize WHERE Name = '" + name + "'";
 		return getTuples(connection, query);
 	}
+	
 	public static void updatePreservedStateSummarize(Connection connection, String name, String relvar, String subRelvar) {
 		String query = "DELETE sys.rev.Op_Summarize WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Summarize RELATION {" +
@@ -516,21 +519,6 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	public static void removeOperator_INTERSECT(Connection connection, String name) {
-		String query = "DELETE sys.rev.Op_INTERSECT WHERE Name = '" + name + "';";
-		execute(connection, query);
-	}
-	
-	public static void removeOperator_UNION(Connection connection, String name) {
-		String query = "DELETE sys.rev.Op_UNION WHERE Name = '" + name + "';";
-		execute(connection, query);
-	}
-	
-	public static void removeOperator_MINUS(Connection connection, String name) {
-		String query = "DELETE sys.rev.Op_MINUS WHERE Name = '" + name + "';";
-		execute(connection, query);
-	}
-	
 	public static void removeOperator_PRODUCT(Connection connection, String name) {
 		String query = "DELETE sys.rev.Op_PRODUCT WHERE Name = '" + name + "';";
 		execute(connection, query);
@@ -540,27 +528,7 @@ public class DatabaseAbstractionLayer {
 		String query = "DELETE sys.rev.Op_DIVIDEBY WHERE Name = '" + name + "';";
 		execute(connection, query);
 	}
-	
-	public static void removeOperator_JOIN(Connection connection, String name) {
-		String query = "DELETE sys.rev.Op_DIVIDEBY WHERE Name = '" + name + "';";
-		execute(connection, query);
-	}
-	
-	public static void removeOperator_Compose(Connection connection, String name) {
-		String query = "DELETE sys.rev.Op_COMPOSE WHERE Name = '" + name + "';";
-		execute(connection, query);
-	}
-	
-	public static void removeOperator_MATCHING(Connection connection, String name) {
-		String query = "DELETE sys.rev.Op_MATCHING WHERE Name = '" + name + "';";
-		execute(connection, query);
-	}
-	
-	public static void removeOperator_NOTMATCHING(Connection connection, String name) {
-		String query = "DELETE sys.rev.Op_NOTMATCHING WHERE Name = '" + name + "';";
-		execute(connection, query);
-	}
-	
+		
 	public static void removeOperator_Order(Connection connection, String name) {
 		String query = "DELETE sys.rev.Op_Order WHERE Name = '" + name + "';";
 		execute(connection, query);

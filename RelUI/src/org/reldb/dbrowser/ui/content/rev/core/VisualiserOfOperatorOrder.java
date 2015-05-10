@@ -23,12 +23,14 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
 public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
-	private static final long serialVersionUID = 1L;
-	
 	private LinkedList<Option> options = new LinkedList<Option>();
 	
-	public VisualiserOfOperatorOrder(Rev rev, String kind, String name, int xpos, int ypos) {
-		super(rev, kind, name, xpos, ypos);
+	public VisualiserOfOperatorOrder(Rev rev) {
+		super(rev);
+	}
+	
+	public VisualiserOfOperatorOrder(Rev rev, String name) {
+		super(rev, name);
 	}
 
 	private String getOrderString() {
@@ -55,7 +57,7 @@ public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 		if (connect == null) {
 			return null;
 		}
-		VisualiserOfRel connected = (VisualiserOfRel)connect;
+		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
 		String connectedQuery = connected.getQuery();
 		if (connectedQuery == null)
 			return null;
@@ -134,7 +136,7 @@ public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 		if (connected == null) {
 			return new PreservedState();
 		}
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateOrder(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateOrder(getRev().getConnection(), getVisualiserName());
 		if (tuples == null)
 			return new PreservedState();
 		Iterator<Tuple> tupleIterator = tuples.iterator();
@@ -144,8 +146,8 @@ public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 		PreservedState preservedState = new PreservedState();
 		//Refresh the preserved state when a new connection is made
 		String relvar = tuple.get("Relvar").toString();
-		if (!relvar.equals(connected.getName())) {
-			DatabaseAbstractionLayer.removeOperator_Order(getRev().getConnection(), getName());
+		if (!relvar.equals(connected.getVisualiserName())) {
+			DatabaseAbstractionLayer.removeOperator_Order(getRev().getConnection(), getVisualiserName());
 			return preservedState;
 		}
 		Tuples selections = (Tuples)tuple.get("selections");
@@ -186,7 +188,7 @@ public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 			}
 		}
 		selections += "}";
-		DatabaseAbstractionLayer.updatePreservedStateOrder(getRev().getConnection(), getName(), connected.getName(), selections);
+		DatabaseAbstractionLayer.updatePreservedStateOrder(getRev().getConnection(), getVisualiserName(), connected.getVisualiserName(), selections);
 	}
 	
 	protected void showAttributes() {
@@ -311,7 +313,7 @@ public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 				}
 			}
 		});
-		box.setFont(Visualiser.LabelFont);
+//		box.setFont(Visualiser.LabelFont);
 		con.gridx = 0;
 		con.gridy = id;
 		con.anchor = GridBagConstraints.WEST;
@@ -335,6 +337,6 @@ public class VisualiserOfOperatorOrder extends VisualiserOfOperatorProject {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Order(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Order(getRev().getConnection(), getVisualiserName());
 	}
 }

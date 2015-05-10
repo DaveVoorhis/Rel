@@ -1,8 +1,6 @@
 package org.reldb.dbrowser.ui.content.rev.core;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +14,7 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.eclipse.swt.graphics.Point;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Attribute;
@@ -23,15 +22,18 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
 public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
-	private static final long serialVersionUID = 1L;
-	
 	protected Parameter operand;	
 	protected JPanel controlPanel;
 	protected LinkedList<Option> options = new LinkedList<Option>();
 	protected String keyword = "UNGROUP";
 	
-	public VisualiserOfOperatorUngroup(Rev rev, String kind, String name, int xpos, int ypos) {
-		super(rev, kind, name, xpos, ypos);
+	public VisualiserOfOperatorUngroup(Rev rev) {
+		super(rev, "UNGROUP");
+		operand = addParameter("Operand", "Relation to be ungrouped.");
+	}
+	
+	public VisualiserOfOperatorUngroup(Rev rev, String name) {
+		super(rev, "UNGROUP", name);
 		operand = addParameter("Operand", "Relation to be ungrouped.");
 	}
 
@@ -56,11 +58,11 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 		if (connect == null) {
 			return null;
 		}
-		VisualiserOfRel connected = (VisualiserOfRel)connect;
+		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
 		String connectedQuery = connected.getQuery();
 		if (connectedQuery == null)
 			return null;
-		return getGroupingString(connect.getName());
+		return getGroupingString(connect.getVisualiserName());
 	}
 	
 	private static class Option {
@@ -103,11 +105,11 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 		PreservedState preservedState = new PreservedState();
 		//Refresh the preserved state when a new connection is made
 		String relvar = tuple.get("Relvar").toString();
-		if (!relvar.equals(connected.getName())) {
+		if (!relvar.equals(connected.getVisualiserName())) {
 			if (keyword.equals("UNGROUP")) {
-				DatabaseAbstractionLayer.removeOperator_Ungroup(getRev().getConnection(), getName());
+				DatabaseAbstractionLayer.removeOperator_Ungroup(getRev().getConnection(), getVisualiserName());
 			} else if (keyword.equals("UNWRAP")) {
-				DatabaseAbstractionLayer.removeOperator_Unwrap(getRev().getConnection(), getName());
+				DatabaseAbstractionLayer.removeOperator_Unwrap(getRev().getConnection(), getVisualiserName());
 			}
 			return preservedState;
 		}
@@ -133,7 +135,7 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 	}
 	
 	protected Tuples load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateUngroup(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateUngroup(getRev().getConnection(), getVisualiserName());
 		return tuples;
 	}
 	
@@ -142,7 +144,7 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 		if (connected == null) {
 			return;
 		}
-		DatabaseAbstractionLayer.updatePreservedStateUngroup(getRev().getConnection(), getName(), connected.getName(), selections);
+		DatabaseAbstractionLayer.updatePreservedStateUngroup(getRev().getConnection(), getVisualiserName(), connected.getVisualiserName(), selections);
 	}
 	
 	private JCheckBox addSelection(JPanel panel, String prompt, boolean selected) {
@@ -157,7 +159,7 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 				}).execute();
 			}
 		});
-		box.setFont(Visualiser.LabelFont);
+//		box.setFont(Visualiser.LabelFont);
 		controlPanel.add(box);
 		return box;
 	}
@@ -167,7 +169,7 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 		options.add(new Option(addSelection(panel, prompt, selected), attribute.getName()));
 	}
 	
-	private Dimension initialSize;
+	private Point initialSize;
 	
 	private void showAttributes() {
 		controlPanel.removeAll();
@@ -195,7 +197,8 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 			controlPanel = new JPanel();
 		controlPanel.setLayout(new GridLayout(0, 1));
 		controlPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		add(controlPanel, BorderLayout.SOUTH);
+		/** TODO Fixme 
+		add(controlPanel, BorderLayout.SOUTH); */
 		showAttributes();
 	}
 	
@@ -207,7 +210,7 @@ public class VisualiserOfOperatorUngroup extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Ungroup(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Ungroup(getRev().getConnection(), getVisualiserName());
 	}
 	
 }

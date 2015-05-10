@@ -1,8 +1,6 @@
 package org.reldb.dbrowser.ui.content.rev.core;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,6 +18,7 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.eclipse.swt.graphics.Point;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Attribute;
@@ -27,8 +26,6 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
 public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
-	private static final long serialVersionUID = 1L;
-	
 	protected Parameter operand;	
 	protected JPanel controlPanel;
 	protected JTextField asBox;
@@ -36,8 +33,13 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 	protected LinkedList<Option> options = new LinkedList<Option>();
 	protected String keyword = "GROUP";
 	
-	public VisualiserOfOperatorGroup(Rev rev, String kind, String name, int xpos, int ypos) {
-		super(rev, kind, name, xpos, ypos);
+	public VisualiserOfOperatorGroup(Rev rev) {
+		super(rev, "GROUP");
+		operand = addParameter("Operand", "Relation to be grouped.");
+	}
+	
+	public VisualiserOfOperatorGroup(Rev rev, String name) {
+		super(rev, "GROUP", name);
 		operand = addParameter("Operand", "Relation to be grouped.");
 	}
 
@@ -62,7 +64,7 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 		if (connected == null) {
 			return null;
 		}	
-		String groupString = connected.getName() + " " + keyword + " {";
+		String groupString = connected.getVisualiserName() + " " + keyword + " {";
 		groupString += getGroupingString();
 		String newAttribute = "";
 		if (asBox != null) {
@@ -128,11 +130,11 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 		PreservedState preservedState = new PreservedState();
 		//Refresh the preserved state when a new connection is made
 		String relvar = tuple.get("Relvar").toString();
-		if (!relvar.equals(connected.getName())) {
+		if (!relvar.equals(connected.getVisualiserName())) {
 			if (keyword.equals("GROUP")) {
-				DatabaseAbstractionLayer.removeOperator_Group(getRev().getConnection(), getName());
+				DatabaseAbstractionLayer.removeOperator_Group(getRev().getConnection(), getVisualiserName());
 			} else if (keyword.equals("WRAP")) {
-				DatabaseAbstractionLayer.removeOperator_Wrap(getRev().getConnection(), getName());
+				DatabaseAbstractionLayer.removeOperator_Wrap(getRev().getConnection(), getVisualiserName());
 			}
 			asText = "";
 			asBox.setText("");
@@ -174,7 +176,7 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 	}
 	
 	protected Tuples load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateGroup(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateGroup(getRev().getConnection(), getVisualiserName());
 		return tuples;
 	}
 	
@@ -183,7 +185,7 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 		if (connected == null) {
 			return;
 		}
-		DatabaseAbstractionLayer.updatePreservedStateGroup(getRev().getConnection(), getName(), connected.getName(), allBut, selections, asString);
+		DatabaseAbstractionLayer.updatePreservedStateGroup(getRev().getConnection(), getVisualiserName(), connected.getVisualiserName(), allBut, selections, asString);
 	}
 	
 	private JCheckBox addSelection(JPanel panel, String prompt, boolean selected) {
@@ -198,7 +200,7 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 				}).execute();
 			}
 		});
-		box.setFont(Visualiser.LabelFont);
+//		box.setFont(Visualiser.LabelFont);
 		controlPanel.add(box);
 		return box;
 	}
@@ -213,7 +215,7 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 		options.add(new Option(addSelection(panel, prompt, selected), attribute.getName()));
 	}
 	
-	private Dimension initialSize;
+	private Point initialSize;
 	
 	private void showAttributes() {
 		controlPanel.removeAll();
@@ -258,7 +260,8 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 			controlPanel = new JPanel();
 		controlPanel.setLayout(new GridLayout(0, 1));
 		controlPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		add(controlPanel, BorderLayout.SOUTH);
+		/** TODO Fixme 
+		add(controlPanel, BorderLayout.SOUTH); */
 		showAttributes();
 	}
 	
@@ -270,7 +273,7 @@ public class VisualiserOfOperatorGroup extends VisualiserOfOperator {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Group(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Group(getRev().getConnection(), getVisualiserName());
 	}
 	
 }

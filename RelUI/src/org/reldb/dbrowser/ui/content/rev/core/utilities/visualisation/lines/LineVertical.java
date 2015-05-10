@@ -6,21 +6,20 @@
 
 package org.reldb.dbrowser.ui.content.rev.core.utilities.visualisation.lines;
 
+import org.eclipse.swt.widgets.Composite;
+
 /**
  *
  * @author  Dave Voorhis
  */
 public class LineVertical extends Block {
-    
-	private static final long serialVersionUID = 1L;
 
-	/** Creates a new instance of VerticalLine */
-    public LineVertical(int x, int y1, int y2, int lineWidth) {
-        super(x, (y1<y2) ? y1 : y2, lineWidth, Math.abs(y1 - y2));
+    public LineVertical(Composite parent, int x, int y1, int y2, int lineWidth) {
+        super(parent, x, (y1<y2) ? y1 : y2, lineWidth, Math.abs(y1 - y2));
     }
     
-    // Creates a new instance of vertical line
-    public LineVertical() {
+    public LineVertical(Composite parent) {
+    	super(parent);
     }
     
     // Set the line

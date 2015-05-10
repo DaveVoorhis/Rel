@@ -1,14 +1,12 @@
 package org.reldb.dbrowser.ui.content.rev.core;
 
-import org.reldb.dbrowser.ui.content.rev.core.graphics.Model;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 
 public class VisualiserOfOperand extends Visualiser {
-	private static final long serialVersionUID = 1L;
-
-	protected VisualiserOfOperand(Model model, String name, int xpos, int ypos) {
-		super(model);
-		setName(name);
+	
+	protected VisualiserOfOperand(Rev rev, String name, int xpos, int ypos) {
+		super(rev);
+		setVisualiserName(name);
 		setLocation(xpos, ypos);
 	}
 	

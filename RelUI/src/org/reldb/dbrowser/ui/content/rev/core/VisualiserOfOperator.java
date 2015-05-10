@@ -1,13 +1,11 @@
 package org.reldb.dbrowser.ui.content.rev.core;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Argument;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
@@ -15,30 +13,36 @@ import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuples;
 
-public abstract class VisualiserOfOperator extends VisualiserOfRel {
-	
-	private static final long serialVersionUID = 1L;
+public abstract class VisualiserOfOperator extends VisualiserOfRelation {
 	
 	private String kind;
 		
-	public VisualiserOfOperator(Rev rev, String kind, String name, int xpos, int ypos) {
-		super(rev, name);
+	public VisualiserOfOperator(Rev rev, String kind) {
+		super(rev, kind);
 		this.kind = kind;
-		setLocation(xpos, ypos);
 	}
 	
+	public VisualiserOfOperator(Rev rev, String kind, String name) {
+		super(rev, kind, name);
+		this.kind = kind;
+	}
+		
 	public String getKind() {
 		return kind;
+	}
+	
+	public void setKind(String kind) {
+		this.kind = kind;
 	}
 	
 	protected String getQuery() {
 		return "";
 	}
 
-	public Argument createDefaultOperand(final Parameter parameter) {
-		String operandName = getName() + parameter.getName();
-		Visualiser operand = new VisualiserOfOperand(getModel(), operandName, Math.max(0, getX() - 140), getY());
-		getModel().refresh();
+	private Argument createDefaultOperand(final Parameter parameter) {
+		String operandName = getVisualiserName() + parameter.getConnectorName();
+		Visualiser operand = new VisualiserOfOperand(getRev(), operandName, Math.max(0, getBounds().x - 140), getBounds().y);
+		getRev().getModel().refresh();
 		return new Argument(parameter, operand, Argument.ARROW_FROM_VISUALISER);
 	}
 
@@ -55,7 +59,7 @@ public abstract class VisualiserOfOperator extends VisualiserOfRel {
 				if (parameter.getConnection(0).getVisualiser() instanceof VisualiserOfOperand)
 					out += "Name ''";
 				else
-					out += "Name '" + parameter.getConnection(0).getVisualiser().getName() + "'";
+					out += "Name '" + parameter.getConnection(0).getVisualiser().getVisualiserName() + "'";
 				out += "}";
 			}
 		}
@@ -77,7 +81,7 @@ public abstract class VisualiserOfOperator extends VisualiserOfRel {
 	
 	protected Attribute[] getAttributes(Parameter operand) {
 		Visualiser connect = getConnected(operand);
-		VisualiserOfRel connected = (VisualiserOfRel)connect;
+		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
 		if (connected == null) {
 			return null;
 		}
@@ -90,29 +94,21 @@ public abstract class VisualiserOfOperator extends VisualiserOfRel {
 	}
 
 	protected void updatePositionInDatabase() {
-		DatabaseAbstractionLayer.updateQueryPosition(getRev().getConnection(), getName(), getX(), getY(), getKind(), getConnections(), getModel().getName());
+		DatabaseAbstractionLayer.updateQueryPosition(getRev().getConnection(), getVisualiserName(), getBounds().x, getBounds().y, getKind(), getConnections(), getRev().getModel().getModelName());
 	}
 	
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator(getRev().getConnection(), getVisualiserName());
 	}
 	
 	private void updatePositionInDatabaseEventHandler() {
-		if (SwingUtilities.isEventDispatchThread())
-			(new SwingWorker<Object, Object>() {
-				protected Object doInBackground() throws Exception {
-					updatePositionInDatabase();
-					return null;
-				}			
-			}).execute();
-		else
-			updatePositionInDatabase();
+		updatePositionInDatabase();
 	}
 	
-	public void moved() {
-		super.moved();
+	public void visualiserMoved() {
+		super.visualiserMoved();
 		updatePositionInDatabaseEventHandler();
 	}
 	
@@ -129,7 +125,6 @@ public abstract class VisualiserOfOperator extends VisualiserOfRel {
 	
 	public Parameter addParameter(final String name, String comment) {
 		return addParameter(new Parameter(this, name, comment) {
-			private static final long serialVersionUID = 1L;
 			private void disconnect() {
 				removeConnections();
 				reconnect();				
@@ -137,25 +132,25 @@ public abstract class VisualiserOfOperator extends VisualiserOfRel {
 			private void reconnect() {
 				createDefaultOperand(this);				
 			}
-			public void handleMouseClick(java.awt.event.MouseEvent evt) {
-				JPopupMenu popup = new JPopupMenu();
-				JMenuItem menuItem = new JMenuItem("Disconnect");
-				menuItem.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+			public void handleMouseClick(MouseEvent evt) {
+				Menu popup = new Menu(getShell(), SWT.POP_UP);
+				MenuItem menuItem = new MenuItem(popup, SWT.PUSH);
+				menuItem.setText("Disconnect");
+				menuItem.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
 						disconnect();
 					}
 				});
-				popup.add(menuItem);
 				if (getConnectionCount() == 0) {
-					menuItem = new JMenuItem("Connect");
-					menuItem.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
+					menuItem = new MenuItem(popup, SWT.PUSH);
+					menuItem.setText("Connect");
+					menuItem.addSelectionListener(new SelectionAdapter() {
+						public void widgetSelected(SelectionEvent e) {
 							reconnect();
 						}
 					});
-					popup.add(menuItem);
 				}
-	            popup.show(evt.getComponent(), evt.getX(), evt.getY());
+				popup.setVisible(true);
 		    }
 		});
 	}

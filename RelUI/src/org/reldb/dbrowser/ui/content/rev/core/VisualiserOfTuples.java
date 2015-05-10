@@ -1093,7 +1093,7 @@ public class VisualiserOfTuples extends JPanel {
 				return null;
 			if (operand.getConnection(0).getVisualiser() instanceof VisualiserOfOperand)
 				return null;
-			VisualiserOfRel connected = (VisualiserOfRel)operand.getConnection(0).getVisualiser();
+			VisualiserOfRelation connected = (VisualiserOfRelation)operand.getConnection(0).getVisualiser();
 			query = connected.getQuery();
 		}
 		if (query == null)
@@ -1178,7 +1178,8 @@ public class VisualiserOfTuples extends JPanel {
 		this.setLayout(new GridBagLayout());
 		//Set scroll pane
 		scrollPane = new JScrollPane(this);
-		rev.setDetailView(scrollPane);
+		/** TODO Fixme
+		rev.setDetailView(scrollPane); */
 	}
 
 	private void saveChanges() {
@@ -1339,7 +1340,7 @@ public class VisualiserOfTuples extends JPanel {
 		//Update sizes
 		int columns = current.getAttributeCount();
 		resizeHeadersAndData(columns, DataModel.size(), false, true);
-		rev.validate();
+		rev.update();
 	}
 	
 	private void scrollToTop() {

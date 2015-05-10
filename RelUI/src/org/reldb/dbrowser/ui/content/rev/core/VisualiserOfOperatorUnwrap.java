@@ -4,10 +4,14 @@ import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.rel.client.Tuples;
 
 public class VisualiserOfOperatorUnwrap extends VisualiserOfOperatorUngroup {
-	private static final long serialVersionUID = 1L;
 	
-	public VisualiserOfOperatorUnwrap(Rev rev, String kind, String name, int xpos, int ypos) {
-		super(rev, kind, name, xpos, ypos);
+	public VisualiserOfOperatorUnwrap(Rev rev) {
+		super(rev);
+		keyword = "UNWRAP";
+	}
+	
+	public VisualiserOfOperatorUnwrap(Rev rev, String name) {
+		super(rev, name);
 		keyword = "UNWRAP";
 	}
 	
@@ -16,11 +20,11 @@ public class VisualiserOfOperatorUnwrap extends VisualiserOfOperatorUngroup {
 		if (connected == null) {
 			return;
 		}
-		DatabaseAbstractionLayer.updatePreservedStateUnwrap(getRev().getConnection(), getName(), connected.getName(), selections);
+		DatabaseAbstractionLayer.updatePreservedStateUnwrap(getRev().getConnection(), getVisualiserName(), connected.getVisualiserName(), selections);
 	}
 	
 	protected Tuples load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateUnwrap(getRev().getConnection(), getName());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateUnwrap(getRev().getConnection(), getVisualiserName());
 		return tuples;
 	}
 	
@@ -35,6 +39,6 @@ public class VisualiserOfOperatorUnwrap extends VisualiserOfOperatorUngroup {
 	/** Override to be notified that this Visualiser is being removed from the Model. */
 	public void removing() {
 		super.removing();
-		DatabaseAbstractionLayer.removeOperator_Unwrap(getRev().getConnection(), getName());
+		DatabaseAbstractionLayer.removeOperator_Unwrap(getRev().getConnection(), getVisualiserName());
 	}
 }

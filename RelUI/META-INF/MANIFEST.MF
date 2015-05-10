@@ -15,7 +15,8 @@ Bundle-ClassPath: .,
  lib/ecj-4.4.2.jar,
  lib/rel0000.jar,
  lib/relclient.jar,
- lib/RelDBMS.jar
+ lib/RelDBMS.jar,
+ swing2swt.jar
 Bundle-Activator: org.reldb.dbrowser.Activator
 Bundle-Vendor: reldb.org
 Require-Bundle: javax.inject;bundle-version="1.0.0",

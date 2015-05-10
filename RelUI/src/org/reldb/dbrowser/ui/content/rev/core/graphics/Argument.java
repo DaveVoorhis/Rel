@@ -6,6 +6,11 @@
 
 package org.reldb.dbrowser.ui.content.rev.core.graphics;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 import org.reldb.dbrowser.ui.content.rev.core.utilities.visualisation.glyphs.Arrow;
 import org.reldb.dbrowser.ui.content.rev.core.utilities.visualisation.lines.LineHorizontal;
 import org.reldb.dbrowser.ui.content.rev.core.utilities.visualisation.lines.LineVertical;
@@ -20,9 +25,10 @@ public class Argument {
 	public final static int ARROW_TO_VISUALISER = 0;
 	public final static int ARROW_FROM_VISUALISER = 1;
 	
-    private final static java.awt.Color BaseColor = new java.awt.Color(25, 75, 75);
-    private final static java.awt.Color SelectedColor = new java.awt.Color(150, 25, 25);
-    private final static java.awt.Color PulseColor = new java.awt.Color(255, 255, 75);
+    private final static Color BaseColor = new Color(Display.getDefault(), 25, 75, 75);
+    private final static Color SelectedColor = new Color(Display.getDefault(), 150, 25, 25);
+    private final static Color PulseColor = new Color(Display.getDefault(), 255, 255, 75);
+    
     private final static int PulseDuration = 250;
     private final static int NormalArrowWidth = 5;
     private final static int NormalLineWidth = 1;
@@ -33,12 +39,12 @@ public class Argument {
     private Parameter parameter;
     private Visualiser visualiser;
 
-    private LineHorizontal parameterExtension = new LineHorizontal();
-    private LineVertical visualiserExtension = new LineVertical();
-    private LineVertical verticalLink = new LineVertical();
-    private LineHorizontal visualiserLink = new LineHorizontal();
-    private Arrow visualiserArrow = new Arrow();
-    private Arrow parameterArrow = new Arrow();
+    private LineHorizontal parameterExtension;
+    private LineVertical visualiserExtension;
+    private LineVertical verticalLink;
+    private LineHorizontal visualiserLink;
+    private Arrow visualiserArrow;
+    private Arrow parameterArrow;
 
     private int lineWidth = NormalLineWidth;
 
@@ -49,7 +55,7 @@ public class Argument {
     
     /** Create a connection between a parameter and a Visualiser. */
     public Argument(Parameter parameter, Visualiser visualiser, int direction) {
-        this.model = visualiser.getModel();
+        this.model = visualiser.getRev().getModel();
         this.parameter = parameter;
         this.visualiser = visualiser;
         arrowIntoVisualiser = (direction == ARROW_TO_VISUALISER);
@@ -64,7 +70,7 @@ public class Argument {
     }
     
     // Get recommended color
-    private java.awt.Color getRecommendedColor() {
+    private Color getRecommendedColor() {
         if (pulsed)
             return PulseColor;
         else if (selected)
@@ -78,12 +84,12 @@ public class Argument {
     
     // Initialise widgets
     private void initComponents() {
-        model.getModelPane().add(visualiserExtension);
-        model.getModelPane().add(visualiserLink);
-        model.getModelPane().add(verticalLink);
-        model.getModelPane().add(parameterExtension);
-        model.getModelPane().add(visualiserArrow);
-        model.getModelPane().add(parameterArrow);
+        parameterExtension = new LineHorizontal(model.getModelPane());
+        visualiserExtension = new LineVertical(model.getModelPane());
+        verticalLink = new LineVertical(model.getModelPane());
+        visualiserLink = new LineHorizontal(model.getModelPane());
+        visualiserArrow = new Arrow(model.getModelPane());
+        parameterArrow = new Arrow(model.getModelPane());
     }
     
     /** Set connection as selected or unselected */
@@ -96,7 +102,7 @@ public class Argument {
         redraw();
     }
 
-    private javax.swing.Timer pulseTimer = null;
+    private Timer pulseTimer = null;
     
     /** Pulse the connector with a given color for a moment.  Used to indicate
      * activity. */
@@ -105,15 +111,14 @@ public class Argument {
             return;
         pulsed = true;
         redrawColor();
-        pulseTimer = new javax.swing.Timer(PulseDuration, new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        pulseTimer = new Timer();
+        pulseTimer.schedule(new TimerTask() {
+        	public void run() {
                 pulsed = false;
                 redrawColor();
-                pulseTimer = null;
-            }
-        });
-        pulseTimer.setRepeats(false);
-        pulseTimer.start();
+                pulseTimer = null;        		
+        	}
+        }, PulseDuration);
     }
     
     /** Set Parameter end of connection. */
@@ -169,19 +174,19 @@ public class Argument {
     	parameterExtension.setVisible(false);
     	visualiserArrow.setVisible(false);
     	parameterArrow.setVisible(false);
-        model.getModelPane().remove(visualiserExtension);
-        model.getModelPane().remove(visualiserLink);
-        model.getModelPane().remove(verticalLink);
-        model.getModelPane().remove(parameterExtension);
-        model.getModelPane().remove(visualiserArrow);
-        model.getModelPane().remove(parameterArrow);
+    	visualiserExtension.dispose();
+    	visualiserLink.dispose();
+    	verticalLink.dispose();
+    	parameterExtension.dispose();
+    	visualiserArrow.dispose();
+    	parameterArrow.dispose();
     }
 
     /** Recolor existing lines. */
     public void redrawColor() {
         if (isDangling())
             return;        
-        java.awt.Color c = getRecommendedColor();
+        Color c = getRecommendedColor();
         visualiserExtension.setBackground(c);
         parameterExtension.setBackground(c);
         verticalLink.setBackground(c);
@@ -232,7 +237,7 @@ public class Argument {
             vxSum += parameter.getConnection(i).getVisualiser().getArgumentX(this);
         long vxAverage = vxSum / parameter.getConnectionCount();
         Visualiser ConnectorVisualiser = parameter.getVisualiser();
-        if (vxAverage > ConnectorVisualiser.getWidth() / 2 + ConnectorVisualiser.getX()) {
+        if (vxAverage > ConnectorVisualiser.getBounds().width / 2 + ConnectorVisualiser.getBounds().x) {
             if (parameter.getLayoutDirection()==Parameter.EASTTOWEST)
                 parameter.switchSides();
         } else {
@@ -246,27 +251,35 @@ public class Argument {
         
         int cextlen = parameter.getExtensionLength();
 
-        int vx1 = parameter.getConnectionX() +
-            ((parameter.getLayoutDirection()==Parameter.EASTTOWEST) ? -cextlen : cextlen);
+        int pcx = parameter.getConnectionX();
+        int pcy = parameter.getConnectionY();
+        
+        int vx1 = pcx + ((parameter.getLayoutDirection() == Parameter.EASTTOWEST) ? -cextlen : cextlen);
 
         int vextlen = visualiser.getExtensionLength(this);
         
-        int vy2 = visualiser.getArgumentY(this) +
-        	((visualiser.isConnectionAtBottom(this)) ? vextlen : -vextlen);
+        int vayt = visualiser.getArgumentY(this);
+        int vy2 = vayt + ((visualiser.isConnectionAtBottom(this)) ? vextlen : -vextlen);
        
-        parameterExtension.setLine(parameter.getConnectionX(), vx1 +
-            ((parameter.getLayoutDirection()!=Parameter.EASTTOWEST) ? lineWidth : 0),
-            parameter.getConnectionY(), lineWidth);
-           
-        visualiserExtension.setLine(vx2, visualiser.getArgumentY(this), vy2, lineWidth);
+        int x1 = pcx;
+        int x2 = vx1 + ((parameter.getLayoutDirection() != Parameter.EASTTOWEST) ? lineWidth : 0);
+        int y = pcy;
+        parameterExtension.setLine(x1, x2, y, lineWidth);
         
-        verticalLink.setLine(vx1, parameter.getConnectionY(), vy2, lineWidth);
+        x1 = vx2;
+        x2 = visualiser.getArgumentY(this);
+        y = vy2;
+        visualiserExtension.setLine(x1, x2, y, lineWidth);
         
-        visualiserLink.setLine(
-        		vx2 + ((vx2 > vx1 && visualiser.isConnectionAtBottom(this)) ? lineWidth : 0), 
-        		vx1 + ((vy2 > parameter.getConnectionY() && vx2 < vx1) ? lineWidth : 0), 
-        		vy2,
-        		lineWidth);
+        x1 = vx1;
+        x2 = parameter.getConnectionY();
+        y = vy2;
+        verticalLink.setLine(x1, x2, y, lineWidth);
+
+        x1 = vx2 + ((vx2 > vx1 && visualiser.isConnectionAtBottom(this)) ? lineWidth : 0);
+        x2 = vx1 + ((vy2 > pcy && vx2 < vx1) ? lineWidth : 0);
+        y = vy2;
+        visualiserLink.setLine(x1, x2, y, lineWidth);
 
         // Create appropriate connection decorations.
         int arrowSize;
