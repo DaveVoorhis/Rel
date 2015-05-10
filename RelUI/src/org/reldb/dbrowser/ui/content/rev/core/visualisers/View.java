@@ -12,7 +12,7 @@ import org.reldb.dbrowser.ui.content.rev.core.graphics.Model;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 
-public class VisualiserOfView extends VisualiserOfRelation {
+public class View extends Relation {
 	private Point location;
 	private Point size;
 	private boolean enabled;
@@ -37,11 +37,11 @@ public class VisualiserOfView extends VisualiserOfRelation {
     private javax.swing.ImageIcon StoreIcon = null;
     private javax.swing.ImageIcon DeleteIcon = null;
 	
-	public VisualiserOfView(Rev rev, String kind, String name, int xpos, int ypos) {
+	public View(Rev rev, String kind, String name, int xpos, int ypos) {
 		this(rev, kind, name, xpos, ypos, 300, 300, true);
 	}
 	
-	public VisualiserOfView(Rev rev, String kind, String name, int xpos, int ypos, int width, int height, boolean enabled) {
+	public View(Rev rev, String kind, String name, int xpos, int ypos, int width, int height, boolean enabled) {
 		super(rev, name);
 		//Set size
 		this.size = new Point(width, height);
@@ -192,7 +192,7 @@ public class VisualiserOfView extends VisualiserOfRelation {
     		return false;
     	}
     	//Don't allow nested views
-    	if (draggedVisualiser instanceof VisualiserOfView) {
+    	if (draggedVisualiser instanceof View) {
     		return false;
     	}
     	return true;

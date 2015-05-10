@@ -21,7 +21,7 @@ import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
 import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operand;
-import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelation;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Relation;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
@@ -61,7 +61,7 @@ public class Order extends Project {
 		if (connect == null) {
 			return null;
 		}
-		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
+		Relation connected = (Relation)connect;
 		String connectedQuery = connected.getQuery();
 		if (connectedQuery == null)
 			return null;

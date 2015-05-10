@@ -4,7 +4,7 @@ import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operand;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
-import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelation;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Relation;
 
 public class Diyadic extends Operator { 
 	private Parameter operand1;
@@ -27,7 +27,7 @@ public class Diyadic extends Operator {
 			return null;
 		if (operand1.getConnection(0).getVisualiser() instanceof Operand)
 			return null;
-		VisualiserOfRelation connected1 = (VisualiserOfRelation)operand1.getConnection(0).getVisualiser();
+		Relation connected1 = (Relation)operand1.getConnection(0).getVisualiser();
 		if (connected1 == null)
 			return null;
 		
@@ -35,7 +35,7 @@ public class Diyadic extends Operator {
 			return null;
 		if (operand2.getConnection(0).getVisualiser() instanceof Operand)
 			return null;
-		VisualiserOfRelation connected2 = (VisualiserOfRelation)operand2.getConnection(0).getVisualiser();
+		Relation connected2 = (Relation)operand2.getConnection(0).getVisualiser();
 		if (connected2 == null)
 			return null;
 		

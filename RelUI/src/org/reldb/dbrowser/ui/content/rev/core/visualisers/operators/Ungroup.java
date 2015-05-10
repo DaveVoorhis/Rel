@@ -20,7 +20,7 @@ import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
-import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelation;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Relation;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
@@ -62,7 +62,7 @@ public class Ungroup extends Operator {
 		if (connect == null) {
 			return null;
 		}
-		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
+		Relation connected = (Relation)connect;
 		String connectedQuery = connected.getQuery();
 		if (connectedQuery == null)
 			return null;

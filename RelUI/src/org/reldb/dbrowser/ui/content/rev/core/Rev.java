@@ -22,11 +22,11 @@ import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.MinimizedView;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.NewRelvar;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
-import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelvar;
-import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfTableDee;
-import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfTableDum;
-import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfTuples;
-import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfView;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Relvar;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.TableDee;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.TableDum;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.TuplesVisualiser;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.View;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Delete;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Diyadic;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.operators.Extend;
@@ -50,10 +50,10 @@ public class Rev extends Composite {
 	private Connection connection;
 	private Model model;
 	private Composite detailView;
-	private VisualiserOfTuples tuples;
+	private TuplesVisualiser tuples;
 	private SashForm revPane;
 	private String[] queryOperators;
-	private LinkedList<VisualiserOfView> views;
+	private LinkedList<View> views;
 	private CrashHandler crashHandler;
 
 	public long getUniqueNumber() {
@@ -65,7 +65,7 @@ public class Rev extends Composite {
 	}
 	
 	public void createTuplesVisualiser(String query, String name) {
-		tuples = new VisualiserOfTuples(this, "VisTuples", "VisTuples" + getUniqueNumber(), 0, 0);
+		tuples = new TuplesVisualiser(this, "VisTuples", "VisTuples" + getUniqueNumber(), 0, 0);
 		if (tuples != null) {
 //			tuples.setSize(detailView.getSize());
 			tuples.setQuery(query, name);
@@ -258,17 +258,17 @@ public class Rev extends Composite {
 	private void menuAction(SelectionEvent e) {
 		MenuItem caller = (MenuItem)e.getSource();
 		String name = caller.getText();
-		Visualiser relvar = new VisualiserOfRelvar(this, name);
+		Visualiser relvar = new Relvar(this, name);
 		//Find out whether to insert the visualiser into the default model
 		//or a view model
 		Visualiser[] selected = getModel().getSelected();
 		if (selected != null) {
 			if (selected.length > 0) {
 				Visualiser target = selected[0];
-				if (target instanceof VisualiserOfView) {
+				if (target instanceof View) {
 					LinkedList<Visualiser> justOne = new LinkedList<Visualiser>();
 					justOne.add(relvar);
-					((VisualiserOfView) target).moveVisualisersToModel(justOne, true);
+					((View) target).moveVisualisersToModel(justOne, true);
 				}
 			}
 		}
@@ -284,7 +284,7 @@ public class Rev extends Composite {
 		//Add in the contained queries
 		presentQueriesWithRevExtensions("model = '" + name + "'");
 		//Update view with relvars
-		for (VisualiserOfView view: views) {
+		for (View view: views) {
 			if (view.getVisualiserName().equals(name)) {
 				view.commitTempList();
 			}
@@ -347,7 +347,7 @@ public class Rev extends Composite {
 	}
 	
 	public void createNewRelvarVisualier(String name) {
-		Visualiser relvar = new VisualiserOfRelvar(this, name);
+		Visualiser relvar = new Relvar(this, name);
 		relvar.setLocation(50, 50);
 		updateMenus();
 	}
@@ -367,7 +367,7 @@ public class Rev extends Composite {
 		updateMenus();
 	}
 	
-	public VisualiserOfView createView(int x, int y, Point size, String uniqueNumber) {
+	public View createView(int x, int y, Point size, String uniqueNumber) {
 		//Don't create view visualiser when rev extension are not installed
 		if (hasRevExtensions() == -1) {
 			return null;
@@ -377,7 +377,7 @@ public class Rev extends Composite {
 			uniqueNumber = "View" + Long.toString(getUniqueNumber());
 		}
 		//Create a normal and a small view
-		VisualiserOfView visualiser = new VisualiserOfView(this, "View", uniqueNumber, x, y, size.x, size.y, true);
+		View visualiser = new View(this, "View", uniqueNumber, x, y, size.x, size.y, true);
 		MinimizedView small = new MinimizedView(this, uniqueNumber);
 		small.setVisible(false);
 		//Link to each other
@@ -465,9 +465,9 @@ public class Rev extends Composite {
 			case "SUMMARIZE":
 				return new Summarize(this);
 			case "DEE (TABLE_DEE)":
-				return new VisualiserOfTableDee(this);
+				return new TableDee(this);
 			case "DUM (TABLE_DUM)":
-				return new VisualiserOfTableDum(this);
+				return new TableDum(this);
 			case "DELETE / DROP":
 				return new Delete(this); 
 		}
@@ -508,7 +508,7 @@ public class Rev extends Composite {
 				continue;
 			}
 			// Create a new relvar
-			Visualiser relvar = new VisualiserOfRelvar(this, tuple.get("relvarName").toString());
+			Visualiser relvar = new Relvar(this, tuple.get("relvarName").toString());
 			relvar.setVisualiserName(tuple.get("Name").toString());
 			// Set up its position
 			if (xpos == -1 && ypos == -1) {
@@ -518,7 +518,7 @@ public class Rev extends Composite {
 				relvar.setLocation(xpos, ypos);
 			}
 			// Find a list of relvars to move
-			for (VisualiserOfView vis: views) {
+			for (View vis: views) {
 				if (modelName.equals(vis.getVisualiserName())) {
 					vis.addTemp(relvar);
 				}
@@ -548,7 +548,7 @@ public class Rev extends Composite {
 			if (visualiser == null)
 				continue;
 			//Add the query to the view model
-			for (VisualiserOfView vis: views) {
+			for (View vis: views) {
 				if (modelName.equals(vis.getVisualiserName())) {
 					vis.addTemp(visualiser);
 				}
@@ -581,8 +581,8 @@ public class Rev extends Composite {
 		//Refresh the visualisers
 		for (int v = 0; v < getModel().getVisualiserCount(); v++) {
 			Visualiser vis = getModel().getVisualiser(v);
-			if (vis instanceof VisualiserOfRelvar)
-				((VisualiserOfRelvar)vis).refresh();
+			if (vis instanceof Relvar)
+				((Relvar)vis).refresh();
 		}
 	}
 	
@@ -593,7 +593,7 @@ public class Rev extends Composite {
 			update = true;
 		}
 		if (update) {
-			views = new LinkedList<VisualiserOfView>();
+			views = new LinkedList<View>();
 		}
 		//Load in the view panels
 		for (Tuple tuple: DatabaseAbstractionLayer.getViews(connection, where)) {
@@ -604,7 +604,7 @@ public class Rev extends Composite {
 			int height = tuple.get("height").toInt();
 			boolean enabled = tuple.get("enabled").toBoolean();
 			//Create normal view
-			VisualiserOfView visualiser = new VisualiserOfView(this, "View", name, xpos, ypos, width, height, enabled);
+			View visualiser = new View(this, "View", name, xpos, ypos, width, height, enabled);
 			views.add(visualiser);
 			//Create minimized view
 			MinimizedView small = new MinimizedView(this, name);
@@ -632,7 +632,7 @@ public class Rev extends Composite {
 		presentRelvarsWithRevExtensions("");
 		presentQueriesWithRevExtensions("");
 		// Add the relvar to the view model
-		for (VisualiserOfView vis: views) {
+		for (View vis: views) {
 			vis.commitTempList();
 		}
 		redraw();

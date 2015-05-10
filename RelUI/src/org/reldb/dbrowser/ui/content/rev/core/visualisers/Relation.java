@@ -20,17 +20,17 @@ import org.reldb.rel.client.Tuples;
 import swing2swt.layout.BorderLayout;
 
 /** Visualiser of anything that produces a relation. */
-public abstract class VisualiserOfRelation extends Visualiser {	
+public abstract class Relation extends Visualiser {	
     private final String InvokeIconFile = "PlayIconTiny";
     private final String EditorIconFile = "EditIconTiny";
 
-	public VisualiserOfRelation(Rev rev, String name) {
+	public Relation(Rev rev, String name) {
 		super(rev);
 		setVisualiserName(name + rev.getUniqueNumber());
 		setLabel();
 	}
 
-	public VisualiserOfRelation(Rev rev, String name, String id) {
+	public Relation(Rev rev, String name, String id) {
 		super(rev);
 		setVisualiserName(id);
 		setLabel();
@@ -50,8 +50,8 @@ public abstract class VisualiserOfRelation extends Visualiser {
 				continue;
 			for (int j=0; j<p.getConnectionCount(); j++) {
 				Visualiser v = p.getVisualiser();
-				if (v != null && v instanceof VisualiserOfRelation)
-					((VisualiserOfRelation)v).refresh();
+				if (v != null && v instanceof Relation)
+					((Relation)v).refresh();
 			}
 			arg.pulse();
 		}
@@ -76,7 +76,7 @@ public abstract class VisualiserOfRelation extends Visualiser {
     	if (draggedVisualiser instanceof Operand) {
     		return true;
     	}
-    	if (draggedVisualiser instanceof VisualiserOfView) {
+    	if (draggedVisualiser instanceof View) {
     		return true;
     	}
     	return false;

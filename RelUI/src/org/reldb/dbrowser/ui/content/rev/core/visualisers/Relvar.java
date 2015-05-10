@@ -4,11 +4,11 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
 import org.reldb.dbrowser.ui.content.rev.core.Rev;
 
-public class VisualiserOfRelvar extends VisualiserOfRelation {
+public class Relvar extends Relation {
 	
 	private String relvarName;
 	
-	public VisualiserOfRelvar(Rev rev, String name) {
+	public Relvar(Rev rev, String name) {
 		super(rev, name);
 		relvarName = name;
 	}

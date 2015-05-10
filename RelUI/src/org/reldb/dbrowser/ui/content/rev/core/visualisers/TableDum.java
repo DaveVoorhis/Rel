@@ -2,13 +2,14 @@ package org.reldb.dbrowser.ui.content.rev.core.visualisers;
 
 import org.reldb.dbrowser.ui.content.rev.core.Rev;
 
-public class VisualiserOfTableDee extends Operator {
-	public VisualiserOfTableDee(Rev rev) {
-		super(rev, "DEE");
-	}
+public class TableDum extends Operator {
 	
+	public TableDum(Rev rev) {
+		super(rev, "DUM");
+	}
+
 	public String getQuery() {
-		return "DEE";
+		return "DUM"; 
 	}
 	
 }

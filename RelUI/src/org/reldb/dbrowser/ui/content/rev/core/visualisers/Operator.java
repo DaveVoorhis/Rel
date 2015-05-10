@@ -15,7 +15,7 @@ import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuples;
 
-public abstract class Operator extends VisualiserOfRelation {
+public abstract class Operator extends Relation {
 	
 	private String kind;
 		
@@ -83,7 +83,7 @@ public abstract class Operator extends VisualiserOfRelation {
 	
 	protected Attribute[] getAttributes(Parameter operand) {
 		Visualiser connect = getConnected(operand);
-		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
+		Relation connected = (Relation)connect;
 		if (connected == null) {
 			return null;
 		}

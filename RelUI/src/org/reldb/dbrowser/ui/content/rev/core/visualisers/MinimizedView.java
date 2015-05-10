@@ -3,9 +3,9 @@ package org.reldb.dbrowser.ui.content.rev.core.visualisers;
 import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 
-public class MinimizedView extends VisualiserOfRelvar {
+public class MinimizedView extends Relvar {
 	
-	private VisualiserOfView view;
+	private View view;
 	
 	public MinimizedView(Rev rev, String name) {
 		super(rev, name);
@@ -16,7 +16,7 @@ public class MinimizedView extends VisualiserOfRelvar {
 		return getVisualiserName();
 	}
 	
-	public void setView(VisualiserOfView view) {
+	public void setView(View view) {
 		this.view = view;
 	}
 	

@@ -203,14 +203,14 @@ class TextFieldRows
 			if (PreviousState.get(i) != null && TextFieldRow.get(i) != null) {
 				String txt = TextFieldRow.get(i).getText();
 				PreviousState.set(i, txt);
-				txt = VisualiserOfTuples.remQuotes(txt);
+				txt = TuplesVisualiser.remQuotes(txt);
 				TextFieldRow.get(i).setText(txt);
 			}
 		}
 	}
 }
 
-public class VisualiserOfTuples extends JPanel {
+public class TuplesVisualiser extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private Rev rev;
@@ -238,7 +238,7 @@ public class VisualiserOfTuples extends JPanel {
 	private int textboxWidth = 100;
 	private int addWidth = 30;
 	
-	public VisualiserOfTuples(Rev rev, String kind, String name, int xpos, int ypos) {
+	public TuplesVisualiser(Rev rev, String kind, String name, int xpos, int ypos) {
 		this.rev = rev;
 		setLocation(xpos, ypos);
 		populateCustom();
@@ -1095,7 +1095,7 @@ public class VisualiserOfTuples extends JPanel {
 				return null;
 			if (operand.getConnection(0).getVisualiser() instanceof Operand)
 				return null;
-			VisualiserOfRelation connected = (VisualiserOfRelation)operand.getConnection(0).getVisualiser();
+			Relation connected = (Relation)operand.getConnection(0).getVisualiser();
 			query = connected.getQuery();
 		}
 		if (query == null)

@@ -24,7 +24,7 @@ import org.reldb.dbrowser.ui.content.rev.core.graphics.Parameter;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Visualiser;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operand;
 import org.reldb.dbrowser.ui.content.rev.core.visualisers.Operator;
-import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfRelation;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.Relation;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuple;
@@ -248,7 +248,7 @@ public class Restrict extends Operator {
 		if (connect == null) {
 			return null;
 		}
-		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
+		Relation connected = (Relation)connect;
 		String connectedQuery = connected.getQuery();
 		if (connectedQuery == null)
 			return null;
@@ -319,7 +319,7 @@ public class Restrict extends Operator {
 		if (connect instanceof Operand) {
 			return null;
 		}
-		VisualiserOfRelation connected = (VisualiserOfRelation)connect;
+		Relation connected = (Relation)connect;
 		if (connected == null) {
 			return null;
 		}
@@ -361,7 +361,7 @@ public class Restrict extends Operator {
 				if (operand.getConnection(0) != null) {
 					Visualiser temp = operand.getConnection(0).getVisualiser();
 					//When connected
-					if (temp instanceof VisualiserOfRelation && connect == null) {
+					if (temp instanceof Relation && connect == null) {
 						//Load the panels from data or create a blank one
 						if (getPreservedState()) {
 							createNewPanel(false);

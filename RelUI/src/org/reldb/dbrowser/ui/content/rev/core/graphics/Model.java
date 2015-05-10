@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.reldb.dbrowser.ui.content.rev.core.Rev;
-import org.reldb.dbrowser.ui.content.rev.core.visualisers.VisualiserOfView;
+import org.reldb.dbrowser.ui.content.rev.core.visualisers.View;
 
 /**
  * Defines a layered pane in which visualised classes may be manipulated.
@@ -57,8 +57,8 @@ public class Model extends ScrolledComposite {
     // This invisible panel always appears well below and to the right
     // of the lowest, rightmost Visualiser.  Used to force the editable
     // area to a region outside of any Visualiser.
-    private VisualiserOfView view = null;
-    private VisualiserOfView viewOwner = null;
+    private View view = null;
+    private View viewOwner = null;
 //    private JPanel redRectangle = new JPanel();
 
     // Changed flag.
@@ -120,10 +120,10 @@ public class Model extends ScrolledComposite {
     		visualiser.redrawArguments();
     }
     
-    public void setViewOwner(VisualiserOfView view) {
+    public void setViewOwner(View view) {
     	this.viewOwner = view;
     }
-    public VisualiserOfView getViewOwner() {
+    public View getViewOwner() {
     	return viewOwner;
     }
     
@@ -426,8 +426,8 @@ public class Model extends ScrolledComposite {
         //Modify the panels
         if (isShiftKeyHeld(evt)) {
         	if (focusVisualiser != null) {
-        		if (focusVisualiser instanceof VisualiserOfView) {
-        			view = (VisualiserOfView)focusVisualiser;
+        		if (focusVisualiser instanceof View) {
+        			view = (View)focusVisualiser;
         		}
         	}
         	//Resize an existing view
@@ -459,8 +459,8 @@ public class Model extends ScrolledComposite {
         //Drag the visualisers around
         else {
         	//Don't allow maximized views to be moved
-        	if (focusVisualiser instanceof VisualiserOfView) {
-        		VisualiserOfView tpView = (VisualiserOfView)focusVisualiser;
+        	if (focusVisualiser instanceof View) {
+        		View tpView = (View)focusVisualiser;
         		if (tpView.getMaximized()) {
         			return;
         		}
@@ -471,7 +471,7 @@ public class Model extends ScrolledComposite {
                 setSelected(focusVisualiser);
             int oldX = focusVisualiser.getBounds().x;
             int oldY = focusVisualiser.getBounds().y;
-            VisualiserOfView owner = focusVisualiser.getRev().getModel().getViewOwner();
+            View owner = focusVisualiser.getRev().getModel().getViewOwner();
             //When its outside, adjust for container location
             if (outside) {
             	newX = oldX;
@@ -598,8 +598,8 @@ public class Model extends ScrolledComposite {
         			if ((location.x >= clickOffsetX && location.y >= clickOffsetY)
         				&& (location.x <= evt.x && location.y <= evt.y)) {
         				//Restrict certain types
-        				if (vis instanceof VisualiserOfView) {
-        					if (VisualiserOfView.getNestable()) {
+        				if (vis instanceof View) {
+        					if (View.getNestable()) {
         						validPlacement = true;	
         					}
         				}
