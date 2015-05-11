@@ -16,8 +16,8 @@ public class Diadic extends Operator {
 		operand2 = addParameter("Operand 2", "Second relation passed to " + operatorName);		
 	}
 	
-	public Diadic(Rev rev, String visualiserName, String operatorName) {
-		super(rev, operatorName, visualiserName);
+	public Diadic(Rev rev, String visualiserName, String operatorName, int xpos, int ypos) {
+		super(rev, operatorName, visualiserName, xpos, ypos);
 		operand1 = addParameter("Operand 1", "First relation passed to " + operatorName); 
 		operand2 = addParameter("Operand 2", "Second relation passed to " + operatorName);		
 	}

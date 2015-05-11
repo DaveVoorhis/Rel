@@ -104,9 +104,12 @@ public class Visualiser extends Composite {
     private void dispatchMovement() {
         movementTimer.schedule(new TimerTask() {
         	public void run() {
+        		if (isDisposed())
+        			return;
         		getDisplay().asyncExec(new Runnable() {
         			public void run() {
-		    			visualiserMoved();		        				
+        				if (!isDisposed())
+        					visualiserMoved();		        				
         			}
         		});
         	}
@@ -401,6 +404,7 @@ public class Visualiser extends Composite {
     private int mouseOffsetX;
     private int mouseOffsetY;
     private boolean dragging = false;
+    private Visualiser dropCandidate = null;
     
     // build widgets
     protected void buildWidgets() {   
@@ -429,10 +433,19 @@ public class Visualiser extends Composite {
 				mouseOffsetX = e.x;
 				mouseOffsetY = e.y;
 				dragging = true;
+				setCapture(true);
 			}
 			@Override
 			public void mouseUp(MouseEvent e) {
+				setCapture(false);
 				dragging = false;
+        		if (dropCandidate!=null) {
+        			Point location = getLocation();
+        			if (dropCandidate == rev.getModel().getPossibleDropTarget(e.x + location.x, e.y + location.y, Visualiser.this) && dropCandidate.receiveDrop(Visualiser.this))
+        				dropCandidate.setDropCandidate(false);
+        			dropCandidate = null;
+            		redrawArguments();
+        		}
 			}
         });
         jLabelTitle.addMouseMoveListener(new MouseMoveListener() {
@@ -440,8 +453,19 @@ public class Visualiser extends Composite {
 			public void mouseMove(MouseEvent e) {
 				if (dragging) {
 					Point location = getLocation();
-					setLocation(location.x + e.x - mouseOffsetX, location.y + e.y - mouseOffsetY);
-				}
+					int newX = location.x + e.x - mouseOffsetX;
+					int newY = location.y + e.y - mouseOffsetY;
+					rev.getModel().moveVisualiser(Visualiser.this, newX, newY);
+					// drop?
+	                Visualiser dropTarget = rev.getModel().getPossibleDropTarget(location.x + e.x, location.y + e.y, Visualiser.this);
+	                if (dropCandidate!=null && dropCandidate!=dropTarget)
+	                    dropCandidate.setDropCandidate(false);
+	                if (dropTarget!=null) {
+	                    dropCandidate = dropTarget;
+	                    dropCandidate.setDropCandidate(true);
+	                }				
+				} else
+					moveAbove(null);
 			}
         });
     }
@@ -481,7 +505,7 @@ public class Visualiser extends Composite {
                 
         // Redraw arguments to this visualiser.  
         redrawArguments();
-        rev.getModel().refresh();
+//        rev.getModel().refresh();
     }
 
     // Temporarily unexposes a parameter (while leaving its connections in visual limbo)
@@ -499,7 +523,7 @@ public class Visualiser extends Composite {
             return;
         unexposeTemporary(c);
         redrawArguments();
-        rev.getModel().refresh();
+//        rev.getModel().refresh();
     }
     
     /** Make a connector switch sides.  Only works if connector is exposed. */

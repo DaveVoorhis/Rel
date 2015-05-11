@@ -55,6 +55,30 @@ public class Rev extends Composite {
 	private String[] queryOperators;
 	private LinkedList<View> views;
 	private CrashHandler crashHandler;
+	
+	public Rev(Composite parent, String dbURL, CrashHandler crashHandler) {
+		super(parent, SWT.None);
+		this.crashHandler = crashHandler;
+		
+		try {
+			connection = new Connection(dbURL, false, crashHandler, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		setLayout(new FillLayout());
+				
+		revPane = new SashForm(this, SWT.NONE);
+		revPane.setOrientation(SWT.VERTICAL);
+
+		model = new Model(this, revPane);
+
+		detailView = new Composite(revPane, SWT.BORDER);
+
+		revPane.setWeights(new int[] {8, 2});
+
+		setupMenus();
+	}
 
 	public long getUniqueNumber() {
 		return DatabaseAbstractionLayer.getUniqueNumber(connection);
@@ -76,73 +100,47 @@ public class Rev extends Composite {
 	private Operator getVisualiserForKind(String kind, String name, int xpos, int ypos) {
 		Operator visualiser = null;
 		if (kind.equals("Project")) {
-			visualiser = new Project(this, name);
+			visualiser = new Project(this, name, xpos, ypos);
 		} else if (kind.equals("Restrict")) {
-			visualiser = new Restrict(this, name);
+			visualiser = new Restrict(this, name, xpos, ypos);
 		} else if (kind.equals("UNION")) {
-			visualiser = new Diadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind, xpos, ypos);
 		} else if (kind.equals("RENAME")) {
-			visualiser = new Rename(this, name);
+			visualiser = new Rename(this, name, xpos, ypos);
 		} else if (kind.equals("INTERSECT")) {
-			visualiser = new Diadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind, xpos, ypos);
 		} else if (kind.equals("MINUS")) {
-			visualiser = new Diadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind, xpos, ypos);
 		} /*else if (kind.equals("PRODUCT")) {
-			visualiser = new VisualiserOfOperatorProduct(this, name);
+			visualiser = new VisualiserOfOperatorProduct(this, name, xpos, ypos);
 		} else if (kind.equals("DIVIDEBY")) {
-			visualiser = new VisualiserOfOperatorDivideby(this, name);
+			visualiser = new VisualiserOfOperatorDivideby(this, name, xpos, ypos);
 		}*/ else if (kind.equals("JOIN")) {
-			visualiser = new Diadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind, xpos, ypos);
 		} else if (kind.equals("COMPOSE")) {
-			visualiser = new Diadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind, xpos, ypos);
 		} else if (kind.equals("MATCHING")) {
-			visualiser = new Diadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind, xpos, ypos);
 		} else if (kind.equals("NOT MATCHING")) {
-			visualiser = new Diadic(this, name, kind);
+			visualiser = new Diadic(this, name, kind, xpos, ypos);
 		} else if (kind.equals("ORDER")) {
-			visualiser = new Order(this, name);
+			visualiser = new Order(this, name, xpos, ypos);
 		} else if (kind.equals("GROUP")) {
-			visualiser = new Group(this, name);
+			visualiser = new Group(this, name, xpos, ypos);
 		} else if (kind.equals("UNGROUP")) {
-			visualiser = new Ungroup(this, name);
+			visualiser = new Ungroup(this, name, xpos, ypos);
 		} else if (kind.equals("WRAP")) {
-			visualiser = new Wrap(this, name);
+			visualiser = new Wrap(this, name, xpos, ypos);
 		} else if (kind.equals("UNWRAP")) {
-			visualiser = new Unwrap(this, name);
+			visualiser = new Unwrap(this, name, xpos, ypos);
 		} else if (kind.equals("EXTEND")) {
-			visualiser = new Extend(this, name);
+			visualiser = new Extend(this, name, xpos, ypos);
 		} else if (kind.equals("SUMMARIZE")) {
-			visualiser = new Summarize(this, name);
+			visualiser = new Summarize(this, name, xpos, ypos);
 		} else {
 			System.out.println("Query kind '" + kind + "' not recognised.");
 		}
-		visualiser.setLocation(xpos, ypos);
 		return visualiser;
-	}
-	
-	public Rev(Composite parent, String dbURL, CrashHandler crashHandler) {
-		super(parent, SWT.None);
-		this.crashHandler = crashHandler;
-		
-		try {
-			connection = new Connection(dbURL, false, crashHandler, null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		setLayout(new FillLayout());
-				
-		revPane = new SashForm(this, SWT.NONE);
-		revPane.setOrientation(SWT.VERTICAL);
-
-		model = new Model(revPane);
-		model.setRev(this);
-
-		detailView = new Composite(revPane, SWT.BORDER);
-
-		revPane.setWeights(new int[] {8, 2});
-
-		setupMenus();
 	}
 
 	public void setupMenus() {
@@ -502,7 +500,7 @@ public class Rev extends Composite {
 			String rejectQuery = "sys.rev.View WHERE Name = '" + modelName + "'";
 			boolean stored = false;
 			for (Tuple view: DatabaseAbstractionLayer.evaluate(connection, rejectQuery)) {
-				stored = view.get("stored").toBoolean();
+				stored |= view.get("stored").toBoolean();
 			}
 			if (stored) {
 				continue;
@@ -528,26 +526,27 @@ public class Rev extends Composite {
 	
 	private void presentQueriesWithRevExtensions(String where) {
 		HashMap<String, LinkedList<Parameter>> unresolved = new HashMap<String, LinkedList<Parameter>>();
-		//Load in the regular query visualisers
+		// Load in the regular query visualisers
 		for (Tuple tuple: DatabaseAbstractionLayer.getQueries(connection, where)) {
 			String name = tuple.get("Name").toString();
 			int xpos = tuple.get("xpos").toInt();
 			int ypos = tuple.get("ypos").toInt();
 			String kind = tuple.get("kind").toString();
 			String modelName = tuple.get("model").toString();
-			//Reject any queries which are contained within stored views
+			// Reject any queries which are contained within stored views
 			String rejectQuery = "sys.rev.View WHERE Name = '" + modelName + "'";
 			boolean stored = false;
 			for (Tuple view: DatabaseAbstractionLayer.evaluate(connection, rejectQuery)) {
-				stored = view.get("stored").toBoolean();
+				stored |= view.get("stored").toBoolean();
 			}
 			if (stored) {
 				continue;
 			}
+			System.out.println("Rev: create visualiser for " + kind);
 			Operator visualiser = getVisualiserForKind(kind, name, xpos, ypos);
 			if (visualiser == null)
 				continue;
-			//Add the query to the view model
+			// Add the query to the view model
 			for (View vis: views) {
 				if (modelName.equals(vis.getVisualiserName())) {
 					vis.addTemp(visualiser);
@@ -558,6 +557,7 @@ public class Rev extends Composite {
 				unresolved.remove(name);
 				for (Parameter parm: unresolvedParms) {
 					parm.removeConnections();
+					System.out.println("Rev: create argument from " + parm + " to visualiser " + visualiser);
 					new Argument(parm, visualiser, Argument.ARROW_FROM_VISUALISER);
 				}
 			}
@@ -568,6 +568,7 @@ public class Rev extends Composite {
 				Visualiser operand = model.getVisualiser(visualiserName);
 				if (operand != null) {
 					parameter.removeConnections();
+					System.out.println("Rev: create argument from " + parameter + " to operand " + operand);
 					new Argument(parameter, operand, Argument.ARROW_FROM_VISUALISER);
 				} else {
 					LinkedList<Parameter> unresolvedParameters = unresolved.get(visualiserName);
@@ -578,7 +579,7 @@ public class Rev extends Composite {
 				}
 			}
 		}
-		//Refresh the visualisers
+		// Refresh the visualisers
 		for (int v = 0; v < getModel().getVisualiserCount(); v++) {
 			Visualiser vis = getModel().getVisualiser(v);
 			if (vis instanceof Relvar)

@@ -40,8 +40,8 @@ public class Project extends Operator {
 		operand = addParameter("Operand", "Relation to be projected");
 	}
 
-	public Project(Rev rev, String name) {
-		super(rev, "Project", name);
+	public Project(Rev rev, String name, int xpos, int ypos) {
+		super(rev, "Project", name, xpos, ypos);
 		operand = addParameter("Operand", "Relation to be projected");
 	}
 

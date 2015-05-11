@@ -23,13 +23,6 @@ import org.eclipse.swt.widgets.Label;
  * @author  Dave Voorhis
  */
 public class Parameter extends Label {
-	
-	// Fonts
-//    private final static java.awt.Font LabelFontBold = new java.awt.Font("sans-serif", java.awt.Font.BOLD, 9);
-//    private final static java.awt.Font LabelFontPlain = new java.awt.Font("sans-serif", java.awt.Font.PLAIN, 9);
-    
-    // Sizes
-    private final static int distance = 20;    // starting distance for connection extension
     
     // Visualiser to which this connector is bound
     private Visualiser visualiser;
@@ -74,14 +67,6 @@ public class Parameter extends Label {
         addConnector(Tip);
         addConnectorLabel();
         configureMouse();
-    }
-    
-    /** Obtain suggested new message visualiser position, relative to Model,
-        and offset (if necessary) by the new visualiser's width. */
-    java.awt.Point getRecommendedNewVisualiserPoint(int NewVisualiserWidth) {
-        return new java.awt.Point(getConnectionX() +
-                ((getLayoutDirection()==EASTTOWEST) ? -(distance + NewVisualiserWidth) : distance),
-                getConnectionY());
     }
     
     /** Get 'exposed' flag. */
@@ -152,7 +137,7 @@ public class Parameter extends Label {
 //        container.add(this, n);
         getVisualiser().updateVisualiser();
         redrawConnections();
-        getVisualiser().getRev().getModel().refresh();
+//        getVisualiser().getRev().getModel().refresh();
     }
     
     /** Redraw all Connections that argument this Connector */

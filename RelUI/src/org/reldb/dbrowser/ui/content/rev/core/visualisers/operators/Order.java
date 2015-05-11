@@ -33,8 +33,8 @@ public class Order extends Project {
 		super(rev);
 	}
 	
-	public Order(Rev rev, String name) {
-		super(rev, name);
+	public Order(Rev rev, String name, int xpos, int ypos) {
+		super(rev, name, xpos, ypos);
 	}
 
 	private String getOrderString() {

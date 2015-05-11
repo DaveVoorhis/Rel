@@ -12,8 +12,8 @@ public class Wrap extends Group {
 		keyword = "WRAP";
 	}
 	
-	public Wrap(Rev rev, String name) {
-		super(rev, name);
+	public Wrap(Rev rev, String name, int xpos, int ypos) {
+		super(rev, name, xpos, ypos);
 		keyword = "WRAP";
 	}
 	

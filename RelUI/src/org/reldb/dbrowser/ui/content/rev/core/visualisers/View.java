@@ -43,6 +43,7 @@ public class View extends Relation {
 	
 	public View(Rev rev, String kind, String name, int xpos, int ypos, int width, int height, boolean enabled) {
 		super(rev, name);
+		/*
 		//Set size
 		this.size = new Point(width, height);
 		this.setSize(this.size);
@@ -60,8 +61,9 @@ public class View extends Relation {
 		//Set up popup handler
 		popupListener = new PopupListener();
 		controlPanel.getModelPane().addMouseListener(popupListener);
+		*/
 	}
-	
+/*	
 	private int popupX;
 	private int popupY;
 	
@@ -83,15 +85,17 @@ public class View extends Relation {
 	        }
 	    }
 	}
-	
+*/	
 	public void setMinimized(MinimizedView view) {
 		minimizedView = view;
 	}
 	
 	public void updatePositionInDatabase() {
+		/*
 		if (!deleting && !maximized) {
 			DatabaseAbstractionLayer.updateViewPosition(getRev().getConnection(), getVisualiserName(), this.location.x, this.location.y, this.size.width, this.size.height, enabled, stored);
 		}
+		*/
 	}
 	
 	//private PreservedState getPreservedState() {
@@ -115,10 +119,6 @@ public class View extends Relation {
 		return nestable;
 	}
 	
-	protected String getQuery() {
-		return null;
-	}
-	
 	//Different than isEnabled() which is the actual component
 	public boolean getEnabled() {
 		return enabled;
@@ -129,6 +129,7 @@ public class View extends Relation {
 	}
 	
     public void moveVisualisersToModel(LinkedList<Visualiser> visualisers, boolean move) {
+    	/*
     	for (Visualiser visualiser: visualisers) {
     		if (move) {
     			int offsetX = visualiser.getX() - getX() - controlPanel.getX();
@@ -143,9 +144,11 @@ public class View extends Relation {
 	    		moveArgumentToModel(visualiser);
 	    	}
     	}
+    	*/
     }
     
 	public void moveVisualisersToDefault(LinkedList<Visualiser> visualisers) {
+		/*
     	for (Visualiser visualiser: visualisers) {
 			int offSetX = visualiser.getX() + getX() + controlPanel.getX();
 	    	int offsetY = visualiser.getY() + getY() + controlPanel.getY();
@@ -158,6 +161,7 @@ public class View extends Relation {
 	    		moveArgumentToModel(visualiser);
 	    	}
     	}
+    	*/
 	}
 	
 	public void moveArgumentToModel(Visualiser visualiser) {
@@ -197,7 +201,7 @@ public class View extends Relation {
     	}
     	return true;
     }
-    
+    /*
 	public void populateCustom() {
 		//Set up the model
 		if (controlPanel == null) {
@@ -285,11 +289,11 @@ public class View extends Relation {
 			setSize(size);
 		}
 	}
-	
+	*/
 	public boolean getMaximized() {
 		return maximized;
 	}
-	
+	/*
 	private void minimize() {
 		//Switch visibility
 		if (minimizedView != null) {
@@ -319,8 +323,10 @@ public class View extends Relation {
 			getRev().validate();
 		}
 	}
+	*/
 	
 	public void restore() {
+		/*
 		getViewModel().setModelDimensions(this.size.width, this.size.height - toolbarOffset);
 		setSize(this.size);
 		maximized = false;
@@ -330,8 +336,10 @@ public class View extends Relation {
 		getRev().getModel().getModelPane().setLayer(this, 0);
 		updatePositionInDatabase();
 		getRev().validate();
+		*/
 	}
 	
+	/*
 	private void store() {
 		//Flag the visualiser as stored
 		stored = true;
@@ -356,12 +364,20 @@ public class View extends Relation {
 		DatabaseAbstractionLayer.removeView(getRev().getConnection(), getVisualiserName());
 		getRev().removeVisualiser(this, true);
 	}
+	*/
 	
 	public void setCacheLocation(Point point) {
 		this.location = point;
 	}
 
+	@Override
+	public String getQuery() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
  	public void visualiserMoved() {
+ 		/*
 		super.visualiserMoved();
 		if (!maximized) {
 			this.location = getLocation();
@@ -370,11 +386,12 @@ public class View extends Relation {
 				minimizedView.setLocation(this.getLocation());
 			}
 		}
+		*/
 	}
 	
 	public void removing() {
 		//When a view is removed, it is added to the list and can be recalled
 		//to actually remove it permanently, a new function delete() must be called instead.
-		store();
+		// store();
 	}
 }

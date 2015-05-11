@@ -36,8 +36,8 @@ public class Ungroup extends Operator {
 		operand = addParameter("Operand", "Relation to be ungrouped.");
 	}
 	
-	public Ungroup(Rev rev, String name) {
-		super(rev, "UNGROUP", name);
+	public Ungroup(Rev rev, String name, int xpos, int ypos) {
+		super(rev, "UNGROUP", name, xpos, ypos);
 		operand = addParameter("Operand", "Relation to be ungrouped.");
 	}
 

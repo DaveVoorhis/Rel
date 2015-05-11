@@ -41,8 +41,8 @@ public class Group extends Operator {
 		operand = addParameter("Operand", "Relation to be grouped.");
 	}
 	
-	public Group(Rev rev, String name) {
-		super(rev, "GROUP", name);
+	public Group(Rev rev, String name, int xpos, int ypos) {
+		super(rev, "GROUP", name, xpos, ypos);
 		operand = addParameter("Operand", "Relation to be grouped.");
 	}
 

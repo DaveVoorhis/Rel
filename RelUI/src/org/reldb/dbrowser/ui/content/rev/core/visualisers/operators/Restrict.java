@@ -48,7 +48,7 @@ class QueryElementPanel extends JPanel
 		expValue = new JTextField();
 		expValue.addCaretListener(new CaretListener() {
 			public void caretUpdate(CaretEvent e) {
-				visualiser.getRev().getModel().refresh();
+		//		visualiser.getRev().getModel().refresh();
 				(new SwingWorker<Object, Object>() {
 					protected Object doInBackground() throws Exception {
 						visualiser.updatePreservedState();
@@ -218,8 +218,8 @@ public class Restrict extends Operator {
 		operand = addParameter("Operand", "Relation to be restricted. Condition example: AttributeName='text' or AttributeName>2 ");
 	}
 	
-	public Restrict(Rev rev, String name) {
-		super(rev, "Restrict", name);
+	public Restrict(Rev rev, String name, int xpos, int ypos) {
+		super(rev, "Restrict", name, xpos, ypos);
 		operand = addParameter("Operand", "Relation to be restricted. Condition example: AttributeName='text' or AttributeName>2 ");
 	}
 

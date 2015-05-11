@@ -168,12 +168,6 @@ public class Argument {
 
     // Unvisualise it
     private void undraw() {
-    	visualiserExtension.setVisible(false);
-    	visualiserLink.setVisible(false);
-    	verticalLink.setVisible(false);
-    	parameterExtension.setVisible(false);
-    	visualiserArrow.setVisible(false);
-    	parameterArrow.setVisible(false);
     	visualiserExtension.dispose();
     	visualiserLink.dispose();
     	verticalLink.dispose();
@@ -185,14 +179,26 @@ public class Argument {
     /** Recolor existing lines. */
     public void redrawColor() {
         if (isDangling())
-            return;        
-        Color c = getRecommendedColor();
-        visualiserExtension.setBackground(c);
-        parameterExtension.setBackground(c);
-        verticalLink.setBackground(c);
-        visualiserLink.setBackground(c);
-        visualiserArrow.setColor(c);
-        parameterArrow.setColor(c);
+            return;
+        if (visualiserExtension.isDisposed())
+        	return;
+        visualiserExtension.getDisplay().asyncExec(new Runnable() {
+        	public void run() {
+                Color c = getRecommendedColor();
+                if (!visualiserExtension.isDisposed())
+                	visualiserExtension.setBackground(c);
+                if (!parameterExtension.isDisposed())
+                	parameterExtension.setBackground(c);
+                if (!verticalLink.isDisposed())
+                	verticalLink.setBackground(c);
+                if (!visualiserLink.isDisposed())
+                	visualiserLink.setBackground(c);
+                if (!visualiserArrow.isDisposed())
+                	visualiserArrow.setColor(c);
+                if (!parameterArrow.isDisposed())
+                	parameterArrow.setColor(c);        		
+        	}
+        });
     }
     
     /** True if the connection is dangling, and therefore invalid. */

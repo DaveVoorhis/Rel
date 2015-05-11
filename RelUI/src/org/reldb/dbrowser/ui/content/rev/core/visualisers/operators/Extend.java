@@ -39,8 +39,8 @@ public class Extend extends Operator {
 		operand = addParameter("Operand", "Relation to be extended.");
 	}
 	
-	public Extend(Rev rev, String name) {
-		super(rev, "EXTEND", name);
+	public Extend(Rev rev, String name, int xpos, int ypos) {
+		super(rev, "EXTEND", name, xpos, ypos);
 		operand = addParameter("Operand", "Relation to be extended.");
 	}
 	

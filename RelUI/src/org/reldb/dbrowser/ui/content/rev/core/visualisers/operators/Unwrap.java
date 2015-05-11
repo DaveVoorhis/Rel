@@ -12,8 +12,8 @@ public class Unwrap extends Ungroup {
 		keyword = "UNWRAP";
 	}
 	
-	public Unwrap(Rev rev, String name) {
-		super(rev, name);
+	public Unwrap(Rev rev, String name, int xpos, int ypos) {
+		super(rev, name, xpos, ypos);
 		keyword = "UNWRAP";
 	}
 	

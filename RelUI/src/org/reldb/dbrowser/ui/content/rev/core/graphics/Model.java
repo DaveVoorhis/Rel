@@ -73,13 +73,10 @@ public class Model extends ScrolledComposite {
     private String name;
     
     /** Ctor */
-    public Model(Composite parent) {
+    public Model(Rev rev, Composite parent) {
     	super(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         setupModel();
-    }
-    
-    public void setRev(Rev rev) {
-    	this.rev = rev;
+        this.rev = rev;
     }
     
     public void setModelName(String name) {
@@ -405,7 +402,7 @@ public class Model extends ScrolledComposite {
     
     // Find first visualiser (bounded by a given coordinate in the Model) that
     // is a compatible drop target for Dragged Visualiser.
-    private Visualiser getPossibleDropTarget(int x, int y, Visualiser draggedVisualiser) {
+    Visualiser getPossibleDropTarget(int x, int y, Visualiser draggedVisualiser) {
         //if (draggedVisualiser.getExposedParameterCount()>0)
             //return null;
         for (Visualiser v: visualisers) {

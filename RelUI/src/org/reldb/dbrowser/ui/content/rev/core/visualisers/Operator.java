@@ -24,8 +24,8 @@ public abstract class Operator extends Relation {
 		this.kind = kind;
 	}
 	
-	public Operator(Rev rev, String kind, String name) {
-		super(rev, kind, name);
+	public Operator(Rev rev, String kind, String name, int xpos, int ypos) {
+		super(rev, kind, name, xpos, ypos);
 		this.kind = kind;
 	}
 		
@@ -43,8 +43,7 @@ public abstract class Operator extends Relation {
 
 	private Argument createDefaultOperand(final Parameter parameter) {
 		String operandName = getVisualiserName() + parameter.getConnectorName();
-		Visualiser operand = new Operand(getRev(), operandName, Math.max(0, getBounds().x - 140), getBounds().y);
-		getRev().getModel().refresh();
+		Visualiser operand = new Operand(getRev(), operandName, Math.max(0, getBounds().x - 140), getBounds().y + 50 * (getParameterCount() + 1));
 		return new Argument(parameter, operand, Argument.ARROW_FROM_VISUALISER);
 	}
 

@@ -39,8 +39,8 @@ public class Rename extends Operator {
 		operand = addParameter("Operand", "Relation to be renamed");
 	}
 	
-	public Rename(Rev rev, String name) {
-		super(rev, "RENAME", name);
+	public Rename(Rev rev, String name, int xpos, int ypos) {
+		super(rev, "RENAME", name, xpos, ypos);
 		operand = addParameter("Operand", "Relation to be renamed");
 	}
 

@@ -30,8 +30,9 @@ public abstract class Relation extends Visualiser {
 		setLabel();
 	}
 
-	public Relation(Rev rev, String name, String id) {
+	public Relation(Rev rev, String name, String id, int xpos, int ypos) {
 		super(rev);
+		setLocation(xpos, ypos);
 		setVisualiserName(id);
 		setLabel();
 	}

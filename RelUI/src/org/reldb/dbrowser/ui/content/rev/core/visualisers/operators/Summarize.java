@@ -12,8 +12,8 @@ public class Summarize extends Extend {
 		KeyWord = "SUMMARIZE";
 	}
 	
-	public Summarize(Rev rev, String name) {
-		super(rev, name);
+	public Summarize(Rev rev, String name, int xpos, int ypos) {
+		super(rev, name, xpos, ypos);
 		KeyWord = "SUMMARIZE";
 	}
 	
