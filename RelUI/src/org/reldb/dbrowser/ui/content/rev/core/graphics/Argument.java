@@ -236,21 +236,7 @@ public class Argument {
         if (drawing)
             return;
         drawing = true;
-        
-        // Force connector to a side nearest a connected Visualisers
-        long vxSum = 0;
-        for (int i=0; i<parameter.getConnectionCount(); i++)
-            vxSum += parameter.getConnection(i).getVisualiser().getArgumentX(this);
-        long vxAverage = vxSum / parameter.getConnectionCount();
-        Visualiser ConnectorVisualiser = parameter.getVisualiser();
-        if (vxAverage > ConnectorVisualiser.getBounds().width / 2 + ConnectorVisualiser.getBounds().x) {
-            if (parameter.getLayoutDirection()==Parameter.EASTTOWEST)
-                parameter.switchSides();
-        } else {
-            if (parameter.getLayoutDirection()==Parameter.WESTTOEAST)
-                parameter.switchSides();
-        }
-        
+
         // Set up connection visualisation.
 
         int vx2 = visualiser.getArgumentX(this);

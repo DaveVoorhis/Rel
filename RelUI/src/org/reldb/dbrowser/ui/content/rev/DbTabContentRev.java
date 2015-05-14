@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.ToolItem;
 
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
-import org.reldb.dbrowser.ui.content.rev.core.Rev;
+import org.reldb.dbrowser.ui.content.rev.core2.Rev;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;

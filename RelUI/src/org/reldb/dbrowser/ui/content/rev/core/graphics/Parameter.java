@@ -57,10 +57,11 @@ public class Parameter extends Label {
     
     /** Create a connector. */
     public Parameter(Visualiser visualiser, String name, String Tip) {
-    	super(visualiser, SWT.None);
+    	super(visualiser, SWT.BORDER);
         this.visualiser = visualiser;
         this.name = name;
         id = visualiser.getNextParameterID();
+        setSize(20, 20);
         setLayoutDirection();
         setToolTipText(Tip);
 //        setBorder(new javax.swing.border.EtchedBorder());
@@ -123,11 +124,6 @@ public class Parameter extends Label {
     /** Expose this Connector */
     public void expose() {
         getVisualiser().expose(this);
-    }
-    
-    /** Move this Connector to the other side of the Visualiser */
-    public void switchSides() {
-        getVisualiser().switchSides(this);
     }
     
     /** Change the ranking of this Connector in the Visualiser's display */
@@ -215,7 +211,7 @@ public class Parameter extends Label {
         if (getLayoutDirection() == EASTTOWEST)
             return x;
         else
-            return x + bounds.width;
+            return x + parentbounds.width;
     }
     
     /** get attachment point in Model coordinates */

@@ -83,7 +83,7 @@ public class Visualiser extends Composite {
     
     /** Ctor */
     protected Visualiser(Rev rev) {
-    	super(rev.getModel(), SWT.None);
+    	super(rev.getModel(), SWT.NONE);
     	this.rev = rev;
         IDNumber = IDNumberStamp++;
         nextParameterID = 0;
@@ -338,7 +338,7 @@ public class Visualiser extends Composite {
     
     /** Set label (blue bar at top of every Visualiser). */
     public void setLabel() {
-        jLabelTitle.setText(getVisualiserName());
+        jLabelTitle.setText(getTitle());
     }
     
     /** Get long title, for use in control panel, etc. */
@@ -411,18 +411,18 @@ public class Visualiser extends Composite {
         setLayout(new BorderLayout(0, 0));
         setBackground(BackgroundColor);
         
-        jPanelLeft = new Composite(this, SWT.None);
+        jPanelLeft = new Composite(this, SWT.BORDER);
         jPanelLeft.setLayout(new GridLayout());
         jPanelLeft.setLayoutData(BorderLayout.WEST);
         
-        jPanelRight = new Composite(this, SWT.None);
+        jPanelRight = new Composite(this, SWT.BORDER);
         jPanelRight.setLayout(new GridLayout());
         jPanelRight.setLayoutData(BorderLayout.EAST);
 
         // Visualiser customisations
         populateCustom();
         
-        jLabelTitle = new Label(this, SWT.None);
+        jLabelTitle = new Label(this, SWT.NONE);
         jLabelTitle.setBackground(BaseColor);
         jLabelTitle.setAlignment(SWT.CENTER);
         jLabelTitle.setLayoutData(BorderLayout.NORTH);
@@ -488,31 +488,25 @@ public class Visualiser extends Composite {
     public void expose(Parameter c) {
         if (c.isExposed())
             return;
-        
-//        c.setAlignmentY(0.0F);
-//        c.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-//        c.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        
         // Position of parameter
         if (c.getLayoutDirection() == Parameter.EASTTOWEST) {
-            c.setParent(jPanelLeft);
+            if (!c.setParent(jPanelLeft))
+            	System.out.println("Visualiser: c.setParent() not supported.");
             c.setExtensionLength(jPanelLeft.getChildren().length * getConnectorExtensionStepLength() + getConnectorExtensionBaseLength());
         } else {
-        	c.setParent(jPanelRight);
+        	if (!c.setParent(jPanelRight));
+        		System.out.println("Visualiser: c.setParent() not supported.");
             c.setExtensionLength(jPanelRight.getChildren().length * getConnectorExtensionStepLength() + getConnectorExtensionBaseLength());
         }
-        c.setExposed(true);
-                
+        c.setExposed(true);                
         // Redraw arguments to this visualiser.  
         redrawArguments();
-//        rev.getModel().refresh();
     }
 
     // Temporarily unexposes a parameter (while leaving its connections in visual limbo)
     // so that it can shortly be re-exposed, possibly on a new side of the whazzit.
     private void unexposeTemporary(Parameter c) {
         c.setExposed(false);
- //       c.getParent().remove(c);
     }
     
     /** Unexpose a parameter.  Will only work if the parameter has no arguments. */
@@ -523,7 +517,6 @@ public class Visualiser extends Composite {
             return;
         unexposeTemporary(c);
         redrawArguments();
-//        rev.getModel().refresh();
     }
     
     /** Make a connector switch sides.  Only works if connector is exposed. */

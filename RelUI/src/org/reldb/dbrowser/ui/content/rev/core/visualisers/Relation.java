@@ -4,10 +4,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.content.rev.core.DatabaseAbstractionLayer;
 import org.reldb.dbrowser.ui.content.rev.core.Rev;
 import org.reldb.dbrowser.ui.content.rev.core.graphics.Argument;
@@ -21,22 +21,28 @@ import swing2swt.layout.BorderLayout;
 
 /** Visualiser of anything that produces a relation. */
 public abstract class Relation extends Visualiser {	
-    private final String InvokeIconFile = "PlayIconTiny";
-    private final String EditorIconFile = "EditIconTiny";
 
+    private Composite buttonPanel;
+    
 	public Relation(Rev rev, String name) {
 		super(rev);
 		setVisualiserName(name + rev.getUniqueNumber());
-		setLabel();
 	}
 
 	public Relation(Rev rev, String name, String id, int xpos, int ypos) {
 		super(rev);
 		setLocation(xpos, ypos);
 		setVisualiserName(id);
-		setLabel();
 	}
 
+	public void buildWidgets() {
+		buttonPanel = new Composite(this, SWT.BORDER);
+		buttonPanel.setLayout(new FillLayout());
+        buttonPanel.setLayoutData(BorderLayout.CENTER);
+        super.buildWidgets();
+		setLabel();
+	}
+	
 	boolean recursionGate = false;
 	
 	public void refresh() {
@@ -138,45 +144,34 @@ public abstract class Relation extends Visualiser {
     
     protected void addShowButton() {
     	// Set up the show button
-        Button buttonShow = new Button(this, SWT.None);
+        Button buttonShow = new Button(buttonPanel, SWT.None);
         buttonShow.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				MessageDialog.openInformation(getShell(), "Query", getQuery());
 			}
         });
         buttonShow.setText("?");
-        buttonShow.setLayoutData(BorderLayout.WEST);
     }
 
     protected void addInvokeButton() {
     	// Set up the invoke button
-        Button buttonInvoke = new Button(this, SWT.None);
+        Button buttonInvoke = new Button(buttonPanel, SWT.None);
         buttonInvoke.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				invokeLeft();
 			}
         });
-        try {
-            buttonInvoke.setImage(IconLoader.loadIconSmall(InvokeIconFile));
-        } catch (Exception e) {
-        	buttonInvoke.setText(">");
-        }
-        buttonInvoke.setLayoutData(BorderLayout.CENTER);
+        buttonInvoke.setText(">");
     }
 	
     protected void addEditButton() {
         // Set up the edit button
-        Button buttonEdit = new Button(this, SWT.None);
+        Button buttonEdit = new Button(buttonPanel, SWT.None);
         buttonEdit.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 		    	invokeRight(); 
 			}
         });
-        try {
-        	buttonEdit.setImage(IconLoader.loadIconSmall(EditorIconFile));
-        } catch (Exception e) {
-        	buttonEdit.setText("+");
-        }
-        buttonEdit.setLayoutData(BorderLayout.EAST);
+        buttonEdit.setText("+");
     }
 }

@@ -11,6 +11,7 @@ public class Relvar extends Relation {
 	public Relvar(Rev rev, String name) {
 		super(rev, name);
 		relvarName = name;
+		setTitle(name);
 	}
 	
 	public String getQuery() {

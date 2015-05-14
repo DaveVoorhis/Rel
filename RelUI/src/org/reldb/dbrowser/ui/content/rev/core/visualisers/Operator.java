@@ -22,13 +22,15 @@ public abstract class Operator extends Relation {
 	public Operator(Rev rev, String kind) {
 		super(rev, kind);
 		this.kind = kind;
+		setTitle(kind);
 	}
 	
 	public Operator(Rev rev, String kind, String name, int xpos, int ypos) {
 		super(rev, kind, name, xpos, ypos);
 		this.kind = kind;
+		setTitle(kind);
 	}
-		
+
 	public String getKind() {
 		return kind;
 	}
