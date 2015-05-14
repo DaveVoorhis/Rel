@@ -91,19 +91,23 @@ public class Rev extends Composite {
 		// Operators
 		OpSelector[] queryOperators = getOperators();
 		MenuItem insOperatorsItem = new MenuItem(menuBar, SWT.CASCADE);
-		insOperatorsItem.setText("Operators");
+		insOperatorsItem.setText("Operators and constants");
 		Menu insOperatorsMenu = new Menu(menuBar);
 		for (int i=0; i < queryOperators.length; i++) {
-			MenuItem item = new MenuItem(insOperatorsMenu, SWT.PUSH);
-			String queryName = queryOperators[i].toString();
-			item.setText(queryName);
-			item.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent evt) {
-					Point lastMousePosition = model.getLastMousePosition();
-					obtainOperatorForKind(queryName, queryName + getUniqueNumber(), lastMousePosition.x, lastMousePosition.y);
-				}
-			});
+			String opName = queryOperators[i].toString();
+			if (opName == null)
+				new MenuItem(insOperatorsMenu, SWT.SEPARATOR);
+			else {
+				MenuItem item = new MenuItem(insOperatorsMenu, SWT.PUSH);
+				item.setText(opName);
+				item.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent evt) {
+						Point lastMousePosition = model.getLastMousePosition();
+						obtainOperatorForKind(opName, opName + getUniqueNumber(), lastMousePosition.x, lastMousePosition.y);
+					}
+				});
+			}
 		}
 		insOperatorsItem.setMenu(insOperatorsMenu);
 		
@@ -159,7 +163,7 @@ public class Rev extends Composite {
 			});			
 		}
 				
-		setMenu(menuBar);
+		model.setMenu(menuBar);
 	}
 	
 	private void refreshMenus() {
@@ -210,6 +214,10 @@ public class Rev extends Composite {
 		public OpSelector(String menuTitle, OpSelectorRun run) {
 			this.menuTitle = menuTitle;
 			this.run = run;
+		}
+		public OpSelector() {
+			this.menuTitle = null;
+			this.run = null;
 		}
 		public String toString() {
 			return menuTitle;
@@ -263,11 +271,11 @@ public class Rev extends Composite {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new Diadic(rev, name, "COMPOSE", xpos, ypos);
 				}}),
-			new OpSelector("MATCHING (SEMIJOIN)", new OpSelectorRun() {
+			new OpSelector("MATCHING", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new Diadic(rev, name, "MATCHING", xpos, ypos);
 				}}),
-			new OpSelector("NOT MATCHING (SEMIMINUS)", new OpSelectorRun() {
+			new OpSelector("NOT MATCHING", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new Diadic(rev, name, "NOT MATCHING", xpos, ypos);
 				}}),
@@ -299,6 +307,7 @@ public class Rev extends Composite {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new Summarize(rev, name, xpos, ypos);
 				}}),
+			new OpSelector(),
 			new OpSelector("TABLE_DEE", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new TableDee(rev, name, xpos, ypos);
@@ -313,7 +322,7 @@ public class Rev extends Composite {
 	
 	private Operator obtainOperatorForKind(String kind, String name, int xpos, int ypos) {
 		for (OpSelector selector: getOperators())
-			if (selector.toString().compareTo(kind) == 0)
+			if (selector.toString() != null && selector.toString().compareTo(kind) == 0)
 				return selector.getOperator(Rev.this, name, xpos, ypos);
 		System.out.println("Query kind '" + kind + "' not recognised.");
 		return null;

@@ -1,7 +1,6 @@
 package org.reldb.dbrowser.ui.content.rev.core2;
 
 import org.reldb.dbrowser.ui.content.rev.core2.Parameter;
-
 import org.reldb.dbrowser.ui.content.rev.core2.graphics.glyphs.Arrow;
 import org.reldb.dbrowser.ui.content.rev.core2.graphics.lines.LineHorizontal;
 import org.reldb.dbrowser.ui.content.rev.core2.graphics.lines.LineVertical;
@@ -11,6 +10,8 @@ public class Argument {
 	private final static int lineWidth = 1;
 	private final static int arrowSize = 5;
 	
+	private final static boolean arrowIntoVisualiser = false;
+	
     private LineHorizontal parameterExtension;
     private LineVertical visualiserExtension;
     private LineVertical verticalLink;
@@ -18,28 +19,22 @@ public class Argument {
     private Arrow visualiserArrow;
     private Arrow parameterArrow;
     
-	private boolean arrowIntoVisualiser;
 	private Parameter parameter;
 	private Visualiser operand;
 
-	public Argument(Parameter parameter, Visualiser operand) {
+	public Argument(Parameter parameter) {
 		this.parameter = parameter;
-		this.operand = operand;
-		arrowIntoVisualiser = false;
         initComponents();
-        if (isDangling())
-            System.out.println("Argument: Attempt to create a dangling reference!");
-        else {
-            parameter.setArgument(this);
-            operand.addArgumentReference(this);
-            redraw();
-        }
+        parameter.setArgument(this);
+        setOperand(null);
 	}
 	
 	public void setOperand(Visualiser visualiser) {
 		if (operand instanceof Connector)
 			operand.dispose();
 		operand = visualiser;
+		if (operand == null)
+			operand = new Connector(parameter.getOperator());
 		operand.addArgumentReference(this);
 		redraw();
 		parameter.getOperator().visualiserMoved();
@@ -55,9 +50,6 @@ public class Argument {
 	}
 	
 	void redraw() {
-        if (isDangling())
-            return;
-
         // Set up connection visualisation.
 
         int vx2 = operand.getArgumentX(this);
@@ -97,11 +89,6 @@ public class Argument {
         setVisualiserArrow(arrowIntoVisualiser, arrowSize);
         setConnectorArrow(!arrowIntoVisualiser, arrowSize);
 	}
-    
-    /** True if the connection is dangling, and therefore invalid. */
-    public boolean isDangling() {
-        return (parameter == null || operand == null);
-    }
 
     // Set connector arrow to given arrow type.
     private void setConnectorArrow(boolean in, int arrowSize) {
@@ -130,13 +117,33 @@ public class Argument {
     }
     
 	private void initComponents() {
-		Model model = operand.getModel();
+		Model model = parameter.getOperator().getModel();
         parameterExtension = new LineHorizontal(model);
         visualiserExtension = new LineVertical(model);
         verticalLink = new LineVertical(model);
         visualiserLink = new LineHorizontal(model);
         visualiserArrow = new Arrow(model);
         parameterArrow = new Arrow(model);
+	}
+
+	public void bringToFront() {
+		visualiserArrow.moveAbove(null);
+		parameterArrow.moveAbove(null);
+		parameterExtension.moveAbove(null);
+		visualiserExtension.moveAbove(null);
+		verticalLink.moveAbove(null);
+		visualiserLink.moveAbove(null);
+	}
+
+	public void dispose() {
+		if (operand instanceof Connector)
+			operand.delete();
+		visualiserArrow.dispose();
+		parameterArrow.dispose();
+		parameterExtension.dispose();
+		visualiserExtension.dispose();
+		verticalLink.dispose();
+		visualiserLink.dispose();
 	}
 
 }

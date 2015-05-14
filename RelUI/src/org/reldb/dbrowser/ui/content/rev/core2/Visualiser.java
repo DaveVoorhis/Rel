@@ -22,8 +22,11 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 public abstract class Visualiser extends Composite {
@@ -77,6 +80,26 @@ public abstract class Visualiser extends Composite {
 		fd_lblTitle.right = new FormAttachment(100);
 		lblTitle.setLayoutData(fd_lblTitle);
 		lblTitle.setText(title);
+        
+		Menu menuBar = new Menu(getShell(), SWT.POP_UP);
+		
+		MenuItem disconnect = new MenuItem(menuBar, SWT.PUSH);
+		disconnect.setText("Disconnect");
+		disconnect.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				disconnect();
+			}
+		});
+
+		MenuItem delete = new MenuItem(menuBar, SWT.PUSH);
+		delete.setText("Delete");
+		delete.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				delete();
+			}
+		});
+
+		lblTitle.setMenu(menuBar);
 		
 		Composite mainPanel = new Composite(this, SWT.NONE);
 		mainPanel.setBackground(BackgroundColor);
@@ -86,16 +109,17 @@ public abstract class Visualiser extends Composite {
 		fd_mainPanel.left = new FormAttachment(0);
 		fd_mainPanel.right = new FormAttachment(100);
 		mainPanel.setLayoutData(fd_mainPanel);
-/*		
-		Composite controlPanel = new Composite(this, SWT.NONE);
-		controlPanel.setSize(10, 10);
-		FormData fd_controlPanel = new FormData();
-		fd_controlPanel.top = new FormAttachment(mainPanel);
-		fd_controlPanel.left = new FormAttachment(0);
-		fd_controlPanel.right = new FormAttachment(100);
-		fd_controlPanel.bottom = new FormAttachment(100);
-		controlPanel.setLayoutData(fd_controlPanel);
-*/		
+		
+		Control controlPanel = obtainControlPanel(this);
+		if (controlPanel != null) {
+			FormData fd_controlPanel = new FormData();
+			fd_controlPanel.top = new FormAttachment(mainPanel);
+			fd_controlPanel.left = new FormAttachment(0);
+			fd_controlPanel.right = new FormAttachment(100);
+			fd_controlPanel.bottom = new FormAttachment(100);
+			controlPanel.setLayoutData(fd_controlPanel);			
+		}
+
 		leftSide = new Composite(mainPanel, SWT.NONE);
 		FormData fd_leftSide = new FormData();
 		fd_leftSide.top = new FormAttachment(0);
@@ -182,7 +206,7 @@ public abstract class Visualiser extends Composite {
 	                    dropCandidate.setDropCandidate(true);
 	                }		
 				} else
-					moveAbove(null);
+					bringToFront();
 			}
         });
     	    	
@@ -197,6 +221,29 @@ public abstract class Visualiser extends Composite {
         pack();
     }
 
+	protected Control obtainControlPanel(Visualiser parent) {
+    	return null;
+    }
+    
+    protected void disconnect() {
+		for (Argument argument: arguments)
+			argument.setOperand(null);    	
+    }
+
+    protected void delete() {
+    	disconnect();
+		for (Argument argument: arguments)
+			argument.dispose();
+		DatabaseAbstractionLayer.removeRelvar(model.getConnection(), getID());
+		dispose();
+	}
+    
+    private void bringToFront() {
+		for (Argument argument: arguments)
+			argument.bringToFront();
+		moveAbove(null);
+    }
+    
     public abstract String getQuery();
     
 	public String getID() {

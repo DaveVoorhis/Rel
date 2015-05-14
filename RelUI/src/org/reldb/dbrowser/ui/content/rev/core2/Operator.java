@@ -24,12 +24,6 @@ public abstract class Operator extends Visualiser {
 	public Parameter getParameter(int parameterNumber) {
 		return parameters.get(parameterNumber);
 	}
-	
-    /** Add a parameter. */
-    protected Parameter addParameter(Parameter c) {
-        parameters.add(c);
-        return c;
-    }
     
     public String getQueryForParameter(int parameterNumber) {
     	Parameter parameter = parameters.get(parameterNumber);
@@ -46,18 +40,31 @@ public abstract class Operator extends Visualiser {
     	return "Operator " + getTitle() + " (" + getID() + ")";
     }
 
+    protected void disconnect() {
+    	super.disconnect();
+    	for (Parameter parameter: parameters)
+    		parameter.getArgument().setOperand(null);
+    }
+    
+    protected void delete() {
+    	super.delete();
+    	for (Parameter parameter: parameters)
+    		parameter.getArgument().dispose();
+		DatabaseAbstractionLayer.removeOperator(getModel().getConnection(), getID());
+    	dispose();
+    }
+    
 	protected void addParameter(String name, String description) {
 		Parameter p;
 		if (lastSide == Parameter.EASTTOWEST) {
-			p = addParameter(new Parameter(this, rightSide, name, description, Parameter.EASTTOWEST));
+			p = new Parameter(this, rightSide, name, description, Parameter.EASTTOWEST);
 			lastSide = Parameter.WESTTOEAST;
 		} else {
-			p = addParameter(new Parameter(this, leftSide, name, description, Parameter.WESTTOEAST));
+			p = new Parameter(this, leftSide, name, description, Parameter.WESTTOEAST);
 			lastSide = Parameter.EASTTOWEST;
 		}
-		int parmNum = parameters.size();
-		Connector unconnected = new Connector(getModel(), getID(), parmNum, getBounds().x, getBounds().y + getBounds().height + 15 + 25 * (parmNum - 1));
-		new Argument(p, unconnected);
+		parameters.add(p);
+		new Argument(p);
 	}
 
     /** Return number of parameters. */

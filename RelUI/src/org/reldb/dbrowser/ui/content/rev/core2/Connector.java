@@ -1,8 +1,12 @@
 package org.reldb.dbrowser.ui.content.rev.core2;
 
 public class Connector extends Visualiser {
-	Connector(Model model, String id, int parmNum, int xpos, int ypos) {
-		super(model, id + "_" + parmNum, "<<parameter " + parmNum + ">>", xpos, ypos);
+	Connector(Operator operator) {
+		super(operator.getModel(), 
+				operator.getID() + "_" + operator.getParameterCount(), 
+				"<<parameter " + operator.getParameterCount() + ">>", 
+				operator.getBounds().x,
+				operator.getBounds().y + operator.getBounds().height + 15 + 25 * (operator.getParameterCount() - 1));
 		btnInfo.dispose();
 		btnEdit.dispose();
 		btnRun.dispose();
