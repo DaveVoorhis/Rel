@@ -13,7 +13,11 @@ public class Relvar extends Visualiser {
 		Point location = getLocation();
 		DatabaseAbstractionLayer.updateRelvarPosition(getModel().getConnection(), getID(), getTitle(), location.x, location.y, getModel().getModelName());
 	}
-    
+
+	public String getQuery() {
+		return getTitle();
+	}
+	
     public String toString() {
     	return "Relvar " + getTitle() + " (" + getID() + ")";
     }

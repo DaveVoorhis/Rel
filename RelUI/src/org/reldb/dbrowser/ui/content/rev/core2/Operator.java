@@ -2,7 +2,7 @@ package org.reldb.dbrowser.ui.content.rev.core2;
 
 import org.eclipse.swt.graphics.Point;
 
-public class Operator extends Visualiser {
+public abstract class Operator extends Visualiser {
     
     private int lastSide = Parameter.EASTTOWEST;
 
@@ -29,6 +29,17 @@ public class Operator extends Visualiser {
     protected Parameter addParameter(Parameter c) {
         parameters.add(c);
         return c;
+    }
+    
+    public String getQueryForParameter(int parameterNumber) {
+    	Parameter parameter = parameters.get(parameterNumber);
+    	Argument argument = parameter.getArgument();
+    	if (argument == null)
+    		return null;
+    	Visualiser operand = argument.getOperand();
+    	if (operand == null)
+    		return null;
+    	return operand.getQuery();
     }
     
     public String toString() {

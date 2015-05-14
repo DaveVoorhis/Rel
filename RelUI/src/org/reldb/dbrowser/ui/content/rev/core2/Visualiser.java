@@ -4,12 +4,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -23,7 +26,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-public class Visualiser extends Composite {
+public abstract class Visualiser extends Composite {
 	
 	private final static Color BaseColor = new Color(Display.getDefault(), 200, 200, 255);
     private final static Color BackgroundColor = new Color(Display.getDefault(), 198, 198, 198);
@@ -118,12 +121,27 @@ public class Visualiser extends Composite {
 		
 		btnInfo = new Button(buttonPanel, SWT.FLAT);
 		btnInfo.setText("?");
+		btnInfo.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+	        	MessageDialog.openInformation(getShell(), getTitle() + " Query", getQuery());
+			}
+		});
 		
 		btnRun = new Button(buttonPanel, SWT.FLAT);
 		btnRun.setText(">");
+		btnRun.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				System.out.println("Visualiser: run " + Visualiser.this.toString());
+			}
+		});
 		
 		btnEdit = new Button(buttonPanel, SWT.FLAT);
 		btnEdit.setText("+");
+		btnEdit.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				System.out.println("Visualiser: edit " + Visualiser.this.toString());
+			}
+		});
 		
         lblTitle.addMouseListener(new MouseAdapter() {
 			@Override
@@ -179,6 +197,8 @@ public class Visualiser extends Composite {
         pack();
     }
 
+    public abstract String getQuery();
+    
 	public String getID() {
     	return id;
     }
@@ -257,6 +277,7 @@ public class Visualiser extends Composite {
     
 	public void addArgumentReference(Argument argument) {
 		arguments.add(argument);
+		visualiserMoved();
 	}
 	
 	private int getArgumentIndex(Argument argument) {

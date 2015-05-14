@@ -11,4 +11,12 @@ public class Diadic extends Operator {
 		addParameter("Operand 2", "Second relation passed to " + kind);		
 	}
 
+	public String getQuery() {
+		String query0 = getQueryForParameter(0);
+		String query1 = getQueryForParameter(1);
+		if (query0 == null || query1 == null)
+			return null;
+		return ("(" + query0 + " " + getKind() + " " + query1 + ")");
+	}
+	
 }

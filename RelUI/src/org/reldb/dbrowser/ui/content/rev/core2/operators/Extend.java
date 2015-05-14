@@ -10,4 +10,10 @@ public class Extend extends Operator {
 		addParameter("Operand", "Relation passed to " + getKind()); 
 	}
 
+	@Override
+	public String getQuery() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

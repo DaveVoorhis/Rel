@@ -8,4 +8,8 @@ public class Connector extends Visualiser {
 		btnRun.dispose();
 		pack();
 	}
+	
+	public String getQuery() {
+		return null;
+	}
 }

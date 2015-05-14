@@ -23,6 +23,8 @@ import org.reldb.dbrowser.ui.content.rev.core2.operators.Project;
 import org.reldb.dbrowser.ui.content.rev.core2.operators.Rename;
 import org.reldb.dbrowser.ui.content.rev.core2.operators.Restrict;
 import org.reldb.dbrowser.ui.content.rev.core2.operators.Summarize;
+import org.reldb.dbrowser.ui.content.rev.core2.operators.TableDee;
+import org.reldb.dbrowser.ui.content.rev.core2.operators.TableDum;
 import org.reldb.dbrowser.ui.content.rev.core2.operators.Ungroup;
 import org.reldb.dbrowser.ui.content.rev.core2.operators.Unwrap;
 import org.reldb.dbrowser.ui.content.rev.core2.operators.Wrap;
@@ -36,7 +38,6 @@ public class Rev extends Composite {
 	private Model model;
 	private Composite detailView;
 	private SashForm revPane;
-	private String[] queryOperators;
 	private CrashHandler crashHandler;
 	
 	public Rev(Composite parent, String dbURL, CrashHandler crashHandler) {
@@ -82,19 +83,19 @@ public class Rev extends Composite {
 		customRelvarsItem.setText("Variables");
 		customRelvarsItem.setMenu(obtainRelvarsMenu(menuBar, "Owner = 'User'"));
 		
-		//System relvars
+		// System relvars
 		MenuItem systemRelvarsItem = new MenuItem(menuBar, SWT.CASCADE);
 		systemRelvarsItem.setText("System variables");
 		systemRelvarsItem.setMenu(obtainRelvarsMenu(menuBar, "Owner = 'Rel'"));
 		
 		// Operators
-		queryOperators = getOperators();
+		OpSelector[] queryOperators = getOperators();
 		MenuItem insOperatorsItem = new MenuItem(menuBar, SWT.CASCADE);
 		insOperatorsItem.setText("Operators");
 		Menu insOperatorsMenu = new Menu(menuBar);
 		for (int i=0; i < queryOperators.length; i++) {
 			MenuItem item = new MenuItem(insOperatorsMenu, SWT.PUSH);
-			String queryName = queryOperators[i];
+			String queryName = queryOperators[i].toString();
 			item.setText(queryName);
 			item.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -199,79 +200,123 @@ public class Rev extends Composite {
 		refreshMenus();
 	}
 	
-	private String[] getOperators() {
-		String[] operators = { 
-				"Project",
-				"Restrict WHERE",
-				"UNION",
-				"RENAME",
-				"D_UNION",
-				"INTERSECT",
-				"MINUS",
-				"PRODUCT",
-				"DIVIDEBY",
-				"JOIN",
-				"COMPOSE",
-				"MATCHING (SEMIJOIN)",
-				"NOT MATCHING (SEMIMINUS)",
-				"EXTEND",
-				"GROUP",
-				"UNGROUP",
-				"WRAP",
-				"UNWRAP",
-				"TCLOSE",
-				"ORDER",
-				"SUMMARIZE",
-				"DEE (TABLE_DEE)",
-				"DUM (TABLE_DUM)",
-			};
+	private static interface OpSelectorRun {
+		public Operator obtain(Rev rev, String name, int xpos, int ypos);
+	}
+	
+	private static class OpSelector {
+		private String menuTitle;
+		private OpSelectorRun run;
+		public OpSelector(String menuTitle, OpSelectorRun run) {
+			this.menuTitle = menuTitle;
+			this.run = run;
+		}
+		public String toString() {
+			return menuTitle;
+		}
+		public Operator getOperator(Rev rev, String name, int xpos, int ypos) {
+			return run.obtain(rev, name, xpos, ypos);
+		}
+	}
+
+	private OpSelector[] getOperators() {
+		OpSelector[] operators = {
+			new OpSelector("Project", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Project(rev, name, xpos, ypos);
+			}}),
+			new OpSelector("Restrict", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Restrict(rev, name, xpos, ypos);
+			}}),
+			new OpSelector("UNION", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "UNION", xpos, ypos);
+				}}),
+			new OpSelector("RENAME", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Rename(rev, name, xpos, ypos);
+				}}),
+			new OpSelector("INTERSECT", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "INTERSECT", xpos, ypos);
+				}}),
+			new OpSelector("MINUS", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "MINUS", xpos, ypos);
+				}}),
+			/*
+			new OpSelector("PRODUCT", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new VisualiserOfOperatorProduct(rev, name, xpos, ypos);
+				}}),
+			new OpSelector("DIVIDEBY", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new VisualiserOfOperatorDivideby(rev, name, xpos, ypos);
+				}}),
+			*/
+			new OpSelector("JOIN", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "JOIN", xpos, ypos);
+				}}),
+			new OpSelector("COMPOSE", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "COMPOSE", xpos, ypos);
+				}}),
+			new OpSelector("MATCHING (SEMIJOIN)", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "MATCHING", xpos, ypos);
+				}}),
+			new OpSelector("NOT MATCHING (SEMIMINUS)", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "NOT MATCHING", xpos, ypos);
+				}}),
+			new OpSelector("ORDER", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Order(rev, name, xpos, ypos);
+				}}),
+			new OpSelector("GROUP", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Group(rev, name, xpos, ypos);
+				}}),
+			new OpSelector("UNGROUP", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Ungroup(rev, name, xpos, ypos);
+				}}),
+			new OpSelector("WRAP", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Wrap(rev, name, xpos, ypos);
+				}}),
+			new OpSelector("UNWRAP", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Unwrap(rev, name, xpos, ypos);
+				}}),
+			new OpSelector("EXTEND", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Extend(rev, name, xpos, ypos);
+				}}),
+			new OpSelector("SUMMARIZE", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Summarize(rev, name, xpos, ypos);
+				}}),
+			new OpSelector("TABLE_DEE", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new TableDee(rev, name, xpos, ypos);
+				}}),
+			new OpSelector("TABLE_DUM", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new TableDum(rev, name, xpos, ypos);
+				}})
+		};
 		return operators;
 	}
 	
 	private Operator obtainOperatorForKind(String kind, String name, int xpos, int ypos) {
-		Operator visualiser = null;
-		if (kind.equals("Project")) {
-			visualiser = new Project(this, name, xpos, ypos);
-		} else if (kind.equals("Restrict")) {
-			visualiser = new Restrict(this, name, xpos, ypos);
-		} else if (kind.equals("UNION")) {
-			visualiser = new Diadic(this, name, kind, xpos, ypos);
-		} else if (kind.equals("RENAME")) {
-			visualiser = new Rename(this, name, xpos, ypos);
-		} else if (kind.equals("INTERSECT")) {
-			visualiser = new Diadic(this, name, kind, xpos, ypos);
-		} else if (kind.equals("MINUS")) {
-			visualiser = new Diadic(this, name, kind, xpos, ypos);
-		} /*else if (kind.equals("PRODUCT")) {
-			visualiser = new VisualiserOfOperatorProduct(this, name, xpos, ypos);
-		} else if (kind.equals("DIVIDEBY")) {
-			visualiser = new VisualiserOfOperatorDivideby(this, name, xpos, ypos);
-		}*/ else if (kind.equals("JOIN")) {
-			visualiser = new Diadic(this, name, kind, xpos, ypos);
-		} else if (kind.equals("COMPOSE")) {
-			visualiser = new Diadic(this, name, kind, xpos, ypos);
-		} else if (kind.equals("MATCHING")) {
-			visualiser = new Diadic(this, name, kind, xpos, ypos);
-		} else if (kind.equals("NOT MATCHING")) {
-			visualiser = new Diadic(this, name, kind, xpos, ypos);
-		} else if (kind.equals("ORDER")) {
-			visualiser = new Order(this, name, xpos, ypos);
-		} else if (kind.equals("GROUP")) {
-			visualiser = new Group(this, name, xpos, ypos);
-		} else if (kind.equals("UNGROUP")) {
-			visualiser = new Ungroup(this, name, xpos, ypos);
-		} else if (kind.equals("WRAP")) {
-			visualiser = new Wrap(this, name, xpos, ypos);
-		} else if (kind.equals("UNWRAP")) {
-			visualiser = new Unwrap(this, name, xpos, ypos);
-		} else if (kind.equals("EXTEND")) {
-			visualiser = new Extend(this, name, xpos, ypos);
-		} else if (kind.equals("SUMMARIZE")) {
-			visualiser = new Summarize(this, name, xpos, ypos);
-		} else {
-			System.out.println("Query kind '" + kind + "' not recognised.");
-		}
-		return visualiser;
+		for (OpSelector selector: getOperators())
+			if (selector.toString().compareTo(kind) == 0)
+				return selector.getOperator(Rev.this, name, xpos, ypos);
+		System.out.println("Query kind '" + kind + "' not recognised.");
+		return null;
 	}
 	
 	private void presentRelvarsWithRevExtensions(String where) {
@@ -304,7 +349,6 @@ public class Rev extends Composite {
 			int ypos = tuple.get("ypos").toInt();
 			String kind = tuple.get("kind").toString();
 			// String modelName = tuple.get("model").toString();
-			System.out.println("Rev: create operator " + kind);
 			Operator operator = obtainOperatorForKind(kind, name, xpos, ypos);
 			if (operator == null)
 				continue;
