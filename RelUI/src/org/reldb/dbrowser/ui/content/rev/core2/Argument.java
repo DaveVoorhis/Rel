@@ -137,7 +137,7 @@ public class Argument {
 
 	public void dispose() {
 		if (operand instanceof Connector)
-			operand.delete();
+			operand.setVisible(false);
 		visualiserArrow.dispose();
 		parameterArrow.dispose();
 		parameterExtension.dispose();

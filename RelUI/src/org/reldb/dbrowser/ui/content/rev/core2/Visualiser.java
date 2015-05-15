@@ -231,9 +231,9 @@ public abstract class Visualiser extends Composite {
     }
 
     protected void delete() {
-    	disconnect();
 		for (Argument argument: arguments)
 			argument.dispose();
+		arguments.clear();
 		DatabaseAbstractionLayer.removeRelvar(model.getConnection(), getID());
 		dispose();
 	}

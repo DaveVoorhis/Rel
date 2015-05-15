@@ -22,6 +22,10 @@ public class Parameter extends Label {
 		pack();
 	}
 
+	public void dispose() {
+		super.dispose();
+	}
+	
 	public Argument getArgument() {
 		return argument;
 	}
