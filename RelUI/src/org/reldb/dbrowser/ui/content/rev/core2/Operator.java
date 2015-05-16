@@ -1,5 +1,9 @@
 package org.reldb.dbrowser.ui.content.rev.core2;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.swt.graphics.Point;
 
 public abstract class Operator extends Visualiser {
@@ -49,7 +53,7 @@ public abstract class Operator extends Visualiser {
     protected void delete() {
     	disconnect();
     	for (Parameter parameter: parameters)
-    		parameter.dispose();
+    		parameter.hide();
     	parameters.clear();
 		DatabaseAbstractionLayer.removeOperator(getModel().getConnection(), getID());
     	super.delete();
@@ -101,6 +105,28 @@ public abstract class Operator extends Visualiser {
 	protected void visualiserMoved() {
 		Point location = getLocation();
 		DatabaseAbstractionLayer.updateQueryPosition(getModel().getConnection(), getID(), location.x, location.y, kind, getConnections(), getModel().getModelName());
+	}
+
+	private void collectAllSources(Set<Visualiser> collection) {
+		for (Parameter parameter: parameters) {
+			if (parameter.getArgument() == null)
+				continue;
+			Visualiser v = parameter.getArgument().getOperand();
+			if (v == null || v instanceof Connector)
+				continue;
+			if (collection.contains(v))
+				continue;
+			collection.add(v);
+			if (v instanceof Operator)
+				((Operator)v).collectAllSources(collection);
+		}
+	}
+	
+	// Collect everything used as an argument to this, or an argument to an argument to this, etc.	
+	protected Collection<Visualiser> collectAllSources() {
+		Set<Visualiser> sources = new HashSet<Visualiser>();
+		collectAllSources(sources);
+		return sources;
 	}
 	
 }

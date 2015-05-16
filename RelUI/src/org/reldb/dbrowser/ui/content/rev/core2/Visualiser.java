@@ -1,5 +1,7 @@
 package org.reldb.dbrowser.ui.content.rev.core2;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -29,7 +31,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-public abstract class Visualiser extends Composite {
+public abstract class Visualiser extends Composite implements Comparable<Visualiser> {
 	
 	private final static Color BaseColor = new Color(Display.getDefault(), 200, 200, 255);
     private final static Color BackgroundColor = new Color(Display.getDefault(), 198, 198, 198);
@@ -221,6 +223,18 @@ public abstract class Visualiser extends Composite {
         pack();
     }
 
+    public int compareTo(Visualiser v) {
+    	return getID().compareTo(v.getID());
+    }
+    
+    public boolean equals(Object o) {
+    	return compareTo((Visualiser)o) == 0;
+    }
+    
+    public int hashCode() {
+    	return getID().hashCode();
+    }
+    
 	protected Control obtainControlPanel(Visualiser parent) {
     	return null;
     }
@@ -234,7 +248,7 @@ public abstract class Visualiser extends Composite {
     	disconnect();
 		arguments.clear();
 		DatabaseAbstractionLayer.removeRelvar(model.getConnection(), getID());
-		dispose();
+		setVisible(false);
 	}
     
     private void bringToFront() {
@@ -269,29 +283,30 @@ public abstract class Visualiser extends Composite {
     	lblTitle.setBackground((b) ? DropCandidateColor : BaseColor);
 	}
 
-	private boolean isSelfReference(Visualiser maybeConnector, Visualiser visualiser) {
-		if (!(maybeConnector instanceof Connector))
-			return false;
-		Connector connector = (Connector)maybeConnector;
-		for (Argument argument: connector.getArguments())
-			if (argument.getOperator() == visualiser)
-				return true;
-		return false;
+	private boolean isSelfReference(Connector connector) {
+    	Argument argument = connector.getArguments()[0];
+		return (argument.getOperator() == this);
+	}
+
+	protected Collection<Visualiser> collectAllSources() {
+		return new HashSet<Visualiser>();
+	}
+	
+	private boolean isCircularReference(Connector connector) {
+		return collectAllSources().contains(connector.getArguments()[0].getOperator());
 	}
 	
 	protected boolean canReceiveDropOf(Visualiser visualiser) {
-		return 
-			visualiser instanceof Connector &&
-			!(this instanceof Connector) &&
-			this != visualiser &&
-			!isSelfReference(visualiser, this);
+		if (!(visualiser instanceof Connector))
+			return false;
+		Connector connector = (Connector)visualiser;
+		return !(this instanceof Connector) && !isSelfReference(connector) && !isCircularReference(connector);
 	}
 
     protected void receiveDropOf(Visualiser visualiser) {
     	Connector connector = (Connector)visualiser;
-    	for (Argument argument: connector.getArguments())
-    		if (argument.getOperand() == visualiser)
-    			argument.setOperand(this);
+    	Argument argument = connector.getArguments()[0];
+		argument.setOperand(this);
 	}
 
 	private void dispatchMovement() {

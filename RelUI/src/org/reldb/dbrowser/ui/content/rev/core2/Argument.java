@@ -31,7 +31,7 @@ public class Argument {
 	
 	public void setOperand(Visualiser visualiser) {
 		if (operand instanceof Connector)
-			operand.dispose();
+			operand.setVisible(false);
 		operand = visualiser;
 		if (operand == null)
 			operand = new Connector(parameter.getOperator());
@@ -135,7 +135,7 @@ public class Argument {
 		visualiserLink.moveAbove(null);
 	}
 
-	public void dispose() {
+	public void hide() {
 		if (operand instanceof Connector)
 			operand.setVisible(false);
 		visualiserArrow.setVisible(false);
