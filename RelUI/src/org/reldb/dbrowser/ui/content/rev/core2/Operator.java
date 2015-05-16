@@ -41,18 +41,18 @@ public abstract class Operator extends Visualiser {
     }
 
     protected void disconnect() {
-    	super.disconnect();
     	for (Parameter parameter: parameters)
     		parameter.getArgument().setOperand(null);
+    	super.disconnect();
     }
     
     protected void delete() {
-    	super.delete();
+    	disconnect();
     	for (Parameter parameter: parameters)
     		parameter.dispose();
     	parameters.clear();
 		DatabaseAbstractionLayer.removeOperator(getModel().getConnection(), getID());
-    	dispose();
+    	super.delete();
     }
     
 	protected void addParameter(String name, String description) {

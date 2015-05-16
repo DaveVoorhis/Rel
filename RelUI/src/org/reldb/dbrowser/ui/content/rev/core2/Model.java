@@ -60,6 +60,7 @@ public class Model extends ScrolledComposite {
 	}
 
 	public void removeVisualiser(Visualiser connected) {
+		
 		System.out.println("Model: removeVisualiser() not implemented.");
 	}
 

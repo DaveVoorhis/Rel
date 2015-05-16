@@ -138,12 +138,12 @@ public class Argument {
 	public void dispose() {
 		if (operand instanceof Connector)
 			operand.setVisible(false);
-		visualiserArrow.dispose();
-		parameterArrow.dispose();
-		parameterExtension.dispose();
-		visualiserExtension.dispose();
-		verticalLink.dispose();
-		visualiserLink.dispose();
+		visualiserArrow.setVisible(false);
+		parameterArrow.setVisible(false);
+		parameterExtension.setVisible(false);
+		visualiserExtension.setVisible(false);
+		verticalLink.setVisible(false);
+		visualiserLink.setVisible(false);
 	}
 
 }

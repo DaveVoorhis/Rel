@@ -23,7 +23,7 @@ public class Parameter extends Label {
 	}
 
 	public void dispose() {
-		super.dispose();
+		argument.dispose();
 	}
 	
 	public Argument getArgument() {
