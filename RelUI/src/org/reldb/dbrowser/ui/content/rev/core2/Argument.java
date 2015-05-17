@@ -30,8 +30,10 @@ public class Argument {
 	}
 	
 	public void setOperand(Visualiser visualiser) {
+		if (operand != null)
+			operand.removeArgumentReference(this);
 		if (operand instanceof Connector)
-			operand.setVisible(false);
+			operand.dispose();
 		operand = visualiser;
 		if (operand == null)
 			operand = new Connector(parameter.getOperator());
@@ -135,15 +137,15 @@ public class Argument {
 		visualiserLink.moveAbove(null);
 	}
 
-	public void hide() {
+	public void dispose() {
 		if (operand instanceof Connector)
-			operand.setVisible(false);
-		visualiserArrow.setVisible(false);
-		parameterArrow.setVisible(false);
-		parameterExtension.setVisible(false);
-		visualiserExtension.setVisible(false);
-		verticalLink.setVisible(false);
-		visualiserLink.setVisible(false);
+			operand.dispose();
+		visualiserArrow.dispose();
+		parameterArrow.dispose();
+		parameterExtension.dispose();
+		visualiserExtension.dispose();
+		verticalLink.dispose();
+		visualiserLink.dispose();
 	}
 
 }

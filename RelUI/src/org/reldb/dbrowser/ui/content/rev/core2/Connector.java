@@ -16,4 +16,7 @@ public class Connector extends Visualiser {
 	public String getQuery() {
 		return null;
 	}
+	
+	// Disable popup menu.
+	protected void setupPopupMenu() {}
 }

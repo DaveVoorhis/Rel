@@ -82,26 +82,8 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 		fd_lblTitle.right = new FormAttachment(100);
 		lblTitle.setLayoutData(fd_lblTitle);
 		lblTitle.setText(title);
-        
-		Menu menuBar = new Menu(getShell(), SWT.POP_UP);
-		
-		MenuItem disconnect = new MenuItem(menuBar, SWT.PUSH);
-		disconnect.setText("Disconnect");
-		disconnect.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				disconnect();
-			}
-		});
 
-		MenuItem delete = new MenuItem(menuBar, SWT.PUSH);
-		delete.setText("Delete");
-		delete.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				delete();
-			}
-		});
-
-		lblTitle.setMenu(menuBar);
+		setupPopupMenu();
 		
 		Composite mainPanel = new Composite(this, SWT.NONE);
 		mainPanel.setBackground(BackgroundColor);
@@ -172,6 +154,8 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
         lblTitle.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
+				if (e.button != 1)
+					return;
 				mouseOffsetX = e.x;
 				mouseOffsetY = e.y;
 				dragging = true;
@@ -179,6 +163,8 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 			}
 			@Override
 			public void mouseUp(MouseEvent e) {
+				if (e.button != 1)
+					return;
 				setCapture(false);
 				dragging = false;
         		if (dropCandidate!=null) {
@@ -194,6 +180,7 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
         lblTitle.addMouseMoveListener(new MouseMoveListener() {
 			@Override
 			public void mouseMove(MouseEvent e) {
+				model.disablePopupMenu();
 				if (dragging) {
 					Point location = getLocation();
 					int newX = location.x + e.x - mouseOffsetX;
@@ -223,6 +210,28 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
         pack();
     }
 
+    protected void setupPopupMenu() {
+		Menu menuBar = new Menu(getShell(), SWT.POP_UP);
+		
+		MenuItem disconnect = new MenuItem(menuBar, SWT.PUSH);
+		disconnect.setText("Disconnect");
+		disconnect.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				disconnect();
+			}
+		});
+
+		MenuItem delete = new MenuItem(menuBar, SWT.PUSH);
+		delete.setText("Delete");
+		delete.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				delete();
+			}
+		});
+
+		lblTitle.setMenu(menuBar);
+    }
+    
     public int compareTo(Visualiser v) {
     	return getID().compareTo(v.getID());
     }
@@ -240,15 +249,16 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
     }
     
     protected void disconnect() {
-		for (Argument argument: arguments)
+    	Argument argumentArray[] = arguments.toArray(new Argument[0]);
+    	for (Argument argument: argumentArray)
 			argument.setOperand(null);    	
+    	arguments.clear();
     }
 
     protected void delete() {
     	disconnect();
-		arguments.clear();
 		DatabaseAbstractionLayer.removeRelvar(model.getConnection(), getID());
-		setVisible(false);
+		dispose();
 	}
     
     private void bringToFront() {
@@ -338,6 +348,11 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
     
 	public void addArgumentReference(Argument argument) {
 		arguments.add(argument);
+		visualiserMoved();
+	}
+	
+	public void removeArgumentReference(Argument argument) {
+		arguments.remove(argument);
 		visualiserMoved();
 	}
 	

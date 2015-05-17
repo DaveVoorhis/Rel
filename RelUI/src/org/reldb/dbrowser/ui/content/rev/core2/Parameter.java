@@ -22,8 +22,9 @@ public class Parameter extends Label {
 		pack();
 	}
 
-	public void hide() {
-		argument.hide();
+	public void dispose() {
+		argument.dispose();
+		super.dispose();
 	}
 	
 	public Argument getArgument() {

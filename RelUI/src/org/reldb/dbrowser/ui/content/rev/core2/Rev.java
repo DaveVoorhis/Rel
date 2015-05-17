@@ -195,15 +195,6 @@ public class Rev extends Composite {
 		return subMenu;
 	}
 	
-	public void deleteVisualiser(Visualiser connected, Visualiser deleteOperator) {
-		if (connected == null) {
-			return;
-		}
-		model.removeVisualiser(connected);
-		model.removeVisualiser(deleteOperator);
-		refreshMenus();
-	}
-	
 	private static interface OpSelectorRun {
 		public Operator obtain(Rev rev, String name, int xpos, int ypos);
 	}

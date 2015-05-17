@@ -13,6 +13,7 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.reldb.rel.client.Connection;
 
 /**
@@ -47,21 +48,35 @@ public class Model extends ScrolledComposite {
 			public void mouseMove(MouseEvent e) {
 				lastMouseX = e.x;
 				lastMouseY = e.y;
+				enablePopupMenu();
 			}
     	});
     }
 
+    private Menu preservedPopupMenu;
+    
+    void disablePopupMenu() {
+    	if (getMenu() == null)
+    		return;
+    	preservedPopupMenu = getMenu();
+    	setMenu(null);
+    }
+    
+    void enablePopupMenu() {
+    	if (getMenu() != null)
+    		return;
+    	if (preservedPopupMenu == null)
+    		return;
+    	setMenu(preservedPopupMenu);
+    	preservedPopupMenu = null;
+    }
+    
     public Point getLastMousePosition() {
     	return new Point(lastMouseX, lastMouseY);
     }
     
 	public void removeEverything() {
 		System.out.println("Model: removeEverything() not implemented.");
-	}
-
-	public void removeVisualiser(Visualiser connected) {
-		
-		System.out.println("Model: removeVisualiser() not implemented.");
 	}
 
 	public Visualiser getVisualiser(String visualiserName) {
