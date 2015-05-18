@@ -57,14 +57,21 @@ public class CmdPanelInput extends Composite {
     private PreferenceChangeListener iconPreferenceChangeListener;
     private PreferenceChangeListener fontPreferenceChangeListener;
 	
+    private CmdPanelOutput cmdPanelOutput;
+    
+	private boolean copyInputToOutput = true;
+    
 	/**
 	 * Create the composite.
 	 * @param parent
+	 * @param cmdPanelOutput 
 	 * @param style
 	 */
-	public CmdPanelInput(Composite parent, int style) {
+	public CmdPanelInput(Composite parent, CmdPanelOutput cmdPanelOutput, int style) {
 		super(parent, style);
 		setLayout(new FormLayout());
+		
+		this.cmdPanelOutput = cmdPanelOutput;
 		
 		ToolBar toolBar = new ToolBar(this, SWT.FLAT);
 		FormData fd_toolBar = new FormData();
@@ -93,7 +100,7 @@ public class CmdPanelInput extends Composite {
 				} catch (Exception ble) {
 					cmdPanelBottom.setRowColDisplay("?:?");
 				}
-				if (isLastNonWhitespaceCharacter(inputText.getText(), ';')) {
+				if (CmdPanelOutput.isLastNonWhitespaceCharacter(inputText.getText(), ';')) {
 					cmdPanelBottom.setRunButtonPrompt("Execute (F5)");
 				} else {
 					cmdPanelBottom.setRunButtonPrompt("Evaluate (F5)");
@@ -291,6 +298,14 @@ public class CmdPanelInput extends Composite {
 	private void setupFont() {
 		inputText.setFont(Preferences.getPreferenceFont(getDisplay(), PreferencePageCmd.CMD_FONT));
 	}
+
+	public void copyOutputToInput() {
+		String selection = cmdPanelOutput.getSelectionText();
+		if (selection.length() == 0)
+			insertInputText(getInputText() + cmdPanelOutput.getText());
+		else
+			insertInputText(getInputText() + selection);
+	}
 	
 	public void dispose() {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, iconPreferenceChangeListener);
@@ -299,28 +314,21 @@ public class CmdPanelInput extends Composite {
 	}
 	
 	/** Override to receive notification that the cancel button has been pressed. */
-	public void notifyStop() {}
+	public void notifyStop() {
+		cmdPanelOutput.notifyStop();
+	}
 	
 	/** Override to receive notification that the run button has been pressed.  Must invoke done() when 
 	 * ready to receive another notification. */
-	public void notifyGo(String text) {}
+	public void notifyGo(String text) {
+		cmdPanelOutput.go(text, copyInputToOutput);
+	}
 	
 	/** Must invoke this after processing invoked by run button has finished, and we're ready to receive another 'run' notification. */
 	public void done() {
 		showRunningStop();
 	}
 	
-	public static boolean isLastNonWhitespaceCharacter(String s, char c) {
-		int endPosn = s.length() - 1;
-		if (endPosn < 0)
-			return false;
-		while (endPosn >= 0 && Character.isWhitespace(s.charAt(endPosn)))
-			endPosn--;
-		if (endPosn < 0)
-			return false;
-		return (s.charAt(endPosn) == c);
-	}
-
 	public void insertInputText(String newText) {
 		int insertionStart;
 		int insertionEnd;
@@ -373,14 +381,17 @@ public class CmdPanelInput extends Composite {
 	
 	/** Override to be notified that copyInputToOutput setting has changed. */
 	protected void setCopyInputToOutput(boolean selection) {
+		copyInputToOutput = selection;
 	}
 
 	/** Override to be notified that an announcement has been raised. */
 	protected void announcement(String msg) {
+		cmdPanelOutput.systemResponse(msg);
 	}
 	
 	/** Override to be notified about an error. */
 	protected void announceError(String msg, Throwable t) {
+		cmdPanelOutput.badResponse(msg);
 	}
 	
 	/** Get number of items in History. */
