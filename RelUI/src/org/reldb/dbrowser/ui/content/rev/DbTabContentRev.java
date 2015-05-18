@@ -25,6 +25,8 @@ public class DbTabContentRev extends Composite {
     
     private PreferenceChangeListener preferenceChangeListener;
 	
+    private Rev rev;
+    
 	public DbTabContentRev(DbTab parentTab, Composite contentParent) {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
@@ -36,7 +38,7 @@ public class DbTabContentRev extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 
-	    Rev rev = new Rev(this, parentTab.getURL(), parentTab.getCrashHandler());
+	    rev = new Rev(this, parentTab.getURL(), parentTab.getCrashHandler());
 
 	    FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
@@ -79,6 +81,7 @@ public class DbTabContentRev extends Composite {
 	}
 
 	public void redisplayed() {
+		rev.refresh();
 	}
 
 }

@@ -75,9 +75,12 @@ public class Rev extends Composite {
 	public void setupMenus() {
 		if (getMenu() != null)
 			getMenu().dispose();
+
+		model.clear();
 		
 		Menu menuBar = new Menu(getShell(), SWT.POP_UP);
-		
+		model.setMenu(menuBar);
+
 		// Custom relvars
 		MenuItem customRelvarsItem = new MenuItem(menuBar, SWT.CASCADE);
 		customRelvarsItem.setText("Variables");
@@ -127,28 +130,19 @@ public class Rev extends Composite {
 		clearRev.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				// Remove the visualisers
+				if (!MessageDialog.openConfirm(getShell(), "Rev", "Remove everything from this model?"))
+					return;
 				model.removeEverything();
-				// Refresh combo boxes
-				refreshMenus();
 			}
 		});
 
 		int version = hasRevExtensions();
 		if (version < 0) {
-			System.out.println("Rev: extensions are not present.");
-			MenuItem installRev = new MenuItem(menuBar, SWT.PUSH);
-			installRev.setText("Install Rev extensions");
-			installRev.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					installRevExtensions();
-					refresh();
-				}
-			});
+			installRevExtensions();
+			refresh();
 		} else if (version < DatabaseAbstractionLayer.EXPECTED_REV_VERSION) {
 			upgrade(version);
 		} else {
-			System.out.println("Rev: extensions are present.");
 			presentRelvarsWithRevExtensions("");
 			presentQueriesWithRevExtensions("");
 			
@@ -162,12 +156,6 @@ public class Rev extends Composite {
 				}
 			});			
 		}
-				
-		model.setMenu(menuBar);
-	}
-	
-	private void refreshMenus() {
-		setupMenus();
 	}
 	
 	private Menu obtainRelvarsMenu(Menu parent, String where) {
@@ -384,35 +372,29 @@ public class Rev extends Composite {
 	
 	private boolean installRevExtensions() {
 		boolean pass = DatabaseAbstractionLayer.installRevExtensions(connection);
-		if (pass) {
-			refreshMenus();
-		}
+		if (pass)
+			setupMenus();
 		return pass;
 	}
 
 	private boolean removeRevExtensions() {
 		boolean pass = DatabaseAbstractionLayer.removeRevExtensions(connection);
-		if (pass) {
-			refreshMenus();
-		}
+		if (pass)
+			setupMenus();
 		return pass;
 	}
 	
 	private void uninstall() {
-		if (hasRevExtensions() < 0) {
+		if (hasRevExtensions() < 0)
         	MessageDialog.openInformation(getShell(), "Rev", "Rev is not installed.");
-		}
-		if (!MessageDialog.openConfirm(getShell(), "Rev", "Uninstall Rev?"))
+		if (!MessageDialog.openConfirm(getShell(), "Rev", "Are you sure?  This will remove all Rev query definitions."))
 			return;
-		if (removeRevExtensions()) {
+		if (removeRevExtensions())
 			refresh();
-			setVisible(false);
-			setVisible(true);
-		}
 	}
 	
 	public void refresh() {
-		refreshMenus();
+		setupMenus();
 	}
 	
 	private void upgrade(int currentVersionOfRevFromDatabase) {

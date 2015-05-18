@@ -6,6 +6,9 @@
 
 package org.reldb.dbrowser.ui.content.rev.core2;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseEvent;
@@ -76,7 +79,17 @@ public class Model extends ScrolledComposite {
     }
     
 	public void removeEverything() {
-		System.out.println("Model: removeEverything() not implemented.");
+		Collection<Visualiser> visualisers = new HashSet<Visualiser>();
+		for (Control child: getChildren())
+			if (child instanceof Visualiser)
+				visualisers.add((Visualiser)child);
+		for (Visualiser visualiser: visualisers)
+			visualiser.delete();
+	}
+
+	public void clear() {
+		for (Control control: getChildren())
+			control.dispose();
 	}
 
 	public Visualiser getVisualiser(String visualiserName) {
