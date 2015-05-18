@@ -557,30 +557,35 @@ public class CmdPanelOutput extends Composite {
 	}
 
 	public void sendExecute(String text) {
-		responseFormatted = false;
-		connection.sendExecute(text);
+		try {
+			clearReplyBuffer();
+			responseFormatted = false;
+			connection.sendExecute(text);
+		} catch (Throwable ioe) {
+			badResponse(ioe.getMessage());
+		}	
 	}
 
 	public void sendEvaluate(String text) {
-		responseFormatted = true;
-		connection.sendEvaluate(text);
+		try {
+			clearReplyBuffer();
+			responseFormatted = true;
+			connection.sendEvaluate(text);
+		} catch (Throwable ioe) {
+			badResponse(ioe.getMessage());
+		}	
 	}
 
 	public void go(String text, boolean copyInputToOutput) {
-		clearReplyBuffer();
 		if (getAutoclear())
 			clearOutput();
 		if (copyInputToOutput)
 			userResponse(text);
-		try {
-			if (isLastNonWhitespaceCharacter(text.trim(), ';')) {
-				sendExecute(text);
-			} else {
-				sendEvaluate(text);
-			}
-		} catch (Throwable ioe) {
-			badResponse(ioe.getMessage());
-		}	
+		if (isLastNonWhitespaceCharacter(text.trim(), ';')) {
+			sendExecute(text);
+		} else {
+			sendEvaluate(text);
+		}
 	}
 
 }
