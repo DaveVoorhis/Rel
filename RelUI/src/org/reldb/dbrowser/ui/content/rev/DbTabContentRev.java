@@ -11,7 +11,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
-import org.reldb.dbrowser.ui.content.rev.core2.Rev;
 
 public class DbTabContentRev extends Composite {
 	
