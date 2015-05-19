@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Point;
@@ -24,7 +23,7 @@ import org.reldb.rel.client.Connection;
  *
  * @author  Dave Voorhis
  */
-public class Model extends ScrolledComposite {
+public class Model extends Composite {
     
 	private int lastMouseX;
 	private int lastMouseY;
@@ -35,16 +34,10 @@ public class Model extends ScrolledComposite {
 	
     /** Ctor */
     public Model(Rev rev, String modelName, Composite parent) {
-    	super(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+    	super(parent, SWT.NONE);
     	
     	this.rev = rev;
     	this.modelName = modelName;
-    	
-    	setMinWidth(100);
-    	setMinHeight(100);
-    	setExpandHorizontal(true);
-    	setExpandVertical(true);
-    //	setSize(4096, 4096);
     	
     	addMouseMoveListener(new MouseMoveListener() {
 			@Override

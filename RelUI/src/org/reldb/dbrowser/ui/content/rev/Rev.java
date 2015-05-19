@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -65,7 +66,15 @@ public class Rev extends Composite {
 			e.printStackTrace();
 		}
 
-		model = new Model(this, "Rev", revPane);
+		ScrolledComposite scrollPanel = new ScrolledComposite(revPane, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		
+		model = new Model(this, "Rev", scrollPanel);
+		model.setSize(4096, 4096);
+		
+		scrollPanel.setContent(model);
+		scrollPanel.setExpandHorizontal(true);
+		scrollPanel.setExpandVertical(true);
+		scrollPanel.setMinSize(model.getSize());
 
 		revPane.setWeights(new int[] {1, 1});
 
