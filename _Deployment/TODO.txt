@@ -1,7 +1,7 @@
 ** TO DO **
 
 Short term:
-	// TODO - Fix Parameter stuff.
+	// TODO - Fix user input selection after successful execution in Cmd
 	// TODO - Fix toolbar button enabled/selected states in RelUI.
 	// TODO - Examine org.reldb.rel.client.  Should tuple iteration close the tuple iterator?
 	// TODO - test client connection reset() on remote databases.
