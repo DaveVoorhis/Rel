@@ -29,7 +29,20 @@ public class CmdPanel extends Composite {
 		
 		SashForm sashForm = new SashForm(this, SWT.VERTICAL);
 
-		cmdPanelOutput = new CmdPanelOutput(sashForm, dbTab, SWT.NONE);
+		cmdPanelOutput = new CmdPanelOutput(sashForm, dbTab, SWT.NONE) {
+			@Override
+			protected void notifyInputDone() {
+				cmdPanelInput.done();
+			}
+			@Override
+			protected void notifyInputOfSuccess() {
+				cmdPanelInput.selectAll();
+			}
+			@Override
+			protected void notifyInputOfError(StringBuffer errorBuffer) {
+				cmdPanelInput.handleError(errorBuffer);
+			}
+		};
 		cmdPanelInput = new CmdPanelInput(sashForm, cmdPanelOutput, SWT.NONE);
 		
 		sashForm.setWeights(new int[] {2, 1});
@@ -42,7 +55,7 @@ public class CmdPanel extends Composite {
 	}
 
 	public void redisplayed() {
-		cmdPanelInput.getInputTextWidget().setFocus();
+		cmdPanelInput.setFocused();
 	}
 
 	public void load(String fname) {

@@ -190,46 +190,11 @@ public class CmdPanelOutput extends Composite {
 		return (s.charAt(endPosn) == c);
 	}
 	
-	protected void notifyInputDone() {
-		/*
-		cmdPanelInput.done();
-		*/
-	}
+	protected void notifyInputDone() {}
 
-	protected void notifyInputOfSuccess() {
-		/*
-		inputTextWidget.selectAll();
-		*/
-	}
+	protected void notifyInputOfSuccess() {}
 
-	protected void notifyInputOfError(StringBuffer errorBuffer) {
-		/*
-		ErrorInformation eInfo = parseErrorInformationFrom(errorBuffer.toString());
-		if (eInfo != null) {
-			int offset = 0;
-			StyledText inputTextWidget = cmdPanelInput.getInputTextWidget();
-			try {
-				if (eInfo.getLine() > 0) {
-					int row = eInfo.getLine() - 1;
-					offset = inputTextWidget.getOffsetAtLine(row);
-					if (eInfo.getColumn() > 0) {
-						int outputTabSize = 4;	// should match parserEngine.setTabSize() in org.reldb.rel.v<n>.interpreter.Interpreter
-						String inputLine = inputTextWidget.getLine(row);
-						int characterIndex = Tabs.displayColumnToCharacterIndex(outputTabSize, inputLine, eInfo.getColumn() - 1);
-						offset = characterIndex + inputTextWidget.getOffsetAtLine(row);
-					}
-				}
-				inputTextWidget.setCaretOffset(offset);
-				if (eInfo.getBadToken() != null)
-					inputTextWidget.setSelection(offset, offset + eInfo.getBadToken().length());
-			} catch (Exception e) {
-				System.out.println("CmdPanel: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
-			}
-		} else
-			System.out.println("CmdPanel: Unable to locate error in " + errorBuffer.toString());
-		errorBuffer = null;
-		*/
-	}
+	protected void notifyInputOfError(StringBuffer errorBuffer) {}
 
 	public void clearOutput() {
 		browser.clear();
@@ -446,98 +411,6 @@ public class CmdPanelOutput extends Composite {
 	/** Handle a notice. */
 	public void noticeResponse(String s) {
 		response(s, "notice", black, true);
-	}
-	
-	private static class ErrorInformation {
-		private int line;
-		private int column;
-		private String badToken;
-		ErrorInformation(int line, int column, String badToken) {
-			this.line = line;
-			this.column = column;
-			this.badToken = badToken;
-		}
-		int getLine() {
-			return line;
-		}
-		int getColumn() {
-			return column;
-		}
-		String getBadToken() {
-			return badToken;
-		}
-		public String toString() {
-			String output = "Error in line " + line;
-			if (column >= 0)
-				output += ", column " + column;
-			if (badToken != null)
-				output += " near " + badToken;
-			return output;
-		}
-	}
-	
-	private ErrorInformation parseErrorInformationFrom(String eInfo) {
-		try {
-			String badToken = null;
-			String errorEncountered = "ERROR: Encountered ";
-			if (eInfo.startsWith(errorEncountered)) {
-				String atLineText = "at line ";
-				int atLineTextPosition = eInfo.indexOf(atLineText);
-				int lastBadTokenCharPosition = eInfo.lastIndexOf('"', atLineTextPosition);
-				if (lastBadTokenCharPosition >= 0)
-					badToken = eInfo.substring(errorEncountered.length() + 1, lastBadTokenCharPosition);
-			}
-			String lineText = "line ";
-			int locatorStart = eInfo.toLowerCase().indexOf(lineText);
-			if (locatorStart >= 0) {
-				int line = 0;
-				int column = 0;
-				eInfo = eInfo.substring(locatorStart + lineText.length());
-				int nonNumberPosition = 0;
-				while (nonNumberPosition < eInfo.length() && Character.isDigit(eInfo.charAt(nonNumberPosition)))
-					nonNumberPosition++;
-				String lineString = eInfo.substring(0, nonNumberPosition);
-				try {
-					line = Integer.parseInt(lineString);			
-				} catch (NumberFormatException nfe) {
-					return null;
-				}
-				int commaPosition = eInfo.indexOf(',');
-				if (commaPosition > 0) {
-					eInfo = eInfo.substring(commaPosition + 2);
-					String columnText = "column ";
-					if (eInfo.startsWith(columnText)) {
-						eInfo = eInfo.substring(columnText.length());
-						int endOfNumber = 0;
-						while (endOfNumber < eInfo.length() && Character.isDigit(eInfo.charAt(endOfNumber)))
-							endOfNumber++;
-						String columnString = "";
-						if (endOfNumber > 0 && endOfNumber < eInfo.length())
-							columnString = eInfo.substring(0, endOfNumber);
-						else
-							columnString = eInfo;
-						try {
-							column = Integer.parseInt(columnString);
-						} catch (NumberFormatException nfe) {
-							return null;
-						}
-						String nearText = "near ";
-						int nearTextPosition = eInfo.indexOf(nearText, endOfNumber);
-						if (nearTextPosition > 0) {
-							int lastQuotePosition = eInfo.lastIndexOf('\'');
-							badToken = eInfo.substring(nearTextPosition + nearText.length() + 1, lastQuotePosition);
-						}
-						return new ErrorInformation(line, column, badToken);
-					} else
-						return new ErrorInformation(line, -1, badToken);
-				} else
-					return new ErrorInformation(line, -1, badToken);
-			}
-		} catch (Throwable t) {
-			System.out.println("CmdPanelOutput: unable to parse " + eInfo + " due to " + t);
-			t.printStackTrace();
-		}
-		return null;
 	}
 
 	public String getSelectionText() {

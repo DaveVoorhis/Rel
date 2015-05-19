@@ -282,6 +282,29 @@ public class CmdPanelInput extends Composite {
 		};
 		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
 	}
+
+	public void copyOutputToInput() {
+		String selection = cmdPanelOutput.getSelectionText();
+		if (selection.length() == 0)
+			insertInputText(inputText.getText() + cmdPanelOutput.getText());
+		else
+			insertInputText(inputText.getText() + selection);
+	}
+	
+	public void dispose() {
+		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, iconPreferenceChangeListener);
+		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
+		super.dispose();
+	}
+	
+	/** Must invoke this after processing invoked by run button has finished, and we're ready to receive another 'run' notification. */
+	public void done() {
+		showRunningStop();
+	}
+
+	public void selectAll() {
+		inputText.selectAll();
+	}
 	
 	private void setupIcons() {
 		tlitmPrevHistory.setImage(IconLoader.loadIcon("previousIcon"));
@@ -298,38 +321,19 @@ public class CmdPanelInput extends Composite {
 	private void setupFont() {
 		inputText.setFont(Preferences.getPreferenceFont(getDisplay(), PreferencePageCmd.CMD_FONT));
 	}
-
-	public void copyOutputToInput() {
-		String selection = cmdPanelOutput.getSelectionText();
-		if (selection.length() == 0)
-			insertInputText(getInputText() + cmdPanelOutput.getText());
-		else
-			insertInputText(getInputText() + selection);
-	}
-	
-	public void dispose() {
-		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, iconPreferenceChangeListener);
-		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
-		super.dispose();
-	}
 	
 	/** Override to receive notification that the cancel button has been pressed. */
-	public void notifyStop() {
+	private void notifyStop() {
 		cmdPanelOutput.notifyStop();
 	}
 	
 	/** Override to receive notification that the run button has been pressed.  Must invoke done() when 
 	 * ready to receive another notification. */
-	public void notifyGo(String text) {
+	private void notifyGo(String text) {
 		cmdPanelOutput.go(text, copyInputToOutput);
 	}
 	
-	/** Must invoke this after processing invoked by run button has finished, and we're ready to receive another 'run' notification. */
-	public void done() {
-		showRunningStop();
-	}
-	
-	public void insertInputText(String newText) {
+	private void insertInputText(String newText) {
 		int insertionStart;
 		int insertionEnd;
 		Point selectionRange = inputText.getSelectionRange();
@@ -344,13 +348,9 @@ public class CmdPanelInput extends Composite {
 		inputText.setText(before + newText + after);
 		inputText.setCaretOffset(before.length() + newText.length());
 	}
-	
-	public String getInputText() {
-		return inputText.getText();
-	}
 
-	public StyledText getInputTextWidget() {
-		return inputText;
+	public void setFocused() {
+		inputText.setFocus();
 	}
 	
 	public void loadFile(String fname) {
@@ -369,6 +369,32 @@ public class CmdPanelInput extends Composite {
 		} catch (Exception ioe) {
 			announceError(ioe.toString(), ioe);
 		}
+	}
+
+	public void handleError(StringBuffer errorBuffer) {
+		ErrorInformation eInfo = parseErrorInformationFrom(errorBuffer.toString());
+		if (eInfo != null) {
+			int offset = 0;
+			try {
+				if (eInfo.getLine() > 0) {
+					int row = eInfo.getLine() - 1;
+					offset = inputText.getOffsetAtLine(row);
+					if (eInfo.getColumn() > 0) {
+						int outputTabSize = 4;	// should match parserEngine.setTabSize() in org.reldb.rel.v<n>.interpreter.Interpreter
+						String inputLine = inputText.getLine(row);
+						int characterIndex = Tabs.displayColumnToCharacterIndex(outputTabSize, inputLine, eInfo.getColumn() - 1);
+						offset = characterIndex + inputText.getOffsetAtLine(row);
+					}
+				}
+				inputText.setCaretOffset(offset);
+				if (eInfo.getBadToken() != null)
+					inputText.setSelection(offset, offset + eInfo.getBadToken().length());
+			} catch (Exception e) {
+				System.out.println("CmdPanelInput: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
+			}
+		} else
+			System.out.println("CmdPanelInput: Unable to locate error in " + errorBuffer.toString());
+		errorBuffer = null;
 	}
 		
 	private void showRunningStart() {
@@ -440,7 +466,7 @@ public class CmdPanelInput extends Composite {
 
 	private void run() {
 		showRunningStart();
-		String text = getInputText();
+		String text = inputText.getText();
 		addHistoryItem(text);
 		notifyGo(text);	
 	}
@@ -478,6 +504,98 @@ public class CmdPanelInput extends Composite {
 			loadDialog.setFilterNames(new String[] {"All Files"});
 			loadPathDialog.setText("Load Path");
 		}
+	}
+	
+	private static class ErrorInformation {
+		private int line;
+		private int column;
+		private String badToken;
+		ErrorInformation(int line, int column, String badToken) {
+			this.line = line;
+			this.column = column;
+			this.badToken = badToken;
+		}
+		int getLine() {
+			return line;
+		}
+		int getColumn() {
+			return column;
+		}
+		String getBadToken() {
+			return badToken;
+		}
+		public String toString() {
+			String output = "Error in line " + line;
+			if (column >= 0)
+				output += ", column " + column;
+			if (badToken != null)
+				output += " near " + badToken;
+			return output;
+		}
+	}
+	
+	private ErrorInformation parseErrorInformationFrom(String eInfo) {
+		try {
+			String badToken = null;
+			String errorEncountered = "ERROR: Encountered ";
+			if (eInfo.startsWith(errorEncountered)) {
+				String atLineText = "at line ";
+				int atLineTextPosition = eInfo.indexOf(atLineText);
+				int lastBadTokenCharPosition = eInfo.lastIndexOf('"', atLineTextPosition);
+				if (lastBadTokenCharPosition >= 0)
+					badToken = eInfo.substring(errorEncountered.length() + 1, lastBadTokenCharPosition);
+			}
+			String lineText = "line ";
+			int locatorStart = eInfo.toLowerCase().indexOf(lineText);
+			if (locatorStart >= 0) {
+				int line = 0;
+				int column = 0;
+				eInfo = eInfo.substring(locatorStart + lineText.length());
+				int nonNumberPosition = 0;
+				while (nonNumberPosition < eInfo.length() && Character.isDigit(eInfo.charAt(nonNumberPosition)))
+					nonNumberPosition++;
+				String lineString = eInfo.substring(0, nonNumberPosition);
+				try {
+					line = Integer.parseInt(lineString);			
+				} catch (NumberFormatException nfe) {
+					return null;
+				}
+				int commaPosition = eInfo.indexOf(',');
+				if (commaPosition > 0) {
+					eInfo = eInfo.substring(commaPosition + 2);
+					String columnText = "column ";
+					if (eInfo.startsWith(columnText)) {
+						eInfo = eInfo.substring(columnText.length());
+						int endOfNumber = 0;
+						while (endOfNumber < eInfo.length() && Character.isDigit(eInfo.charAt(endOfNumber)))
+							endOfNumber++;
+						String columnString = "";
+						if (endOfNumber > 0 && endOfNumber < eInfo.length())
+							columnString = eInfo.substring(0, endOfNumber);
+						else
+							columnString = eInfo;
+						try {
+							column = Integer.parseInt(columnString);
+						} catch (NumberFormatException nfe) {
+							return null;
+						}
+						String nearText = "near ";
+						int nearTextPosition = eInfo.indexOf(nearText, endOfNumber);
+						if (nearTextPosition > 0) {
+							int lastQuotePosition = eInfo.lastIndexOf('\'');
+							badToken = eInfo.substring(nearTextPosition + nearText.length() + 1, lastQuotePosition);
+						}
+						return new ErrorInformation(line, column, badToken);
+					} else
+						return new ErrorInformation(line, -1, badToken);
+				} else
+					return new ErrorInformation(line, -1, badToken);
+			}
+		} catch (Throwable t) {
+			System.out.println("CmdPanelOutput: unable to parse " + eInfo + " due to " + t);
+			t.printStackTrace();
+		}
+		return null;
 	}
 	
 }
