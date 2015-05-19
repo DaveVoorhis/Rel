@@ -348,11 +348,13 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
     
 	public void addArgumentReference(Argument argument) {
 		arguments.add(argument);
+		movement();
 		visualiserMoved();
 	}
 	
 	public void removeArgumentReference(Argument argument) {
 		arguments.remove(argument);
+		movement();
 		visualiserMoved();
 	}
 	
