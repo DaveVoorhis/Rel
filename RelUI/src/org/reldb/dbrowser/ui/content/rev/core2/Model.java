@@ -121,5 +121,9 @@ public class Model extends ScrolledComposite {
 	public String getModelName() {
 		return modelName;
 	}
+
+	public Rev getRev() {
+		return rev;
+	}
     
 }

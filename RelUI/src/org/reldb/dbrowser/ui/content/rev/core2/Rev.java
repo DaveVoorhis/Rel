@@ -15,6 +15,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.reldb.dbrowser.ui.DbTab;
+import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
 import org.reldb.dbrowser.ui.content.rev.core2.operators.Diadic;
 import org.reldb.dbrowser.ui.content.rev.core2.operators.Extend;
 import org.reldb.dbrowser.ui.content.rev.core2.operators.Group;
@@ -36,17 +38,18 @@ import org.reldb.rel.client.connection.CrashHandler;
 public class Rev extends Composite {
 	private Connection connection;
 	private Model model;
-	private Composite detailView;
+	private CmdPanelOutput outputView;
 	private SashForm revPane;
 	private CrashHandler crashHandler;
 	
-	public Rev(Composite parent, String dbURL, CrashHandler crashHandler) {
+	public Rev(Composite parent, DbTab parentTab, CrashHandler crashHandler) {
 		super(parent, SWT.None);
 		this.crashHandler = crashHandler;
 		
 		try {
-			connection = new Connection(dbURL, false, crashHandler, null);
+			connection = new Connection(parentTab.getURL(), false, crashHandler, null);
 		} catch (Exception e) {
+			System.out.println("Rev: Unable to establish connection.");
 			e.printStackTrace();
 		}
 		
@@ -54,16 +57,25 @@ public class Rev extends Composite {
 				
 		revPane = new SashForm(this, SWT.NONE);
 		revPane.setOrientation(SWT.VERTICAL);
+		
+		try {
+			outputView = new CmdPanelOutput(revPane, parentTab, SWT.NONE);
+		} catch (Exception e) {
+			System.out.println("Rev: Unable to open output panel.");
+			e.printStackTrace();
+		}
 
 		model = new Model(this, "Rev", revPane);
 
-		detailView = new Composite(revPane, SWT.BORDER);
-
-		revPane.setWeights(new int[] {8, 2});
+		revPane.setWeights(new int[] {1, 1});
 
 		setupMenus();
 	}
 
+	public CmdPanelOutput getCmdPanelOutput() {
+		return outputView;
+	}
+	
 	public long getUniqueNumber() {
 		return DatabaseAbstractionLayer.getUniqueNumber(connection);
 	}

@@ -47,6 +47,10 @@ public class CmdPanel extends Composite {
 		
 		sashForm.setWeights(new int[] {2, 1});
 	}
+
+	public CmdPanelOutput getCmdPanelOutput() {
+		return cmdPanelOutput;
+	}
 	
 	public void dispose() {
 		cmdPanelInput.dispose();
@@ -62,60 +66,12 @@ public class CmdPanel extends Composite {
 		cmdPanelInput.loadFile(fname);
 	}
 
-	public boolean getHeadingTypesVisible() {
-		return cmdPanelOutput.getHeadingTypesVisible();
-	}
-
-	public void setHeadingTypesVisible(boolean selection) {
-		cmdPanelOutput.setHeadingTypesVisible(selection);
-	}
-
-	public boolean getHeadingVisible() {
-		return cmdPanelOutput.getHeadingVisible();
-	}
-
-	public void setHeadingVisible(boolean selection) {
-		cmdPanelOutput.setHeadingVisible(selection);
-	}
-
-	public boolean getAutoclear() {
-		return cmdPanelOutput.getAutoclear();
-	}
-
-	public void setAutoclear(boolean selection) {
-		cmdPanelOutput.setAutoclear(selection);
-	}
-
-	public boolean getShowOk() {
-		return cmdPanelOutput.getShowOk();
-	}
-
-	public void setShowOk(boolean selection) {
-		cmdPanelOutput.setShowOk(selection);
-	}
-
-	public boolean getEnhancedOutput() {
-		return cmdPanelOutput.getEnhancedOutput();
-	}
-
-	public void setEnhancedOutput(boolean selection) {
-		cmdPanelOutput.setEnhancedOutput(selection);
-	}
-
 	public void copyOutputToInput() {
 		cmdPanelInput.copyOutputToInput();
 	}
 
-	public void saveOutputAsText() {
-		cmdPanelOutput.saveOutputAsText();
-	}
-
-	public void saveOutputAsHtml() {
-		cmdPanelOutput.saveOutputAsHtml();
-	}
-
-	public void clearOutput() {
-		cmdPanelOutput.clearOutput();
+	public boolean getEnhancedOutput() {
+		return cmdPanelOutput.getEnhancedOutput();
 	}
 
 }

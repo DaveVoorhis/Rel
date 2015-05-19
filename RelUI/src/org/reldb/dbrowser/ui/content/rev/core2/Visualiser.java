@@ -139,7 +139,11 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 		btnRun.setText(">");
 		btnRun.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
-				System.out.println("Visualiser: run " + Visualiser.this.toString());
+				String query = getQuery();
+				if (query != null)
+					model.getRev().getCmdPanelOutput().go(query, true);
+				else
+					model.getRev().getCmdPanelOutput().badResponse("Unable to produce query.");
 			}
 		});
 		
