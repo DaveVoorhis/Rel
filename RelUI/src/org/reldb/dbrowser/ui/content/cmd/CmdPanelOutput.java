@@ -171,6 +171,7 @@ public class CmdPanelOutput extends Composite {
 				else
 					notifyInputOfSuccess();
 				notifyInputDone();
+				errorBuffer = null;
 			}
 		};
 		
