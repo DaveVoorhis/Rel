@@ -46,7 +46,7 @@ public class DbTabContentCmd extends Composite {
 						cmdPanel.copyOutputToInput();
 					}
 				});
-				addAdditionalItem(copyOutputToInputBtn, "");
+				addAdditionalItem(copyOutputToInputBtn, "copyToInputIcon");
 			}
 		};
 		
