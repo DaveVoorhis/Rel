@@ -237,27 +237,11 @@ public class Rev extends Composite {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new Restrict(rev, name, xpos, ypos);
 			}}),
-			new OpSelector("UNION", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "UNION", xpos, ypos);
-				}}),
 			new OpSelector("RENAME", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new Rename(rev, name, xpos, ypos);
 				}}),
-			new OpSelector("INTERSECT", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "INTERSECT", xpos, ypos);
-				}}),
-			new OpSelector("MINUS", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "MINUS", xpos, ypos);
-				}}),
 			/*
-			new OpSelector("PRODUCT", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new VisualiserOfOperatorProduct(rev, name, xpos, ypos);
-				}}),
 			new OpSelector("DIVIDEBY", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new VisualiserOfOperatorDivideby(rev, name, xpos, ypos);
@@ -278,6 +262,22 @@ public class Rev extends Composite {
 			new OpSelector("NOT MATCHING", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new Diadic(rev, name, "NOT MATCHING", xpos, ypos);
+				}}),
+			new OpSelector("TIMES", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "TIMES", xpos, ypos);
+				}}),
+			new OpSelector("UNION", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "UNION", xpos, ypos);
+				}}),
+			new OpSelector("INTERSECT", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "INTERSECT", xpos, ypos);
+				}}),
+			new OpSelector("MINUS", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "MINUS", xpos, ypos);
 				}}),
 			new OpSelector("ORDER", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
