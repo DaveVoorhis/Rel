@@ -69,7 +69,7 @@ public class Rev extends Composite {
 		ScrolledComposite scrollPanel = new ScrolledComposite(revPane, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		
 		model = new Model(this, "Rev", scrollPanel);
-		model.setSize(4096, 4096);
+		model.setSize(10000, 10000);
 		
 		scrollPanel.setContent(model);
 		scrollPanel.setExpandHorizontal(true);
