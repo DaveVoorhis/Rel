@@ -1,6 +1,8 @@
 ** TO DO **
 
 Short term:
+	// TODO - implement (only for multiple possreps) SELECTORS and (mandatory) INIT clause 
+	//        in TYPE definitions.
 	// TODO - Fix parameter numbering after disconnecting operator in Rev
 	// TODO - Fix toolbar button enabled/selected states in RelUI.
 	// TODO - Examine org.reldb.rel.client.  Should tuple iteration close the tuple iterator?
