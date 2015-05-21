@@ -119,7 +119,7 @@ public class Model extends Composite {
 		return rev;
 	}
 
-	public void verify() {
+	public void loaded() {
 		for (Control child: getChildren()) {
 			if (!(child instanceof Visualiser))
 				continue;

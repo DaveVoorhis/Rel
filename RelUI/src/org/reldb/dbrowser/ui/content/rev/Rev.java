@@ -41,11 +41,9 @@ public class Rev extends Composite {
 	private Model model;
 	private CmdPanelOutput outputView;
 	private SashForm revPane;
-	private CrashHandler crashHandler;
 	
 	public Rev(Composite parent, DbTab parentTab, CrashHandler crashHandler) {
 		super(parent, SWT.None);
-		this.crashHandler = crashHandler;
 		
 		try {
 			connection = new Connection(parentTab.getURL(), false, crashHandler, null);
@@ -78,7 +76,7 @@ public class Rev extends Composite {
 
 		revPane.setWeights(new int[] {1, 1});
 
-		setupMenus();
+		loadModel();
 	}
 
 	public CmdPanelOutput getCmdPanelOutput() {
@@ -89,16 +87,24 @@ public class Rev extends Composite {
 		return DatabaseAbstractionLayer.getUniqueNumber(connection);
 	}
 	
-	public CrashHandler getCrashHandler() {
-		return crashHandler;
+	public void refresh() {
+		loadModel();
 	}
 
-	public void setupMenus() {
-		if (getMenu() != null)
-			getMenu().dispose();
+	public Model getModel() {
+		return model;
+	}
 
+	public Connection getConnection() {
+		return connection;
+	}
+
+	private void loadModel() {
 		model.clear();
 		
+		if (getMenu() != null)
+			getMenu().dispose();
+	
 		Menu menuBar = new Menu(getShell(), SWT.POP_UP);
 		model.setMenu(menuBar);
 
@@ -157,6 +163,7 @@ public class Rev extends Composite {
 			}
 		});
 
+		// load
 		int version = hasRevExtensions();
 		if (version < 0) {
 			installRevExtensions();
@@ -177,6 +184,8 @@ public class Rev extends Composite {
 				}
 			});			
 		}
+				
+		model.loaded();
 	}
 	
 	private Menu obtainRelvarsMenu(Menu parent, String where) {
@@ -384,7 +393,6 @@ public class Rev extends Composite {
 				}
 			}
 		}
-		model.verify();
 	}
 	
 	// Return version number of Rev extensions.  Return -1 if not installed.
@@ -395,14 +403,14 @@ public class Rev extends Composite {
 	private boolean installRevExtensions() {
 		boolean pass = DatabaseAbstractionLayer.installRevExtensions(connection);
 		if (pass)
-			setupMenus();
+			loadModel();
 		return pass;
 	}
 
 	private boolean removeRevExtensions() {
 		boolean pass = DatabaseAbstractionLayer.removeRevExtensions(connection);
 		if (pass)
-			setupMenus();
+			loadModel();
 		return pass;
 	}
 	
@@ -415,20 +423,8 @@ public class Rev extends Composite {
 			refresh();
 	}
 	
-	public void refresh() {
-		setupMenus();
-	}
-	
 	private void upgrade(int currentVersionOfRevFromDatabase) {
 		// Perform upgrade from currentVersionOfRevFromDatabase to EXPECTED_REV_VERSION
-	}
-
-	public Model getModel() {
-		return model;
-	}
-
-	public Connection getConnection() {
-		return connection;
 	}
 	
 }
