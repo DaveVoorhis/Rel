@@ -1,12 +1,12 @@
 package org.reldb.dbrowser.ui.content.rev;
 
 public class Connector extends Visualiser {
-	Connector(Operator operator) {
-		super(operator.getModel(), 
-				operator.getID() + "_" + operator.getParameterCount(), 
-				"<<parameter " + operator.getParameterCount() + ">>", 
-				operator.getBounds().x,
-				operator.getBounds().y + operator.getBounds().height + 15 + 25 * (operator.getParameterCount() - 1));
+	Connector(Parameter parameter) {
+		super(parameter.getOperator().getModel(), 
+				parameter.getOperator().getID() + "_" + parameter.getNumber(), 
+				"<<parameter " + (parameter.getNumber() + 1) + ">>", 
+				parameter.getOperator().getBounds().x,
+				parameter.getOperator().getBounds().y + parameter.getOperator().getBounds().height + 15 + 25 * (parameter.getNumber()));
 		btnInfo.dispose();
 		btnEdit.dispose();
 		btnRun.dispose();
@@ -15,6 +15,10 @@ public class Connector extends Visualiser {
 	
 	public String getQuery() {
 		return null;
+	}
+	
+	public boolean isQueryable() {
+		return false;
 	}
 	
 	// Disable popup menu.

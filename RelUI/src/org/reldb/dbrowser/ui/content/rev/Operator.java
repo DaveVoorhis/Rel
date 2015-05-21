@@ -58,14 +58,47 @@ public abstract class Operator extends Visualiser {
 		DatabaseAbstractionLayer.removeOperator(getModel().getConnection(), getID());
     	super.delete();
     }
+
+    public boolean isQueryable() {
+    	for (Parameter parameter: parameters) {
+    		Visualiser operand = parameter.getArgument().getOperand();
+    		if (operand == null || operand.getQuery() == null)
+    			return false;
+    	}
+    	return true;
+    }
+    
+    public void verify() {
+    	// Make sure we're the right colour and ready, if we're connected to operands.
+    	for (Parameter parameter: parameters)
+    		notifyArgumentChanged(parameter);
+    }
+    
+    /** Override to be notified that a parameter's argument has changed */
+    protected void notifyArgumentChanged(Parameter p) {
+    	if (isQueryable()) {
+        	setReadyColour();
+        	btnInfo.setEnabled(true);
+        	btnRun.setEnabled(true);
+        	notifyArgumentChanged(p, true);
+    	} else {
+			setWarningColour();
+			btnInfo.setEnabled(false);
+			btnRun.setEnabled(false);
+			notifyArgumentChanged(p, false);
+    	}
+    }
+
+    /** Override to be notified that a parameter's argument has changed, with identification as to whether it's queryable or not. */
+    protected void notifyArgumentChanged(Parameter p, boolean queryable) {}
     
 	protected void addParameter(String name, String description) {
 		Parameter p;
 		if (lastSide == Parameter.EASTTOWEST) {
-			p = new Parameter(this, rightSide, name, description, Parameter.EASTTOWEST);
+			p = new Parameter(this, rightSide, name, description, parameters.size(), Parameter.EASTTOWEST);
 			lastSide = Parameter.WESTTOEAST;
 		} else {
-			p = new Parameter(this, leftSide, name, description, Parameter.WESTTOEAST);
+			p = new Parameter(this, leftSide, name, description, parameters.size(), Parameter.WESTTOEAST);
 			lastSide = Parameter.EASTTOWEST;
 		}
 		parameters.add(p);
@@ -86,7 +119,7 @@ public abstract class Operator extends Visualiser {
 				if (i > 0)
 					out += ", ";
 				out += " tuple {";
-				out += "parameter " + i + ", ";
+				out += "parameter " + parameter.getNumber() + ", ";
 				out += "Name '" + parameter.getArgument().getOperand().getID() + "'";
 				out += "}";
 			}
@@ -106,7 +139,7 @@ public abstract class Operator extends Visualiser {
 		Point location = getLocation();
 		DatabaseAbstractionLayer.updateQueryPosition(getModel().getConnection(), getID(), location.x, location.y, kind, getConnections(), getModel().getModelName());
 	}
-
+	
 	private void collectAllSources(Set<Visualiser> collection) {
 		for (Parameter parameter: parameters) {
 			if (parameter.getArgument() == null)

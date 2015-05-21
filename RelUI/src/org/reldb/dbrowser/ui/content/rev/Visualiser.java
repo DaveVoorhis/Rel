@@ -34,9 +34,11 @@ import org.eclipse.wb.swt.SWTResourceManager;
 public abstract class Visualiser extends Composite implements Comparable<Visualiser> {
 	
 	private final static Color BaseColor = new Color(Display.getDefault(), 200, 200, 255);
+	private final static Color WarningColor = new Color(Display.getDefault(), 255, 255, 200);
     private final static Color BackgroundColor = new Color(Display.getDefault(), 198, 198, 198);
     private final static Color DropCandidateColor = new Color(Display.getDefault(), 100, 255, 100);
 	   	
+    private Color titleColor = BaseColor;
     private Label lblTitle;
     
     private int mouseOffsetX;
@@ -74,7 +76,7 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 		
 		lblTitle = new Label(this, SWT.NONE);
 		lblTitle.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
-		lblTitle.setBackground(BaseColor);
+		lblTitle.setBackground(titleColor);
 		lblTitle.setAlignment(SWT.CENTER);
 		FormData fd_lblTitle = new FormData();
 		fd_lblTitle.top = new FormAttachment(0);
@@ -214,6 +216,16 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
         pack();
     }
 
+    public void setWarningColour() {
+    	titleColor = WarningColor;
+    	lblTitle.setBackground(titleColor);
+    }
+    
+    public void setReadyColour() {
+    	titleColor = BaseColor;
+    	lblTitle.setBackground(titleColor);
+    }
+    
     protected void setupPopupMenu() {
 		Menu menuBar = new Menu(getShell(), SWT.POP_UP);
 		
@@ -289,12 +301,17 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
     	return "Visualiser " + getTitle() + " (" + getID() + ")";
     }
     
+    /** Without running getQuery(), return true if getQuery() should return non-null. */
+    public boolean isQueryable() {
+    	return true;
+    }
+    
     public Argument[] getArguments() {
     	return arguments.toArray(new Argument[0]);
     }
     
     protected void setDropCandidate(boolean b) {
-    	lblTitle.setBackground((b) ? DropCandidateColor : BaseColor);
+    	lblTitle.setBackground((b) ? DropCandidateColor : titleColor);
 	}
 
 	private boolean isSelfReference(Connector connector) {
@@ -402,4 +419,6 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 			return false;
 		return argument.getOperator().getBounds().y > getBounds().y + getBounds().height;
 	}
+
+	public void verify() {}
 }

@@ -384,6 +384,7 @@ public class Rev extends Composite {
 				}
 			}
 		}
+		model.verify();
 	}
 	
 	// Return version number of Rev extensions.  Return -1 if not installed.

@@ -36,11 +36,12 @@ public class Argument {
 			operand.dispose();
 		operand = visualiser;
 		if (operand == null)
-			operand = new Connector(parameter.getOperator());
+			operand = new Connector(parameter);
 		operand.addArgumentReference(this);
 		redraw();
 		parameter.getOperator().visualiserMoved();
 		operand.visualiserMoved();
+		parameter.getOperator().notifyArgumentChanged(parameter);
 	}
 	
 	public Visualiser getOperand() {

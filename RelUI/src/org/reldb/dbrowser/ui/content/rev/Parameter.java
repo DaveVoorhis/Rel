@@ -12,12 +12,14 @@ public class Parameter extends Label {
     private int extensionLength = 10;
     
     private Argument argument;
+	private int number;
 	private int layoutDirection;
 	private Operator operator;
 		
-	public Parameter(Operator operator, Composite parent, String name, String description, int layoutDirection) {
+	public Parameter(Operator operator, Composite parent, String name, String description, int number, int layoutDirection) {
 		super(parent, SWT.NONE);
 		this.operator = operator;
+		this.number = number;
 		this.layoutDirection = layoutDirection;
 		pack();
 	}
@@ -25,6 +27,10 @@ public class Parameter extends Label {
 	public void dispose() {
 		argument.dispose();
 		super.dispose();
+	}
+	
+	public int getNumber() {
+		return number;
 	}
 	
 	public Argument getArgument() {
