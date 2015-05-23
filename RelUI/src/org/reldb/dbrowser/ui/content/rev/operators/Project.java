@@ -10,8 +10,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
+import org.reldb.dbrowser.ui.content.rev.ControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Operator;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.dbrowser.ui.content.rev.Visualiser;
@@ -40,27 +40,33 @@ public class Project extends Operator {
 		return controlPanel;
 	}
 	
-	private void addRow(Composite parent) {
-		Label lblNewLabel = new Label(parent, SWT.NONE);
-		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblNewLabel.setText("New Label");
+	private static class Controls extends ControlPanel {
+		public Controls(Visualiser visualiser) {
+			super(visualiser);
+		}
 		
-		Button btnCheckButton = new Button(parent, SWT.CHECK);
+		@Override
+		protected void buildContents(Composite container) {				
+			container.setLayout(new GridLayout(3, false));
+			for (int i=0; i<10; i++)
+				addRow(container);
+		}
 		
-		Spinner spinner = new Spinner(parent, SWT.BORDER);
+		private void addRow(Composite parent) {
+			Label lblNewLabel = new Label(parent, SWT.NONE);
+			lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+			lblNewLabel.setText("New Label");
+			
+			Button btnCheckButton = new Button(parent, SWT.CHECK);
+			
+			Spinner spinner = new Spinner(parent, SWT.BORDER);
+		}			
 	}
 	
 	private void openDetails() {
 		if (!queryable)
-			return;
-		
-		Shell details = new Shell(this.getDisplay(), SWT.DIALOG_TRIM);
-		details.setLayout(new GridLayout(3, false));
-		
-		for (int i=0; i<10; i++)
-			addRow(details);
-		
-		details.setVisible(true);
+			return;		
+		(new Controls(this)).open();
 	}
 
 	private boolean queryable = false;
