@@ -39,9 +39,11 @@ public class Argument {
 			operand = new Connector(parameter);
 		operand.addArgumentReference(this);
 		redraw();
-		parameter.getOperator().visualiserMoved();
+		Operator operator = parameter.getOperator();
+		operator.visualiserMoved();
 		operand.visualiserMoved();
-		parameter.getOperator().notifyArgumentChanged(parameter);
+		operator.verify();
+		operand.verify();
 	}
 	
 	public Visualiser getOperand() {

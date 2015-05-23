@@ -1,9 +1,5 @@
 package org.reldb.dbrowser.ui.content.rev;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.swt.graphics.Point;
 
 public abstract class Operator extends Visualiser {
@@ -60,37 +56,42 @@ public abstract class Operator extends Visualiser {
     }
 
     public boolean isQueryable() {
-    	for (Parameter parameter: parameters) {
-    		Visualiser operand = parameter.getArgument().getOperand();
-    		if (operand == null || operand.getQuery() == null)
+    	for (Parameter parameter: parameters)
+    		if (parameter.getArgument().getOperand().getQuery() == null)
     			return false;
-    	}
     	return true;
     }
     
     public void verify() {
-    	// Make sure we're the right colour and ready, if we're connected to operands.
-    	for (Parameter parameter: parameters)
-    		notifyArgumentChanged(parameter);
+    	super.verify();
+    	notifyArgumentChanged();
     }
     
-    /** Override to be notified that a parameter's argument has changed */
-    protected void notifyArgumentChanged(Parameter p) {
+    private String cachedQuery = null;
+    
+    private void notifyArgumentChanged() {
     	if (isQueryable()) {
         	setReadyColour();
         	btnInfo.setEnabled(true);
         	btnRun.setEnabled(true);
-        	notifyArgumentChanged(p, true);
+        	String query = getQuery();
+        	if (cachedQuery == null || query.compareTo(cachedQuery) != 0) {
+        		notifyArgumentChanged(true);
+        		cachedQuery = query;
+        	}
     	} else {
 			setWarningColour();
 			btnInfo.setEnabled(false);
 			btnRun.setEnabled(false);
-			notifyArgumentChanged(p, false);
+        	if (cachedQuery != null) {
+        		notifyArgumentChanged(false);
+        		cachedQuery = null;
+        	}
     	}
     }
 
     /** Override to be notified that a parameter's argument has changed, with identification as to whether it's queryable or not. */
-    protected void notifyArgumentChanged(Parameter p, boolean queryable) {}
+    protected void notifyArgumentChanged(boolean queryable) {}
     
 	protected void addParameter(String name, String description) {
 		Parameter p;
@@ -138,28 +139,6 @@ public abstract class Operator extends Visualiser {
 	protected void visualiserMoved() {
 		Point location = getLocation();
 		DatabaseAbstractionLayer.updateQueryPosition(getModel().getConnection(), getID(), location.x, location.y, kind, getConnections(), getModel().getModelName());
-	}
-	
-	private void collectAllSources(Set<Visualiser> collection) {
-		for (Parameter parameter: parameters) {
-			if (parameter.getArgument() == null)
-				continue;
-			Visualiser v = parameter.getArgument().getOperand();
-			if (v == null || v instanceof Connector)
-				continue;
-			if (collection.contains(v))
-				continue;
-			collection.add(v);
-			if (v instanceof Operator)
-				((Operator)v).collectAllSources(collection);
-		}
-	}
-	
-	// Collect everything used as an argument to this, or an argument to an argument to this, etc.	
-	protected Collection<Visualiser> collectAllSources() {
-		Set<Visualiser> sources = new HashSet<Visualiser>();
-		collectAllSources(sources);
-		return sources;
 	}
 	
 }

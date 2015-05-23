@@ -184,8 +184,6 @@ public class Rev extends Composite {
 				}
 			});			
 		}
-				
-		model.loaded();
 	}
 	
 	private Menu obtainRelvarsMenu(Menu parent, String where) {

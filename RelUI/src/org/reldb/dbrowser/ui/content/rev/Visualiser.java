@@ -87,7 +87,7 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 
 		setupPopupMenu();
 		
-		Composite mainPanel = new Composite(this, SWT.NONE);
+		Composite mainPanel = new Composite(this, SWT.BORDER);
 		mainPanel.setBackground(BackgroundColor);
 		mainPanel.setLayout(new FormLayout());
 		FormData fd_mainPanel = new FormData();
@@ -319,12 +319,12 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 		return (argument.getOperator() == this);
 	}
 
-	protected Collection<Visualiser> collectAllSources() {
+	protected Collection<Visualiser> collectAllConnectedSources() {
 		return new HashSet<Visualiser>();
 	}
 	
 	private boolean isCircularReference(Connector connector) {
-		return collectAllSources().contains(connector.getArguments()[0].getOperator());
+		return collectAllConnectedSources().contains(connector.getArguments()[0].getOperator());
 	}
 	
 	protected boolean canReceiveDropOf(Visualiser visualiser) {
@@ -419,6 +419,10 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 			return false;
 		return argument.getOperator().getBounds().y > getBounds().y + getBounds().height;
 	}
-
-	public void verify() {}
+	
+	/** Invoked when the model changes, to allow the visualiser to update itself accordingly. */
+	public void verify() {
+		for (Argument argument: arguments)
+			argument.getOperator().verify();
+	}
 }

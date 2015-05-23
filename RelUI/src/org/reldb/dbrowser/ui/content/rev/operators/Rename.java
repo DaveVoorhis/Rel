@@ -12,8 +12,10 @@ public class Rename extends Operator {
 
 	@Override
 	public String getQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		String source = getQueryForParameter(0);
+		if (source == null)
+			return null;
+		return "(" + source + " RENAME {})";
 	}
 
 }
