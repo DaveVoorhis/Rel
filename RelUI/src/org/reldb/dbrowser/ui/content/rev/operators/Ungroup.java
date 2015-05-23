@@ -1,12 +1,12 @@
 package org.reldb.dbrowser.ui.content.rev.operators;
 
-import org.reldb.dbrowser.ui.content.rev.Operator;
+import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 
-public class Ungroup extends Operator {
+public class Ungroup extends OperatorWithControlPanel {
 
 	public Ungroup(Rev rev, String name, int xpos, int ypos) {
-		super(rev.getModel(), name, "UNGROUP", xpos, ypos);
+		super(rev, name, "UNGROUP", xpos, ypos);
 		addParameter("Operand", "Relation passed to " + getKind()); 
 	}
 

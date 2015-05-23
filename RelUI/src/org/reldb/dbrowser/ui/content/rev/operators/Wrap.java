@@ -1,12 +1,12 @@
 package org.reldb.dbrowser.ui.content.rev.operators;
 
-import org.reldb.dbrowser.ui.content.rev.Operator;
+import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 
-public class Wrap extends Operator {
+public class Wrap extends OperatorWithControlPanel {
 
 	public Wrap(Rev rev, String name, int xpos, int ypos) {
-		super(rev.getModel(), name, "WRAP", xpos, ypos);
+		super(rev, name, "WRAP", xpos, ypos);
 		addParameter("Operand", "Relation passed to " + getKind()); 
 	}
 

@@ -1,12 +1,12 @@
 package org.reldb.dbrowser.ui.content.rev.operators;
 
-import org.reldb.dbrowser.ui.content.rev.Operator;
+import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 
-public class Order extends Operator {
+public class Order extends OperatorWithControlPanel {
 
 	public Order(Rev rev, String name, int xpos, int ypos) {
-		super(rev.getModel(), name, "GROUP", xpos, ypos);
+		super(rev, name, "ORDER", xpos, ypos);
 		addParameter("Operand", "Relation passed to " + getKind()); 
 	}
 

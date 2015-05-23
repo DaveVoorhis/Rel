@@ -1,80 +1,77 @@
 package org.reldb.dbrowser.ui.content.rev.operators;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Spinner;
-import org.reldb.dbrowser.ui.content.rev.ControlPanel;
-import org.reldb.dbrowser.ui.content.rev.Operator;
+import org.reldb.dbrowser.ui.content.rev.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
-import org.reldb.dbrowser.ui.content.rev.Visualiser;
+import org.reldb.rel.client.Attribute;
+import org.reldb.rel.client.Heading;
+import org.reldb.rel.client.Tuples;
 
-public class Project extends Operator {
+public class Project extends OperatorWithControlPanel {
 
-	private Label projectClause;
-	
 	public Project(Rev rev, String name, int xpos, int ypos) {
-		super(rev.getModel(), name, "Project", xpos, ypos);
+		super(rev, name, "Project", xpos, ypos);
 		addParameter("Operand", "Relation passed to " + getKind()); 
 	}
 	
+	private void addRowAllBut(Composite parent) {
+		Label lblNewLabel = new Label(parent, SWT.NONE);
+		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		lblNewLabel.setText("ALL BUT");
+
+		Button btnCheckButton = new Button(parent, SWT.CHECK);
+
+		Label dummy = new Label(parent, SWT.NONE);
+		dummy.setVisible(false);		
+	}
+	
+	private void addRow(Composite parent, Attribute attribute, int rowNum, boolean last) {
+		Label lblNewLabel = new Label(parent, SWT.NONE);
+		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		lblNewLabel.setText(attribute.getName());
+		
+		Button btnCheckButton = new Button(parent, SWT.CHECK);
+	
+		Composite buttonPanel = new Composite(parent, SWT.NONE);
+		buttonPanel.setLayout(new FillLayout(SWT.HORIZONTAL));
+		Button btnUp = new Button(buttonPanel, SWT.ARROW | SWT.UP | SWT.ARROW_UP);
+		Button btnDown = new Button(buttonPanel, SWT.ARROW | SWT.DOWN | SWT.ARROW_DOWN);
+		btnUp.setVisible(!(rowNum == 0));
+		btnDown.setVisible(!last);
+	}
+	
+	protected Attribute[] getAttributes() {
+		String query = getQueryForParameter(0);
+		if (query == null)
+			return null;
+		Tuples tuples = DatabaseAbstractionLayer.evaluate(getModel().getConnection(), query);
+		Heading heading = tuples.getHeading();
+		return heading.toArray();
+	}
+	
 	@Override
-	protected Control obtainControlPanel(Visualiser parent) {
-		Composite controlPanel = new Composite(parent, SWT.BORDER);
-		controlPanel.setLayout(new FillLayout());
-		projectClause = new Label(controlPanel, SWT.NONE);
-		projectClause.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				if (projectClause.getBounds().contains(e.x, e.y))
-					openDetails();
-			}
-		});
-		return controlPanel;
-	}
-	
-	private static class Controls extends ControlPanel {
-		public Controls(Visualiser visualiser) {
-			super(visualiser);
-		}
-		
-		@Override
-		protected void buildContents(Composite container) {				
-			container.setLayout(new GridLayout(3, false));
-			for (int i=0; i<10; i++)
-				addRow(container);
-		}
-		
-		private void addRow(Composite parent) {
-			Label lblNewLabel = new Label(parent, SWT.NONE);
-			lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-			lblNewLabel.setText("New Label");
-			
-			Button btnCheckButton = new Button(parent, SWT.CHECK);
-			
-			Spinner spinner = new Spinner(parent, SWT.BORDER);
-		}			
-	}
-	
-	private void openDetails() {
-		if (!queryable)
-			return;		
-		(new Controls(this)).open();
+	protected void buildControlPanel(Composite container) {
+		container.setLayout(new GridLayout(3, false));
+		addRowAllBut(container);
+		DatabaseAbstractionLayer.removeRelvar(getModel().getConnection(), getID());
+		int rowNum = 0;
+		Attribute[] attributes = getAttributes();
+		for (Attribute attribute: attributes)
+			addRow(container, attribute, rowNum++, rowNum == attributes.length);
 	}
 
-	private boolean queryable = false;
+	@Override
+	protected void controlPanelOkPressed() {}
 	
 	@Override
-    protected void notifyArgumentChanged(boolean queryable) {
-		this.queryable = queryable;
-	}
+	protected void controlPanelCancelPressed() {}
 
 	@Override
 	public String getQuery() {

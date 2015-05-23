@@ -1,12 +1,12 @@
 package org.reldb.dbrowser.ui.content.rev.operators;
 
-import org.reldb.dbrowser.ui.content.rev.Operator;
+import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 
-public class Rename extends Operator {
+public class Rename extends OperatorWithControlPanel {
 
 	public Rename(Rev rev, String name, int xpos, int ypos) {
-		super(rev.getModel(), name, "RENAME", xpos, ypos);
+		super(rev, name, "RENAME", xpos, ypos);
 		addParameter("Operand", "Relation passed to " + getKind()); 
 	}
 
