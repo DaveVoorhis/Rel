@@ -20,14 +20,15 @@ import org.reldb.rel.client.Tuples;
 
 public class Project extends OperatorWithControlPanel {
 
-	Button checkAllBut;
-	Vector<Label> labelAttributes;
-	Vector<Button> checkAttributes;
+	private Button checkAllBut;
+	private Vector<Label> labelAttributes;
+	private Vector<Button> checkAttributes;
 	
 	public Project(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "Project", xpos, ypos);
 		addParameter("Operand", "Relation passed to " + getKind()); 
 		operatorLabel.setText("{ALL BUT}");
+		pack();
 	}
 	
 	private void addRowAllBut(Composite parent) {
