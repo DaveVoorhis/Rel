@@ -133,13 +133,7 @@ public class DatabaseAbstractionLayer {
 				//Create an Op_Project relation
 			    "var sys.rev.Op_Project real relation {" +
 				"   Name CHAR, " +
-			    "	Relvar CHAR, " +
-				"   AllBut BOOLEAN, " +
-				"   selections RELATION {" +
-				"	ID INTEGER" +
-				"   , attribute CHAR" +
-				"	, selected BOOLEAN" +
-				"   }" +
+			    "   Definition CHAR" +
 				"} key {Name};" +
 				//Create an Op_Restrict relation
 				"var sys.rev.Op_Restrict real relation {" +
@@ -348,10 +342,11 @@ public class DatabaseAbstractionLayer {
 		return getTuples(connection, query);
 	}
 	
-	public static void updatePreservedStateProject(Connection connection, String name, String relvar, String allBut, String selections) {
+	public static void updatePreservedStateProject(Connection connection, String name, String definition) {
 		String query = "DELETE sys.rev.Op_Project WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Project RELATION {" +
-		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + allBut + ", " + selections + "}};";
+		                  "TUPLE {Name '" + name + "', Definition '" + definition + "'}" +
+		               "};";
 		execute(connection, query);
 	}
 	

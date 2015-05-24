@@ -16,6 +16,7 @@ import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
+import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
 public class Project extends OperatorWithControlPanel {
@@ -27,20 +28,23 @@ public class Project extends OperatorWithControlPanel {
 	public Project(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "Project", xpos, ypos);
 		addParameter("Operand", "Relation passed to " + getKind()); 
-		operatorLabel.setText("{ALL BUT}");
+		load();
 		pack();
 	}
 	
-	private void addRowAllBut(Composite parent) {
-		Label lblNewLabel = new Label(parent, SWT.NONE);
-		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblNewLabel.setText("ALL BUT");
-
-		checkAllBut = new Button(parent, SWT.CHECK);
-		checkAllBut.setSelection(true);
-
-		Label dummy = new Label(parent, SWT.NONE);
-		dummy.setVisible(false);		
+	private void load() {
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateProject(getModel().getConnection(), getID());
+		Tuple tuple = tuples.iterator().next();
+		if (tuple == null)
+			operatorLabel.setText("{ALL BUT}");
+		else {
+			String definition = tuple.getAttributeValue("Definition").toString();
+			operatorLabel.setText(definition);
+		}
+	}
+	
+	private void save() {
+		DatabaseAbstractionLayer.updatePreservedStateProject(getModel().getConnection(), getID(), operatorLabel.getText());
 	}
 	
 	private void moveAttributeRow(int fromRow, int toRow) {
@@ -53,13 +57,27 @@ public class Project extends OperatorWithControlPanel {
 		checkAttributes.get(fromRow).setSelection(tmpButtonState);
 	}
 	
-	private void addRow(Composite parent, Attribute attribute, int rowNum, boolean last) {
+	private void addRowAllBut(Composite parent, boolean selected) {
 		Label lblNewLabel = new Label(parent, SWT.NONE);
 		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblNewLabel.setText(attribute.getName());
+		lblNewLabel.setText("ALL BUT");
+
+		checkAllBut = new Button(parent, SWT.CHECK);
+		checkAllBut.setSelection(selected);
+
+		Label dummy = new Label(parent, SWT.NONE);
+		dummy.setVisible(false);		
+	}
+	
+	private void addRow(Composite parent, String name, int rowNum, boolean last, boolean selected) {
+		Label lblNewLabel = new Label(parent, SWT.NONE);
+		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		lblNewLabel.setText(name);
 		labelAttributes.add(lblNewLabel);
 		
-		checkAttributes.add(new Button(parent, SWT.CHECK));
+		Button checkBox = new Button(parent, SWT.CHECK);
+		checkBox.setSelection(selected);
+		checkAttributes.add(checkBox);
 	
 		Composite buttonPanel = new Composite(parent, SWT.NONE);
 		buttonPanel.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -79,31 +97,65 @@ public class Project extends OperatorWithControlPanel {
 		btnDown.setVisible(!last);
 	}
 	
-	protected Attribute[] getAttributes() {
+	private Vector<String> getAvailableAttributes() {
 		String query = getQueryForParameter(0);
 		if (query == null)
 			return null;
 		Tuples tuples = DatabaseAbstractionLayer.evaluate(getModel().getConnection(), query);
 		Heading heading = tuples.getHeading();
-		return heading.toArray();
+		Vector<String> output = new Vector<String>();
+		for (Attribute attribute: heading.toArray())
+			output.add(attribute.getName());
+		return output;
+	}
+	
+	private Vector<String> getDefinitionAttributes() {
+		String definition = operatorLabel.getText();
+		if (definition.length() == 0)
+			return null;
+		definition = definition.replaceAll("\\{", "").replaceAll("\\}", "");
+		Vector<String> output = new Vector<String>();
+		if (definition.startsWith("ALL BUT ")) {
+			output.add("ALL BUT");
+			definition = definition.substring("ALL BUT ".length());
+		}
+		String[] names = definition.split(",");
+		for (String name: names)
+			output.add(name.trim());
+		return output;
 	}
 	
 	@Override
 	protected void buildControlPanel(Composite container) {
 		container.setLayout(new GridLayout(3, false));
-		addRowAllBut(container);
 		DatabaseAbstractionLayer.removeRelvar(getModel().getConnection(), getID());
 		labelAttributes = new Vector<Label>();
 		checkAttributes = new Vector<Button>();
 		int rowNum = 0;
-		Attribute[] attributes = getAttributes();
-		for (Attribute attribute: attributes)
-			addRow(container, attribute, rowNum++, rowNum == attributes.length);
+		Vector<String> availableAttributes = getAvailableAttributes();
+		Vector<String> definitionAttributes = getDefinitionAttributes();
+		if (definitionAttributes == null) {
+			addRowAllBut(container, true);
+			for (String attribute: availableAttributes)
+				addRow(container, attribute, rowNum++, rowNum == availableAttributes.size(), false);
+		} else {
+			Vector<String> panelAttributeList = new Vector<String>();
+			for (String name: definitionAttributes)
+				if (availableAttributes.contains(name))
+					panelAttributeList.add(name);
+			for (String attribute: availableAttributes)
+				if (!definitionAttributes.contains(attribute))
+					panelAttributeList.add(attribute);
+			addRowAllBut(container, definitionAttributes.size() > 0 && definitionAttributes.get(0).equals("ALL BUT"));
+			for (String name: panelAttributeList)
+				addRow(container, name, rowNum++, rowNum == panelAttributeList.size(), definitionAttributes.contains(name));
+		}
 	}
 
 	@Override
 	protected void controlPanelOkPressed() {
 		operatorLabel.setText(getAttributeSpecification());
+		save();
 		pack();
 	}
 	

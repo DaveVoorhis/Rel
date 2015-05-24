@@ -176,13 +176,13 @@ public class Rev extends Composite {
 			
 			// Uninstall
 			MenuItem uninstallRev = new MenuItem(menuBar, SWT.PUSH);
-			uninstallRev.setText("Uninstall Rev extensions");
+			uninstallRev.setText("Re-install Rev extensions");
 			uninstallRev.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					uninstall();
 				}
-			});			
+			});	
 		}
 	}
 	
@@ -419,6 +419,8 @@ public class Rev extends Composite {
 			return;
 		if (removeRevExtensions())
 			refresh();
+		else
+			MessageDialog.openError(getShell(), "Rev", "Unable to remove Rev extensions.  You may have to remove them manually.");
 	}
 	
 	private void upgrade(int currentVersionOfRevFromDatabase) {
