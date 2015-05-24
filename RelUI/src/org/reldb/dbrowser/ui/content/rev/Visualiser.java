@@ -33,10 +33,10 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 public abstract class Visualiser extends Composite implements Comparable<Visualiser> {
 	
-	private final static Color BaseColor = new Color(Display.getDefault(), 200, 200, 255);
-	private final static Color WarningColor = new Color(Display.getDefault(), 255, 255, 200);
-    private final static Color BackgroundColor = new Color(Display.getDefault(), 198, 198, 198);
-    private final static Color DropCandidateColor = new Color(Display.getDefault(), 100, 255, 100);
+	protected final static Color BaseColor = new Color(Display.getDefault(), 200, 200, 255);
+	protected final static Color WarningColor = new Color(Display.getDefault(), 255, 255, 200);
+    protected final static Color BackgroundColor = new Color(Display.getDefault(), 198, 198, 198);
+    protected final static Color DropCandidateColor = new Color(Display.getDefault(), 100, 255, 100);
 	   	
     private Color titleColor = BaseColor;
     private Label lblTitle;
@@ -50,9 +50,6 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
        
     private String id;
     private String title;
-    
-    protected Composite leftSide;
-    protected Composite rightSide;
     
     protected Button btnInfo;
     protected Button btnRun;
@@ -87,7 +84,7 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 
 		setupPopupMenu();
 		
-		Composite mainPanel = new Composite(this, SWT.BORDER);
+		Composite mainPanel = new Composite(this, SWT.NONE);
 		mainPanel.setBackground(BackgroundColor);
 		mainPanel.setLayout(new FormLayout());
 		FormData fd_mainPanel = new FormData();
@@ -105,27 +102,13 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 			fd_controlPanel.bottom = new FormAttachment(100);
 			controlPanel.setLayoutData(fd_controlPanel);			
 		}
-
-		leftSide = new Composite(mainPanel, SWT.NONE);
-		FormData fd_leftSide = new FormData();
-		fd_leftSide.top = new FormAttachment(0);
-		fd_leftSide.left = new FormAttachment(0);
-		leftSide.setLayoutData(fd_leftSide);
-		leftSide.setLayout(new FillLayout(SWT.VERTICAL));
-		
-		rightSide = new Composite(mainPanel, SWT.NONE);
-		FormData fd_rightSide = new FormData();
-		fd_rightSide.top = new FormAttachment(0);
-		fd_rightSide.right = new FormAttachment(100);
-		rightSide.setLayoutData(fd_rightSide);
-		rightSide.setLayout(new FillLayout(SWT.VERTICAL));
 		
 		Composite buttonPanel = new Composite(mainPanel, SWT.NONE);
 		buttonPanel.setBackground(BackgroundColor);
 		FormData fd_buttonPanel = new FormData();
 		fd_buttonPanel.top = new FormAttachment(0);
-		fd_buttonPanel.left = new FormAttachment(leftSide);
-		fd_buttonPanel.right = new FormAttachment(rightSide);
+		fd_buttonPanel.left = new FormAttachment(0);
+		fd_buttonPanel.right = new FormAttachment(100);
 		buttonPanel.setLayoutData(fd_buttonPanel);
 		buttonPanel.setLayout(new FillLayout(SWT.HORIZONTAL));
 		

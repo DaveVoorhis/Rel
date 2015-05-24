@@ -23,9 +23,10 @@ public class OperatorWithControlPanel extends Operator {
 	
 	@Override
 	protected Control obtainControlPanel(Visualiser parent) {
-		Composite controlPanel = new Composite(parent, SWT.BORDER);
+		Composite controlPanel = new Composite(parent, SWT.NONE);
 		controlPanel.setLayout(new FillLayout());
 		operatorLabel = new Label(controlPanel, SWT.NONE);
+		operatorLabel.setBackground(BackgroundColor);
 		operatorLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {

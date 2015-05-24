@@ -94,14 +94,8 @@ public abstract class Operator extends Visualiser {
     protected void notifyArgumentChanged(boolean queryable) {}
     
 	protected void addParameter(String name, String description) {
-		Parameter p;
-		if (lastSide == Parameter.EASTTOWEST) {
-			p = new Parameter(this, rightSide, name, description, parameters.size(), Parameter.EASTTOWEST);
-			lastSide = Parameter.WESTTOEAST;
-		} else {
-			p = new Parameter(this, leftSide, name, description, parameters.size(), Parameter.WESTTOEAST);
-			lastSide = Parameter.EASTTOWEST;
-		}
+		Parameter p = new Parameter(this, name, description, parameters.size(), lastSide);
+		lastSide = (lastSide == Parameter.EASTTOWEST) ? Parameter.WESTTOEAST : Parameter.EASTTOWEST;
 		parameters.add(p);
 		new Argument(p);
 	}

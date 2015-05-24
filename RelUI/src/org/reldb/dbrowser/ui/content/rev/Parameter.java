@@ -1,10 +1,6 @@
 package org.reldb.dbrowser.ui.content.rev;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-
-public class Parameter extends Label {
+public class Parameter {
 
 	public static final int EASTTOWEST = 0;
 	public static final int WESTTOEAST = 1;
@@ -16,17 +12,14 @@ public class Parameter extends Label {
 	private int layoutDirection;
 	private Operator operator;
 		
-	public Parameter(Operator operator, Composite parent, String name, String description, int number, int layoutDirection) {
-		super(parent, SWT.NONE);
+	public Parameter(Operator operator, String name, String description, int number, int layoutDirection) {
 		this.operator = operator;
 		this.number = number;
 		this.layoutDirection = layoutDirection;
-		pack();
 	}
 
 	public void dispose() {
 		argument.dispose();
-		super.dispose();
 	}
 	
 	public int getNumber() {
@@ -46,15 +39,15 @@ public class Parameter extends Label {
 	}
 
 	public int getParameterX() {
-		int x = getParent().getParent().getParent().getLocation().x;
+		int x = operator.getLocation().x;
 		if (layoutDirection == EASTTOWEST)
 			return x;
 		else
-			return x + getParent().getParent().getParent().getBounds().width;
+			return x + operator.getBounds().width;
 	}
 
 	public int getParameterY() {
-		return getParent().getParent().getParent().getLocation().y + getParent().getParent().getParent().getBounds().height / 2;
+		return operator.getLocation().y + operator.getBounds().height / 2;
 	}
 
 	public int getLayoutDirection() {
@@ -72,11 +65,6 @@ public class Parameter extends Label {
 
 	public String toString() {
 		return "Parameter " + operator.toString() + "->" + argument.toString();
-	}
-	
-	@Override
-	protected void checkSubclass() {
-		// Disable the check that prevents subclassing of SWT components
 	}
 
 }
