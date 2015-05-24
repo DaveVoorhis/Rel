@@ -1,6 +1,5 @@
 package org.reldb.dbrowser.ui.content.rev;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -54,15 +53,24 @@ public class OperatorWithControlPanel extends Operator {
 			container.setLayout(new GridLayout(3, false));
 			buildControlPanel(container);
 		}
+		
+		@Override
+		protected void okPressed() {
+			controlPanelOkPressed();
+			super.okPressed();
+		}
+		
+		@Override
+		protected void cancelPressed() {
+			controlPanelCancelPressed();
+			super.cancelPressed();
+		}
 	}
 	
 	private void openDetails() {
 		if (!queryable)
 			return;		
-		if ((new Controls(this)).open() == Dialog.OK)
-			controlPanelOkPressed();
-		else
-			controlPanelCancelPressed();
+		new Controls(this).open();
 	}
 
 	private boolean queryable = false;
