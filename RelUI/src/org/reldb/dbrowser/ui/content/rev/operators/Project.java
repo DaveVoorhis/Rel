@@ -138,7 +138,7 @@ public class Project extends OperatorWithControlPanel {
 		}
 	}
 
-	public String getAttributeSpecification() {
+	private String getSpecification() {
 		String allbut = "";
 		if (checkAllBut.getSelection())
 			allbut += "ALL BUT";
@@ -159,7 +159,7 @@ public class Project extends OperatorWithControlPanel {
 
 	@Override
 	protected void controlPanelOkPressed() {
-		operatorLabel.setText(getAttributeSpecification());
+		operatorLabel.setText(getSpecification());
 		save();
 		pack();
 	}

@@ -193,11 +193,10 @@ public class DatabaseAbstractionLayer {
 				
 				"var sys.rev.Op_Extend real relation {" +
 				"   Name CHAR, " +
-			    "	Relvar CHAR, " +
-				"   subRelvar RELATION {" +
-				"	ID INTEGER" +
-				"   , attribute CHAR" +
-				"	, expression CHAR" +
+				"   Definition RELATION {" +
+				"	  ID INTEGER," +
+				"     attribute CHAR," +
+				"	  expression CHAR" +
 				"   }" +
 				"} key {Name};" +
 
@@ -361,7 +360,6 @@ public class DatabaseAbstractionLayer {
 		               "INSERT sys.rev.Op_Rename RELATION {" +
 		               "  TUPLE {Name '" + name + "', Definition '" + definition + "'}" +
 		               "};";
-		System.out.println("DatabaseAbstractionLayer: " + query);
 		execute(connection, query);
 	}
 	
@@ -430,16 +428,18 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	//Extend
+	// Extend
 	public static Tuples getPreservedStateExtend(Connection connection, String name) {
-		String query = "sys.rev.Op_Extend WHERE Name = '" + name + "'";
+		String query = "(sys.rev.Op_Extend WHERE Name = '" + name + "') UNGROUP Definition ORDER(ASC ID)";
 		return getTuples(connection, query);
 	}
 	
-	public static void updatePreservedStateExtend(Connection connection, String name, String relvar, String subRelvar) {
+	public static void updatePreservedStateExtend(Connection connection, String name, String definition) {
 		String query = "DELETE sys.rev.Op_Extend WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Extend RELATION {" +
-		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + subRelvar + "}};";
+		               "  TUPLE {Name '" + name + "', Definition " + definition + 
+		               "}};";
+		System.out.println("DatabaseAbstractionLayer: EXTEND: " + query);
 		execute(connection, query);
 	}
 	
@@ -460,7 +460,6 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	//Methods for removing operator visualisers
 	public static void removeOperator(Connection connection, String name) {
 		String query = "DELETE sys.rev.Query WHERE Name = '" + name + "';"; 
 		execute(connection, query);

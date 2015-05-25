@@ -124,6 +124,12 @@ public class Rename extends OperatorWithControlPanel {
 		renamings.add(r);
 	}
 	
+	private String unsurround(String s) {
+		if (s.startsWith("\"") && s.endsWith("\""))
+			return s.substring(1, s.length() - 1);
+		return s;
+	}
+	
 	private Vector<Renaming> getDefinitionRenamings() {
 		String definition = operatorLabel.getText().trim();
 		Vector<Renaming> output = new Vector<Renaming>();
@@ -140,17 +146,17 @@ public class Rename extends OperatorWithControlPanel {
 					clause = clause.substring("SUFFIX ".length());
 				}
 				String[] fromto = clause.split("AS");
-				String from = fromto[0].trim();
-				String to = fromto[1].trim();
+				String from = unsurround(fromto[0].trim());
+				String to = unsurround(fromto[1].trim());
 				output.add(new Renaming(type, from, to));
 			}
 		}
 		return output;
 	}
 	
-	private Renaming findRenaming(String fromName, Vector<Renaming> renamings) {
+	private Renaming findNormalRenaming(String fromName, Vector<Renaming> renamings) {
 		for (Renaming renaming: renamings)
-			if (renaming.getFrom().equals(fromName))
+			if (renaming.getFrom().equals(fromName) && renaming.getType() == Renaming.RenameType.NORMAL)
 				return renaming;
 		return null;
 	}
@@ -162,8 +168,12 @@ public class Rename extends OperatorWithControlPanel {
 		renamings = new Vector<Renaming>();
 		Vector<String> availableAttributes = getAttributesOfParameter(0);
 		Vector<Renaming> definitionRenamings = getDefinitionRenamings();
+		for (Renaming renaming: definitionRenamings) {
+			if (renaming.getType() != Renaming.RenameType.NORMAL)
+				addRow(container, renaming);
+		}
 		for (String attributeName: availableAttributes) {
-			Renaming renaming = findRenaming(attributeName, definitionRenamings);
+			Renaming renaming = findNormalRenaming(attributeName, definitionRenamings);
 			if (renaming == null)
 				addRow(container, new Renaming(attributeName));
 			else
@@ -171,21 +181,21 @@ public class Rename extends OperatorWithControlPanel {
 		}
 	}
 
-	public String getAttributeSpecification() {
-		String attributeSpec = "";
+	private String getSpecification() {
+		String specification = "";
 		for (Renaming renaming: renamings) {
 			if (renaming.getTo().trim().length() == 0)
 				continue;
-			if (attributeSpec.length() > 0)
-				attributeSpec += ", ";
-			attributeSpec += renaming.toString();
+			if (specification.length() > 0)
+				specification += ", ";
+			specification += renaming.toString();
 		}
-		return attributeSpec;
+		return specification;
 	}
 
 	@Override
 	protected void controlPanelOkPressed() {
-		operatorLabel.setText(getAttributeSpecification());
+		operatorLabel.setText(getSpecification());
 		save();
 		pack();
 	}
