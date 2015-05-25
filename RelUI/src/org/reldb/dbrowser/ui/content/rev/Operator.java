@@ -1,6 +1,11 @@
 package org.reldb.dbrowser.ui.content.rev;
 
+import java.util.Vector;
+
 import org.eclipse.swt.graphics.Point;
+import org.reldb.rel.client.Attribute;
+import org.reldb.rel.client.Heading;
+import org.reldb.rel.client.Tuples;
 
 public abstract class Operator extends Visualiser {
     
@@ -35,6 +40,18 @@ public abstract class Operator extends Visualiser {
     		return null;
     	return operand.getQuery();
     }
+	
+	public Vector<String> getAttributesOfParameter(int parameterNumber) {
+		String query = getQueryForParameter(parameterNumber);
+		if (query == null)
+			return null;
+		Tuples tuples = DatabaseAbstractionLayer.evaluate(getModel().getConnection(), query);
+		Heading heading = tuples.getHeading();
+		Vector<String> output = new Vector<String>();
+		for (Attribute attribute: heading.toArray())
+			output.add(attribute.getName());
+		return output;
+	}
     
     public String toString() {
     	return "Operator " + getTitle() + " (" + getID() + ")";

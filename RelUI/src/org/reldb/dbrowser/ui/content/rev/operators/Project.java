@@ -14,8 +14,6 @@ import org.eclipse.swt.widgets.Label;
 import org.reldb.dbrowser.ui.content.rev.DatabaseAbstractionLayer;
 import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
-import org.reldb.rel.client.Attribute;
-import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
@@ -97,20 +95,8 @@ public class Project extends OperatorWithControlPanel {
 		btnDown.setVisible(!last);
 	}
 	
-	private Vector<String> getAvailableAttributes() {
-		String query = getQueryForParameter(0);
-		if (query == null)
-			return null;
-		Tuples tuples = DatabaseAbstractionLayer.evaluate(getModel().getConnection(), query);
-		Heading heading = tuples.getHeading();
-		Vector<String> output = new Vector<String>();
-		for (Attribute attribute: heading.toArray())
-			output.add(attribute.getName());
-		return output;
-	}
-	
 	private Vector<String> getDefinitionAttributes() {
-		String definition = operatorLabel.getText();
+		String definition = operatorLabel.getText().trim();
 		if (definition.length() == 0)
 			return null;
 		definition = definition.replaceAll("\\{", "").replaceAll("\\}", "");
@@ -132,7 +118,7 @@ public class Project extends OperatorWithControlPanel {
 		labelAttributes = new Vector<Label>();
 		checkAttributes = new Vector<Button>();
 		int rowNum = 0;
-		Vector<String> availableAttributes = getAvailableAttributes();
+		Vector<String> availableAttributes = getAttributesOfParameter(0);
 		Vector<String> definitionAttributes = getDefinitionAttributes();
 		if (definitionAttributes == null) {
 			addRowAllBut(container, true);
@@ -152,16 +138,6 @@ public class Project extends OperatorWithControlPanel {
 		}
 	}
 
-	@Override
-	protected void controlPanelOkPressed() {
-		operatorLabel.setText(getAttributeSpecification());
-		save();
-		pack();
-	}
-	
-	@Override
-	protected void controlPanelCancelPressed() {}
-
 	public String getAttributeSpecification() {
 		String allbut = "";
 		if (checkAllBut.getSelection())
@@ -179,6 +155,13 @@ public class Project extends OperatorWithControlPanel {
 			attributeSpec += " ";
 		attributeSpec += attributeList;
 		return "{" + attributeSpec + "}";
+	}
+
+	@Override
+	protected void controlPanelOkPressed() {
+		operatorLabel.setText(getAttributeSpecification());
+		save();
+		pack();
 	}
 	
 	@Override

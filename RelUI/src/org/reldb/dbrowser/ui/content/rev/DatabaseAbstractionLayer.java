@@ -96,11 +96,10 @@ public class DatabaseAbstractionLayer {
 	
 	public static boolean installRevExtensions(Connection connection) {
 		String query = 
-				//Create a version relation
 				"var sys.rev.Version real relation {" +
 				"	ver INTEGER" +
 				"} INIT(relation {tuple {ver " + EXPECTED_REV_VERSION + "}}) key {ver};" +
-				//Create a relvar relation
+				
 			    "var sys.rev.Relvar real relation {" +
 			    "	    Name CHAR, " +
 			    " relvarName CHAR, " +
@@ -108,7 +107,7 @@ public class DatabaseAbstractionLayer {
 			    "	    ypos INTEGER, " +
 			    "	   model CHAR" +
 			    "} key {Name};" +
-				//Create a query relation
+			    
 			    "var sys.rev.Query real relation {" +
 			    "   Name CHAR, " +
 			    "   xpos INTEGER, " +
@@ -120,7 +119,7 @@ public class DatabaseAbstractionLayer {
 			    "   }," +
 			    "	 model CHAR" +
 			    "} key {Name};" +
-			    //Create a view relation
+			    
 			    "var sys.rev.View real relation {" +
 			    "   Name CHAR, " +
 			    "   xpos INTEGER, " +
@@ -130,12 +129,12 @@ public class DatabaseAbstractionLayer {
 			    "	enabled BOOLEAN, " +
 			    "	stored BOOLEAN" +
 			    "} key {Name};" +
-				//Create an Op_Project relation
+			    
 			    "var sys.rev.Op_Project real relation {" +
 				"   Name CHAR, " +
 			    "   Definition CHAR" +
 				"} key {Name};" +
-				//Create an Op_Restrict relation
+			    
 				"var sys.rev.Op_Restrict real relation {" +
 				"   Name CHAR, " +
 			    "	Relvar CHAR, " +
@@ -147,16 +146,12 @@ public class DatabaseAbstractionLayer {
 				"	PanelID INTEGER" +
 				"	}" +
 				"} key {Name};" +
-				//Create an Op_Rename relation
+				
 				"var sys.rev.Op_Rename real relation {" +
 				"   Name CHAR, " +
-			    "	Relvar CHAR, " +
-				"   selections RELATION {" +
-				"   attribute CHAR" +
-				"	, expression CHAR" +
-				"   }" +
+				"   Definition CHAR" +
 				"} key {Name};" +
-				//Create an Op_Order relation
+				
 				"var sys.rev.Op_Order real relation {" +
 				"   Name CHAR, " +
 			    "	Relvar CHAR, " +
@@ -167,7 +162,7 @@ public class DatabaseAbstractionLayer {
 				"	, SortType INTEGER" +
 				"   }" +
 				"} key {Name};" +
-				//Create an Op_Group relation
+				
 	    		"var sys.rev.Op_Group real relation {" +
 	    		"   Name CHAR, " +
 			    "	Relvar CHAR, " +
@@ -177,7 +172,7 @@ public class DatabaseAbstractionLayer {
 	    		"   }" +
 	    		"	, ASText CHAR" +
 	    		"} key {Name};" +
-				//Create an Op_Ungroup relation
+	    		
 				"var sys.rev.Op_Ungroup real relation {" +
 				"   Name CHAR, " +
 			    "	Relvar CHAR, " +
@@ -185,7 +180,7 @@ public class DatabaseAbstractionLayer {
 				"      attribute CHAR" +
 				"   }" +
 				"} key {Name};" +
-				//Create an Op_Wrap relation
+				
 	    		"var sys.rev.Op_Wrap real relation {" +
 	    		"   Name CHAR, " +
 			    "	Relvar CHAR, " +
@@ -195,7 +190,7 @@ public class DatabaseAbstractionLayer {
 	    		"   }" +
 	    		"	, ASText CHAR" +
 	    		"} key {Name};" +
-				//Create an Op_Unwrap relation
+	    		
 				"var sys.rev.Op_Unwrap real relation {" +
 				"   Name CHAR, " +
 			    "	Relvar CHAR, " +
@@ -203,7 +198,7 @@ public class DatabaseAbstractionLayer {
 				"      attribute CHAR" +
 				"   }" +
 				"} key {Name};" +
-				//Create an Op_Extend relation
+				
 				"var sys.rev.Op_Extend real relation {" +
 				"   Name CHAR, " +
 			    "	Relvar CHAR, " +
@@ -213,7 +208,7 @@ public class DatabaseAbstractionLayer {
 				"	, expression CHAR" +
 				"   }" +
 				"} key {Name};" +
-				//Create an Op_Summarize relation
+
 				"var sys.rev.Op_Summarize real relation {" +
 				"   Name CHAR, " +
 			    "	Relvar CHAR, " +
@@ -376,10 +371,12 @@ public class DatabaseAbstractionLayer {
 		return getTuples(connection, query);
 	}
 	
-	public static void updatePreservedStateRename(Connection connection, String name, String relvar, String selections) {
+	public static void updatePreservedStateRename(Connection connection, String name, String definition) {
 		String query = "DELETE sys.rev.Op_Rename WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Rename RELATION {" +
-		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + selections + "}};";
+		               "  TUPLE {Name '" + name + "', Definition '" + definition + "'" +
+		               "}};";
+		System.out.println("DatabaseAbstractionLayer: " + query);
 		execute(connection, query);
 	}
 	
