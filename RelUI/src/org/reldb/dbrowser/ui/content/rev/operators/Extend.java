@@ -7,7 +7,7 @@ public class Extend extends OperatorWithControlPanel {
 
 	public Extend(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "EXTEND", xpos, ypos);
-		addParameter("Operand", "Relation passed to " + getKind()); 
+		addParameter("Operand"); 
 	}
 
 	@Override

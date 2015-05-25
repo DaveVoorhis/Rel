@@ -4,7 +4,7 @@ public class Connector extends Visualiser {
 	Connector(Parameter parameter) {
 		super(parameter.getOperator().getModel(), 
 				parameter.getOperator().getID() + "_" + parameter.getNumber(), 
-				"<<parameter " + (parameter.getNumber() + 1) + ">>", 
+				parameter.getName(), 
 				parameter.getOperator().getBounds().x,
 				parameter.getOperator().getBounds().y + parameter.getOperator().getBounds().height + 15 + 25 * (parameter.getNumber()));
 		btnInfo.dispose();

@@ -19,7 +19,7 @@ public class Restrict extends OperatorWithControlPanel {
 	
 	public Restrict(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "Restrict", xpos, ypos);
-		addParameter("Operand", "Relation passed to " + getKind()); 
+		addParameter("Operand"); 
 		load();
 		pack();
 	}

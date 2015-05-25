@@ -7,7 +7,7 @@ public class Order extends OperatorWithControlPanel {
 
 	public Order(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "ORDER", xpos, ypos);
-		addParameter("Operand", "Relation passed to " + getKind()); 
+		addParameter("Operand"); 
 	}
 
 	@Override

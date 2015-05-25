@@ -110,8 +110,8 @@ public abstract class Operator extends Visualiser {
     /** Override to be notified that a parameter's argument has changed, with identification as to whether it's queryable or not. */
     protected void notifyArgumentChanged(boolean queryable) {}
     
-	protected void addParameter(String name, String description) {
-		Parameter p = new Parameter(this, name, description, parameters.size(), lastSide);
+	protected void addParameter(String name) {
+		Parameter p = new Parameter(this, name, parameters.size(), lastSide);
 		lastSide = (lastSide == Parameter.EASTTOWEST) ? Parameter.WESTTOEAST : Parameter.EASTTOWEST;
 		parameters.add(p);
 		new Argument(p);

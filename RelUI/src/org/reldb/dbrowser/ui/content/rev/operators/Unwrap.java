@@ -7,7 +7,7 @@ public class Unwrap extends OperatorWithControlPanel {
 
 	public Unwrap(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "UNWRAP", xpos, ypos);
-		addParameter("Operand", "Relation passed to " + getKind()); 
+		addParameter("Operand"); 
 	}
 
 	@Override

@@ -71,7 +71,7 @@ public class Rename extends OperatorWithControlPanel {
 	
 	public Rename(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "RENAME", xpos, ypos);
-		addParameter("Operand", "Relation passed to " + getKind()); 
+		addParameter("Operand"); 
 		load();
 		pack();
 	}

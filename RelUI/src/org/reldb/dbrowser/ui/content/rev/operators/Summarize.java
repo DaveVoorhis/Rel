@@ -7,7 +7,7 @@ public class Summarize extends OperatorWithControlPanel {
 
 	public Summarize(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "SUMMARIZE", xpos, ypos);
-		addParameter("Operand", "Relation passed to " + getKind()); 
+		addParameter("Operand"); 
 	}
 
 	@Override

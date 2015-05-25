@@ -7,7 +7,7 @@ public class Ungroup extends OperatorWithControlPanel {
 
 	public Ungroup(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "UNGROUP", xpos, ypos);
-		addParameter("Operand", "Relation passed to " + getKind()); 
+		addParameter("Operand"); 
 	}
 
 	@Override

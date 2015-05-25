@@ -8,14 +8,20 @@ public class Parameter {
     private int extensionLength = 10;
     
     private Argument argument;
+	private Operator operator;
+	private String name;
 	private int number;
 	private int layoutDirection;
-	private Operator operator;
 		
-	public Parameter(Operator operator, String name, String description, int number, int layoutDirection) {
+	public Parameter(Operator operator, String name, int number, int layoutDirection) {
 		this.operator = operator;
+		this.name = name;
 		this.number = number;
 		this.layoutDirection = layoutDirection;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public void dispose() {

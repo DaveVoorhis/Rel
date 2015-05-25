@@ -7,7 +7,7 @@ public class Group extends OperatorWithControlPanel {
 
 	public Group(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "GROUP", xpos, ypos);
-		addParameter("Operand", "Relation passed to " + getKind()); 
+		addParameter("Operand"); 
 	}
 
 	@Override
