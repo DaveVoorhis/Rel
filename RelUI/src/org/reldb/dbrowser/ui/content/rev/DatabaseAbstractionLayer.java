@@ -11,7 +11,6 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
 import org.reldb.rel.client.Connection.HTMLReceiver;
-import org.reldb.rel.utilities.StringUtils;
 
 public class DatabaseAbstractionLayer {
 
@@ -137,14 +136,7 @@ public class DatabaseAbstractionLayer {
 			    
 				"var sys.rev.Op_Restrict real relation {" +
 				"   Name CHAR, " +
-			    "	Relvar CHAR, " +
-				"	Panels RELATION {" +
-				"   expression CHAR, " +
-				"	Attribute INTEGER, " +
-				"	Operators INTEGER, " +
-				"	AndOrOp INTEGER, " +
-				"	PanelID INTEGER" +
-				"	}" +
+				"   Definition CHAR" +
 				"} key {Name};" +
 				
 				"var sys.rev.Op_Rename real relation {" +
@@ -283,8 +275,7 @@ public class DatabaseAbstractionLayer {
 		return getTuples(connection, query);
 	}
 	
-	//Update the positions of the relvars and queries
-	//Update relvar position
+	// Update relvar position
 	public static void updateRelvarPosition(Connection connection, String name, String relvarName, int x, int y, String model) {
 		String query = 
 				"DELETE sys.rev.Relvar where Name='" + name + "', " + 
@@ -292,7 +283,7 @@ public class DatabaseAbstractionLayer {
 		execute(connection, query);
 	}
 	
-	//Update query position
+	// Update query operator position
 	public static void updateQueryPosition(Connection connection, String name, int x, int y, String kind, String connections, String model) {
 		String query = 
 				"DELETE sys.rev.Query where Name='" + name + "', " + 
@@ -324,13 +315,13 @@ public class DatabaseAbstractionLayer {
 	}
 
 	//Preserved States
+	
 	//Views
 	public static Tuples getPreservedView(Connection connection, String name) {
 		String query = "sys.rev.View WHERE Name = '" + name + "'";
 		return getTuples(connection, query);
 	}
 	
-	//updatePreservedView was the same as updateViewPosition, so therefore redundant
 	//Project
 	public static Tuples getPreservedStateProject(Connection connection, String name) {
 		String query = "sys.rev.Op_Project WHERE Name = '" + name + "'";
@@ -351,17 +342,11 @@ public class DatabaseAbstractionLayer {
 		return getTuples(connection, query);
 	}
 	
-	public static void updatePreservedStateRestrict(Connection connection, String name, String relvar, String[] expression, int[] attribute, int[] operators, int[] andOrOps, int count) {
-		String query = "DELETE sys.rev.Op_Restrict WHERE Name = '" + name + "', ";
-        query += "INSERT sys.rev.Op_Restrict RELATION {";
-		query += " TUPLE {Name '" + name + "', Relvar '" + relvar + "', Panels RELATION {";
-		for (int i=0; i < count; i++) {
-			if (i > 0) {
-				query += ", ";
-			}
-			query += "TUPLE {expression '" + StringUtils.quote(expression[i]) + "', Attribute " + attribute[i] + ", Operators " + operators[i] + ", AndOrOp " + andOrOps[i] + ", PanelID " + i + "}";
-		}
-		query += "}}};";
+	public static void updatePreservedStateRestrict(Connection connection, String name, String definition) {
+		String query = "DELETE sys.rev.Op_Restrict WHERE Name = '" + name + "', " +
+                       "INSERT sys.rev.Op_Restrict RELATION {" +
+                       "  TUPLE {Name '" + name + "', Definition '" + definition + "'}" +
+                       "};";
 		execute(connection, query);
 	}
 	
@@ -374,8 +359,8 @@ public class DatabaseAbstractionLayer {
 	public static void updatePreservedStateRename(Connection connection, String name, String definition) {
 		String query = "DELETE sys.rev.Op_Rename WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Rename RELATION {" +
-		               "  TUPLE {Name '" + name + "', Definition '" + definition + "'" +
-		               "}};";
+		               "  TUPLE {Name '" + name + "', Definition '" + definition + "'}" +
+		               "};";
 		System.out.println("DatabaseAbstractionLayer: " + query);
 		execute(connection, query);
 	}

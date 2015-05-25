@@ -158,7 +158,7 @@ public class Rename extends OperatorWithControlPanel {
 	@Override
 	protected void buildControlPanel(Composite container) {
 		container.setLayout(new GridLayout(3, false));
-		DatabaseAbstractionLayer.removeRelvar(getModel().getConnection(), getID());
+		
 		renamings = new Vector<Renaming>();
 		Vector<String> availableAttributes = getAttributesOfParameter(0);
 		Vector<Renaming> definitionRenamings = getDefinitionRenamings();
@@ -195,9 +195,7 @@ public class Rename extends OperatorWithControlPanel {
 		String source = getQueryForParameter(0);
 		if (source == null)
 			return null;
-		if (operatorLabel.getText().length() == 0)
-			return null;
-		return "(" + source + " RENAME {" + operatorLabel.getText() + "})";		
+		return "(" + source + ") RENAME {" + operatorLabel.getText() + "}";		
 	}
 
 }

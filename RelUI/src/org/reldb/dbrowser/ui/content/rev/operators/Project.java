@@ -114,7 +114,7 @@ public class Project extends OperatorWithControlPanel {
 	@Override
 	protected void buildControlPanel(Composite container) {
 		container.setLayout(new GridLayout(3, false));
-		DatabaseAbstractionLayer.removeRelvar(getModel().getConnection(), getID());
+
 		labelAttributes = new Vector<Label>();
 		checkAttributes = new Vector<Button>();
 		int rowNum = 0;
@@ -171,7 +171,7 @@ public class Project extends OperatorWithControlPanel {
 			return null;
 		if (operatorLabel.getText().length() == 0)
 			return null;
-		return "(" + source + " " + operatorLabel.getText() + ")";		
+		return "(" + source + ") " + operatorLabel.getText();		
 	}
 
 }
