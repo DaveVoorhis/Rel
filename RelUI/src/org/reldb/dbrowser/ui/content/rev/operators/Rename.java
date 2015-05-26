@@ -9,6 +9,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.reldb.dbrowser.ui.content.rev.DatabaseAbstractionLayer;
 import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
@@ -77,7 +78,7 @@ public class Rename extends OperatorWithControlPanel {
 	}
 	
 	private void load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateRename(getModel().getConnection(), getID());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateOperator(getModel().getConnection(), getID());
 		Tuple tuple = tuples.iterator().next();
 		if (tuple == null)
 			operatorLabel.setText("");
@@ -88,7 +89,7 @@ public class Rename extends OperatorWithControlPanel {
 	}
 	
 	private void save() {
-		DatabaseAbstractionLayer.updatePreservedStateRename(getModel().getConnection(), getID(), operatorLabel.getText());
+		DatabaseAbstractionLayer.updatePreservedStateOperator(getModel().getConnection(), getID(), operatorLabel.getText());
 	}
 	
 	private void addRow(Composite parent, Renaming r) {
@@ -164,6 +165,10 @@ public class Rename extends OperatorWithControlPanel {
 	@Override
 	protected void buildControlPanel(Composite container) {
 		container.setLayout(new GridLayout(3, false));
+		
+		(new Label(container, SWT.None)).setText("Option");
+		(new Label(container, SWT.None)).setText("Name");
+		(new Label(container, SWT.None)).setText("AS");
 		
 		renamings = new Vector<Renaming>();
 		Vector<String> availableAttributes = getAttributesOfParameter(0);

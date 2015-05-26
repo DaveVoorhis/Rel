@@ -68,7 +68,7 @@ public abstract class Operator extends Visualiser {
     	for (Parameter parameter: parameters)
     		parameter.dispose();
     	parameters.clear();
-		DatabaseAbstractionLayer.removeOperator(getModel().getConnection(), getID());
+		DatabaseAbstractionLayer.removeQuery(getModel().getConnection(), getID());
     	super.delete();
     }
 

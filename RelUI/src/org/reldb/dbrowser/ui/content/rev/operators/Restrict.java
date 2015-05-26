@@ -25,7 +25,7 @@ public class Restrict extends OperatorWithControlPanel {
 	}
 	
 	private void load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateRestrict(getModel().getConnection(), getID());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateOperator(getModel().getConnection(), getID());
 		Tuple tuple = tuples.iterator().next();
 		if (tuple == null)
 			operatorLabel.setText("true");
@@ -36,7 +36,7 @@ public class Restrict extends OperatorWithControlPanel {
 	}
 	
 	private void save() {
-		DatabaseAbstractionLayer.updatePreservedStateRestrict(getModel().getConnection(), getID(), operatorLabel.getText());
+		DatabaseAbstractionLayer.updatePreservedStateOperator(getModel().getConnection(), getID(), operatorLabel.getText());
 	}
 	
 	@Override

@@ -31,7 +31,7 @@ public class Project extends OperatorWithControlPanel {
 	}
 	
 	private void load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateProject(getModel().getConnection(), getID());
+		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateOperator(getModel().getConnection(), getID());
 		Tuple tuple = tuples.iterator().next();
 		if (tuple == null)
 			operatorLabel.setText("{ALL BUT}");
@@ -42,7 +42,7 @@ public class Project extends OperatorWithControlPanel {
 	}
 	
 	private void save() {
-		DatabaseAbstractionLayer.updatePreservedStateProject(getModel().getConnection(), getID(), operatorLabel.getText());
+		DatabaseAbstractionLayer.updatePreservedStateOperator(getModel().getConnection(), getID(), operatorLabel.getText());
 	}
 	
 	private void moveAttributeRow(int fromRow, int toRow) {
