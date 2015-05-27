@@ -15,7 +15,8 @@ Version 1.0.13:
   - enhancement: Rel: System startup announcement now provides more information about runtime platform.
   - enhancement: Rel DBMS now called RelDBMS. 
   - enhancement: Rel: Removed octal and hex integer representations, as these were a source of confusion.
-
+  - enhancement: Rel: Empty EXTEND, e.g., EXTEND S: {}, is now permitted.
+  
 Version 1.0.12:
 
   - note: Rel: Updated storage engine to Oracle Berkeley DB 

@@ -1503,7 +1503,7 @@ void extend() #Extend :
 void extend_add_commalist() #ExtendList :
 {}
 {
-	extend_add() ( "," extend_add() )*
+	[ extend_add() ( "," extend_add() )* ]
 }
 
 void extend_add() #ExtendItem :
