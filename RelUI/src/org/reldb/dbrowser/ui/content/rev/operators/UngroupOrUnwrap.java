@@ -58,6 +58,8 @@ public abstract class UngroupOrUnwrap extends Monadic {
 		Attribute[] attributes = heading.toArray();
 		Vector<Attribute> output = new Vector<Attribute>();
 		for (Attribute attribute: attributes) {
+			if (attribute.getType() instanceof Heading)
+				System.out.println("UngroupOrUnwrap: " + attribute.getName() + " is a heading.");
 			System.out.println("UngroupOrUnwrap: " + attribute.getName() + ": " + attribute.getType().toString());
 			if (attribute.getType().toString().startsWith(typeName))
 				output.add(attribute);
