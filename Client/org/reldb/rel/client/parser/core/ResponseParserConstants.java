@@ -39,35 +39,31 @@ public interface ResponseParserConstants {
   /** RegularExpression Id. */
   int DECIMAL_LITERAL = 19;
   /** RegularExpression Id. */
-  int HEX_LITERAL = 20;
+  int FLOATING_POINT_LITERAL = 20;
   /** RegularExpression Id. */
-  int OCTAL_LITERAL = 21;
+  int EXPONENT = 21;
   /** RegularExpression Id. */
-  int FLOATING_POINT_LITERAL = 22;
+  int STRING_LITERAL = 22;
   /** RegularExpression Id. */
-  int EXPONENT = 23;
+  int IDENTIFIER = 23;
   /** RegularExpression Id. */
-  int STRING_LITERAL = 24;
+  int LETTER = 24;
   /** RegularExpression Id. */
-  int IDENTIFIER = 25;
+  int DIGIT = 25;
   /** RegularExpression Id. */
-  int LETTER = 26;
+  int LPAREN = 26;
   /** RegularExpression Id. */
-  int DIGIT = 27;
+  int RPAREN = 27;
   /** RegularExpression Id. */
-  int LPAREN = 28;
+  int LBRACE = 28;
   /** RegularExpression Id. */
-  int RPAREN = 29;
+  int RBRACE = 29;
   /** RegularExpression Id. */
-  int LBRACE = 30;
+  int SEMICOLON = 30;
   /** RegularExpression Id. */
-  int RBRACE = 31;
+  int COMMA = 31;
   /** RegularExpression Id. */
-  int SEMICOLON = 32;
-  /** RegularExpression Id. */
-  int COMMA = 33;
-  /** RegularExpression Id. */
-  int COLON = 34;
+  int COLON = 32;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -94,8 +90,6 @@ public interface ResponseParserConstants {
     "\"RETURNS\"",
     "<INTEGER_LITERAL>",
     "<DECIMAL_LITERAL>",
-    "<HEX_LITERAL>",
-    "<OCTAL_LITERAL>",
     "<FLOATING_POINT_LITERAL>",
     "<EXPONENT>",
     "<STRING_LITERAL>",
