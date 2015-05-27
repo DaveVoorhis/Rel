@@ -10,11 +10,11 @@
 	<classpathentry kind="lib" path="lib/httpclient-cache-4.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/httpmime-4.1.3.jar"/>
-	<classpathentry kind="lib" path="lib/je-6.2.31.jar"/>
 	<classpathentry kind="lib" path="lib/rel0000.jar" sourcepath="/ServerV0000/src"/>
 	<classpathentry kind="lib" path="lib/relclient.jar" sourcepath="/Client"/>
 	<classpathentry kind="lib" path="lib/RelDBMS.jar" sourcepath="/Server"/>
 	<classpathentry kind="lib" path="lib/ecj-4.4.2.jar"/>
 	<classpathentry kind="lib" path="swing2swt.jar"/>
+	<classpathentry kind="lib" path="lib/je-6.3.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

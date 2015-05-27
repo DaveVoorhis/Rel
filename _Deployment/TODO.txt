@@ -1,7 +1,6 @@
 ** TO DO **
 
 Short term:
-	// TODO - either eliminate octal and hex from parser, or do it properly.
 	// TODO - allow empty EXTEND.  E.g., "EXTEND S: {}"
 	// TODO - implement (only for multiple possreps) SELECTORS and (mandatory) INIT clause 
 	//        in TYPE definitions.
