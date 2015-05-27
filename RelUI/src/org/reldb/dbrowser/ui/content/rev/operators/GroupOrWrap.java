@@ -18,25 +18,29 @@ import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
-public class Group extends OperatorWithControlPanel {
+public class GroupOrWrap extends OperatorWithControlPanel {
 
 	private Text as;
 	private Button checkAllBut;
 	private Vector<Label> labelAttributes;
 	private Vector<Button> checkAttributes;
 	
-	public Group(Rev rev, String name, int xpos, int ypos) {
-		super(rev, name, "GROUP", xpos, ypos);
+	public GroupOrWrap(Rev rev, String name, String opName, int xpos, int ypos) {
+		super(rev, name, opName, xpos, ypos);
 		addParameter("Operand"); 
 		load();
 		pack();
+	}
+	
+	private String getDefaultAttributeName() {
+		return getTitle() + "attr";
 	}
 	
 	private void load() {
 		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateOperator(getModel().getConnection(), getID());
 		Tuple tuple = tuples.iterator().next();
 		if (tuple == null)
-			operatorLabel.setText("{} AS grouped");
+			operatorLabel.setText("{} AS " + getDefaultAttributeName());
 		else {
 			String definition = tuple.getAttributeValue("Definition").toString();
 			operatorLabel.setText(definition);
@@ -175,7 +179,7 @@ public class Group extends OperatorWithControlPanel {
 			attributeSpec += " ";
 		attributeSpec += attributeList;
 		if (as.getText().trim().length() == 0)
-			as.setText("grouped");
+			as.setText(getDefaultAttributeName());
 		return "{" + attributeSpec + "} AS " + as.getText();
 	}
 
@@ -193,7 +197,7 @@ public class Group extends OperatorWithControlPanel {
 			return null;
 		if (operatorLabel.getText().length() == 0)
 			return null;
-		return "(" + source + ") GROUP " + operatorLabel.getText();		
+		return "(" + source + ") " + getTitle() + " " + operatorLabel.getText();		
 	}
 
 }

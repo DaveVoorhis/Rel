@@ -20,7 +20,7 @@ import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
 import org.reldb.dbrowser.ui.content.rev.operators.Diadic;
 import org.reldb.dbrowser.ui.content.rev.operators.Extend;
-import org.reldb.dbrowser.ui.content.rev.operators.Group;
+import org.reldb.dbrowser.ui.content.rev.operators.GroupOrWrap;
 import org.reldb.dbrowser.ui.content.rev.operators.Order;
 import org.reldb.dbrowser.ui.content.rev.operators.Project;
 import org.reldb.dbrowser.ui.content.rev.operators.Rename;
@@ -30,7 +30,6 @@ import org.reldb.dbrowser.ui.content.rev.operators.TableDee;
 import org.reldb.dbrowser.ui.content.rev.operators.TableDum;
 import org.reldb.dbrowser.ui.content.rev.operators.Ungroup;
 import org.reldb.dbrowser.ui.content.rev.operators.Unwrap;
-import org.reldb.dbrowser.ui.content.rev.operators.Wrap;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
@@ -292,7 +291,7 @@ public class Rev extends Composite {
 				}}),
 			new OpSelector("GROUP", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Group(rev, name, xpos, ypos);
+					return new GroupOrWrap(rev, name, "GROUP", xpos, ypos);
 				}}),
 			new OpSelector("UNGROUP", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
@@ -300,7 +299,7 @@ public class Rev extends Composite {
 				}}),
 			new OpSelector("WRAP", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Wrap(rev, name, xpos, ypos);
+					return new GroupOrWrap(rev, name, "WRAP", xpos, ypos);
 				}}),
 			new OpSelector("UNWRAP", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
