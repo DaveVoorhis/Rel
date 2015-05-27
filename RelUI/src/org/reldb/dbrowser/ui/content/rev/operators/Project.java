@@ -113,7 +113,7 @@ public class Project extends Monadic {
 		labelAttributes = new Vector<Label>();
 		checkAttributes = new Vector<Button>();
 		int rowNum = 0;
-		Vector<String> availableAttributes = getAttributesOfParameter(0);
+		Vector<String> availableAttributes = getAttributeNamesOfParameter(0);
 		Vector<String> definitionAttributes = getDefinitionAttributes();
 		if (definitionAttributes == null) {
 			addRowAllBut(container, true);

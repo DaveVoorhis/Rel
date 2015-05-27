@@ -41,18 +41,24 @@ public abstract class Operator extends Visualiser {
     	return operand.getQuery();
     }
 	
-	public Vector<String> getAttributesOfParameter(int parameterNumber) {
+	public Heading getHeadingOfParameter(int parameterNumber) {
 		String query = getQueryForParameter(parameterNumber);
 		if (query == null)
 			return null;
 		Tuples tuples = getDatabase().evaluate(query);
-		Heading heading = tuples.getHeading();
+		return tuples.getHeading();
+	}
+	
+	public Vector<String> getAttributeNamesOfParameter(int parameterNumber) {
+		Heading heading = getHeadingOfParameter(parameterNumber);
+		if (heading == null)
+			return null;
 		Vector<String> output = new Vector<String>();
 		for (Attribute attribute: heading.toArray())
 			output.add(attribute.getName());
 		return output;
 	}
-    
+	
     public String toString() {
     	return "Operator " + getTitle() + " (" + getID() + ")";
     }

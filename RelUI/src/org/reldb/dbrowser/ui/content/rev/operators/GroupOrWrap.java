@@ -142,7 +142,7 @@ public class GroupOrWrap extends Monadic {
 		labelAttributes = new Vector<Label>();
 		checkAttributes = new Vector<Button>();
 		int rowNum = 0;
-		Vector<String> availableAttributes = getAttributesOfParameter(0);
+		Vector<String> availableAttributes = getAttributeNamesOfParameter(0);
 		Vector<String> definitionAttributes = getDefinitionAttributes();
 		String as = getDefinitionAs();
 		if (definitionAttributes == null) {

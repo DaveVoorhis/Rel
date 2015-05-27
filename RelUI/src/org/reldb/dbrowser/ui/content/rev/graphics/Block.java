@@ -6,7 +6,7 @@
  * Created on July 18, 2002, 3:24 PM
  */
 
-package org.reldb.dbrowser.ui.content.rev.graphics.lines;
+package org.reldb.dbrowser.ui.content.rev.graphics;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;

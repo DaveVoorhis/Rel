@@ -166,7 +166,7 @@ public class Rename extends Monadic {
 		(new Label(container, SWT.None)).setText("AS");
 		
 		renamings = new Vector<Renaming>();
-		Vector<String> availableAttributes = getAttributesOfParameter(0);
+		Vector<String> availableAttributes = getAttributeNamesOfParameter(0);
 		Vector<Renaming> definitionRenamings = getDefinitionRenamings();
 		for (Renaming renaming: definitionRenamings) {
 			if (renaming.getType() != Renaming.RenameType.NORMAL)
