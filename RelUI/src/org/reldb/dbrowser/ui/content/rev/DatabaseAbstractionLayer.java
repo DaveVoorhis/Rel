@@ -1,6 +1,7 @@
 package org.reldb.dbrowser.ui.content.rev;
 
 import java.io.IOException;
+import java.util.Vector;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -115,11 +116,11 @@ public class DatabaseAbstractionLayer {
 				"} INIT(relation {tuple {ver " + EXPECTED_REV_VERSION + "}}) key {ver};" +
 				
 			    "var sys.rev.Relvar real relation {" +
-			    "	    Name CHAR, " +
-			    " relvarName CHAR, " +
-			    "	    xpos INTEGER, " +
-			    "	    ypos INTEGER, " +
-			    "	   model CHAR" +
+			    "   Name CHAR, " +
+			    "   relvarName CHAR, " +
+			    "	xpos INTEGER, " +
+			    "	ypos INTEGER, " +
+			    "	model CHAR" +
 			    "} key {Name};" +
 			    
 			    "var sys.rev.Query real relation {" +
@@ -150,11 +151,14 @@ public class DatabaseAbstractionLayer {
 
 				"var sys.rev.Op_Summarize real relation {" +
 				"   Name CHAR, " +
-			    "	Relvar CHAR, " +
-				"   subRelvar RELATION {" +
-				"	ID INTEGER" +
-				"   , attribute CHAR" +
-				"	, expression CHAR" +
+				"   byList CHAR, " +
+				"   perExpr CHAR, " +
+			    "	Definition RELATION {" +
+				"	  ID INTEGER, " +
+				"     asAttribute CHAR, " +
+				"     aggregateOp CHAR, " +
+				"	  expression1 CHAR, " +
+				"	  expression2 CHAR " +
 				"   }" +
 				"} key {Name};";
 		
@@ -261,14 +265,29 @@ public class DatabaseAbstractionLayer {
 	
 	// Summarize
 	public Tuples getPreservedStateSummarize(String name) {
-		String query = "sys.rev.Op_Summarize WHERE Name = '" + name + "'";
+		String query = "(sys.rev.Op_Summarize WHERE Name = '" + name + "') UNGROUP Definition ORDER(ASC ID)";
 		return getTuples(query);
 	}
 	
-	public void updatePreservedStateSummarize(String name, String relvar, String subRelvar) {
+	public void updatePreservedStateSummarize(String name, String perExpr, String definition) {
 		String query = "DELETE sys.rev.Op_Summarize WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Summarize RELATION {" +
-		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + subRelvar + "}};";
+		               "  TUPLE {Name '" + name + "', perExpr '" + perExpr + "', byList '', Definition '" + definition + "'}" +
+		               "};";
+		execute(query);
+	}
+	
+	public void updatePreservedStateSummarize(String name, Vector<String> byList, String definition) {
+		String by = "";
+		for (String attribute: byList) {
+			if (by.length() > 0)
+				by += ", ";
+			by += attribute;
+		}
+		String query = "DELETE sys.rev.Op_Summarize WHERE Name = '" + name + "', " +
+		               "INSERT sys.rev.Op_Summarize RELATION {" +
+		               "  TUPLE {Name '" + name + "', perExpr '', byList '" + by + "', Definition '" + definition + "'}" +
+		               "};";
 		execute(query);
 	}
 	
