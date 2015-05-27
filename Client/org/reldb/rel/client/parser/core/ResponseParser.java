@@ -577,11 +577,6 @@ public class ResponseParser implements ResponseParserConstants {
     return false;
   }
 
-  private boolean jj_3R_19() {
-    if (jj_3R_11()) return true;
-    return false;
-  }
-
   private boolean jj_3_1() {
     if (jj_3R_6()) return true;
     return false;
@@ -615,6 +610,11 @@ public class ResponseParser implements ResponseParserConstants {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_32()) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3R_19() {
+    if (jj_3R_11()) return true;
     return false;
   }
 

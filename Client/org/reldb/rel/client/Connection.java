@@ -11,6 +11,7 @@ import org.reldb.rel.client.connection.stream.ClientLocalConnection;
 import org.reldb.rel.client.connection.stream.InputStreamInterceptor;
 import org.reldb.rel.client.connection.stream.StreamReceiverClient;
 import org.reldb.rel.client.parser.ResponseAdapter;
+import org.reldb.rel.client.parser.ResponseHandler;
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.ResponseToHTMLProgressive;
 import org.reldb.rel.client.parser.core.ParseException;

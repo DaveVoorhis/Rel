@@ -73,7 +73,7 @@ public abstract class ResponseToHTML extends ResponseProcessor {
 		emitHTML("</table>");
 	}
 	
-	public void beginHeading() {
+	public void beginHeading(String typeName) {
 		if (!emitHeadings)
 			return;
 		emitHTML("<tr>");
@@ -86,7 +86,7 @@ public abstract class ResponseToHTML extends ResponseProcessor {
 		emitHTML("</tr>");
 	}
 	
-	public void beginContainer(int depth) {
+	public void beginContainer(int depth, String typeName) {
 		if (depth == 0)
 			emitHTML("<table id=\"table\" cellpadding=\"1\" cellspacing=\"0\">");
 		else

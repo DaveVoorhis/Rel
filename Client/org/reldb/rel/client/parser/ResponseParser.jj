@@ -223,7 +223,7 @@ void relation_or_array(int depth) :
 {
 	( <RELATION> {htype="RELATION";} | <ARRAY> {htype="ARRAY";})
 	{responseHandler.beginContainer(depth, htype);}
-	[ LOOKAHEAD(heading(htype) "{") heading(htype) ] "{" [ tuple(2) ( "," tuple(2) )* ] "}"
+	[ LOOKAHEAD(heading() "{") heading(htype) ] "{" [ tuple(2) ( "," tuple(2) )* ] "}"
 	{responseHandler.endContainer(depth);}
 }
 

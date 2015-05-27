@@ -37,8 +37,8 @@ public abstract class ResponseToHTMLProgressive extends ResponseToHTML {
 			emitInitialHTML(s);
 	}
 	
-	public void beginHeading() {
-		super.beginHeading();
+	public void beginHeading(String typeName) {
+		super.beginHeading(typeName);
 		headingCount++;
 	}
 	
