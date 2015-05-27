@@ -28,8 +28,7 @@ import org.reldb.dbrowser.ui.content.rev.operators.Restrict;
 import org.reldb.dbrowser.ui.content.rev.operators.Summarize;
 import org.reldb.dbrowser.ui.content.rev.operators.TableDee;
 import org.reldb.dbrowser.ui.content.rev.operators.TableDum;
-import org.reldb.dbrowser.ui.content.rev.operators.Ungroup;
-import org.reldb.dbrowser.ui.content.rev.operators.Unwrap;
+import org.reldb.dbrowser.ui.content.rev.operators.UngroupOrUnwrap;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
@@ -302,7 +301,7 @@ public class Rev extends Composite {
 				}}),
 			new OpSelector("UNGROUP", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Ungroup(rev, name, xpos, ypos);
+					return new UngroupOrUnwrap(rev, name, "UNGROUP", "RELATION", xpos, ypos);
 				}}),
 			new OpSelector("WRAP", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
@@ -310,7 +309,7 @@ public class Rev extends Composite {
 				}}),
 			new OpSelector("UNWRAP", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Unwrap(rev, name, xpos, ypos);
+					return new UngroupOrUnwrap(rev, name, "UNWRAP", "TUPLE", xpos, ypos);
 				}}),
 			new OpSelector("EXTEND", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {

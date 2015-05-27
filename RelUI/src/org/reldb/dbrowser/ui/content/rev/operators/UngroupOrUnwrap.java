@@ -16,10 +16,13 @@ import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
-public abstract class UngroupOrUnwrap extends Monadic {
+public class UngroupOrUnwrap extends Monadic {
 	
-	public UngroupOrUnwrap(Rev rev, String name, String opName, int xpos, int ypos) {
+	private String attributeTypeName;
+	
+	public UngroupOrUnwrap(Rev rev, String name, String opName, String attributeTypeName, int xpos, int ypos) {
 		super(rev, name, opName, xpos, ypos);
+		this.attributeTypeName = attributeTypeName;
 	}
 	
 	protected void load() {
@@ -57,23 +60,29 @@ public abstract class UngroupOrUnwrap extends Monadic {
 			return null;
 		Attribute[] attributes = heading.toArray();
 		Vector<Attribute> output = new Vector<Attribute>();
-		for (Attribute attribute: attributes) {
-			if (attribute.getType() instanceof Heading)
-				System.out.println("UngroupOrUnwrap: " + attribute.getName() + " is a heading.");
-			System.out.println("UngroupOrUnwrap: " + attribute.getName() + ": " + attribute.getType().toString());
-			if (attribute.getType().toString().startsWith(typeName))
+		for (Attribute attribute: attributes)
+			if (attribute.getType() instanceof Heading && attribute.getType().toString().startsWith(typeName))
 				output.add(attribute);
-		}
 		return output.toArray(new Attribute[0]);
 	}
 	
-	protected abstract Attribute[] getAvailableAttributes();
+	@Override
+	protected void notifyArgumentChanged(boolean queryable) {
+		super.notifyArgumentChanged(queryable);
+		if (queryable && operatorLabel.getText().trim().length() == 0) {
+			Attribute[] attributes = getAvailableAttributesForType(attributeTypeName);
+			if (attributes.length > 0)
+				operatorLabel.setText(attributes[0].getName());
+		}
+	}
 	
 	@Override
 	protected void buildControlPanel(Composite container) {
 		container.setLayout(new GridLayout(2, false));
 
-		Attribute[] attributes = getAvailableAttributes();
+		Attribute[] attributes = getAvailableAttributesForType(attributeTypeName);
+		if (attributes.length == 0)
+			(new Label(container, SWT.None)).setText("No " + attributeTypeName + "-valued attributes found in operand.");
 		for (Attribute attribute: attributes)
 			addRow(container, attribute.getName());
 	}
