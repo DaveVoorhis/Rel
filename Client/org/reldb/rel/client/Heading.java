@@ -7,8 +7,9 @@ public class Heading extends Type {
 	
 	private LinkedList<Attribute> attributes = new LinkedList<Attribute>();
 	private String lastAttributeName;
+	private String typeName;
 	
-	Heading() {}
+	Heading(String typeName) {this.typeName = typeName;}
 	
 	void addAttributeName(String name) {
 		lastAttributeName = name;
@@ -30,6 +31,10 @@ public class Heading extends Type {
 		return attributes.size();
 	}
 	
+	public String getTypeName() {
+		return typeName;
+	}
+	
 	public String toString() {
 		String attributeString = "";
 		for (Attribute attribute: attributes) {
@@ -37,7 +42,7 @@ public class Heading extends Type {
 				attributeString += ", ";
 			attributeString += attribute;
 		}
-		return "{" + attributeString + "}";
+		return typeName + " {" + attributeString + "}";
 	}
 	
 }

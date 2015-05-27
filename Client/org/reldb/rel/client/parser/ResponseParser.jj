@@ -219,20 +219,20 @@ void tuple_component(int depth) :
 }
 
 void relation_or_array(int depth) :
-{}
+{String htype;}
 {
-	( <RELATION> | <ARRAY> ) 
-	{responseHandler.beginContainer(depth);}
-	[ LOOKAHEAD(heading() "{") heading() ] "{" [ tuple(2) ( "," tuple(2) )* ] "}"
+	( <RELATION> {htype="RELATION";} | <ARRAY> {htype="ARRAY";})
+	{responseHandler.beginContainer(depth, htype);}
+	[ LOOKAHEAD(heading(htype) "{") heading(htype) ] "{" [ tuple(2) ( "," tuple(2) )* ] "}"
 	{responseHandler.endContainer(depth);}
 }
 
-void heading() :
+void heading(String htype) :
 {}
 {
 	"{" 
 		[
-		  {if (responseHandler.isEmitHeading()) responseHandler.beginHeading();}
+		  {if (responseHandler.isEmitHeading()) responseHandler.beginHeading(htype);}
 		  attribute_spec() ( "," attribute_spec() )*
 		  {if (responseHandler.isEmitHeading()) responseHandler.endHeading();}
 		] 
@@ -248,10 +248,10 @@ void attribute_spec() :
 }
 
 void type_ref() :
-{String v;}
+{String v; String htype;}
 {
-		<TUPLE> {if (responseHandler.isEmitHeading()) responseHandler.beginTupleDefinition();} heading() {if (responseHandler.isEmitHeading()) responseHandler.endTupleDefinition();}
-	|	( <RELATION> | <ARRAY> ) {if (responseHandler.isEmitHeading()) responseHandler.beginContainerDefinition();} heading() {if (responseHandler.isEmitHeading()) responseHandler.endContainerDefinition();}
+		<TUPLE> {if (responseHandler.isEmitHeading()) responseHandler.beginTupleDefinition();} heading("TUPLE") {if (responseHandler.isEmitHeading()) responseHandler.endTupleDefinition();}
+	|	( <RELATION> {htype="RELATION";} | <ARRAY> {htype="ARRAY";}) {if (responseHandler.isEmitHeading()) responseHandler.beginContainerDefinition();} heading(htype) {if (responseHandler.isEmitHeading()) responseHandler.endContainerDefinition();}
 	|	v = identifier()	{if (responseHandler.isEmitHeading() && responseHandler.isEmitHeadingTypes()) responseHandler.typeReference(v);}
 	| 	op_type()
 }

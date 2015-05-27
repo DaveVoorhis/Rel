@@ -11,7 +11,7 @@ public class ResponseAdapter implements ResponseHandler {
 	public void endTupleDefinition() {}
 	public void beginContainerDefinition() {}
 	public void endContainerDefinition() {}
-	public void beginHeading() {}
+	public void beginHeading(String typeName) {}
 	public void endHeading() {}
 	public void attributeNameInTuple(int depth, String name) {}
 	public void beginScalar(int depth) {}
@@ -20,7 +20,7 @@ public class ResponseAdapter implements ResponseHandler {
 	public void endPossrep() {}
 	public void separatePossrepComponent() {}
 	public void primitive(String value) {}
-	public void beginContainer(int depth) {}
+	public void beginContainer(int depth, String typeName) {}
 	public void endContainer(int depth) {}
 	public void beginTuple(int depth) {}
 	public void endTuple(int depth) {}

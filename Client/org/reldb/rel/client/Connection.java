@@ -174,8 +174,8 @@ public class Connection {
 						else
 							response.setResult(value);					
 					}
-					public void beginHeading() {
-						headingReceiver.push(new Heading());
+					public void beginHeading(String typeName) {
+						headingReceiver.push(new Heading(typeName));
 					}
 					public void endHeading() {
 						Heading heading = headingReceiver.pop();
@@ -205,13 +205,13 @@ public class Connection {
 					public void primitive(String value) {
 						valueReceiver.peek().addValue(new Scalar(value));
 					}
-					public void beginContainer(int depth) {
+					public void beginContainer(int depth, String typeName) {
 						if (depth == 0) {
 							Tuples tuples = new Tuples();
 							valueReceiver.push(tuples);
 							response.setResult(tuples);
 						} else {
-							valueReceiver.push(new Tuples(new Heading()));
+							valueReceiver.push(new Tuples(new Heading(typeName)));
 						}
 					}
 					public void endContainer(int depth) {
