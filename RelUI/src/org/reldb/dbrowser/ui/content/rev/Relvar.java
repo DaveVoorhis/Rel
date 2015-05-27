@@ -11,7 +11,7 @@ public class Relvar extends Visualiser {
 	protected void visualiserMoved() {
 		super.visualiserMoved();
 		Point location = getLocation();
-		DatabaseAbstractionLayer.updateRelvarPosition(getModel().getConnection(), getID(), getTitle(), location.x, location.y, getModel().getModelName());
+		getDatabase().updateRelvarPosition(getID(), getTitle(), location.x, location.y, getModel().getModelName());
 	}
 
 	public String getQuery() {

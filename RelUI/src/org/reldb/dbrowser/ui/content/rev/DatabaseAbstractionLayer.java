@@ -17,7 +17,13 @@ public class DatabaseAbstractionLayer {
 	public static final int EXPECTED_REV_VERSION = 0;
 	public static final int QUERY_WAIT_MILLISECONDS = 5000;
 	
-	private synchronized static boolean execute(Connection connection, String query) {
+	private Connection connection;
+	
+	public DatabaseAbstractionLayer(Connection connection) {
+		this.connection = connection;
+	}
+	
+	private synchronized boolean execute(String query) {
 		Value response;
 		try {
 			response = connection.execute(query).awaitResult(QUERY_WAIT_MILLISECONDS);
@@ -37,7 +43,7 @@ public class DatabaseAbstractionLayer {
 		return true;
 	}
 
-	private synchronized static Tuples getTuples(Connection connection, String query) {
+	private synchronized Tuples getTuples(String query) {
 		Value response;
 		try {
 			response = connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
@@ -57,11 +63,11 @@ public class DatabaseAbstractionLayer {
 		return (Tuples)response;
 	}
 
-	public synchronized static void evaluate(Connection connection, String query, HTMLReceiver htmlReceiver) {
+	public synchronized void evaluate(String query, HTMLReceiver htmlReceiver) {
 		connection.evaluate(query, htmlReceiver);
 	}
 
-	public synchronized static Tuples evaluate(Connection connection, String query) {
+	public synchronized Tuples evaluate(String query) {
 		try {
 			Value result = connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
 			if (result instanceof Error) {
@@ -75,7 +81,7 @@ public class DatabaseAbstractionLayer {
 		}
 	}
 
-	public synchronized static int hasRevExtensions(Connection connection) {
+	public synchronized int hasRevExtensions() {
 		String query = "sys.rev.Version";
 		try {
 			Value response = (Value)connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
@@ -92,7 +98,7 @@ public class DatabaseAbstractionLayer {
 		}
 	}
 
-	public synchronized static long getUniqueNumber(Connection connection) {
+	public synchronized long getUniqueNumber() {
 		String query = "GET_UNIQUE_NUMBER()";
 		try {
 			return connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS).toLong();
@@ -102,7 +108,7 @@ public class DatabaseAbstractionLayer {
 		}
 	}
 	
-	public static boolean installRevExtensions(Connection connection) {
+	public boolean installRevExtensions() {
 		String query = 
 				"var sys.rev.Version real relation {" +
 				"	ver INTEGER" +
@@ -150,84 +156,66 @@ public class DatabaseAbstractionLayer {
 				"   , attribute CHAR" +
 				"	, expression CHAR" +
 				"   }" +
-				"} key {Name};" +
-				
-			    "var sys.rev.View real relation {" +
-			    "   Name CHAR, " +
-			    "   xpos INTEGER, " +
-			    "   ypos INTEGER, " +
-			    "	width INTEGER, " +
-			    "	height INTEGER, " +
-			    "	enabled BOOLEAN, " +
-			    "	stored BOOLEAN" +
-			    "} key {Name};";
-		return execute(connection, query);
+				"} key {Name};";
+		
+		return execute(query);
 	}
 
-	public static boolean removeRevExtensions(Connection connection) {
+	public boolean removeRevExtensions() {
 		String query = 
 				"drop var sys.rev.Operator;" +
 				"drop var sys.rev.Op_Extend;" +
 				"drop var sys.rev.Op_Summarize;" +
 			    "drop var sys.rev.Query;" +
 				"drop var sys.rev.Relvar;" +
-			    "drop var sys.rev.View;" +
 				"drop var sys.rev.Version;";
-		return execute(connection, query);
+		return execute(query);
 	}
 
-	public static Tuples getRelvarsWithoutRevExtensions(Connection connection) {
-		return getRelvarsWithoutRevExtensions(connection, "");
+	public Tuples getRelvarsWithoutRevExtensions() {
+		return getRelvarsWithoutRevExtensions("");
 	}
 	
-	public static Tuples getRelvarsWithoutRevExtensions(Connection connection, String where) {
+	public Tuples getRelvarsWithoutRevExtensions(String where) {
 		String query = "sys.Catalog {Name, Owner} WHERE " + where;
-		return getTuples(connection, query);
+		return getTuples(query);
 	}
 	
-	public static Tuples getRelvarsWithRevExtensions(Connection connection) {
+	public Tuples getRelvarsWithRevExtensions() {
 		String query = 
 				"union {" + 
 				"   sys.rev.Relvar," +
 				"   extend sys.Catalog not matching sys.rev.Relvar : {xpos := -1, ypos := -1} {Name, xpos, ypos}" +
 				"} matching sys.Catalog";
-		return getTuples(connection, query);
+		return getTuples(query);
 	}
 	
-	public static Tuples getRelvars(Connection connection, String where) {
+	public Tuples getRelvars(String where) {
 		String query = "sys.rev.Relvar";
 		if (where.length() > 0) {
 			query += " WHERE " + where;
 		}
-		return getTuples(connection, query);
+		return getTuples(query);
 	}
 
-	public static Tuples getQueries(Connection connection, String where) {
+	public Tuples getQueries(String where) {
 		String query = "sys.rev.Query";
 		if (where.length() > 0) {
 			query += " WHERE " + where;
 		}
-		return getTuples(connection, query);
-	}
-	
-	public static Tuples getViews(Connection connection, String where) {
-		String query = "sys.rev.View";
-		if (where.length() > 0) {
-			query += " WHERE " + where;
-		}
-		return getTuples(connection, query);
+		return getTuples(query);
 	}
 	
 	// Update relvar position
-	public static void updateRelvarPosition(Connection connection, String name, String relvarName, int x, int y, String model) {
+	public void updateRelvarPosition(String name, String relvarName, int x, int y, String model) {
 		String query = 
 				"DELETE sys.rev.Relvar where Name='" + name + "', " + 
                 "INSERT sys.rev.Relvar relation {tuple {Name '" + name + "', relvarName '" + relvarName + "', xpos " + x + ", ypos " + y + ", model '" + model + "'}};";
-		execute(connection, query);
+		execute(query);
 	}
 	
 	// Update query operator position
-	public static void updateQueryPosition(Connection connection, String name, int x, int y, String kind, String connections, String model) {
+	public void updateQueryPosition(String name, int x, int y, String kind, String connections, String model) {
 		String query = 
 				"DELETE sys.rev.Query where Name='" + name + "', " + 
                 "INSERT sys.rev.Query relation {tuple {" +
@@ -238,106 +226,74 @@ public class DatabaseAbstractionLayer {
 						"connections " + connections + 
 						", model '" + model + "'" +
 					"}};";
-		execute(connection, query);
-	}
-	
-	// Update view position
-	public static void updateViewPosition(Connection connection, String name, int x, int y, int width, int height, boolean enabled, boolean stored) {
-		String query = 
-				"DELETE sys.rev.View where Name='" + name + "', " + 
-                "INSERT sys.rev.View relation {tuple {" +
-						"Name '" + name + "', " +
-						"xpos " + x + ", " +
-						"ypos " + y + ", " +
-						"width " + width + ", " +
-						"height " + height + ", " +
-						"enabled " + enabled + ", " +
-						"stored " + stored +
-					"}};";
-		execute(connection, query);
+		execute(query);
 	}
 
 	// Preserved States
 	
-	// Views
-	public static Tuples getPreservedView(Connection connection, String name) {
-		String query = "sys.rev.View WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
-	}
-	
 	// Most operators
-	public static Tuples getPreservedStateOperator(Connection connection, String name) {
+	public Tuples getPreservedStateOperator(String name) {
 		String query = "sys.rev.Operator WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(query);
 	}
 	
-	public static void updatePreservedStateOperator(Connection connection, String name, String definition) {
+	public void updatePreservedStateOperator(String name, String definition) {
 		String query = "DELETE sys.rev.Operator WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Operator RELATION {" +
 		                  "TUPLE {Name '" + name + "', Definition '" + definition + "'}" +
 		               "};";
-		execute(connection, query);
+		execute(query);
 	}
 	
 	// Extend
-	public static Tuples getPreservedStateExtend(Connection connection, String name) {
+	public Tuples getPreservedStateExtend(String name) {
 		String query = "(sys.rev.Op_Extend WHERE Name = '" + name + "') UNGROUP Definition ORDER(ASC ID)";
-		return getTuples(connection, query);
+		return getTuples(query);
 	}
 	
-	public static void updatePreservedStateExtend(Connection connection, String name, String definition) {
+	public void updatePreservedStateExtend(String name, String definition) {
 		String query = "DELETE sys.rev.Op_Extend WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Extend RELATION {" +
 		               "  TUPLE {Name '" + name + "', Definition " + definition + "}" +
 		               "};";
-		System.out.println("DatabaseAbstractionLayer: EXTEND: " + query);
-		execute(connection, query);
+		execute(query);
 	}
 	
 	// Summarize
-	public static Tuples getPreservedStateSummarize(Connection connection, String name) {
+	public Tuples getPreservedStateSummarize(String name) {
 		String query = "sys.rev.Op_Summarize WHERE Name = '" + name + "'";
-		return getTuples(connection, query);
+		return getTuples(query);
 	}
 	
-	public static void updatePreservedStateSummarize(Connection connection, String name, String relvar, String subRelvar) {
+	public void updatePreservedStateSummarize(String name, String relvar, String subRelvar) {
 		String query = "DELETE sys.rev.Op_Summarize WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Summarize RELATION {" +
 		               "  TUPLE {Name '" + name + "', Relvar '" + relvar + "', " + subRelvar + "}};";
-		execute(connection, query);
-	}
-
-	public static void executeHandler(Connection connection, String query) {
-		execute(connection, query);
+		execute(query);
 	}
 	
-	public static void removeQuery(Connection connection, String name) {
+	public void removeQuery(String name) {
 		String query = "DELETE sys.rev.Query WHERE Name = '" + name + "';"; 
-		execute(connection, query);
+		execute(query);
 	}
 	
-	public static void removeRelvar(Connection connection, String name) {
+	public void removeRelvar(String name) {
 		String query = "DELETE sys.rev.Relvar WHERE Name = '" + name + "';"; 
-		execute(connection, query);
+		execute(query);
 	}
 	
-	public static void removeView(Connection connection, String name) {
-		String query = "DELETE sys.rev.View WHERE Name = '" + name + "';";
-		execute(connection, query);
+	public void removeOperator(String name) {
+		String query = "DELETE sys.rev.Operator WHERE Name = '" + name + "';";
+		execute(query);
 	}
 	
-	public static void removeOperator(Connection connection, String name, String kind) {
-		String query = "DELETE sys.rev.Operator WHERE Name = '" + name + "' AND Kind = '" + kind + "';";
-		execute(connection, query);
-	}
-	
-	public static void removeOperator_Extend(Connection connection, String name) {
+	public void removeOperator_Extend(String name) {
 		String query = "DELETE sys.rev.Op_Extend WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(query);
 	}
 	
-	public static void removeOperator_Summarize(Connection connection, String name) {
+	public void removeOperator_Summarize(String name) {
 		String query = "DELETE sys.rev.Op_Summarize WHERE Name = '" + name + "';";
-		execute(connection, query);
+		execute(query);
 	}
 }

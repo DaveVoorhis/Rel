@@ -11,13 +11,11 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.reldb.dbrowser.ui.content.rev.DatabaseAbstractionLayer;
-import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
-public class Rename extends OperatorWithControlPanel {
+public class Rename extends Monadic {
 	
 	private static class Renaming { 
 		enum RenameType {NORMAL, PREFIX, SUFFIX};
@@ -72,13 +70,10 @@ public class Rename extends OperatorWithControlPanel {
 	
 	public Rename(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "RENAME", xpos, ypos);
-		addParameter("Operand"); 
-		load();
-		pack();
 	}
 	
-	private void load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateOperator(getModel().getConnection(), getID());
+	protected void load() {
+		Tuples tuples = getDatabase().getPreservedStateOperator(getID());
 		Tuple tuple = tuples.iterator().next();
 		if (tuple == null)
 			operatorLabel.setText("");
@@ -89,7 +84,7 @@ public class Rename extends OperatorWithControlPanel {
 	}
 	
 	private void save() {
-		DatabaseAbstractionLayer.updatePreservedStateOperator(getModel().getConnection(), getID(), operatorLabel.getText());
+		getDatabase().updatePreservedStateOperator(getID(), operatorLabel.getText());
 	}
 	
 	private void addRow(Composite parent, Renaming r) {

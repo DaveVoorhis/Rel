@@ -40,6 +40,7 @@ public class Rev extends Composite {
 	private Model model;
 	private CmdPanelOutput outputView;
 	private SashForm revPane;
+	private DatabaseAbstractionLayer database;
 	
 	public Rev(Composite parent, DbTab parentTab, CrashHandler crashHandler) {
 		super(parent, SWT.None);
@@ -50,6 +51,8 @@ public class Rev extends Composite {
 			System.out.println("Rev: Unable to establish connection.");
 			e.printStackTrace();
 		}
+
+		database = new DatabaseAbstractionLayer(connection);
 		
 		setLayout(new FillLayout());
 				
@@ -82,8 +85,12 @@ public class Rev extends Composite {
 		return outputView;
 	}
 	
+	public DatabaseAbstractionLayer getDatabase() {
+		return database;
+	}
+	
 	public long getUniqueNumber() {
-		return DatabaseAbstractionLayer.getUniqueNumber(connection);
+		return database.getUniqueNumber();
 	}
 	
 	public void refresh() {
@@ -187,7 +194,7 @@ public class Rev extends Composite {
 	
 	private Menu obtainRelvarsMenu(Menu parent, String where) {
 		Menu subMenu = new Menu(parent);
-		Tuples tuples = DatabaseAbstractionLayer.getRelvarsWithoutRevExtensions(connection, where);
+		Tuples tuples = database.getRelvarsWithoutRevExtensions(where);
 		if (tuples != null) {
 			Iterator<Tuple> it = tuples.iterator();
 			while (it.hasNext()) {
@@ -337,7 +344,7 @@ public class Rev extends Composite {
 	private void presentRelvarsWithRevExtensions(String where) {
 		int nextX = 10;
 		int nextY = 10;
-		Tuples tuples = DatabaseAbstractionLayer.getRelvars(connection, where);
+		Tuples tuples = database.getRelvars(where);
 		if (tuples == null)
 			return;
 		for (Tuple tuple: tuples) {
@@ -358,7 +365,7 @@ public class Rev extends Composite {
 	private void presentQueriesWithRevExtensions(String where) {
 		HashMap<String, LinkedList<Parameter>> unresolved = new HashMap<String, LinkedList<Parameter>>();
 		// Load in the regular query visualisers
-		for (Tuple tuple: DatabaseAbstractionLayer.getQueries(connection, where)) {
+		for (Tuple tuple: database.getQueries(where)) {
 			String name = tuple.get("Name").toString();
 			int xpos = tuple.get("xpos").toInt();
 			int ypos = tuple.get("ypos").toInt();
@@ -394,18 +401,18 @@ public class Rev extends Composite {
 	
 	// Return version number of Rev extensions.  Return -1 if not installed.
 	private int hasRevExtensions() {
-		return DatabaseAbstractionLayer.hasRevExtensions(connection);
+		return database.hasRevExtensions();
 	}
 	
 	private boolean installRevExtensions() {
-		boolean pass = DatabaseAbstractionLayer.installRevExtensions(connection);
+		boolean pass = database.installRevExtensions();
 		if (pass)
 			loadModel();
 		return pass;
 	}
 
 	private boolean removeRevExtensions() {
-		boolean pass = DatabaseAbstractionLayer.removeRevExtensions(connection);
+		boolean pass = database.removeRevExtensions();
 		if (pass)
 			loadModel();
 		return pass;

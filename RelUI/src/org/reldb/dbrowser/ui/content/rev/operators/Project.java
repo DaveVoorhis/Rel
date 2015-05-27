@@ -11,13 +11,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.reldb.dbrowser.ui.content.rev.DatabaseAbstractionLayer;
-import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
-public class Project extends OperatorWithControlPanel {
+public class Project extends Monadic {
 
 	private Button checkAllBut;
 	private Vector<Label> labelAttributes;
@@ -25,13 +23,10 @@ public class Project extends OperatorWithControlPanel {
 	
 	public Project(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "Project", xpos, ypos);
-		addParameter("Operand"); 
-		load();
-		pack();
 	}
 	
-	private void load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateOperator(getModel().getConnection(), getID());
+	protected void load() {
+		Tuples tuples = getDatabase().getPreservedStateOperator(getID());
 		Tuple tuple = tuples.iterator().next();
 		if (tuple == null)
 			operatorLabel.setText("{ALL BUT}");
@@ -42,7 +37,7 @@ public class Project extends OperatorWithControlPanel {
 	}
 	
 	private void save() {
-		DatabaseAbstractionLayer.updatePreservedStateOperator(getModel().getConnection(), getID(), operatorLabel.getText());
+		getDatabase().updatePreservedStateOperator(getID(), operatorLabel.getText());
 	}
 	
 	private void moveAttributeRow(int fromRow, int toRow) {

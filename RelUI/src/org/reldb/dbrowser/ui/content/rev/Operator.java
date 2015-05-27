@@ -45,7 +45,7 @@ public abstract class Operator extends Visualiser {
 		String query = getQueryForParameter(parameterNumber);
 		if (query == null)
 			return null;
-		Tuples tuples = DatabaseAbstractionLayer.evaluate(getModel().getConnection(), query);
+		Tuples tuples = getDatabase().evaluate(query);
 		Heading heading = tuples.getHeading();
 		Vector<String> output = new Vector<String>();
 		for (Attribute attribute: heading.toArray())
@@ -68,7 +68,7 @@ public abstract class Operator extends Visualiser {
     	for (Parameter parameter: parameters)
     		parameter.dispose();
     	parameters.clear();
-		DatabaseAbstractionLayer.removeQuery(getModel().getConnection(), getID());
+		getDatabase().removeQuery(getID());
     	super.delete();
     }
 
@@ -149,7 +149,7 @@ public abstract class Operator extends Visualiser {
 	
 	protected void visualiserMoved() {
 		Point location = getLocation();
-		DatabaseAbstractionLayer.updateQueryPosition(getModel().getConnection(), getID(), location.x, location.y, kind, getConnections(), getModel().getModelName());
+		getDatabase().updateQueryPosition(getID(), location.x, location.y, kind, getConnections(), getModel().getModelName());
 	}
-	
+
 }

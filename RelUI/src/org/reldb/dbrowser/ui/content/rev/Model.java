@@ -16,7 +16,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
-import org.reldb.rel.client.Connection;
 
 /**
  * Defines a layered pane in which visualised classes may be manipulated.
@@ -107,8 +106,8 @@ public class Model extends Composite {
 		return null;
 	}
 
-	public Connection getConnection() {
-		return rev.getConnection();
+	public DatabaseAbstractionLayer getDatabase() {
+		return rev.getDatabase();
 	}
 
 	public String getModelName() {

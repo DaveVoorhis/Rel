@@ -14,7 +14,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.reldb.dbrowser.ui.content.rev.DatabaseAbstractionLayer;
 import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.rel.client.Tuple;
@@ -88,9 +87,9 @@ public class Extend extends OperatorWithControlPanel {
 		return specification;
 	}
 	
-	private void load() {
+	protected void load() {
 		extendings = new Vector<Extending>();
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateExtend(getModel().getConnection(), getID());
+		Tuples tuples = getDatabase().getPreservedStateExtend(getID());
 		if (tuples == null)
 			return;
 		Iterator<Tuple> i = tuples.iterator();
@@ -103,7 +102,7 @@ public class Extend extends OperatorWithControlPanel {
 	}
 	
 	private void save() {
-		DatabaseAbstractionLayer.updatePreservedStateExtend(getModel().getConnection(), getID(), getSpecificationAsRelation());
+		getDatabase().updatePreservedStateExtend(getID(), getSpecificationAsRelation());
 	}
 	
 	private void addRow(Composite parent, Extending r) {
@@ -177,5 +176,10 @@ public class Extend extends OperatorWithControlPanel {
 			return null;
 		return "EXTEND " + source + ": {" + operatorLabel.getText() + "}";		
 	}
+	
+    protected void delete() {
+		getDatabase().removeOperator_Extend(getID());
+    	super.delete();
+    }
 
 }

@@ -12,13 +12,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.reldb.dbrowser.ui.content.rev.DatabaseAbstractionLayer;
-import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
-public class GroupOrWrap extends OperatorWithControlPanel {
+public class GroupOrWrap extends Monadic {
 
 	private Text as;
 	private Button checkAllBut;
@@ -27,17 +25,14 @@ public class GroupOrWrap extends OperatorWithControlPanel {
 	
 	public GroupOrWrap(Rev rev, String name, String opName, int xpos, int ypos) {
 		super(rev, name, opName, xpos, ypos);
-		addParameter("Operand"); 
-		load();
-		pack();
 	}
 	
 	private String getDefaultAttributeName() {
 		return getTitle() + "attr";
 	}
 	
-	private void load() {
-		Tuples tuples = DatabaseAbstractionLayer.getPreservedStateOperator(getModel().getConnection(), getID());
+	protected void load() {
+		Tuples tuples = getDatabase().getPreservedStateOperator(getID());
 		Tuple tuple = tuples.iterator().next();
 		if (tuple == null)
 			operatorLabel.setText("{} AS " + getDefaultAttributeName());
@@ -48,7 +43,7 @@ public class GroupOrWrap extends OperatorWithControlPanel {
 	}
 	
 	private void save() {
-		DatabaseAbstractionLayer.updatePreservedStateOperator(getModel().getConnection(), getID(), operatorLabel.getText());
+		getDatabase().updatePreservedStateOperator(getID(), operatorLabel.getText());
 	}
 	
 	private void moveAttributeRow(int fromRow, int toRow) {
@@ -67,6 +62,9 @@ public class GroupOrWrap extends OperatorWithControlPanel {
 
 		checkAllBut = new Button(parent, SWT.CHECK);
 		checkAllBut.setSelection(selected);
+		
+		Label dummy = new Label(parent, SWT.NONE);
+		dummy.setVisible(false);
 		
 		Label asPrompt = new Label(parent, SWT.NONE);
 		asPrompt.setAlignment(SWT.RIGHT);
@@ -105,6 +103,9 @@ public class GroupOrWrap extends OperatorWithControlPanel {
 		
 		Label dummy = new Label(parent, SWT.NONE);
 		dummy.setVisible(false);
+		
+		dummy = new Label(parent, SWT.NONE);
+		dummy.setVisible(false);
 	}
 	
 	private Vector<String> getDefinitionAttributes() {
@@ -136,7 +137,7 @@ public class GroupOrWrap extends OperatorWithControlPanel {
 	
 	@Override
 	protected void buildControlPanel(Composite container) {
-		container.setLayout(new GridLayout(4, false));
+		container.setLayout(new GridLayout(5, false));
 
 		labelAttributes = new Vector<Label>();
 		checkAttributes = new Vector<Button>();

@@ -256,17 +256,21 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 
     protected void delete() {
     	disconnect();
-		DatabaseAbstractionLayer.removeRelvar(model.getConnection(), getID());
+		getDatabase().removeRelvar(getID());
 		dispose();
 	}
-    
-    private void bringToFront() {
+
+	private void bringToFront() {
 		for (Argument argument: arguments)
 			argument.bringToFront();
 		moveAbove(null);
     }
     
     public abstract String getQuery();
+    
+    public DatabaseAbstractionLayer getDatabase() {
+    	return model.getDatabase();
+	}
     
 	public String getID() {
     	return id;
