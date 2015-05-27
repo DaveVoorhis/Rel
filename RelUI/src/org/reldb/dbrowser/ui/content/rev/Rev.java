@@ -171,8 +171,10 @@ public class Rev extends Composite {
 		// load
 		int version = hasRevExtensions();
 		if (version < 0) {
-			installRevExtensions();
-			refresh();
+			if (!installRevExtensions())
+				MessageDialog.openError(getShell(), "Rev", "Unable to install Rev extensions.  Check the system log.");
+			else
+				refresh();
 		} else if (version < DatabaseAbstractionLayer.EXPECTED_REV_VERSION) {
 			upgrade(version);
 		} else {
