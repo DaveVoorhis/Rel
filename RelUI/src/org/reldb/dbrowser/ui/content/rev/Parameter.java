@@ -72,5 +72,5 @@ public class Parameter {
 	public String toString() {
 		return "Parameter " + operator.toString() + "->" + argument.toString();
 	}
-
+	
 }

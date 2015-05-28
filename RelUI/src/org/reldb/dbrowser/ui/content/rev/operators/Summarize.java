@@ -8,13 +8,17 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.reldb.dbrowser.ui.content.rev.Argument;
 import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.rel.client.Tuple;
@@ -77,8 +81,8 @@ public class Summarize extends OperatorWithControlPanel {
 					"     ID " + id + ", " +
 					"     asAttribute '" + as + "', " +
 					"     aggregateOp '" + aggOpName + "', " +
-					"     expression1 '" + ((expression1 != null) ? expression1 : "") + ", " +
-					"     expression2 '" + ((expression1 != null) ? expression1 : "") + ", " +
+					"     expression1 '" + ((expression1 != null) ? expression1 : "") + "', " +
+					"     expression2 '" + ((expression2 != null) ? expression2 : "") + "'" +
 					"}";
 		}
 	}
@@ -118,13 +122,15 @@ public class Summarize extends OperatorWithControlPanel {
 			new AggOp("INTERSECT", 1)
 	};
 	
-	private Vector<String> byList;
-	private String perExpr;
+	private String byList;
 	private Vector<Aggregate> aggregations;
+	
+	private Argument perArgument;
 	
 	public Summarize(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "SUMMARIZE", xpos, ypos);
 		addParameter("Operand"); 
+		perArgument = addParameter("Per").getArgument();
 		load();
 		pack();
 	}
@@ -143,7 +149,7 @@ public class Summarize extends OperatorWithControlPanel {
 	
 	private String getSpecificationAsRelation() {
 		int id = 0;
-		String specification = "RELATION {\n";
+		String specification = "RELATION {ID INTEGER, asAttribute CHAR, aggregateOp CHAR, expression1 CHAR, expression2 CHAR} {\n";
 		for (Aggregate extending: aggregations) {
 			if (extending.getAs().trim().length() == 0)
 				continue;
@@ -160,9 +166,17 @@ public class Summarize extends OperatorWithControlPanel {
 		Tuples tuples = getDatabase().getPreservedStateSummarize(getID());
 		if (tuples == null)
 			return;
+		byList = "";
+		boolean perBySet = false;
 		Iterator<Tuple> i = tuples.iterator();
 		while (i.hasNext()) {
 			Tuple t = i.next();
+			if (!perBySet) {
+				boolean isby = t.getAttributeValue("isby").toBoolean();
+				byList = t.getAttributeValue("byList").toString();
+				perArgument.setVisible(!isby);
+				perBySet = true;
+			}
 			String as = t.getAttributeValue("asAttribute").toString();
 			String aggregateOp = t.getAttributeValue("aggregateOp").toString();
 			String expression1 = t.getAttributeValue("expression1").toString();
@@ -173,11 +187,18 @@ public class Summarize extends OperatorWithControlPanel {
 				expression2 = null;
 			aggregations.add(new Aggregate(as, aggregateOp, expression1, expression2));
 		}
+		if (!perBySet) {
+			byList = "";
+			perArgument.setVisible(false);
+		}
 		operatorLabel.setText(getSpecificationAsString());
 	}
 	
 	private void save() {
-//		getDatabase().updatePreservedStateSummarize(getID(), getSpecificationAsRelation());
+		if (perArgument.isVisible())
+			getDatabase().updatePreservedStateSummarize(getID(), getSpecificationAsRelation());
+		else
+			getDatabase().updatePreservedStateSummarize(getID(), byList, getSpecificationAsRelation());			
 	}
 	
 	private void addRow(Composite parent, Aggregate r) {
@@ -214,10 +235,43 @@ public class Summarize extends OperatorWithControlPanel {
 		});
 	}
 	
-	@Override
-	protected void buildControlPanel(Composite container) {
-		container.setLayout(new GridLayout(4, false));
+	protected void buildPer(Composite container) {
+		perArgument.setVisible(true);
+	}
+	
+	protected void buildBy(Composite container) {
+		perArgument.setOperand(null);
+		perArgument.setVisible(false);
+	}
+	
+	protected void buildPerOrByPanel(Composite container) {
+		container.setLayout(new RowLayout(SWT.VERTICAL));
+		
+		Group perOrByGroup = new Group(container, SWT.SHADOW_IN);
+		perOrByGroup.setLayout(new RowLayout(SWT.VERTICAL));
+		
+		Button btnPer = new Button(perOrByGroup, SWT.RADIO);
+		btnPer.setText("PER");
+		btnPer.setSelection(perArgument.isVisible());
+		btnPer.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				buildPer(container);
+			}
+		});
 
+		Button btnBy = new Button(perOrByGroup, SWT.RADIO);
+		btnBy.setText("BY");
+		btnBy.setSelection(!perArgument.isVisible());
+		btnBy.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				buildBy(container);
+			}
+		});		
+	}
+	
+	protected void buildAggregationPanel(Composite container) {
+		container.setLayout(new GridLayout(4, false));
+		
 		Label col0Heading = new Label(container, SWT.None);
 		col0Heading.setText("Operator");
 		
@@ -234,6 +288,21 @@ public class Summarize extends OperatorWithControlPanel {
 			addRow(container, extending);
 
 		addRowAddButton(container);
+	}
+	
+	@Override
+	protected void buildControlPanel(Composite container) {
+		container.setLayout(new GridLayout(2, false));
+
+		Composite perOrByPanel = new Composite(container, SWT.NONE);
+		perOrByPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buildPerOrByPanel(perOrByPanel);
+		
+		Composite aggregationPanel = new Composite(container, SWT.BORDER);
+		aggregationPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buildAggregationPanel(aggregationPanel);
+		
+		pack();
 	}
 
 	private void addRowAddButton(Composite container) {

@@ -80,7 +80,7 @@ public abstract class Operator extends Visualiser {
 
     public boolean isQueryable() {
     	for (Parameter parameter: parameters)
-    		if (parameter.getArgument().getOperand().getQuery() == null)
+    		if (parameter.getArgument().isVisible() && parameter.getArgument().getOperand().getQuery() == null)
     			return false;
     	return true;
     }
@@ -116,13 +116,14 @@ public abstract class Operator extends Visualiser {
     /** Override to be notified that a parameter's argument has changed, with identification as to whether it's queryable or not. */
     protected void notifyArgumentChanged(boolean queryable) {}
     
-	protected void addParameter(String name) {
+	protected Parameter addParameter(String name) {
 		Parameter p = new Parameter(this, name, parameters.size(), lastSide);
 		lastSide = (lastSide == Parameter.EASTTOWEST) ? Parameter.WESTTOEAST : Parameter.EASTTOWEST;
 		parameters.add(p);
 		new Argument(p);
+		return p;
 	}
-
+	
     /** Return number of parameters. */
     public int getParameterCount() {
         return parameters.size();

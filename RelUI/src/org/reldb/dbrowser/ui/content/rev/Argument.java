@@ -151,4 +151,20 @@ public class Argument {
 		visualiserLink.dispose();
 	}
 
+	public void setVisible(boolean b) {
+		if (operand instanceof Connector)
+			operand.setVisible(b);
+		visualiserArrow.setVisible(b);
+		parameterArrow.setVisible(b);
+		parameterExtension.setVisible(b);
+		visualiserExtension.setVisible(b);
+		verticalLink.setVisible(b);
+		visualiserLink.setVisible(b);
+		parameter.getOperator().verify();
+	}
+
+	public boolean isVisible() {
+		return visualiserArrow.getVisible();
+	}
+
 }

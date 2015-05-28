@@ -72,7 +72,7 @@ public class Extend extends OperatorWithControlPanel {
 	
 	private String getSpecificationAsRelation() {
 		int id = 0;
-		String specification = "RELATION {\n";
+		String specification = "RELATION {ID INTEGER, attribute CHAR, expression CHAR} {\n";
 		for (Extending extending: extendings) {
 			if (extending.getAs().trim().length() == 0)
 				continue;

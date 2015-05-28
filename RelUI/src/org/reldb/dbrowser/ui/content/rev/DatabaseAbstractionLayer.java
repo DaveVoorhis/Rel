@@ -151,8 +151,8 @@ public class DatabaseAbstractionLayer {
 
 				"var sys.rev.Op_Summarize real relation {" +
 				"   Name CHAR, " +
+				"   isby BOOLEAN, " +
 				"   byList CHAR, " +
-				"   perExpr CHAR, " +
 			    "	Definition RELATION {" +
 				"	  ID INTEGER, " +
 				"     asAttribute CHAR, " +
@@ -269,24 +269,18 @@ public class DatabaseAbstractionLayer {
 		return getTuples(query);
 	}
 	
-	public void updatePreservedStateSummarize(String name, String perExpr, String definition) {
+	public void updatePreservedStateSummarize(String name, String definition) {
 		String query = "DELETE sys.rev.Op_Summarize WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Summarize RELATION {" +
-		               "  TUPLE {Name '" + name + "', perExpr '" + perExpr + "', byList '', Definition '" + definition + "'}" +
+		               "  TUPLE {Name '" + name + "', isby false, byList '', Definition " + definition + "}" +
 		               "};";
 		execute(query);
 	}
 	
-	public void updatePreservedStateSummarize(String name, Vector<String> byList, String definition) {
-		String by = "";
-		for (String attribute: byList) {
-			if (by.length() > 0)
-				by += ", ";
-			by += attribute;
-		}
+	public void updatePreservedStateSummarize(String name, String byList, String definition) {
 		String query = "DELETE sys.rev.Op_Summarize WHERE Name = '" + name + "', " +
 		               "INSERT sys.rev.Op_Summarize RELATION {" +
-		               "  TUPLE {Name '" + name + "', perExpr '', byList '" + by + "', Definition '" + definition + "'}" +
+		               "  TUPLE {Name '" + name + "', isby true, byList '" + byList + "', Definition " + definition + "}" +
 		               "};";
 		execute(query);
 	}
