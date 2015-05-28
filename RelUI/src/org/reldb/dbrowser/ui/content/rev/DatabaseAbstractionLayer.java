@@ -1,7 +1,6 @@
 package org.reldb.dbrowser.ui.content.rev;
 
 import java.io.IOException;
-import java.util.Vector;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
