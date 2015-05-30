@@ -219,6 +219,15 @@ public class Summarize extends OperatorWithControlPanel {
 			getDatabase().updatePreservedStateSummarize(getID(), byList, getSpecificationAsRelation());			
 	}
 	
+	private void setRowVisibility(int index, Text expression1, Text expression2) {
+		expression1.setVisible(aggregateOperators[index].getParameterCount() > 0);
+		if (!expression1.getVisible())
+			expression1.setText("");
+		expression2.setVisible(aggregateOperators[index].getParameterCount() > 1);
+		if (!expression2.getVisible())
+			expression2.setText("");		
+	}
+	
 	private void addRow(Composite parent, Aggregate r) {
 		Combo aggOps = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
 		
@@ -245,8 +254,7 @@ public class Summarize extends OperatorWithControlPanel {
 			aggOps.add(op.getName());
 			if (op.getName().equals(r.getAggOpName())) {
 					aggOps.select(index);
-					expression1.setVisible(aggregateOperators[index].getParameterCount() > 0);
-					expression2.setVisible(aggregateOperators[index].getParameterCount() > 1);
+					setRowVisibility(index, expression1, expression2);
 			}
 			index++;
 		}
@@ -254,8 +262,7 @@ public class Summarize extends OperatorWithControlPanel {
 			public void modifyText(ModifyEvent e) {
 				int selected = aggOps.getSelectionIndex();
 				r.setAggOpName(aggOps.getText());
-				expression1.setVisible(aggregateOperators[selected].getParameterCount() > 0);
-				expression2.setVisible(aggregateOperators[selected].getParameterCount() > 1);
+				setRowVisibility(selected, expression1, expression2);
 			}
 		});
 		
