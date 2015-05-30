@@ -38,6 +38,8 @@ public abstract class Operator extends Visualiser {
     	Visualiser operand = argument.getOperand();
     	if (operand == null)
     		return null;
+    	if (operand instanceof Operator)
+    		return "(" + operand.getQuery() + ")";
     	return operand.getQuery();
     }
 	

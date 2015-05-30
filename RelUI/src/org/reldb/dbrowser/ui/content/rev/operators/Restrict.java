@@ -72,7 +72,7 @@ public class Restrict extends Monadic {
 			return null;
 		if (operatorLabel.getText().length() == 0)
 			return null;
-		return "(" + source + ") WHERE " + operatorLabel.getText();		
+		return source + " WHERE " + operatorLabel.getText();		
 	}
 
 }

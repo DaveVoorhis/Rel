@@ -51,7 +51,7 @@ public class Project extends Monadic {
 			return null;
 		if (operatorLabel.getText().length() == 0)
 			return null;
-		return "(" + source + ") " + operatorLabel.getText();		
+		return source + " " + operatorLabel.getText();		
 	}
 
 }

@@ -205,7 +205,7 @@ public class Rename extends Monadic {
 		String source = getQueryForParameter(0);
 		if (source == null)
 			return null;
-		return "(" + source + ") RENAME {" + operatorLabel.getText() + "}";		
+		return source + " RENAME {" + operatorLabel.getText() + "}";		
 	}
 
 }

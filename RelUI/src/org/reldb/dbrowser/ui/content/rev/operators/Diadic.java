@@ -16,7 +16,7 @@ public class Diadic extends Operator {
 		String query1 = getQueryForParameter(1);
 		if (query0 == null || query1 == null)
 			return null;
-		return "(" + query0 + ") " + getKind() + " (" + query1 + ")";
+		return query0 + " " + getKind() + " " + query1;
 	}
 	
 }

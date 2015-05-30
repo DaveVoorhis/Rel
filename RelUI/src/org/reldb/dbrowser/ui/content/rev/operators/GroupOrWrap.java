@@ -198,7 +198,7 @@ public class GroupOrWrap extends Monadic {
 			return null;
 		if (operatorLabel.getText().length() == 0)
 			return null;
-		return "(" + source + ") " + getTitle() + " " + operatorLabel.getText();		
+		return source + " " + getTitle() + " " + operatorLabel.getText();		
 	}
 
 }

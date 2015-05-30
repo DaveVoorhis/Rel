@@ -404,7 +404,7 @@ public class Summarize extends OperatorWithControlPanel {
 			return null;
 		String per = "";
 		if (perArgument.isVisible())
-			per = "PER (" + getQueryForParameter(1) + ") ";
+			per = "PER " + getQueryForParameter(1) + " ";
 		return "SUMMARIZE " + source + " " + per + operatorLabel.getText();		
 	}
 	
