@@ -1,5 +1,6 @@
 package org.reldb.dbrowser.ui.content.rev.operators;
 
+import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 
@@ -10,6 +11,8 @@ public class Order extends OperatorWithControlPanel {
 		addParameter("Operand"); 
 	}
 
+	public void buildControlPanel(Composite container) {}
+	
 	@Override
 	public String getQuery() {
 		// TODO Auto-generated method stub

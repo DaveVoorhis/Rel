@@ -8,7 +8,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -19,6 +18,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.reldb.dbrowser.ui.content.rev.Argument;
+import org.reldb.dbrowser.ui.content.rev.AttributeListPanel;
 import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.rel.client.Tuple;
@@ -48,7 +48,15 @@ public class Summarize extends OperatorWithControlPanel {
 		}
 		
 		public String toString() {
-			return as + " := " + aggOpName + "(" + expression1 + ((expression2 != null) ? ", " + expression2 : "") + ")";
+			String aggOpParms = "";
+			if (expression1 != null && expression1.trim().length() > 0)
+				aggOpParms += expression1;
+			if (expression2 != null && expression2.trim().length() > 0) {
+				if (aggOpParms.length() > 0)
+					aggOpParms += ", ";
+				aggOpParms += expression2;
+			}
+			return as + " := " + aggOpName + "(" + aggOpParms + ")";
 		}
 		
 		public String getAggOpName() {
@@ -60,6 +68,8 @@ public class Summarize extends OperatorWithControlPanel {
 		}
 		
 		public String getExpression1() {
+			if (expression1 == null)
+				return "";
 			return expression1;
 		}
 		
@@ -68,6 +78,8 @@ public class Summarize extends OperatorWithControlPanel {
 		}
 		
 		public String getExpression2() {
+			if (expression2 == null)
+				return "";
 			return expression2;
 		}
 		
@@ -127,6 +139,8 @@ public class Summarize extends OperatorWithControlPanel {
 	
 	private Argument perArgument;
 	
+	private Composite controlPanel;
+	
 	public Summarize(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "SUMMARIZE", xpos, ypos);
 		addParameter("Operand"); 
@@ -137,13 +151,17 @@ public class Summarize extends OperatorWithControlPanel {
 
 	private String getSpecificationAsString() {
 		String specification = "";
+		if (!perArgument.isVisible())
+			specification += "BY " + byList + " ";
+		String aggExprs = "";
 		for (Aggregate extending: aggregations) {
 			if (extending.getAs().trim().length() == 0)
 				continue;
-			if (specification.length() > 0)
-				specification += ", ";
-			specification += extending.toString();
+			if (aggExprs.length() > 0)
+				aggExprs += ", ";
+			aggExprs += extending.toString();
 		}
+		specification += ": {" + aggExprs + "}";
 		return specification;
 	}
 	
@@ -204,8 +222,18 @@ public class Summarize extends OperatorWithControlPanel {
 	private void addRow(Composite parent, Aggregate r) {
 		
 		Combo aggOps = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-		for (AggOp op: aggregateOperators)
+		int index = 0;
+		for (AggOp op: aggregateOperators) {
 			aggOps.add(op.getName());
+			if (op.getName().equals(r.getAggOpName()))
+					aggOps.select(index);
+			index++;
+		}
+		aggOps.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				r.setAggOpName(aggOps.getText());
+			}
+		});
 		
 		Text expression1 = new Text(parent, SWT.NONE);
 		expression1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -218,7 +246,7 @@ public class Summarize extends OperatorWithControlPanel {
 		
 		Text expression2 = new Text(parent, SWT.NONE);
 		expression2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		expression2.setText(r.getExpression1());
+		expression2.setText(r.getExpression2());
 		expression2.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				r.setExpression2(expression2.getText());
@@ -235,13 +263,23 @@ public class Summarize extends OperatorWithControlPanel {
 		});
 	}
 	
+	private AttributeListPanel attributeListPanel = null;
+	
 	protected void buildPer(Composite container) {
 		perArgument.setVisible(true);
+		if (attributeListPanel != null) {
+			attributeListPanel.dispose();
+			attributeListPanel = null;
+		}
 	}
 	
 	protected void buildBy(Composite container) {
 		perArgument.setOperand(null);
 		perArgument.setVisible(false);
+		if (attributeListPanel == null)
+			attributeListPanel = new AttributeListPanel(container, SWT.None);
+		attributeListPanel.setText(byList);
+		attributeListPanel.setAvailableAttributes(getAttributeNamesOfParameter(0));
 	}
 	
 	protected void buildPerOrByPanel(Composite container) {
@@ -256,6 +294,7 @@ public class Summarize extends OperatorWithControlPanel {
 		btnPer.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
 				buildPer(container);
+				controlPanel.getShell().pack();
 			}
 		});
 
@@ -265,8 +304,14 @@ public class Summarize extends OperatorWithControlPanel {
 		btnBy.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
 				buildBy(container);
+				controlPanel.getShell().pack();
 			}
-		});		
+		});
+		
+		if (perArgument.isVisible())
+			buildPer(container);
+		else
+			buildBy(container);
 	}
 	
 	protected void buildAggregationPanel(Composite container) {
@@ -294,6 +339,8 @@ public class Summarize extends OperatorWithControlPanel {
 	protected void buildControlPanel(Composite container) {
 		container.setLayout(new GridLayout(2, false));
 
+		controlPanel = container;
+		
 		Composite perOrByPanel = new Composite(container, SWT.NONE);
 		perOrByPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buildPerOrByPanel(perOrByPanel);
@@ -322,8 +369,18 @@ public class Summarize extends OperatorWithControlPanel {
 
 	@Override
 	protected void controlPanelOkPressed() {
+		if (attributeListPanel != null)
+			byList = attributeListPanel.getText();
 		operatorLabel.setText(getSpecificationAsString());
+		attributeListPanel = null;
 		save();
+		pack();
+	}
+	
+	@Override
+	protected void controlPanelCancelPressed() {
+		attributeListPanel = null;
+		load();
 		pack();
 	}
 	
@@ -332,7 +389,10 @@ public class Summarize extends OperatorWithControlPanel {
 		String source = getQueryForParameter(0);
 		if (source == null)
 			return null;
-		return "SUMMARIZE " + source + " " + operatorLabel.getText();		
+		String per = "";
+		if (perArgument.isVisible())
+			per = "PER (" + getQueryForParameter(1) + ") ";
+		return "SUMMARIZE " + source + " " + per + operatorLabel.getText();		
 	}
 	
     protected void delete() {

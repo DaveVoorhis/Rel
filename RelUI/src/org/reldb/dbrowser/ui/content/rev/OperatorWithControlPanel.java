@@ -13,7 +13,7 @@ import org.reldb.dbrowser.ui.content.rev.Operator;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.dbrowser.ui.content.rev.Visualiser;
 
-public class OperatorWithControlPanel extends Operator {
+public abstract class OperatorWithControlPanel extends Operator {
 
 	protected Label operatorLabel;
 	
@@ -37,8 +37,7 @@ public class OperatorWithControlPanel extends Operator {
 		return controlPanel;
 	}
 	
-	protected void buildControlPanel(Composite container) {
-	}
+	protected abstract void buildControlPanel(Composite container);
 	
 	protected void controlPanelOkPressed() {}
 	
