@@ -220,20 +220,7 @@ public class Summarize extends OperatorWithControlPanel {
 	}
 	
 	private void addRow(Composite parent, Aggregate r) {
-		
 		Combo aggOps = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-		int index = 0;
-		for (AggOp op: aggregateOperators) {
-			aggOps.add(op.getName());
-			if (op.getName().equals(r.getAggOpName()))
-					aggOps.select(index);
-			index++;
-		}
-		aggOps.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				r.setAggOpName(aggOps.getText());
-			}
-		});
 		
 		Text expression1 = new Text(parent, SWT.NONE);
 		expression1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -250,6 +237,25 @@ public class Summarize extends OperatorWithControlPanel {
 		expression2.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				r.setExpression2(expression2.getText());
+			}
+		});
+		
+		int index = 0;
+		for (AggOp op: aggregateOperators) {
+			aggOps.add(op.getName());
+			if (op.getName().equals(r.getAggOpName())) {
+					aggOps.select(index);
+					expression1.setVisible(aggregateOperators[index].getParameterCount() > 0);
+					expression2.setVisible(aggregateOperators[index].getParameterCount() > 1);
+			}
+			index++;
+		}
+		aggOps.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				int selected = aggOps.getSelectionIndex();
+				r.setAggOpName(aggOps.getText());
+				expression1.setVisible(aggregateOperators[selected].getParameterCount() > 0);
+				expression2.setVisible(aggregateOperators[selected].getParameterCount() > 1);
 			}
 		});
 		
