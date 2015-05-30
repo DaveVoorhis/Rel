@@ -423,7 +423,7 @@ public class CmdPanelOutput extends Composite {
 	}
 
 	public void notifyStop() {
-		connection.reset();		
+		connection.reset();
 	}
 
 	public void clearReplyBuffer() {

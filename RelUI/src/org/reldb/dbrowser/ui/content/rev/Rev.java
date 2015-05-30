@@ -13,10 +13,16 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbTab;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
 import org.reldb.dbrowser.ui.content.rev.operators.Diadic;
 import org.reldb.dbrowser.ui.content.rev.operators.Extend;
@@ -29,6 +35,11 @@ import org.reldb.dbrowser.ui.content.rev.operators.Summarize;
 import org.reldb.dbrowser.ui.content.rev.operators.TableDee;
 import org.reldb.dbrowser.ui.content.rev.operators.TableDum;
 import org.reldb.dbrowser.ui.content.rev.operators.UngroupOrUnwrap;
+import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
+import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
+import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
+import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
+import org.reldb.dbrowser.ui.preferences.Preferences;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
@@ -40,6 +51,12 @@ public class Rev extends Composite {
 	private CmdPanelOutput outputView;
 	private SashForm revPane;
 	private DatabaseAbstractionLayer database;
+    
+    private PreferenceChangeListener preferenceChangeListener;
+	
+	private ToolItem loadBtn = null;
+	private ToolItem saveBtn = null;
+	private ToolItem stopBtn = null;
 	
 	public Rev(Composite parent, DbTab parentTab, CrashHandler crashHandler) {
 		super(parent, SWT.None);
@@ -59,14 +76,70 @@ public class Rev extends Composite {
 		revPane.setOrientation(SWT.VERTICAL);
 		
 		try {
-			outputView = new CmdPanelOutput(revPane, parentTab, SWT.NONE);
+			outputView = new CmdPanelOutput(revPane, parentTab, SWT.NONE) {
+				@Override
+				protected void notifyInputDone() {
+					stopBtn.setEnabled(false);
+				}
+				@Override
+				public void go(String text, boolean copyInputToOutput) {
+					stopBtn.setEnabled(true);
+					super.go(text, copyInputToOutput);
+				}
+			};
 		} catch (Exception e) {
 			System.out.println("Rev: Unable to open output panel.");
 			e.printStackTrace();
 		}
 
-		ScrolledComposite scrollPanel = new ScrolledComposite(revPane, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		Composite inputView = new Composite(revPane, SWT.NONE);
+		inputView.setLayout(new FormLayout());
 		
+		ToolBar revTools = new ToolBar(inputView, SWT.NONE);
+		
+		loadBtn = new ToolItem(revTools, SWT.PUSH);
+		loadBtn.setToolTipText("Load");
+		loadBtn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				doLoad();
+			}
+		});
+		
+		saveBtn = new ToolItem(revTools, SWT.PUSH);
+		saveBtn.setToolTipText("Save as");
+		saveBtn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				doSaveAs();
+			}
+		});
+		
+		stopBtn = new ToolItem(revTools, SWT.PUSH);
+		stopBtn.setToolTipText("Cancel running query.");
+		stopBtn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				outputView.notifyStop();
+			}
+		});
+		stopBtn.setEnabled(false);
+		
+		ScrolledComposite scrollPanel = new ScrolledComposite(inputView, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+
+		FormData fd_revTools = new FormData();
+		fd_revTools.left = new FormAttachment(0);
+		fd_revTools.top = new FormAttachment(0);
+		fd_revTools.right = new FormAttachment(100);
+		revTools.setLayoutData(fd_revTools);
+
+		FormData fd_scrollPanel = new FormData();
+		fd_scrollPanel.left = new FormAttachment(0);
+		fd_scrollPanel.top = new FormAttachment(revTools);
+		fd_scrollPanel.right = new FormAttachment(100);
+		fd_scrollPanel.bottom = new FormAttachment(100);
+		scrollPanel.setLayoutData(fd_scrollPanel);
+				
 		model = new Model(this, "Rev", scrollPanel);
 		model.setSize(10000, 10000);
 		
@@ -77,7 +150,33 @@ public class Rev extends Composite {
 
 		revPane.setWeights(new int[] {1, 1});
 
+		setupIcons();
+
+		preferenceChangeListener = new PreferenceChangeAdapter("Rev") {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent evt) {
+				setupIcons();
+			}
+		};
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
+
 		loadModel();
+	}
+
+	protected void doSaveAs() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void doLoad() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void setupIcons() {
+		loadBtn.setImage(IconLoader.loadIcon("loadIcon"));
+		saveBtn.setImage(IconLoader.loadIcon("saveIcon"));
+		stopBtn.setImage(IconLoader.loadIcon("stopIcon"));
 	}
 
 	public CmdPanelOutput getCmdPanelOutput() {

@@ -134,15 +134,13 @@ public class CmdPanelToolbar {
 
 		setupIcons();
 
-		preferenceChangeListener = new PreferenceChangeAdapter(
-				"DbTabContentCmd") {
+		preferenceChangeListener = new PreferenceChangeAdapter("CmdPanelToolbar") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
 				setupIcons();
 			}
 		};
-		Preferences.addPreferenceChangeListener(
-				PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 	}
 
 	private static class ToolbarItem {

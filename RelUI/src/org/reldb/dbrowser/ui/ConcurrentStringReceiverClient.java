@@ -174,6 +174,8 @@ public abstract class ConcurrentStringReceiverClient {
 	public void reset() {
 		try {
 			connection.reset();
+			if (rcache == null)
+				return;
 			rcache.add(new QueueEntry("Cancel."));
 			rcache.add(new QueueEntry());
 			rcache.clear();
