@@ -6,7 +6,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -116,7 +115,7 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 		btnInfo.setText("?");
 		btnInfo.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
-	        	MessageDialog.openInformation(getShell(), getTitle() + " Query", getQuery());
+	        	(new ViewQueryDialog(getShell(), getQuery())).open();
 			}
 		});
 		

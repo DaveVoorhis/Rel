@@ -164,8 +164,9 @@ public class Rev extends Composite {
 	}
 
 	protected void doSaveAs() {
-		// TODO Auto-generated method stub
-		
+		if ((new SaveAsDialog(getShell())).open() == SWT.OK) {
+			
+		}
 	}
 
 	protected void doLoad() {
