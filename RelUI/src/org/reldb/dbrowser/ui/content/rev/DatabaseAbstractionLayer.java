@@ -296,13 +296,26 @@ public class DatabaseAbstractionLayer {
 		return evaluate(query).toBoolean();
 	}
 
-	public void modelWrite(String oldName, String newName) {
+	public void modelRename(String oldName, String newName) {
 		if (oldName.equals(newName))
 			return;
 		String query = "DELETE sys.rev.Query WHERE model = '" + newName + "', " +
 				       "DELETE sys.rev.Relvar WHERE model = '" + newName + "', " +
 				       "UPDATE sys.rev.Query WHERE model = '" + oldName + "': {model := '" + newName + "'}, " +
 				       "UPDATE sys.rev.Relvar WHERE model = '" + oldName + "': {model := '" + newName + "'};";
+		execute(query);
+	}
+	
+	public void modelCopyTo(String oldName, String newName) {
+		if (oldName.equals(newName))
+			return;
+		String query = "DELETE sys.rev.Query WHERE model = '" + newName + "', " +
+			           "DELETE sys.rev.Relvar WHERE model = '" + newName + "', " +
+			           "INSERT sys.rev.Operator UPDATE sys.rev.Operator JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
+			           "INSERT sys.rev.Op_Extend UPDATE sys.rev.Op_Extend JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
+			           "INSERT sys.rev.Op_Summarize UPDATE sys.rev.Op_Summarize JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
+			           "INSERT sys.rev.Query UPDATE sys.rev.Query WHERE model = '" + oldName + "': {model := '" + newName + "', Name := Name || 'copy', connections := UPDATE connections: {Name := Name || 'copy'}}, " +	        
+			           "INSERT sys.rev.Relvar UPDATE sys.rev.Relvar WHERE model = '" + oldName + "': {model := '" + newName + "', Name := Name || 'copy'};";
 		execute(query);
 	}
 	

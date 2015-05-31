@@ -18,6 +18,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
@@ -59,7 +60,9 @@ public class Rev extends Composite {
 	private ToolItem saveBtn = null;
 	private ToolItem stopBtn = null;
 	
-	private static final String scratchModelName = "Rev";
+	private Label modelLabel;
+	
+	private static final String scratchModelName = "scratchpad";
 	
 	public Rev(Composite parent, DbTab parentTab, CrashHandler crashHandler) {
 		super(parent, SWT.None);
@@ -128,6 +131,9 @@ public class Rev extends Composite {
 		});
 		stopBtn.setEnabled(false);
 		
+		modelLabel = new Label(inputView, SWT.NONE);
+		modelLabel.setAlignment(SWT.CENTER);
+		
 		ScrolledComposite scrollPanel = new ScrolledComposite(inputView, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 
 		FormData fd_revTools = new FormData();
@@ -136,13 +142,20 @@ public class Rev extends Composite {
 		fd_revTools.right = new FormAttachment(100);
 		revTools.setLayoutData(fd_revTools);
 
+		FormData fd_modelLabel = new FormData();
+		fd_modelLabel.left = new FormAttachment(0);
+		fd_modelLabel.top = new FormAttachment(0);
+		fd_modelLabel.right = new FormAttachment(100);
+		fd_modelLabel.bottom = new FormAttachment(scrollPanel);
+		modelLabel.setLayoutData(fd_modelLabel);
+		
 		FormData fd_scrollPanel = new FormData();
 		fd_scrollPanel.left = new FormAttachment(0);
 		fd_scrollPanel.top = new FormAttachment(revTools);
 		fd_scrollPanel.right = new FormAttachment(100);
 		fd_scrollPanel.bottom = new FormAttachment(100);
 		scrollPanel.setLayoutData(fd_scrollPanel);
-				
+
 		model = new Model(this, scratchModelName, scrollPanel);
 		model.setSize(10000, 10000);
 		
@@ -154,7 +167,7 @@ public class Rev extends Composite {
 		revPane.setWeights(new int[] {1, 1});
 
 		setupIcons();
-
+		
 		preferenceChangeListener = new PreferenceChangeAdapter("Rev") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
@@ -171,18 +184,28 @@ public class Rev extends Composite {
 		SaveQueryAsDialog saveAs = new SaveQueryAsDialog(getShell(), oldName);
 		if (saveAs.open() == Dialog.OK) {
 			String newName = saveAs.getName();
+			if (newName.trim().length() == 0)
+				return;
+			if (oldName.equals(newName)) {
+				MessageDialog.openInformation(getShell(), "No need to save", "No need to save.  Changes are automatically saved while you edit.");
+				return;
+			}
 			if (database.modelExists(newName)) {
 				if (!MessageDialog.openConfirm(getShell(), "Overwrite?", "A query named '" + newName + "' already exists.  Overwrite it?"))
 					return;
 			}
-			database.modelWrite(oldName, newName);
-			model.setModelName(newName);
+			if (saveAs.keepOriginal())
+				database.modelCopyTo(oldName, newName);
+			else
+				database.modelRename(oldName, newName);
+			model.setModelName(newName);			
+			modelLabel.setText(model.getModelName());
 		}
 	}
 
 	protected void doLoad() {
 		LoadQueryDialog load = new LoadQueryDialog(getShell(), database.getModels());
-		if (load.open() == Dialog.OK) {
+		if (load.open() == Dialog.OK && load.getSelectedItem() != null && load.getSelectedItem().trim().length() > 0) {
 			model.setModelName(load.getSelectedItem());
 			loadModel();
 		}
@@ -220,6 +243,8 @@ public class Rev extends Composite {
 
 	private void loadModel() {
 		model.clear();
+		
+		modelLabel.setText(model.getModelName());
 		
 		if (getMenu() != null)
 			getMenu().dispose();
@@ -276,7 +301,7 @@ public class Rev extends Composite {
 		clearRev.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				if (!MessageDialog.openConfirm(getShell(), "Rev", "Remove everything from this model?"))
+				if (!MessageDialog.openConfirm(getShell(), "Rev", "Remove everything from this query?"))
 					return;
 				model.removeEverything();
 			}
