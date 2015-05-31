@@ -107,17 +107,6 @@ public class Extend extends OperatorWithControlPanel {
 	
 	private void addRow(Composite parent, Extending r) {
 		
-		Text expression = new Text(parent, SWT.NONE);
-		expression.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		expression.setText(r.getExpression());
-		expression.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				r.setExpression(expression.getText());
-			}
-		});
-
-		new Label(parent, SWT.NONE);
-		
 		Text as = new Text(parent, SWT.NONE);
 		as.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		as.setText(r.getAs());		
@@ -126,20 +115,26 @@ public class Extend extends OperatorWithControlPanel {
 				r.setAs(as.getText());
 			}
 		});
+
+		new Label(parent, SWT.NONE);
+		
+		Text expression = new Text(parent, SWT.NONE);
+		expression.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		expression.setText(r.getExpression());
+		expression.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				r.setExpression(expression.getText());
+			}
+		});
 	}
 	
 	@Override
 	protected void buildControlPanel(Composite container) {
 		container.setLayout(new GridLayout(3, false));
-
-		Label col0Heading = new Label(container, SWT.None);
-		col0Heading.setText("Expression");
 		
-		Label col1Heading = new Label(container, SWT.None);
-		col1Heading.setText("AS");
-		
-		Label col2Heading = new Label(container, SWT.None);
-		col2Heading.setText("Attribute");
+		(new Label(container, SWT.None)).setText("Attribute");
+		(new Label(container, SWT.None)).setText(":=");
+		(new Label(container, SWT.None)).setText("Expression");
 		
 		for (Extending extending: extendings)
 			addRow(container, extending);

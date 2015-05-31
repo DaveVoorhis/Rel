@@ -139,6 +139,15 @@ public class DatabaseAbstractionLayer {
 				"   Name CHAR, " +
 			    "   Definition CHAR" +
 				"} key {Name};" +
+			    
+				"var sys.rev.Op_Update real relation {" +
+				"   Name CHAR, " +
+				"   Definition RELATION {" +
+				"	  ID INTEGER," +
+				"     attribute CHAR," +
+				"	  expression CHAR" +
+				"   }" +
+				"} key {Name};" +
 				
 				"var sys.rev.Op_Extend real relation {" +
 				"   Name CHAR, " +
@@ -168,6 +177,7 @@ public class DatabaseAbstractionLayer {
 	public boolean removeRevExtensions() {
 		String query = 
 				"drop var sys.rev.Operator;" +
+				"drop var sys.rev.Op_Update;" +
 				"drop var sys.rev.Op_Extend;" +
 				"drop var sys.rev.Op_Summarize;" +
 			    "drop var sys.rev.Query;" +
@@ -230,6 +240,20 @@ public class DatabaseAbstractionLayer {
 		execute(query);
 	}
 	
+	// Update
+	public Tuples getPreservedStateUpdate(String name) {
+		String query = "(sys.rev.Op_Update WHERE Name = '" + name + "') UNGROUP Definition ORDER(ASC ID)";
+		return getTuples(query);
+	}
+	
+	public void updatePreservedStateUpdate(String name, String definition) {
+		String query = "DELETE sys.rev.Op_Update WHERE Name = '" + name + "', " +
+		               "INSERT sys.rev.Op_Update RELATION {" +
+		               "  TUPLE {Name '" + name + "', Definition " + definition + "}" +
+		               "};";
+		execute(query);
+	}
+	
 	// Extend
 	public Tuples getPreservedStateExtend(String name) {
 		String query = "(sys.rev.Op_Extend WHERE Name = '" + name + "') UNGROUP Definition ORDER(ASC ID)";
@@ -281,6 +305,11 @@ public class DatabaseAbstractionLayer {
 		execute(query);
 	}
 	
+	public void removeOperator_Update(String name) {
+		String query = "DELETE sys.rev.Op_Update WHERE Name = '" + name + "';";
+		execute(query);
+	}
+	
 	public void removeOperator_Extend(String name) {
 		String query = "DELETE sys.rev.Op_Extend WHERE Name = '" + name + "';";
 		execute(query);
@@ -312,6 +341,7 @@ public class DatabaseAbstractionLayer {
 		String query = "DELETE sys.rev.Query WHERE model = '" + newName + "', " +
 			           "DELETE sys.rev.Relvar WHERE model = '" + newName + "', " +
 			           "INSERT sys.rev.Operator UPDATE sys.rev.Operator JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
+			           "INSERT sys.rev.Op_Update UPDATE sys.rev.Op_Extend JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
 			           "INSERT sys.rev.Op_Extend UPDATE sys.rev.Op_Extend JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
 			           "INSERT sys.rev.Op_Summarize UPDATE sys.rev.Op_Summarize JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
 			           "INSERT sys.rev.Query UPDATE sys.rev.Query WHERE model = '" + oldName + "': {model := '" + newName + "', Name := Name || 'copy', connections := UPDATE connections: {Name := Name || 'copy'}}, " +	        

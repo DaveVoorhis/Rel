@@ -152,7 +152,7 @@ public class Summarize extends OperatorWithControlPanel {
 	private String getSpecificationAsString() {
 		String specification = "";
 		if (!perArgument.isVisible())
-			specification += "BY " + byList + " ";
+			specification += "BY " + byList;
 		String aggExprs = "";
 		for (Aggregate extending: aggregations) {
 			if (extending.getAs().trim().length() == 0)
@@ -229,6 +229,17 @@ public class Summarize extends OperatorWithControlPanel {
 	}
 	
 	private void addRow(Composite parent, Aggregate r) {
+		Text as = new Text(parent, SWT.NONE);
+		as.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		as.setText(r.getAs());		
+		as.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				r.setAs(as.getText());
+			}
+		});
+
+		new Label(parent, SWT.None);
+		
 		Combo aggOps = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
 		
 		Text expression1 = new Text(parent, SWT.NONE);
@@ -263,15 +274,6 @@ public class Summarize extends OperatorWithControlPanel {
 				int selected = aggOps.getSelectionIndex();
 				r.setAggOpName(aggOps.getText());
 				setRowVisibility(selected, expression1, expression2);
-			}
-		});
-		
-		Text as = new Text(parent, SWT.NONE);
-		as.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		as.setText(r.getAs());		
-		as.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				r.setAs(as.getText());
 			}
 		});
 	}
@@ -328,19 +330,13 @@ public class Summarize extends OperatorWithControlPanel {
 	}
 	
 	protected void buildAggregationPanel(Composite container) {
-		container.setLayout(new GridLayout(4, false));
+		container.setLayout(new GridLayout(5, false));
 		
-		Label col0Heading = new Label(container, SWT.None);
-		col0Heading.setText("Operator");
-		
-		Label col1Heading = new Label(container, SWT.None);
-		col1Heading.setText("Expression 1");
-		
-		Label col2Heading = new Label(container, SWT.None);
-		col2Heading.setText("Expression 2");
-		
-		Label col3Heading = new Label(container, SWT.None);
-		col3Heading.setText("As");
+		(new Label(container, SWT.None)).setText("Attribute");		
+		(new Label(container, SWT.None)).setText(":=");
+		(new Label(container, SWT.None)).setText("Operator (");
+		(new Label(container, SWT.None)).setText("Expression1 ,");
+		(new Label(container, SWT.None)).setText("Expression2 )");
 		
 		for (Aggregate extending: aggregations)
 			addRow(container, extending);
@@ -404,7 +400,7 @@ public class Summarize extends OperatorWithControlPanel {
 			return null;
 		String per = "";
 		if (perArgument.isVisible())
-			per = "PER " + getQueryForParameter(1) + " ";
+			per = "PER " + getQueryForParameter(1);
 		return "SUMMARIZE " + source + " " + per + operatorLabel.getText();		
 	}
 	

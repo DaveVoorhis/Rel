@@ -37,6 +37,7 @@ import org.reldb.dbrowser.ui.content.rev.operators.Summarize;
 import org.reldb.dbrowser.ui.content.rev.operators.TableDee;
 import org.reldb.dbrowser.ui.content.rev.operators.TableDum;
 import org.reldb.dbrowser.ui.content.rev.operators.UngroupOrUnwrap;
+import org.reldb.dbrowser.ui.content.rev.operators.Update;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
@@ -455,6 +456,10 @@ public class Rev extends Composite {
 			new OpSelector("UNWRAP", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new UngroupOrUnwrap(rev, name, "UNWRAP", "TUPLE", xpos, ypos);
+				}}),
+			new OpSelector("UPDATE", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Update(rev, name, xpos, ypos);
 				}}),
 			new OpSelector("EXTEND", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
