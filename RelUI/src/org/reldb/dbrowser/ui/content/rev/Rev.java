@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -57,6 +58,8 @@ public class Rev extends Composite {
 	private ToolItem loadBtn = null;
 	private ToolItem saveBtn = null;
 	private ToolItem stopBtn = null;
+	
+	private static final String scratchModelName = "Rev";
 	
 	public Rev(Composite parent, DbTab parentTab, CrashHandler crashHandler) {
 		super(parent, SWT.None);
@@ -140,7 +143,7 @@ public class Rev extends Composite {
 		fd_scrollPanel.bottom = new FormAttachment(100);
 		scrollPanel.setLayoutData(fd_scrollPanel);
 				
-		model = new Model(this, "Rev", scrollPanel);
+		model = new Model(this, scratchModelName, scrollPanel);
 		model.setSize(10000, 10000);
 		
 		scrollPanel.setContent(model);
@@ -164,8 +167,16 @@ public class Rev extends Composite {
 	}
 
 	protected void doSaveAs() {
-		if ((new SaveAsDialog(getShell())).open() == SWT.OK) {
-			
+		String oldName = model.getModelName();
+		SaveAsDialog saveAs = new SaveAsDialog(getShell(), oldName);
+		if (saveAs.open() == Dialog.OK) {
+			String newName = saveAs.getName();
+			if (database.modelExists(newName)) {
+				if (!MessageDialog.openConfirm(getShell(), "Overwrite?", "A query named '" + newName + "' already exists.  Overwrite it?"))
+					return;
+			}
+			database.modelWrite(oldName, newName);
+			model.setModelName(newName);
 		}
 	}
 
@@ -216,12 +227,12 @@ public class Rev extends Composite {
 		// Custom relvars
 		MenuItem customRelvarsItem = new MenuItem(menuBar, SWT.CASCADE);
 		customRelvarsItem.setText("Variables");
-		customRelvarsItem.setMenu(obtainRelvarsMenu(menuBar, "Owner = 'User'"));
+		customRelvarsItem.setMenu(obtainRelvarsMenu(menuBar, false));
 		
 		// System relvars
 		MenuItem systemRelvarsItem = new MenuItem(menuBar, SWT.CASCADE);
 		systemRelvarsItem.setText("System variables");
-		systemRelvarsItem.setMenu(obtainRelvarsMenu(menuBar, "Owner = 'Rel'"));
+		systemRelvarsItem.setMenu(obtainRelvarsMenu(menuBar, true));
 		
 		// Operators
 		OpSelector[] queryOperators = getOperators();
@@ -278,8 +289,8 @@ public class Rev extends Composite {
 		} else if (version < DatabaseAbstractionLayer.EXPECTED_REV_VERSION) {
 			upgrade(version);
 		} else {
-			presentRelvarsWithRevExtensions("");
-			presentQueriesWithRevExtensions("");
+			presentRelvars();
+			presentQueries();
 			
 			// Uninstall
 			MenuItem uninstallRev = new MenuItem(menuBar, SWT.PUSH);
@@ -293,16 +304,20 @@ public class Rev extends Composite {
 		}
 	}
 	
-	private Menu obtainRelvarsMenu(Menu parent, String where) {
+	private Menu obtainRelvarsMenu(Menu parent, boolean systemOnly) {
 		Menu subMenu = new Menu(parent);
-		Tuples tuples = database.getRelvarsWithoutRevExtensions(where);
+		Tuples tuples = database.getRelvars();
 		if (tuples != null) {
 			Iterator<Tuple> it = tuples.iterator();
 			while (it.hasNext()) {
 				Tuple tuple = it.next();
 				if (tuple != null) {
-					MenuItem item = new MenuItem(subMenu, SWT.PUSH);
+					String owner = tuple.get("Owner").toString();
 					String name = tuple.get("Name").toString();
+					boolean isSystemVar = owner.equals("Rel") || name.startsWith("sys.rev");
+					if (systemOnly != isSystemVar)
+						continue;
+					MenuItem item = new MenuItem(subMenu, SWT.PUSH);
 					item.setText(name);
 					SelectionListener listener = new SelectionAdapter() {
 						@Override
@@ -442,10 +457,10 @@ public class Rev extends Composite {
 		return null;
 	}
 	
-	private void presentRelvarsWithRevExtensions(String where) {
+	private void presentRelvars() {
 		int nextX = 10;
 		int nextY = 10;
-		Tuples tuples = database.getRelvars(where);
+		Tuples tuples = database.getRelvars(model.getModelName());
 		if (tuples == null)
 			return;
 		for (Tuple tuple: tuples) {
@@ -463,10 +478,10 @@ public class Rev extends Composite {
 		}
 	}
 	
-	private void presentQueriesWithRevExtensions(String where) {
+	private void presentQueries() {
 		HashMap<String, LinkedList<Parameter>> unresolved = new HashMap<String, LinkedList<Parameter>>();
 		// Load in the regular query visualisers
-		for (Tuple tuple: database.getQueries(where)) {
+		for (Tuple tuple: database.getQueries(model.getModelName())) {
 			String name = tuple.get("Name").toString();
 			int xpos = tuple.get("xpos").toInt();
 			int ypos = tuple.get("ypos").toInt();

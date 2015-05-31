@@ -114,6 +114,10 @@ public class Model extends Composite {
 		return modelName;
 	}
 
+	public void setModelName(String name) {
+		modelName = name;
+	}
+	
 	public Rev getRev() {
 		return rev;
 	}

@@ -67,14 +67,14 @@ public class DatabaseAbstractionLayer {
 		connection.evaluate(query, htmlReceiver);
 	}
 
-	public synchronized Tuples evaluate(String query) {
+	public synchronized Value evaluate(String query) {
 		try {
 			Value result = connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
 			if (result instanceof Error) {
 				MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", result.toString());
 				return new NullTuples();
 			}
-			return (Tuples)result;
+			return result;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return new NullTuples();
@@ -174,38 +174,19 @@ public class DatabaseAbstractionLayer {
 				"drop var sys.rev.Version;";
 		return execute(query);
 	}
-
-	public Tuples getRelvarsWithoutRevExtensions() {
-		return getRelvarsWithoutRevExtensions("");
-	}
 	
-	public Tuples getRelvarsWithoutRevExtensions(String where) {
-		String query = "sys.Catalog {Name, Owner} WHERE " + where;
+	public Tuples getRelvars() {
+		String query = "sys.Catalog {Name, Owner}";
 		return getTuples(query);
 	}
 	
-	public Tuples getRelvarsWithRevExtensions() {
-		String query = 
-				"union {" + 
-				"   sys.rev.Relvar," +
-				"   extend sys.Catalog not matching sys.rev.Relvar : {xpos := -1, ypos := -1} {Name, xpos, ypos}" +
-				"} matching sys.Catalog";
-		return getTuples(query);
-	}
-	
-	public Tuples getRelvars(String where) {
-		String query = "sys.rev.Relvar";
-		if (where.length() > 0) {
-			query += " WHERE " + where;
-		}
+	public Tuples getRelvars(String model) {
+		String query = "sys.rev.Relvar WHERE model = '" + model + "'";
 		return getTuples(query);
 	}
 
-	public Tuples getQueries(String where) {
-		String query = "sys.rev.Query";
-		if (where.length() > 0) {
-			query += " WHERE " + where;
-		}
+	public Tuples getQueries(String model) {
+		String query = "sys.rev.Query WHERE model = '" + model + "'";
 		return getTuples(query);
 	}
 	
@@ -226,8 +207,8 @@ public class DatabaseAbstractionLayer {
 						"xpos " + x + ", " +
 						"ypos " + y + ", " +
 						"kind '" + kind + "', " + 
-						"connections " + connections + 
-						", model '" + model + "'" +
+						"connections " + connections + ", " + 
+						"model '" + model + "'" +
 					"}};";
 		execute(query);
 	}
@@ -306,6 +287,21 @@ public class DatabaseAbstractionLayer {
 	
 	public void removeOperator_Summarize(String name) {
 		String query = "DELETE sys.rev.Op_Summarize WHERE Name = '" + name + "';";
+		execute(query);
+	}
+
+	public boolean modelExists(String name) {
+		String query = "COUNT(((sys.rev.Query {model}) UNION (sys.rev.Relvar {model})) WHERE model = '" + name + "') > 0";
+		return evaluate(query).toBoolean();
+	}
+
+	public void modelWrite(String oldName, String newName) {
+		if (oldName.equals(newName))
+			return;
+		String query = "DELETE sys.rev.Query WHERE model = '" + newName + "', " +
+				       "DELETE sys.rev.Relvar WHERE model = '" + newName + "', " +
+				       "UPDATE sys.rev.Query WHERE model = '" + oldName + "': {model := '" + newName + "'}, " +
+				       "UPDATE sys.rev.Relvar WHERE model = '" + oldName + "': {model := '" + newName + "'};";
 		execute(query);
 	}
 }

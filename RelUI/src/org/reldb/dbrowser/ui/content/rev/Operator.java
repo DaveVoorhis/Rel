@@ -47,7 +47,7 @@ public abstract class Operator extends Visualiser {
 		String query = getQueryForParameter(parameterNumber);
 		if (query == null)
 			return null;
-		Tuples tuples = getDatabase().evaluate(query);
+		Tuples tuples = (Tuples)getDatabase().evaluate(query);
 		return tuples.getHeading();
 	}
 	

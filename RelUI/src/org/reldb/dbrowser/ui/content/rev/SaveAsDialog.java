@@ -13,16 +13,19 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Text;
 
 public class SaveAsDialog extends Dialog {
+	private String name;
+	
 	private Text text;
 
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public SaveAsDialog(Shell parentShell) {
+	public SaveAsDialog(Shell parentShell, String name) {
 		super(parentShell);
 		setShellStyle(SWT.RESIZE | SWT.TITLE | SWT.APPLICATION_MODAL);
 		setBlockOnOpen(true);
+		this.name = name;
 	}
 	
 	protected void configureShell(Shell shell) {
@@ -52,6 +55,7 @@ public class SaveAsDialog extends Dialog {
 		fd_text.left = new FormAttachment(lblNewLabel, 6);
 		fd_text.right = new FormAttachment(100, -10);
 		text.setLayoutData(fd_text);
+		text.setText(name);
 		
 		return container;
 	}
@@ -64,5 +68,15 @@ public class SaveAsDialog extends Dialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+	}
+	
+	@Override
+	protected void okPressed() {
+		name = text.getText();
+		super.okPressed();
+	}
+
+	public String getName() {
+		return name;
 	}
 }
