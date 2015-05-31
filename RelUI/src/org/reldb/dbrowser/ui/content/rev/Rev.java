@@ -67,15 +67,8 @@ public class Rev extends Composite {
 	
 	public Rev(Composite parent, DbTab parentTab, CrashHandler crashHandler) {
 		super(parent, SWT.None);
-		
-		try {
-			connection = new Connection(parentTab.getURL(), false, crashHandler, null);
-		} catch (Exception e) {
-			System.out.println("Rev: Unable to establish connection.");
-			e.printStackTrace();
-		}
 
-		database = new DatabaseAbstractionLayer(connection);
+		database = new DatabaseAbstractionLayer(parentTab.getConnection());
 		
 		setLayout(new FillLayout());
 				

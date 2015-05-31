@@ -1,112 +1,41 @@
 package org.reldb.dbrowser.ui.content.rev;
 
-import java.io.IOException;
 import java.util.Vector;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
-import org.reldb.rel.client.Connection;
-import org.reldb.rel.client.Error;
-import org.reldb.rel.client.NullTuples;
+import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
-import org.reldb.rel.client.Connection.HTMLReceiver;
 
 public class DatabaseAbstractionLayer {
 
 	public static final int EXPECTED_REV_VERSION = 0;
 	public static final int QUERY_WAIT_MILLISECONDS = 5000;
 	
-	private Connection connection;
+	private DbConnection connection;
 	
-	public DatabaseAbstractionLayer(Connection connection) {
+	public DatabaseAbstractionLayer(DbConnection connection) {
 		this.connection = connection;
 	}
+
+	public Value evaluate(String query) {
+		return connection.evaluate(query);
+	}
+
+	public int hasRevExtensions() {
+		return connection.hasRevExtensions();
+	}
+
+	public long getUniqueNumber() {
+		return connection.evaluate("GET_UNIQUE_NUMBER()").toLong();
+	}
 	
-	private synchronized boolean execute(String query) {
-		Value response;
-		try {
-			response = connection.execute(query).awaitResult(QUERY_WAIT_MILLISECONDS);
-		} catch (IOException e1) {
-			System.out.println("DatabaseAbstraction: execute() error: " + e1);
-			e1.printStackTrace();
-			return false;
-		}
-		if (response instanceof Error && response.toString().length() > 0) {
-			System.out.println("DatabaseAbstraction: execute() query returns error in " + query + ": " + response.toString());
-			return false;
-		}
-		if (response == null) {
-			System.out.println("DatabaseAbstraction: execute() unable to obtain query results.");
-			return false;
-		}
-		return true;
+	private boolean execute(String query) {
+		return connection.execute(query);
 	}
-
-	private synchronized Tuples getTuples(String query) {
-		Value response;
-		try {
-			response = connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
-		} catch (IOException e) {
-			System.out.println("DatabaseAbstraction: getTuples() error: " + e);
-			e.printStackTrace();
-			return null;
-		}
-		if (response instanceof Error && response.toString().length() > 0) {
-			System.out.println("DatabaseAbstraction: getTuples() query returns error in " + query + ": " + response.toString());
-			return null;
-		}
-		if (response == null) {
-			System.out.println("DatabaseAbstraction: getTuples() unable to obtain query results.");
-			return null;
-		}
-		return (Tuples)response;
-	}
-
-	public synchronized void evaluate(String query, HTMLReceiver htmlReceiver) {
-		connection.evaluate(query, htmlReceiver);
-	}
-
-	public synchronized Value evaluate(String query) {
-		try {
-			Value result = connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
-			if (result instanceof Error) {
-				MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", result.toString());
-				return new NullTuples();
-			}
-			return result;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return new NullTuples();
-		}
-	}
-
-	public synchronized int hasRevExtensions() {
-		String query = "sys.rev.Version";
-		try {
-			Value response = (Value)connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
-			if (response instanceof Tuples) {
-				int version = -1;
-				for (Tuple tuple: (Tuples)response)
-					version = tuple.get("ver").toInt();
-				return version;
-			}
-			return -1;
-		} catch (IOException e) {
-			System.out.println("Unable to obtain version of Rev extensions.  Are they not installed?");
-			return -1;
-		}
-	}
-
-	public synchronized long getUniqueNumber() {
-		String query = "GET_UNIQUE_NUMBER()";
-		try {
-			return connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS).toLong();
-		} catch (Exception e) {
-			System.out.println("Rev failed to get a unique number: " + e);
-			return 0;
-		}
+	
+	private Tuples getTuples(String query) {
+		return connection.getTuples(query);
 	}
 	
 	public boolean installRevExtensions() {

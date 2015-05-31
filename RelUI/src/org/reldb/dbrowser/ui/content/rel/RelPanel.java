@@ -67,7 +67,7 @@ public class RelPanel extends Composite {
 		buildDbTree();
 	}
 	
-	private void buildSubtree(String section, String query, String displayAttributeName, boolean suppressErrors) {
+	private void buildSubtree(String section, String query, String displayAttributeName) {
 		TreeItem root = treeRoots.get(section);
 		if (root == null) {
 			root = new TreeItem(tree, SWT.NONE);
@@ -75,17 +75,13 @@ public class RelPanel extends Composite {
 			treeRoots.put(section, root);
 		}
 		if (query != null) {
-			Tuples relvarNames = connection.getTuples(query, suppressErrors);
+			Tuples relvarNames = connection.getTuples(query);
 			if (relvarNames != null)
 				for (Tuple tuple: relvarNames) {
 					TreeItem relvar = new TreeItem(root, SWT.NONE);
 					relvar.setText(tuple.getAttributeValue(displayAttributeName).toString());
 				}
 		}
-	}
-	
-	private void buildSubtree(String section, String query, String displayAttributeName) {
-		buildSubtree(section, query, displayAttributeName, false);
 	}
 	
 	private void buildDbTree() {
@@ -101,7 +97,8 @@ public class RelPanel extends Composite {
 		buildSubtree("Operators", "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName");
 		buildSubtree("Types", "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name");
 		buildSubtree("Constraints", "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name");
-		buildSubtree("Queries", "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model", true);
+		if (connection.hasRevExtensions() >= 0)
+			buildSubtree("Queries", "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model");
 		buildSubtree("Forms", null, null);
 		buildSubtree("Reports", null, null);
 		buildSubtree("Scripts", null, null);

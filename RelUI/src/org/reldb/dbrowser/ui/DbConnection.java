@@ -9,9 +9,14 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.reldb.rel.client.Connection;
+import org.reldb.rel.client.Error;
+import org.reldb.rel.client.NullTuples;
+import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
 import org.reldb.rel.client.Connection.HTMLReceiver;
@@ -89,42 +94,65 @@ public class DbConnection {
 			connection.execute(query);
 			return true;
 		} catch (IOException e1) {
-			System.out.println("DbTab: Error: " + e1);
+			System.out.println("DbConnection: Error: " + e1);
 			e1.printStackTrace();
 			return false;
 		}
 	}
 	
-	public Tuples getTuples(String query, boolean suppressErrors) {
+	public Tuples getTuples(String query) {
 		Value response;
 		try {
 			response = connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
 		} catch (IOException e) {
-			if (!suppressErrors) {
-				System.out.println("RelPanel: Error: " + e);
-				e.printStackTrace();
-			}
+			System.out.println("DbConnection: Error: " + e);
+			e.printStackTrace();
 			return null;
 		}
 		if (response instanceof org.reldb.rel.client.Error) {
-			if (!suppressErrors) {
-				System.out.println("RelPanel: Query returns error. " + query + "\n");
-			}
+			System.out.println("DbConnection: Query returns error. " + query + "\n");
 			return null;
 		}
 		if (response == null) {
-			System.out.println("RelPanel: Unable to obtain query results.");
+			System.out.println("DbConnection: Unable to obtain query results.");
 			return null;
 		}
 		return (Tuples)response;				
 	}
 
-	public Tuples getTuples(String query) {
-		return getTuples(query, false);
-	}
-
 	public void evaluate(String query, HTMLReceiver htmlReceiver) {
 		connection.evaluate(query, htmlReceiver);
+	}
+
+	public Value evaluate(String query) {
+		try {
+			Value result = connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
+			if (result instanceof Error) {
+				MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", result.toString());
+				return new NullTuples();
+			}
+			return result;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new NullTuples();
+		}
+	}
+	
+	public int hasRevExtensions() {
+		String query = "sys.rev.Version";
+		try {
+			Value response = (Value)connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
+			if (response instanceof Tuples) {
+				int version = -1;
+				for (Tuple tuple: (Tuples)response)
+					version = tuple.get("ver").toInt();
+				return version;
+			}
+			return -1;
+		} catch (IOException e) {
+			System.out.println("Unable to obtain version of Rev extensions.  Are they not installed?");
+			return -1;
+		}
 	}
 
 }
