@@ -94,25 +94,33 @@ public class DbConnection {
 			return false;
 		}
 	}
-
-	public Tuples getTuples(String query) {
+	
+	public Tuples getTuples(String query, boolean suppressErrors) {
 		Value response;
 		try {
 			response = connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
 		} catch (IOException e) {
-			System.out.println("RelPanel: Error: " + e);
-			e.printStackTrace();
+			if (!suppressErrors) {
+				System.out.println("RelPanel: Error: " + e);
+				e.printStackTrace();
+			}
 			return null;
 		}
 		if (response instanceof org.reldb.rel.client.Error) {
-			System.out.println("RelPanel: Query returns error. " + query + "\n");
+			if (!suppressErrors) {
+				System.out.println("RelPanel: Query returns error. " + query + "\n");
+			}
 			return null;
 		}
 		if (response == null) {
 			System.out.println("RelPanel: Unable to obtain query results.");
 			return null;
 		}
-		return (Tuples)response;		
+		return (Tuples)response;				
+	}
+
+	public Tuples getTuples(String query) {
+		return getTuples(query, false);
 	}
 
 	public void evaluate(String query, HTMLReceiver htmlReceiver) {
