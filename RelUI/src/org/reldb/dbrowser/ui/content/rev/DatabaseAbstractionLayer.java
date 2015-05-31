@@ -1,6 +1,7 @@
 package org.reldb.dbrowser.ui.content.rev;
 
 import java.io.IOException;
+import java.util.Vector;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -304,4 +305,14 @@ public class DatabaseAbstractionLayer {
 				       "UPDATE sys.rev.Relvar WHERE model = '" + oldName + "': {model := '" + newName + "'};";
 		execute(query);
 	}
+	
+	public Vector<String> getModels() {
+		String query = "(sys.rev.Query {model}) UNION (sys.rev.Relvar {model})";
+		Tuples tuples = (Tuples)evaluate(query);
+		Vector<String> models = new Vector<String>();
+		for (Tuple tuple: tuples)
+			 models.add(tuple.get("model").toString());
+		return models;
+	}
+	
 }

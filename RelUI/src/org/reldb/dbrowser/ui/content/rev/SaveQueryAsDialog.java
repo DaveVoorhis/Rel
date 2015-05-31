@@ -12,7 +12,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Text;
 
-public class SaveAsDialog extends Dialog {
+public class SaveQueryAsDialog extends Dialog {
 	private String name;
 	
 	private Text text;
@@ -21,7 +21,7 @@ public class SaveAsDialog extends Dialog {
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public SaveAsDialog(Shell parentShell, String name) {
+	public SaveQueryAsDialog(Shell parentShell, String name) {
 		super(parentShell);
 		setShellStyle(SWT.RESIZE | SWT.TITLE | SWT.APPLICATION_MODAL);
 		setBlockOnOpen(true);

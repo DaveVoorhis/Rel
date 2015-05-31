@@ -168,7 +168,7 @@ public class Rev extends Composite {
 
 	protected void doSaveAs() {
 		String oldName = model.getModelName();
-		SaveAsDialog saveAs = new SaveAsDialog(getShell(), oldName);
+		SaveQueryAsDialog saveAs = new SaveQueryAsDialog(getShell(), oldName);
 		if (saveAs.open() == Dialog.OK) {
 			String newName = saveAs.getName();
 			if (database.modelExists(newName)) {
@@ -181,8 +181,11 @@ public class Rev extends Composite {
 	}
 
 	protected void doLoad() {
-		// TODO Auto-generated method stub
-		
+		LoadQueryDialog load = new LoadQueryDialog(getShell(), database.getModels());
+		if (load.open() == Dialog.OK) {
+			model.setModelName(load.getSelectedItem());
+			loadModel();
+		}
 	}
 
 	private void setupIcons() {
