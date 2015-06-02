@@ -1,7 +1,7 @@
 ** TO DO **
 
 Short term:
-	// TODO - create UPDATE operator in Rev.
+	// TODO - improve UPDATE operator in Rev.
 	// TODO - implement (only for multiple possreps) SELECTORS and (mandatory) INIT clause 
 	//        in TYPE definitions.
 	// TODO - Fix toolbar button enabled/selected states in RelUI.

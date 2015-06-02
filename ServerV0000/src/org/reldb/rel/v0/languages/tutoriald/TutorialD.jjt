@@ -1055,7 +1055,7 @@ void update_where() #UpdateWhere :
 void update_assignment() #UpdateAssignment :
 {}
 {
-	"{" assignment() "}"
+	"{" [ assignment() ] "}"
 }
 
 /* Expressions */
