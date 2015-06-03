@@ -1,6 +1,7 @@
 package org.reldb.dbrowser.ui.content.rel;
 
 import java.util.HashMap;
+import java.util.function.Predicate;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.custom.SashForm;
@@ -67,7 +68,7 @@ public class RelPanel extends Composite {
 		buildDbTree();
 	}
 	
-	private void buildSubtree(String section, String query, String displayAttributeName) {
+	private void buildSubtree(String section, String query, String displayAttributeName, Predicate<String> filter) {
 		TreeItem root = treeRoots.get(section);
 		if (root == null) {
 			root = new TreeItem(tree, SWT.NONE);
@@ -78,10 +79,17 @@ public class RelPanel extends Composite {
 			Tuples relvarNames = connection.getTuples(query);
 			if (relvarNames != null)
 				for (Tuple tuple: relvarNames) {
-					TreeItem relvar = new TreeItem(root, SWT.NONE);
-					relvar.setText(tuple.getAttributeValue(displayAttributeName).toString());
+					String attributeValue = tuple.getAttributeValue(displayAttributeName).toString();
+					if (filter.test(attributeValue)) {
+						TreeItem relvar = new TreeItem(root, SWT.NONE);
+						relvar.setText(attributeValue);
+					}
 				}
 		}
+	}
+
+	private void buildSubtree(String section, String query, String displayAttributeName) {
+		buildSubtree(section, query, displayAttributeName, (String attributeName) -> true);
 	}
 	
 	private void buildDbTree() {
@@ -92,16 +100,18 @@ public class RelPanel extends Composite {
 		String andSysStr = ((sysStr != null) ? (" AND " + sysStr) : "");
 		String whereSysStr = ((sysStr != null) ? (" WHERE " + sysStr) : "");
 		
-		buildSubtree("Variables", "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name");
-		buildSubtree("Views", "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name");
+		Predicate<String> revSysNamesFilter = (String attributeName) -> attributeName.startsWith("sys.rev") ? showSystemObjects : true; 
+		buildSubtree("Variables", "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter);
+		buildSubtree("Views", "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter);
 		buildSubtree("Operators", "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName");
 		buildSubtree("Types", "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name");
 		buildSubtree("Constraints", "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name");
-		if (connection.hasRevExtensions() >= 0)
+		if (connection.hasRevExtensions() >= 0) {
 			buildSubtree("Queries", "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model");
-		buildSubtree("Forms", null, null);
-		buildSubtree("Reports", null, null);
-		buildSubtree("Scripts", null, null);
+			buildSubtree("Forms", null, null);
+			buildSubtree("Reports", null, null);
+			buildSubtree("Scripts", null, null);
+		}
 	}
 
 	public void redisplayed() {
