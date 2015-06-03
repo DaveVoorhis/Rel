@@ -5,7 +5,9 @@ import java.util.Vector;
 import org.eclipse.swt.graphics.Point;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
+import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
+import org.reldb.rel.client.Value;
 
 public abstract class Operator extends Visualiser {
     
@@ -47,17 +49,29 @@ public abstract class Operator extends Visualiser {
 		String query = getQueryForParameter(parameterNumber);
 		if (query == null)
 			return null;
-		Tuples tuples = (Tuples)getDatabase().evaluate(query);
-		return tuples.getHeading();
+		Value returned = getDatabase().evaluate(query);
+		if (returned instanceof Tuples) {
+			Tuples tuples = (Tuples)returned;
+			return tuples.getHeading();
+		}
+		return null;
 	}
 	
 	public Vector<String> getAttributeNamesOfParameter(int parameterNumber) {
-		Heading heading = getHeadingOfParameter(parameterNumber);
-		if (heading == null)
+		String query = getQueryForParameter(parameterNumber);
+		if (query == null)
 			return null;
+		Value returned = getDatabase().evaluate(query);
 		Vector<String> output = new Vector<String>();
-		for (Attribute attribute: heading.toArray())
-			output.add(attribute.getName());
+		if (returned instanceof Tuples) {
+			Heading heading = ((Tuples)returned).getHeading();
+			for (Attribute attribute: heading.toArray())
+				output.add(attribute.getName());
+		} else if (returned instanceof Tuple) {
+			Tuple tuple = (Tuple)returned;
+			for (int index=0; index<tuple.getAttributeCount(); index++)
+				output.add(tuple.getAttributeName(index));
+		}
 		return output;
 	}
 	

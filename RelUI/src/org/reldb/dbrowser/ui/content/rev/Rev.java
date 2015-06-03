@@ -29,6 +29,7 @@ import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
 import org.reldb.dbrowser.ui.content.rev.operators.Diadic;
 import org.reldb.dbrowser.ui.content.rev.operators.Expression;
 import org.reldb.dbrowser.ui.content.rev.operators.Extend;
+import org.reldb.dbrowser.ui.content.rev.operators.From;
 import org.reldb.dbrowser.ui.content.rev.operators.GroupOrWrap;
 import org.reldb.dbrowser.ui.content.rev.operators.Order;
 import org.reldb.dbrowser.ui.content.rev.operators.Project;
@@ -534,6 +535,11 @@ public class Rev extends Composite {
 			new OpSelector("TUPLE FROM", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new TupleFrom(rev, name, xpos, ypos);
+				}
+			}),
+			new OpSelector("FROM", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new From(rev, name, xpos, ypos);
 				}
 			}),
 			new OpSelector(),
