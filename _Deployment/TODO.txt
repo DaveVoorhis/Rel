@@ -1,7 +1,7 @@
 ** TO DO **
 
 Short term:
-	// TODO - implement FROM and TUPLE FROM in Rev.
+	// TODO - implement FROM in Rev.
 	// TODO - improve UPDATE operator in Rev.
 	// TODO - implement (only for multiple possreps) SELECTORS and (mandatory) INIT clause 
 	//        in TYPE definitions.

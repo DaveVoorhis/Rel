@@ -37,6 +37,7 @@ import org.reldb.dbrowser.ui.content.rev.operators.Restrict;
 import org.reldb.dbrowser.ui.content.rev.operators.Summarize;
 import org.reldb.dbrowser.ui.content.rev.operators.TableDee;
 import org.reldb.dbrowser.ui.content.rev.operators.TableDum;
+import org.reldb.dbrowser.ui.content.rev.operators.TupleFrom;
 import org.reldb.dbrowser.ui.content.rev.operators.UngroupOrUnwrap;
 import org.reldb.dbrowser.ui.content.rev.operators.Update;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
@@ -529,6 +530,12 @@ public class Rev extends Composite {
 					return new Diadic(rev, name, "IN", xpos, ypos);
 				}
 			}), 
+			new OpSelector(),
+			new OpSelector("TUPLE FROM", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new TupleFrom(rev, name, xpos, ypos);
+				}
+			}),
 			new OpSelector(),
 			new OpSelector("Expression", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {

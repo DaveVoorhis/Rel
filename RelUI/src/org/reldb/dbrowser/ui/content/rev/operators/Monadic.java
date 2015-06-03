@@ -12,7 +12,7 @@ public abstract class Monadic extends OperatorWithControlPanel {
 		pack();
 	}
 
-	protected abstract void load();
+	protected void load() {}
 	
     protected void delete() {
 		getDatabase().removeOperator(getID());
