@@ -68,8 +68,9 @@ public abstract class OperatorWithControlPanel extends Operator {
 	}
 	
 	private void openDetails() {
+		System.out.println("OperatorWithControlPanel: queryable is " + queryable);
 		if (!queryable)
-			return;		
+			return;
 		new Controls(this).open();
 	}
 

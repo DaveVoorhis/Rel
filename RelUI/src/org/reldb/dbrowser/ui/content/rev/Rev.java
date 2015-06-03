@@ -27,6 +27,7 @@ import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
 import org.reldb.dbrowser.ui.content.rev.operators.Diadic;
+import org.reldb.dbrowser.ui.content.rev.operators.Expression;
 import org.reldb.dbrowser.ui.content.rev.operators.Extend;
 import org.reldb.dbrowser.ui.content.rev.operators.GroupOrWrap;
 import org.reldb.dbrowser.ui.content.rev.operators.Order;
@@ -470,6 +471,11 @@ public class Rev extends Composite {
 			new OpSelector("TABLE_DUM", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new TableDum(rev, name, xpos, ypos);
+				}}),
+			new OpSelector(),
+			new OpSelector("Expression", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Expression(rev, name, xpos, ypos);
 				}})
 		};
 		return operators;
