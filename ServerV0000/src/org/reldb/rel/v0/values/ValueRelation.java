@@ -606,6 +606,57 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 			}
 		};
 	}
+
+	public static Value sequence(Generator generator, ValueInteger start, ValueInteger end, ValueInteger step) {
+		return new ValueRelation(generator) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public TupleIterator newIterator() {
+				return new TupleIterator() {
+					long currentValue = start.longValue();
+					ValueTuple current = getCurrentValue();
+
+					private ValueTuple getCurrentValue() {
+						return new ValueTuple(generator, new Value[] {ValueInteger.select(generator, currentValue)});
+					}
+					
+					public boolean hasNext() {
+						if (current != null)
+							return true;
+						currentValue += step.longValue();
+						if ((step.longValue() > 0) ? currentValue > end.longValue() : currentValue < end.longValue())
+							return false;
+						current = getCurrentValue();
+						return true;
+					}
+
+					public ValueTuple next() {
+						if (hasNext())
+							try {
+								return current;
+							} finally {
+								current = null;
+							}
+						throw new NoSuchElementException();
+					}
+					
+					public void close() {
+					}
+				};
+			}
+
+			@Override
+			public int hashCode() {
+				return 0;
+			}
+			
+		};
+	}
+	
+	public static Value sequence(Generator generator, ValueInteger start, ValueInteger end) {
+		return sequence(generator, start, end, ValueInteger.select(generator, 1));
+	}
 	
 	private static class Sorter implements Comparator<Value> {
 		private int map[];

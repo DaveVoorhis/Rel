@@ -539,6 +539,43 @@ public class BuiltinOperators {
 			);		
 	}
 	
+	private void sequence2(final RelDatabase database, Type[] parameters) {
+		Heading resultHeading = new Heading();
+		resultHeading.add("N", TypeInteger.getInstance());
+		database.defineBuiltinOperator(
+				new OperatorDefinitionNativeFunction("SEQUENCE",
+						parameters,
+						(new TypeRelation(resultHeading)), 
+						new NativeFunction() {
+							public Value evaluate(Value arguments[]) {
+								return ValueRelation.sequence(generator, (ValueInteger)arguments[0], (ValueInteger)arguments[1]);
+							}
+						}
+				)
+			);
+	}
+
+	private void sequence3(final RelDatabase database, Type[] parameters) {
+		Heading resultHeading = new Heading();
+		resultHeading.add("N", TypeInteger.getInstance());
+		database.defineBuiltinOperator(
+				new OperatorDefinitionNativeFunction("SEQUENCE",
+						parameters,
+						(new TypeRelation(resultHeading)), 
+						new NativeFunction() {
+							public Value evaluate(Value arguments[]) {
+								return ValueRelation.sequence(generator, (ValueInteger)arguments[0], (ValueInteger)arguments[1], (ValueInteger)arguments[2]);
+							}
+						}
+				)
+			);
+	}
+	
+	private void sequence(RelDatabase database) {
+		sequence2(database, new Type[] {TypeInteger.getInstance(), TypeInteger.getInstance()});
+		sequence3(database, new Type[] {TypeInteger.getInstance(), TypeInteger.getInstance(), TypeInteger.getInstance()});
+	}
+	
 	private BuiltinOperators(RelDatabase database) {
 		generator = new Generator(database, System.out);
 		is_empty(database);
@@ -567,6 +604,7 @@ public class BuiltinOperators {
 		lessthan(database);
 		greaterthan(database);
 		getuniquenumber(database);
+		sequence(database);
 	}
 	
 	public static void buildOperators(RelDatabase database) {

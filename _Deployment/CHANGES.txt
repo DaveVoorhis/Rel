@@ -17,6 +17,9 @@ Version 1.0.13:
   - enhancement: Rel: Removed octal and hex integer representations, as these were a source of confusion.
   - enhancement: Rel: Empty EXTEND, e.g., EXTEND S: {}, is now permitted.
   - enhancement: Rel: Empty UPDATE, e.g., UPDATE S: {}, is now permitted.
+  - enhancement: Rel: Added a sequence generator built-in operator:
+                 OPERATOR SEQUENCE(first INT, last INT, step INT) RELATION {n INT};
+                 OPERATOR SEQUENCE(first INT, last INT) RELATION {n INT};
   
 Version 1.0.12:
 
