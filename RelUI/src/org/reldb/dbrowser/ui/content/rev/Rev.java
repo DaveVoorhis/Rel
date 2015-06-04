@@ -136,7 +136,6 @@ public class Rev extends Composite {
 		FormData fd_revTools = new FormData();
 		fd_revTools.left = new FormAttachment(0);
 		fd_revTools.top = new FormAttachment(0);
-		fd_revTools.right = new FormAttachment(100);
 		revTools.setLayoutData(fd_revTools);
 
 		FormData fd_modelLabel = new FormData();
