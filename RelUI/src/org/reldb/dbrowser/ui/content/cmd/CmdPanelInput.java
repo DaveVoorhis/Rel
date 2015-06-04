@@ -500,8 +500,8 @@ public class CmdPanelInput extends Composite {
 		if (loadPathDialog == null) {
 			loadPathDialog = new FileDialog(getShell(), SWT.OPEN);
 			loadPathDialog.setFilterPath(System.getProperty("user.home"));
-			loadDialog.setFilterExtensions(new String[] {"*.*"});
-			loadDialog.setFilterNames(new String[] {"All Files"});
+			loadPathDialog.setFilterExtensions(new String[] {"*.*"});
+			loadPathDialog.setFilterNames(new String[] {"All Files"});
 			loadPathDialog.setText("Load Path");
 		}
 	}
