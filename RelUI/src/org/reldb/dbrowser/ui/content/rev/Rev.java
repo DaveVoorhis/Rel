@@ -172,6 +172,8 @@ public class Rev extends Composite {
 			}
 		};
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
+		
+		pack();
 
 		loadModel();
 	}
