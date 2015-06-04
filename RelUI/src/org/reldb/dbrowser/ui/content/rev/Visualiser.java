@@ -147,13 +147,11 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 				mouseOffsetX = e.x;
 				mouseOffsetY = e.y;
 				dragging = true;
-//				setCapture(true);
 			}
 			@Override
 			public void mouseUp(MouseEvent e) {
 				if (e.button != 1)
 					return;
-//				setCapture(false);
 				dragging = false;
         		if (dropCandidate!=null) {
         			Point location = getLocation();
