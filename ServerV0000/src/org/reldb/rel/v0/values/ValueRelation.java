@@ -1007,9 +1007,13 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 
 	/** Aggregate operator */
 	public ValueRelation union(int attributeIndex) {
-		TupleFold folder = new TupleFoldFirstIsIdentity("Result of UNION on no values is undefined.", iterator(), attributeIndex) {
+		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
 			public Value fold(Value left, Value right) {
 				return ((ValueRelation)left).union((ValueRelation)right);
+			}
+			@Override
+			public Value getIdentity() {
+				return new ValueRelationLiteral(getGenerator());
 			}
 		};
 		folder.run();
@@ -1018,9 +1022,12 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 
 	/** Aggregate operator */
 	public Value xunion(int attributeIndex) {
-		TupleFold folder = new TupleFoldFirstIsIdentity("Result of XUNION on no values is undefined.", iterator(), attributeIndex) {
+		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
 			public Value fold(Value left, Value right) {
 				return ((ValueRelation)left).xunion((ValueRelation)right);
+			}
+			public Value getIdentity() {
+				return new ValueRelationLiteral(getGenerator());
 			}
 		};
 		folder.run();
@@ -1029,9 +1036,13 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 
 	/** Aggregate operator */
 	public ValueRelation d_union(int attributeIndex) {
-		TupleFold folder = new TupleFoldFirstIsIdentity("Result of D_UNION on no values is undefined.", iterator(), attributeIndex) {
+		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
 			public Value fold(Value left, Value right) {
 				return ((ValueRelation)left).dunion((ValueRelation)right);
+			}
+			@Override
+			public Value getIdentity() {
+				return new ValueRelationLiteral(getGenerator());
 			}
 		};
 		folder.run();

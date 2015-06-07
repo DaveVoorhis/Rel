@@ -1,9 +1,6 @@
 ** TO DO **
 
 Short term:
-	// TODO - Windows only: Visualiser movement doesn't work in Rev.
-	// TODO - Windows only: Search for Rel core JAR files blows up with "URI has an authority component".
-	//        Probably due to running in a UNC path.
 	// TODO - improve UPDATE operator in Rev.
 	// TODO - implement (only for multiple possreps) SELECTORS and (mandatory) INIT clause 
 	//        in TYPE definitions.
@@ -19,8 +16,6 @@ Short term:
 	//        RELATION {TUPLE {SID 1, PARTS RELATION {TUPLE {PID 1}}},
     //                    TUPLE {SID 4, PARTS RELATION {TUPLE {PID 5}}}}
     //        Produces bogus result, apparently due to GROUP.  Fix!
-	// TODO - UNION (RELATION {x RELATION {y INT}} {}, x) returns error.
-	//        It should give RELATION {y INT}} {}.
 	// TODO - Currently, it seems that Rel does not fully support the parallel execution of individual renamings 
 	//        which is specified in Tutorial D. For instance,
 	//        TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x}
