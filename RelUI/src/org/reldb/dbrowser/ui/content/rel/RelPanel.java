@@ -30,7 +30,6 @@ public class RelPanel extends Composite {
 	private HashMap<String, TreeItem> treeRoots;
 	
 	public static class DbTreeItem {
-		
 		private boolean canPlay;
 		private boolean canNew;
 		private boolean canDrop;
