@@ -1,6 +1,7 @@
 package org.reldb.dbrowser.ui.content.rel;
 
 import java.util.HashMap;
+import java.util.Vector;
 import java.util.function.Predicate;
 
 import org.eclipse.swt.widgets.Composite;
@@ -8,6 +9,10 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -24,6 +29,70 @@ public class RelPanel extends Composite {
 	private Tree tree;
 	private HashMap<String, TreeItem> treeRoots;
 	
+	public static class DbTreeItem {
+		
+		private boolean canPlay;
+		private boolean canNew;
+		private boolean canDrop;
+		private boolean canDesign;
+		private String section;
+		private String name;
+
+		DbTreeItem(String section, boolean canPlay, boolean canNew, boolean canDrop, boolean canDesign, String name) {
+			this.section = section;
+			this.canPlay = canPlay;
+			this.canNew = canNew;
+			this.canDrop = canDrop;
+			this.canDesign = canDesign;
+			this.name = name;
+		}
+		
+		DbTreeItem(String section, boolean canPlay, boolean canNew, boolean canDrop, boolean canDesign) {
+			this(section, canPlay, canNew, canDrop, canDesign, null);
+		}
+		
+		DbTreeItem() {
+			this(null, false, false, false, false, null);
+		}
+		
+		public boolean canPlay() {
+			return canPlay;
+		}
+
+		public boolean canNew() {
+			return canNew;
+		}
+
+		public boolean canDrop() {
+			return canDrop;
+		}
+
+		public boolean canDesign() {
+			return canDesign;
+		}
+		
+		public String getSection() {
+			return section;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public String toString() {
+			if (section != null && name != null)
+				return section + ": " + name;
+			else if (section != null)
+				return section;
+			else
+				return "<none>";
+		}
+	};
+	
+	public static interface DbTreeListener {
+		public void select(DbTreeItem item);
+	}
+	
 	/**
 	 * Create the composite.
 	 * @param parentTab 
@@ -39,7 +108,23 @@ public class RelPanel extends Composite {
 		SashForm sashForm = new SashForm(this, SWT.NONE);
 		
 		tree = new Tree(sashForm, SWT.NONE);
-
+		tree.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				DbTreeItem selection = getSelection();
+				if (selection == null)
+					fireDbTreeNoSelectionEvent();
+				else
+					fireDbTreeSelectionEvent(selection);
+			}
+		});
+		tree.addMouseListener(new MouseAdapter() {
+			public void mouseDoubleClick(MouseEvent e) {
+				DbTreeItem selection = getSelection();
+				if (selection != null && selection.canPlay())
+					playItem();
+			}
+		});		
+		
 		treeRoots = new HashMap<String, TreeItem>();
 		
 		CTabFolder tabFolder = new CTabFolder(sashForm, SWT.BORDER);
@@ -49,14 +134,47 @@ public class RelPanel extends Composite {
 		buildDbTree();
 	}
 
+	private DbTreeItem getSelection() {
+		TreeItem items[] = tree.getSelection();
+		if (items == null || items.length == 0)
+			return null;
+		TreeItem item = items[0];
+		return (DbTreeItem)item.getData();
+	}
+	
+	private Vector<DbTreeListener> listeners = new Vector<DbTreeListener>();
+	
+	public void addDbTreeListener(DbTreeListener listener) {
+		listeners.add(listener);
+	}
+	
+	public void removeDbTreeListener(DbTreeListener listener) {
+		listeners.remove(listener);
+	}
+	
+	protected void fireDbTreeSelectionEvent(DbTreeItem item) {
+		for (DbTreeListener listener: listeners)
+			listener.select(item);
+	}
+	
+	protected void fireDbTreeNoSelectionEvent() {
+		fireDbTreeSelectionEvent(new DbTreeItem());
+	}
+	
+	public void playItem() {
+		System.out.println("RelPanel: play " + getSelection().toString());
+	}
+
 	public void newItem() {
-		// TODO Auto-generated method stub
-		
+		System.out.println("RelPanel: new " + getSelection().toString());
 	}
 
 	public void dropItem() {
-		// TODO Auto-generated method stub
-		
+		System.out.println("RelPanel: drop " + getSelection().toString());
+	}
+
+	public void designItem() {
+		System.out.println("RelPanel: design " + getSelection().toString());
 	}
 
 	public boolean getShowSystemObjects() {
@@ -74,15 +192,17 @@ public class RelPanel extends Composite {
 			root = new TreeItem(tree, SWT.NONE);
 			root.setText(section);
 			treeRoots.put(section, root);
+			root.setData(new DbTreeItem(section, false, true, false, false));
 		}
 		if (query != null) {
-			Tuples relvarNames = connection.getTuples(query);
-			if (relvarNames != null)
-				for (Tuple tuple: relvarNames) {
-					String attributeValue = tuple.getAttributeValue(displayAttributeName).toString();
-					if (filter.test(attributeValue)) {
-						TreeItem relvar = new TreeItem(root, SWT.NONE);
-						relvar.setText(attributeValue);
+			Tuples names = connection.getTuples(query);
+			if (names != null)
+				for (Tuple tuple: names) {
+					String name = tuple.getAttributeValue(displayAttributeName).toString();
+					if (filter.test(name)) {
+						TreeItem item = new TreeItem(root, SWT.NONE);
+						item.setText(name);
+						item.setData(new DbTreeItem(section, true, true, true, true, name));
 					}
 				}
 		}
@@ -118,4 +238,5 @@ public class RelPanel extends Composite {
 		buildDbTree();
 		tree.setFocus();
 	}
+	
 }
