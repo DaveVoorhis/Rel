@@ -30,6 +30,8 @@ public class RelPanel extends Composite {
 	private DbConnection connection;
 	private boolean showSystemObjects = false;
 
+	private CTabFolder tabFolder;
+	
 	private Tree tree;
 	private HashMap<String, TreeItem> treeRoots;
 	
@@ -116,13 +118,21 @@ public class RelPanel extends Composite {
 		
 		treeRoots = new HashMap<String, TreeItem>();
 		
-		CTabFolder tabFolder = new CTabFolder(sashForm, SWT.BORDER);
+		tabFolder = new CTabFolder(sashForm, SWT.BORDER | SWT.CLOSE);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		sashForm.setWeights(new int[] {1, 4});
 		
 		buildDbTree();
 	}
 
+	public DbConnection getConnection() {
+		return connection;
+	}
+	
+	public CTabFolder getTabFolder() {
+		return tabFolder;
+	}
+	
 	private DbTreeItem getSelection() {
 		TreeItem items[] = tree.getSelection();
 		if (items == null || items.length == 0)
