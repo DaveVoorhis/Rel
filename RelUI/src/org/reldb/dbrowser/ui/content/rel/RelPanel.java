@@ -9,11 +9,15 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.events.MenuDetectEvent;
+import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.reldb.dbrowser.ui.DbConnection;
@@ -59,7 +63,56 @@ public class RelPanel extends Composite {
 				if (selection != null && selection.canPlay())
 					playItem();
 			}
-		});		
+		});
+		
+		Menu menu = new Menu(this);
+		MenuItem showItem = new MenuItem(menu, SWT.POP_UP);
+		showItem.setText("Show");
+		showItem.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				playItem();
+			}
+		});
+		MenuItem createItem = new MenuItem(menu, SWT.POP_UP);
+		createItem.setText("Create");
+		createItem.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				createItem();
+			}
+		});
+		MenuItem dropItem = new MenuItem(menu, SWT.POP_UP);
+		dropItem.setText("Drop");
+		dropItem.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				dropItem();
+			}
+		});
+		MenuItem designItem = new MenuItem(menu, SWT.POP_UP);
+		designItem.setText("Design");
+		designItem.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				designItem();
+			}
+		});
+
+		tree.setMenu(menu);
+		
+		tree.addMenuDetectListener(new MenuDetectListener() {
+			public void menuDetected(MenuDetectEvent e) {
+				DbTreeItem selection = getSelection();
+				if (selection == null) {
+					showItem.setEnabled(false);
+					createItem.setEnabled(false);
+					dropItem.setEnabled(false);
+					designItem.setEnabled(false);
+				} else {
+					showItem.setEnabled(selection.canPlay());
+					createItem.setEnabled(selection.canCreate());
+					dropItem.setEnabled(selection.canDrop());
+					designItem.setEnabled(selection.canDesign());
+				}
+			}
+		});
 		
 		treeRoots = new HashMap<String, TreeItem>();
 		
@@ -176,9 +229,9 @@ public class RelPanel extends Composite {
 		if (connection.hasRevExtensions() >= 0) {
 			buildSubtree("Queries", "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
 					new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this));
-			buildSubtree("Forms", null, null, null, null, null, null);
-			buildSubtree("Reports", null, null, null, null, null, null);
-			buildSubtree("Scripts", null, null, null, null, null, null);
+			// buildSubtree("Forms", null, null, null, null, null, null);
+			// buildSubtree("Reports", null, null, null, null, null, null);
+			// buildSubtree("Scripts", null, null, null, null, null, null);
 		}
 		
 		fireDbTreeNoSelectionEvent();

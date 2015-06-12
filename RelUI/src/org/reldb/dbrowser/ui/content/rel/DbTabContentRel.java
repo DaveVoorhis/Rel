@@ -20,7 +20,7 @@ import org.reldb.dbrowser.ui.preferences.Preferences;
 public class DbTabContentRel extends Composite {
 
 	private ToolItem tlitmBackup;
-	private ToolItem tlitmPlay;
+	private ToolItem tlitmShow;
 	private ToolItem tlitmNew;
 	private ToolItem tlitmDrop;
 	private ToolItem tlitmDesign;
@@ -58,9 +58,9 @@ public class DbTabContentRel extends Composite {
 			}
 		});
 		
-		tlitmPlay = new ToolItem(toolBar, SWT.None);
-		tlitmPlay.setToolTipText("Activate");
-		tlitmPlay.addSelectionListener(new SelectionAdapter() {
+		tlitmShow = new ToolItem(toolBar, SWT.None);
+		tlitmShow.setToolTipText("Show");
+		tlitmShow.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				rel.playItem();
@@ -108,7 +108,7 @@ public class DbTabContentRel extends Composite {
 		
 		rel.addDbTreeListener(new DbTreeListener() {
 			public void select(DbTreeItem item) {
-				tlitmPlay.setEnabled(item.canPlay());
+				tlitmShow.setEnabled(item.canPlay());
 				tlitmNew.setEnabled(item.canCreate());
 				tlitmDrop.setEnabled(item.canDrop());
 				tlitmDesign.setEnabled(item.canDesign());
@@ -123,7 +123,7 @@ public class DbTabContentRel extends Composite {
 		};		
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 		
-		tlitmPlay.setEnabled(false);
+		tlitmShow.setEnabled(false);
 		tlitmNew.setEnabled(false);
 		tlitmDrop.setEnabled(false);
 		tlitmDesign.setEnabled(false);
@@ -136,7 +136,7 @@ public class DbTabContentRel extends Composite {
 	
 	private void setupIcons() {
 		tlitmBackup.setImage(IconLoader.loadIcon("safeIcon"));
-		tlitmPlay.setImage(IconLoader.loadIcon("play"));
+		tlitmShow.setImage(IconLoader.loadIcon("play"));
 		tlitmNew.setImage(IconLoader.loadIcon("item_add"));
 		tlitmDrop.setImage(IconLoader.loadIcon("item_delete"));
 		tlitmDesign.setImage(IconLoader.loadIcon("item_design"));
