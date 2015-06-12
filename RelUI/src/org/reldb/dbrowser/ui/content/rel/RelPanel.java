@@ -29,69 +29,6 @@ public class RelPanel extends Composite {
 	private Tree tree;
 	private HashMap<String, TreeItem> treeRoots;
 	
-	public static class DbTreeItem {
-		private boolean canPlay;
-		private boolean canNew;
-		private boolean canDrop;
-		private boolean canDesign;
-		private String section;
-		private String name;
-
-		DbTreeItem(String section, boolean canPlay, boolean canNew, boolean canDrop, boolean canDesign, String name) {
-			this.section = section;
-			this.canPlay = canPlay;
-			this.canNew = canNew;
-			this.canDrop = canDrop;
-			this.canDesign = canDesign;
-			this.name = name;
-		}
-		
-		DbTreeItem(String section, boolean canPlay, boolean canNew, boolean canDrop, boolean canDesign) {
-			this(section, canPlay, canNew, canDrop, canDesign, null);
-		}
-		
-		DbTreeItem() {
-			this(null, false, false, false, false, null);
-		}
-		
-		public boolean canPlay() {
-			return canPlay;
-		}
-
-		public boolean canNew() {
-			return canNew;
-		}
-
-		public boolean canDrop() {
-			return canDrop;
-		}
-
-		public boolean canDesign() {
-			return canDesign;
-		}
-		
-		public String getSection() {
-			return section;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		
-		public String toString() {
-			if (section != null && name != null)
-				return section + ": " + name;
-			else if (section != null)
-				return section;
-			else
-				return "<none>";
-		}
-	};
-	
-	public static interface DbTreeListener {
-		public void select(DbTreeItem item);
-	}
-	
 	/**
 	 * Create the composite.
 	 * @param parentTab 
@@ -161,19 +98,19 @@ public class RelPanel extends Composite {
 	}
 	
 	public void playItem() {
-		System.out.println("RelPanel: play " + getSelection().toString());
+		getSelection().play();
 	}
 
-	public void newItem() {
-		System.out.println("RelPanel: new " + getSelection().toString());
+	public void createItem() {
+		getSelection().create();
 	}
 
 	public void dropItem() {
-		System.out.println("RelPanel: drop " + getSelection().toString());
+		getSelection().drop();
 	}
 
 	public void designItem() {
-		System.out.println("RelPanel: design " + getSelection().toString());
+		getSelection().design();
 	}
 
 	public boolean getShowSystemObjects() {
@@ -185,13 +122,13 @@ public class RelPanel extends Composite {
 		buildDbTree();
 	}
 	
-	private void buildSubtree(String section, String query, String displayAttributeName, Predicate<String> filter) {
+	private void buildSubtree(String section, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer) {
 		TreeItem root = treeRoots.get(section);
 		if (root == null) {
 			root = new TreeItem(tree, SWT.NONE);
 			root.setText(section);
 			treeRoots.put(section, root);
-			root.setData(new DbTreeItem(section, false, true, false, false));
+			root.setData(new DbTreeItem(section, null, creator, null, null));
 		}
 		if (query != null) {
 			Tuples names = connection.getTuples(query);
@@ -201,14 +138,14 @@ public class RelPanel extends Composite {
 					if (filter.test(name)) {
 						TreeItem item = new TreeItem(root, SWT.NONE);
 						item.setText(name);
-						item.setData(new DbTreeItem(section, true, true, true, true, name));
+						item.setData(new DbTreeItem(section, player, creator, dropper, designer, name));
 					}
 				}
 		}
 	}
 
-	private void buildSubtree(String section, String query, String displayAttributeName) {
-		buildSubtree(section, query, displayAttributeName, (String attributeName) -> true);
+	private void buildSubtree(String section, String query, String displayAttributeName, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer) {
+		buildSubtree(section, query, displayAttributeName, (String attributeName) -> true, player, creator, dropper, designer);
 	}
 	
 	private void buildDbTree() {
@@ -221,21 +158,27 @@ public class RelPanel extends Composite {
 		
 		Predicate<String> revSysNamesFilter = (String attributeName) -> attributeName.startsWith("sys.rev") ? showSystemObjects : true; 
 		
-		buildSubtree("Variables", "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter);
+		buildSubtree("Variables", "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter, 
+				new VarRealPlayer(this), new VarRealCreator(this), new VarRealDropper(this), new VarRealDesigner(this));
 		
-		buildSubtree("Views", "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter);
+		buildSubtree("Views", "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
+				new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this));
 		
-		buildSubtree("Operators", "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName");
+		buildSubtree("Operators", "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName",
+			new OperatorPlayer(this), new OperatorCreator(this), new OperatorDropper(this), new OperatorDesigner(this));
 		
-		buildSubtree("Types", "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name");
+		buildSubtree("Types", "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
+			null, new TypeCreator(this), new TypeDropper(this), null);
 		
-		buildSubtree("Constraints", "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name");
+		buildSubtree("Constraints", "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
+			null, new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this));
 		
 		if (connection.hasRevExtensions() >= 0) {
-			buildSubtree("Queries", "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model");
-			buildSubtree("Forms", null, null);
-			buildSubtree("Reports", null, null);
-			buildSubtree("Scripts", null, null);
+			buildSubtree("Queries", "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
+					new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this));
+			buildSubtree("Forms", null, null, null, null, null, null);
+			buildSubtree("Reports", null, null, null, null, null, null);
+			buildSubtree("Scripts", null, null, null, null, null, null);
 		}
 	}
 

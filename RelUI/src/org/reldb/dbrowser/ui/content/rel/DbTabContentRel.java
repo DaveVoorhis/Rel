@@ -11,7 +11,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
-import org.reldb.dbrowser.ui.content.rel.RelPanel.DbTreeItem;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
@@ -73,7 +72,7 @@ public class DbTabContentRel extends Composite {
 		tlitmNew.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				rel.newItem();
+				rel.createItem();
 			}
 		});
 		
@@ -107,10 +106,10 @@ public class DbTabContentRel extends Composite {
 		
 		setupIcons();
 		
-		rel.addDbTreeListener(new RelPanel.DbTreeListener() {
+		rel.addDbTreeListener(new DbTreeListener() {
 			public void select(DbTreeItem item) {
 				tlitmPlay.setEnabled(item.canPlay());
-				tlitmNew.setEnabled(item.canNew());
+				tlitmNew.setEnabled(item.canCreate());
 				tlitmDrop.setEnabled(item.canDrop());
 				tlitmDesign.setEnabled(item.canDesign());
 			}
