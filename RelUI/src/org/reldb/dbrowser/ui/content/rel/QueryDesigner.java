@@ -8,8 +8,7 @@ public class QueryDesigner implements DbTreeAction {
 
 	@Override
 	public void go(DbTreeItem item) {
-		// TODO Auto-generated method stub
-
+		System.out.println("Design query " + item.getName());
 	}
 
 }
