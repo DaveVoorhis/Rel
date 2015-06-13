@@ -1,9 +1,9 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-public class VarRealPlayer implements DbTreeAction {
+public class VarRealPlayer extends DbTreeAction {
 
 	public VarRealPlayer(RelPanel relPanel) {
-		// TODO Auto-generated constructor stub
+		super(relPanel);
 	}
 
 	@Override

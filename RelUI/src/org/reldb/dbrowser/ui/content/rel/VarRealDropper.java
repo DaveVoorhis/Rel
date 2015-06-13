@@ -1,9 +1,9 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-public class VarRealDropper implements DbTreeAction {
+public class VarRealDropper extends DbTreeAction {
 
 	public VarRealDropper(RelPanel relPanel) {
-		// TODO Auto-generated constructor stub
+		super(relPanel);
 	}
 
 	@Override

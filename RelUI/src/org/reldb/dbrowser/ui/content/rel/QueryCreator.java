@@ -1,9 +1,9 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-public class QueryCreator implements DbTreeAction {
+public class QueryCreator extends DbTreeAction {
 
 	public QueryCreator(RelPanel relPanel) {
-		// TODO Auto-generated constructor stub
+		super(relPanel);
 	}
 
 	@Override

@@ -1,9 +1,9 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-public class ConstraintDropper implements DbTreeAction {
+public class ConstraintDropper extends DbTreeAction {
 
 	public ConstraintDropper(RelPanel relPanel) {
-		// TODO Auto-generated constructor stub
+		super(relPanel);
 	}
 
 	@Override

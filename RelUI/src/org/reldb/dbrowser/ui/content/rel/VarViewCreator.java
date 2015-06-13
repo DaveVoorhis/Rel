@@ -1,9 +1,9 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-public class VarViewCreator implements DbTreeAction {
+public class VarViewCreator extends DbTreeAction {
 
 	public VarViewCreator(RelPanel relPanel) {
-		// TODO Auto-generated constructor stub
+		super(relPanel);
 	}
 
 	@Override

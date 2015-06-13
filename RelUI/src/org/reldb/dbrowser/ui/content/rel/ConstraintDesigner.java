@@ -1,9 +1,9 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-public class ConstraintDesigner implements DbTreeAction {
+public class ConstraintDesigner extends DbTreeAction {
 
 	public ConstraintDesigner(RelPanel relPanel) {
-		// TODO Auto-generated constructor stub
+		super(relPanel);
 	}
 
 	@Override

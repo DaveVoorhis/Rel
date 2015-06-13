@@ -5,6 +5,7 @@ import java.util.Vector;
 import java.util.function.Predicate;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -131,6 +132,13 @@ public class RelPanel extends Composite {
 	
 	public CTabFolder getTabFolder() {
 		return tabFolder;
+	}
+	
+	public CTabItem getTab(String name) {
+		for (CTabItem tab: tabFolder.getItems())
+			if (tab.getText().equals(name))
+				return tab;
+		return null;
 	}
 	
 	private DbTreeItem getSelection() {

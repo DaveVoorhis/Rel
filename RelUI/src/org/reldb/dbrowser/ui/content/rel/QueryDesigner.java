@@ -1,8 +1,9 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-public class QueryDesigner implements DbTreeAction {
+public class QueryDesigner extends DbTreeAction {
 
 	public QueryDesigner(RelPanel relPanel) {
+		super(relPanel);
 	}
 
 	@Override

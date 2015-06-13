@@ -1,6 +1,12 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-@FunctionalInterface
-public interface DbTreeAction {
-	public void go(DbTreeItem item);
+public abstract class DbTreeAction {
+	
+	protected RelPanel relPanel;
+	
+	public DbTreeAction(RelPanel relPanel) {
+		this.relPanel = relPanel;
+	}
+	
+	public abstract void go(DbTreeItem item);
 }

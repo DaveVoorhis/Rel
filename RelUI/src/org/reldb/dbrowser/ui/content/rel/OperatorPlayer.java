@@ -1,9 +1,9 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-public class OperatorPlayer implements DbTreeAction {
+public class OperatorPlayer extends DbTreeAction {
 
 	public OperatorPlayer(RelPanel relPanel) {
-		// TODO Auto-generated constructor stub
+		super(relPanel);
 	}
 
 	@Override

@@ -1,9 +1,9 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-public class TypeDropper implements DbTreeAction {
+public class TypeDropper extends DbTreeAction {
 
 	public TypeDropper(RelPanel relPanel) {
-		// TODO Auto-generated constructor stub
+		super(relPanel);
 	}
 
 	@Override
