@@ -72,6 +72,10 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < OPERATOR: "OPERATOR" >
 | < END: "END" >
 | < RETURNS: "RETURNS" >
+| < NOTICE: "NOTICE:" >
+| < UPDATED: "Inserted" | "Updated" | "Deleted" >
+| < TUPLES: "tuple." | "tuples." >
+| < OK: "Ok." >
 }
 
 TOKEN : /* LITERALS */
@@ -184,8 +188,12 @@ TOKEN : /* SEPARATORS */
 void parse() :
 {}
 {
-	literal(0) ( <EOT> | <EOF> ) 
+	literal(0) | (( updateResponse() )* <OK> ) ( <EOT> | <EOF> ) 
 }
+
+void updateResponse() :
+{}{
+  <NOTICE> <UPDATED> <INTEGER_LITERAL> <TUPLES>}
 
 void literal(int depth) :
 {}

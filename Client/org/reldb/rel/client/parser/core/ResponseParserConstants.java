@@ -35,35 +35,43 @@ public interface ResponseParserConstants {
   /** RegularExpression Id. */
   int RETURNS = 17;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 18;
+  int NOTICE = 18;
   /** RegularExpression Id. */
-  int DECIMAL_LITERAL = 19;
+  int UPDATED = 19;
   /** RegularExpression Id. */
-  int FLOATING_POINT_LITERAL = 20;
+  int TUPLES = 20;
   /** RegularExpression Id. */
-  int EXPONENT = 21;
+  int OK = 21;
   /** RegularExpression Id. */
-  int STRING_LITERAL = 22;
+  int INTEGER_LITERAL = 22;
   /** RegularExpression Id. */
-  int IDENTIFIER = 23;
+  int DECIMAL_LITERAL = 23;
   /** RegularExpression Id. */
-  int LETTER = 24;
+  int FLOATING_POINT_LITERAL = 24;
   /** RegularExpression Id. */
-  int DIGIT = 25;
+  int EXPONENT = 25;
   /** RegularExpression Id. */
-  int LPAREN = 26;
+  int STRING_LITERAL = 26;
   /** RegularExpression Id. */
-  int RPAREN = 27;
+  int IDENTIFIER = 27;
   /** RegularExpression Id. */
-  int LBRACE = 28;
+  int LETTER = 28;
   /** RegularExpression Id. */
-  int RBRACE = 29;
+  int DIGIT = 29;
   /** RegularExpression Id. */
-  int SEMICOLON = 30;
+  int LPAREN = 30;
   /** RegularExpression Id. */
-  int COMMA = 31;
+  int RPAREN = 31;
   /** RegularExpression Id. */
-  int COLON = 32;
+  int LBRACE = 32;
+  /** RegularExpression Id. */
+  int RBRACE = 33;
+  /** RegularExpression Id. */
+  int SEMICOLON = 34;
+  /** RegularExpression Id. */
+  int COMMA = 35;
+  /** RegularExpression Id. */
+  int COLON = 36;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -88,6 +96,10 @@ public interface ResponseParserConstants {
     "\"OPERATOR\"",
     "\"END\"",
     "\"RETURNS\"",
+    "\"NOTICE:\"",
+    "<UPDATED>",
+    "<TUPLES>",
+    "\"Ok.\"",
     "<INTEGER_LITERAL>",
     "<DECIMAL_LITERAL>",
     "<FLOATING_POINT_LITERAL>",
