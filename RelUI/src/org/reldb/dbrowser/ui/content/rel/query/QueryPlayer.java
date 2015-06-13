@@ -1,7 +1,10 @@
-package org.reldb.dbrowser.ui.content.rel;
+package org.reldb.dbrowser.ui.content.rel.query;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
+import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
+import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
+import org.reldb.dbrowser.ui.content.rel.RelPanel;
 
 public class QueryPlayer extends DbTreeAction {
 	

@@ -1,7 +1,10 @@
-package org.reldb.dbrowser.ui.content.rel;
+package org.reldb.dbrowser.ui.content.rel.query;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CTabItem;
+import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
+import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
+import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.dbrowser.ui.content.rev.DatabaseAbstractionLayer;
 
 public class QueryDropper extends DbTreeAction {

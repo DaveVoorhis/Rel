@@ -94,11 +94,11 @@ public class DbConnection {
 		try {
 			Response response = connection.execute(query);
 			if (response == null) {
-				System.out.println("DbConnection: Unable to obtain query results.");
+				System.out.println("DbConnection: Unable to obtain result of executing query.");
 				return false;
 			}
-			if (response.getResult() instanceof org.reldb.rel.client.Error) {
-				org.reldb.rel.client.Error error = (org.reldb.rel.client.Error)response.getResult();
+			if (response.getResult() instanceof Error) {
+				Error error = (Error)response.getResult();
 				System.out.println("DbConnection: Query execute returns error. " + query + "\n" + error.getErrorMsg());
 				(new Throwable()).getStackTrace();
 				return false;
@@ -120,8 +120,8 @@ public class DbConnection {
 			e.printStackTrace();
 			return null;
 		}
-		if (response instanceof org.reldb.rel.client.Error) {
-			org.reldb.rel.client.Error error = (org.reldb.rel.client.Error)response;
+		if (response instanceof Error) {
+			Error error = (Error)response;
 			System.out.println("DbConnection: Query evaluate returns error. " + query + "\n" + error.getErrorMsg());
 			(new Throwable()).getStackTrace();
 			return null;

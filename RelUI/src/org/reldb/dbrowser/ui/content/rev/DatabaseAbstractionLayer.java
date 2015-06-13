@@ -280,12 +280,12 @@ public class DatabaseAbstractionLayer {
 	
 	public boolean modelDelete(String name) {
 		String query = 
-		    "DELETE sys.rev.Operator WHERE Name IN (sys.rev.Operator JOIN (((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}))), " +
-		    "DELETE sys.rev.Op_Update WHERE Name IN (sys.rev.Op_Extend JOIN (((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}))), " +
-		    "DELETE sys.rev.Op_Extend WHERE Name IN (sys.rev.Op_Extend JOIN (((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}))), " +
-		    "DELETE sys.rev.Op_Summarize WHERE Name IN (sys.rev.Op_Summarize JOIN (((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}))), " +
-			"DELETE sys.rev.Query WHERE model = '" + name + "', " +
-			"DELETE sys.rev.Relvar WHERE model = '" + name + "'";
+				"DELETE sys.rev.Operator WHERE TUPLE {Name Name} IN ((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}), " +
+				"DELETE sys.rev.Op_Update WHERE TUPLE {Name Name} IN ((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}), " +
+				"DELETE sys.rev.Op_Extend WHERE TUPLE {Name Name} IN ((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}), " +
+				"DELETE sys.rev.Op_Summarize WHERE TUPLE {Name Name} IN ((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}), " +
+				"DELETE sys.rev.Query WHERE model = '" + name + "', " +
+				"DELETE sys.rev.Relvar WHERE model = '" + name + "';";
 		return execute(query);
 	}
 	

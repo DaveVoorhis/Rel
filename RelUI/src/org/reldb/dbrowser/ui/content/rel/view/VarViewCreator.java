@@ -1,4 +1,8 @@
-package org.reldb.dbrowser.ui.content.rel;
+package org.reldb.dbrowser.ui.content.rel.view;
+
+import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
+import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
+import org.reldb.dbrowser.ui.content.rel.RelPanel;
 
 public class VarViewCreator extends DbTreeAction {
 
