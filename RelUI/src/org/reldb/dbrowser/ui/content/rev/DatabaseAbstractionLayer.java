@@ -270,12 +270,23 @@ public class DatabaseAbstractionLayer {
 		String query = "DELETE sys.rev.Query WHERE model = '" + newName + "', " +
 			           "DELETE sys.rev.Relvar WHERE model = '" + newName + "', " +
 			           "INSERT sys.rev.Operator UPDATE sys.rev.Operator JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
-			           "INSERT sys.rev.Op_Update UPDATE sys.rev.Op_Extend JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
+			           "INSERT sys.rev.Op_Update UPDATE sys.rev.Op_Update JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
 			           "INSERT sys.rev.Op_Extend UPDATE sys.rev.Op_Extend JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
 			           "INSERT sys.rev.Op_Summarize UPDATE sys.rev.Op_Summarize JOIN (((sys.rev.Query WHERE model = '" + oldName + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + oldName + "') {Name})): {Name := Name || 'copy'}, " +
 			           "INSERT sys.rev.Query UPDATE sys.rev.Query WHERE model = '" + oldName + "': {model := '" + newName + "', Name := Name || 'copy', connections := UPDATE connections: {Name := Name || 'copy'}}, " +	        
 			           "INSERT sys.rev.Relvar UPDATE sys.rev.Relvar WHERE model = '" + oldName + "': {model := '" + newName + "', Name := Name || 'copy'};";
 		execute(query);
+	}
+	
+	public boolean modelDelete(String name) {
+		String query = 
+		    "DELETE sys.rev.Operator WHERE Name IN (sys.rev.Operator JOIN (((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}))), " +
+		    "DELETE sys.rev.Op_Update WHERE Name IN (sys.rev.Op_Extend JOIN (((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}))), " +
+		    "DELETE sys.rev.Op_Extend WHERE Name IN (sys.rev.Op_Extend JOIN (((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}))), " +
+		    "DELETE sys.rev.Op_Summarize WHERE Name IN (sys.rev.Op_Summarize JOIN (((sys.rev.Query WHERE model = '" + name + "') {Name}) UNION ((sys.rev.Relvar WHERE model = '" + name + "') {Name}))), " +
+			"DELETE sys.rev.Query WHERE model = '" + name + "', " +
+			"DELETE sys.rev.Relvar WHERE model = '" + name + "'";
+		return execute(query);
 	}
 	
 	public Vector<String> getModels() {

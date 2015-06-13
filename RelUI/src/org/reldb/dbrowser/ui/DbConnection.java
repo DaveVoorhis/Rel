@@ -16,6 +16,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Error;
 import org.reldb.rel.client.NullTuples;
+import org.reldb.rel.client.Response;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
@@ -91,7 +92,17 @@ public class DbConnection {
 	
 	public boolean execute(String query) {
 		try {
-			connection.execute(query);
+			Response response = connection.execute(query);
+			if (response == null) {
+				System.out.println("DbConnection: Unable to obtain query results.");
+				return false;
+			}
+			if (response.getResult() instanceof org.reldb.rel.client.Error) {
+				org.reldb.rel.client.Error error = (org.reldb.rel.client.Error)response.getResult();
+				System.out.println("DbConnection: Query execute returns error. " + query + "\n" + error.getErrorMsg());
+				(new Throwable()).getStackTrace();
+				return false;
+			}
 			return true;
 		} catch (IOException e1) {
 			System.out.println("DbConnection: Error: " + e1);
@@ -110,7 +121,9 @@ public class DbConnection {
 			return null;
 		}
 		if (response instanceof org.reldb.rel.client.Error) {
-			System.out.println("DbConnection: Query returns error. " + query + "\n");
+			org.reldb.rel.client.Error error = (org.reldb.rel.client.Error)response;
+			System.out.println("DbConnection: Query evaluate returns error. " + query + "\n" + error.getErrorMsg());
+			(new Throwable()).getStackTrace();
 			return null;
 		}
 		if (response == null) {
