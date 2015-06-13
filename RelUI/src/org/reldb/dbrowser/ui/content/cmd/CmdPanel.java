@@ -29,7 +29,7 @@ public class CmdPanel extends Composite {
 		
 		SashForm sashForm = new SashForm(this, SWT.VERTICAL);
 
-		cmdPanelOutput = new CmdPanelOutput(sashForm, dbTab, SWT.NONE) {
+		cmdPanelOutput = new CmdPanelOutput(sashForm, dbTab.getConnection(), SWT.NONE) {
 			@Override
 			protected void notifyInputDone() {
 				cmdPanelInput.done();

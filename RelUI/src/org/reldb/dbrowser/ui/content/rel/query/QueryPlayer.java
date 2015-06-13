@@ -1,6 +1,5 @@
 package org.reldb.dbrowser.ui.content.rel.query;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
@@ -17,7 +16,7 @@ public class QueryPlayer extends DbTreeAction {
 		String name = "Query: " + item.getName();
 		CTabItem tab = relPanel.getTab(name);
 		if (tab == null) {
-			tab = new CTabItem(relPanel.getTabFolder(), SWT.NONE);
+			tab = new RevTab(relPanel);
 			tab.setText("Query: " + item.getName());
 		}
 		relPanel.getTabFolder().setSelection(tab);

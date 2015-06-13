@@ -1,6 +1,8 @@
 package org.reldb.dbrowser.ui.content.rel;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
@@ -30,26 +32,27 @@ public class DbTabContentRel extends Composite {
 	
     private PreferenceChangeListener preferenceChangeListener;
 	
+    private ToolBar tabToolBar = null;
+    
 	public DbTabContentRel(DbTab parentTab, Composite contentParent) {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 
-		ToolBar toolBar = new ToolBar(this, SWT.None);
+		ToolBar mainToolBar = new ToolBar(this, SWT.None);
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);
 		fd_toolBar.top = new FormAttachment(0);
-		fd_toolBar.right = new FormAttachment(100);
-		toolBar.setLayoutData(fd_toolBar);
+		mainToolBar.setLayoutData(fd_toolBar);
 		
 		rel = new RelPanel(parentTab, this, SWT.None);
 		FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
-		fd_composite.top = new FormAttachment(toolBar);
+		fd_composite.top = new FormAttachment(mainToolBar);
 		fd_composite.right = new FormAttachment(100);
 		fd_composite.bottom = new FormAttachment(100);
 		rel.setLayoutData(fd_composite);
 	
-		tlitmBackup = new ToolItem(toolBar, SWT.None);
+		tlitmBackup = new ToolItem(mainToolBar, SWT.None);
 		tlitmBackup.setToolTipText("Make backup");
 		tlitmBackup.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -58,7 +61,7 @@ public class DbTabContentRel extends Composite {
 			}
 		});
 		
-		tlitmShow = new ToolItem(toolBar, SWT.None);
+		tlitmShow = new ToolItem(mainToolBar, SWT.None);
 		tlitmShow.setToolTipText("Show");
 		tlitmShow.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -67,7 +70,7 @@ public class DbTabContentRel extends Composite {
 			}
 		});
 				
-		tlitmNew = new ToolItem(toolBar, SWT.None);
+		tlitmNew = new ToolItem(mainToolBar, SWT.None);
 		tlitmNew.setToolTipText("New");
 		tlitmNew.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -76,7 +79,7 @@ public class DbTabContentRel extends Composite {
 			}
 		});
 		
-		tlitmDrop = new ToolItem(toolBar, SWT.None);
+		tlitmDrop = new ToolItem(mainToolBar, SWT.None);
 		tlitmDrop.setToolTipText("Drop");
 		tlitmDrop.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -85,7 +88,7 @@ public class DbTabContentRel extends Composite {
 			}
 		});
 		
-		tlitmDesign = new ToolItem(toolBar, SWT.None);
+		tlitmDesign = new ToolItem(mainToolBar, SWT.None);
 		tlitmDesign.setToolTipText("Design");
 		tlitmDesign.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -94,7 +97,7 @@ public class DbTabContentRel extends Composite {
 			}
 		});
 		
-		tlitmShowSystem = new ToolItem(toolBar, SWT.CHECK);
+		tlitmShowSystem = new ToolItem(mainToolBar, SWT.CHECK);
 		tlitmShowSystem.setToolTipText("Show system objects");
 		tlitmShowSystem.setSelection(rel.getShowSystemObjects());
 		tlitmShowSystem.addSelectionListener(new SelectionAdapter() {
@@ -112,6 +115,27 @@ public class DbTabContentRel extends Composite {
 				tlitmNew.setEnabled(item.canCreate());
 				tlitmDrop.setEnabled(item.canDrop());
 				tlitmDesign.setEnabled(item.canDesign());
+			}
+			public void tabChangeNotify() {
+				if (tabToolBar != null) {
+					tabToolBar.dispose();
+					tabToolBar = null;
+				}
+				CTabFolder tabs = rel.getTabFolder();
+				CTabItem selectedTab = tabs.getSelection();
+				if (selectedTab != null) {
+					if (selectedTab instanceof DbTreeTab) {
+						tabToolBar = ((DbTreeTab)selectedTab).getToolBar(DbTabContentRel.this);
+						if (tabToolBar != null) {
+							FormData fd_toolBar = new FormData();
+							fd_toolBar.left = new FormAttachment(mainToolBar);
+							fd_toolBar.top = new FormAttachment(0);
+							fd_toolBar.right = new FormAttachment(100);
+							tabToolBar.setLayoutData(fd_toolBar);
+						}
+					}
+				}
+				layout();
 			}
 		});
 		

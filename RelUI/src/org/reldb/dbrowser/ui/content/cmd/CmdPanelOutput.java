@@ -13,7 +13,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Color;
 import org.reldb.dbrowser.ui.ConcurrentStringReceiverClient;
-import org.reldb.dbrowser.ui.DbTab;
+import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.html.BrowserManager;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
@@ -66,7 +66,7 @@ public class CmdPanelOutput extends Composite {
 	 * @throws NumberFormatException 
 	 * @throws DatabaseFormatVersionException 
 	 */
-	public CmdPanelOutput(Composite parent, DbTab dbTab, int style) throws NumberFormatException, ClassNotFoundException, IOException, DatabaseFormatVersionException {
+	public CmdPanelOutput(Composite parent, DbConnection dbConnection, int style) throws NumberFormatException, ClassNotFoundException, IOException, DatabaseFormatVersionException {
 		super(parent, style);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
@@ -102,7 +102,7 @@ public class CmdPanelOutput extends Composite {
 				
 		outputStackLayout.topControl = browser.getWidget();
 		
-		connection = new ConcurrentStringReceiverClient(this, dbTab.getConnection().obtainStringReceiverClient()) {
+		connection = new ConcurrentStringReceiverClient(this, dbConnection.obtainStringReceiverClient()) {
 			StringBuffer errorBuffer = null;
 			StringBuffer compilerErrorBuffer = null;
 			@Override

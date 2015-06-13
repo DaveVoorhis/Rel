@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.reldb.dbrowser.ui.DbTab;
+import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
 import org.reldb.dbrowser.ui.content.rev.operators.Diadic;
@@ -68,10 +68,10 @@ public class Rev extends Composite {
 	
 	private static final String scratchModelName = "scratchpad";
 	
-	public Rev(Composite parent, DbTab parentTab, CrashHandler crashHandler) {
+	public Rev(Composite parent, DbConnection connection, CrashHandler crashHandler) {
 		super(parent, SWT.None);
 
-		database = new DatabaseAbstractionLayer(parentTab.getConnection());
+		database = new DatabaseAbstractionLayer(connection);
 		
 		setLayout(new FillLayout());
 				
@@ -79,7 +79,7 @@ public class Rev extends Composite {
 		revPane.setOrientation(SWT.VERTICAL);
 		
 		try {
-			outputView = new CmdPanelOutput(revPane, parentTab, SWT.NONE) {
+			outputView = new CmdPanelOutput(revPane, connection, SWT.NONE) {
 				@Override
 				protected void notifyInputDone() {
 					stopBtn.setEnabled(false);

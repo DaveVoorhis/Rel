@@ -46,10 +46,12 @@ import org.reldb.dbrowser.ui.content.rel.view.VarViewDropper;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewPlayer;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
+import org.reldb.rel.client.connection.CrashHandler;
 
 public class RelPanel extends Composite {
 	
 	private DbConnection connection;
+	private CrashHandler crashHandler;
 	private boolean showSystemObjects = false;
 
 	private CTabFolder tabFolder;
@@ -68,6 +70,7 @@ public class RelPanel extends Composite {
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		connection = parentTab.getConnection();
+		crashHandler = parentTab.getCrashHandler();
 		
 		SashForm sashForm = new SashForm(this, SWT.NONE);
 		
@@ -142,6 +145,12 @@ public class RelPanel extends Composite {
 		
 		tabFolder = new CTabFolder(sashForm, SWT.BORDER | SWT.CLOSE);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+		tabFolder.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				fireDbTreeTabchangeEvent();
+			}
+		});
+		
 		sashForm.setWeights(new int[] {1, 4});
 		
 		buildDbTree();
@@ -150,7 +159,11 @@ public class RelPanel extends Composite {
 	public DbConnection getConnection() {
 		return connection;
 	}
-	
+
+	public CrashHandler getCrashHandler() {
+		return crashHandler;
+	}
+
 	public CTabFolder getTabFolder() {
 		return tabFolder;
 	}
@@ -178,6 +191,11 @@ public class RelPanel extends Composite {
 	
 	public void removeDbTreeListener(DbTreeListener listener) {
 		listeners.remove(listener);
+	}
+	
+	protected void fireDbTreeTabchangeEvent() {
+		for (DbTreeListener listener: listeners)
+			listener.tabChangeNotify();
 	}
 	
 	protected void fireDbTreeSelectionEvent(DbTreeItem item) {
