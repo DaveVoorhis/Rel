@@ -20,7 +20,7 @@ public class QueryDropper extends DbTreeAction {
 			relPanel.getTabFolder().setSelection(tab);
 			MessageDialog.openInformation(relPanel.getShell(), "Note", "You must close the '" + item.getTabName() + "' tab first.");
 		} else {
-			if (!MessageDialog.openConfirm(relPanel.getShell(), "Confirm DROP", "Are you sure you wish to drop " + item.getName() + "?"))
+			if (!MessageDialog.openConfirm(relPanel.getShell(), "Confirm DROP", "Are you sure you wish to drop query " + item.getName() + "?"))
 				return;
 			DatabaseAbstractionLayer dal = new DatabaseAbstractionLayer(relPanel.getConnection());
 			if (!dal.modelDelete(item.getName()))
