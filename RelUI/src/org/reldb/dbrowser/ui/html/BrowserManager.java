@@ -27,7 +27,6 @@ public class BrowserManager implements HtmlBrowser {
 			if (browser.createWidget(parent)) {
 				if (content != null)
 					browser.setContent(content);
-				System.out.println("BrowserManager: Using native browser.");
 				return true;
 			} else
 				System.out.println("BrowserManager: Native browser is not available on this platform.");
