@@ -14,10 +14,8 @@ public class QueryPlayer extends DbTreeAction {
 	@Override
 	public void go(DbTreeItem item) {
 		CTabItem tab = relPanel.getTab(item.getTabName());
-		if (tab == null) {
-			tab = new RevTab(relPanel, item.getName());
-			tab.setText(item.getTabName());
-		}
+		if (tab == null)
+			tab = new RevTab(relPanel, item);
 		relPanel.getTabFolder().setSelection(tab);
 	}
 
