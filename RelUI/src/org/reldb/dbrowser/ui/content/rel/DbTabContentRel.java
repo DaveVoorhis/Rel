@@ -47,7 +47,7 @@ public class DbTabContentRel extends Composite {
 		rel = new RelPanel(parentTab, this, SWT.None);
 		FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
-		fd_composite.top = new FormAttachment(mainToolBar);
+		fd_composite.top = new FormAttachment(mainToolBar, 4);
 		fd_composite.right = new FormAttachment(100);
 		fd_composite.bottom = new FormAttachment(100);
 		rel.setLayoutData(fd_composite);

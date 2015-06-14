@@ -81,7 +81,8 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 		lblTitle.setLayoutData(fd_lblTitle);
 		lblTitle.setText(title);
 
-		setupPopupMenu();
+		if (!model.getRev().isReadOnly())
+			setupPopupMenu();
 		
 		Composite mainPanel = new Composite(this, SWT.NONE);
 		mainPanel.setBackground(BackgroundColor);
@@ -139,59 +140,61 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 			}
 		});
 		
-        lblTitle.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				if (e.button != 1)
-					return;
-				mouseOffsetX = e.x;
-				mouseOffsetY = e.y;
-				dragging = true;
-			}
-			@Override
-			public void mouseUp(MouseEvent e) {
-				if (e.button != 1)
-					return;
-				dragging = false;
-        		if (dropCandidate!=null) {
-        			Point location = getLocation();
-        			if (dropCandidate == model.getPossibleDropTarget(e.x + location.x, e.y + location.y, Visualiser.this)) {
-        				dropCandidate.setDropCandidate(false);
-        				dropCandidate.receiveDropOf(Visualiser.this);
-        			}
-        			dropCandidate = null;
-        		}
-			}
-        });
-        lblTitle.addMouseMoveListener(new MouseMoveListener() {
-			@Override
-			public void mouseMove(MouseEvent e) {
-				model.disablePopupMenu();
-				if (dragging) {
-					Point location = getLocation();
-					int newX = location.x + e.x - mouseOffsetX;
-					int newY = location.y + e.y - mouseOffsetY;
-					setLocation(newX, newY);
-					// drop?
-	                Visualiser dropTarget = model.getPossibleDropTarget(location.x + e.x, location.y + e.y, Visualiser.this);
-	                if (dropCandidate != null && dropCandidate != dropTarget)
-	                    dropCandidate.setDropCandidate(false);
-	                if (dropTarget != null) {
-	                    dropCandidate = dropTarget;
-	                    dropCandidate.setDropCandidate(true);
-	                }		
-				} else
-					bringToFront();
-			}
-        });
-    	    	
-        addControlListener(new ControlAdapter() {
-			@Override
-			public void controlMoved(ControlEvent e) {
-				dispatchMovement();
-			}
-        });
-        dispatchMovement();
+        if (!model.getRev().isReadOnly()) {
+	        lblTitle.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseDown(MouseEvent e) {
+					if (e.button != 1)
+						return;
+					mouseOffsetX = e.x;
+					mouseOffsetY = e.y;
+					dragging = true;
+				}
+				@Override
+				public void mouseUp(MouseEvent e) {
+					if (e.button != 1)
+						return;
+					dragging = false;
+	        		if (dropCandidate!=null) {
+	        			Point location = getLocation();
+	        			if (dropCandidate == model.getPossibleDropTarget(e.x + location.x, e.y + location.y, Visualiser.this)) {
+	        				dropCandidate.setDropCandidate(false);
+	        				dropCandidate.receiveDropOf(Visualiser.this);
+	        			}
+	        			dropCandidate = null;
+	        		}
+				}
+	        });
+	        lblTitle.addMouseMoveListener(new MouseMoveListener() {
+				@Override
+				public void mouseMove(MouseEvent e) {
+					model.disablePopupMenu();
+					if (dragging) {
+						Point location = getLocation();
+						int newX = location.x + e.x - mouseOffsetX;
+						int newY = location.y + e.y - mouseOffsetY;
+						setLocation(newX, newY);
+						// drop?
+		                Visualiser dropTarget = model.getPossibleDropTarget(location.x + e.x, location.y + e.y, Visualiser.this);
+		                if (dropCandidate != null && dropCandidate != dropTarget)
+		                    dropCandidate.setDropCandidate(false);
+		                if (dropTarget != null) {
+		                    dropCandidate = dropTarget;
+		                    dropCandidate.setDropCandidate(true);
+		                }		
+					} else
+						bringToFront();
+				}
+	        });
+
+	        addControlListener(new ControlAdapter() {
+				@Override
+				public void controlMoved(ControlEvent e) {
+					dispatchMovement();
+				}
+	        });
+	        dispatchMovement();
+        }
         
         pack();
     }
@@ -255,6 +258,9 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
     	disconnect();
 		getDatabase().removeRelvar(getID());
 		dispose();
+        // If this visualiser was the last in this model, fireModelChangeEvent.
+        if (model.getVisualiserCount() == 0)
+        	model.getRev().fireModelChangeEvent();		
 	}
 
 	private void bringToFront() {
@@ -265,7 +271,7 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
     
     public abstract String getQuery();
     
-    public DatabaseAbstractionLayer getDatabase() {
+    public RevDatabase getDatabase() {
     	return model.getDatabase();
 	}
     
@@ -324,6 +330,8 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 		argument.setOperand(this);
 	}
 
+    private boolean fireModelChangeEventCheckDone = false;
+    
 	private void dispatchMovement() {
         (new Timer()).schedule(new TimerTask() {
         	public void run() {
@@ -331,8 +339,15 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
         			return;
         		getDisplay().asyncExec(new Runnable() {
         			public void run() {
-        				if (!isDisposed())
-        					visualiserMoved();		        				
+        				if (!isDisposed()) {
+        					visualiserMoved();        			        
+        			        // If this visualiser is the first in this model, fireModelChangeEvent.
+        					if (fireModelChangeEventCheckDone)
+        						return;
+        			        if (model.getVisualiserCount() == 1)
+        			        	model.getRev().fireModelChangeEvent();
+        			        fireModelChangeEventCheckDone = true;
+        				}
         			}
         		});
         	}

@@ -10,9 +10,10 @@ public class DbTreeTab extends CTabItem {
 	
 	private RelPanel relPanel;
 	
-	public DbTreeTab(RelPanel parent) {
+	public DbTreeTab(RelPanel parent, DbTreeItem item) {
 		super(parent.getTabFolder(), SWT.NONE);
 		this.relPanel = parent;
+		setText(item.getTabName());
 	}
 
 	public void ready() {

@@ -25,6 +25,10 @@ public class DbTreeItem {
 		this(null, null, null, null, null, null);
 	}
 	
+	public DbTreeItem(DbTreeItem item, String name) {
+		this(item.section, item.player, item.creator, item.dropper, item.designer, name);
+	}
+
 	public boolean canPlay() {
 		return player != null;
 	}

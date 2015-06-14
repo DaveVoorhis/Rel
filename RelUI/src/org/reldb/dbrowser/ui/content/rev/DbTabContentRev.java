@@ -20,7 +20,7 @@ public class DbTabContentRev extends Composite {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 
-	    rev = new Rev(this, parentTab.getConnection(), parentTab.getCrashHandler(), "scratchpad");	    
+	    rev = new Rev(this, parentTab.getConnection(), parentTab.getCrashHandler(), "scratchpad", Rev.SAVE_AND_LOAD_BUTTONS);	    
 
 		CmdPanelToolbar toolBar = new CmdPanelToolbar(this, rev.getCmdPanelOutput()) {
 			public void addAdditionalItems(ToolBar toolbar) {

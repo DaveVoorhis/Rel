@@ -182,6 +182,10 @@ public class RelPanel extends Composite {
 		return null;
 	}
 	
+	public CTabItem getTab(DbTreeItem item) {
+		return getTab(item.getTabName());
+	}
+	
 	private DbTreeItem getSelection() {
 		TreeItem items[] = tree.getSelection();
 		if (items == null || items.length == 0)

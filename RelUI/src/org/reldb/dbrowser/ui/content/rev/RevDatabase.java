@@ -7,14 +7,14 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
 
-public class DatabaseAbstractionLayer {
+public class RevDatabase {
 
 	public static final int EXPECTED_REV_VERSION = 0;
 	public static final int QUERY_WAIT_MILLISECONDS = 5000;
 	
 	private DbConnection connection;
 	
-	public DatabaseAbstractionLayer(DbConnection connection) {
+	public RevDatabase(DbConnection connection) {
 		this.connection = connection;
 	}
 

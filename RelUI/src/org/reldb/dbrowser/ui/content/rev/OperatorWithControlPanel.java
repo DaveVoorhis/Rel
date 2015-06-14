@@ -27,13 +27,14 @@ public abstract class OperatorWithControlPanel extends Operator {
 		controlPanel.setLayout(new FillLayout());
 		operatorLabel = new Label(controlPanel, SWT.NONE);
 		operatorLabel.setBackground(BackgroundColor);
-		operatorLabel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				if (operatorLabel.getBounds().contains(e.x, e.y))
-					openDetails();
-			}
-		});
+		if (!getModel().getRev().isReadOnly())
+			operatorLabel.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseUp(MouseEvent e) {
+					if (operatorLabel.getBounds().contains(e.x, e.y))
+						openDetails();
+				}
+			});
 		return controlPanel;
 	}
 	

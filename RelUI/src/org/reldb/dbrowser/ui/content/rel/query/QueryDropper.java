@@ -5,7 +5,7 @@ import org.eclipse.swt.custom.CTabItem;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
-import org.reldb.dbrowser.ui.content.rev.DatabaseAbstractionLayer;
+import org.reldb.dbrowser.ui.content.rev.RevDatabase;
 
 public class QueryDropper extends DbTreeAction {
 
@@ -22,7 +22,7 @@ public class QueryDropper extends DbTreeAction {
 		} else {
 			if (!MessageDialog.openConfirm(relPanel.getShell(), "Confirm DROP", "Are you sure you wish to drop query " + item.getName() + "?"))
 				return;
-			DatabaseAbstractionLayer dal = new DatabaseAbstractionLayer(relPanel.getConnection());
+			RevDatabase dal = new RevDatabase(relPanel.getConnection());
 			if (!dal.modelDelete(item.getName()))
 				MessageDialog.openError(relPanel.getShell(), "Error", "Unable to delete query " + item.getName() + ". Check the system log for details.");
 			else

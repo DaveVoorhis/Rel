@@ -77,13 +77,22 @@ public class Model extends Composite {
 				visualisers.add((Visualiser)child);
 		for (Visualiser visualiser: visualisers)
 			visualiser.delete();
+		rev.fireModelChangeEvent();
 	}
 
-	public void clear() {
+	void clear() {
 		for (Control control: getChildren())
 			control.dispose();
 	}
 
+	public int getVisualiserCount() {
+		int count = 0;
+		for (Control child: getChildren())
+			if (child instanceof Visualiser)
+				count++;
+		return count;
+	}
+	
 	public Visualiser getVisualiser(String visualiserName) {
 		for (Control child: getChildren()) {
 			if (!(child instanceof Visualiser))
@@ -106,7 +115,7 @@ public class Model extends Composite {
 		return null;
 	}
 
-	public DatabaseAbstractionLayer getDatabase() {
+	public RevDatabase getDatabase() {
 		return rev.getDatabase();
 	}
 

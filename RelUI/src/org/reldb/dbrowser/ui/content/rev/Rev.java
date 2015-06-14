@@ -3,6 +3,7 @@ package org.reldb.dbrowser.ui.content.rev;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Vector;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -52,11 +53,16 @@ import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.connection.CrashHandler;
 
 public class Rev extends Composite {
+	public static final int NONE = 0;
+	public static final int EDITABLE = 0;
+	public static final int READONLY = 1;
+	public static final int SAVE_AND_LOAD_BUTTONS = 2;
+
 	private Connection connection;
 	private Model model;
 	private CmdPanelOutput outputView;
 	private SashForm revPane;
-	private DatabaseAbstractionLayer database;
+	private RevDatabase database;
     
     private PreferenceChangeListener preferenceChangeListener;
 	
@@ -66,10 +72,16 @@ public class Rev extends Composite {
 	
 	private Label modelLabel;
 	
-	public Rev(Composite parent, DbConnection connection, CrashHandler crashHandler, String modelName) {
+	private Vector<ModelChangeListener> modelChangeListeners = new Vector<ModelChangeListener>();
+	
+	private int revstyle;
+	
+	public Rev(Composite parent, DbConnection connection, CrashHandler crashHandler, String modelName, int revstyle) {
 		super(parent, SWT.None);
+		
+		this.revstyle = revstyle;
 
-		database = new DatabaseAbstractionLayer(connection);
+		database = new RevDatabase(connection);
 		
 		setLayout(new FillLayout());
 				
@@ -98,23 +110,25 @@ public class Rev extends Composite {
 		
 		ToolBar revTools = new ToolBar(inputView, SWT.NONE);
 		
-		loadBtn = new ToolItem(revTools, SWT.PUSH);
-		loadBtn.setToolTipText("Load");
-		loadBtn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				doLoad();
-			}
-		});
-		
-		saveBtn = new ToolItem(revTools, SWT.PUSH);
-		saveBtn.setToolTipText("Save as");
-		saveBtn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				doSaveAs();
-			}
-		});
+		if ((revstyle & SAVE_AND_LOAD_BUTTONS) != 0) {
+			loadBtn = new ToolItem(revTools, SWT.PUSH);
+			loadBtn.setToolTipText("Load");
+			loadBtn.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					doLoad();
+				}
+			});
+			
+			saveBtn = new ToolItem(revTools, SWT.PUSH);
+			saveBtn.setToolTipText("Save as");
+			saveBtn.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					doSaveAs();
+				}
+			});
+		}
 		
 		stopBtn = new ToolItem(revTools, SWT.PUSH);
 		stopBtn.setToolTipText("Cancel running query.");
@@ -175,6 +189,23 @@ public class Rev extends Composite {
 		loadModel();
 	}
 
+	public int getRevStyle() {
+		return revstyle;
+	}
+	
+	public boolean isReadOnly() {
+		return (revstyle & READONLY) != 0;
+	}
+
+	/** Add listener to be notified when a newly-created Rev model gets its first Visualiser, or when it loses its last Visualiser. */
+	public void addModelChangeListener(ModelChangeListener modelChangeListener) {
+		modelChangeListeners.add(modelChangeListener);
+	}
+
+	public void removeModelChangeListener(ModelChangeListener modelChangeListener) {
+		modelChangeListeners.remove(modelChangeListener);
+	}
+
 	protected void doSaveAs() {
 		String oldName = model.getModelName();
 		SaveQueryAsDialog saveAs = new SaveQueryAsDialog(getShell(), oldName);
@@ -196,9 +227,15 @@ public class Rev extends Composite {
 				database.modelRename(oldName, newName);
 			model.setModelName(newName);			
 			modelLabel.setText(model.getModelName());
+			fireModelChangeEvent();
 		}
 	}
 
+	void fireModelChangeEvent() {
+		for (ModelChangeListener listener: modelChangeListeners)
+			listener.modelChanged();
+	}
+	
 	protected void doLoad() {
 		LoadQueryDialog load = new LoadQueryDialog(getShell(), database.getModels());
 		if (load.open() == Dialog.OK && load.getSelectedItem() != null && load.getSelectedItem().trim().length() > 0) {
@@ -208,8 +245,10 @@ public class Rev extends Composite {
 	}
 
 	private void setupIcons() {
-		loadBtn.setImage(IconLoader.loadIcon("loadIcon"));
-		saveBtn.setImage(IconLoader.loadIcon("saveIcon"));
+		if (loadBtn != null)
+			loadBtn.setImage(IconLoader.loadIcon("loadIcon"));
+		if (saveBtn != null)
+			saveBtn.setImage(IconLoader.loadIcon("saveIcon"));
 		stopBtn.setImage(IconLoader.loadIcon("stopIcon"));
 	}
 
@@ -217,7 +256,7 @@ public class Rev extends Composite {
 		return outputView;
 	}
 	
-	public DatabaseAbstractionLayer getDatabase() {
+	public RevDatabase getDatabase() {
 		return database;
 	}
 	
@@ -240,13 +279,14 @@ public class Rev extends Composite {
 	private void loadModel() {
 		model.clear();
 		
-		modelLabel.setText(model.getModelName());
+		modelLabel.setText(((isReadOnly()) ? "Show" : "Edit") + " " + model.getModelName());
 		
 		if (getMenu() != null)
 			getMenu().dispose();
 	
 		Menu menuBar = new Menu(getShell(), SWT.POP_UP);
-		model.setMenu(menuBar);
+		if (!isReadOnly())
+			model.setMenu(menuBar);
 
 		// Custom relvars
 		MenuItem customRelvarsItem = new MenuItem(menuBar, SWT.CASCADE);
@@ -310,7 +350,7 @@ public class Rev extends Composite {
 				MessageDialog.openError(getShell(), "Rev", "Unable to install Rev extensions.  Check the system log.");
 			else
 				refresh();
-		} else if (version < DatabaseAbstractionLayer.EXPECTED_REV_VERSION) {
+		} else if (version < RevDatabase.EXPECTED_REV_VERSION) {
 			upgrade(version);
 		} else {
 			presentRelvars();
