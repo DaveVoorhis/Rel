@@ -80,8 +80,15 @@ public class RelPanel extends Composite {
 				DbTreeItem selection = getSelection();
 				if (selection == null)
 					fireDbTreeNoSelectionEvent();
-				else
+				else {
 					fireDbTreeSelectionEvent(selection);
+					String name = selection.getTabName();
+					CTabItem tab = getTab(name);
+					if (tab != null) {
+						getTabFolder().setSelection(tab);
+						fireDbTreeTabchangeEvent();
+					}
+				}
 			}
 		});
 		tree.addMouseListener(new MouseAdapter() {
@@ -268,23 +275,23 @@ public class RelPanel extends Composite {
 		
 		Predicate<String> revSysNamesFilter = (String attributeName) -> attributeName.startsWith("sys.rev") ? showSystemObjects : true; 
 		
-		buildSubtree("Variables", "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter, 
+		buildSubtree("Variable", "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter, 
 			new VarRealPlayer(this), new VarRealCreator(this), new VarRealDropper(this), new VarRealDesigner(this));
 		
-		buildSubtree("Views", "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
+		buildSubtree("View", "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
 			new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this));
 		
-		buildSubtree("Operators", "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName",
+		buildSubtree("Operator", "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName",
 			new OperatorPlayer(this), new OperatorCreator(this), new OperatorDropper(this), new OperatorDesigner(this));
 		
-		buildSubtree("Types", "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
+		buildSubtree("Type", "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
 			null, new TypeCreator(this), new TypeDropper(this), null);
 		
-		buildSubtree("Constraints", "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
+		buildSubtree("Constraint", "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
 			null, new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this));
 		
 		if (connection.hasRevExtensions() >= 0) {
-			buildSubtree("Queries", "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
+			buildSubtree("Query", "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
 					new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this));
 			// buildSubtree("Forms", null, null, null, null, null, null);
 			// buildSubtree("Reports", null, null, null, null, null, null);

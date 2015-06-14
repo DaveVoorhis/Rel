@@ -15,11 +15,10 @@ public class QueryDropper extends DbTreeAction {
 
 	@Override
 	public void go(DbTreeItem item) {
-		String name = "Query: " + item.getName();
-		CTabItem tab = relPanel.getTab(name);
+		CTabItem tab = relPanel.getTab(item.getTabName());
 		if (tab != null) {
 			relPanel.getTabFolder().setSelection(tab);
-			MessageDialog.openInformation(relPanel.getShell(), "Note", "You must close the '" + name + "' tab first.");
+			MessageDialog.openInformation(relPanel.getShell(), "Note", "You must close the '" + item.getTabName() + "' tab first.");
 		} else {
 			if (!MessageDialog.openConfirm(relPanel.getShell(), "Confirm DROP", "Are you sure you wish to drop " + item.getName() + "?"))
 				return;

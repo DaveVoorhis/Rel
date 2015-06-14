@@ -65,12 +65,17 @@ public class DbTreeItem {
 		return name;
 	}
 	
-	public String toString() {
+	public String getTabName() {
 		if (section != null && name != null)
 			return section + ": " + name;
 		else if (section != null)
 			return section;
 		else
-			return "<none>";
+			return "<none>";		
 	}
+	
+	public String toString() {
+		return getTabName();
+	}
+	
 };

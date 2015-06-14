@@ -66,9 +66,7 @@ public class Rev extends Composite {
 	
 	private Label modelLabel;
 	
-	private static final String scratchModelName = "scratchpad";
-	
-	public Rev(Composite parent, DbConnection connection, CrashHandler crashHandler) {
+	public Rev(Composite parent, DbConnection connection, CrashHandler crashHandler, String modelName) {
 		super(parent, SWT.None);
 
 		database = new DatabaseAbstractionLayer(connection);
@@ -152,7 +150,7 @@ public class Rev extends Composite {
 		fd_scrollPanel.bottom = new FormAttachment(100);
 		scrollPanel.setLayoutData(fd_scrollPanel);
 
-		model = new Model(this, scratchModelName, scrollPanel);
+		model = new Model(this, modelName, scrollPanel);
 		model.setSize(10000, 10000);
 		
 		scrollPanel.setContent(model);

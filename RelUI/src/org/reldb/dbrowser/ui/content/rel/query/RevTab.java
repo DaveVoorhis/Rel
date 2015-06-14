@@ -10,9 +10,9 @@ import org.reldb.dbrowser.ui.content.rev.Rev;
 public class RevTab extends DbTreeTab {
 	private Rev rev;
 	
-	public RevTab(RelPanel parent) {
+	public RevTab(RelPanel parent, String name) {
 		super(parent);
-	    rev = new Rev(parent.getTabFolder(), parent.getConnection(), parent.getCrashHandler());  
+	    rev = new Rev(parent.getTabFolder(), parent.getConnection(), parent.getCrashHandler(), name);  
 	    setControl(rev);
 	    ready();
 	}
