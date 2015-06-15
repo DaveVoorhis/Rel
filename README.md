@@ -1,4 +1,4 @@
-This is the live development repository for Rel.
+This is the live development repository for Rel, an implementation of Date & Darwen's "Tutorial D" database language.
 
 If you wish to work with the source code, it can be imported directly
 into Eclipse.  
