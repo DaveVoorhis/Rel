@@ -67,12 +67,12 @@ public class CmdPanelInput extends Composite {
 	 * @param cmdPanelOutput 
 	 * @param style
 	 */
-	public CmdPanelInput(Composite parent, CmdPanelOutput cmdPanelOutput, int style) {
-		super(parent, style);
+	public CmdPanelInput(Composite parent, CmdPanelOutput cmdPanelOutput, int cmdStyle) {
+		super(parent, SWT.NONE);
 		setLayout(new FormLayout());
 		
 		this.cmdPanelOutput = cmdPanelOutput;
-		
+	
 		ToolBar toolBar = new ToolBar(this, SWT.FLAT);
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);
@@ -132,137 +132,139 @@ public class CmdPanelInput extends Composite {
 		fd_inputText.bottom = new FormAttachment(cmdPanelBottom);
 		cmdPanelBottom.setLayoutData(fd_cmdPanelBottom);
 
-		tlitmPrevHistory = new ToolItem(toolBar, SWT.NONE);
-		tlitmPrevHistory.setToolTipText("Load previous historical entry");
-		tlitmPrevHistory.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				inputText.setText(getPreviousHistoryItem());
-				inputText.setSelection(0, inputText.getText().length());
-				inputText.setFocus();
-			}
-		});
-		
-		tlitmNextHistory = new ToolItem(toolBar, SWT.NONE);
-		tlitmNextHistory.setToolTipText("Load next historical entry");
-		tlitmNextHistory.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				inputText.setText(getNextHistoryItem());
-				inputText.setSelection(0, inputText.getText().length());
-				inputText.setFocus();
-			}
-		});
-		
-		tlitmClear = new ToolItem(toolBar, SWT.NONE);
-		tlitmClear.setToolTipText("Clear");
-		tlitmClear.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				inputText.setText("");
-				inputText.setFocus();
-			}
-		});
-		
-		tlitmLoad = new ToolItem(toolBar, SWT.NONE);
-		tlitmLoad.setToolTipText("Load file");
-		tlitmLoad.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				ensureLoadDialogExists();
-				loadDialog.setFileName("");
-				loadDialog.setText("Load File");
-				String fname = loadDialog.open();
-				if (fname == null)
-					return;
-				loadFile(fname);
-			}
-		});
-		
-		tlitmGetPath = new ToolItem(toolBar, SWT.NONE);
-		tlitmGetPath.setToolTipText("Get file path");
-		tlitmGetPath.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				ensureLoadPathDialogExists();
-				loadPathDialog.setFileName("");
-				loadPathDialog.setText("Get File Path");
-				String fname = loadPathDialog.open();
-				if (fname == null)
-					return;
-				insertInputText('"' + fname + '"');
-			}
-		});
-		
-		tlitmSave = new ToolItem(toolBar, SWT.NONE);
-		tlitmSave.setToolTipText("Save");
-		tlitmSave.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				ensureSaveDialogExists();
-				saveDialog.setText("Save Input");
-				String fname = saveDialog.open();
-				if (fname == null)
-					return;
-				try {
-					BufferedWriter f = new BufferedWriter(new FileWriter(fname));
-					f.write(inputText.getText());
-					f.close();
-					announcement("Saved " + fname);
-				} catch (IOException ioe) {
-					announceError(ioe.toString(), ioe);
+		if ((cmdStyle & CmdPanel.NO_INPUT_TOOLBAR) == 0) {
+			tlitmPrevHistory = new ToolItem(toolBar, SWT.NONE);
+			tlitmPrevHistory.setToolTipText("Load previous historical entry");
+			tlitmPrevHistory.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					inputText.setText(getPreviousHistoryItem());
+					inputText.setSelection(0, inputText.getText().length());
+					inputText.setFocus();
 				}
-			}
-		});
-		
-		tlitmSaveHistory = new ToolItem(toolBar, SWT.NONE);
-		tlitmSaveHistory.setToolTipText("Save history");
-		tlitmSaveHistory.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				ensureSaveDialogExists();
-				saveDialog.setText("Save History");
-				String fname = saveDialog.open();
-				if (fname == null)
-					return;
-				try {
-					BufferedWriter f = new BufferedWriter(new FileWriter(fname));
-					for (int i = 0; i < getHistorySize(); i++) {
-						f.write("// History item #" + (i + 1) + "\n");
-						f.write(getHistoryItemAt(i));
-						f.write("\n\n");
+			});
+			
+			tlitmNextHistory = new ToolItem(toolBar, SWT.NONE);
+			tlitmNextHistory.setToolTipText("Load next historical entry");
+			tlitmNextHistory.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					inputText.setText(getNextHistoryItem());
+					inputText.setSelection(0, inputText.getText().length());
+					inputText.setFocus();
+				}
+			});
+			
+			tlitmClear = new ToolItem(toolBar, SWT.NONE);
+			tlitmClear.setToolTipText("Clear");
+			tlitmClear.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					inputText.setText("");
+					inputText.setFocus();
+				}
+			});
+			
+			tlitmLoad = new ToolItem(toolBar, SWT.NONE);
+			tlitmLoad.setToolTipText("Load file");
+			tlitmLoad.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					ensureLoadDialogExists();
+					loadDialog.setFileName("");
+					loadDialog.setText("Load File");
+					String fname = loadDialog.open();
+					if (fname == null)
+						return;
+					loadFile(fname);
+				}
+			});
+			
+			tlitmGetPath = new ToolItem(toolBar, SWT.NONE);
+			tlitmGetPath.setToolTipText("Get file path");
+			tlitmGetPath.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					ensureLoadPathDialogExists();
+					loadPathDialog.setFileName("");
+					loadPathDialog.setText("Get File Path");
+					String fname = loadPathDialog.open();
+					if (fname == null)
+						return;
+					insertInputText('"' + fname + '"');
+				}
+			});
+			
+			tlitmSave = new ToolItem(toolBar, SWT.NONE);
+			tlitmSave.setToolTipText("Save");
+			tlitmSave.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					ensureSaveDialogExists();
+					saveDialog.setText("Save Input");
+					String fname = saveDialog.open();
+					if (fname == null)
+						return;
+					try {
+						BufferedWriter f = new BufferedWriter(new FileWriter(fname));
+						f.write(inputText.getText());
+						f.close();
+						announcement("Saved " + fname);
+					} catch (IOException ioe) {
+						announceError(ioe.toString(), ioe);
 					}
-					f.write("// Current entry" + "\n");
-					f.write(inputText.getText());
-					f.close();
-					announcement("Saved " + fname);
-				} catch (IOException ioe) {
-					announceError(ioe.toString(), ioe);
 				}
-			}
-		});
-		
-		tlitmCopyToOutput = new ToolItem(toolBar, SWT.CHECK);
-		tlitmCopyToOutput.setToolTipText("Copy input to output");
-		tlitmCopyToOutput.setSelection(true);
-		tlitmCopyToOutput.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				setCopyInputToOutput(tlitmCopyToOutput.getSelection());
-			}
-		});
-		
-		tlitmWrap = new ToolItem(toolBar, SWT.CHECK);
-		tlitmWrap.setToolTipText("Wrap text");
-		tlitmWrap.setSelection(true);
-		tlitmWrap.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				inputText.setWordWrap(tlitmWrap.getSelection());
-			}
-		});
-		
-		setupButtons();
+			});
+			
+			tlitmSaveHistory = new ToolItem(toolBar, SWT.NONE);
+			tlitmSaveHistory.setToolTipText("Save history");
+			tlitmSaveHistory.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					ensureSaveDialogExists();
+					saveDialog.setText("Save History");
+					String fname = saveDialog.open();
+					if (fname == null)
+						return;
+					try {
+						BufferedWriter f = new BufferedWriter(new FileWriter(fname));
+						for (int i = 0; i < getHistorySize(); i++) {
+							f.write("// History item #" + (i + 1) + "\n");
+							f.write(getHistoryItemAt(i));
+							f.write("\n\n");
+						}
+						f.write("// Current entry" + "\n");
+						f.write(inputText.getText());
+						f.close();
+						announcement("Saved " + fname);
+					} catch (IOException ioe) {
+						announceError(ioe.toString(), ioe);
+					}
+				}
+			});
+			
+			tlitmCopyToOutput = new ToolItem(toolBar, SWT.CHECK);
+			tlitmCopyToOutput.setToolTipText("Copy input to output");
+			tlitmCopyToOutput.setSelection(true);
+			tlitmCopyToOutput.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					setCopyInputToOutput(tlitmCopyToOutput.getSelection());
+				}
+			});
+			
+			tlitmWrap = new ToolItem(toolBar, SWT.CHECK);
+			tlitmWrap.setToolTipText("Wrap text");
+			tlitmWrap.setSelection(true);
+			tlitmWrap.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					inputText.setWordWrap(tlitmWrap.getSelection());
+				}
+			});
+			
+			setupButtons();
+		}
 		
 		setupIcons();		
 		iconPreferenceChangeListener = new PreferenceChangeAdapter("CmdPanelInput_icon") {
@@ -307,6 +309,8 @@ public class CmdPanelInput extends Composite {
 	}
 	
 	private void setupIcons() {
+		if (tlitmPrevHistory == null)
+			return;		
 		tlitmPrevHistory.setImage(IconLoader.loadIcon("previousIcon"));
 		tlitmNextHistory.setImage(IconLoader.loadIcon("nextIcon"));
 		tlitmClear.setImage(IconLoader.loadIcon("clearIcon"));
@@ -315,7 +319,7 @@ public class CmdPanelInput extends Composite {
 		tlitmSave.setImage(IconLoader.loadIcon("saveIcon"));
 		tlitmSaveHistory.setImage(IconLoader.loadIcon("saveHistoryIcon"));
 		tlitmCopyToOutput.setImage(IconLoader.loadIcon("copyToOutputIcon"));
-		tlitmWrap.setImage(IconLoader.loadIcon("wrapIcon"));		
+		tlitmWrap.setImage(IconLoader.loadIcon("wrapIcon"));
 	}
 
 	private void setupFont() {
@@ -396,7 +400,11 @@ public class CmdPanelInput extends Composite {
 			System.out.println("CmdPanelInput: Unable to locate error in " + errorBuffer.toString());
 		errorBuffer = null;
 	}
-		
+
+	public void setText(String text) {
+		inputText.setText(text);
+	}
+
 	private void showRunningStart() {
 		cmdPanelBottom.setEnabledRunButton(false);		
 	}
@@ -460,6 +468,8 @@ public class CmdPanelInput extends Composite {
 
 	/** Set up history button status. */
 	private void setupButtons() {
+		if (tlitmPrevHistory == null)
+			return;
 		tlitmPrevHistory.setEnabled(currentHistoryItem > 0 && getHistorySize() > 1);
 		tlitmNextHistory.setEnabled(currentHistoryItem < getHistorySize() - 1 && getHistorySize() > 1);
 	}

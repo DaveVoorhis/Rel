@@ -8,7 +8,7 @@ import org.reldb.dbrowser.ui.content.rel.RelPanel;
 
 public class DbTreeTab extends CTabItem {
 	
-	private RelPanel relPanel;
+	protected RelPanel relPanel;
 	
 	public DbTreeTab(RelPanel parent, DbTreeItem item) {
 		super(parent.getTabFolder(), SWT.NONE);

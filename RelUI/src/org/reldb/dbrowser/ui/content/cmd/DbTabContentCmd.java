@@ -22,7 +22,7 @@ public class DbTabContentCmd extends Composite {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 		
-		cmdPanel = new CmdPanel(parentTab, this, SWT.None);
+		cmdPanel = new CmdPanel(parentTab.getConnection(), this, CmdPanel.NONE);
 
 		CmdPanelToolbar toolBar = new CmdPanelToolbar(this, cmdPanel.getCmdPanelOutput()) {
 			public void addAdditionalItems(ToolBar toolbar) {

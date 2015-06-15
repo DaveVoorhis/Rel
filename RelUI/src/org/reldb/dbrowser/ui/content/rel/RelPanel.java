@@ -26,6 +26,7 @@ import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.content.rel.constraint.ConstraintCreator;
 import org.reldb.dbrowser.ui.content.rel.constraint.ConstraintDesigner;
 import org.reldb.dbrowser.ui.content.rel.constraint.ConstraintDropper;
+import org.reldb.dbrowser.ui.content.rel.constraint.ConstraintPlayer;
 import org.reldb.dbrowser.ui.content.rel.operator.OperatorCreator;
 import org.reldb.dbrowser.ui.content.rel.operator.OperatorDesigner;
 import org.reldb.dbrowser.ui.content.rel.operator.OperatorDropper;
@@ -36,6 +37,7 @@ import org.reldb.dbrowser.ui.content.rel.query.QueryDropper;
 import org.reldb.dbrowser.ui.content.rel.query.QueryPlayer;
 import org.reldb.dbrowser.ui.content.rel.type.TypeCreator;
 import org.reldb.dbrowser.ui.content.rel.type.TypeDropper;
+import org.reldb.dbrowser.ui.content.rel.type.TypePlayer;
 import org.reldb.dbrowser.ui.content.rel.var.VarRealCreator;
 import org.reldb.dbrowser.ui.content.rel.var.VarRealDesigner;
 import org.reldb.dbrowser.ui.content.rel.var.VarRealDropper;
@@ -289,10 +291,10 @@ public class RelPanel extends Composite {
 			new OperatorPlayer(this), new OperatorCreator(this), new OperatorDropper(this), new OperatorDesigner(this));
 		
 		buildSubtree("Type", "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
-			null, new TypeCreator(this), new TypeDropper(this), null);
+			new TypePlayer(this), new TypeCreator(this), new TypeDropper(this), null);
 		
 		buildSubtree("Constraint", "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
-			null, new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this));
+			new ConstraintPlayer(this), new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this));
 		
 		if (connection.hasRevExtensions() >= 0) {
 			buildSubtree("Query", "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
