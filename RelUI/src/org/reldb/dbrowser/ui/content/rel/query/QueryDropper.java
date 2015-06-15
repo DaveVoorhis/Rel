@@ -24,7 +24,7 @@ public class QueryDropper extends DbTreeAction {
 				return;
 			RevDatabase database = new RevDatabase(relPanel.getConnection());
 			if (!database.modelDelete(item.getName()))
-				MessageDialog.openError(relPanel.getShell(), "Error", "Unable to delete query " + item.getName() + ". Check the system log for details.");
+				MessageDialog.openError(relPanel.getShell(), "Error", "Unable to drop query " + item.getName() + ". Check the system log for details.");
 			else
 				relPanel.redisplayed();
 		}

@@ -2,7 +2,10 @@ package org.reldb.dbrowser.ui.content.rel.operator;
 
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
+import org.reldb.dbrowser.ui.content.rel.NaiveShowTab;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
+import org.reldb.rel.client.Tuple;
+import org.reldb.rel.client.Tuples;
 
 public class OperatorPlayer extends DbTreeAction {
 
@@ -12,8 +15,13 @@ public class OperatorPlayer extends DbTreeAction {
 
 	@Override
 	public void go(DbTreeItem item) {
-		// TODO Auto-generated method stub
-
+		Tuples tuples = relPanel.getConnection().getTuples("(sys.Operators WHERE Name='" + item.getName() + "') {Definition}");
+		String definition = "???";
+		if (tuples != null)
+			for (Tuple tuple: tuples)
+				definition = tuple.getAttributeValue("Definition").toString();
+		NaiveShowTab typetab = new NaiveShowTab(relPanel, item, definition);
+		relPanel.getTabFolder().setSelection(typetab);
 	}
 
 }

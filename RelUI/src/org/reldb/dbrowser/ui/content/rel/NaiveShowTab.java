@@ -25,6 +25,7 @@ public class NaiveShowTab extends DbTreeTab {
 	protected Composite getContents(Composite parent) {
 		definition = new StyledText(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		definition.setEditable(false);
+		definition.setWordWrap(true);
 		return definition;
 	}
 
