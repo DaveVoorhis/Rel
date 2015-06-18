@@ -2,6 +2,9 @@ package org.reldb.dbrowser.ui.content.rel.var;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -31,12 +34,17 @@ public class EditTable extends DbTreeTab {
 	}
 
 	protected Composite getContents(Composite parent) {
+		Color changeColor = new Color(parent.getDisplay(), 240, 240, 128);
+		
 		Table table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 
 		Tuples tuples = getTuples();
 
+		TableColumn rowMarker = new TableColumn(table, SWT.NONE);
+		rowMarker.setText(" ");
+		
 		Heading heading = tuples.getHeading();
 		for (Attribute attribute : heading.toArray()) {
 			TableColumn column = new TableColumn(table, SWT.NONE);
@@ -44,31 +52,40 @@ public class EditTable extends DbTreeTab {
 			column.setToolTipText(attribute.getType().toString());
 		}
 
+		// relvar tuples
 		for (Tuple tuple : tuples) {
 			TableItem item = new TableItem(table, SWT.NONE);
+			item.setText(" ");
 			for (int i = 0; i < heading.getCardinality(); i++)
-				item.setText(i, tuple.getAttributeValue(i).toString());
+				item.setText(i + 1, tuple.getAttributeValue(i).toString());
 		}
 
+		// blank "new" tuple
+		TableItem item = new TableItem(table, SWT.NONE);
+		item.setText(0, "+");
+		for (int i = 0; i < heading.getCardinality(); i++)
+			item.setText(i + 1, "");		
+		
 		for (int i = 0; i < table.getColumnCount(); i++)
 			table.getColumn(i).pack();
 
 		final TableEditor editor = new TableEditor(table);
 		editor.horizontalAlignment = SWT.LEFT;
 		editor.grabHorizontal = true;
-		table.addListener(SWT.MouseDown, new Listener() {
+		
+		Listener editListener = new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				Rectangle clientArea = table.getClientArea();
 				Point pt = new Point(event.x, event.y);
-				int index = table.getTopIndex();
-				while (index < table.getItemCount()) {
+				int row = table.getTopIndex();
+				while (row < table.getItemCount()) {
 					boolean visible = false;
-					final TableItem item = table.getItem(index);
-					for (int i = 0; i < table.getColumnCount(); i++) {
-						Rectangle rect = item.getBounds(i);
+					final TableItem item = table.getItem(row);
+					for (int col = 1; col < table.getColumnCount(); col++) {
+						Rectangle rect = item.getBounds(col);
 						if (rect.contains(pt)) {
-							final int column = i;
+							final int column = col;
 							final Text text = new Text(table, SWT.NONE);
 							Listener textListener = new Listener() {
 								@Override
@@ -93,8 +110,14 @@ public class EditTable extends DbTreeTab {
 							};
 							text.addListener(SWT.FocusOut, textListener);
 							text.addListener(SWT.Traverse, textListener);
-							editor.setEditor(text, item, i);
-							text.setText(item.getText(i));
+							text.addModifyListener(new ModifyListener() {
+								public void modifyText(ModifyEvent e) {
+									if (!item.getText(column).equals(text.getText()))
+										item.setBackground(column, changeColor);
+								}								
+							});
+							editor.setEditor(text, item, column);
+							text.setText(item.getText(column));
 							text.selectAll();
 							text.setFocus();
 							return;
@@ -105,10 +128,12 @@ public class EditTable extends DbTreeTab {
 					}
 					if (!visible)
 						return;
-					index++;
+					row++;
 				}
 			}
-		});
+		};
+		
+		table.addListener(SWT.MouseDown, editListener);
 
 		return table;
 	}
