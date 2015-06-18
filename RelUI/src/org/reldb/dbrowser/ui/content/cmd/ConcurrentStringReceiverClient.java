@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui;
+package org.reldb.dbrowser.ui.content.cmd;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;

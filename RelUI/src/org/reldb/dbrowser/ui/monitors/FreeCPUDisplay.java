@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.widgets.monitors;
+package org.reldb.dbrowser.ui.monitors;
 
 import java.lang.management.ManagementFactory;
 

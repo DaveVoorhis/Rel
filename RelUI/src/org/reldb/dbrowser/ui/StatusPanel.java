@@ -6,8 +6,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
-import org.reldb.dbrowser.ui.widgets.monitors.FreeCPUDisplay;
-import org.reldb.dbrowser.ui.widgets.monitors.FreeMemoryDisplay;
+import org.reldb.dbrowser.ui.monitors.FreeCPUDisplay;
+import org.reldb.dbrowser.ui.monitors.FreeMemoryDisplay;
 
 public class StatusPanel extends Composite {
 	private FreeCPUDisplay freeCPU;

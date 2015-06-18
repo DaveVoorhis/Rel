@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Lars Vogel <lars.Vogel@gmail.com> - Bug 419770
  *******************************************************************************/
-package org.reldb.dbrowser.ui;
+package org.reldb.dbrowser.ui.content.rel.view;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

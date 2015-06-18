@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.monitor;
+package log;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

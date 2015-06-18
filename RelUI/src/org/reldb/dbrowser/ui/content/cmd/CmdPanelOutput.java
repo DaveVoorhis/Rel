@@ -12,7 +12,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Color;
-import org.reldb.dbrowser.ui.ConcurrentStringReceiverClient;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.html.BrowserManager;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;

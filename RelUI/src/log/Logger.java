@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.monitor;
+package log;
 
 public interface Logger {
 	void log(String s);
