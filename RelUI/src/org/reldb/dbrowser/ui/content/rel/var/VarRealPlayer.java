@@ -12,8 +12,8 @@ public class VarRealPlayer extends DbTreeAction {
 
 	@Override
 	public void go(DbTreeItem item) {
-		// TODO Auto-generated method stub
-
+		EditTable table = new EditTable(relPanel, item);
+		relPanel.getTabFolder().setSelection(table);
 	}
 
 }
