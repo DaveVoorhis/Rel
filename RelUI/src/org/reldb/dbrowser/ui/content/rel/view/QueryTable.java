@@ -32,8 +32,11 @@ public class QueryTable extends DbTreeTab {
 		Tuples tuples = getTuples();
 		
 		Heading heading = tuples.getHeading();
-		for (Attribute attribute: heading.toArray())
-			(new TableColumn(table, SWT.NONE)).setText(attribute.getName());
+		for (Attribute attribute: heading.toArray()) {
+			TableColumn column = new TableColumn(table, SWT.NONE);
+			column.setText(attribute.getName());
+			column.setToolTipText(attribute.getType().toString());
+		}
 		
 		for (Tuple tuple: tuples) {
 			TableItem item = new TableItem(table, SWT.NONE);
