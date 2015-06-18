@@ -9,11 +9,13 @@ import org.reldb.dbrowser.ui.content.rel.RelPanel;
 public class DbTreeTab extends CTabItem {
 	
 	protected RelPanel relPanel;
+	protected DbTreeItem dbTreeItem;
 	
-	public DbTreeTab(RelPanel parent, DbTreeItem item) {
+	public DbTreeTab(RelPanel parent, DbTreeItem dbTreeItem) {
 		super(parent.getTabFolder(), SWT.NONE);
 		this.relPanel = parent;
-		setText(item.getTabName());
+		this.dbTreeItem = dbTreeItem;
+		setText(dbTreeItem.getTabName());
 	}
 
 	public void ready() {

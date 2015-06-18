@@ -2,10 +2,7 @@ package org.reldb.dbrowser.ui.content.rel.view;
 
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
-import org.reldb.dbrowser.ui.content.rel.NaiveShowTab;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
-import org.reldb.rel.client.Tuple;
-import org.reldb.rel.client.Tuples;
 
 public class VarViewPlayer extends DbTreeAction {
 
@@ -15,13 +12,8 @@ public class VarViewPlayer extends DbTreeAction {
 
 	@Override
 	public void go(DbTreeItem item) {
-		Tuples tuples = relPanel.getConnection().getTuples("(sys.Catalog WHERE Name='" + item.getName() + "' AND isVirtual) {Definition}");
-		String definition = "???";
-		if (tuples != null)
-			for (Tuple tuple: tuples)
-				definition = tuple.getAttributeValue("Definition").toString();
-		NaiveShowTab typetab = new NaiveShowTab(relPanel, item, definition);
-		relPanel.getTabFolder().setSelection(typetab);
+		QueryTable table = new QueryTable(relPanel, item);
+		relPanel.getTabFolder().setSelection(table);
 	}
 
 }
