@@ -245,7 +245,7 @@ public class EditTable extends DbTreeTab {
 		editor.horizontalAlignment = SWT.LEFT;
 		editor.grabHorizontal = true;
 		
-		Listener editListener = new Listener() {
+		Listener mouseListener = new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				Rectangle clientArea = table.getClientArea();
@@ -331,8 +331,19 @@ public class EditTable extends DbTreeTab {
 			}
 		};
 		
-		if (!readonly)
-			table.addListener(SWT.MouseDown, editListener);
+		Listener keyListener = new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (event.character == '\u0008' || event.character == '\u007F') {
+					System.out.println("EditTable: delete selected");
+				}
+			}
+		};
+		
+		if (!readonly) {
+			table.addListener(SWT.MouseDown, mouseListener);
+			table.addListener(SWT.KeyUp, keyListener);
+		}
 
 		return table;
 	}
