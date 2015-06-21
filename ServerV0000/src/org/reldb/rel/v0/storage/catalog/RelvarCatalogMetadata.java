@@ -22,6 +22,15 @@ public class RelvarCatalogMetadata extends RelvarMetadata {
 		heading.add("Owner", TypeCharacter.getInstance());
 		heading.add("CreationSequence", TypeInteger.getInstance());
 		heading.add("isVirtual", TypeBoolean.getInstance());
+		Heading attributesHeading = new Heading();
+		attributesHeading.add("Name", TypeCharacter.getInstance());
+		attributesHeading.add("TypeName", TypeCharacter.getInstance());
+		heading.add("Attributes", new TypeRelation(attributesHeading));
+		Heading keyHeading = new Heading();
+		keyHeading.add("Name", TypeCharacter.getInstance());
+		Heading keysHeading = new Heading();
+		keysHeading.add("Attributes", new TypeRelation(keyHeading));
+		heading.add("Keys", new TypeRelation(keysHeading));
 		return heading;
 	}
 	

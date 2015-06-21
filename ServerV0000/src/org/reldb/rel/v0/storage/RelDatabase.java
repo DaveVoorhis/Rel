@@ -30,6 +30,8 @@ import org.reldb.rel.v0.storage.tables.KeyTables;
 import org.reldb.rel.v0.storage.tables.RegisteredTupleIterator;
 import org.reldb.rel.v0.storage.tables.Table;
 import org.reldb.rel.v0.storage.tables.TablePrivate;
+import org.reldb.rel.v0.types.Attribute;
+import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.types.TypeAlpha;
 import org.reldb.rel.v0.types.builtin.*;
 import org.reldb.rel.v0.values.*;
@@ -875,13 +877,78 @@ public class RelDatabase {
 			public ValueTuple next() {
 				if (hasNext())
 					try {
+						RelvarHeading relvarHeading = current.getHeadingDefinition(RelDatabase.this);
+						Heading heading = relvarHeading.getHeading();
+						Vector<Attribute> attributes = heading.getAttributes();
+						ValueRelation attributeRelation = new ValueRelation(generator) {
+							private static final long serialVersionUID = 1L;
+							@Override
+							public TupleIterator newIterator() {
+								Iterator<Attribute> iterator = attributes.iterator();
+								return new TupleIterator() {
+									@Override
+									public boolean hasNext() {
+										return iterator.hasNext();
+									}
+									@Override
+									public ValueTuple next() {
+										Attribute attribute = iterator.next();
+										Value[] tupleValues = new Value[] {
+												ValueCharacter.select(generator, attribute.getName()),
+												ValueCharacter.select(generator, attribute.getType().getSignature())
+										};
+										return new ValueTuple(generator, tupleValues);
+									}
+									@Override
+									public void close() {
+									}
+								};
+							}
+							@Override
+							public int hashCode() {
+								return attributes.hashCode();
+							}
+						};
+						int keyCount = relvarHeading.getKeyCount();
+						ValueRelation keysRelation = new ValueRelation(generator) {
+							private static final long serialVersionUID = 1L;
+							@Override
+							public TupleIterator newIterator() {
+								return new TupleIterator() {
+									int keyNumber = 0;
+									@Override
+									public boolean hasNext() {
+										return keyNumber < keyCount;
+									}
+									@Override
+									public ValueTuple next() {
+										ValueRelationLiteral keyDef = new ValueRelationLiteral(generator);
+										for (String attributeName: relvarHeading.getKey(keyNumber).getNames()) {
+											ValueCharacter attributeNameChar = ValueCharacter.select(generator, attributeName);
+											keyDef.insert(new ValueTuple(generator, new Value[] {attributeNameChar}));
+										}
+										keyNumber++;
+										return new ValueTuple(generator, new Value[] {keyDef});
+									}
+									@Override
+									public void close() {
+									}
+								};
+							}
+							@Override
+							public int hashCode() {
+								return attributes.hashCode();
+							}
+						};
 						// This must parallel the Heading defined by getNewHeading() in RelvarCatalogMetadata
 						Value[] values = new Value[] {
 							ValueCharacter.select(generator, currentKey),
 							ValueCharacter.select(generator, current.getSourceDefinition()),
 							ValueCharacter.select(generator, current.getOwner()),
 							ValueInteger.select(generator, current.getCreationSequence()),
-							ValueBoolean.select(generator, current.isVirtual())
+							ValueBoolean.select(generator, current.isVirtual()),
+							attributeRelation,
+							keysRelation
 						};
  						return new ValueTuple(generator, values);
 					} finally {

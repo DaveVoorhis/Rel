@@ -1,9 +1,13 @@
 package org.reldb.dbrowser.ui.content.rel.var;
 
+import java.util.HashSet;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -23,6 +27,15 @@ import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Heading;
 
 public class EditTable extends DbTreeTab {
+	
+	Color changeColor = new Color(getDisplay(), 240, 240, 128);
+	Color failColor = new Color(getDisplay(), 240, 128, 128);
+
+	private Table table;	
+	private HashSet<Integer> rowNeedsUpdate = new HashSet<Integer>();
+	private int focusCount = 0;
+	private Timer updateTimer = new Timer();
+	private int lastUpdatedRow = -1;
 
 	public EditTable(RelPanel parent, DbTreeItem item) {
 		super(parent, item);
@@ -32,13 +45,56 @@ public class EditTable extends DbTreeTab {
 	protected Tuples getTuples() {
 		return relPanel.getConnection().getTuples(dbTreeItem.getName());
 	}
-
+	
+	private synchronized void updateRows() {
+		for (Integer rownum: rowNeedsUpdate) {
+			TableItem updateRow = table.getItem(rownum);
+			
+			boolean updateSucceeds = Math.random() > 0.75;
+			
+			if (updateSucceeds) {
+				for (int c = 1; c < table.getColumnCount(); c++)
+					updateRow.setBackground(c, null);
+				updateRow.setText(0, " ");
+			} else {
+				for (int c = 1; c < table.getColumnCount(); c++)
+					updateRow.setBackground(c, failColor);
+				updateRow.setText(0, "!");				
+			}
+		}
+		rowNeedsUpdate.clear();		
+	}
+	
+	private void updateTimerReset() {
+		updateTimer.cancel();
+		updateTimer = new Timer();
+		updateTimer.schedule(new TimerTask() {
+			public void run() {
+				if (focusCount == 0) {
+					getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							updateRows();
+						}
+					});
+				}
+			}
+		}, 500);
+	}
+	
 	protected Composite getContents(Composite parent) {
-		Color changeColor = new Color(parent.getDisplay(), 240, 240, 128);
-		
-		Table table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+		table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
+		
+		table.addFocusListener(new FocusListener() {
+			public void focusLost(FocusEvent e) {
+				focusCount--;
+				updateTimerReset();
+			}
+			public void focusGained(FocusEvent e) {
+				focusCount++;
+			}
+		});
 
 		Tuples tuples = getTuples();
 
@@ -78,8 +134,9 @@ public class EditTable extends DbTreeTab {
 			public void handleEvent(Event event) {
 				Rectangle clientArea = table.getClientArea();
 				Point pt = new Point(event.x, event.y);
-				int row = table.getTopIndex();
+				int row = table.getTopIndex() - 1;
 				while (row < table.getItemCount()) {
+					final int rownum = row;
 					boolean visible = false;
 					final TableItem item = table.getItem(row);
 					for (int col = 1; col < table.getColumnCount(); col++) {
@@ -91,31 +148,40 @@ public class EditTable extends DbTreeTab {
 								@Override
 								public void handleEvent(final Event e) {
 									switch (e.type) {
-									case SWT.FocusOut:
-										item.setText(column, text.getText());
-										text.dispose();
+									case SWT.FocusIn:
+										focusCount++;
 										break;
+									case SWT.FocusOut:
+										e.detail = SWT.TRAVERSE_RETURN;
+										// FALL THROUGH
 									case SWT.Traverse:
 										switch (e.detail) {
 										case SWT.TRAVERSE_RETURN:
-											item.setText(column, text.getText());
+											if (lastUpdatedRow >= 0 && lastUpdatedRow != rownum) {
+												updateRows();
+												lastUpdatedRow = -1;
+											}
+											if (!item.getText(column).equals(text.getText())) {
+												item.setBackground(column, changeColor);
+												rowNeedsUpdate.add(rownum);
+												lastUpdatedRow = rownum;
+												item.setText(column, text.getText());
+												item.setText(0, ">");
+											}
 											// FALL THROUGH
 										case SWT.TRAVERSE_ESCAPE:
+											focusCount--;
 											text.dispose();
 											e.doit = false;
+											updateTimerReset();
 										}
 										break;
 									}
 								}
 							};
+							text.addListener(SWT.FocusIn, textListener);
 							text.addListener(SWT.FocusOut, textListener);
 							text.addListener(SWT.Traverse, textListener);
-							text.addModifyListener(new ModifyListener() {
-								public void modifyText(ModifyEvent e) {
-									if (!item.getText(column).equals(text.getText()))
-										item.setBackground(column, changeColor);
-								}								
-							});
 							editor.setEditor(text, item, column);
 							text.setText(item.getText(column));
 							text.selectAll();
