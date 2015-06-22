@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.FocusEvent;
@@ -32,6 +33,8 @@ import org.reldb.rel.utilities.StringUtils;
 
 public class EditTable extends DbTreeTab {
 	
+	private static boolean askDeleteConfirm = true;
+	
 	Color changeColor = new Color(getDisplay(), 240, 240, 128);
 	Color failColor = new Color(getDisplay(), 240, 128, 128);
 
@@ -51,11 +54,16 @@ public class EditTable extends DbTreeTab {
 
 	public EditTable(RelPanel parent, DbTreeItem item) {
 		super(parent, item);
+		refresh();
+	}
+	
+	public void refresh() {
 		obtainKeyDefinitions();
-		setControl(getContents(parent.getTabFolder()));
+		setControl(getContents(relPanel.getTabFolder()));		
 	}
 
 	private void obtainKeyDefinitions() {
+		keyAttributeNames.clear();
 		Tuples keyDefinitions = (Tuples)relPanel.getConnection().evaluate("((sys.Catalog WHERE Name = '" + dbTreeItem.getName() + "') {Keys}) UNGROUP Keys");
 		for (Tuple keyDefinition: keyDefinitions) {
 			Tuples keyAttributes = (Tuples)(keyDefinition.get("Attributes"));
@@ -72,11 +80,10 @@ public class EditTable extends DbTreeTab {
 		return relPanel.getConnection().getTuples(dbTreeItem.getName());
 	}
 	
-	private void updateRow(TableItem updateRow, int rownum) {
+	private String getKeySelectionExpression(Vector<String> keyValues) {
 		String keyspec = "";
 		int index = 0;
 		for (Integer keyColumn: keyColumnNumbers) {
-			Vector<String> keyValues = originalKeyValues.get(rownum);
 			if (keyspec.length() > 0)
 				keyspec += " AND ";
 			String preparedAttribute = keyValues.get(index);
@@ -85,6 +92,24 @@ public class EditTable extends DbTreeTab {
 			keyspec += table.getColumn(keyColumn).getText() + " = " + preparedAttribute;
 			index++;
 		}
+		return keyspec;
+	}
+	
+	private Vector<String> getKeySelectionValuesForRow(TableItem row) {
+		Vector<String> keyValues = new Vector<String>();
+		for (Integer keyColumn: keyColumnNumbers) {
+			String currentValue = row.getText(keyColumn);
+			keyValues.add(currentValue);
+		}
+		return keyValues;
+	}
+	
+	private String getKeySelectionExpression(TableItem row) {
+		return getKeySelectionExpression(getKeySelectionValuesForRow(row));
+	}
+	
+	private void updateRow(TableItem updateRow, int rownum) {
+		String keyspec = getKeySelectionExpression(originalKeyValues.get(rownum));
 		
 		String updateQuery = "UPDATE " + dbTreeItem.getName() + " WHERE " + keyspec + ": {";
 		String updateAttributes = "";
@@ -207,6 +232,7 @@ public class EditTable extends DbTreeTab {
 		TableColumn rowMarker = new TableColumn(table, SWT.NONE);
 		rowMarker.setText(" ");
 		
+		rowNeedsProcessing.clear();
 		changedColumnNumbers.clear();
 		keyColumnNumbers.clear();
 		stringColumnNumbers.clear();
@@ -335,7 +361,9 @@ public class EditTable extends DbTreeTab {
 			@Override
 			public void handleEvent(Event event) {
 				if (event.character == '\u0008' || event.character == '\u007F') {
-					System.out.println("EditTable: delete selected");
+					askDeleteSelected();
+				} else if (event.keyCode == SWT.F5) {
+					refresh();
 				}
 			}
 		};
@@ -346,6 +374,39 @@ public class EditTable extends DbTreeTab {
 		}
 
 		return table;
+	}
+	
+	public void doDeleteSelected() {
+		String selection = "";
+		TableItem[] selectedRows = table.getSelection();
+		if (selectedRows.length == 0)
+			return;
+		for (TableItem row: selectedRows) {
+			if (selection.length() > 0)
+				selection += " OR ";
+			selection += "(" + getKeySelectionExpression(row) + ")";
+		}
+		String query = "DELETE " + dbTreeItem.getName() + " WHERE " + selection + ";";
+		
+		System.out.println(query);
+		
+		if (!relPanel.getConnection().execute(query))
+			MessageDialog.openError(relPanel.getShell(), "Error", "Unable to delete tuples.");
+		else
+			refresh();
+	}
+
+	public void askDeleteSelected() {
+		if (askDeleteConfirm) {
+			DeleteConfirmDialog confirmer = new DeleteConfirmDialog(relPanel.getShell(), table.getSelectionCount()) {
+				public void buttonPressed() {
+					askDeleteConfirm = getAskDeleteConfirm();
+				}
+			};
+			if (confirmer.open() != DeleteConfirmDialog.OK)
+				return;
+		}
+		doDeleteSelected();		
 	}
 
 }
