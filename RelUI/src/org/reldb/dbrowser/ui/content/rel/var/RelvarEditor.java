@@ -254,7 +254,7 @@ public class RelvarEditor {
 		}
 		String query = "DELETE " + relvarName + " WHERE " + selection + ";";
 		
-		System.out.println(query);
+		System.out.println("EditTable: query is " + query);
 		
 		if (!connection.execute(query))
 			MessageDialog.openError(parent.getShell(), "Error", "Unable to delete tuples.");
@@ -371,7 +371,7 @@ public class RelvarEditor {
 	}
 	
 	private void addRow(TableItem addRow, int rownum) {		
-		String insertQuery = "INSERT " + relvarName + " RELATION {TUPLE {";
+		String insertQuery = "D_INSERT " + relvarName + " RELATION {TUPLE {";
 		String insertAttributes = "";
 		for (int column = 1; column < table.getColumnCount(); column++) {
 			if (insertAttributes.length() > 0)
