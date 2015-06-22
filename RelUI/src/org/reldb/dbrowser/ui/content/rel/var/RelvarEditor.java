@@ -15,6 +15,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
@@ -60,10 +61,7 @@ public class RelvarEditor {
 		this.parent = parent;
 		this.connection = connection;
 		this.relvarName = relvarName;
-		refresh();
-	}
-	
-	public Composite getContents() {
+
 		table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
@@ -77,48 +75,6 @@ public class RelvarEditor {
 				focusCount++;
 			}
 		});
-
-		Tuples tuples = obtainTuples();
-
-		originalKeyValues.clear();
-		
-		TableColumn rowMarker = new TableColumn(table, SWT.NONE);
-		rowMarker.setText(" ");
-		
-		rowNeedsProcessing.clear();
-		changedColumnNumbers.clear();
-		keyColumnNumbers.clear();
-		stringColumnNumbers.clear();
-		int columnNumber = 1;
-		Heading heading = tuples.getHeading();
-		for (Attribute attribute : heading.toArray()) {
-			TableColumn column = new TableColumn(table, SWT.NONE);
-			String columnHeading = attribute.getName();
-			String columnType = attribute.getType().toString();
-			if (columnType.equalsIgnoreCase("CHARACTER") || columnType.equalsIgnoreCase("CHAR"))
-				stringColumnNumbers.add(columnNumber);
-			if (keyAttributeNames.contains(columnHeading)) {
-				column.setImage(IconLoader.loadIconSmall("bullet_key"));
-				keyColumnNumbers.add(columnNumber);
-			}
-			column.setText(columnHeading);
-			column.setToolTipText(attribute.getType().toString());
-			columnNumber++;
-		}
-
-		// relvar tuples
-		for (Tuple tuple : tuples) {
-			TableItem item = new TableItem(table, SWT.NONE);
-			item.setText(" ");
-			for (int i = 0; i < heading.getCardinality(); i++)
-				item.setText(i + 1, tuple.getAttributeValue(i).toString());
-		}
-
-		// blank "new" tuple
-		appendNewTuple();
-		
-		for (int i = 0; i < table.getColumnCount(); i++)
-			table.getColumn(i).pack();
 
 		final TableEditor editor = new TableEditor(table);
 		editor.horizontalAlignment = SWT.LEFT;
@@ -225,8 +181,62 @@ public class RelvarEditor {
 			table.addListener(SWT.MouseDown, mouseListener);
 			table.addListener(SWT.KeyUp, keyListener);
 		}
-
+		
+		refresh();
+	}
+	
+	public Control getControl() {
 		return table;
+	}
+	
+	public void refresh() {		
+		obtainKeyDefinitions();
+		
+		while (table.getColumnCount() > 0)
+			table.getColumn(0).dispose();
+		table.removeAll();
+		
+		Tuples tuples = obtainTuples();
+
+		originalKeyValues.clear();
+		
+		TableColumn rowMarker = new TableColumn(table, SWT.NONE);
+		rowMarker.setText(" ");
+		
+		rowNeedsProcessing.clear();
+		changedColumnNumbers.clear();
+		keyColumnNumbers.clear();
+		stringColumnNumbers.clear();
+		int columnNumber = 1;
+		Heading heading = tuples.getHeading();
+		for (Attribute attribute : heading.toArray()) {
+			TableColumn column = new TableColumn(table, SWT.NONE);
+			String columnHeading = attribute.getName();
+			String columnType = attribute.getType().toString();
+			if (columnType.equalsIgnoreCase("CHARACTER") || columnType.equalsIgnoreCase("CHAR"))
+				stringColumnNumbers.add(columnNumber);
+			if (keyAttributeNames.contains(columnHeading)) {
+				column.setImage(IconLoader.loadIconSmall("bullet_key"));
+				keyColumnNumbers.add(columnNumber);
+			}
+			column.setText(columnHeading);
+			column.setToolTipText(attribute.getType().toString());
+			columnNumber++;
+		}
+
+		// relvar tuples
+		for (Tuple tuple: tuples) {
+			TableItem item = new TableItem(table, SWT.NONE);
+			item.setText(" ");
+			for (int i = 0; i < heading.getCardinality(); i++)
+				item.setText(i + 1, tuple.getAttributeValue(i).toString());
+		}
+
+		// blank "new" tuple
+		appendNewTuple();
+		
+		for (int i = 0; i < table.getColumnCount(); i++)
+			table.getColumn(i).pack();
 	}
 	
 	public void doDeleteSelected() {
@@ -261,12 +271,13 @@ public class RelvarEditor {
 		}
 		doDeleteSelected();		
 	}
-	
-	public void refresh() {
-		obtainKeyDefinitions();
+
+	public void goToInsertRow() {
+		table.showItem(table.getItem(table.getItemCount()));
 	}
 
 	private void obtainKeyDefinitions() {
+		readonly = false;
 		keyAttributeNames.clear();
 		Tuples keyDefinitions = (Tuples)connection.evaluate("((sys.Catalog WHERE Name = '" + relvarName + "') {Keys}) UNGROUP Keys");
 		for (Tuple keyDefinition: keyDefinitions) {
