@@ -273,7 +273,11 @@ public class RelvarEditor {
 	}
 
 	public void goToInsertRow() {
-		table.showItem(table.getItem(table.getItemCount()));
+		if (table.getItemCount() < 0)
+			return;
+		TableItem insertionPoint = table.getItem(table.getItemCount() - 1);
+		table.showItem(insertionPoint);
+		table.setSelection(insertionPoint);
 	}
 
 	private void obtainKeyDefinitions() {
