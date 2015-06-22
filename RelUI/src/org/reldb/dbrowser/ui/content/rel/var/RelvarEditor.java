@@ -21,22 +21,20 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.IconLoader;
-import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
-import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
-import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Heading;
 import org.reldb.rel.utilities.StringUtils;
 
-public class EditTable extends DbTreeTab {
+public class RelvarEditor {
 	
 	private static boolean askDeleteConfirm = true;
 	
-	Color changeColor = new Color(getDisplay(), 240, 240, 128);
-	Color failColor = new Color(getDisplay(), 240, 128, 128);
+	private Color changeColor;
+	private Color failColor;
 
 	private HashSet<String> keyAttributeNames = new HashSet<String>();
 	private HashSet<Integer> keyColumnNumbers = new HashSet<Integer>();
@@ -51,166 +49,21 @@ public class EditTable extends DbTreeTab {
 	private Timer updateTimer = new Timer();
 	private int lastUpdatedRow = -1;
 	private boolean readonly = false;
+	
+	private Composite parent;
+	private DbConnection connection;
+	private String relvarName;
 
-	public EditTable(RelPanel parent, DbTreeItem item) {
-		super(parent, item);
+	public RelvarEditor(Composite parent, DbConnection connection, String relvarName) {
+		changeColor = new Color(parent.getDisplay(), 240, 240, 128);
+		failColor = new Color(parent.getDisplay(), 240, 128, 128);
+		this.parent = parent;
+		this.connection = connection;
+		this.relvarName = relvarName;
 		refresh();
 	}
 	
-	public void refresh() {
-		obtainKeyDefinitions();
-		setControl(getContents(relPanel.getTabFolder()));		
-	}
-
-	private void obtainKeyDefinitions() {
-		keyAttributeNames.clear();
-		Tuples keyDefinitions = (Tuples)relPanel.getConnection().evaluate("((sys.Catalog WHERE Name = '" + dbTreeItem.getName() + "') {Keys}) UNGROUP Keys");
-		for (Tuple keyDefinition: keyDefinitions) {
-			Tuples keyAttributes = (Tuples)(keyDefinition.get("Attributes"));
-			for (Tuple keyAttribute: keyAttributes) {
-				String name = keyAttribute.get("Name").toString();
-				keyAttributeNames.add(name);
-			}
-			return;
-		}
-		readonly = true;
-	}
-	
-	private Tuples obtainTuples() {
-		return relPanel.getConnection().getTuples(dbTreeItem.getName());
-	}
-	
-	private String getKeySelectionExpression(Vector<String> keyValues) {
-		String keyspec = "";
-		int index = 0;
-		for (Integer keyColumn: keyColumnNumbers) {
-			if (keyspec.length() > 0)
-				keyspec += " AND ";
-			String preparedAttribute = keyValues.get(index);
-			if (stringColumnNumbers.contains(keyColumn))
-				preparedAttribute = "'" + StringUtils.quote(preparedAttribute) + "'";
-			keyspec += table.getColumn(keyColumn).getText() + " = " + preparedAttribute;
-			index++;
-		}
-		return keyspec;
-	}
-	
-	private Vector<String> getKeySelectionValuesForRow(TableItem row) {
-		Vector<String> keyValues = new Vector<String>();
-		for (Integer keyColumn: keyColumnNumbers) {
-			String currentValue = row.getText(keyColumn);
-			keyValues.add(currentValue);
-		}
-		return keyValues;
-	}
-	
-	private String getKeySelectionExpression(TableItem row) {
-		return getKeySelectionExpression(getKeySelectionValuesForRow(row));
-	}
-	
-	private void updateRow(TableItem updateRow, int rownum) {
-		String keyspec = getKeySelectionExpression(originalKeyValues.get(rownum));
-		
-		String updateQuery = "UPDATE " + dbTreeItem.getName() + " WHERE " + keyspec + ": {";
-		String updateAttributes = "";
-		HashSet<Integer> changedColumns = changedColumnNumbers.get(rownum);
-		for (Integer changedColumn: changedColumns) {
-			if (updateAttributes.length() > 0)
-				updateAttributes += ", ";
-			String preparedAttribute = table.getItem(rownum).getText(changedColumn);
-			if (stringColumnNumbers.contains(changedColumn))
-				preparedAttribute = "'" + StringUtils.quote(preparedAttribute) + "'";
-			updateAttributes += table.getColumn(changedColumn).getText() + " := " + preparedAttribute;
-		}
-		updateQuery += updateAttributes + "};";
-
-		System.out.println("EditTable: query is " + updateQuery);
-		
-		boolean updateSucceeds = relPanel.getConnection().execute(updateQuery);
-		
-		if (updateSucceeds) {
-			for (int c = 1; c < table.getColumnCount(); c++)
-				updateRow.setBackground(c, null);
-			updateRow.setText(0, " ");
-			originalKeyValues.remove(rownum);
-			changedColumnNumbers.remove(rownum);
-		} else {
-			for (int c = 1; c < table.getColumnCount(); c++)
-				updateRow.setBackground(c, failColor);
-			updateRow.setText(0, "!");	
-		}		
-	}
-
-	private void appendNewTuple() {
-		TableItem item = new TableItem(table, SWT.NONE);
-		item.setText(0, "+");
-		for (int i = 0; i < table.getColumnCount() - 1; i++)
-			item.setText(i + 1, "");		
-	}
-	
-	private void addRow(TableItem addRow, int rownum) {		
-		String insertQuery = "INSERT " + dbTreeItem.getName() + " RELATION {TUPLE {";
-		String insertAttributes = "";
-		for (int column = 1; column < table.getColumnCount(); column++) {
-			if (insertAttributes.length() > 0)
-				insertAttributes += ", ";
-			String preparedAttribute = table.getItem(rownum).getText(column);
-			if (stringColumnNumbers.contains(column))
-				preparedAttribute = "'" + StringUtils.quote(preparedAttribute) + "'";
-			insertAttributes += table.getColumn(column).getText() + " " + preparedAttribute;
-		}
-		insertQuery += insertAttributes + "}};";
-
-		System.out.println("EditTable: query is " + insertQuery);
-		
-		boolean updateSucceeds = relPanel.getConnection().execute(insertQuery);
-
-		if (updateSucceeds) {
-			for (int c = 1; c < table.getColumnCount(); c++)
-				addRow.setBackground(c, null);
-			addRow.setText(0, " ");
-			originalKeyValues.remove(rownum);
-			changedColumnNumbers.remove(rownum);			
-			appendNewTuple();
-		} else {
-			for (int c = 1; c < table.getColumnCount(); c++)
-				addRow.setBackground(c, failColor);
-			addRow.setText(0, "*");	
-		}
-	}
-	
-	private synchronized void processRows() {
-		for (Integer rownum: rowNeedsProcessing) {			
-			TableItem processRow = table.getItem(rownum);
-			if (processRow.getText(0).equals("+") || processRow.getText(0).equals("*"))
-				addRow(processRow, rownum);
-			else
-				updateRow(processRow, rownum);
-		}
-		rowNeedsProcessing.clear();
-	}
-	
-	private void updateTimerReset() {
-		updateTimer.cancel();
-		updateTimer = new Timer();
-		updateTimer.schedule(new TimerTask() {
-			public void run() {
-				if (focusCount == 0) {
-					if (isDisposed())
-						return;
-					getDisplay().asyncExec(new Runnable() {
-						public void run() {
-							if (isDisposed())
-								return;
-							processRows();
-						}
-					});
-				}
-			}
-		}, 500);
-	}
-	
-	protected Composite getContents(Composite parent) {
+	public Composite getContents() {
 		table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
@@ -386,19 +239,19 @@ public class EditTable extends DbTreeTab {
 				selection += " OR ";
 			selection += "(" + getKeySelectionExpression(row) + ")";
 		}
-		String query = "DELETE " + dbTreeItem.getName() + " WHERE " + selection + ";";
+		String query = "DELETE " + relvarName + " WHERE " + selection + ";";
 		
 		System.out.println(query);
 		
-		if (!relPanel.getConnection().execute(query))
-			MessageDialog.openError(relPanel.getShell(), "Error", "Unable to delete tuples.");
+		if (!connection.execute(query))
+			MessageDialog.openError(parent.getShell(), "Error", "Unable to delete tuples.");
 		else
 			refresh();
 	}
 
 	public void askDeleteSelected() {
 		if (askDeleteConfirm) {
-			DeleteConfirmDialog confirmer = new DeleteConfirmDialog(relPanel.getShell(), table.getSelectionCount()) {
+			DeleteConfirmDialog confirmer = new DeleteConfirmDialog(parent.getShell(), table.getSelectionCount()) {
 				public void buttonPressed() {
 					askDeleteConfirm = getAskDeleteConfirm();
 				}
@@ -407,6 +260,158 @@ public class EditTable extends DbTreeTab {
 				return;
 		}
 		doDeleteSelected();		
+	}
+	
+	public void refresh() {
+		obtainKeyDefinitions();
+	}
+
+	private void obtainKeyDefinitions() {
+		keyAttributeNames.clear();
+		Tuples keyDefinitions = (Tuples)connection.evaluate("((sys.Catalog WHERE Name = '" + relvarName + "') {Keys}) UNGROUP Keys");
+		for (Tuple keyDefinition: keyDefinitions) {
+			Tuples keyAttributes = (Tuples)(keyDefinition.get("Attributes"));
+			for (Tuple keyAttribute: keyAttributes) {
+				String name = keyAttribute.get("Name").toString();
+				keyAttributeNames.add(name);
+			}
+			return;
+		}
+		readonly = true;
+	}
+	
+	private Tuples obtainTuples() {
+		return connection.getTuples(relvarName);
+	}
+	
+	private String getKeySelectionExpression(Vector<String> keyValues) {
+		String keyspec = "";
+		int index = 0;
+		for (Integer keyColumn: keyColumnNumbers) {
+			if (keyspec.length() > 0)
+				keyspec += " AND ";
+			String preparedAttribute = keyValues.get(index);
+			if (stringColumnNumbers.contains(keyColumn))
+				preparedAttribute = "'" + StringUtils.quote(preparedAttribute) + "'";
+			keyspec += table.getColumn(keyColumn).getText() + " = " + preparedAttribute;
+			index++;
+		}
+		return keyspec;
+	}
+	
+	private Vector<String> getKeySelectionValuesForRow(TableItem row) {
+		Vector<String> keyValues = new Vector<String>();
+		for (Integer keyColumn: keyColumnNumbers) {
+			String currentValue = row.getText(keyColumn);
+			keyValues.add(currentValue);
+		}
+		return keyValues;
+	}
+	
+	private String getKeySelectionExpression(TableItem row) {
+		return getKeySelectionExpression(getKeySelectionValuesForRow(row));
+	}
+	
+	private void updateRow(TableItem updateRow, int rownum) {
+		String keyspec = getKeySelectionExpression(originalKeyValues.get(rownum));
+		
+		String updateQuery = "UPDATE " + relvarName + " WHERE " + keyspec + ": {";
+		String updateAttributes = "";
+		HashSet<Integer> changedColumns = changedColumnNumbers.get(rownum);
+		for (Integer changedColumn: changedColumns) {
+			if (updateAttributes.length() > 0)
+				updateAttributes += ", ";
+			String preparedAttribute = table.getItem(rownum).getText(changedColumn);
+			if (stringColumnNumbers.contains(changedColumn))
+				preparedAttribute = "'" + StringUtils.quote(preparedAttribute) + "'";
+			updateAttributes += table.getColumn(changedColumn).getText() + " := " + preparedAttribute;
+		}
+		updateQuery += updateAttributes + "};";
+
+		System.out.println("EditTable: query is " + updateQuery);
+		
+		boolean updateSucceeds = connection.execute(updateQuery);
+		
+		if (updateSucceeds) {
+			for (int c = 1; c < table.getColumnCount(); c++)
+				updateRow.setBackground(c, null);
+			updateRow.setText(0, " ");
+			originalKeyValues.remove(rownum);
+			changedColumnNumbers.remove(rownum);
+		} else {
+			for (int c = 1; c < table.getColumnCount(); c++)
+				updateRow.setBackground(c, failColor);
+			updateRow.setText(0, "!");	
+		}		
+	}
+
+	private void appendNewTuple() {
+		TableItem item = new TableItem(table, SWT.NONE);
+		item.setText(0, "+");
+		for (int i = 0; i < table.getColumnCount() - 1; i++)
+			item.setText(i + 1, "");		
+	}
+	
+	private void addRow(TableItem addRow, int rownum) {		
+		String insertQuery = "INSERT " + relvarName + " RELATION {TUPLE {";
+		String insertAttributes = "";
+		for (int column = 1; column < table.getColumnCount(); column++) {
+			if (insertAttributes.length() > 0)
+				insertAttributes += ", ";
+			String preparedAttribute = table.getItem(rownum).getText(column);
+			if (stringColumnNumbers.contains(column))
+				preparedAttribute = "'" + StringUtils.quote(preparedAttribute) + "'";
+			insertAttributes += table.getColumn(column).getText() + " " + preparedAttribute;
+		}
+		insertQuery += insertAttributes + "}};";
+
+		System.out.println("EditTable: query is " + insertQuery);
+		
+		boolean updateSucceeds = connection.execute(insertQuery);
+
+		if (updateSucceeds) {
+			for (int c = 1; c < table.getColumnCount(); c++)
+				addRow.setBackground(c, null);
+			addRow.setText(0, " ");
+			originalKeyValues.remove(rownum);
+			changedColumnNumbers.remove(rownum);			
+			appendNewTuple();
+		} else {
+			for (int c = 1; c < table.getColumnCount(); c++)
+				addRow.setBackground(c, failColor);
+			addRow.setText(0, "*");	
+		}
+	}
+	
+	private synchronized void processRows() {
+		for (Integer rownum: rowNeedsProcessing) {			
+			TableItem processRow = table.getItem(rownum);
+			if (processRow.getText(0).equals("+") || processRow.getText(0).equals("*"))
+				addRow(processRow, rownum);
+			else
+				updateRow(processRow, rownum);
+		}
+		rowNeedsProcessing.clear();
+	}
+	
+	private void updateTimerReset() {
+		updateTimer.cancel();
+		updateTimer = new Timer();
+		updateTimer.schedule(new TimerTask() {
+			public void run() {
+				if (focusCount == 0) {
+					if (parent.isDisposed())
+						return;
+					parent.getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							if (parent.isDisposed())
+								return;
+							processRows();
+						}
+					});
+				}
+			}
+		}, 500);
 	}
 
 }
