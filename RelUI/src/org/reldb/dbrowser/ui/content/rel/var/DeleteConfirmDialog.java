@@ -57,7 +57,7 @@ public class DeleteConfirmDialog extends Dialog {
 		fd_lblPrompt.left = new FormAttachment(image, 10);
 		fd_lblPrompt.right = new FormAttachment(100, -10);
 		lblPrompt.setLayoutData(fd_lblPrompt);
-		lblPrompt.setText("Press OK to delete " + tupleCount + " tuples.  Press Cancel to do nothing.");
+		lblPrompt.setText("Press OK to delete " + tupleCount + " tuple" + ((tupleCount > 1) ? "s" : "") + ".  Press Cancel to do nothing.");
 		
 		Button btnNoAsk = new Button(container, SWT.CHECK);
 		FormData fd_btnNoAsk = new FormData();
