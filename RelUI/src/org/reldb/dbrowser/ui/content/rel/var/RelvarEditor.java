@@ -85,7 +85,10 @@ public class RelvarEditor {
 			public void handleEvent(Event event) {
 				Rectangle clientArea = table.getClientArea();
 				Point pt = new Point(event.x, event.y);
-				int row = table.getTopIndex() - 1;
+				int row = table.getTopIndex();
+				// get around apparent bug selecting first row if table.getItemCount() > 1
+				if (table.getItemCount() > 1)
+					row--;
 				while (row < table.getItemCount()) {
 					final int rownum = row;
 					boolean visible = false;
