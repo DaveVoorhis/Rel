@@ -2,6 +2,7 @@ package org.reldb.dbrowser.ui.content.rel.view;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CTabItem;
+import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
@@ -21,8 +22,9 @@ public class VarViewDropper extends DbTreeAction {
 		} else {
 			if (!MessageDialog.openConfirm(relPanel.getShell(), "Confirm DROP", "Are you sure you wish to drop var " + item.getName() + "?"))
 				return;
-			if (!relPanel.getConnection().execute("DROP VAR " + item.getName() + ";"))
-				MessageDialog.openError(relPanel.getShell(), "Error", "Unable to drop var " + item.getName() + ". Check the system log for details.");
+			DbConnection.ExecuteResult result = relPanel.getConnection().execute("DROP VAR " + item.getName() + ";");
+			if (result.failed())
+				MessageDialog.openError(relPanel.getShell(), "Error", "Unable to drop var " + item.getName() + ": " + result.getErrorMessage());
 			else
 				relPanel.redisplayed();
 		}

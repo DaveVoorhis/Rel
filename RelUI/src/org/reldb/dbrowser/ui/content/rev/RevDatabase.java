@@ -31,7 +31,12 @@ public class RevDatabase {
 	}
 	
 	private boolean execute(String query) {
-		return connection.execute(query);
+		DbConnection.ExecuteResult result = connection.execute(query);
+		if (result.failed()) {
+			System.out.println("Rev: Error: " + result.getErrorMessage());
+			return false;
+		}
+		return true;
 	}
 	
 	private Tuples getTuples(String query) {

@@ -90,24 +90,28 @@ public class DbConnection {
 		}
 	}
 	
-	public boolean execute(String query) {
+	public static class ExecuteResult {
+		private Response response;
+		public ExecuteResult(Response response) {
+			this.response = response;
+		}
+		public boolean failed() {
+			return (response == null || response.getResult() instanceof Error); 
+		}
+		public String getErrorMessage() {
+			if (response == null)
+				return "Connection failed.";
+			if (response.getResult() instanceof Error)
+				return ((Error)response.getResult()).getErrorMsg();
+			return "Unknown error.";
+		}
+	}
+	
+	public ExecuteResult execute(String query) {
 		try {
-			Response response = connection.execute(query);
-			if (response == null) {
-				System.out.println("DbConnection: Unable to obtain result of executing query.");
-				return false;
-			}
-			if (response.getResult() instanceof Error) {
-				Error error = (Error)response.getResult();
-				System.out.println("DbConnection: Query execute returns error. " + query + "\n" + error.getErrorMsg());
-				(new Throwable()).getStackTrace();
-				return false;
-			}
-			return true;
+			return new ExecuteResult(connection.execute(query));
 		} catch (IOException e1) {
-			System.out.println("DbConnection: Error: " + e1);
-			e1.printStackTrace();
-			return false;
+			return new ExecuteResult(null);
 		}
 	}
 	

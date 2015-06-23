@@ -272,8 +272,10 @@ public class RelvarEditor {
 		
 		System.out.println("EditTable: query is " + query);
 		
-		if (!connection.execute(query))
-			MessageDialog.openError(parent.getShell(), "Error", "Unable to delete tuples.");
+		DbConnection.ExecuteResult result = connection.execute(query);
+		
+		if (result.failed())
+			MessageDialog.openError(parent.getShell(), "Error", "Unable to delete tuples.\n\nQuery: " + query + " failed: " + result.getErrorMessage());
 		else
 			refresh();
 	}
@@ -377,9 +379,9 @@ public class RelvarEditor {
 
 		System.out.println("EditTable: query is " + updateQuery);
 		
-		boolean updateSucceeds = connection.execute(updateQuery);
+		DbConnection.ExecuteResult result = connection.execute(updateQuery);
 		
-		if (updateSucceeds) {
+		if (!result.failed()) {
 			for (int c = 1; c < table.getColumnCount(); c++)
 				updateRow.setBackground(c, null);
 			updateRow.setText(0, " ");
@@ -389,7 +391,8 @@ public class RelvarEditor {
 			for (int c = 1; c < table.getColumnCount(); c++)
 				updateRow.setBackground(c, failColor);
 			updateRow.setText(0, "!");	
-		}		
+			MessageDialog.openError(parent.getShell(), "Error", "Unable to update tuples.\n\nQuery: " + updateQuery + " failed: " + result.getErrorMessage());			
+		}
 	}
 
 	private void appendNewTuple() {
@@ -418,9 +421,9 @@ public class RelvarEditor {
 
 		System.out.println("EditTable: query is " + insertQuery);
 		
-		boolean updateSucceeds = connection.execute(insertQuery);
+		DbConnection.ExecuteResult result = connection.execute(insertQuery);
 
-		if (updateSucceeds) {
+		if (!result.failed()) {
 			for (int c = 1; c < table.getColumnCount(); c++)
 				addRow.setBackground(c, null);
 			addRow.setText(0, " ");
@@ -431,6 +434,7 @@ public class RelvarEditor {
 			for (int c = 1; c < table.getColumnCount(); c++)
 				addRow.setBackground(c, failColor);
 			addRow.setText(0, "*");	
+			MessageDialog.openError(parent.getShell(), "Error", "Unable to insert tuples.\n\nQuery: " + insertQuery + " failed: " + result.getErrorMessage());			
 		}
 	}
 	

@@ -231,7 +231,7 @@ public class Connection {
 				try {
 					parser.parse();
 				} catch (ParseException e) {
-					response.setResult(new Error("Parse exception: " + errorMessageTrap.toString()));
+					response.setResult(new Error(errorMessageTrap.toString()));
 				}
 				try {
 					if (receiveComplete != null)
