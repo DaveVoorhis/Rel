@@ -11,6 +11,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -69,7 +71,7 @@ public class RelvarEditor {
 		table.addFocusListener(new FocusListener() {
 			public void focusLost(FocusEvent e) {
 				focusCount--;
-				updateTimerReset();
+				scheduleForUpdate();
 			}
 			public void focusGained(FocusEvent e) {
 				focusCount++;
@@ -97,6 +99,8 @@ public class RelvarEditor {
 						Rectangle rect = item.getBounds(col);
 						if (rect.contains(pt)) {
 							final int column = col;
+							if (row == table.getItemCount() - 1)
+								return;
 							final Text text = new Text(table, SWT.NONE);
 							Listener textListener = new Listener() {
 								@Override
@@ -143,7 +147,7 @@ public class RelvarEditor {
 											focusCount--;
 											text.dispose();
 											e.doit = false;
-											updateTimerReset();
+											scheduleForUpdate();
 										}
 										break;
 									}
@@ -180,7 +184,17 @@ public class RelvarEditor {
 			}
 		};
 		
+		SelectionAdapter selectionListener = new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				if (table.getSelectionIndex() != lastUpdatedRow && lastUpdatedRow != -1) {
+					processRows();
+					lastUpdatedRow = -1;
+				}
+			}
+		};
+		
 		if (!readonly) {
+			table.addSelectionListener(selectionListener);
 			table.addListener(SWT.MouseDown, mouseListener);
 			table.addListener(SWT.KeyUp, keyListener);
 		}
@@ -201,15 +215,15 @@ public class RelvarEditor {
 		
 		Tuples tuples = obtainTuples();
 
-		originalKeyValues.clear();
-		
-		TableColumn rowMarker = new TableColumn(table, SWT.NONE);
-		rowMarker.setText(" ");
-		
+		originalKeyValues.clear();		
 		rowNeedsProcessing.clear();
 		changedColumnNumbers.clear();
 		keyColumnNumbers.clear();
 		stringColumnNumbers.clear();
+
+		// marker column
+		(new TableColumn(table, SWT.NONE)).setText(" ");
+		// column headings
 		int columnNumber = 1;
 		Heading heading = tuples.getHeading();
 		for (Attribute attribute : heading.toArray()) {
@@ -248,6 +262,8 @@ public class RelvarEditor {
 		if (selectedRows.length == 0)
 			return;
 		for (TableItem row: selectedRows) {
+			if (row.getText(0) != " ")
+				continue;
 			if (selection.length() > 0)
 				selection += " OR ";
 			selection += "(" + getKeySelectionExpression(row) + ")";
@@ -262,9 +278,22 @@ public class RelvarEditor {
 			refresh();
 	}
 
+	public int getTupleSelectionCount() {
+		TableItem[] selectedRows = table.getSelection();
+		if (selectedRows.length == 0)
+			return 0;
+		int count = 0;
+		for (TableItem row: selectedRows) {
+			if (row.getText(0) != " ")
+				continue;
+			count++;
+		}		
+		return count;
+	}
+	
 	public void askDeleteSelected() {
 		if (askDeleteConfirm) {
-			DeleteConfirmDialog confirmer = new DeleteConfirmDialog(parent.getShell(), table.getSelectionCount()) {
+			DeleteConfirmDialog confirmer = new DeleteConfirmDialog(parent.getShell(), getTupleSelectionCount()) {
 				public void buttonPressed() {
 					askDeleteConfirm = getAskDeleteConfirm();
 				}
@@ -364,8 +393,12 @@ public class RelvarEditor {
 	}
 
 	private void appendNewTuple() {
-		TableItem item = new TableItem(table, SWT.NONE);
+		TableItem item = table.getItem(table.getItemCount() - 1);
 		item.setText(0, "+");
+		for (int i = 0; i < table.getColumnCount() - 1; i++)
+			item.setText(i + 1, "");
+		item = new TableItem(table, SWT.NONE);
+		item.setText(0, "");
 		for (int i = 0; i < table.getColumnCount() - 1; i++)
 			item.setText(i + 1, "");		
 	}
@@ -412,7 +445,7 @@ public class RelvarEditor {
 		rowNeedsProcessing.clear();
 	}
 	
-	private void updateTimerReset() {
+	private void scheduleForUpdate() {
 		updateTimer.cancel();
 		updateTimer = new Timer();
 		updateTimer.schedule(new TimerTask() {
