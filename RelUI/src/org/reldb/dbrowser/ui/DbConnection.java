@@ -101,8 +101,13 @@ public class DbConnection {
 		public String getErrorMessage() {
 			if (response == null)
 				return "Connection failed.";
-			if (response.getResult() instanceof Error)
-				return ((Error)response.getResult()).getErrorMsg();
+			if (response.getResult() instanceof Error) {
+				String error = ((Error)response.getResult()).getErrorMsg();
+				int EOTposition = error.indexOf("<EOT>");
+				if (EOTposition >= 0)
+					error = error.substring(0, EOTposition);
+				return error;
+			}
 			return "Unknown error.";
 		}
 	}
@@ -127,7 +132,6 @@ public class DbConnection {
 		if (response instanceof Error) {
 			Error error = (Error)response;
 			System.out.println("DbConnection: Query evaluate returns error. " + query + "\n" + error.getErrorMsg());
-			(new Throwable()).getStackTrace();
 			return null;
 		}
 		if (response == null) {

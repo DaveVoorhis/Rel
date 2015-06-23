@@ -275,7 +275,7 @@ public class RelvarEditor {
 		DbConnection.ExecuteResult result = connection.execute(query);
 		
 		if (result.failed())
-			MessageDialog.openError(parent.getShell(), "Error", "Unable to delete tuples.\n\nQuery: " + query + " failed: " + result.getErrorMessage());
+			showError(query, "Unable to delete tuples.\n\nQuery: " + query + " failed:\n\n" + result.getErrorMessage());
 		else
 			refresh();
 	}
@@ -295,7 +295,10 @@ public class RelvarEditor {
 	
 	public void askDeleteSelected() {
 		if (askDeleteConfirm) {
-			DeleteConfirmDialog confirmer = new DeleteConfirmDialog(parent.getShell(), getTupleSelectionCount()) {
+			int tupleSelectionCount = getTupleSelectionCount();
+			if (tupleSelectionCount == 0)
+				return;
+			DeleteConfirmDialog confirmer = new DeleteConfirmDialog(parent.getShell(), tupleSelectionCount) {
 				public void buttonPressed() {
 					askDeleteConfirm = getAskDeleteConfirm();
 				}
@@ -303,7 +306,7 @@ public class RelvarEditor {
 			if (confirmer.open() != DeleteConfirmDialog.OK)
 				return;
 		}
-		doDeleteSelected();		
+		doDeleteSelected();
 	}
 
 	public void goToInsertRow() {
@@ -391,7 +394,7 @@ public class RelvarEditor {
 			for (int c = 1; c < table.getColumnCount(); c++)
 				updateRow.setBackground(c, failColor);
 			updateRow.setText(0, "!");	
-			MessageDialog.openError(parent.getShell(), "Error", "Unable to update tuples.\n\nQuery: " + updateQuery + " failed: " + result.getErrorMessage());			
+			showError(updateQuery, "Unable to update tuples.\n\nQuery: " + updateQuery + " failed:\n\n" + result.getErrorMessage());			
 		}
 	}
 
@@ -433,12 +436,22 @@ public class RelvarEditor {
 		} else {
 			for (int c = 1; c < table.getColumnCount(); c++)
 				addRow.setBackground(c, failColor);
-			addRow.setText(0, "*");	
-			MessageDialog.openError(parent.getShell(), "Error", "Unable to insert tuples.\n\nQuery: " + insertQuery + " failed: " + result.getErrorMessage());			
+			addRow.setText(0, "*");
+			showError(insertQuery, "Unable to insert tuples.\n\nQuery: " + insertQuery + " failed:\n\n" + result.getErrorMessage());			
 		}
 	}
 	
+	private boolean errorDisplayed = false;
+	
+	private void showError(String query, String msg) {
+		errorDisplayed = true;
+		MessageDialog.openError(parent.getShell(), "Error", msg);
+		errorDisplayed = false;
+	}
+	
 	private synchronized void processRows() {
+		if (errorDisplayed)
+			return;
 		for (Integer rownum: rowNeedsProcessing) {			
 			TableItem processRow = table.getItem(rownum);
 			if (processRow.getText(0).equals("+") || processRow.getText(0).equals("*"))
