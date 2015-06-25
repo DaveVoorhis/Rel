@@ -302,5 +302,11 @@ public class RevDatabase {
 			 models.add(tuple.get("model").toString());
 		return models;
 	}
+
+	public boolean relvarExists(String name) {
+		String query = "COUNT(sys.Catalog WHERE Name = '" + name + "') > 0";
+		Value result = (Value)evaluate(query);
+		return result.toBoolean();
+	}
 	
 }

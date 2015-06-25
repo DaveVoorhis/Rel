@@ -12,10 +12,6 @@
                value="bundleclass://RelUI/org.reldb.dbrowser.E4LifeCycle">
          </property>
          <property
-               name="applicationCSS"
-               value="platform:/plugin/RelUI/css/default.css">
-         </property>
-         <property
                name="appName"
                value="Rel">
          </property>

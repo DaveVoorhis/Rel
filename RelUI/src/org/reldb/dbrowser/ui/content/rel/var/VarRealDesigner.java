@@ -12,8 +12,8 @@ public class VarRealDesigner extends DbTreeAction {
 
 	@Override
 	public void go(DbTreeItem item) {
-		// TODO Auto-generated method stub
-
+		RelvarDesignerTab varDesignTab = new RelvarDesignerTab(relPanel, item);
+		relPanel.getTabFolder().setSelection(varDesignTab);
 	}
 
 }
