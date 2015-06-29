@@ -6,7 +6,8 @@
          point="org.eclipse.core.runtime.products">
       <product
             name="Rel"
-            application="org.eclipse.e4.ui.workbench.swt.E4Application">
+            application="org.eclipse.e4.ui.workbench.swt.E4Application"
+            >
          <property
                name="lifeCycleURI"
                value="bundleclass://RelUI/org.reldb.dbrowser.E4LifeCycle">
