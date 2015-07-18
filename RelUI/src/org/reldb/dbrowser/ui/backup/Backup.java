@@ -94,12 +94,6 @@ public class Backup {
 					while (inf.readLine() != null)
 						linesRead++;
 				} catch (IOException ioe) {
-					try {
-						if (inf != null)
-							inf.close();
-					} catch (IOException ioe2) {
-						return new BackupResponse(ioe2.toString(), "Unable to close backup file after reading it", BackupResponse.ResponseType.ERROR, false);			
-					}
 					return new BackupResponse(ioe.toString(), "Unable to read backup file", BackupResponse.ResponseType.ERROR, false);
 				}
 				try {
