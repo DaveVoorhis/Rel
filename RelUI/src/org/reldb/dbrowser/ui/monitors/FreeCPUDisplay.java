@@ -11,8 +11,7 @@ public class FreeCPUDisplay extends PercentDisplay {
 	    
 	    operatingSystemMXBean =  ManagementFactory.getOperatingSystemMXBean();
 	    
-	    @SuppressWarnings("restriction")
-		double processCpuLoad = ((com.sun.management.OperatingSystemMXBean)operatingSystemMXBean).getProcessCpuLoad();
+	    double processCpuLoad = ((com.sun.management.OperatingSystemMXBean)operatingSystemMXBean).getProcessCpuLoad();
 
 	    return 	(int)(processCpuLoad * 100.0);
 	}
