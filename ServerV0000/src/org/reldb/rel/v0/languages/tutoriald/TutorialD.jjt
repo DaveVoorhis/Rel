@@ -28,7 +28,7 @@ options {
   NODE_EXTENDS = "org.reldb.rel.v0.languages.tutoriald.BaseASTNode";
   NODE_PACKAGE = "org.reldb.rel.v0.languages.tutoriald.parser";
   JJTREE_OUTPUT_DIRECTORY = "parser";
-  JDK_VERSION = "1.6";
+  JDK_VERSION = "1.8";
 }
 
 PARSER_BEGIN(TutorialD)
@@ -177,6 +177,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < TRUE: "TRUE" >
 | < TUPLE: ( "TUPLE" | "TUP" ) >
 | < TYPE: "TYPE" >
+| < TYPE_OF: "TYPE_OF" >
 | < UNGROUP: "UNGROUP" >
 | < UNION: "UNION" >
 | < UNWRAP: "UNWRAP" >
@@ -1334,9 +1335,15 @@ void primary_expression() :
 	|	substitute()
 	|	case_expression()
 	|	if_expression()
+	|  	type_of()
 	|	LOOKAHEAD(2) fn_invoke() 
 	| 	dereference() 
 	| 	"(" expression() ")"
+}
+
+void type_of() #TypeOf :
+{}
+{  		<TYPE_OF> "(" expression() ")"
 }
 
 void case_expression() #CaseExpression :
@@ -1564,7 +1571,7 @@ void summary() :
 void fn_invoke() #FnInvoke :
 {}
 {
-	identifier() "(" arglist() ")"
+ 	identifier() "(" arglist() ")"
 }
 
 void arglist() #ArgList :
