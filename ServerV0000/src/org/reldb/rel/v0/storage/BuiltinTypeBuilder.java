@@ -7,6 +7,7 @@ import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.generator.OperatorSignature;
 import org.reldb.rel.v0.generator.References;
 import org.reldb.rel.v0.interpreter.Interpreter;
+import org.reldb.rel.v0.languages.tutoriald.parser.ParseException;
 import org.reldb.rel.v0.storage.catalog.Catalog;
 import org.reldb.rel.v0.storage.catalog.RelvarTypes;
 import org.reldb.rel.v0.types.Type;
@@ -369,6 +370,17 @@ public class BuiltinTypeBuilder {
     	typeBuilderInteger.go();
     	typeBuilderRational.go();
     	typeBuilderCharacter.go();
+
+    	if (!relDatabase.isTypeExists(typeBuilderBoolean.generator, "TypeInfo")) {
+    		try {
+				Interpreter.executeStatementPrivileged(relDatabase, "TYPE TypeInfo UNION;", "Rel", System.out);
+	    		Interpreter.executeStatementPrivileged(relDatabase, "TYPE Scalar IS {TypeInfo POSSREP {TypeName CHAR}};", "Rel", System.out);
+	    		Interpreter.executeStatementPrivileged(relDatabase, "TYPE TupleHeading IS {TypeInfo POSSREP {Attributes RELATION {AttrName CHAR, AttrType TypeInfo}}};", "Rel", System.out);
+	    		Interpreter.executeStatementPrivileged(relDatabase, "TYPE RelationHeading IS {TypeInfo POSSREP {Attributes RELATION {AttrName CHAR, AttrType TypeInfo}}};", "Rel", System.out);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+    	}
     	
     	loadSubtypes(relDatabase);
 	}	

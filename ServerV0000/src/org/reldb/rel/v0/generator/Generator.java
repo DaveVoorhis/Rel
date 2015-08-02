@@ -138,7 +138,7 @@ import org.reldb.rel.v0.vm.instructions.tuple.OpTupleSetAttribute;
 public class Generator {
 
 	// Temporary kludge to obtain a relvar owner
-	private static final String userRelvarOwner = "User";
+	private String userRelvarOwner = "User";
 	
 	private boolean compiling = true;
 	private boolean persistentOnly = false;
@@ -221,7 +221,11 @@ public class Generator {
 	public PrintStream getPrintStream() {
 		return printStream;
 	}
-		
+
+	public void setOwner(String owner) {
+		userRelvarOwner = owner;
+	}
+
 	public void beginCompilation() {
 		// Begin main operator definition
 		operatorDefinition("Interactive Session");

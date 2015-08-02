@@ -93,6 +93,12 @@ public class Interpreter {
 	public static void executeStatement(RelDatabase database, String source, PrintStream outputStream) throws ParseException {
 		(new Interpreter(database, outputStream)).interpret(source);
 	}
+
+	public static void executeStatementPrivileged(RelDatabase database, String source, String owner, PrintStream outputStream) throws ParseException {
+		Interpreter interpreter = new Interpreter(database, outputStream);
+		interpreter.getGenerator().setOwner(owner);
+		interpreter.interpret(source);
+	}
 	
 	public Evaluation evaluate(TutorialDVisitor parser, InputStream input) throws ParseException {
 		beginCompile();
