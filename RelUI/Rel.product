@@ -109,6 +109,7 @@ END OF TERMS AND CONDITIONS
 
    <plugins>
       <plugin id="RelUI"/>
+      <plugin id="ca.odell.glazedlists"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.inject"/>
@@ -117,7 +118,10 @@ END OF TERMS AND CONDITIONS
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
+      <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.jxpath"/>
+      <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.poi"/>
       <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -195,6 +199,12 @@ END OF TERMS AND CONDITIONS
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>
+      <plugin id="org.eclipse.nebula.widgets.nattable.core"/>
+      <plugin id="org.eclipse.nebula.widgets.nattable.core.source"/>
+      <plugin id="org.eclipse.nebula.widgets.nattable.extension.glazedlists"/>
+      <plugin id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.source"/>
+      <plugin id="org.eclipse.nebula.widgets.nattable.extension.poi"/>
+      <plugin id="org.eclipse.nebula.widgets.nattable.extension.poi.source"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.compatibility.state" fragment="true"/>
       <plugin id="org.eclipse.osgi.services"/>
