@@ -13,8 +13,8 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.reldb.dbrowser.ui.StatusPanel;
+import org.reldb.dbrowser.ui.log.LogWin;
 import org.reldb.dbrowser.ui.preferences.Preferences;
-import org.reldb.log.LogWin;
 
 public class MainPanel extends Composite {
 	

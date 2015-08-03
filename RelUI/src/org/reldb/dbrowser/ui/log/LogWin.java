@@ -1,4 +1,4 @@
-package org.reldb.log;
+package org.reldb.dbrowser.ui.log;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
