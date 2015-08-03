@@ -1,4 +1,4 @@
-package log;
+package org.reldb.log;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

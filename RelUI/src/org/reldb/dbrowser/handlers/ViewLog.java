@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.reldb.dbrowser.handlers;
 
-import log.LogWin;
-
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.swt.widgets.Shell;
+import org.reldb.log.LogWin;
 
 public class ViewLog {
 	@Execute

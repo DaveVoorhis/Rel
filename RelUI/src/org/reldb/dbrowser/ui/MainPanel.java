@@ -1,7 +1,5 @@
 package org.reldb.dbrowser.ui;
 
-import log.LogWin;
-
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -16,6 +14,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.reldb.dbrowser.ui.StatusPanel;
 import org.reldb.dbrowser.ui.preferences.Preferences;
+import org.reldb.log.LogWin;
 
 public class MainPanel extends Composite {
 	
