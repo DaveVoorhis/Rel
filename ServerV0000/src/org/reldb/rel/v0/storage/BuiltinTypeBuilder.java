@@ -375,9 +375,7 @@ public class BuiltinTypeBuilder {
     		try {
 				Interpreter.executeStatementPrivileged(relDatabase, "TYPE TypeInfo UNION;", "Rel", System.out);
 	    		Interpreter.executeStatementPrivileged(relDatabase, "TYPE Scalar IS {TypeInfo POSSREP {TypeName CHAR}};", "Rel", System.out);
-	    		Interpreter.executeStatementPrivileged(relDatabase, "TYPE TupleHeading IS {TypeInfo POSSREP {Attributes RELATION {AttrName CHAR, AttrType TypeInfo}}};", "Rel", System.out);
-	    		Interpreter.executeStatementPrivileged(relDatabase, "TYPE RelationHeading IS {TypeInfo POSSREP {Attributes RELATION {AttrName CHAR, AttrType TypeInfo}}};", "Rel", System.out);
-	    		Interpreter.executeStatementPrivileged(relDatabase, "TYPE ArrayHeading IS {TypeInfo POSSREP {Attributes RELATION {AttrName CHAR, AttrType TypeInfo}}};", "Rel", System.out);
+	    		Interpreter.executeStatementPrivileged(relDatabase, "TYPE NonScalar IS {TypeInfo POSSREP {Kind CHAR, Attributes RELATION {AttrName CHAR, AttrType TypeInfo}}};", "Rel", System.out);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}

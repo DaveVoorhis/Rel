@@ -1478,67 +1478,52 @@ public class TutorialDParser implements TutorialDVisitor {
 		return generator.findType(typeName);
 	}
 
-	private Value getTypeOf(Type typeInfo, Type typeOfExpression) {	
-		TypeAlpha typeScalar = (TypeAlpha)generator.findType("Scalar");
-		if (typeOfExpression instanceof TypeTuple) {
-			TypeAlpha typeTupleHeading = (TypeAlpha)generator.findType("TupleHeading");
-			Heading heading = ((TypeTuple)typeOfExpression).getHeading();
-			Heading metaHeading = new Heading();
-			metaHeading.add("AttrName", TypeCharacter.getInstance());
-			metaHeading.add("AttrType", typeInfo);
-			ValueRelationLiteral metaData = new ValueRelationLiteral(generator);
-			for (Attribute attribute: heading.getAttributes()) {
-				Value[] values = new Value[] {
-					ValueCharacter.select(generator, attribute.getName()),
-					getTypeOf(typeInfo, attribute.getType())
-				};
-				ValueTuple metadataTuple = new ValueTuple(generator, values);
-				metaData.insert(metadataTuple);
+	// Return TypeScalar value about heading
+	Value getTypeOf(Heading heading, String headingIn) {
+		Heading metaHeading = new Heading();
+		metaHeading.add("AttrName", TypeCharacter.getInstance());
+		metaHeading.add("AttrType", generator.findType("TypeInfo"));
+		ValueRelationLiteral attributes = new ValueRelationLiteral(generator);
+		for (Attribute attribute: heading.getAttributes()) {
+			Value[] values = new Value[] {
+				ValueCharacter.select(generator, attribute.getName()),
+				getTypeOf(attribute.getType())
+			};
+			ValueTuple metadataTuple = new ValueTuple(generator, values);
+			attributes.insert(metadataTuple);
+		}
+		ValueCharacter kind = ValueCharacter.select(generator, headingIn);
+		TypeAlpha typeNonScalar = (TypeAlpha)generator.findType("NonScalar");
+		ValueAlpha value = new ValueAlpha(generator, typeNonScalar, new Value[] {kind, attributes}, 0);
+		return value;
+	}
+	
+	// Return TypeInfo value about typeOfExpression
+	Value getTypeOf(Type typeOfExpression) {
+		if (typeOfExpression instanceof TypeHeading) {
+			if (typeOfExpression instanceof TypeTuple) {
+				Heading heading = ((TypeTuple)typeOfExpression).getHeading();
+				return getTypeOf(heading, "TUPLE");
+			} else if (typeOfExpression instanceof TypeRelation) {
+				Heading heading = ((TypeRelation)typeOfExpression).getHeading();
+				return getTypeOf(heading, "RELATION");
+			} else if (typeOfExpression instanceof TypeArray) {
+				Heading heading = ((TypeArray)typeOfExpression).getElementType().getHeading();
+				return getTypeOf(heading, "ARRAY");
+			} else {
+				// We should never get here, but deal with it sensibly if we do.
+				Heading heading = ((TypeRelation)typeOfExpression).getHeading();
+				return getTypeOf(heading, typeOfExpression.getSignature());
 			}
-			ValueAlpha value = new ValueAlpha(generator, typeTupleHeading, new Value[] {metaData}, 0);
-			return value;
-		} else if (typeOfExpression instanceof TypeRelation) {
-			TypeAlpha typeRelationHeading = (TypeAlpha)generator.findType("TupleHeading");
-			Heading heading = ((TypeRelation)typeOfExpression).getHeading();
-			Heading metaHeading = new Heading();
-			metaHeading.add("AttrName", TypeCharacter.getInstance());
-			metaHeading.add("AttrType", typeInfo);
-			ValueRelationLiteral metaData = new ValueRelationLiteral(generator);
-			for (Attribute attribute: heading.getAttributes()) {
-				Value[] values = new Value[] {
-					ValueCharacter.select(generator, attribute.getName()),
-					getTypeOf(typeInfo, attribute.getType())
-				};
-				ValueTuple metadataTuple = new ValueTuple(generator, values);
-				metaData.insert(metadataTuple);
-			}
-			ValueAlpha value = new ValueAlpha(generator, typeRelationHeading, new Value[] {metaData}, 0);
-			return value;
-		} else if (typeOfExpression instanceof TypeArray) {
-			TypeAlpha typeArrayHeading = (TypeAlpha)generator.findType("TupleHeading");
-			Heading heading = ((TypeArray)typeOfExpression).getElementType().getHeading();
-			Heading metaHeading = new Heading();
-			metaHeading.add("AttrName", TypeCharacter.getInstance());
-			metaHeading.add("AttrType", typeInfo);
-			ValueRelationLiteral metaData = new ValueRelationLiteral(generator);
-			for (Attribute attribute: heading.getAttributes()) {
-				Value[] values = new Value[] {
-					ValueCharacter.select(generator, attribute.getName()),
-					getTypeOf(typeInfo, attribute.getType())
-				};
-				ValueTuple metadataTuple = new ValueTuple(generator, values);
-				metaData.insert(metadataTuple);
-			}
-			ValueAlpha value = new ValueAlpha(generator, typeArrayHeading, new Value[] {metaData}, 0);
-			return value;
 		} else {
 			ValueCharacter scalarSignature = ValueCharacter.select(generator, typeOfExpression.getSignature());
+			TypeAlpha typeScalar = (TypeAlpha)generator.findType("Scalar");
 			ValueAlpha value = new ValueAlpha(generator, typeScalar, new Value[] {scalarSignature}, 0);
 			return value;
 		}
 	}
 	
-	// TYPE_OF pseudo-operator.  Return Type of TypeInfo.
+	// TYPE_OF pseudo-operator.  Return TypeInfo for given expression.
 	public Object visit(ASTTypeOf node, Object data) {
 		currentNode = node;
 		// don't emit code, because the expression isn't evaluated
@@ -1551,7 +1536,7 @@ public class TutorialDParser implements TutorialDVisitor {
 			generator.setCompilingOn();
 		}
 		Type typeInfo = generator.findType("TypeInfo");
-		generator.compilePush(getTypeOf(typeInfo, typeOfExpression));
+		generator.compilePush(getTypeOf(typeOfExpression));
 		return typeInfo;
 	}
 
