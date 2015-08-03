@@ -1479,7 +1479,7 @@ public class TutorialDParser implements TutorialDVisitor {
 	}
 
 	// Return TypeScalar value about heading
-	Value getTypeOf(Heading heading, String headingIn) {
+	private Value getTypeOf(Heading heading, String headingIn) {
 		Heading metaHeading = new Heading();
 		metaHeading.add("AttrName", TypeCharacter.getInstance());
 		metaHeading.add("AttrType", generator.findType("TypeInfo"));
@@ -1499,7 +1499,7 @@ public class TutorialDParser implements TutorialDVisitor {
 	}
 	
 	// Return TypeInfo value about typeOfExpression
-	Value getTypeOf(Type typeOfExpression) {
+	private Value getTypeOf(Type typeOfExpression) {
 		if (typeOfExpression instanceof TypeHeading) {
 			if (typeOfExpression instanceof TypeTuple) {
 				Heading heading = ((TypeTuple)typeOfExpression).getHeading();
