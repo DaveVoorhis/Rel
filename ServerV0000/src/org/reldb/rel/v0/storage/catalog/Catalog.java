@@ -30,13 +30,8 @@ public class Catalog {
 	public final static String relvarDependenciesOperatorRelvar = "sys.DependenciesOperatorRelvar";
 	public final static String relvarDependenciesOperatorType = "sys.DependenciesOperatorType";
 	
-	// Generate and initialise the catalog relvars
-	public void generate(Generator generator) throws DatabaseException {
-		(new RegisterSpecialRelvar(relvarCatalog) {
-			RelvarMetadata getMetadata() {
-				return new RelvarCatalogMetadata(database);
-			}
-		}).go();
+	// Generate and initialise the catalog relvars - phase 0
+	public void generatePhase0(Generator generator) throws DatabaseException {
 		(new RegisterSpecialRelvar(relvarVersion) {
 			RelvarMetadata getMetadata() {
 				return new RelvarVersionMetadata(database);
@@ -70,6 +65,15 @@ public class Catalog {
 		(new CreateSystemDependenciesRelvar(generator, relvarDependenciesOperatorOperator)).go();
 		(new CreateSystemDependenciesRelvar(generator, relvarDependenciesOperatorRelvar)).go();
 		(new CreateSystemDependenciesRelvar(generator, relvarDependenciesOperatorType)).go();        
+	}
+	
+	// Generate and initialise the catalog relvars - phase 1
+	public void generatePhase1(Generator generator) throws DatabaseException {
+		(new RegisterSpecialRelvar(relvarCatalog) {
+			RelvarMetadata getMetadata() {
+				return new RelvarCatalogMetadata(database, generator);
+			}
+		}).go();
 	}
 	
 	private RelDatabase database;

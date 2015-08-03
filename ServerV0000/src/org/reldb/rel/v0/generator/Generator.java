@@ -38,6 +38,7 @@ import org.reldb.rel.v0.types.TypeOperator;
 import org.reldb.rel.v0.types.TypeRelation;
 import org.reldb.rel.v0.types.TypeTuple;
 import org.reldb.rel.v0.types.builtin.TypeBoolean;
+import org.reldb.rel.v0.types.builtin.TypeCharacter;
 import org.reldb.rel.v0.types.userdefined.DerivedPossrep;
 import org.reldb.rel.v0.types.userdefined.Possrep;
 import org.reldb.rel.v0.types.userdefined.PossrepComponent;
@@ -47,6 +48,7 @@ import org.reldb.rel.v0.values.ValueBoolean;
 import org.reldb.rel.v0.values.ValueCharacter;
 import org.reldb.rel.v0.values.ValueInteger;
 import org.reldb.rel.v0.values.ValueRational;
+import org.reldb.rel.v0.values.ValueRelationLiteral;
 import org.reldb.rel.v0.values.ValueTuple;
 import org.reldb.rel.v0.vm.Instruction;
 import org.reldb.rel.v0.vm.NativeFunction;
@@ -411,6 +413,51 @@ public class Generator {
 		beginAssignment();
 		compileInstruction(new OpDropRelvar(varName));
 		endAssignment();
+	}
+	
+	// Return TypeScalar value about heading
+	public Value getTypeOf(Heading heading, String headingIn) {
+		Heading metaHeading = new Heading();
+		metaHeading.add("AttrName", TypeCharacter.getInstance());
+		metaHeading.add("AttrType", findType("TypeInfo"));
+		ValueRelationLiteral attributes = new ValueRelationLiteral(this);
+		for (Attribute attribute: heading.getAttributes()) {
+			Value[] values = new Value[] {
+				ValueCharacter.select(this, attribute.getName()),
+				getTypeOf(attribute.getType())
+			};
+			ValueTuple metadataTuple = new ValueTuple(this, values);
+			attributes.insert(metadataTuple);
+		}
+		ValueCharacter kind = ValueCharacter.select(this, headingIn);
+		TypeAlpha typeNonScalar = (TypeAlpha)findType("NonScalar");
+		ValueAlpha value = new ValueAlpha(this, typeNonScalar, new Value[] {kind, attributes}, 0);
+		return value;
+	}
+	
+	// Return TypeInfo value about typeOfExpression
+	public Value getTypeOf(Type typeOfExpression) {
+		if (typeOfExpression instanceof TypeHeading) {
+			if (typeOfExpression instanceof TypeTuple) {
+				Heading heading = ((TypeTuple)typeOfExpression).getHeading();
+				return getTypeOf(heading, "TUPLE");
+			} else if (typeOfExpression instanceof TypeRelation) {
+				Heading heading = ((TypeRelation)typeOfExpression).getHeading();
+				return getTypeOf(heading, "RELATION");
+			} else if (typeOfExpression instanceof TypeArray) {
+				Heading heading = ((TypeArray)typeOfExpression).getElementType().getHeading();
+				return getTypeOf(heading, "ARRAY");
+			} else {
+				// We should never get here, but deal with it sensibly if we do.
+				Heading heading = ((TypeRelation)typeOfExpression).getHeading();
+				return getTypeOf(heading, typeOfExpression.getSignature());
+			}
+		} else {
+			ValueCharacter scalarSignature = ValueCharacter.select(this, typeOfExpression.getSignature());
+			TypeAlpha typeScalar = (TypeAlpha)findType("Scalar");
+			ValueAlpha value = new ValueAlpha(this, typeScalar, new Value[] {scalarSignature}, 0);
+			return value;
+		}
 	}
 
 	public void addTypeInProgress(String typeName, Type type) {
@@ -2703,5 +2750,5 @@ public class Generator {
 	public void compileWriteRelation() {
 		compileInstruction(new OpRelationWrite());		
 	}
-		
+
 }

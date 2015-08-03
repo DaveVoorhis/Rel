@@ -1,6 +1,7 @@
 package org.reldb.rel.v0.storage.catalog;
 
 import org.reldb.rel.exceptions.ExceptionSemantic;
+import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.generator.SelectAttributes;
 import org.reldb.rel.v0.storage.RelDatabase;
 import org.reldb.rel.v0.storage.relvars.RelvarGlobal;
@@ -15,17 +16,14 @@ public class RelvarCatalogMetadata extends RelvarMetadata {
 	public static final long serialVersionUID = 0;
 	
 	// This must parallel the ValueTuple created by getCatalogTupleIterator() in RelDatabase.
-	static Heading getNewHeading() {
+	static Heading getNewHeading(Generator generator) {
 		Heading heading = new Heading();
 		heading.add("Name", TypeCharacter.getInstance());
 		heading.add("Definition", TypeCharacter.getInstance());
 		heading.add("Owner", TypeCharacter.getInstance());
 		heading.add("CreationSequence", TypeInteger.getInstance());
 		heading.add("isVirtual", TypeBoolean.getInstance());
-		Heading attributesHeading = new Heading();
-		attributesHeading.add("Name", TypeCharacter.getInstance());
-		attributesHeading.add("TypeName", TypeCharacter.getInstance());
-		heading.add("Attributes", new TypeRelation(attributesHeading));
+		heading.add("Attributes", generator.findType("NonScalar"));
 		Heading keyHeading = new Heading();
 		keyHeading.add("Name", TypeCharacter.getInstance());
 		Heading keysHeading = new Heading();
@@ -34,16 +32,16 @@ public class RelvarCatalogMetadata extends RelvarMetadata {
 		return heading;
 	}
 	
-	static RelvarHeading getNewKeyDefinition() {
+	static RelvarHeading getNewKeyDefinition(Generator generator) {
 		SelectAttributes attributes = new SelectAttributes();
 		attributes.add("Name");
-		RelvarHeading keyDefinition = new RelvarHeading(getNewHeading());
+		RelvarHeading keyDefinition = new RelvarHeading(getNewHeading(generator));
 		keyDefinition.addKey(attributes);
 		return keyDefinition;
 	}
 	
-	public RelvarCatalogMetadata(RelDatabase database) {
-		super(database, getNewKeyDefinition(), RelDatabase.systemOwner);
+	public RelvarCatalogMetadata(RelDatabase database, Generator generator) {
+		super(database, getNewKeyDefinition(generator), RelDatabase.systemOwner);
 	}
 	
 	public RelvarGlobal getRelvar(String name, RelDatabase database) {

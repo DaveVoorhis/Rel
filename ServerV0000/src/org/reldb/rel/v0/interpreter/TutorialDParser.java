@@ -1477,51 +1477,6 @@ public class TutorialDParser implements TutorialDVisitor {
 		String typeName = getTokenOfChild(node, 0);
 		return generator.findType(typeName);
 	}
-
-	// Return TypeScalar value about heading
-	private Value getTypeOf(Heading heading, String headingIn) {
-		Heading metaHeading = new Heading();
-		metaHeading.add("AttrName", TypeCharacter.getInstance());
-		metaHeading.add("AttrType", generator.findType("TypeInfo"));
-		ValueRelationLiteral attributes = new ValueRelationLiteral(generator);
-		for (Attribute attribute: heading.getAttributes()) {
-			Value[] values = new Value[] {
-				ValueCharacter.select(generator, attribute.getName()),
-				getTypeOf(attribute.getType())
-			};
-			ValueTuple metadataTuple = new ValueTuple(generator, values);
-			attributes.insert(metadataTuple);
-		}
-		ValueCharacter kind = ValueCharacter.select(generator, headingIn);
-		TypeAlpha typeNonScalar = (TypeAlpha)generator.findType("NonScalar");
-		ValueAlpha value = new ValueAlpha(generator, typeNonScalar, new Value[] {kind, attributes}, 0);
-		return value;
-	}
-	
-	// Return TypeInfo value about typeOfExpression
-	private Value getTypeOf(Type typeOfExpression) {
-		if (typeOfExpression instanceof TypeHeading) {
-			if (typeOfExpression instanceof TypeTuple) {
-				Heading heading = ((TypeTuple)typeOfExpression).getHeading();
-				return getTypeOf(heading, "TUPLE");
-			} else if (typeOfExpression instanceof TypeRelation) {
-				Heading heading = ((TypeRelation)typeOfExpression).getHeading();
-				return getTypeOf(heading, "RELATION");
-			} else if (typeOfExpression instanceof TypeArray) {
-				Heading heading = ((TypeArray)typeOfExpression).getElementType().getHeading();
-				return getTypeOf(heading, "ARRAY");
-			} else {
-				// We should never get here, but deal with it sensibly if we do.
-				Heading heading = ((TypeRelation)typeOfExpression).getHeading();
-				return getTypeOf(heading, typeOfExpression.getSignature());
-			}
-		} else {
-			ValueCharacter scalarSignature = ValueCharacter.select(generator, typeOfExpression.getSignature());
-			TypeAlpha typeScalar = (TypeAlpha)generator.findType("Scalar");
-			ValueAlpha value = new ValueAlpha(generator, typeScalar, new Value[] {scalarSignature}, 0);
-			return value;
-		}
-	}
 	
 	// TYPE_OF pseudo-operator.  Return TypeInfo for given expression.
 	public Object visit(ASTTypeOf node, Object data) {
@@ -1536,7 +1491,7 @@ public class TutorialDParser implements TutorialDVisitor {
 			generator.setCompilingOn();
 		}
 		Type typeInfo = generator.findType("TypeInfo");
-		generator.compilePush(getTypeOf(typeOfExpression));
+		generator.compilePush(generator.getTypeOf(typeOfExpression));
 		return typeInfo;
 	}
 

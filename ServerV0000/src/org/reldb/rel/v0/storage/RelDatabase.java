@@ -30,7 +30,6 @@ import org.reldb.rel.v0.storage.tables.KeyTables;
 import org.reldb.rel.v0.storage.tables.RegisteredTupleIterator;
 import org.reldb.rel.v0.storage.tables.Table;
 import org.reldb.rel.v0.storage.tables.TablePrivate;
-import org.reldb.rel.v0.types.Attribute;
 import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.types.TypeAlpha;
 import org.reldb.rel.v0.types.builtin.*;
@@ -317,9 +316,12 @@ public class RelDatabase {
 	        
 	        // Open the metadata db.
 	        relvarDb = environment.openDatabase(null, "_Relvars", dbConfigurationMetadataAllowCreateNoComparator);	        
+	        	        
+	        // Declare the Catalog
+	        Catalog catalog = new Catalog(this);
 	        
-	        // Initialise the Catalog
-	        (new Catalog(this)).generate(generator);
+	        // Catalog build phase 0
+	        catalog.generatePhase0(generator);
 	        
 	        // Construct builtin-in types and operators
 	        specialCacheMode = true;
@@ -327,6 +329,9 @@ public class RelDatabase {
 			BuiltinTypeBuilder.buildTypes(this);
 			operatorCachePermanent = operatorCache;
 			specialCacheMode = false;
+			
+			// Catalog build phase 1
+	        catalog.generatePhase1(generator);
 
 			// Prepare for battle.
 			reset();
@@ -879,36 +884,7 @@ public class RelDatabase {
 					try {
 						RelvarHeading relvarHeading = current.getHeadingDefinition(RelDatabase.this);
 						Heading heading = relvarHeading.getHeading();
-						Vector<Attribute> attributes = heading.getAttributes();
-						ValueRelation attributeRelation = new ValueRelation(generator) {
-							private static final long serialVersionUID = 1L;
-							@Override
-							public TupleIterator newIterator() {
-								Iterator<Attribute> iterator = attributes.iterator();
-								return new TupleIterator() {
-									@Override
-									public boolean hasNext() {
-										return iterator.hasNext();
-									}
-									@Override
-									public ValueTuple next() {
-										Attribute attribute = iterator.next();
-										Value[] tupleValues = new Value[] {
-												ValueCharacter.select(generator, attribute.getName()),
-												ValueCharacter.select(generator, attribute.getType().getSignature())
-										};
-										return new ValueTuple(generator, tupleValues);
-									}
-									@Override
-									public void close() {
-									}
-								};
-							}
-							@Override
-							public int hashCode() {
-								return attributes.hashCode();
-							}
-						};
+						Value typeInfo = generator.getTypeOf(heading, "RELATION");
 						int keyCount = relvarHeading.getKeyCount();
 						ValueRelation keysRelation = new ValueRelation(generator) {
 							private static final long serialVersionUID = 1L;
@@ -937,7 +913,7 @@ public class RelDatabase {
 							}
 							@Override
 							public int hashCode() {
-								return attributes.hashCode();
+								return 0;
 							}
 						};
 						// This must parallel the Heading defined by getNewHeading() in RelvarCatalogMetadata
@@ -947,7 +923,7 @@ public class RelDatabase {
 							ValueCharacter.select(generator, current.getOwner()),
 							ValueInteger.select(generator, current.getCreationSequence()),
 							ValueBoolean.select(generator, current.isVirtual()),
-							attributeRelation,
+							typeInfo,
 							keysRelation
 						};
  						return new ValueTuple(generator, values);
