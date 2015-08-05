@@ -2,449 +2,506 @@ package org.reldb.dbrowser.ui.content.rel.var;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Vector;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.action.ContributionItem;
+import org.eclipse.nebula.widgets.nattable.NatTable;
+import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
+import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
+import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
+import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
+import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
+import org.eclipse.nebula.widgets.nattable.config.IEditableRule;
+import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
+import org.eclipse.nebula.widgets.nattable.data.convert.DefaultDisplayConverter;
+import org.eclipse.nebula.widgets.nattable.data.convert.DefaultDoubleDisplayConverter;
+import org.eclipse.nebula.widgets.nattable.data.convert.DefaultIntegerDisplayConverter;
+import org.eclipse.nebula.widgets.nattable.edit.EditConfigAttributes;
+import org.eclipse.nebula.widgets.nattable.edit.editor.CheckBoxCellEditor;
+import org.eclipse.nebula.widgets.nattable.edit.editor.MultiLineTextCellEditor;
+import org.eclipse.nebula.widgets.nattable.edit.editor.TextCellEditor;
+import org.eclipse.nebula.widgets.nattable.edit.gui.ICellEditDialog;
+import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
+import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultGridLayer;
+import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
+import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
+import org.eclipse.nebula.widgets.nattable.layer.LabelStack;
+import org.eclipse.nebula.widgets.nattable.layer.cell.IConfigLabelAccumulator;
+import org.eclipse.nebula.widgets.nattable.layer.event.ILayerEvent;
+import org.eclipse.nebula.widgets.nattable.painter.cell.CheckBoxPainter;
+import org.eclipse.nebula.widgets.nattable.painter.cell.ImagePainter;
+import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
+import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.BeveledBorderDecorator;
+import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.CellPainterDecorator;
+import org.eclipse.nebula.widgets.nattable.selection.event.CellSelectionEvent;
+import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
+import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
+import org.eclipse.nebula.widgets.nattable.style.HorizontalAlignmentEnum;
+import org.eclipse.nebula.widgets.nattable.style.Style;
+import org.eclipse.nebula.widgets.nattable.tickupdate.TickUpdateConfigAttributes;
+import org.eclipse.nebula.widgets.nattable.ui.binding.UiBindingRegistry;
+import org.eclipse.nebula.widgets.nattable.ui.matcher.MouseEventMatcher;
+import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuAction;
+import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
+import org.eclipse.nebula.widgets.nattable.ui.util.CellEdgeEnum;
+import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ControlEditor;
-import org.eclipse.swt.custom.TableCursor;
-import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
-import org.reldb.rel.client.Heading;
-import org.reldb.rel.utilities.StringUtils;
 
 public class RelvarEditor {
 	
 	private static boolean askDeleteConfirm = true;
-	
-	private Color changeColor;
-	private Color failColor;
 
 	private HashSet<String> keyAttributeNames = new HashSet<String>();
-	private HashSet<Integer> keyColumnNumbers = new HashSet<Integer>();
-	private HashSet<Integer> stringColumnNumbers = new HashSet<Integer>();
 	
-	private HashMap<Integer, Vector<String>> originalKeyValues = new HashMap<Integer, Vector<String>>();
-	private HashMap<Integer, HashSet<Integer>> changedColumnNumbers = new HashMap<Integer, HashSet<Integer>>();
-	
-	private Table table;
-	private HashSet<Integer> rowNeedsProcessing = new HashSet<Integer>();
-	private int focusCount = 0;
-	private Timer updateTimer = new Timer();
-	private int lastUpdatedRow = -1;
-	private boolean readonly = false;
-	
-	private Composite parent;
 	private DbConnection connection;
 	private String relvarName;
-
+	
+	private Composite content;
+	private NatTable table;
+	
+	private boolean popupEdit = false;
+	
 	public RelvarEditor(Composite parent, DbConnection connection, String relvarName) {
-		changeColor = new Color(parent.getDisplay(), 240, 240, 128);
-		failColor = new Color(parent.getDisplay(), 240, 128, 128);
-		this.parent = parent;
 		this.connection = connection;
 		this.relvarName = relvarName;
-
-		table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
 		
-		table.addFocusListener(new FocusListener() {
-			public void focusLost(FocusEvent e) {
-				focusCount--;
-				scheduleForUpdate();
-			}
-			public void focusGained(FocusEvent e) {
-				focusCount++;
-			}
-		});
-
-		final TableEditor tableEditor = new TableEditor(table);
-		tableEditor.horizontalAlignment = SWT.LEFT;
-		tableEditor.grabHorizontal = true;
-		
-		TableCursor cursor = new TableCursor(table, SWT.NONE);
-		final ControlEditor editor = new ControlEditor(cursor);
-		editor.grabHorizontal = true;
-		editor.grabVertical = true;
-
-		cursor.addSelectionListener(new SelectionAdapter() {
-			// when the TableEditor is over a cell, select the corresponding row in 
-			// the table
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				table.setSelection(new TableItem[] {cursor.getRow()});
-			}
-			// when the user hits "ENTER" in the TableCursor, pop up a text editor so that 
-			// they can change the text of the cell
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				final Text text = new Text(cursor, SWT.NONE);
-				TableItem row = cursor.getRow();
-				int column = cursor.getColumn();
-				text.setText(row.getText(column));
-				text.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyPressed(KeyEvent e) {
-						// close the text editor and copy the data over 
-						// when the user hits "ENTER"
-						if (e.character == SWT.CR) {
-							TableItem row = cursor.getRow();
-							int column = cursor.getColumn();
-							row.setText(column, text.getText());
-							text.dispose();
-						}
-						// close the text editor when the user hits "ESC"
-						if (e.character == SWT.ESC) {
-							text.dispose();
-						}
-					}
-				});
-				// close the text editor when the user tabs away
-				text.addFocusListener(new FocusAdapter() {
-					@Override
-					public void focusLost(FocusEvent e) {
-						text.dispose();
-					}
-				});
-				editor.setEditor(text);
-				text.setFocus();
-			}
-		});
-		// Hide the TableCursor when the user hits the "CTRL" or "SHIFT" key.
-		// This allows the user to select multiple items in the table.
-		cursor.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == SWT.CTRL
-					|| e.keyCode == SWT.SHIFT
-					|| (e.stateMask & SWT.CONTROL) != 0
-					|| (e.stateMask & SWT.SHIFT) != 0) {
-					cursor.setVisible(false);
-				}
-			}
-		});
-		// When the user double clicks in the TableCursor, pop up a text editor so that 
-		// they can change the text of the cell.
-		cursor.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				final Text text = new Text(cursor, SWT.NONE);
-				TableItem row = cursor.getRow();
-				int column = cursor.getColumn();
-				text.setText(row.getText(column));
-				text.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyPressed(KeyEvent e) {
-						// close the text editor and copy the data over 
-						// when the user hits "ENTER"
-						if (e.character == SWT.CR) {
-							TableItem row = cursor.getRow();
-							int column = cursor.getColumn();
-							row.setText(column, text.getText());
-							text.dispose();
-						}
-						// close the text editor when the user hits "ESC"
-						if (e.character == SWT.ESC) {
-							text.dispose();
-						}
-					}
-				});
-				// close the text editor when the user clicks away
-				text.addFocusListener(new FocusAdapter() {
-					@Override
-					public void focusLost(FocusEvent e) {
-						text.dispose();
-					}
-				});
-				editor.setEditor(text);
-				text.setFocus();
-			}
-		});
-		
-		// Show the TableCursor when the user releases the "SHIFT" or "CTRL" key.
-		// This signals the end of the multiple selection task.
-		table.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (e.keyCode == SWT.CONTROL && (e.stateMask & SWT.SHIFT) != 0) return;
-				if (e.keyCode == SWT.SHIFT && (e.stateMask & SWT.CONTROL) != 0) return;
-				if (e.keyCode != SWT.CONTROL && (e.stateMask & SWT.CONTROL) != 0) return;
-				if (e.keyCode != SWT.SHIFT && (e.stateMask & SWT.SHIFT) != 0) return;
-
-				TableItem[] selection = table.getSelection();
-				TableItem row = (selection.length == 0) ? table.getItem(table.getTopIndex()) : selection[0];
-				table.showItem(row);
-				cursor.setSelection(row, cursor.getColumn());
-				cursor.setVisible(true);
-				cursor.setFocus();
-			}
-		});
-/*		
-		Listener mouseListener = new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				Rectangle clientArea = table.getClientArea();
-				Point pt = new Point(event.x, event.y);
-				int row = table.getTopIndex();
-				// get around apparent bug selecting first row if table.getItemCount() > 1
-				if (table.getItemCount() > 1)
-					row--;
-				while (row < table.getItemCount()) {
-					final int rownum = row;
-					boolean visible = false;
-					final TableItem item = table.getItem(row);
-					for (int col = 1; col < table.getColumnCount(); col++) {
-						Rectangle rect = item.getBounds(col);
-						if (rect.contains(pt)) {
-							final int column = col;
-							if (row == table.getItemCount() - 1)
-								return;
-							final Text text = new Text(table, SWT.NONE);
-							Listener textListener = new Listener() {
-								@Override
-								public void handleEvent(final Event e) {
-									switch (e.type) {
-									case SWT.FocusIn:
-										focusCount++;
-										break;
-									case SWT.FocusOut:
-										e.detail = SWT.TRAVERSE_RETURN;
-										// FALL THROUGH
-									case SWT.Traverse:
-										switch (e.detail) {
-										case SWT.TRAVERSE_RETURN:
-											if (lastUpdatedRow >= 0 && lastUpdatedRow != rownum) {
-												processRows();
-												lastUpdatedRow = -1;
-											}
-											String editedText = text.getText();
-											if (!item.getText(column).equals(editedText)) {
-												item.setBackground(column, changeColor);
-												rowNeedsProcessing.add(rownum);
-												lastUpdatedRow = rownum;
-												if (!originalKeyValues.containsKey(rownum)) {
-													Vector<String> keyColumnValues = new Vector<String>();
-													for (Integer columnNumber: keyColumnNumbers)
-														keyColumnValues.add(item.getText(columnNumber));
-													originalKeyValues.put(rownum, keyColumnValues);
-												}
-												item.setText(column, editedText);
-												HashSet<Integer> changedColumns = changedColumnNumbers.get(rownum);
-												if (changedColumns == null) {
-													changedColumns = new HashSet<Integer>();
-													changedColumnNumbers.put(rownum, changedColumns);
-												}
-												changedColumns.add(column);
-												if (item.getText(0).equals("+") || item.getText(0).equals("*"))
-													item.setText(0, "*");
-												else
-													item.setText(0, ">");
-											}
-											// FALL THROUGH
-										case SWT.TRAVERSE_ESCAPE:
-											focusCount--;
-											text.dispose();
-											e.doit = false;
-											scheduleForUpdate();
-										}
-										break;
-									}
-								}
-							};
-							text.addListener(SWT.FocusIn, textListener);
-							text.addListener(SWT.FocusOut, textListener);
-							text.addListener(SWT.Traverse, textListener);
-							tableEditor.setEditor(text, item, column);
-							text.setText(item.getText(column));
-							text.setFocus();
-							return;
-						}
-						if (!visible && rect.intersects(clientArea)) {
-							visible = true;
-						}
-					}
-					if (!visible)
-						return;
-					row++;
-				}
-			}
-		};
-*/		
-		Listener keyListener = new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				if (event.character == '\u0008' || event.character == '\u007F') {
-					askDeleteSelected();
-				} else if (event.keyCode == SWT.F5) {
-					refresh();
-				}
-			}
-		};
-/*		
-		SelectionAdapter selectionListener = new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				if (table.getSelectionIndex() != lastUpdatedRow && lastUpdatedRow != -1) {
-					processRows();
-					lastUpdatedRow = -1;
-				}
-			}
-		};
-*/		
-		if (!readonly) {
-/*
-			table.addSelectionListener(selectionListener);
-			table.addListener(SWT.MouseDown, mouseListener);
-*/
-			table.addListener(SWT.KeyUp, keyListener);
-		}
+		content = new Composite(parent, SWT.None);
+		content.setLayout(new FillLayout());
 		
 		refresh();
 	}
 	
 	public Control getControl() {
-		return table;
+		return content;
 	}
 	
 	public void refresh() {		
 		obtainKeyDefinitions();
 		
-		while (table.getColumnCount() > 0)
-			table.getColumn(0).dispose();
-		table.removeAll();
-		
 		Tuples tuples = obtainTuples();
 
-		originalKeyValues.clear();		
-		rowNeedsProcessing.clear();
-		changedColumnNumbers.clear();
-		keyColumnNumbers.clear();
-		stringColumnNumbers.clear();
+    	Attribute[] heading = tuples.getHeading().toArray();
 
-		// marker column
-		(new TableColumn(table, SWT.NONE)).setText(" ");
-		// column headings
-		int columnNumber = 1;
-		Heading heading = tuples.getHeading();
-		for (Attribute attribute : heading.toArray()) {
-			TableColumn column = new TableColumn(table, SWT.NONE);
-			String columnHeading = attribute.getName();
-			String columnType = attribute.getType().toString();
-			if (columnType.equalsIgnoreCase("CHARACTER") || columnType.equalsIgnoreCase("CHAR"))
-				stringColumnNumbers.add(columnNumber);
-			if (keyAttributeNames.contains(columnHeading)) {
-				column.setImage(IconLoader.loadIconSmall("bullet_key"));
-				keyColumnNumbers.add(columnNumber);
+    	// IConfiguration for registering a UI binding to open a menu
+    	class MenuConfiguration extends AbstractUiBindingConfiguration {
+    	    private final Menu menu;
+    	    private final String gridRegion;
+    	 
+    	    // gridRegion can be, for example, GridRegion.COLUMN_HEADER
+    	    public MenuConfiguration(String gridRegion, PopupMenuBuilder menuBuilder) {
+    	        this.gridRegion = gridRegion;
+    	        // create the menu using the PopupMenuBuilder
+    	        menu = menuBuilder.build();
+    	    }
+    	    
+    	    @Override
+    	    public void configureUiBindings(UiBindingRegistry uiBindingRegistry) {
+    	        uiBindingRegistry.registerMouseDownBinding(
+    	                new MouseEventMatcher(SWT.NONE, gridRegion, MouseEventMatcher.RIGHT_BUTTON),
+    	                new PopupMenuAction(menu));
+    	    }
+    	}
+   	
+    	class PopupEditorConfiguration extends AbstractRegistryConfiguration {
+    	    @Override
+    	    public void configureRegistry(IConfigRegistry configRegistry) {
+    	        // always/never open in a subdialog depending on popupEdit value
+    	    	configRegistry.unregisterConfigAttribute(EditConfigAttributes.OPEN_IN_DIALOG);
+    	        configRegistry.registerConfigAttribute(
+    	                EditConfigAttributes.OPEN_IN_DIALOG,
+    	                popupEdit,
+    	                DisplayMode.EDIT);
+    	    }
+    	}
+    	
+    	class HeaderConfiguration extends AbstractRegistryConfiguration {
+    		public void configureRegistry(IConfigRegistry configRegistry) {
+    			CellPainterDecorator decorator = new CellPainterDecorator(
+    					new TextPainter(), 
+    					CellEdgeEnum.RIGHT, 
+    					new ImagePainter(IconLoader.loadIconSmall("bullet_key")));
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.CELL_PAINTER,
+    	                new BeveledBorderDecorator(decorator),
+    	                DisplayMode.NORMAL,
+    	                "keycolumn");
+    		}
+    	}
+    	
+    	class EditorConfiguration extends AbstractRegistryConfiguration {
+    	    @Override
+    	    public void configureRegistry(IConfigRegistry configRegistry) {
+    	        configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, IEditableRule.ALWAYS_EDITABLE);
+    	        Style changedStyle = new Style();
+    	        changedStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_YELLOW);
+    	        changedStyle.setAttributeValue(CellStyleAttributes.FOREGROUND_COLOR, GUIHelper.COLOR_BLACK);
+    	        configRegistry.registerConfigAttribute(
+    	        		CellConfigAttributes.CELL_STYLE,
+    	        		changedStyle,
+    	        		DisplayMode.NORMAL,
+    	        		"changed");
+    	        configRegistry.registerConfigAttribute(
+    	        		CellConfigAttributes.CELL_STYLE,
+    	        		changedStyle,
+    	        		DisplayMode.SELECT,
+    	        		"changed");
+    	        Style selectStyle = new Style();
+    			configRegistry.registerConfigAttribute(
+    					CellConfigAttributes.CELL_STYLE, 
+    					selectStyle, 
+    					DisplayMode.SELECT);
+    	        configRegistry.registerConfigAttribute(
+    	                EditConfigAttributes.CELL_EDITOR,
+    	                new TextCellEditor(true, true), DisplayMode.NORMAL);
+    	        configRegistry.registerConfigAttribute(
+    	                EditConfigAttributes.OPEN_ADJACENT_EDITOR,
+    	                Boolean.TRUE,
+    	                DisplayMode.EDIT);
+    	        for (int column = 0; column < heading.length; column++) {
+    	        	Attribute attribute = heading[column];
+    	        	String columnLabel = "column" + column;
+    	        	String type = attribute.getType().toString();
+    	        	if (type.equalsIgnoreCase("INTEGER"))
+						registerIntegerColumn(configRegistry, columnLabel);
+					else if (type.equalsIgnoreCase("RATIONAL"))
+						registerRationalColumn(configRegistry, columnLabel);
+					else if (type.equalsIgnoreCase("CHARACTER"))
+						registerMultiLineEditorColumn(configRegistry, columnLabel);
+					else if (type.equalsIgnoreCase("BOOLEAN"))
+						registerBooleanColumn(configRegistry, columnLabel);
+					else
+						registerDefaultColumn(configRegistry, columnLabel);
+    	        }
+    	    }
+
+			private void registerDefaultColumn(IConfigRegistry configRegistry, String columnLabel) {
+    	    }
+    	    
+    	    private void registerBooleanColumn(IConfigRegistry configRegistry, String columnLabel) {
+    	        // register a CheckBoxCellEditor
+    	        configRegistry.registerConfigAttribute(
+    	                EditConfigAttributes.CELL_EDITOR,
+    	                new CheckBoxCellEditor(),
+    	                DisplayMode.EDIT,
+    	                columnLabel);
+
+    	        // if you want to use the CheckBoxCellEditor, you should also consider
+    	        // using the corresponding CheckBoxPainter to show the content like a
+    	        // checkbox in your NatTable
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.CELL_PAINTER,
+    	                new CheckBoxPainter(),
+    	                DisplayMode.NORMAL,
+    	                columnLabel);
+
+    	        // using a CheckBoxCellEditor also needs a Boolean conversion to work
+    	        // correctly
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.DISPLAY_CONVERTER,
+    	                new DefaultDisplayConverter() {
+    	                    @Override
+    	                    public Object canonicalToDisplayValue(Object canonicalValue) {
+    	                    	if (canonicalValue == null)
+    	                    		return null;
+    	                    	boolean isTrue = canonicalValue.toString().equalsIgnoreCase("True");
+    	                    	return new Boolean(isTrue);
+    	                    }
+    	                    @Override
+    	                    public Object displayToCanonicalValue(Object destinationValue) {
+    	                    	return ((Boolean)destinationValue).booleanValue() ? "True" : "False";
+    	                    }
+    	                },
+    	                DisplayMode.NORMAL,
+    	                columnLabel);
+    	    }
+
+    	    private void registerRationalColumn(IConfigRegistry configRegistry, String columnLabel) {
+    	        // configure the tick update dialog to use the adjust mode
+    	        configRegistry.registerConfigAttribute(
+    	                TickUpdateConfigAttributes.USE_ADJUST_BY,
+    	                Boolean.TRUE,
+    	                DisplayMode.EDIT,
+    	                columnLabel);
+
+    	        // don't forget to register the Double converter!
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.DISPLAY_CONVERTER,
+    	                new DefaultDoubleDisplayConverter(),
+    	                DisplayMode.NORMAL,
+    	                columnLabel);
+    	    }
+
+    	    private void registerIntegerColumn(IConfigRegistry configRegistry, String columnLabel) {
+    	        // don't forget to register the Integer converter!
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.DISPLAY_CONVERTER,
+    	                new DefaultIntegerDisplayConverter(),
+    	                DisplayMode.NORMAL,
+    	                columnLabel);
+    	    }
+
+    	    private void registerMultiLineEditorColumn(IConfigRegistry configRegistry, String columnLabel) {
+    	        // configure the multi line text editor for column four
+    	        configRegistry.registerConfigAttribute(
+    	                EditConfigAttributes.CELL_EDITOR,
+    	                new MultiLineTextCellEditor(false),
+    	                DisplayMode.NORMAL,
+    	                columnLabel);
+
+    	        Style cellStyle = new Style();
+    	        cellStyle.setAttributeValue(
+    	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
+    	                HorizontalAlignmentEnum.LEFT);
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.CELL_STYLE,
+    	                cellStyle,
+    	                DisplayMode.NORMAL,
+    	                columnLabel);
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.CELL_STYLE,
+    	                cellStyle,
+    	                DisplayMode.EDIT,
+    	                columnLabel);
+
+    	        // configure custom dialog settings
+    	        Display display = Display.getCurrent();
+    	        Map<String, Object> editDialogSettings = new HashMap<String, Object>();
+    	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_TITLE, "Edit");
+    	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_ICON, display.getSystemImage(SWT.ICON_WARNING));
+    	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_RESIZABLE, Boolean.TRUE);
+
+    	        Point size = new Point(400, 300);
+    	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_SIZE, size);
+
+    	        int screenWidth = display.getBounds().width;
+    	        int screenHeight = display.getBounds().height;
+    	        Point location = new Point(
+    	                (screenWidth / (2 * display.getMonitors().length)) - (size.x / 2),
+    	                (screenHeight / 2) - (size.y / 2));
+    	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_LOCATION, location);
+
+    	        configRegistry.registerConfigAttribute(
+    	                EditConfigAttributes.EDIT_DIALOG_SETTINGS,
+    	                editDialogSettings,
+    	                DisplayMode.EDIT,
+    	                columnLabel);
+    	    }
+
+    	}
+
+    	class Row {
+    		private Vector<Object> originalData = new Vector<Object>();
+    		private HashMap<Integer, Object> newData = new HashMap<Integer, Object>();
+    		
+    		Row(Tuple tuple) {
+    			for (int column=0; column<tuple.getAttributeCount(); column++)
+    				originalData.add(tuple.get(column));
+    		}
+    		
+    		Object getColumnValue(int column) {
+    			Object v = newData.get(column);
+    			if (v != null)
+    				return v;
+    			return originalData.get(column);
+    		}
+    		
+    		void setColumnValue(int column, Object newValue) {
+    			newData.put(Integer.valueOf(column), newValue);
+    		}
+
+			boolean isChanged(int columnIndex) {
+				return newData.containsKey(columnIndex);
 			}
-			column.setText(columnHeading);
-			column.setToolTipText(attribute.getType().toString());
-			columnNumber++;
-		}
+			
+			// Copy new data to original data, and clear new data
+			void committed() {
+				for (Entry<Integer, Object> entry: newData.entrySet())
+					originalData.set(entry.getKey(), entry.getValue());
+				newData.clear();
+			}
+			
+			// Flush new data
+			public void cancelled() {
+				newData.clear();
+			}
+    	}
+    	
+	    class DataProvider implements IDataProvider {
+	    	
+	    	private HashSet<Integer> modifiedRows = new HashSet<Integer>();	    	
+	    	private Vector<Row> cache = new Vector<Row>();
+	    	
+	    	public DataProvider() {
+	    		Iterator<Tuple> iterator = tuples.iterator();
+	    		while (iterator.hasNext())
+	    			cache.add(new Row(iterator.next()));
+	    	}
 
-		// relvar tuples
-		for (Tuple tuple: tuples) {
-			TableItem item = new TableItem(table, SWT.NONE);
-			item.setText(" ");
-			for (int i = 0; i < heading.getCardinality(); i++)
-				item.setText(i + 1, tuple.getAttributeValue(i).toString());
-		}
+			public boolean isChanged(int columnIndex, int rowIndex) {
+				return cache.get(rowIndex).isChanged(columnIndex);
+			}
+	    	
+			@Override
+			public Object getDataValue(int columnIndex, int rowIndex) {
+				return cache.get(rowIndex).getColumnValue(columnIndex);
+			}
 
-		// blank "new" tuple
-		appendNewTuple();
-		
-		for (int i = 0; i < table.getColumnCount(); i++)
-			table.getColumn(i).pack();
-	}
-	
-	public void doDeleteSelected() {
-		String selection = "";
-		TableItem[] selectedRows = table.getSelection();
-		if (selectedRows.length == 0)
-			return;
-		for (TableItem row: selectedRows) {
-			if (row.getText(0) != " ")
-				continue;
-			if (selection.length() > 0)
-				selection += " OR ";
-			selection += "(" + getKeySelectionExpression(row) + ")";
-		}
-		String query = "DELETE " + relvarName + " WHERE " + selection + ";";
-		
-		System.out.println("EditTable: query is " + query);
-		
-		DbConnection.ExecuteResult result = connection.execute(query);
-		
-		if (result.failed())
-			showError(query, "Unable to delete tuples.\n\nQuery: " + query + " failed:\n\n" + result.getErrorMessage());
-		else
-			refresh();
-	}
+			@Override
+			public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
+				if (newValue.toString().equals(getDataValue(columnIndex, rowIndex).toString()))
+					return;
+				cache.get(rowIndex).setColumnValue(columnIndex, newValue.toString());
+				modifiedRows.add(rowIndex);
+			}
 
-	public int getTupleSelectionCount() {
-		TableItem[] selectedRows = table.getSelection();
-		if (selectedRows.length == 0)
-			return 0;
-		int count = 0;
-		for (TableItem row: selectedRows) {
-			if (row.getText(0) != " ")
-				continue;
-			count++;
-		}		
-		return count;
-	}
-	
-	public void askDeleteSelected() {
-		if (askDeleteConfirm) {
-			int tupleSelectionCount = getTupleSelectionCount();
-			if (tupleSelectionCount == 0)
-				return;
-			DeleteConfirmDialog confirmer = new DeleteConfirmDialog(parent.getShell(), tupleSelectionCount) {
-				public void buttonPressed() {
-					askDeleteConfirm = getAskDeleteConfirm();
+			@Override
+			public int getColumnCount() {
+				return heading.length;
+			}
+
+			@Override
+			public int getRowCount() {
+				return cache.size();
+			}
+
+			public void processDirtyRows() {
+				if (modifiedRows.size() > 0)
+					System.out.println("NatTable: process unsaved data");
+			}
+	    };
+		
+	    class HeadingProvider implements IDataProvider {	    	
+			@Override
+			public Object getDataValue(int columnIndex, int rowIndex) {
+				Attribute attribute = heading[columnIndex];
+				switch (rowIndex) {
+					case 0:
+						return attribute.getName();
+					case 1:
+						return attribute.getType().toString();
+					default:
+						return null;
 				}
-			};
-			if (confirmer.open() != DeleteConfirmDialog.OK)
-				return;
-		}
-		doDeleteSelected();
-	}
+			}
 
-	public void goToInsertRow() {
-		if (table.getItemCount() < 0)
-			return;
-		TableItem insertionPoint = table.getItem(table.getItemCount() - 1);
-		table.showItem(insertionPoint);
-		table.setSelection(insertionPoint);
+			@Override
+			public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public int getColumnCount() {
+				return heading.length;
+			}
+
+			@Override
+			public int getRowCount() {
+				return 2;
+			}
+	    };
+	    
+	    DataProvider dataProvider = new DataProvider();
+	    
+        DefaultGridLayer gridLayer = new DefaultGridLayer(
+        		dataProvider,
+                new HeadingProvider()
+        );
+        
+        class CellLabelAccumulator implements IConfigLabelAccumulator {
+			@Override
+			public void accumulateConfigLabels(LabelStack configLabels, int columnPosition, int rowPosition) {
+				configLabels.addLabel("column" + columnPosition);
+				if (dataProvider.isChanged(columnPosition, rowPosition))
+					configLabels.addLabel("changed");
+			}
+        }
+        
+        DataLayer bodyDataLayer = (DataLayer)gridLayer.getBodyDataLayer();
+        CellLabelAccumulator cellLabelAccumulator = new CellLabelAccumulator();
+        bodyDataLayer.setConfigLabelAccumulator(cellLabelAccumulator);
+
+        class HeadingLabelAccumulator implements IConfigLabelAccumulator {
+        	@Override
+			public void accumulateConfigLabels(LabelStack configLabels, int columnPosition, int rowPosition) {
+        		if (rowPosition == 0 && keyAttributeNames.contains(heading[columnPosition].getName()))
+        			configLabels.addLabel("keycolumn");
+			}
+        }
+        
+        DataLayer headingDataLayer = (DataLayer)gridLayer.getColumnHeaderDataLayer();
+        HeadingLabelAccumulator columnLabelAccumulator = new HeadingLabelAccumulator();
+        headingDataLayer.setConfigLabelAccumulator(columnLabelAccumulator);
+        
+        for (Control control: content.getChildren())
+        	control.dispose();
+        
+        table = new NatTable(content, gridLayer, false);
+        
+		table.addFocusListener(new FocusListener() {
+			public void focusLost(FocusEvent e) {
+				dataProvider.processDirtyRows();
+			}
+			public void focusGained(FocusEvent e) {
+				dataProvider.processDirtyRows();
+			}
+		});
+		
+        table.addLayerListener(new ILayerListener() {
+			@Override
+			public void handleLayerEvent(ILayerEvent event) {
+				if (event instanceof CellSelectionEvent)
+					dataProvider.processDirtyRows();
+			}
+        });
+        
+        DefaultNatTableStyleConfiguration defaultStyle = new DefaultNatTableStyleConfiguration();
+        table.addConfiguration(defaultStyle);
+        table.addConfiguration(new EditorConfiguration()); 
+        table.addConfiguration(new HeaderConfiguration());
+        
+        ContributionItem contributionItem = new ContributionItem() {
+            @Override
+        	public void fill(Menu menu, int index) {
+            	MenuItem doesPopupEdit = new MenuItem(menu, SWT.CHECK);
+            	doesPopupEdit.setText("Pop-up Edit Box");
+            	doesPopupEdit.setSelection(popupEdit);
+            	doesPopupEdit.addSelectionListener(new SelectionAdapter() {
+            		public void widgetSelected(SelectionEvent evt) {
+            			popupEdit = !popupEdit;
+            			table.addConfiguration(new PopupEditorConfiguration());
+            			table.configure();
+            		}
+            	});
+            }
+        };
+		table.addConfiguration(new MenuConfiguration(
+				GridRegion.COLUMN_HEADER, 
+				new PopupMenuBuilder(table).withContributionItem(contributionItem)));
+		
+        table.configure();	
 	}
 
 	private void obtainKeyDefinitions() {
-		readonly = false;
 		keyAttributeNames.clear();
 		Tuples keyDefinitions = (Tuples)connection.evaluate("((sys.Catalog WHERE Name = '" + relvarName + "') {Keys}) UNGROUP Keys");
 		for (Tuple keyDefinition: keyDefinitions) {
@@ -455,13 +512,13 @@ public class RelvarEditor {
 			}
 			return;
 		}
-		readonly = true;
 	}
 	
 	private Tuples obtainTuples() {
 		return connection.getTuples(relvarName);
 	}
 	
+/*	
 	private String getKeySelectionExpression(Vector<String> keyValues) {
 		String keyspec = "";
 		int index = 0;
@@ -606,6 +663,17 @@ public class RelvarEditor {
 				}
 			}
 		}, 500);
+	}
+*/
+
+	public void goToInsertRow() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void askDeleteSelected() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
