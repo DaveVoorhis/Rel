@@ -10,6 +10,9 @@ will compile with the Eclipse IDE for Java developers.
 You'll need the JavaCC Eclipse plugin.  Download
 and install it in Eclipse from http://eclipse-javacc.sourceforge.net/
 
+Install NatTable, which is used by the RelUI project.  
+See https://eclipse.org/nattable/
+
 Then, in Eclipse, select "File | Import... | Git | Projects from Git"
 and pick "Clone URI".  The URI is
 https://github.com/DaveVoorhis/Rel.git
