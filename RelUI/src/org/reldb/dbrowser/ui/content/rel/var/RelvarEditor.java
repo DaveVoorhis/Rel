@@ -27,19 +27,15 @@ import org.eclipse.nebula.widgets.nattable.edit.gui.ICellEditDialog;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultGridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
-import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
 import org.eclipse.nebula.widgets.nattable.layer.LabelStack;
 import org.eclipse.nebula.widgets.nattable.layer.cell.IConfigLabelAccumulator;
-import org.eclipse.nebula.widgets.nattable.layer.event.ILayerEvent;
 import org.eclipse.nebula.widgets.nattable.painter.cell.CheckBoxPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.ImagePainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.BeveledBorderDecorator;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.CellPainterDecorator;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.LineBorderDecorator;
-import org.eclipse.nebula.widgets.nattable.selection.event.CellSelectionEvent;
 import org.eclipse.nebula.widgets.nattable.style.BorderStyle;
-import org.eclipse.nebula.widgets.nattable.style.BorderStyle.LineStyleEnum;
 import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.nebula.widgets.nattable.style.HorizontalAlignmentEnum;
@@ -52,9 +48,6 @@ import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
 import org.eclipse.nebula.widgets.nattable.ui.util.CellEdgeEnum;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -62,6 +55,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.ui.DbConnection;
@@ -79,12 +74,14 @@ public class RelvarEditor {
 	private DbConnection connection;
 	private String relvarName;
 	
+	private Composite parent;
 	private Composite content;
 	private NatTable table;
 	
 	private boolean popupEdit = false;
 	
 	public RelvarEditor(Composite parent, DbConnection connection, String relvarName) {
+		this.parent = parent;
 		this.connection = connection;
 		this.relvarName = relvarName;
 		
@@ -96,6 +93,17 @@ public class RelvarEditor {
 	
 	public Control getControl() {
 		return content;
+	}
+	
+	// Recursively determine if control or one of its children have the keyboard focus.
+	public static boolean hasFocus(Control control) {
+		if (control.isFocusControl())
+			return true;
+		if (control instanceof Composite)
+			for (Control child: ((Composite)control).getChildren())
+				if (hasFocus(child))
+					return true;
+		return false;
 	}
 	
 	public void refresh() {		
@@ -167,7 +175,9 @@ public class RelvarEditor {
     	class EditorConfiguration extends AbstractRegistryConfiguration {
     	    @Override
     	    public void configureRegistry(IConfigRegistry configRegistry) {
+    	    	// editable
     	        configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, IEditableRule.ALWAYS_EDITABLE);
+    	        // style for "changed" cells
     	        Style changedStyle = new Style();
     	        changedStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_YELLOW);
     	        changedStyle.setAttributeValue(CellStyleAttributes.FOREGROUND_COLOR, GUIHelper.COLOR_BLACK);
@@ -181,18 +191,32 @@ public class RelvarEditor {
     	        		changedStyle,
     	        		DisplayMode.SELECT,
     	        		"changed");
+    	        // style for selected cells
     	        Style selectStyle = new Style();
     			configRegistry.registerConfigAttribute(
     					CellConfigAttributes.CELL_STYLE, 
     					selectStyle, 
     					DisplayMode.SELECT);
+    			// default text editor
     	        configRegistry.registerConfigAttribute(
     	                EditConfigAttributes.CELL_EDITOR,
-    	                new TextCellEditor(true, true), DisplayMode.NORMAL);
+    	                new TextCellEditor(true, true) {
+    	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
+    	                		System.out.println("CellEditor opens at " + getRowIndex() + ", " + getColumnIndex());
+    	                		return super.activateCell(parent, originalCanonicalValue);
+    	                	}
+    	                	public void close() {
+    	                		System.out.println("CellEditor closes at " + getRowIndex() + ", " + getColumnIndex());
+    	                		super.close();
+    	                	}
+    	                }, 
+    	                DisplayMode.NORMAL);
+    	        // open adjacent editor when we leave the current one during editing
     	        configRegistry.registerConfigAttribute(
     	                EditConfigAttributes.OPEN_ADJACENT_EDITOR,
     	                Boolean.TRUE,
     	                DisplayMode.EDIT);
+    	        // for each column...
     	        for (int column = 0; column < heading.length; column++) {
     	        	Attribute attribute = heading[column];
     	        	String columnLabel = "column" + column;
@@ -217,7 +241,16 @@ public class RelvarEditor {
     	        // register a CheckBoxCellEditor
     	        configRegistry.registerConfigAttribute(
     	                EditConfigAttributes.CELL_EDITOR,
-    	                new CheckBoxCellEditor(),
+    	                new CheckBoxCellEditor() {
+    	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
+    	                		System.out.println("CellEditor opens at " + getRowIndex() + ", " + getColumnIndex());
+    	                		return super.activateCell(parent, originalCanonicalValue);
+    	                	}
+    	                	public void close() {
+    	                		System.out.println("CellEditor closes at " + getRowIndex() + ", " + getColumnIndex());
+    	                		super.close();
+    	                	}
+    	                },
     	                DisplayMode.EDIT,
     	                columnLabel);
 
@@ -259,7 +292,7 @@ public class RelvarEditor {
     	                DisplayMode.EDIT,
     	                columnLabel);
 
-    	        // don't forget to register the Double converter!
+    	        // Use Double converter
     	        configRegistry.registerConfigAttribute(
     	                CellConfigAttributes.DISPLAY_CONVERTER,
     	                new DefaultDoubleDisplayConverter(),
@@ -268,19 +301,28 @@ public class RelvarEditor {
     	    }
 
     	    private void registerIntegerColumn(IConfigRegistry configRegistry, String columnLabel) {
-    	        // don't forget to register the Integer converter!
+    	        // Use Integer converter
     	        configRegistry.registerConfigAttribute(
     	                CellConfigAttributes.DISPLAY_CONVERTER,
     	                new DefaultIntegerDisplayConverter(),
     	                DisplayMode.NORMAL,
     	                columnLabel);
     	    }
-
+    	    
     	    private void registerMultiLineEditorColumn(IConfigRegistry configRegistry, String columnLabel) {
-    	        // configure the multi line text editor for column four
+    	        // configure the multi line text editor
     	        configRegistry.registerConfigAttribute(
     	                EditConfigAttributes.CELL_EDITOR,
-    	                new MultiLineTextCellEditor(false),
+    	                new MultiLineTextCellEditor(false) {
+    	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
+    	                		System.out.println("CellEditor opens at " + getRowIndex() + ", " + getColumnIndex());
+    	                		return super.activateCell(parent, originalCanonicalValue);
+    	                	}
+    	                	public void close() {
+    	                		System.out.println("CellEditor closes at " + getRowIndex() + ", " + getColumnIndex());
+    	                		super.close();
+    	                	}
+    	                },
     	                DisplayMode.NORMAL,
     	                columnLabel);
 
@@ -322,7 +364,6 @@ public class RelvarEditor {
     	                DisplayMode.EDIT,
     	                columnLabel);
     	    }
-
     	}
 
     	class Row {
@@ -355,17 +396,13 @@ public class RelvarEditor {
 					originalData.set(entry.getKey(), entry.getValue());
 				newData.clear();
 			}
-			
-			// Flush new data
-			public void cancelled() {
-				newData.clear();
-			}
     	}
     	
 	    class DataProvider implements IDataProvider {
 	    	
 	    	private HashSet<Integer> modifiedRows = new HashSet<Integer>();	    	
 	    	private Vector<Row> cache = new Vector<Row>();
+	    	private HashMap<Integer, String> addRow = null;
 	    	
 	    	public DataProvider() {
 	    		Iterator<Tuple> iterator = tuples.iterator();
@@ -374,16 +411,31 @@ public class RelvarEditor {
 	    	}
 
 			public boolean isChanged(int columnIndex, int rowIndex) {
+				if (rowIndex >= cache.size())
+					return addRow != null;
 				return cache.get(rowIndex).isChanged(columnIndex);
 			}
 	    	
 			@Override
 			public Object getDataValue(int columnIndex, int rowIndex) {
+				if (rowIndex >= cache.size()) {
+					if (addRow == null)
+						return "";
+					return addRow.get(columnIndex);
+				}
 				return cache.get(rowIndex).getColumnValue(columnIndex);
 			}
 
 			@Override
 			public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
+				if (newValue == null)
+					newValue = "";
+				if (rowIndex >= cache.size()) {
+					if (addRow == null)
+						addRow = new HashMap<Integer, String>();
+					addRow.put(columnIndex, newValue.toString());
+					return;
+				}
 				if (newValue.toString().equals(getDataValue(columnIndex, rowIndex).toString()))
 					return;
 				cache.get(rowIndex).setColumnValue(columnIndex, newValue.toString());
@@ -397,12 +449,14 @@ public class RelvarEditor {
 
 			@Override
 			public int getRowCount() {
-				return cache.size();
+				return cache.size() + 1;
 			}
 
 			public void processDirtyRows() {
 				if (modifiedRows.size() > 0)
-					System.out.println("NatTable: process unsaved data");
+					System.out.println("NatTable: update changes - invoke committed() on each updated row and purge modifiedRows when done");
+				if (addRow != null)
+					System.out.println("NatTable: insert new data - move addRow to cache and null addRow when done");
 			}
 	    };
 		
@@ -437,10 +491,11 @@ public class RelvarEditor {
 	    };
 	    
 	    DataProvider dataProvider = new DataProvider();
+	    HeadingProvider headingProvider = new HeadingProvider();
 	    
         DefaultGridLayer gridLayer = new DefaultGridLayer(
         		dataProvider,
-                new HeadingProvider()
+                headingProvider
         );
         
         class CellLabelAccumulator implements IConfigLabelAccumulator {
@@ -477,27 +532,6 @@ public class RelvarEditor {
         
         table = new NatTable(content, gridLayer, false);
         
-		table.addFocusListener(new FocusListener() {
-			public void focusLost(FocusEvent e) {
-				dataProvider.processDirtyRows();
-			}
-			public void focusGained(FocusEvent e) {
-				dataProvider.processDirtyRows();
-			}
-		});
-		
-        table.addLayerListener(new ILayerListener() {
-			@Override
-			public void handleLayerEvent(ILayerEvent event) {
-				if (event instanceof CellSelectionEvent) {
-					CellSelectionEvent csEvent = (CellSelectionEvent)event;
-					csEvent.convertToLocal(csEvent.getSelectionLayer());
-					System.out.println("RelvarEditor: row selected is " + csEvent.getRowPosition());
-					dataProvider.processDirtyRows();
-				}
-			}
-        });
-        
         DefaultNatTableStyleConfiguration defaultStyle = new DefaultNatTableStyleConfiguration();
         table.addConfiguration(defaultStyle);
         table.addConfiguration(new EditorConfiguration()); 
@@ -522,7 +556,16 @@ public class RelvarEditor {
 				GridRegion.COLUMN_HEADER, 
 				new PopupMenuBuilder(table).withContributionItem(contributionItem)));
 	
-        table.configure();	
+        table.configure();
+        
+        parent.getDisplay().addFilter(SWT.FocusIn, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (!hasFocus(table))
+					System.out.println("Table lost focus [2].");
+			}
+        });
+
 	}
 
 	private void obtainKeyDefinitions() {
