@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 import org.eclipse.jface.action.ContributionItem;
@@ -24,6 +26,7 @@ import org.eclipse.nebula.widgets.nattable.edit.editor.CheckBoxCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.editor.MultiLineTextCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.editor.TextCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.gui.ICellEditDialog;
+import org.eclipse.nebula.widgets.nattable.export.command.ExportCommand;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultGridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
@@ -67,6 +70,10 @@ import org.reldb.rel.client.Tuples;
 
 public class RelvarEditor {
 	
+	private Attribute[] heading;
+	
+	private Tuples tuples;
+	
 	private static boolean askDeleteConfirm = true;
 
 	private Vector<HashSet<String>> keys = new Vector<HashSet<String>>();
@@ -74,14 +81,110 @@ public class RelvarEditor {
 	private DbConnection connection;
 	private String relvarName;
 	
-	private Composite parent;
 	private Composite content;
 	private NatTable table;
 	
+	private DataProvider dataProvider;
+	
 	private boolean popupEdit = false;
 	
+	private Timer updateTimer = new Timer();
+	
+	class Row {
+		private Vector<Object> originalData = new Vector<Object>();
+		private HashMap<Integer, Object> newData = new HashMap<Integer, Object>();
+		
+		Row(Tuple tuple) {
+			for (int column=0; column<tuple.getAttributeCount(); column++)
+				originalData.add(tuple.get(column));
+		}
+		
+		Object getColumnValue(int column) {
+			Object v = newData.get(column);
+			if (v != null)
+				return v;
+			return originalData.get(column);
+		}
+		
+		void setColumnValue(int column, Object newValue) {
+			newData.put(Integer.valueOf(column), newValue);
+		}
+
+		boolean isChanged(int columnIndex) {
+			return newData.containsKey(columnIndex);
+		}
+		
+		// Copy new data to original data, and clear new data
+		void committed() {
+			for (Entry<Integer, Object> entry: newData.entrySet())
+				originalData.set(entry.getKey(), entry.getValue());
+			newData.clear();
+		}
+	}
+	
+    class DataProvider implements IDataProvider {
+    	
+    	private HashSet<Integer> modifiedRows = new HashSet<Integer>();	    	
+    	private Vector<Row> cache = new Vector<Row>();
+    	private HashMap<Integer, String> addRow = null;
+    	
+    	public DataProvider() {
+    		Iterator<Tuple> iterator = tuples.iterator();
+    		while (iterator.hasNext())
+    			cache.add(new Row(iterator.next()));
+    	}
+
+		public boolean isChanged(int columnIndex, int rowIndex) {
+			if (rowIndex >= cache.size())
+				return addRow != null;
+			return cache.get(rowIndex).isChanged(columnIndex);
+		}
+    	
+		@Override
+		public Object getDataValue(int columnIndex, int rowIndex) {
+			if (rowIndex >= cache.size()) {
+				if (addRow == null)
+					return "";
+				return addRow.get(columnIndex);
+			}
+			return cache.get(rowIndex).getColumnValue(columnIndex);
+		}
+
+		@Override
+		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
+			if (newValue == null)
+				newValue = "";
+			if (rowIndex >= cache.size()) {
+				if (addRow == null)
+					addRow = new HashMap<Integer, String>();
+				addRow.put(columnIndex, newValue.toString());
+				return;
+			}
+			if (newValue.toString().equals(getDataValue(columnIndex, rowIndex).toString()))
+				return;
+			cache.get(rowIndex).setColumnValue(columnIndex, newValue.toString());
+			modifiedRows.add(rowIndex);
+		}
+
+		@Override
+		public int getColumnCount() {
+			return heading.length;
+		}
+
+		@Override
+		public int getRowCount() {
+			return cache.size() + 1;
+		}
+
+		public void processDirtyRows() {
+			if (modifiedRows.size() > 0)
+				System.out.println("NatTable: update changes - invoke committed() on each updated row and purge modifiedRows when done");
+			if (addRow != null)
+				System.out.println("NatTable: insert new data - move addRow to cache and null addRow when done");
+		}
+    };
+	
 	public RelvarEditor(Composite parent, DbConnection connection, String relvarName) {
-		this.parent = parent;
 		this.connection = connection;
 		this.relvarName = relvarName;
 		
@@ -89,6 +192,45 @@ public class RelvarEditor {
 		content.setLayout(new FillLayout());
 		
 		refresh();
+	}
+	
+	public void export() {
+		ExportCommand cmd = new ExportCommand(table.getConfigRegistry(), table.getShell());
+		table.doCommand(cmd);
+	}
+	
+	private void processDirtyRows() {
+		dataProvider.processDirtyRows();		
+	}
+	
+	private void stopUpdateTimer() {
+		updateTimer.cancel();		
+	}
+	
+	private void startUpdateTimer() {
+		updateTimer = new Timer();
+		updateTimer.schedule(
+			new TimerTask() {
+				@Override
+				public void run() {
+					processDirtyRows();
+				}
+		    }, 
+			1000);
+	}
+	
+	private void editorOpen(int row, int column) {
+		stopUpdateTimer();
+	}
+	
+	private void editorClose(int row, int column) {
+		stopUpdateTimer();
+		startUpdateTimer();
+	}
+	
+	private void lostFocus() {
+		updateTimer.cancel();
+		processDirtyRows();
 	}
 	
 	public Control getControl() {
@@ -109,9 +251,9 @@ public class RelvarEditor {
 	public void refresh() {		
 		obtainKeyDefinitions();
 		
-		Tuples tuples = obtainTuples();
+		tuples = obtainTuples();
 
-    	Attribute[] heading = tuples.getHeading().toArray();
+    	heading = tuples.getHeading().toArray();
 
     	// IConfiguration for registering a UI binding to open a menu
     	class MenuConfiguration extends AbstractUiBindingConfiguration {
@@ -202,11 +344,11 @@ public class RelvarEditor {
     	                EditConfigAttributes.CELL_EDITOR,
     	                new TextCellEditor(true, true) {
     	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
-    	                		System.out.println("CellEditor opens at " + getRowIndex() + ", " + getColumnIndex());
+    	                		editorOpen(getRowIndex(), getColumnIndex());
     	                		return super.activateCell(parent, originalCanonicalValue);
     	                	}
     	                	public void close() {
-    	                		System.out.println("CellEditor closes at " + getRowIndex() + ", " + getColumnIndex());
+    	                		editorClose(getRowIndex(), getColumnIndex());
     	                		super.close();
     	                	}
     	                }, 
@@ -243,11 +385,11 @@ public class RelvarEditor {
     	                EditConfigAttributes.CELL_EDITOR,
     	                new CheckBoxCellEditor() {
     	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
-    	                		System.out.println("CellEditor opens at " + getRowIndex() + ", " + getColumnIndex());
+    	                		editorOpen(getRowIndex(), getColumnIndex());
     	                		return super.activateCell(parent, originalCanonicalValue);
     	                	}
     	                	public void close() {
-    	                		System.out.println("CellEditor closes at " + getRowIndex() + ", " + getColumnIndex());
+    	                		editorClose(getRowIndex(), getColumnIndex());
     	                		super.close();
     	                	}
     	                },
@@ -315,11 +457,11 @@ public class RelvarEditor {
     	                EditConfigAttributes.CELL_EDITOR,
     	                new MultiLineTextCellEditor(false) {
     	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
-    	                		System.out.println("CellEditor opens at " + getRowIndex() + ", " + getColumnIndex());
+    	                		editorOpen(getRowIndex(), getColumnIndex());
     	                		return super.activateCell(parent, originalCanonicalValue);
     	                	}
     	                	public void close() {
-    	                		System.out.println("CellEditor closes at " + getRowIndex() + ", " + getColumnIndex());
+    	                		editorClose(getRowIndex(), getColumnIndex());
     	                		super.close();
     	                	}
     	                },
@@ -365,100 +507,6 @@ public class RelvarEditor {
     	                columnLabel);
     	    }
     	}
-
-    	class Row {
-    		private Vector<Object> originalData = new Vector<Object>();
-    		private HashMap<Integer, Object> newData = new HashMap<Integer, Object>();
-    		
-    		Row(Tuple tuple) {
-    			for (int column=0; column<tuple.getAttributeCount(); column++)
-    				originalData.add(tuple.get(column));
-    		}
-    		
-    		Object getColumnValue(int column) {
-    			Object v = newData.get(column);
-    			if (v != null)
-    				return v;
-    			return originalData.get(column);
-    		}
-    		
-    		void setColumnValue(int column, Object newValue) {
-    			newData.put(Integer.valueOf(column), newValue);
-    		}
-
-			boolean isChanged(int columnIndex) {
-				return newData.containsKey(columnIndex);
-			}
-			
-			// Copy new data to original data, and clear new data
-			void committed() {
-				for (Entry<Integer, Object> entry: newData.entrySet())
-					originalData.set(entry.getKey(), entry.getValue());
-				newData.clear();
-			}
-    	}
-    	
-	    class DataProvider implements IDataProvider {
-	    	
-	    	private HashSet<Integer> modifiedRows = new HashSet<Integer>();	    	
-	    	private Vector<Row> cache = new Vector<Row>();
-	    	private HashMap<Integer, String> addRow = null;
-	    	
-	    	public DataProvider() {
-	    		Iterator<Tuple> iterator = tuples.iterator();
-	    		while (iterator.hasNext())
-	    			cache.add(new Row(iterator.next()));
-	    	}
-
-			public boolean isChanged(int columnIndex, int rowIndex) {
-				if (rowIndex >= cache.size())
-					return addRow != null;
-				return cache.get(rowIndex).isChanged(columnIndex);
-			}
-	    	
-			@Override
-			public Object getDataValue(int columnIndex, int rowIndex) {
-				if (rowIndex >= cache.size()) {
-					if (addRow == null)
-						return "";
-					return addRow.get(columnIndex);
-				}
-				return cache.get(rowIndex).getColumnValue(columnIndex);
-			}
-
-			@Override
-			public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
-				if (newValue == null)
-					newValue = "";
-				if (rowIndex >= cache.size()) {
-					if (addRow == null)
-						addRow = new HashMap<Integer, String>();
-					addRow.put(columnIndex, newValue.toString());
-					return;
-				}
-				if (newValue.toString().equals(getDataValue(columnIndex, rowIndex).toString()))
-					return;
-				cache.get(rowIndex).setColumnValue(columnIndex, newValue.toString());
-				modifiedRows.add(rowIndex);
-			}
-
-			@Override
-			public int getColumnCount() {
-				return heading.length;
-			}
-
-			@Override
-			public int getRowCount() {
-				return cache.size() + 1;
-			}
-
-			public void processDirtyRows() {
-				if (modifiedRows.size() > 0)
-					System.out.println("NatTable: update changes - invoke committed() on each updated row and purge modifiedRows when done");
-				if (addRow != null)
-					System.out.println("NatTable: insert new data - move addRow to cache and null addRow when done");
-			}
-	    };
 		
 	    class HeadingProvider implements IDataProvider {	    	
 			@Override
@@ -490,7 +538,7 @@ public class RelvarEditor {
 			}
 	    };
 	    
-	    DataProvider dataProvider = new DataProvider();
+	    dataProvider = new DataProvider();
 	    HeadingProvider headingProvider = new HeadingProvider();
 	    
         DefaultGridLayer gridLayer = new DefaultGridLayer(
@@ -550,6 +598,13 @@ public class RelvarEditor {
             			table.configure();
             		}
             	});
+            	MenuItem export = new MenuItem(menu, SWT.PUSH);
+            	export.setText("Export");
+            	export.addSelectionListener(new SelectionAdapter() {
+            		public void widgetSelected(SelectionEvent evt) {
+            			export();
+            		}
+            	});
             }
         };
 		table.addConfiguration(new MenuConfiguration(
@@ -558,14 +613,14 @@ public class RelvarEditor {
 	
         table.configure();
         
-        parent.getDisplay().addFilter(SWT.FocusIn, new Listener() {
+        table.getDisplay().addFilter(SWT.FocusIn, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				if (!hasFocus(table))
-					System.out.println("Table lost focus [2].");
+					lostFocus();
 			}
         });
-
+        
 	}
 
 	private void obtainKeyDefinitions() {
