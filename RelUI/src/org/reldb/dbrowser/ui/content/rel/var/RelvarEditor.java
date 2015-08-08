@@ -23,6 +23,7 @@ import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.convert.DefaultDisplayConverter;
 import org.eclipse.nebula.widgets.nattable.data.convert.DefaultDoubleDisplayConverter;
 import org.eclipse.nebula.widgets.nattable.data.convert.DefaultIntegerDisplayConverter;
+import org.eclipse.nebula.widgets.nattable.edit.CellEditorCreatedEvent;
 import org.eclipse.nebula.widgets.nattable.edit.EditConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.edit.editor.CheckBoxCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.editor.MultiLineTextCellEditor;
@@ -34,15 +35,20 @@ import org.eclipse.nebula.widgets.nattable.extension.poi.HSSFExcelExporter;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultGridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
+import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
 import org.eclipse.nebula.widgets.nattable.layer.LabelStack;
 import org.eclipse.nebula.widgets.nattable.layer.cell.IConfigLabelAccumulator;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
+import org.eclipse.nebula.widgets.nattable.layer.event.CellVisualChangeEvent;
+import org.eclipse.nebula.widgets.nattable.layer.event.ILayerEvent;
 import org.eclipse.nebula.widgets.nattable.painter.cell.CheckBoxPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.ImagePainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.BeveledBorderDecorator;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.CellPainterDecorator;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.LineBorderDecorator;
+import org.eclipse.nebula.widgets.nattable.selection.event.CellSelectionEvent;
+import org.eclipse.nebula.widgets.nattable.selection.event.RowSelectionEvent;
 import org.eclipse.nebula.widgets.nattable.style.BorderStyle;
 import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
@@ -95,6 +101,8 @@ public class RelvarEditor {
 	
 	private Timer updateTimer = new Timer();
 	
+	private int lastRowSelected = -1;
+
 	class Row {
 		private Vector<Object> originalData = new Vector<Object>();
 		private HashMap<Integer, Object> newData = new HashMap<Integer, Object>();
@@ -235,6 +243,7 @@ public class RelvarEditor {
 	
 	private void processDirtyRows() {
 		dataProvider.processDirtyRows();		
+		lastRowSelected = -1;
 	}
 	
 	private void stopUpdateTimer() {
@@ -252,18 +261,37 @@ public class RelvarEditor {
 		    }, 
 			1000);
 	}
-	
-	private void editorOpen(int row, int column) {
-		stopUpdateTimer();
+
+	private void maybeStartUpdateTimer(int row) {
+		if (lastRowSelected > 0 && row == lastRowSelected)
+			return;
+		if (lastRowSelected < 0) {
+			lastRowSelected = row;
+			return;
+		}
+		startUpdateTimer();		
 	}
 	
-	private void editorClose(int row, int column) {
+	private void editorBeenOpened(int row, int column) {
 		stopUpdateTimer();
-		startUpdateTimer();
+		maybeStartUpdateTimer(row);
+	}
+	
+	private void editorBeenClosed(int row, int column) {
+		stopUpdateTimer();
+		maybeStartUpdateTimer(row);
+	}
+	
+	private void rowBeenSelected(int row) {
+		stopUpdateTimer();
+		if (row < 0)
+			processDirtyRows();
+		else
+			maybeStartUpdateTimer(row);
 	}
 	
 	private void lostFocus() {
-		updateTimer.cancel();
+		stopUpdateTimer();
 		processDirtyRows();
 	}
 	
@@ -394,11 +422,11 @@ public class RelvarEditor {
     	                EditConfigAttributes.CELL_EDITOR,
     	                new TextCellEditor(true, true) {
     	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
-    	                		editorOpen(getRowIndex(), getColumnIndex());
+    	                		editorBeenOpened(getRowIndex(), getColumnIndex());
     	                		return super.activateCell(parent, originalCanonicalValue);
     	                	}
     	                	public void close() {
-    	                		editorClose(getRowIndex(), getColumnIndex());
+    	                		editorBeenClosed(getRowIndex(), getColumnIndex());
     	                		super.close();
     	                	}
     	                }, 
@@ -435,11 +463,11 @@ public class RelvarEditor {
     	                EditConfigAttributes.CELL_EDITOR,
     	                new CheckBoxCellEditor() {
     	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
-    	                		editorOpen(getRowIndex(), getColumnIndex());
+    	                		editorBeenOpened(getRowIndex(), getColumnIndex());
     	                		return super.activateCell(parent, originalCanonicalValue);
     	                	}
     	                	public void close() {
-    	                		editorClose(getRowIndex(), getColumnIndex());
+    	                		editorBeenClosed(getRowIndex(), getColumnIndex());
     	                		super.close();
     	                	}
     	                },
@@ -507,11 +535,11 @@ public class RelvarEditor {
     	                EditConfigAttributes.CELL_EDITOR,
     	                new MultiLineTextCellEditor(false) {
     	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
-    	                		editorOpen(getRowIndex(), getColumnIndex());
+    	                		editorBeenOpened(getRowIndex(), getColumnIndex());
     	                		return super.activateCell(parent, originalCanonicalValue);
     	                	}
     	                	public void close() {
-    	                		editorClose(getRowIndex(), getColumnIndex());
+    	                		editorBeenClosed(getRowIndex(), getColumnIndex());
     	                		super.close();
     	                	}
     	                },
@@ -665,7 +693,26 @@ public class RelvarEditor {
 		table.addConfiguration(new MenuConfiguration(
 				GridRegion.COLUMN_HEADER, 
 				new PopupMenuBuilder(table).withContributionItem(contributionItem)));
-	
+
+		// Report row selection events, to help control updating
+		table.addLayerListener(new ILayerListener() {
+			@Override
+			public void handleLayerEvent(ILayerEvent event) {
+				if (event instanceof RowSelectionEvent) {
+					rowBeenSelected(-1);
+				} else if (event instanceof CellSelectionEvent) {
+					CellSelectionEvent csEvent = (CellSelectionEvent) event;
+					rowBeenSelected(csEvent.getRowPosition() - headingProvider.getRowCount());								
+				} else if (event instanceof CellVisualChangeEvent) {
+					CellVisualChangeEvent cvEvent = (CellVisualChangeEvent)event;
+					rowBeenSelected(cvEvent.getRowPosition() - headingProvider.getRowCount());
+				} else if (event instanceof CellEditorCreatedEvent) {
+				} else {
+					rowBeenSelected(-1);
+				}
+			}
+		});
+		
         table.configure();
         
         table.getDisplay().addFilter(SWT.FocusIn, new Listener() {
