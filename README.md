@@ -4,7 +4,7 @@ If you wish to work with the source code, it can be imported directly into Eclip
 
 You'll need the JavaCC Eclipse plugin.  It's explicitly required to compile the Client and ServerVxxx subprojects, but other subprojects have dependencies on Client and ServerVxxx, so you're almost certain to need it.  Download and install it in Eclipse from http://eclipse-javacc.sourceforge.net/
 
-Install NatTable, which is used by the RelUI project.  See https://eclipse.org/nattable/
+Install NatTable, which is used by the RelUI subproject.  See https://eclipse.org/nattable/
 
 In Eclipse, select "File | Import... | Git | Projects from Git" and pick "Clone URI".  The URI is https://github.com/DaveVoorhis/Rel.git
 
