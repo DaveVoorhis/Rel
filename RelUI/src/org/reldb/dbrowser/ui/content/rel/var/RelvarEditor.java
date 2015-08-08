@@ -10,6 +10,8 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 import org.eclipse.jface.action.ContributionItem;
+import org.eclipse.jface.window.DefaultToolTip;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
@@ -26,12 +28,15 @@ import org.eclipse.nebula.widgets.nattable.edit.editor.CheckBoxCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.editor.MultiLineTextCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.editor.TextCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.gui.ICellEditDialog;
+import org.eclipse.nebula.widgets.nattable.export.ExportConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.export.command.ExportCommand;
+import org.eclipse.nebula.widgets.nattable.extension.poi.HSSFExcelExporter;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultGridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.LabelStack;
 import org.eclipse.nebula.widgets.nattable.layer.cell.IConfigLabelAccumulator;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.nebula.widgets.nattable.painter.cell.CheckBoxPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.ImagePainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
@@ -74,7 +79,7 @@ public class RelvarEditor {
 	
 	private Tuples tuples;
 	
-	private static boolean askDeleteConfirm = true;
+//	private static boolean askDeleteConfirm = true;
 
 	private Vector<HashSet<String>> keys = new Vector<HashSet<String>>();
 	
@@ -93,16 +98,23 @@ public class RelvarEditor {
 	class Row {
 		private Vector<Object> originalData = new Vector<Object>();
 		private HashMap<Integer, Object> newData = new HashMap<Integer, Object>();
+		private String error = null;
 		
 		Row(Tuple tuple) {
 			for (int column=0; column<tuple.getAttributeCount(); column++)
 				originalData.add(tuple.get(column));
 		}
 		
+		Row() {
+			originalData = new Vector<Object>();
+		}
+		
 		Object getColumnValue(int column) {
 			Object v = newData.get(column);
 			if (v != null)
 				return v;
+			if (column >= originalData.size())
+				return null;
 			return originalData.get(column);
 		}
 		
@@ -119,6 +131,15 @@ public class RelvarEditor {
 			for (Entry<Integer, Object> entry: newData.entrySet())
 				originalData.set(entry.getKey(), entry.getValue());
 			newData.clear();
+			error = null;
+		}
+		
+		String getError() {
+			return error;
+		}
+		
+		void setError(String error) {
+			this.error = error;
 		}
 	}
 	
@@ -126,7 +147,7 @@ public class RelvarEditor {
     	
     	private HashSet<Integer> modifiedRows = new HashSet<Integer>();	    	
     	private Vector<Row> cache = new Vector<Row>();
-    	private HashMap<Integer, String> addRow = null;
+    	private Row addRow = null;
     	
     	public DataProvider() {
     		Iterator<Tuple> iterator = tuples.iterator();
@@ -145,19 +166,22 @@ public class RelvarEditor {
 			if (rowIndex >= cache.size()) {
 				if (addRow == null)
 					return "";
-				return addRow.get(columnIndex);
+				return addRow.getColumnValue(columnIndex);
 			}
 			return cache.get(rowIndex).getColumnValue(columnIndex);
 		}
 
 		@Override
 		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
-			if (newValue == null)
-				newValue = "";
+			if (heading[columnIndex].getType().toString().equals("CHARACTER")) {
+				if (newValue == null)
+					newValue = "";
+			} else if (newValue == null || newValue.toString().length() == 0)
+				return;
 			if (rowIndex >= cache.size()) {
 				if (addRow == null)
-					addRow = new HashMap<Integer, String>();
-				addRow.put(columnIndex, newValue.toString());
+					addRow = new Row();
+				addRow.setColumnValue(columnIndex, newValue.toString());
 				return;
 			}
 			if (newValue.toString().equals(getDataValue(columnIndex, rowIndex).toString()))
@@ -181,6 +205,16 @@ public class RelvarEditor {
 				System.out.println("NatTable: update changes - invoke committed() on each updated row and purge modifiedRows when done");
 			if (addRow != null)
 				System.out.println("NatTable: insert new data - move addRow to cache and null addRow when done");
+			// if update fails, set cache.get(row).getError to non-null
+		}
+
+		public String getError(int row) {
+			if (row >= cache.size())
+				if (addRow != null)
+					return addRow.getError();
+				else
+					return null;
+			return cache.get(row).getError();
 		}
     };
 	
@@ -333,6 +367,22 @@ public class RelvarEditor {
     	        		changedStyle,
     	        		DisplayMode.SELECT,
     	        		"changed");
+    	        // style for "error" cells
+    	        Style errorStyle = new Style();
+    	        errorStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_RED);
+    	        errorStyle.setAttributeValue(CellStyleAttributes.FOREGROUND_COLOR, GUIHelper.COLOR_BLACK);
+    	        configRegistry.registerConfigAttribute(
+    	        		CellConfigAttributes.CELL_STYLE,
+    	        		errorStyle,
+    	        		DisplayMode.NORMAL,
+    	        		"error");
+    	        configRegistry.registerConfigAttribute(
+    	        		CellConfigAttributes.CELL_STYLE,
+    	        		errorStyle,
+    	        		DisplayMode.SELECT,
+    	        		"error");    	        
+    	        // options for Excel export
+    	        configRegistry.registerConfigAttribute(ExportConfigAttributes.EXPORTER, new HSSFExcelExporter());    	        
     	        // style for selected cells
     	        Style selectStyle = new Style();
     			configRegistry.registerConfigAttribute(
@@ -546,11 +596,16 @@ public class RelvarEditor {
                 headingProvider
         );
         
+        // CellLabelAccumulator determines how cells will be displayed
         class CellLabelAccumulator implements IConfigLabelAccumulator {
 			@Override
 			public void accumulateConfigLabels(LabelStack configLabels, int columnPosition, int rowPosition) {
 				configLabels.addLabel("column" + columnPosition);
-				if (dataProvider.isChanged(columnPosition, rowPosition))
+				// error?
+				if (dataProvider.getError(rowPosition) != null)
+					configLabels.addLabel("error");
+				// changed?
+				else if (dataProvider.isChanged(columnPosition, rowPosition))
 					configLabels.addLabel("changed");
 			}
         }
@@ -620,7 +675,34 @@ public class RelvarEditor {
 					lostFocus();
 			}
         });
-        
+
+        // Tooltip shows dataProvider update errors
+		new DefaultToolTip(table, ToolTip.NO_RECREATE, false) {
+			@Override
+			protected Object getToolTipArea(Event event) {
+				int x = table.getColumnPositionByX(event.x);
+				int y = table.getRowPositionByY(event.y);
+				return new Point(x, y);
+			}
+
+			@Override
+			protected String getText(Event event) {
+				int x = table.getColumnPositionByX(event.x);
+				int y = table.getRowPositionByY(event.y);
+				ILayerCell cell = table.getCellByPosition(x, y);
+				if (cell == null)
+					return null;
+				int row = cell.getRowIndex();
+				return dataProvider.getError(row);
+			}
+			
+			@Override
+			protected boolean shouldCreateToolTip(Event event) {
+				if (getText(event) != null)
+					return super.shouldCreateToolTip(event);
+				return false;
+			}
+		};
 	}
 
 	private void obtainKeyDefinitions() {
