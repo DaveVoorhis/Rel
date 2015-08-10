@@ -254,25 +254,17 @@ public class RelvarEditor {
 		
 		@Override
 		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
-			String columnType = heading[columnIndex].getType().toString();
-			if (columnType.equals("CHARACTER")) {
-				if (newValue == null)
-					newValue = "";
-			} else if (columnType.equals("BOOLEAN")) {
-				if (newValue == null)
-					newValue = "False";
-			} else if (columnType.equals("RATIONAL")) {
-				if (newValue == null)
-					newValue = "0.0";
-			} else if (columnType.equals("INTEGER")) {
-				if (newValue == null)
-					newValue = "0";
-			} else if (newValue == null || newValue.toString().length() == 0)
+			if (newValue != null && newValue.toString().length() == 0)
+				newValue = null;
+			if (getDataValue(columnIndex, rowIndex) == null && newValue == null)
 				return;
-			if (getDataValue(columnIndex, rowIndex) != null)
+			if (getDataValue(columnIndex, rowIndex) != null && newValue != null)
 				if (newValue.toString().equals(getDataValue(columnIndex, rowIndex).toString()))
 					return;
-			cache.get(rowIndex).setColumnValue(columnIndex, newValue.toString());
+			if (newValue == null)
+				cache.get(rowIndex).setColumnValue(columnIndex, newValue);
+			else
+				cache.get(rowIndex).setColumnValue(columnIndex, newValue.toString());
 			processRows.add(rowIndex);
 			int lastRowIndex = cache.size() - 1;
 			if (rowIndex == lastRowIndex && getCountOfInsertErrors() == 0) {
@@ -372,14 +364,15 @@ public class RelvarEditor {
 				String attributeValue = "";
 				if (attributeValueRaw != null)
 					attributeValue = attributeValueRaw.toString();
-				else if (attributeType.equals("BOOLEAN"))
+				if (attributeType.equals("BOOLEAN"))
 					attributeValue = "False";
 				else if (attributeType.equals("RATIONAL"))
 					attributeValue = "0.0";
 				else if (attributeType.equals("INTEGER"))
 					attributeValue = "0";
+				row.setColumnValue(column, attributeValue);
 				if (attributeType.equals("CHARACTER"))
-					attributeValue = "'" + StringUtils.quote(attributeValue) + "'";				
+					attributeValue = "'" + StringUtils.quote(attributeValue) + "'";
 				String attributeName = heading[column].getName();
 				insertAttributes += attributeName + " " + attributeValue;
 			}
