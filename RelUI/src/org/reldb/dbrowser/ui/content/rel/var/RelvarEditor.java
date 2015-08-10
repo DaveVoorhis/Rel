@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Set;
 import java.util.Vector;
 
 import org.eclipse.jface.action.ContributionItem;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.nebula.widgets.nattable.NatTable;
@@ -19,6 +19,7 @@ import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
 import org.eclipse.nebula.widgets.nattable.config.IEditableRule;
+import org.eclipse.nebula.widgets.nattable.coordinate.Range;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.convert.DefaultDisplayConverter;
 import org.eclipse.nebula.widgets.nattable.data.convert.DefaultDoubleDisplayConverter;
@@ -37,6 +38,7 @@ import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultGridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayerListener;
 import org.eclipse.nebula.widgets.nattable.layer.LabelStack;
+import org.eclipse.nebula.widgets.nattable.layer.LayerUtil;
 import org.eclipse.nebula.widgets.nattable.layer.cell.IConfigLabelAccumulator;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.nebula.widgets.nattable.layer.event.CellVisualChangeEvent;
@@ -47,6 +49,8 @@ import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.BeveledBorderDecorator;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.CellPainterDecorator;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.LineBorderDecorator;
+import org.eclipse.nebula.widgets.nattable.selection.ITraversalStrategy;
+import org.eclipse.nebula.widgets.nattable.selection.MoveCellSelectionCommandHandler;
 import org.eclipse.nebula.widgets.nattable.selection.event.CellSelectionEvent;
 import org.eclipse.nebula.widgets.nattable.selection.event.RowSelectionEvent;
 import org.eclipse.nebula.widgets.nattable.style.BorderStyle;
@@ -61,6 +65,7 @@ import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuAction;
 import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
 import org.eclipse.nebula.widgets.nattable.ui.util.CellEdgeEnum;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
+import org.eclipse.nebula.widgets.nattable.viewport.command.ShowRowInViewportCommand;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -78,6 +83,7 @@ import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
+import org.reldb.rel.v0.values.StringUtils;
 
 public class RelvarEditor {
 	
@@ -85,7 +91,7 @@ public class RelvarEditor {
 	
 	private Tuples tuples;
 	
-//	private static boolean askDeleteConfirm = true;
+	private boolean askDeleteConfirm = true;
 
 	private Vector<HashSet<String>> keys = new Vector<HashSet<String>>();
 	
@@ -96,106 +102,32 @@ public class RelvarEditor {
 	private NatTable table;
 	
 	private DataProvider dataProvider;
+	private HeadingProvider headingProvider;
+	private DefaultGridLayer gridLayer;
 	
 	private boolean popupEdit = false;
 	
-	private Timer updateTimer = new Timer();
-	
 	private int lastRowSelected = -1;
-
-	class Row {
-		private Vector<Object> originalData = new Vector<Object>();
-		private HashMap<Integer, Object> newData = new HashMap<Integer, Object>();
-		private String error = null;
-		
-		Row(Tuple tuple) {
-			for (int column=0; column<tuple.getAttributeCount(); column++)
-				originalData.add(tuple.get(column));
-		}
-		
-		Row() {
-			originalData = new Vector<Object>();
-		}
-		
-		Object getColumnValue(int column) {
-			Object v = newData.get(column);
-			if (v != null)
-				return v;
-			if (column >= originalData.size())
-				return null;
-			return originalData.get(column);
-		}
-		
-		void setColumnValue(int column, Object newValue) {
-			newData.put(Integer.valueOf(column), newValue);
-		}
-
-		boolean isChanged(int columnIndex) {
-			return newData.containsKey(columnIndex);
-		}
-		
-		// Copy new data to original data, and clear new data
-		void committed() {
-			for (Entry<Integer, Object> entry: newData.entrySet())
-				originalData.set(entry.getKey(), entry.getValue());
-			newData.clear();
-			error = null;
-		}
-		
-		String getError() {
-			return error;
-		}
-		
-		void setError(String error) {
-			this.error = error;
-		}
-	}
 	
-    class DataProvider implements IDataProvider {
-    	
-    	private HashSet<Integer> modifiedRows = new HashSet<Integer>();	    	
-    	private Vector<Row> cache = new Vector<Row>();
-    	private Row addRow = null;
-    	
-    	public DataProvider() {
-    		Iterator<Tuple> iterator = tuples.iterator();
-    		while (iterator.hasNext())
-    			cache.add(new Row(iterator.next()));
-    	}
-
-		public boolean isChanged(int columnIndex, int rowIndex) {
-			if (rowIndex >= cache.size())
-				return addRow != null;
-			return cache.get(rowIndex).isChanged(columnIndex);
-		}
-    	
+	enum RowAction {UPDATE, INSERT};
+	
+    class HeadingProvider implements IDataProvider {	    	
 		@Override
 		public Object getDataValue(int columnIndex, int rowIndex) {
-			if (rowIndex >= cache.size()) {
-				if (addRow == null)
+			Attribute attribute = heading[columnIndex];
+			switch (rowIndex) {
+				case 0:
+					return attribute.getName();
+				case 1:
+					return attribute.getType().toString();
+				default:
 					return "";
-				return addRow.getColumnValue(columnIndex);
 			}
-			return cache.get(rowIndex).getColumnValue(columnIndex);
 		}
 
 		@Override
 		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
-			if (heading[columnIndex].getType().toString().equals("CHARACTER")) {
-				if (newValue == null)
-					newValue = "";
-			} else if (newValue == null || newValue.toString().length() == 0)
-				return;
-			if (rowIndex >= cache.size()) {
-				if (addRow == null)
-					addRow = new Row();
-				addRow.setColumnValue(columnIndex, newValue.toString());
-				return;
-			}
-			if (newValue.toString().equals(getDataValue(columnIndex, rowIndex).toString()))
-				return;
-			cache.get(rowIndex).setColumnValue(columnIndex, newValue.toString());
-			modifiedRows.add(rowIndex);
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
@@ -205,116 +137,327 @@ public class RelvarEditor {
 
 		@Override
 		public int getRowCount() {
-			return cache.size() + 1;
-		}
-
-		public void processDirtyRows() {
-			if (modifiedRows.size() > 0)
-				System.out.println("NatTable: update changes - invoke committed() on each updated row and purge modifiedRows when done");
-			if (addRow != null)
-				System.out.println("NatTable: insert new data - move addRow to cache and null addRow when done");
-			// if update fails, set cache.get(row).getError to non-null
-		}
-
-		public String getError(int row) {
-			if (row >= cache.size())
-				if (addRow != null)
-					return addRow.getError();
-				else
-					return null;
-			return cache.get(row).getError();
+			return 2 + ((keys.size() > 1) ? keys.size() - 1 : 0);
 		}
     };
 	
+	class Row {
+		private HashMap<Integer, Object> originalData;
+		private HashMap<Integer, Object> newData;
+		private String error;
+		private RowAction action;
+		
+		Row(Tuple tuple) {
+			originalData = new HashMap<Integer, Object>();
+			newData = new HashMap<Integer, Object>();
+			for (int column=0; column<tuple.getAttributeCount(); column++)
+				originalData.put(column, tuple.get(column));
+			reset();
+			action = RowAction.UPDATE;
+		}
+		
+		Row() {
+			originalData = new HashMap<Integer, Object>();
+			newData = new HashMap<Integer, Object>();
+			reset();
+			action = RowAction.INSERT;
+		}
+		
+		Object getOriginalColumnValue(int column) {
+			return originalData.get(column);
+		}
+		
+		Object getColumnValue(int column) {
+			Object v = newData.get(column);
+			if (v != null)
+				return v;
+			return getOriginalColumnValue(column);
+		}
+		
+		void setColumnValue(int column, Object newValue) {
+			newData.put(column, newValue);
+		}
+
+		boolean isChanged(int columnIndex) {
+			return newData.containsKey(columnIndex);
+		}
+		
+		private void reset() {
+			newData.clear();
+			error = null;
+		}
+		
+		// Copy new data to original data, and clear new data
+		void committed() {
+			for (Entry<Integer, Object> entry: newData.entrySet())
+				originalData.put(entry.getKey(), entry.getValue());
+			reset();
+			action = RowAction.UPDATE;
+		}
+
+		// Clear new data
+		public void cancelled() {
+			reset();
+		}
+		
+		String getError() {
+			return error;
+		}
+		
+		void setError(String error) {
+			this.error = error;
+		}
+		
+		RowAction getAction() {
+			return action;
+		}
+	}
+
+    class DataProvider implements IDataProvider {
+    	
+    	private HashSet<Integer> processRows = new HashSet<Integer>();
+    	private Vector<Row> cache = new Vector<Row>();
+    	
+    	public DataProvider() {
+    		reload();
+    	}
+
+		public void reload() {
+			cache.clear();
+    		Iterator<Tuple> iterator = tuples.iterator();
+    		while (iterator.hasNext())
+    			cache.add(new Row(iterator.next()));
+    		cache.add(new Row());			
+			processRows.clear();
+		}
+
+		public String getError(int row) {
+			return cache.get(row).getError();
+		}
+
+		public boolean isChanged(int columnIndex, int rowIndex) {
+			return cache.get(rowIndex).isChanged(columnIndex);
+		}
+    	
+		@Override
+		public Object getDataValue(int columnIndex, int rowIndex) {
+			return cache.get(rowIndex).getColumnValue(columnIndex);
+		}
+
+		private int getCountOfInsertErrors() {
+			int count = 0;
+			for (int row: processRows)
+				if (cache.get(row).getError() != null && cache.get(row).getAction() == RowAction.INSERT)
+					count++;
+			return count;
+		}
+		
+		@Override
+		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
+			String columnType = heading[columnIndex].getType().toString();
+			if (columnType.equals("CHARACTER")) {
+				if (newValue == null)
+					newValue = "";
+			} else if (columnType.equals("BOOLEAN")) {
+				if (newValue == null)
+					newValue = "False";
+			} else if (columnType.equals("RATIONAL")) {
+				if (newValue == null)
+					newValue = "0.0";
+			} else if (columnType.equals("INTEGER")) {
+				if (newValue == null)
+					newValue = "0";
+			} else if (newValue == null || newValue.toString().length() == 0)
+				return;
+			if (getDataValue(columnIndex, rowIndex) != null)
+				if (newValue.toString().equals(getDataValue(columnIndex, rowIndex).toString()))
+					return;
+			cache.get(rowIndex).setColumnValue(columnIndex, newValue.toString());
+			processRows.add(rowIndex);
+			int lastRowIndex = cache.size() - 1;
+			if (rowIndex == lastRowIndex && getCountOfInsertErrors() == 0) {
+				cache.add(new Row());
+				table.redraw();
+			}
+		}
+
+		@Override
+		public int getColumnCount() {
+			return heading.length;
+		}
+
+		@Override
+		public int getRowCount() {
+			return cache.size();
+		}
+				
+		private String getKeySelectionExpression(int rownum) {
+			HashSet<String> key;
+			if (keys.size() == 0) {
+				key = new HashSet<String>();
+				for (int column = 0; column < heading.length; column++)
+					key.add(heading[column].getName());
+			}
+			else
+				key = keys.get(0);
+			Row originalValues = cache.get(rownum);
+			String keyspec = "";
+			for (int column = 0; column < heading.length; column++) {
+				String attributeName = heading[column].getName();
+				if (key.contains(attributeName)) {
+					if (keyspec.length() > 0)
+						keyspec += " AND ";
+					String attributeType = heading[column].getType().toString();
+					Object attributeValueRaw = originalValues.getOriginalColumnValue(column);
+					String attributeValue = "";
+					if (attributeValueRaw != null)
+						attributeValue = attributeValueRaw.toString();
+					if (attributeType.equals("CHARACTER"))
+						attributeValue = "'" + StringUtils.quote(attributeValue) + "'";
+					keyspec += attributeName + " = " + attributeValue;
+				}
+			}
+			return keyspec;
+		}
+		
+		private void refreshAfterUpdate() {
+			table.getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					table.redraw();
+				}
+			});
+		}
+		
+		private synchronized void updateRow(Row row, int rownum) {
+			String keyspec = getKeySelectionExpression(rownum);
+			String updateQuery = "UPDATE " + relvarName + " WHERE " + keyspec + ": {";
+			String updateAttributes = "";
+			for (int column = 0; column < heading.length; column++) {
+				if (row.isChanged(column)) {
+					if (updateAttributes.length() > 0)
+						updateAttributes += ", ";
+					String attributeType = heading[column].getType().toString();
+					String attributeValue = row.getColumnValue(column).toString();
+					if (attributeType.equals("CHARACTER"))
+						attributeValue = "'" + StringUtils.quote(attributeValue) + "'";
+					String attributeName = heading[column].getName();
+					updateAttributes += attributeName + " := " + attributeValue;
+				}
+			}
+			updateQuery += updateAttributes + "};";
+
+			System.out.println("RelvarEditor: query is " + updateQuery);
+			
+			DbConnection.ExecuteResult result = connection.execute(updateQuery);
+			
+			if (result.failed())
+				row.setError("Unable to update tuples.\n\nQuery: " + updateQuery + " failed:\n\n" + result.getErrorMessage());
+			else {
+				row.committed();
+				processRows.remove(rownum);
+			}
+			
+			refreshAfterUpdate();
+		}
+		
+		private synchronized void insertRow(Row row, int rownum) {		
+			String insertQuery = "D_INSERT " + relvarName + " RELATION {TUPLE {";
+			String insertAttributes = "";
+			for (int column = 0; column < heading.length; column++) {
+				if (insertAttributes.length() > 0)
+					insertAttributes += ", ";
+				String attributeType = heading[column].getType().toString();
+				Object attributeValueRaw = row.getColumnValue(column);
+				String attributeValue = "";
+				if (attributeValueRaw != null)
+					attributeValue = attributeValueRaw.toString();
+				else if (attributeType.equals("BOOLEAN"))
+					attributeValue = "False";
+				else if (attributeType.equals("RATIONAL"))
+					attributeValue = "0.0";
+				else if (attributeType.equals("INTEGER"))
+					attributeValue = "0";
+				if (attributeType.equals("CHARACTER"))
+					attributeValue = "'" + StringUtils.quote(attributeValue) + "'";				
+				String attributeName = heading[column].getName();
+				insertAttributes += attributeName + " " + attributeValue;
+			}
+			insertQuery += insertAttributes + "}};";
+
+			System.out.println("RelvarEditor: query is " + insertQuery);
+			
+			DbConnection.ExecuteResult result = connection.execute(insertQuery);
+
+			if (result.failed()) 
+				row.setError("Unable to insert tuple.\n\nQuery: " + insertQuery + " failed:\n\n" + result.getErrorMessage());
+			else {
+				row.committed();
+				processRows.remove(rownum);
+			}
+			
+			refreshAfterUpdate();
+		}
+
+		public void deleteRows(Set<Range> selections) {
+			String deleteQuery = "DELETE " + relvarName + " WHERE ";
+			String allKeysSpec = "";
+			int tupleCount = 0;
+			for (Range range: selections)
+				for (int rownum = range.start; rownum < range.end; rownum++) {
+					if (cache.get(rownum).getAction() != RowAction.INSERT) {
+						String keyspec = getKeySelectionExpression(rownum);
+						if (allKeysSpec.length() > 0)
+							allKeysSpec += " OR ";
+						allKeysSpec += "(" + keyspec + ")";
+					}
+					tupleCount++;
+				}
+			deleteQuery += allKeysSpec + ";";
+			
+			System.out.println("RelvarEditor: query is " + deleteQuery);
+		
+			DbConnection.ExecuteResult result = connection.execute(deleteQuery);
+			
+			if (result.failed())
+				MessageDialog.openError(table.getShell(), "DELETE Error", "Unable to delete tuple" + ((tupleCount>1) ? "s" : "") + ".\n\nQuery: " + deleteQuery + " failed:\n\n" + result.getErrorMessage());
+			else
+				refresh();
+		}
+
+		public void processDirtyRows() {
+			for (Integer rownum: processRows.toArray(new Integer[0]))
+				if (rownum != lastRowSelected) {
+					Row row = cache.get(rownum);
+					switch (row.getAction()) {
+						case INSERT: insertRow(row, rownum); break;
+						case UPDATE: updateRow(row, rownum); break;
+					}
+				}
+		}
+		
+		public int countDirtyRows() {
+			return processRows.size();
+		}
+    };
+	
+    public void refresh() {
+		obtainKeyDefinitions();		
+		tuples = obtainTuples();
+    	heading = tuples.getHeading().toArray();
+    	dataProvider.reload();
+    	table.refresh();
+    }
+    
 	public RelvarEditor(Composite parent, DbConnection connection, String relvarName) {
 		this.connection = connection;
 		this.relvarName = relvarName;
 		
 		content = new Composite(parent, SWT.None);
 		content.setLayout(new FillLayout());
-		
-		refresh();
-	}
-	
-	public void export() {
-		ExportCommand cmd = new ExportCommand(table.getConfigRegistry(), table.getShell());
-		table.doCommand(cmd);
-	}
-	
-	private void processDirtyRows() {
-		dataProvider.processDirtyRows();		
-		lastRowSelected = -1;
-	}
-	
-	private void stopUpdateTimer() {
-		updateTimer.cancel();		
-	}
-	
-	private void startUpdateTimer() {
-		updateTimer = new Timer();
-		updateTimer.schedule(
-			new TimerTask() {
-				@Override
-				public void run() {
-					processDirtyRows();
-				}
-		    }, 
-			1000);
-	}
 
-	private void maybeStartUpdateTimer(int row) {
-		if (lastRowSelected > 0 && row == lastRowSelected)
-			return;
-		if (lastRowSelected < 0) {
-			lastRowSelected = row;
-			return;
-		}
-		startUpdateTimer();		
-	}
-	
-	private void editorBeenOpened(int row, int column) {
-		stopUpdateTimer();
-		maybeStartUpdateTimer(row);
-	}
-	
-	private void editorBeenClosed(int row, int column) {
-		stopUpdateTimer();
-		maybeStartUpdateTimer(row);
-	}
-	
-	private void rowBeenSelected(int row) {
-		stopUpdateTimer();
-		if (row < 0)
-			processDirtyRows();
-		else
-			maybeStartUpdateTimer(row);
-	}
-	
-	private void lostFocus() {
-		stopUpdateTimer();
-		processDirtyRows();
-	}
-	
-	public Control getControl() {
-		return content;
-	}
-	
-	// Recursively determine if control or one of its children have the keyboard focus.
-	public static boolean hasFocus(Control control) {
-		if (control.isFocusControl())
-			return true;
-		if (control instanceof Composite)
-			for (Control child: ((Composite)control).getChildren())
-				if (hasFocus(child))
-					return true;
-		return false;
-	}
-	
-	public void refresh() {		
-		obtainKeyDefinitions();
-		
+		obtainKeyDefinitions();		
 		tuples = obtainTuples();
-
     	heading = tuples.getHeading().toArray();
 
     	// IConfiguration for registering a UI binding to open a menu
@@ -336,7 +479,7 @@ public class RelvarEditor {
     	                new PopupMenuAction(menu));
     	    }
     	}
-   	
+    	
     	class PopupEditorConfiguration extends AbstractRegistryConfiguration {
     	    @Override
     	    public void configureRegistry(IConfigRegistry configRegistry) {
@@ -585,41 +728,11 @@ public class RelvarEditor {
     	                columnLabel);
     	    }
     	}
-		
-	    class HeadingProvider implements IDataProvider {	    	
-			@Override
-			public Object getDataValue(int columnIndex, int rowIndex) {
-				Attribute attribute = heading[columnIndex];
-				switch (rowIndex) {
-					case 0:
-						return attribute.getName();
-					case 1:
-						return attribute.getType().toString();
-					default:
-						return "";
-				}
-			}
-
-			@Override
-			public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
-				throw new UnsupportedOperationException();
-			}
-
-			@Override
-			public int getColumnCount() {
-				return heading.length;
-			}
-
-			@Override
-			public int getRowCount() {
-				return 2 + ((keys.size() > 1) ? keys.size() - 1 : 0);
-			}
-	    };
 	    
 	    dataProvider = new DataProvider();
-	    HeadingProvider headingProvider = new HeadingProvider();
+	    headingProvider = new HeadingProvider();
 	    
-        DefaultGridLayer gridLayer = new DefaultGridLayer(
+        gridLayer = new DefaultGridLayer(
         		dataProvider,
                 headingProvider
         );
@@ -668,7 +781,7 @@ public class RelvarEditor {
         table.addConfiguration(new EditorConfiguration()); 
         table.addConfiguration(new HeaderConfiguration());
         
-        ContributionItem contributionItem = new ContributionItem() {
+        ContributionItem columnMenuItems = new ContributionItem() {
             @Override
         	public void fill(Menu menu, int index) {
             	MenuItem doesPopupEdit = new MenuItem(menu, SWT.CHECK);
@@ -692,8 +805,32 @@ public class RelvarEditor {
         };
 		table.addConfiguration(new MenuConfiguration(
 				GridRegion.COLUMN_HEADER, 
-				new PopupMenuBuilder(table).withContributionItem(contributionItem)));
+				new PopupMenuBuilder(table).withContributionItem(columnMenuItems)));
 
+        ContributionItem rowMenuItems = new ContributionItem() {
+            @Override
+        	public void fill(Menu menu, int index) {
+            	MenuItem doesDelete = new MenuItem(menu, SWT.PUSH);
+            	doesDelete.setText("Delete");
+            	doesDelete.setSelection(popupEdit);
+            	doesDelete.addSelectionListener(new SelectionAdapter() {
+            		public void widgetSelected(SelectionEvent evt) {
+            			askDeleteSelected();
+            		}
+            	});
+            	MenuItem export = new MenuItem(menu, SWT.PUSH);
+            	export.setText("Export");
+            	export.addSelectionListener(new SelectionAdapter() {
+            		public void widgetSelected(SelectionEvent evt) {
+            			export();
+            		}
+            	});
+            }
+        };
+		table.addConfiguration(new MenuConfiguration(
+				GridRegion.ROW_HEADER, 
+				new PopupMenuBuilder(table).withContributionItem(rowMenuItems)));
+				
 		// Report row selection events, to help control updating
 		table.addLayerListener(new ILayerListener() {
 			@Override
@@ -702,16 +839,23 @@ public class RelvarEditor {
 					rowBeenSelected(-1);
 				} else if (event instanceof CellSelectionEvent) {
 					CellSelectionEvent csEvent = (CellSelectionEvent) event;
-					rowBeenSelected(csEvent.getRowPosition() - headingProvider.getRowCount());								
+					int row = LayerUtil.convertRowPosition(csEvent.getLayer(), csEvent.getRowPosition(), gridLayer.getBodyDataLayer());
+					rowBeenSelected(row);								
 				} else if (event instanceof CellVisualChangeEvent) {
 					CellVisualChangeEvent cvEvent = (CellVisualChangeEvent)event;
-					rowBeenSelected(cvEvent.getRowPosition() - headingProvider.getRowCount());
+					int row = LayerUtil.convertRowPosition(cvEvent.getLayer(), cvEvent.getRowPosition(), gridLayer.getBodyDataLayer());
+					rowBeenSelected(row);								
 				} else if (event instanceof CellEditorCreatedEvent) {
 				} else {
 					rowBeenSelected(-1);
 				}
 			}
 		});
+		
+		// Tabbing wraps and moves up/down
+		gridLayer.registerCommandHandler(
+			    new MoveCellSelectionCommandHandler(gridLayer.getBodyLayer().getSelectionLayer(), 
+			    		ITraversalStrategy.TABLE_CYCLE_TRAVERSAL_STRATEGY));
 		
         table.configure();
         
@@ -751,6 +895,51 @@ public class RelvarEditor {
 			}
 		};
 	}
+	
+	public void export() {
+		ExportCommand cmd = new ExportCommand(table.getConfigRegistry(), table.getShell());
+		table.doCommand(cmd);
+	}
+	
+	private void processDirtyRows() {
+		dataProvider.processDirtyRows();		
+		lastRowSelected = -1;
+	}
+	
+	private void editorBeenOpened(int row, int column) {
+		lastRowSelected = row;
+		processDirtyRows();
+	}
+	
+	private void editorBeenClosed(int row, int column) {
+		lastRowSelected = row;
+		processDirtyRows();
+	}
+	
+	private void rowBeenSelected(int row) {
+		lastRowSelected = row;
+		processDirtyRows();
+	}
+	
+	private void lostFocus() {
+		lastRowSelected = -1;
+		processDirtyRows();
+	}
+	
+	public Control getControl() {
+		return content;
+	}
+	
+	// Recursively determine if control or one of its children have the keyboard focus.
+	public static boolean hasFocus(Control control) {
+		if (control.isFocusControl())
+			return true;
+		if (control instanceof Composite)
+			for (Control child: ((Composite)control).getChildren())
+				if (hasFocus(child))
+					return true;
+		return false;
+	}
 
 	private void obtainKeyDefinitions() {
 		keys.clear();
@@ -770,162 +959,31 @@ public class RelvarEditor {
 		return connection.getTuples(relvarName);
 	}
 	
-/*	
-	private String getKeySelectionExpression(Vector<String> keyValues) {
-		String keyspec = "";
-		int index = 0;
-		for (Integer keyColumn: keyColumnNumbers) {
-			if (keyspec.length() > 0)
-				keyspec += " AND ";
-			String preparedAttribute = keyValues.get(index);
-			if (stringColumnNumbers.contains(keyColumn))
-				preparedAttribute = "'" + StringUtils.quote(preparedAttribute) + "'";
-			keyspec += table.getColumn(keyColumn).getText() + " = " + preparedAttribute;
-			index++;
-		}
-		return keyspec;
-	}
-	
-	private Vector<String> getKeySelectionValuesForRow(TableItem row) {
-		Vector<String> keyValues = new Vector<String>();
-		for (Integer keyColumn: keyColumnNumbers) {
-			String currentValue = row.getText(keyColumn);
-			keyValues.add(currentValue);
-		}
-		return keyValues;
-	}
-	
-	private String getKeySelectionExpression(TableItem row) {
-		return getKeySelectionExpression(getKeySelectionValuesForRow(row));
-	}
-	
-	private void updateRow(TableItem updateRow, int rownum) {
-		String keyspec = getKeySelectionExpression(originalKeyValues.get(rownum));
-		
-		String updateQuery = "UPDATE " + relvarName + " WHERE " + keyspec + ": {";
-		String updateAttributes = "";
-		HashSet<Integer> changedColumns = changedColumnNumbers.get(rownum);
-		for (Integer changedColumn: changedColumns) {
-			if (updateAttributes.length() > 0)
-				updateAttributes += ", ";
-			String preparedAttribute = table.getItem(rownum).getText(changedColumn);
-			if (stringColumnNumbers.contains(changedColumn))
-				preparedAttribute = "'" + StringUtils.quote(preparedAttribute) + "'";
-			updateAttributes += table.getColumn(changedColumn).getText() + " := " + preparedAttribute;
-		}
-		updateQuery += updateAttributes + "};";
-
-		System.out.println("EditTable: query is " + updateQuery);
-		
-		DbConnection.ExecuteResult result = connection.execute(updateQuery);
-		
-		if (!result.failed()) {
-			for (int c = 1; c < table.getColumnCount(); c++)
-				updateRow.setBackground(c, null);
-			updateRow.setText(0, " ");
-			originalKeyValues.remove(rownum);
-			changedColumnNumbers.remove(rownum);
-		} else {
-			for (int c = 1; c < table.getColumnCount(); c++)
-				updateRow.setBackground(c, failColor);
-			updateRow.setText(0, "!");	
-			showError(updateQuery, "Unable to update tuples.\n\nQuery: " + updateQuery + " failed:\n\n" + result.getErrorMessage());			
-		}
-	}
-
-	private void appendNewTuple() {
-		TableItem item = table.getItem(table.getItemCount() - 1);
-		item.setText(0, "+");
-		for (int i = 0; i < table.getColumnCount() - 1; i++)
-			item.setText(i + 1, "");
-		item = new TableItem(table, SWT.NONE);
-		item.setText(0, "");
-		for (int i = 0; i < table.getColumnCount() - 1; i++)
-			item.setText(i + 1, "");		
-	}
-	
-	private void addRow(TableItem addRow, int rownum) {		
-		String insertQuery = "D_INSERT " + relvarName + " RELATION {TUPLE {";
-		String insertAttributes = "";
-		for (int column = 1; column < table.getColumnCount(); column++) {
-			if (insertAttributes.length() > 0)
-				insertAttributes += ", ";
-			String preparedAttribute = table.getItem(rownum).getText(column);
-			if (stringColumnNumbers.contains(column))
-				preparedAttribute = "'" + StringUtils.quote(preparedAttribute) + "'";
-			insertAttributes += table.getColumn(column).getText() + " " + preparedAttribute;
-		}
-		insertQuery += insertAttributes + "}};";
-
-		System.out.println("EditTable: query is " + insertQuery);
-		
-		DbConnection.ExecuteResult result = connection.execute(insertQuery);
-
-		if (!result.failed()) {
-			for (int c = 1; c < table.getColumnCount(); c++)
-				addRow.setBackground(c, null);
-			addRow.setText(0, " ");
-			originalKeyValues.remove(rownum);
-			changedColumnNumbers.remove(rownum);			
-			appendNewTuple();
-		} else {
-			for (int c = 1; c < table.getColumnCount(); c++)
-				addRow.setBackground(c, failColor);
-			addRow.setText(0, "*");
-			showError(insertQuery, "Unable to insert tuples.\n\nQuery: " + insertQuery + " failed:\n\n" + result.getErrorMessage());			
-		}
-	}
-	
-	private boolean errorDisplayed = false;
-	
-	private void showError(String query, String msg) {
-		errorDisplayed = true;
-		MessageDialog.openError(parent.getShell(), "Error", msg);
-		errorDisplayed = false;
-	}
-	
-	private synchronized void processRows() {
-		if (errorDisplayed)
-			return;
-		for (Integer rownum: rowNeedsProcessing) {			
-			TableItem processRow = table.getItem(rownum);
-			if (processRow.getText(0).equals("+") || processRow.getText(0).equals("*"))
-				addRow(processRow, rownum);
-			else
-				updateRow(processRow, rownum);
-		}
-		rowNeedsProcessing.clear();
-	}
-	
-	private void scheduleForUpdate() {
-		updateTimer.cancel();
-		updateTimer = new Timer();
-		updateTimer.schedule(new TimerTask() {
-			public void run() {
-				if (focusCount == 0) {
-					if (parent.isDisposed())
-						return;
-					parent.getDisplay().asyncExec(new Runnable() {
-						public void run() {
-							if (parent.isDisposed())
-								return;
-							processRows();
-						}
-					});
-				}
-			}
-		}, 500);
-	}
-*/
-
 	public void goToInsertRow() {
-		// TODO Auto-generated method stub
-		
+		ShowRowInViewportCommand cmd = new ShowRowInViewportCommand(gridLayer.getBodyLayer(), dataProvider.getRowCount() - 1);
+		table.doCommand(cmd);
 	}
 
+	private void doDeleteSelected() {
+		Set<Range> selections = gridLayer.getBodyLayer().getSelectionLayer().getSelectedRowPositions();
+		dataProvider.deleteRows(selections);
+	}
+	
 	public void askDeleteSelected() {
-		// TODO Auto-generated method stub
-		
+		if (dataProvider.countDirtyRows() > 0 && 
+		    !MessageDialog.openConfirm(
+		    		table.getShell(), 
+		    		"Unsaved Changes", 
+		    		"There are unsaved changes. If you proceed with deletion, they will be cancelled.\n\nPress OK to cancel unsaved changes and proceed with deletion."))
+				return;
+		if (askDeleteConfirm) {
+			int selectedRowCount = gridLayer.getBodyLayer().getSelectionLayer().getSelectedRowCount();
+			DeleteConfirmDialog deleteConfirmDialog = new DeleteConfirmDialog(table.getShell(), selectedRowCount);
+			if (deleteConfirmDialog.open() == DeleteConfirmDialog.OK) {
+				askDeleteConfirm = deleteConfirmDialog.getAskDeleteConfirm();
+				doDeleteSelected();
+			}
+		}
 	}
 
 }
