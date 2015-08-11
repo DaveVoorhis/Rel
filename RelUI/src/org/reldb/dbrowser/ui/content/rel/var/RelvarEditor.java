@@ -316,7 +316,8 @@ public class RelvarEditor {
 			table.getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					table.redraw();
+					if (!table.isDisposed())
+						table.redraw();
 				}
 			});
 		}
@@ -364,7 +365,7 @@ public class RelvarEditor {
 				String attributeValue = "";
 				if (attributeValueRaw != null)
 					attributeValue = attributeValueRaw.toString();
-				if (attributeType.equals("BOOLEAN"))
+				else if (attributeType.equals("BOOLEAN"))
 					attributeValue = "False";
 				else if (attributeType.equals("RATIONAL"))
 					attributeValue = "0.0";
