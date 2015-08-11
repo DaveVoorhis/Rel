@@ -71,13 +71,15 @@ public class VirtualMachine {
 	}
 	
 	public void outputTupleUpdateNotices() {
-		if (inserted || updated || deleted) {
-			if (inserted)
-				printStream.println("NOTICE: Inserted " + inserts + " tuple" + ((inserts == 1) ? "" : "s") + ".");
-			if (updated)
-				printStream.println("NOTICE: Updated " + updates + " tuple" + ((updates == 1) ? "" : "s") + ".");
-			if (deleted)
-				printStream.println("NOTICE: Deleted " + deletes + " tuple" + ((deletes == 1) ? "" : "s") + ".");
+		if ((inserted || updated || deleted)) {
+			if (generator.isVerboseRelvarUpdates()) {
+				if (inserted)
+					printStream.println("NOTICE: Inserted " + inserts + " tuple" + ((inserts == 1) ? "" : "s") + ".");
+				if (updated)
+					printStream.println("NOTICE: Updated " + updates + " tuple" + ((updates == 1) ? "" : "s") + ".");
+				if (deleted)
+					printStream.println("NOTICE: Deleted " + deletes + " tuple" + ((deletes == 1) ? "" : "s") + ".");
+			}
 			clearTupleUpdateNotices();
 		}
 	}

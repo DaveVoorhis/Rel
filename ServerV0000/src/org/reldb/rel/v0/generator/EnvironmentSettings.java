@@ -18,8 +18,19 @@ public class EnvironmentSettings {
 				generator.setVerboseExternalCompilation(false);
 			}			
 		};
+		Attribute verboseRelvarUpdates = new Attribute("VerboseRelvarUpdates");
+		new Value(verboseRelvarUpdates, "On", "Updates to relvars will report number of tuples updated. (Default)") {
+			void setter(Generator generator) {
+				generator.setVerboseRelvarUpdates(true);
+			}
+		};
+		new Value(verboseRelvarUpdates, "Off", "Updates to relvars will not report number of tuples updated.") {
+			void setter(Generator generator) {
+				generator.setVerboseRelvarUpdates(false);
+			}
+		};
 	}
-	
+
 	private TreeMap<String, Attribute> attributes = new TreeMap<String, Attribute>();
 
 	private class Attribute {

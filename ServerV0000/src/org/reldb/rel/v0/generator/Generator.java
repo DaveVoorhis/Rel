@@ -181,6 +181,9 @@ public class Generator {
 
 	// True if verbose external operator/type generation is enabled
 	private boolean verboseExternalOperatorTypeGeneration = false;
+
+	// True if verbose reporting of relvar updates is enabled
+	private boolean verboseRelvarUpdates = true;
 	
 	public Generator(RelDatabase database, PrintStream outputStream) {
 		this.database = database;
@@ -248,6 +251,14 @@ public class Generator {
 
 	public void setVerboseExternalCompilation(boolean b) {
 		verboseExternalOperatorTypeGeneration = b;
+	}
+
+	public void setVerboseRelvarUpdates(boolean b) {
+		verboseRelvarUpdates = b;
+	}
+
+	public boolean isVerboseRelvarUpdates() {
+		return verboseRelvarUpdates;
 	}
 
 	/** Turn code generation on or off.  Useful for doing type checking without generating code. */

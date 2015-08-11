@@ -1,6 +1,7 @@
 ** TO DO **
 
 Short term:
+	// TODO - Provide SET option to turn off "Inserted xx tuples." messages.
 	// TODO - provide DELETE operation in EditTable.
 	// TODO - improve UPDATE operator in Rev.
 	// TODO - implement (only for multiple possreps) SELECTORS and (mandatory) INIT clause 

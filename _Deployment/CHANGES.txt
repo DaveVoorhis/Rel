@@ -13,7 +13,7 @@ Version 1.0.13:
   - enhancement: Rel: External Java compilation integrated; no longer requires JDK.
   - enhancement: Rel: Default database now refers to explicit path
   - enhancement: Rel: System startup announcement now provides more information about runtime platform.
-  - enhancement: Rel DBMS now called RelDBMS. 
+  - enhancement: Rel: Rel DBMS now called RelDBMS. 
   - enhancement: Rel: Removed octal and hex integer representations, as these were a source of confusion.
   - enhancement: Rel: Empty EXTEND, e.g., EXTEND S: {}, is now permitted.
   - enhancement: Rel: Empty UPDATE, e.g., UPDATE S: {}, is now permitted.
@@ -23,7 +23,8 @@ Version 1.0.13:
   - enhancement: Rel: TYPE_OF(e) pseudo-operator returns TypeInfo (either Scalar or NonScalar)
                  about any expression e.  Uses new built-in types TypeInfo, Scalar and NonScalar. 
   - enhancement: Rel: sys.Catalog relvar now provides Attributes and Keys metadata
-  - fix: UNION (RELATION {x RELATION {y INT}} {}, x) returns error. It should give RELATION {y INT}} {}.
+  - enhancement: Rel: Relvar update notices can be turned off with SET VerboseRelvarUpdates Off.
+  - fix: Rel: UNION (RELATION {x RELATION {y INT}} {}, x) returns error. It should give RELATION {y INT}} {}.
          Same for D_UNION and XUNION.  This has been corrected.
   
 Version 1.0.12:
