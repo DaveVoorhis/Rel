@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rel.var;
+package org.reldb.dbrowser.ui.content.rel.var.grids;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -16,16 +16,18 @@ import org.eclipse.swt.layout.FormAttachment;
 
 public class DeleteConfirmDialog extends Dialog {
 
-	private int tupleCount = 0;
+	private int count = 0;
 	private boolean noAskAgain = false;
+	private String whatToDelete;
 	
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public DeleteConfirmDialog(Shell parentShell, int tupleCount) {
+	public DeleteConfirmDialog(Shell parentShell, int count, String whatToDelete) {
 		super(parentShell);
-		this.tupleCount = tupleCount;
+		this.count = count;
+		this.whatToDelete = whatToDelete;
 		setBlockOnOpen(true);
 	}
 
@@ -57,10 +59,10 @@ public class DeleteConfirmDialog extends Dialog {
 		fd_lblPrompt.left = new FormAttachment(image, 10);
 		fd_lblPrompt.right = new FormAttachment(100, -10);
 		lblPrompt.setLayoutData(fd_lblPrompt);
-		if (tupleCount > 0)
-			lblPrompt.setText("Press OK to delete " + tupleCount + " tuple" + ((tupleCount > 1) ? "s" : "") + ".  Press Cancel to do nothing.");
+		if (count > 0)
+			lblPrompt.setText("Press OK to delete " + count + " " + whatToDelete + ((count > 1) ? "s" : "") + ".  Press Cancel to do nothing.");
 		else
-			lblPrompt.setText("No tuples selected.  Press Ok to optionally confirm the checkbox below, or Cancel to do nothing.");
+			lblPrompt.setText("No " + whatToDelete + "s selected.  Press Ok to optionally confirm the checkbox below, or Cancel to do nothing.");
 		
 		Button btnNoAsk = new Button(container, SWT.CHECK);
 		FormData fd_btnNoAsk = new FormData();

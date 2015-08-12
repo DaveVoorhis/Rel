@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rel.var;
+package org.reldb.dbrowser.ui.content.rel.var.grids;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +14,6 @@ import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
-import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
@@ -59,9 +58,6 @@ import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.nebula.widgets.nattable.style.HorizontalAlignmentEnum;
 import org.eclipse.nebula.widgets.nattable.style.Style;
 import org.eclipse.nebula.widgets.nattable.tickupdate.TickUpdateConfigAttributes;
-import org.eclipse.nebula.widgets.nattable.ui.binding.UiBindingRegistry;
-import org.eclipse.nebula.widgets.nattable.ui.matcher.MouseEventMatcher;
-import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuAction;
 import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
 import org.eclipse.nebula.widgets.nattable.ui.util.CellEdgeEnum;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
@@ -70,7 +66,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -83,22 +78,14 @@ import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
-import org.reldb.rel.v0.values.StringUtils;
+import org.reldb.rel.utilities.StringUtils;
 
-public class RelvarEditor {
+public class RelvarEditor extends RelvarUI {
 	
 	private Attribute[] heading;
 	
 	private Tuples tuples;
 	
-	private boolean askDeleteConfirm = true;
-
-	private Vector<HashSet<String>> keys = new Vector<HashSet<String>>();
-	
-	private DbConnection connection;
-	private String relvarName;
-	
-	private Composite content;
 	private NatTable table;
 	
 	private DataProvider dataProvider;
@@ -116,12 +103,9 @@ public class RelvarEditor {
 		public Object getDataValue(int columnIndex, int rowIndex) {
 			Attribute attribute = heading[columnIndex];
 			switch (rowIndex) {
-				case 0:
-					return attribute.getName();
-				case 1:
-					return attribute.getType().toString();
-				default:
-					return "";
+			case 0: return attribute.getName();
+			case 1: return attribute.getType().toString();
+			default: return "";
 			}
 		}
 
@@ -435,44 +419,22 @@ public class RelvarEditor {
 		}
     };
 	
-    public void refresh() {
+    private void syncFromDatabase() {
 		obtainKeyDefinitions();		
 		tuples = obtainTuples();
-    	heading = tuples.getHeading().toArray();
+    	heading = tuples.getHeading().toArray();    	
+    }
+    
+    public void refresh() {
+    	syncFromDatabase();
     	dataProvider.reload();
     	table.refresh();
     }
     
 	public RelvarEditor(Composite parent, DbConnection connection, String relvarName) {
-		this.connection = connection;
-		this.relvarName = relvarName;
-		
-		content = new Composite(parent, SWT.None);
-		content.setLayout(new FillLayout());
+		super(parent, connection, relvarName);
 
-		obtainKeyDefinitions();		
-		tuples = obtainTuples();
-    	heading = tuples.getHeading().toArray();
-
-    	// IConfiguration for registering a UI binding to open a menu
-    	class MenuConfiguration extends AbstractUiBindingConfiguration {
-    	    private final Menu menu;
-    	    private final String gridRegion;
-    	 
-    	    // gridRegion can be, for example, GridRegion.COLUMN_HEADER
-    	    public MenuConfiguration(String gridRegion, PopupMenuBuilder menuBuilder) {
-    	        this.gridRegion = gridRegion;
-    	        // create the menu using the PopupMenuBuilder
-    	        menu = menuBuilder.build();
-    	    }
-    	    
-    	    @Override
-    	    public void configureUiBindings(UiBindingRegistry uiBindingRegistry) {
-    	        uiBindingRegistry.registerMouseDownBinding(
-    	                new MouseEventMatcher(SWT.NONE, gridRegion, MouseEventMatcher.RIGHT_BUTTON),
-    	                new PopupMenuAction(menu));
-    	    }
-    	}
+		syncFromDatabase();
     	
     	class PopupEditorConfiguration extends AbstractRegistryConfiguration {
     	    @Override
@@ -592,6 +554,20 @@ public class RelvarEditor {
     	    }
 
 			private void registerDefaultColumn(IConfigRegistry configRegistry, String columnLabel) {
+    	        Style cellStyle = new Style();
+    	        cellStyle.setAttributeValue(
+    	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
+    	                HorizontalAlignmentEnum.LEFT);
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.CELL_STYLE,
+    	                cellStyle,
+    	                DisplayMode.NORMAL,
+    	                columnLabel);
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.CELL_STYLE,
+    	                cellStyle,
+    	                DisplayMode.EDIT,
+    	                columnLabel);
     	    }
     	    
     	    private void registerBooleanColumn(IConfigRegistry configRegistry, String columnLabel) {
@@ -648,7 +624,6 @@ public class RelvarEditor {
     	                Boolean.TRUE,
     	                DisplayMode.EDIT,
     	                columnLabel);
-
     	        // Use Double converter
     	        configRegistry.registerConfigAttribute(
     	                CellConfigAttributes.DISPLAY_CONVERTER,
@@ -658,6 +633,20 @@ public class RelvarEditor {
     	    }
 
     	    private void registerIntegerColumn(IConfigRegistry configRegistry, String columnLabel) {
+    	        Style cellStyle = new Style();
+    	        cellStyle.setAttributeValue(
+    	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
+    	                HorizontalAlignmentEnum.RIGHT);
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.CELL_STYLE,
+    	                cellStyle,
+    	                DisplayMode.NORMAL,
+    	                columnLabel);
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.CELL_STYLE,
+    	                cellStyle,
+    	                DisplayMode.EDIT,
+    	                columnLabel);
     	        // Use Integer converter
     	        configRegistry.registerConfigAttribute(
     	                CellConfigAttributes.DISPLAY_CONVERTER,
@@ -765,10 +754,7 @@ public class RelvarEditor {
         HeadingLabelAccumulator columnLabelAccumulator = new HeadingLabelAccumulator();
         headingDataLayer.setConfigLabelAccumulator(columnLabelAccumulator);
         
-        for (Control control: content.getChildren())
-        	control.dispose();
-        
-        table = new NatTable(content, gridLayer, false);
+        table = new NatTable(parent, gridLayer, false);
         
         DefaultNatTableStyleConfiguration defaultStyle = new DefaultNatTableStyleConfiguration();
         table.addConfiguration(defaultStyle);
@@ -806,7 +792,6 @@ public class RelvarEditor {
         	public void fill(Menu menu, int index) {
             	MenuItem doesDelete = new MenuItem(menu, SWT.PUSH);
             	doesDelete.setText("Delete");
-            	doesDelete.setSelection(popupEdit);
             	doesDelete.addSelectionListener(new SelectionAdapter() {
             		public void widgetSelected(SelectionEvent evt) {
             			askDeleteSelected();
@@ -921,7 +906,7 @@ public class RelvarEditor {
 	}
 	
 	public Control getControl() {
-		return content;
+		return table;
 	}
 	
 	// Recursively determine if control or one of its children have the keyboard focus.
@@ -933,20 +918,6 @@ public class RelvarEditor {
 				if (hasFocus(child))
 					return true;
 		return false;
-	}
-
-	private void obtainKeyDefinitions() {
-		keys.clear();
-		Tuples keyDefinitions = (Tuples)connection.evaluate("((sys.Catalog WHERE Name = '" + relvarName + "') {Keys}) UNGROUP Keys");
-		for (Tuple keyDefinition: keyDefinitions) {
-			Tuples keyAttributes = (Tuples)(keyDefinition.get("Attributes"));
-			HashSet<String> keyAttributeNames = new HashSet<String>();
-			for (Tuple keyAttribute: keyAttributes) {
-				String name = keyAttribute.get("Name").toString();
-				keyAttributeNames.add(name);
-			}
-			keys.add(keyAttributeNames);
-		}
 	}
 	
 	private Tuples obtainTuples() {
@@ -972,7 +943,7 @@ public class RelvarEditor {
 				return;
 		if (askDeleteConfirm) {
 			int selectedRowCount = gridLayer.getBodyLayer().getSelectionLayer().getSelectedRowCount();
-			DeleteConfirmDialog deleteConfirmDialog = new DeleteConfirmDialog(table.getShell(), selectedRowCount);
+			DeleteConfirmDialog deleteConfirmDialog = new DeleteConfirmDialog(table.getShell(), selectedRowCount, "tuple");
 			if (deleteConfirmDialog.open() == DeleteConfirmDialog.OK) {
 				askDeleteConfirm = deleteConfirmDialog.getAskDeleteConfirm();
 				doDeleteSelected();

@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
+import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarDesigner;
 
 public class RelvarDesignerTab extends DbTreeTab {
 	

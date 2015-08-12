@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.IconLoader;
+import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarDesigner;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
@@ -18,6 +19,7 @@ public class RelvarDesignerToolbar {
     private PreferenceChangeListener preferenceChangeListener;
 
 	private ToolItem refreshBtn = null;
+	private ToolItem deleteBtn = null;
 
 	private ToolBar toolBar;
 	
@@ -30,6 +32,15 @@ public class RelvarDesignerToolbar {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				relvarDesigner.refresh();
+			}
+		});
+
+		deleteBtn = new ToolItem(toolBar, SWT.PUSH);
+		deleteBtn.setToolTipText("DELETE selected tuples");
+		deleteBtn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				relvarDesigner.askDeleteSelected();
 			}
 		});
 
@@ -50,6 +61,7 @@ public class RelvarDesignerToolbar {
 
 	private void setupIcons() {
 		refreshBtn.setImage(IconLoader.loadIcon("arrow_refresh"));
+		deleteBtn.setImage(IconLoader.loadIcon("table_row_delete"));
 	}
 
 	public ToolBar getToolBar() {
