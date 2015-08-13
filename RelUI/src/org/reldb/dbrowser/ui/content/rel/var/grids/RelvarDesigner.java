@@ -1,13 +1,14 @@
 package org.reldb.dbrowser.ui.content.rel.var.grids;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
 import org.eclipse.jface.action.ContributionItem;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
@@ -19,6 +20,8 @@ import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.edit.EditConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.edit.editor.CheckBoxCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.editor.ComboBoxCellEditor;
+import org.eclipse.nebula.widgets.nattable.edit.editor.MultiLineTextCellEditor;
+import org.eclipse.nebula.widgets.nattable.edit.gui.ICellEditDialog;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultGridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
@@ -40,8 +43,10 @@ import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.ui.DbConnection;
@@ -87,15 +92,18 @@ public class RelvarDesigner extends RelvarUI {
 					GridRegion.CORNER);
 	        // for each column...
 	        for (int column = 0; column < headingProvider.getColumnCount(); column++)
-	        	addColumn(column);
+	        	addColumn(column, headingProvider.getDataValue(1, 0).toString());
 	    }
 
-	    public void addColumn(int column) {
+	    public void addColumn(int column, String type) {
         	String columnLabel = "column" + column;
         	if (column == 0)
         		registerAttributeNameColumn(registry, columnLabel);
         	else if (column == 1)
-        		registerTypeNameColumn(registry, columnLabel);
+        		if (type.startsWith("RELATION ") || type.startsWith("TUPLE ") || type.startsWith("ARRAY "))
+        			registerTypeNonscalarColumn(registry, columnLabel, type.substring(0, type.indexOf(' ')));
+        		else
+        			registerTypeNameColumn(registry, columnLabel);
         	else
         		registerKeyColumn(registry, columnLabel);    	    	
 	    }
@@ -145,6 +153,61 @@ public class RelvarDesigner extends RelvarUI {
     	        	columnLabel);    	    
         }
 	    
+		private void registerTypeNonscalarColumn(IConfigRegistry configRegistry, String columnLabel, String typeKind) {
+	        // configure the multi line text editor
+	        configRegistry.registerConfigAttribute(
+	                EditConfigAttributes.CELL_EDITOR,
+	                new MultiLineTextCellEditor(false),
+	                DisplayMode.NORMAL,
+	                columnLabel);
+
+	        // popup
+	    	configRegistry.unregisterConfigAttribute(EditConfigAttributes.OPEN_IN_DIALOG);
+	        configRegistry.registerConfigAttribute(
+	                EditConfigAttributes.OPEN_IN_DIALOG,
+	                true,
+	                DisplayMode.EDIT,
+	                columnLabel);
+	        
+	        Style cellStyle = new Style();
+	        cellStyle.setAttributeValue(
+	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
+	                HorizontalAlignmentEnum.LEFT);
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_STYLE,
+	                cellStyle,
+	                DisplayMode.NORMAL,
+	                columnLabel);
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_STYLE,
+	                cellStyle,
+	                DisplayMode.EDIT,
+	                columnLabel);
+
+	        // configure custom dialog settings
+	        Display display = Display.getCurrent();
+	        Map<String, Object> editDialogSettings = new HashMap<String, Object>();
+	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_TITLE, "Edit");
+	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_ICON, display.getSystemImage(SWT.ICON_WARNING));
+	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_RESIZABLE, Boolean.TRUE);
+
+	        Point size = new Point(400, 300);
+	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_SIZE, size);
+
+	        int screenWidth = display.getBounds().width;
+	        int screenHeight = display.getBounds().height;
+	        Point location = new Point(
+	                (screenWidth / (2 * display.getMonitors().length)) - (size.x / 2),
+	                (screenHeight / 2) - (size.y / 2));
+	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_LOCATION, location);
+
+	        configRegistry.registerConfigAttribute(
+	                EditConfigAttributes.EDIT_DIALOG_SETTINGS,
+	                editDialogSettings,
+	                DisplayMode.EDIT,
+	                columnLabel);
+		}
+		
 	    private void registerKeyColumn(IConfigRegistry configRegistry, String columnLabel) {
 	        configRegistry.registerConfigAttribute(
 	        		EditConfigAttributes.CELL_EDITOR, 
@@ -208,13 +271,6 @@ public class RelvarDesigner extends RelvarUI {
 			reset();
 		}
 		
-		Object getOriginalColumnValue(int column) {
-			switch (column) {
-			case 0: return oldName;
-			default: return oldTypeName;
-			}
-		}
-		
 		Object getColumnValue(int column) {
 			switch (column) {
 			case 0: return (newName != null) ? newName : oldName;
@@ -222,8 +278,11 @@ public class RelvarDesigner extends RelvarUI {
 			}
 		}
 		
-		String getOldName() {
-			return oldName;
+		void setColumnValue(int column, Object newValue) {
+			switch (column) {
+			case 0: newName = (newValue == null) ? null : newValue.toString(); break; 
+			default: newTypeName = (newValue == null) ? null : newValue.toString(); break;
+			}
 		}
 		
 		String getName() {
@@ -235,21 +294,15 @@ public class RelvarDesigner extends RelvarUI {
 			return newName;
 		}
 		
-		void setColumnValue(int column, Object newValue) {
-			switch (column) {
-			case 0: newName = (newValue == null) ? null : newValue.toString(); break; 
-			default: newTypeName = (newValue == null) ? null : newValue.toString(); break;
-			}
-		}
-		
-		boolean isBlank() {
-			return oldName == null && oldTypeName == null && newName == null && newTypeName == null;
-		}
-		
 		private void reset() {
 			newName = null;
 			newTypeName = null;
 			newDefinition = null;
+		}
+
+		public boolean isFilled() {
+			return (getColumnValue(0) != null && getColumnValue(0).toString().length() > 0 && 
+					getColumnValue(1) != null && getColumnValue(1).toString().length() > 0);
 		}
 	}
 
@@ -286,16 +339,18 @@ public class RelvarDesigner extends RelvarUI {
 			if (columnIndex < 2) {
 				if (newValue == null || newValue.toString().length() == 0)
 					return;
-				attribute.setColumnValue(columnIndex, newValue);
 				if (columnIndex == 0) {
 					for (HashSet<String> key: keys) {
-						if (key.contains(attribute.getOldName())) {
-							key.remove(attribute.getOldName());
-							key.add(attribute.getName());
+						if (key.contains(attribute.getName())) {
+							key.remove(attribute.getName());
+							key.add(newValue.toString());
 						}
 					}
 				}
+				attribute.setColumnValue(columnIndex, newValue);
 			} else {
+				if (rowIndex == getRowCount() - 1 && !attribute.isFilled())
+					return;
 				if (newValue == null)
 					newValue = "false";
 				if (newValue.equals("false"))
@@ -306,7 +361,7 @@ public class RelvarDesigner extends RelvarUI {
 			if (columnIndex >= lastColumnIndex && newValue != null && newValue.equals("true")) {
 				keys.add(new HashSet<String>());
 				lastColumnIndex++;
-				editorConfiguration.addColumn(columnIndex);
+				editorConfiguration.addColumn(columnIndex, "");
 				table.configure();
 				table.refresh();
 			} else if (columnIndex >= 2 && getKeyAttributeCount(columnIndex - 2) == 0) {
@@ -316,7 +371,7 @@ public class RelvarDesigner extends RelvarUI {
 				table.refresh();
 			}
 			int lastRowIndex = cache.size() - 1;
-			if (rowIndex == lastRowIndex && !cache.get(lastRowIndex).isBlank()) {
+			if (rowIndex == lastRowIndex && cache.get(lastRowIndex).isFilled()) {
 				cache.add(new Attribute());
 				table.redraw();
 			}
@@ -337,7 +392,31 @@ public class RelvarDesigner extends RelvarUI {
 		}
 
 		public void deleteRows(Set<Range> selections) {
-			System.out.println("RelvarDesigner: delete not implemented yet.");
+			HashSet<Integer> deleteMe = new HashSet<Integer>();
+			for (Range range: selections)
+				for (int n = range.start; n < range.end; n++)
+					deleteMe.add(n);
+			Vector<Attribute> newCache = new Vector<Attribute>();
+			int index = 0;
+			for (Attribute attribute: cache) {
+				if (deleteMe.contains(index))
+					for (HashSet<String> key: keys)
+						key.remove(attribute.getName());
+				else
+					newCache.add(attribute);
+				index++;
+			}
+			HashSet<HashSet<String>> newKeys = new HashSet<HashSet<String>>();
+			for (HashSet<String> key: keys)
+				if (key.size() > 0)
+					newKeys.add(key);
+			keys.clear();
+			keys.addAll(newKeys);
+			// Blank key definition allows user to add keys
+			keys.add(new HashSet<String>());
+    		lastColumnIndex = 2 + keys.size() - 1;
+			cache = newCache;
+			table.refresh();
 		}
     };
 	
