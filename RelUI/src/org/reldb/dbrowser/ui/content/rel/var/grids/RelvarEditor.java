@@ -216,6 +216,8 @@ public class RelvarEditor extends RelvarUI {
 		}
 
 		public String getError(int row) {
+			if (row >= cache.size())
+				return null;
 			return cache.get(row).getError();
 		}
 
