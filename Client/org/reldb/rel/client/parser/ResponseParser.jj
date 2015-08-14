@@ -311,11 +311,11 @@ void primitive(boolean inPossrep) :
 {Token t;}
 {
 	( 
-	  t = <STRING_LITERAL> {responseHandler.primitive((inPossrep) ? t.image : StringUtils.unquote(t.image.substring(1, t.image.length()-1)));}
-	| t = <INTEGER_LITERAL> {responseHandler.primitive(t.image);} 
-	| t = <FLOATING_POINT_LITERAL> {responseHandler.primitive(t.image);}
-	| t = <TRUE> {responseHandler.primitive(t.image);}
-	| t = <FALSE> {responseHandler.primitive(t.image);}
+	  t = <STRING_LITERAL> {responseHandler.primitive((inPossrep) ? t.image : StringUtils.unquote(t.image.substring(1, t.image.length()-1)), true);}
+	| t = <INTEGER_LITERAL> {responseHandler.primitive(t.image, false);} 
+	| t = <FLOATING_POINT_LITERAL> {responseHandler.primitive(t.image, false);}
+	| t = <TRUE> {responseHandler.primitive(t.image, false);}
+	| t = <FALSE> {responseHandler.primitive(t.image, false);}
 	| tuple_relation_or_array(0)
 	) 
 }

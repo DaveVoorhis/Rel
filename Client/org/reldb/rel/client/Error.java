@@ -8,7 +8,7 @@ public class Error extends Value {
 		this.errorMsg = errorMsg;
 	}
 	
-	void addValue(Value r) throws InvalidValueException {
+	void addValue(Value r, boolean b) throws InvalidValueException {
 		throw new InvalidValueException("Invocation of addValue() on error.");
 	}
 
@@ -36,7 +36,7 @@ public class Error extends Value {
 		throw new InvalidValueException("Error can't be cast to boolean.");
 	}
 	
-	public String toString() {
+	public String toString(int depth) {
 		return getErrorMsg();
 	}
 	

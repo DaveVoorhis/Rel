@@ -405,23 +405,23 @@ public class ResponseParser implements ResponseParserConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case STRING_LITERAL:
       t = jj_consume_token(STRING_LITERAL);
-                                responseHandler.primitive((inPossrep) ? t.image : StringUtils.unquote(t.image.substring(1, t.image.length()-1)));
+                                responseHandler.primitive((inPossrep) ? t.image : StringUtils.unquote(t.image.substring(1, t.image.length()-1)), true);
       break;
     case INTEGER_LITERAL:
       t = jj_consume_token(INTEGER_LITERAL);
-                                 responseHandler.primitive(t.image);
+                                 responseHandler.primitive(t.image, false);
       break;
     case FLOATING_POINT_LITERAL:
       t = jj_consume_token(FLOATING_POINT_LITERAL);
-                                        responseHandler.primitive(t.image);
+                                        responseHandler.primitive(t.image, false);
       break;
     case TRUE:
       t = jj_consume_token(TRUE);
-                      responseHandler.primitive(t.image);
+                      responseHandler.primitive(t.image, false);
       break;
     case FALSE:
       t = jj_consume_token(FALSE);
-                       responseHandler.primitive(t.image);
+                       responseHandler.primitive(t.image, false);
       break;
     case ARRAY:
     case RELATION:

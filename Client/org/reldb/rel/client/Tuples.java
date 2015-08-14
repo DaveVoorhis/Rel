@@ -9,6 +9,7 @@ public class Tuples extends Value implements Iterable<Tuple>{
 	private ArrayBlockingQueue<Tuple> tuples = new ArrayBlockingQueue<Tuple>(50);
 	private ArrayBlockingQueue<Heading> headingQueue = new ArrayBlockingQueue<Heading>(1);
 	private Heading heading = null;
+	private String typeName = null;
 	private boolean cacheable = false;
 	private LinkedList<Tuple> cache = null;
 	
@@ -17,22 +18,30 @@ public class Tuples extends Value implements Iterable<Tuple>{
 		cacheable = true;
 	}
 	
+	Tuples(String typeName) {
+		this.typeName = typeName;
+		cacheable = true;
+	}
+	
 	public Tuples() {
 	}
 
 	void setHeading(Heading heading) {
 		try {
-			headingQueue.put(heading);
+			if (heading == null)
+				headingQueue = null;
+			else
+				headingQueue.put(heading);
 		} catch (InterruptedException e) {
 		}
 	}
 
 	// Insert special end-of-set indicator tuple.
 	void insertNullTuple() {
-		addValue(new NullTuple());
+		addValue(new NullTuple(), false);
 	}
 
-	void addValue(Value value) {
+	void addValue(Value value, boolean b) {
 		try {
 			tuples.put((Tuple)value);
 		} catch (InterruptedException e) {
@@ -43,7 +52,10 @@ public class Tuples extends Value implements Iterable<Tuple>{
 		if (heading != null)
 			return heading;
 		try {
-			heading = headingQueue.take();
+			if (headingQueue == null)
+				heading = null;
+			else
+				heading = headingQueue.take();
 		} catch (InterruptedException e) {
 		}
 		return heading;
@@ -69,13 +81,17 @@ public class Tuples extends Value implements Iterable<Tuple>{
 		throw new InvalidValueException("Tuples can't be cast to boolean.");
 	}
 
-	public String toString() {
+	public String toString(int depth) {
 		String lines = "";
 		for (Tuple tuple: this)
-			lines += "\t" + tuple + "\n";				
-		return heading + " {\n" + lines + "}"; 
+			lines += ((lines.length() > 0) ? ",\n" : "") + "\t" + tuple.toString(depth + 1);
+		return ((heading != null) ? heading : (typeName != null) ? typeName : "")  + " {\n" + lines + "}"; 
 	}
 
+	public String toString() {
+		return toString(0);
+	}
+	
 	private boolean done = false;
 
 	public Iterator<Tuple> iterator() {

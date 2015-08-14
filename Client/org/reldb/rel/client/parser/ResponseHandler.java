@@ -19,7 +19,7 @@ public interface ResponseHandler {
 	public void beginPossrep(String name);
 	public void endPossrep();
 	public void separatePossrepComponent();
-	public void primitive(String value);
+	public void primitive(String value, boolean quoted);
 	public void beginContainer(int depth, String typeName);
 	public void endContainer(int depth);
 	public void beginTuple(int depth);

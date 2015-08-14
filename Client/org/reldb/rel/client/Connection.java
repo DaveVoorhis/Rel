@@ -170,9 +170,9 @@ public class Connection {
 					private void endData() {
 						Value value = valueReceiver.pop();
 						if (valueReceiver.size() > 0)
-							valueReceiver.peek().addValue(value);
+							valueReceiver.peek().addValue(value, false);
 						else
-							response.setResult(value);					
+							response.setResult(value);
 					}
 					public void beginHeading(String typeName) {
 						headingReceiver.push(new Heading(typeName));
@@ -202,8 +202,8 @@ public class Connection {
 					public void endPossrep() {
 						endData();
 					}
-					public void primitive(String value) {
-						valueReceiver.peek().addValue(new Scalar(value));
+					public void primitive(String value, boolean quoted) {
+						valueReceiver.peek().addValue(new Scalar(value, quoted), quoted);
 					}
 					public void beginContainer(int depth, String typeName) {
 						if (depth == 0) {
@@ -211,7 +211,7 @@ public class Connection {
 							valueReceiver.push(tuples);
 							response.setResult(tuples);
 						} else {
-							valueReceiver.push(new Tuples(new Heading(typeName)));
+							valueReceiver.push(new Tuples(typeName));
 						}
 					}
 					public void endContainer(int depth) {

@@ -1,20 +1,31 @@
 package org.reldb.rel.client;
 
+import org.reldb.rel.utilities.StringUtils;
+
 public class Scalar extends Value {
 
 	private String value = null;
+	private boolean quoted = false;
 	
-	Scalar(String value) {
+	Scalar(String value, boolean quoted) {
 		this.value = value;
+		this.quoted = quoted;
 	}
 
 	Scalar() {}
 	
-	void addValue(Value v) {
-		value = v.toString();
+	void addValue(Value value, boolean quoted) {
+		this.value = value.toString();
+		this.quoted = quoted;
 	}
 	
 	public String getValue() {
+		return value;
+	}
+	
+	public String toString(int depth) {
+		if (quoted && depth > 0)
+			return "'" + StringUtils.quote(value) + "'";
 		return value;
 	}
 	

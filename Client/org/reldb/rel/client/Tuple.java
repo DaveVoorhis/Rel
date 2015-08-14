@@ -13,7 +13,7 @@ public class Tuple extends Value {
 		attributeNames.add(name);
 	}
 	
-	void addValue(Value value) {
+	void addValue(Value value, boolean b) {
 		attributeValues.add(value);
 	}
 
@@ -80,14 +80,18 @@ public class Tuple extends Value {
 		throw new InvalidValueException("Tuple can't be cast to boolean.");
 	}
 	
-	public String toString() {
+	public String toString(int depth) {
 		String tuples = "";
 		for (int i=0; i<getAttributeCount(); i++) {
 			if (tuples.length() > 0)
 				tuples += ", ";
-			tuples += getAttributeName(i) + " " + getAttributeValue(i).toString();
+			tuples += getAttributeName(i) + " " + getAttributeValue(i).toString(depth + 1);
 		}
 		return "TUPLE {" + tuples + "}";
+	}
+	
+	public String toString() {
+		return toString(0);
 	}
 	
 }

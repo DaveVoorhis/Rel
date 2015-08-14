@@ -151,7 +151,7 @@ public abstract class ResponseToHTML extends ResponseProcessor {
 		emitHTML(", ");
 	}
 	
-	public void primitive(String value) {
+	public void primitive(String value, boolean quoted) {
 		emitHTML(textToHTML(value));						
 	}
 
