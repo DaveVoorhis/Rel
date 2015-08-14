@@ -424,7 +424,7 @@ public class RelvarEditor extends RelvarUI {
     private void syncFromDatabase() {
 		obtainKeyDefinitions();		
 		tuples = obtainTuples();
-    	heading = tuples.getHeading().toArray();    	
+    	heading = tuples.getHeading().toArray();
     }
     
     public void refresh() {

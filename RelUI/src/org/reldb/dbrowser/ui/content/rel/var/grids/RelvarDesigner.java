@@ -97,15 +97,17 @@ public class RelvarDesigner extends RelvarUI {
 
 	    public void addColumn(int column, String type) {
         	String columnLabel = "column" + column;
-        	if (column == 0)
-        		registerAttributeNameColumn(registry, columnLabel);
-        	else if (column == 1)
-        		if (type.startsWith("RELATION ") || type.startsWith("TUPLE ") || type.startsWith("ARRAY "))
+        	switch (column) {
+        	case 0: registerAttributeNameColumn(registry, columnLabel); break;
+        	case 1: registerTypeNameColumn(registry, columnLabel); break;
+        	case 2: 
+        		if (isNonScalar(type))
         			registerTypeNonscalarColumn(registry, columnLabel, type.substring(0, type.indexOf(' ')));
         		else
-        			registerTypeNameColumn(registry, columnLabel);
-        	else
-        		registerKeyColumn(registry, columnLabel);    	    	
+        			registerTypeBlankColumn(registry, columnLabel);
+        		break;
+        	default: registerKeyColumn(registry, columnLabel);
+        	}
 	    }
 	    
 		private void registerAttributeNameColumn(IConfigRegistry configRegistry, String columnLabel) {
@@ -153,6 +155,10 @@ public class RelvarDesigner extends RelvarUI {
     	        	columnLabel);    	    
         }
 	    
+		private void registerTypeBlankColumn(IConfigRegistry configRegistry, String columnLabel) {
+			
+		}
+		
 		private void registerTypeNonscalarColumn(IConfigRegistry configRegistry, String columnLabel, String typeKind) {
 	        // configure the multi line text editor
 	        configRegistry.registerConfigAttribute(
@@ -228,7 +234,8 @@ public class RelvarDesigner extends RelvarUI {
 			switch (columnIndex) {
 			case 0: return "Name";
 			case 1: return "Type";
-			default: return (columnIndex == getColumnCount() - 1 && columnIndex > 2) ? "New Key" : "Key " + (columnIndex - 1);
+			case 2: return "Definition";
+			default: return (columnIndex == getColumnCount() - 1 && columnIndex > 3) ? "New Key" : "Key " + (columnIndex - 2);
 			}
 		}
 
@@ -239,7 +246,7 @@ public class RelvarDesigner extends RelvarUI {
 
 		@Override
 		public int getColumnCount() {
-			return 2 + keys.size();
+			return 3 + keys.size();
 		}
 
 		@Override
@@ -274,14 +281,16 @@ public class RelvarDesigner extends RelvarUI {
 		Object getColumnValue(int column) {
 			switch (column) {
 			case 0: return (newName != null) ? newName : oldName;
-			default: return (newTypeName != null) ? newTypeName : oldTypeName;
+			case 1: return (newTypeName != null) ? newTypeName : oldTypeName;
+			default: return (newDefinition != null) ? newDefinition : (oldTypeName != null && isNonScalar(oldTypeName) ? oldType : "");
 			}
 		}
 		
 		void setColumnValue(int column, Object newValue) {
 			switch (column) {
 			case 0: newName = (newValue == null) ? null : newValue.toString(); break; 
-			default: newTypeName = (newValue == null) ? null : newValue.toString(); break;
+			case 1: newTypeName = (newValue == null) ? null : newValue.toString(); break;
+			default: newDefinition = (newValue == null) ? null : newValue.toString();
 			}
 		}
 		
@@ -313,7 +322,7 @@ public class RelvarDesigner extends RelvarUI {
     	
     	public DataProvider() {
     		reload();
-    		lastColumnIndex = 2 + keys.size() - 1;
+    		lastColumnIndex = 3 + keys.size() - 1;
     	}
 
 		public void reload() {
@@ -327,16 +336,16 @@ public class RelvarDesigner extends RelvarUI {
     	
 		@Override
 		public Object getDataValue(int columnIndex, int rowIndex) {
-			if (columnIndex < 2)
+			if (columnIndex < 3)
 				return cache.get(rowIndex).getColumnValue(columnIndex);
 			else
-				return keys.get(columnIndex - 2).contains(cache.get(rowIndex).getName());
+				return keys.get(columnIndex - 3).contains(cache.get(rowIndex).getName());
 		}
 		
 		@Override
 		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
 			Attribute attribute = cache.get(rowIndex);
-			if (columnIndex < 2) {
+			if (columnIndex < 3) {
 				if (newValue == null || newValue.toString().length() == 0)
 					return;
 				if (columnIndex == 0) {
@@ -354,9 +363,9 @@ public class RelvarDesigner extends RelvarUI {
 				if (newValue == null)
 					newValue = "false";
 				if (newValue.equals("false"))
-					keys.get(columnIndex - 2).remove(attribute.getName());
+					keys.get(columnIndex - 3).remove(attribute.getName());
 				else
-					keys.get(columnIndex - 2).add(attribute.getName());
+					keys.get(columnIndex - 3).add(attribute.getName());
 			}
 			if (columnIndex >= lastColumnIndex && newValue != null && newValue.equals("true")) {
 				keys.add(new HashSet<String>());
@@ -364,8 +373,8 @@ public class RelvarDesigner extends RelvarUI {
 				editorConfiguration.addColumn(columnIndex, "");
 				table.configure();
 				table.refresh();
-			} else if (columnIndex >= 2 && getKeyAttributeCount(columnIndex - 2) == 0) {
-				keys.remove(columnIndex - 2);
+			} else if (columnIndex >= 3 && getKeyAttributeCount(columnIndex - 3) == 0) {
+				keys.remove(columnIndex - 3);
 				lastColumnIndex--;
 				table.configure();
 				table.refresh();
@@ -414,7 +423,7 @@ public class RelvarDesigner extends RelvarUI {
 			keys.addAll(newKeys);
 			// Blank key definition allows user to add keys
 			keys.add(new HashSet<String>());
-    		lastColumnIndex = 2 + keys.size() - 1;
+    		lastColumnIndex = 3 + keys.size() - 1;
 			cache = newCache;
 			table.refresh();
 		}
@@ -424,6 +433,10 @@ public class RelvarDesigner extends RelvarUI {
 		obtainKeyDefinitions();		
 		// Blank key definition allows user to add keys
 		keys.add(new HashSet<String>());
+	}
+
+	private boolean isNonScalar(String type) {
+		return type.startsWith("RELATION ") || type.startsWith("TUPLE ") || type.startsWith("ARRAY ");	
 	}
 
 	public void refresh() {
