@@ -73,7 +73,7 @@ public class Tuples extends Value implements Iterable<Tuple>{
 		String lines = "";
 		for (Tuple tuple: this)
 			lines += "\t" + tuple + "\n";				
-		return "ARRAY " + heading + " {\n" + lines + "}"; 
+		return heading + " {\n" + lines + "}"; 
 	}
 
 	private boolean done = false;
