@@ -92,20 +92,15 @@ public class RelvarDesigner extends RelvarUI {
 					GridRegion.CORNER);
 	        // for each column...
 	        for (int column = 0; column < headingProvider.getColumnCount(); column++)
-	        	addColumn(column, headingProvider.getDataValue(1, 0).toString());
+	        	addColumn(column);
 	    }
 
-	    public void addColumn(int column, String type) {
+	    public void addColumn(int column) {
         	String columnLabel = "column" + column;
         	switch (column) {
         	case 0: registerAttributeNameColumn(registry, columnLabel); break;
         	case 1: registerTypeNameColumn(registry, columnLabel); break;
-        	case 2: 
-        		if (isNonScalar(type))
-        			registerTypeNonscalarColumn(registry, columnLabel, type.substring(0, type.indexOf(' ')));
-        		else
-        			registerTypeBlankColumn(registry, columnLabel);
-        		break;
+        	case 2: registerTypeDefinitionColumn(registry, columnLabel); break;
         	default: registerKeyColumn(registry, columnLabel);
         	}
 	    }
@@ -154,12 +149,8 @@ public class RelvarDesigner extends RelvarUI {
     	        	DisplayMode.EDIT, 
     	        	columnLabel);    	    
         }
-	    
-		private void registerTypeBlankColumn(IConfigRegistry configRegistry, String columnLabel) {
-			
-		}
 		
-		private void registerTypeNonscalarColumn(IConfigRegistry configRegistry, String columnLabel, String typeKind) {
+		private void registerTypeDefinitionColumn(IConfigRegistry configRegistry, String columnLabel) {
 	        // configure the multi line text editor
 	        configRegistry.registerConfigAttribute(
 	                EditConfigAttributes.CELL_EDITOR,
@@ -238,7 +229,7 @@ public class RelvarDesigner extends RelvarUI {
 			default: return (columnIndex == getColumnCount() - 1 && columnIndex > 3) ? "New Key" : "Key " + (columnIndex - 2);
 			}
 		}
-
+		
 		@Override
 		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
 			throw new UnsupportedOperationException();
@@ -370,7 +361,7 @@ public class RelvarDesigner extends RelvarUI {
 			if (columnIndex >= lastColumnIndex && newValue != null && newValue.equals("true")) {
 				keys.add(new HashSet<String>());
 				lastColumnIndex++;
-				editorConfiguration.addColumn(columnIndex, "");
+				editorConfiguration.addColumn(columnIndex);
 				table.configure();
 				table.refresh();
 			} else if (columnIndex >= 3 && getKeyAttributeCount(columnIndex - 3) == 0) {
@@ -436,7 +427,7 @@ public class RelvarDesigner extends RelvarUI {
 	}
 
 	private boolean isNonScalar(String type) {
-		return type.startsWith("RELATION ") || type.startsWith("TUPLE ") || type.startsWith("ARRAY ");	
+		return type.equals("RELATION") || type.equals("TUPLE") || type.equals("ARRAY");	
 	}
 
 	public void refresh() {
