@@ -11,7 +11,7 @@ public class Selector extends Scalar {
 		this.name = name;
 	}
 	
-	void addValue(Value r) {
+	void addValue(Value r, boolean b) {
 		values.add(r);
 	}
 
