@@ -27,6 +27,7 @@ import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultGridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.LabelStack;
 import org.eclipse.nebula.widgets.nattable.layer.cell.IConfigLabelAccumulator;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.nebula.widgets.nattable.painter.cell.CheckBoxPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.ComboBoxPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
@@ -151,6 +152,22 @@ public class RelvarDesigner extends RelvarUI {
         }
 		
 		private void registerTypeDefinitionColumn(IConfigRegistry configRegistry, String columnLabel) {
+			// edit or not
+			configRegistry.registerConfigAttribute(
+					EditConfigAttributes.CELL_EDITABLE_RULE, 
+					new IEditableRule() {
+						@Override
+						public boolean isEditable(ILayerCell cell, IConfigRegistry configRegistry) {
+							return isEditable(cell.getColumnIndex(), cell.getRowIndex());
+						}
+						@Override
+						public boolean isEditable(int columnIndex, int rowIndex) {
+							return dataProvider.isEditableNonscalarDefinition(rowIndex);
+						}
+					}, 
+					DisplayMode.EDIT, 
+					columnLabel);
+			
 	        // configure the multi line text editor
 	        configRegistry.registerConfigAttribute(
 	                EditConfigAttributes.CELL_EDITOR,
@@ -184,7 +201,7 @@ public class RelvarDesigner extends RelvarUI {
 	        // configure custom dialog settings
 	        Display display = Display.getCurrent();
 	        Map<String, Object> editDialogSettings = new HashMap<String, Object>();
-	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_TITLE, "Edit");
+	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_TITLE, "Edit Nonscalar Definition");
 	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_ICON, display.getSystemImage(SWT.ICON_WARNING));
 	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_RESIZABLE, Boolean.TRUE);
 
@@ -273,15 +290,22 @@ public class RelvarDesigner extends RelvarUI {
 			switch (column) {
 			case 0: return (newName != null) ? newName : oldName;
 			case 1: return (newTypeName != null) ? newTypeName : oldTypeName;
-			default: return (newDefinition != null) ? newDefinition : (oldTypeName != null && isNonScalar(oldTypeName) ? oldType : "");
+			default: return isEditableNonscalarDefinition() ? ((newDefinition != null) ? newDefinition : oldType) : "";
 			}
 		}
 		
 		void setColumnValue(int column, Object newValue) {
+			if (newValue == null)
+				return;
 			switch (column) {
-			case 0: newName = (newValue == null) ? null : newValue.toString(); break; 
-			case 1: newTypeName = (newValue == null) ? null : newValue.toString(); break;
-			default: newDefinition = (newValue == null) ? null : newValue.toString();
+			case 0: newName = newValue.toString(); break; 
+			case 1: 
+				if (newTypeName != null && newTypeName.equals(newValue.toString()))
+					return;
+				newTypeName = newValue.toString();
+				newDefinition = "";
+				break;
+			default: newDefinition = newValue.toString();
 			}
 		}
 		
@@ -299,8 +323,15 @@ public class RelvarDesigner extends RelvarUI {
 			newTypeName = null;
 			newDefinition = null;
 		}
+		
+		boolean isEditableNonscalarDefinition() {
+			Object typeName = getColumnValue(1);
+			if (typeName == null)
+				return false;
+			return isFilled() && isNonScalar(typeName.toString());
+		}
 
-		public boolean isFilled() {
+		boolean isFilled() {
 			return (getColumnValue(0) != null && getColumnValue(0).toString().length() > 0 && 
 					getColumnValue(1) != null && getColumnValue(1).toString().length() > 0);
 		}
@@ -385,6 +416,10 @@ public class RelvarDesigner extends RelvarUI {
 		@Override
 		public int getRowCount() {
 			return cache.size();
+		}
+
+		public boolean isEditableNonscalarDefinition(int rowIndex) {
+			return cache.get(rowIndex).isEditableNonscalarDefinition();
 		}
 		
 		public int getKeyAttributeCount(int keyColumn) {
