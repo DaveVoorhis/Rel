@@ -14,16 +14,20 @@ public class RelvarUI {
 	
 	protected Vector<HashSet<String>> keys = new Vector<HashSet<String>>();
 	
+	protected Composite parent;
 	protected DbConnection connection;
 	protected String relvarName;
 
 	public RelvarUI(Composite parent, DbConnection connection, String relvarName) {
+		this.parent = parent;
 		this.connection = connection;
 		this.relvarName = relvarName;		
 	}
 	
 	protected void obtainKeyDefinitions() {
 		keys.clear();
+		if (relvarName == null)
+			return;
 		Tuples keyDefinitions = (Tuples)connection.evaluate("((sys.Catalog WHERE Name = '" + relvarName + "') {Keys}) UNGROUP Keys");
 		for (Tuple keyDefinition: keyDefinitions) {
 			Tuples keyAttributes = (Tuples)(keyDefinition.get("Attributes"));

@@ -1,10 +1,8 @@
 package org.reldb.dbrowser.ui.content.rel.var.grids;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -20,8 +18,6 @@ import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.edit.EditConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.edit.editor.CheckBoxCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.editor.ComboBoxCellEditor;
-import org.eclipse.nebula.widgets.nattable.edit.editor.MultiLineTextCellEditor;
-import org.eclipse.nebula.widgets.nattable.edit.gui.ICellEditDialog;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultGridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
@@ -44,10 +40,8 @@ import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.ui.DbConnection;
@@ -168,56 +162,10 @@ public class RelvarDesigner extends RelvarUI {
 					DisplayMode.EDIT, 
 					columnLabel);
 			
-	        // configure the multi line text editor
+			// Custom dialog box
 	        configRegistry.registerConfigAttribute(
 	                EditConfigAttributes.CELL_EDITOR,
-	                new MultiLineTextCellEditor(false),
-	                DisplayMode.NORMAL,
-	                columnLabel);
-
-	        // popup
-	    	configRegistry.unregisterConfigAttribute(EditConfigAttributes.OPEN_IN_DIALOG);
-	        configRegistry.registerConfigAttribute(
-	                EditConfigAttributes.OPEN_IN_DIALOG,
-	                true,
-	                DisplayMode.EDIT,
-	                columnLabel);
-	        
-	        Style cellStyle = new Style();
-	        cellStyle.setAttributeValue(
-	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
-	                HorizontalAlignmentEnum.LEFT);
-	        configRegistry.registerConfigAttribute(
-	                CellConfigAttributes.CELL_STYLE,
-	                cellStyle,
-	                DisplayMode.NORMAL,
-	                columnLabel);
-	        configRegistry.registerConfigAttribute(
-	                CellConfigAttributes.CELL_STYLE,
-	                cellStyle,
-	                DisplayMode.EDIT,
-	                columnLabel);
-
-	        // configure custom dialog settings
-	        Display display = Display.getCurrent();
-	        Map<String, Object> editDialogSettings = new HashMap<String, Object>();
-	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_TITLE, "Edit Nonscalar Definition");
-	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_ICON, display.getSystemImage(SWT.ICON_WARNING));
-	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_RESIZABLE, Boolean.TRUE);
-
-	        Point size = new Point(400, 300);
-	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_SIZE, size);
-
-	        int screenWidth = display.getBounds().width;
-	        int screenHeight = display.getBounds().height;
-	        Point location = new Point(
-	                (screenWidth / (2 * display.getMonitors().length)) - (size.x / 2),
-	                (screenHeight / 2) - (size.y / 2));
-	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_LOCATION, location);
-
-	        configRegistry.registerConfigAttribute(
-	                EditConfigAttributes.EDIT_DIALOG_SETTINGS,
-	                editDialogSettings,
+	                new AttributeDesignerDialog(),
 	                DisplayMode.EDIT,
 	                columnLabel);
 		}
@@ -470,12 +418,22 @@ public class RelvarDesigner extends RelvarUI {
     	dataProvider.reload();
     	table.refresh();		
 	}
-
+	
+	// Relvar attribute designer
+	public RelvarDesigner(RelvarDesigner parent) {
+		super(parent.parent, parent.connection, null);
+		askDeleteConfirm = false;	
+		init();
+	}
+	
+	// Relvar designer
 	public RelvarDesigner(Composite parent, DbConnection connection, String relvarName) {
 		super(parent, connection, relvarName);
-
 	    syncFromDatabase();
-		
+	    init();
+	}
+
+	private void init() {
 	    dataProvider = new DataProvider();
 	    headingProvider = new HeadingProvider();
 	    
@@ -527,7 +485,7 @@ public class RelvarDesigner extends RelvarUI {
                 
         table.configure();
 	}
-
+	
 	private void doDeleteSelected() {
 		Set<Range> selections = gridLayer.getBodyLayer().getSelectionLayer().getSelectedRowPositions();
 		dataProvider.deleteRows(selections);
