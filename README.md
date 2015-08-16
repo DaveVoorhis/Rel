@@ -8,9 +8,11 @@ If you wish to work with the source code, do this:
 
 3. Install NatTable (https://eclipse.org/nattable) -- used by the RelUI subproject -- via "Help | Install New Software".  The update site is http://download.eclipse.org/nattable/releases/1.3.0/repository/
 
-4. Select "File | Import... | Git | Projects from Git" and pick "Clone URI".  The URI is https://github.com/DaveVoorhis/Rel.git
+4. Select "File | Import... | Git | Projects from Git" and pick "Clone URI".  The URI is https://github.com/DaveVoorhis/Rel.git  Or, better yet, fork it on GitHub and send me a pull request when you've done something good!
 
-You're ready to develop Rel.  Submit a pull request once you've done something good.
+5. To ensure that the relevant libraries are up-to-date in the RelUI subproject, run the /RelUI/lib/copy.bat script on Windows or /RelUI/lib/link.sh on Linux or OS X.  Build should be automatic, but it wouldn't hurt to do a "Project | Clean..." to ensure everything is freshly built.  If you're developing on Windows, you'll need to run the /RelUI/lib/copy.bat file whenever the referenced libraries are changed.
+
+You're ready to develop Rel.
 
 For further information, see the Rel home page at http://reldb.org
 
