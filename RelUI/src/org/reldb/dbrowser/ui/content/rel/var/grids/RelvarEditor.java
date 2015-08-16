@@ -843,6 +843,8 @@ public class RelvarEditor extends RelvarUI {
         table.getDisplay().addFilter(SWT.FocusIn, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
+				if (table.isDisposed())
+					return;
 				if (!hasFocus(table))
 					lostFocus();
 			}
