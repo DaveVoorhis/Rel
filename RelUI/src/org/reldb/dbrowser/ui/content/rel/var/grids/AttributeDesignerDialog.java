@@ -2,6 +2,7 @@ package org.reldb.dbrowser.ui.content.rel.var.grids;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -24,13 +25,21 @@ public class AttributeDesignerDialog extends Dialog {
 		this.connection = connection;
 	}
 	
+	protected Point getInitialSize() {
+		return new Point(400, 300);
+	}
+	
+	protected boolean isResizable() {
+	    return true;
+	}
+	
 	/**
 	 * Create contents of the dialog.
 	 * @param parent
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		Composite container = (Composite) super.createDialogArea(parent);
+		Composite container = (Composite)super.createDialogArea(parent);
 		container.setLayout(new FillLayout());
 
 		attributeDesigner = new AttributeDesigner(container, connection);
@@ -40,23 +49,14 @@ public class AttributeDesignerDialog extends Dialog {
 		
 		return container;
 	}
-
-	protected void buttonPressed() {}
 	
 	protected void cancelPressed() {
-		buttonPressed();
 		super.cancelPressed();
 	}
 	
 	protected void okPressed() {
-		buttonPressed();
 		attributeDefinition = attributeDesigner.getAttributeDefinition();
 		super.okPressed();
-	}
-
-	public int open() {
-		System.out.println("AttributeDesignerDialog: open");
-		return super.open();
 	}
 	
 	/**
@@ -74,7 +74,6 @@ public class AttributeDesignerDialog extends Dialog {
 	}
 
 	public void setAttributeDefinition(String attributeDefinition) {
-		System.out.println("AttributeDesignerDialog: setAttributeDefinition");
 		this.attributeDefinition = attributeDefinition;
 	}
 }

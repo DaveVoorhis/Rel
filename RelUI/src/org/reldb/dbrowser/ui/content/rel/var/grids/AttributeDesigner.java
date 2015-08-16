@@ -2,7 +2,6 @@ package org.reldb.dbrowser.ui.content.rel.var.grids;
 
 import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.ui.DbConnection;
-import org.reldb.rel.client.Tuples;
 
 public class AttributeDesigner extends Designer {
 	
@@ -18,17 +17,8 @@ public class AttributeDesigner extends Designer {
     	table.refresh();		
 	}
 
-	@Override
-	protected Tuples obtainAttributes() {
-		return connection.getTuples(
-				"EXTEND THE_Attributes(" + getAttributeDefinition() + "): " +
-				"{AttrTypeName := " +
-				"	IF IS_Scalar(AttrType) THEN " +
-				"		THE_TypeName(TREAT_AS_Scalar(AttrType)) " + 
-				"	ELSE " +
-				"		THE_Kind(TREAT_AS_NonScalar(AttrType)) " + 
-				"	END IF} " +
-				"{AttrName, AttrTypeName, AttrType}");
+	protected String getAttributeSource() {
+		return getAttributeDefinition();
 	}
 	
 	protected void obtainKeyDefinitions() {
@@ -43,5 +33,4 @@ public class AttributeDesigner extends Designer {
 		this.attributeDefinition = attributeDefinition;
 		init();
 	}
-	
 }

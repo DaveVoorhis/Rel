@@ -501,7 +501,19 @@ public abstract class Designer extends Grid {
 		return types;
 	}
 	
+	protected abstract String getAttributeSource();
+	
 	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
-	protected abstract Tuples obtainAttributes();
+	protected Tuples obtainAttributes() {
+		return connection.getTuples(
+				"EXTEND THE_Attributes(" + getAttributeSource() + "): " +
+				"{AttrTypeName := " +
+				"	IF IS_Scalar(AttrType) THEN " +
+				"		THE_TypeName(TREAT_AS_Scalar(AttrType)) " + 
+				"	ELSE " +
+				"		THE_Kind(TREAT_AS_NonScalar(AttrType)) " + 
+				"	END IF} " +
+				"{AttrName, AttrTypeName, AttrType}");
+	}
 
 }

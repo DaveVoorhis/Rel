@@ -4,7 +4,6 @@ import java.util.HashSet;
 
 import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.ui.DbConnection;
-import org.reldb.rel.client.Tuples;
 
 public class RelvarDesigner extends Designer {
 	
@@ -27,17 +26,8 @@ public class RelvarDesigner extends Designer {
     	table.refresh();		
 	}
 	
-	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
-	protected Tuples obtainAttributes() {
-		return connection.getTuples(
-				"EXTEND THE_Attributes(Attributes FROM TUPLE FROM (sys.Catalog WHERE Name='" + relvarName + "')): " +
-				"{AttrTypeName := " +
-				"	IF IS_Scalar(AttrType) THEN " +
-				"		THE_TypeName(TREAT_AS_Scalar(AttrType)) " + 
-				"	ELSE " +
-				"		THE_Kind(TREAT_AS_NonScalar(AttrType)) " + 
-				"	END IF} " +
-				"{AttrName, AttrTypeName, AttrType}");
+	protected String getAttributeSource() {
+		return "Attributes FROM TUPLE FROM (sys.Catalog WHERE Name='" + relvarName + "')";
 	}
 
 }
