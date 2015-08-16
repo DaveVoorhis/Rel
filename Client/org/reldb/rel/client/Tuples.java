@@ -85,7 +85,7 @@ public class Tuples extends Value implements Iterable<Tuple>{
 		String lines = "";
 		for (Tuple tuple: this)
 			lines += ((lines.length() > 0) ? ",\n" : "") + "\t" + tuple.toString(depth + 1);
-		return ((heading != null) ? heading : (typeName != null) ? typeName : "")  + " {\n" + lines + "}"; 
+		return ((heading != null) ? heading : (typeName != null) ? typeName : "RELATION")  + " {\n" + lines + "}"; 
 	}
 
 	public String toString() {
