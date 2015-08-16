@@ -1,14 +1,18 @@
 This is the live development repository for Rel, an implementation of Date & Darwen's "Tutorial D" database language.
 
-If you wish to work with the source code, it can be imported directly into Eclipse. RelUI development requires Eclipse for RCP and RAP Developers.  All the other subprojects will compile with the Eclipse IDE for Java developers.
+If you wish to work with the source code, do this:
 
-You'll need the JavaCC Eclipse plugin.  It's explicitly required to compile the Client and ServerVxxx subprojects, but other subprojects have dependencies on Client and ServerVxxx, so you're almost certain to need it.  Download and install it in Eclipse from http://eclipse-javacc.sourceforge.net/
+1. Download and install Eclipse for RCP and RAP Developers.  Run Eclipse.
 
-Install NatTable, which is used by the RelUI subproject.  See https://eclipse.org/nattable/
+2. Install the JavaCC Eclipse plugin via "Help | Install New Software".  The update site (i.e., the URL to put in "Work with", then press "Add") is http://eclipse-javacc.sourceforge.net/
 
-In Eclipse, select "File | Import... | Git | Projects from Git" and pick "Clone URI".  The URI is https://github.com/DaveVoorhis/Rel.git
+3. Install NatTable (https://eclipse.org/nattable) -- used by the RelUI subproject -- via "Help | Install New Software".  The update site is http://download.eclipse.org/nattable/releases/1.3.0/repository/
 
-See the Rel home page at http://reldb.org
+4. Select "File | Import... | Git | Projects from Git" and pick "Clone URI".  The URI is https://github.com/DaveVoorhis/Rel.git
+
+You're ready to develop Rel.  Submit a pull request once you've done something good.
+
+For further information, see the Rel home page at http://reldb.org
 
 See the _Deployment directory for conventional installable versions of Rel.  These are currently executable Java .jar files, with names of the form RelInstall-x.y.z.jar  As of version 1.0.13 or later this might be replaced by a Web Start installer (see below), or something else.
 
