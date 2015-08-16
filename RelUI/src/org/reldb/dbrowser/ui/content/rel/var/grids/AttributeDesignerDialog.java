@@ -1,113 +1,80 @@
 package org.reldb.dbrowser.ui.content.rel.var.grids;
 
-import org.eclipse.jface.window.Window;
-import org.eclipse.nebula.widgets.nattable.edit.gui.AbstractDialogCellEditor;
-import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer.MoveDirectionEnum;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
+import org.reldb.dbrowser.ui.DbConnection;
 
-public class AttributeDesignerDialog extends AbstractDialogCellEditor {
+public class AttributeDesignerDialog extends Dialog {
 
-    /**
-     * The selection result of the {@link FileDialog}. Needed to update the data
-     * model after closing the dialog.
-     */
-    private String selectedFile;
-    /**
-     * Flag to determine whether the dialog was closed or if it is still open.
-     */
-    private boolean closed = false;
+	private DbConnection connection;
+	private String attributeDefinition;
+	private AttributeDesigner attributeDesigner;
+	
+	/**
+	 * Create the dialog.
+	 * @param parentShell
+	 */
+	public AttributeDesignerDialog(Shell parentShell, DbConnection connection) {
+		super(parentShell);
+		setBlockOnOpen(true);
+		this.connection = connection;
+	}
+	
+	/**
+	 * Create contents of the dialog.
+	 * @param parent
+	 */
+	@Override
+	protected Control createDialogArea(Composite parent) {
+		Composite container = (Composite) super.createDialogArea(parent);
+		container.setLayout(new FillLayout());
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.nebula.widgets.nattable.edit.editor.AbstractDialogCellEditor
-     * #open()
-     */
-    @Override
-    public int open() {
-        this.selectedFile = getDialogInstance().open();
-        if (this.selectedFile == null) {
-            this.closed = true;
-            return Window.CANCEL;
-        } else {
-            commit(MoveDirectionEnum.NONE);
-            this.closed = true;
-            return Window.OK;
-        }
-    }
+		attributeDesigner = new AttributeDesigner(container, connection);
+		attributeDesigner.setAttributeDefinition(getAttributeDefinition());
+		
+		container.pack();
+		
+		return container;
+	}
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.nebula.widgets.nattable.edit.editor.AbstractDialogCellEditor
-     * #createDialogInstance()
-     */
-    @Override
-    public FileDialog createDialogInstance() {
-        this.closed = false;
-        return new FileDialog(this.parent.getShell(), SWT.OPEN);
-    }
+	protected void buttonPressed() {}
+	
+	protected void cancelPressed() {
+		buttonPressed();
+		super.cancelPressed();
+	}
+	
+	protected void okPressed() {
+		buttonPressed();
+		attributeDefinition = attributeDesigner.getAttributeDefinition();
+		super.okPressed();
+	}
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.nebula.widgets.nattable.edit.editor.AbstractDialogCellEditor
-     * #getDialogInstance()
-     */
-    @Override
-    public FileDialog getDialogInstance() {
-        return (FileDialog) this.dialog;
-    }
+	public int open() {
+		System.out.println("AttributeDesignerDialog: open");
+		return super.open();
+	}
+	
+	/**
+	 * Create contents of the button bar.
+	 * @param parent
+	 */
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, false);
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, true);
+	}
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.nebula.widgets.nattable.edit.editor.AbstractDialogCellEditor
-     * #getEditorValue()
-     */
-    @Override
-    public Object getEditorValue() {
-        return this.selectedFile;
-    }
+	public String getAttributeDefinition() {
+		return attributeDefinition;
+	}
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.nebula.widgets.nattable.edit.editor.AbstractDialogCellEditor
-     * #setEditorValue(java.lang.Object)
-     */
-    @Override
-    public void setEditorValue(Object value) {
-        getDialogInstance().setFileName(value != null ? value.toString() : null);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.nebula.widgets.nattable.edit.editor.AbstractDialogCellEditor
-     * #close()
-     */
-    @Override
-    public void close() {
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.nebula.widgets.nattable.edit.editor.AbstractDialogCellEditor
-     * #isClosed()
-     */
-    @Override
-    public boolean isClosed() {
-        return this.closed;
-    }
-
+	public void setAttributeDefinition(String attributeDefinition) {
+		System.out.println("AttributeDesignerDialog: setAttributeDefinition");
+		this.attributeDefinition = attributeDefinition;
+	}
 }

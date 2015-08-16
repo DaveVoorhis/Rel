@@ -8,7 +8,7 @@ import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
-public class RelvarUI {
+public class Grid {
 	
 	protected boolean askDeleteConfirm = true;
 	
@@ -18,7 +18,7 @@ public class RelvarUI {
 	protected DbConnection connection;
 	protected String relvarName;
 
-	public RelvarUI(Composite parent, DbConnection connection, String relvarName) {
+	public Grid(Composite parent, DbConnection connection, String relvarName) {
 		this.parent = parent;
 		this.connection = connection;
 		this.relvarName = relvarName;		

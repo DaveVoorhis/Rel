@@ -80,7 +80,7 @@ import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.utilities.StringUtils;
 
-public class RelvarEditor extends RelvarUI {
+public class RelvarEditor extends Grid {
 	
 	private Attribute[] heading;
 	
