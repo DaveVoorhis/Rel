@@ -1,0 +1,12 @@
+copy ..\..\..\Rel\_Deployment\RelDBMS.jar .
+copy ..\..\..\Rel\_Deployment\commons-codec-1.4.jar .
+copy ..\..\..\Rel\_Deployment\commons-logging-1.1.1.jar .
+copy ..\..\..\Rel\_Deployment\ecj-4.4.2.jar .
+copy ..\..\..\Rel\_Deployment\httpclient-4.1.3.jar .
+copy ..\..\..\Rel\_Deployment\httpclient-cache-4.1.3.jar .
+copy ..\..\..\Rel\_Deployment\httpcore-4.1.4.jar .
+copy ..\..\..\Rel\_Deployment\httpmime-4.1.3.jar .
+copy ..\..\..\Rel\_Deployment\je-6.3.8.jar .
+copy ..\..\..\Rel\_Deployment\rel0000.jar .
+copy ..\..\..\Rel\_Deployment\relclient.jar .
+copy ..\..\..\Rel\_Deployment\relshared.jar .
