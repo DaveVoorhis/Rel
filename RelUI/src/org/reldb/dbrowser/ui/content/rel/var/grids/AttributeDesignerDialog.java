@@ -25,6 +25,11 @@ public class AttributeDesignerDialog extends Dialog {
 		this.connection = connection;
 	}
 	
+	protected void configureShell(Shell shell) {
+	      super.configureShell(shell);
+	      shell.setText("Non-Scalar Attribute Designer");
+	}
+	
 	protected Point getInitialSize() {
 		return new Point(400, 300);
 	}

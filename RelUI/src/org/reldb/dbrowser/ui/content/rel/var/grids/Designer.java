@@ -26,6 +26,7 @@ import org.eclipse.nebula.widgets.nattable.layer.cell.IConfigLabelAccumulator;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.nebula.widgets.nattable.painter.cell.CheckBoxPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.ComboBoxPainter;
+import org.eclipse.nebula.widgets.nattable.painter.cell.ImagePainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.LineBorderDecorator;
 import org.eclipse.nebula.widgets.nattable.selection.ITraversalStrategy;
@@ -162,6 +163,14 @@ public abstract class Designer extends Grid {
 					DisplayMode.EDIT, 
 					columnLabel);
 			
+			// Button displayed if editable
+			ImagePainter imagePainter = new ImagePainter(GUIHelper.getImage("preferences"));
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_PAINTER,
+	                imagePainter,
+	                DisplayMode.NORMAL,
+	                "nonscalareditor");
+
 			// Custom dialog box
 	        configRegistry.registerConfigAttribute(
 	                EditConfigAttributes.CELL_EDITOR,
@@ -431,6 +440,8 @@ public abstract class Designer extends Grid {
 			@Override
 			public void accumulateConfigLabels(LabelStack configLabels, int columnPosition, int rowPosition) {
 				configLabels.addLabel("column" + columnPosition);
+				if (dataProvider.isEditableNonscalarDefinition(rowPosition) && columnPosition == 2)
+					configLabels.addLabel("nonscalareditor");
 			}
         }
         
