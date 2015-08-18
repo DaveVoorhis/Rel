@@ -3,6 +3,10 @@ package org.reldb.dbrowser.ui.content.rel.var.grids;
 import org.reldb.rel.client.Tuple;
 
 class Attribute {
+	private static final int NAME_COLUMN = 0;
+	private static final int TYPE_COLUMN = 1;
+	private static final int HEADING_COLUMN = 2;
+	
 	private String oldName;
 	private String oldTypeName;
 	private String oldHeading;
@@ -12,9 +16,9 @@ class Attribute {
 	private String newHeading;
 	
 	Attribute(Tuple tuple) {
-		oldName = tuple.get(0).toString();
-		oldTypeName = tuple.get(1).toString();
-		oldHeading = tuple.get(2).toString();
+		oldName = tuple.get(NAME_COLUMN).toString();
+		oldTypeName = tuple.get(TYPE_COLUMN).toString();
+		oldHeading = tuple.get(HEADING_COLUMN).toString();
 		newName = null;
 		newTypeName = null;
 		newHeading = null;
@@ -41,8 +45,8 @@ class Attribute {
 		if (newValue == null)
 			return;
 		switch (column) {
-		case 0: newName = newValue.toString(); break; 
-		case 1: 
+		case NAME_COLUMN: newName = newValue.toString(); break; 
+		case TYPE_COLUMN: 
 			if (newTypeName != null && newTypeName.equals(newValue.toString()))
 				return;
 			newTypeName = newValue.toString();
@@ -73,15 +77,17 @@ class Attribute {
 	}
 
 	boolean isFilled() {
-		return (getColumnValue(0) != null && getColumnValue(0).toString().length() > 0 && 
-				getColumnValue(1) != null && getColumnValue(1).toString().length() > 0);
+		Object name = getColumnValue(NAME_COLUMN);
+		Object type = getColumnValue(TYPE_COLUMN);
+		return (name != null && name.toString().trim().length() > 0 && 
+				type != null && type.toString().trim().length() > 0);
 	}
 	
 	// Convert this into a TypeInfo literal
 	public String getTypeInfoLiteral() {
 		if (isEditableNonscalarDefinition())
-			return "TUPLE {AttrName '" + getColumnValue(0) + "', AttrType " + getColumnValue(2) + "}";
+			return "TUPLE {AttrName '" + getColumnValue(NAME_COLUMN) + "', AttrType " + getColumnValue(HEADING_COLUMN) + "}";
 		else
-			return "TUPLE {AttrName '" + getColumnValue(0) + "', AttrType Scalar('" + getColumnValue(1) + "')}";
+			return "TUPLE {AttrName '" + getColumnValue(NAME_COLUMN) + "', AttrType Scalar('" + getColumnValue(TYPE_COLUMN) + "')}";
 	}
 }
