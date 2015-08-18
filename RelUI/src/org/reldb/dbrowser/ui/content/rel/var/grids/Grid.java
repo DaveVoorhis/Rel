@@ -12,7 +12,7 @@ public class Grid {
 	
 	protected boolean askDeleteConfirm = true;
 	
-	protected Vector<HashSet<String>> keys = new Vector<HashSet<String>>();
+	protected Vector<HashSet<String>> keys = null;
 	
 	protected Composite parent;
 	protected DbConnection connection;
@@ -25,9 +25,7 @@ public class Grid {
 	}
 	
 	protected void obtainKeyDefinitions() {
-		keys.clear();
-		if (relvarName == null)
-			return;
+		keys = new Vector<HashSet<String>>();
 		Tuples keyDefinitions = (Tuples)connection.evaluate("((sys.Catalog WHERE Name = '" + relvarName + "') {Keys}) UNGROUP Keys");
 		for (Tuple keyDefinition: keyDefinitions) {
 			Tuples keyAttributes = (Tuples)(keyDefinition.get("Attributes"));

@@ -952,7 +952,8 @@ public class RelvarEditor extends Grid {
 				askDeleteConfirm = deleteConfirmDialog.getAskDeleteConfirm();
 				doDeleteSelected();
 			}
-		}
+		} else
+			doDeleteSelected();
 	}
 
 }

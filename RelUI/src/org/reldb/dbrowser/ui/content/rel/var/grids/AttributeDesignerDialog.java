@@ -12,7 +12,7 @@ import org.reldb.dbrowser.ui.DbConnection;
 public class AttributeDesignerDialog extends Dialog {
 
 	private DbConnection connection;
-	private String attributeDefinition;
+	private String headingDefinition;
 	private AttributeDesigner attributeDesigner;
 	
 	/**
@@ -27,7 +27,7 @@ public class AttributeDesignerDialog extends Dialog {
 	
 	protected void configureShell(Shell shell) {
 	      super.configureShell(shell);
-	      shell.setText("Non-Scalar Attribute Designer");
+	      shell.setText("Heading Designer");
 	}
 	
 	protected Point getInitialSize() {
@@ -48,7 +48,7 @@ public class AttributeDesignerDialog extends Dialog {
 		container.setLayout(new FillLayout());
 
 		attributeDesigner = new AttributeDesigner(container, connection);
-		attributeDesigner.setAttributeDefinition(getAttributeDefinition());
+		attributeDesigner.setHeadingDefinition(getHeadingDefinition());
 		
 		container.pack();
 		
@@ -60,7 +60,7 @@ public class AttributeDesignerDialog extends Dialog {
 	}
 	
 	protected void okPressed() {
-		attributeDefinition = attributeDesigner.getAttributeDefinition();
+		headingDefinition = attributeDesigner.getHeadingDefinition();
 		super.okPressed();
 	}
 	
@@ -74,11 +74,11 @@ public class AttributeDesignerDialog extends Dialog {
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, true);
 	}
 
-	public String getAttributeDefinition() {
-		return attributeDefinition;
+	public String getHeadingDefinition() {
+		return headingDefinition;
 	}
 
-	public void setAttributeDefinition(String attributeDefinition) {
-		this.attributeDefinition = attributeDefinition;
+	public void setHeadingDefinition(String headingDefinition) {
+		this.headingDefinition = headingDefinition;
 	}
 }

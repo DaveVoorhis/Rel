@@ -5,7 +5,7 @@ import org.reldb.dbrowser.ui.DbConnection;
 
 public class AttributeDesigner extends Designer {
 	
-	private String attributeDefinition;
+	private String headingDefinition;
 	
 	// Relvar attribute designer
 	public AttributeDesigner(Composite parent, DbConnection connection) {
@@ -18,19 +18,17 @@ public class AttributeDesigner extends Designer {
 	}
 
 	protected String getAttributeSource() {
-		return getAttributeDefinition();
-	}
-	
-	protected void obtainKeyDefinitions() {
-		keys = null;
+		return headingDefinition;
 	}
 
-	public String getAttributeDefinition() {
-		return attributeDefinition;
+	public String getHeadingDefinition() {
+		headingDefinition = dataProvider.getTypeInfoLiteral();
+		return headingDefinition;
 	}
 
-	public void setAttributeDefinition(String attributeDefinition) {
-		this.attributeDefinition = attributeDefinition;
+	public void setHeadingDefinition(String headingDefinition) {
+		this.headingDefinition = headingDefinition;
 		init();
 	}
+	
 }

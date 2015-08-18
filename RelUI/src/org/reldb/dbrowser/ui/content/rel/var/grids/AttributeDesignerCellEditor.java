@@ -16,12 +16,12 @@ public class AttributeDesignerCellEditor extends AbstractDialogCellEditor {
     @Override
     public int open() {
     	if (Window.OK == getDialogInstance().open()) {
-            this.dialogIsClosed = true;
-            return Window.CANCEL;
-        } else {
             commit(MoveDirectionEnum.NONE);
             this.dialogIsClosed = true;
             return Window.OK;
+        } else {
+            this.dialogIsClosed = true;
+            return Window.CANCEL;
         }
     }
 
@@ -33,17 +33,20 @@ public class AttributeDesignerCellEditor extends AbstractDialogCellEditor {
 
     @Override
     public AttributeDesignerDialog getDialogInstance() {
-        return (AttributeDesignerDialog)dialog;
+        return (AttributeDesignerDialog) dialog;
     }
 
     @Override
     public Object getEditorValue() {
-    	return getDialogInstance().getAttributeDefinition();
+    	String newHeading = getDialogInstance().getHeadingDefinition();
+    	System.out.println("AttributeDesignerCellEditor: get heading " + newHeading);
+    	return newHeading;
     }
 
     @Override
     public void setEditorValue(Object value) {
-    	getDialogInstance().setAttributeDefinition(value.toString());
+    	System.out.println("AttributeDesignerCellEditor: set heading " + value.toString());
+    	getDialogInstance().setHeadingDefinition(value.toString());
     }
 
     @Override

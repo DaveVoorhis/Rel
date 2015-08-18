@@ -46,9 +46,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.ui.DbConnection;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
-import org.reldb.rel.client.Value;
 
 public abstract class Designer extends Grid {
 
@@ -164,7 +164,7 @@ public abstract class Designer extends Grid {
 					columnLabel);
 			
 			// Button displayed if editable
-			ImagePainter imagePainter = new ImagePainter(GUIHelper.getImage("preferences"));
+			ImagePainter imagePainter = new ImagePainter(IconLoader.loadIcon("item_design"));
 	        configRegistry.registerConfigAttribute(
 	                CellConfigAttributes.CELL_PAINTER,
 	                imagePainter,
@@ -199,7 +199,7 @@ public abstract class Designer extends Grid {
 			switch (columnIndex) {
 			case 0: return "Name";
 			case 1: return "Type";
-			case 2: return "Definition";
+			case 2: return "Heading";
 			default: return (columnIndex == getColumnCount() - 1 && columnIndex > 3) ? "New Key" : "Key " + (columnIndex - 2);
 			}
 		}
@@ -211,7 +211,7 @@ public abstract class Designer extends Grid {
 
 		@Override
 		public int getColumnCount() {
-			return 3 + ((keys != null) ? keys.size() : 0);
+			return dataProvider.getLastColumnIndex() + 1;
 		}
 
 		@Override
@@ -220,120 +220,58 @@ public abstract class Designer extends Grid {
 		}
     };
 	
-	class Attribute {
-		private String oldName;
-		private String oldTypeName;
-		private Value oldType;
-
-		private String newName;
-		private String newTypeName;
-		private String newDefinition;
-		
-		Attribute(Tuple tuple) {
-			oldName = tuple.get(0).toString();
-			oldTypeName = tuple.get(1).toString();
-			oldType = tuple.get(2);
-			reset();
+	protected Vector<Attribute> getData() {
+		Vector<Attribute> data = new Vector<Attribute>();
+		Tuples tuples = obtainAttributes();
+		if (tuples != null) {
+    		Iterator<Tuple> iterator = tuples.iterator();
+    		while (iterator.hasNext())
+    			data.add(new Attribute(iterator.next()));
 		}
-		
-		Attribute() {
-			oldName = null;
-			oldTypeName = null;
-			oldType = null;
-			reset();
-		}
-		
-		Object getColumnValue(int column) {
-			switch (column) {
-			case 0: return (newName != null) ? newName : oldName;
-			case 1: return (newTypeName != null) ? newTypeName : oldTypeName;
-			default: return isEditableNonscalarDefinition() ? ((newDefinition != null) ? newDefinition : oldType) : "";
-			}
-		}
-		
-		void setColumnValue(int column, Object newValue) {
-			if (newValue == null)
-				return;
-			switch (column) {
-			case 0: newName = newValue.toString(); break; 
-			case 1: 
-				if (newTypeName != null && newTypeName.equals(newValue.toString()))
-					return;
-				newTypeName = newValue.toString();
-				newDefinition = "";
-				break;
-			default: newDefinition = newValue.toString();
-			}
-		}
-		
-		String getName() {
-			if (newName == null) {
-				if (oldName == null)
-					return "";
-				return oldName;
-			}
-			return newName;
-		}
-		
-		private void reset() {
-			newName = null;
-			newTypeName = null;
-			newDefinition = null;
-		}
-		
-		boolean isEditableNonscalarDefinition() {
-			Object typeName = getColumnValue(1);
-			if (typeName == null)
-				return false;
-			return isFilled() && isNonScalar(typeName.toString());
-		}
-
-		boolean isFilled() {
-			return (getColumnValue(0) != null && getColumnValue(0).toString().length() > 0 && 
-					getColumnValue(1) != null && getColumnValue(1).toString().length() > 0);
-		}
+		data.add(new Attribute());
+		return data;
 	}
-
-    class DataProvider implements IDataProvider {
+    
+	class DataProvider implements IDataProvider {
     	
-    	private Vector<Attribute> cache = new Vector<Attribute>();
+    	private Vector<Attribute> data;
     	private int lastColumnIndex = 0;
+    	
+    	private int getLastColumnIndex() {
+    		return 3 + ((keys != null) ? keys.size() : 0) - 1;
+    	}
     	
     	public DataProvider() {
     		reload();
-    		lastColumnIndex = 3 + ((keys != null) ? keys.size() : 0) - 1;
+    		lastColumnIndex = getLastColumnIndex();
     	}
 
 		public void reload() {
-			cache.clear();
-			Tuples tuples = obtainAttributes();
-    		Iterator<Tuple> iterator = tuples.iterator();
-    		while (iterator.hasNext())
-    			cache.add(new Attribute(iterator.next()));
-    		cache.add(new Attribute());			
+			data = getData();
 		}
     	
 		@Override
 		public Object getDataValue(int columnIndex, int rowIndex) {
 			if (columnIndex < 3)
-				return cache.get(rowIndex).getColumnValue(columnIndex);
+				return data.get(rowIndex).getColumnValue(columnIndex);
 			else
-				return keys.get(columnIndex - 3).contains(cache.get(rowIndex).getName());
+				return keys.get(columnIndex - 3).contains(data.get(rowIndex).getName());
 		}
 		
 		@Override
 		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
-			Attribute attribute = cache.get(rowIndex);
+			Attribute attribute = data.get(rowIndex);
 			if (columnIndex < 3) {
 				if (newValue == null || newValue.toString().length() == 0)
 					return;
 				if (columnIndex == 0) {
-					for (HashSet<String> key: keys) {
-						if (key.contains(attribute.getName())) {
-							key.remove(attribute.getName());
-							key.add(newValue.toString());
+					if (keys != null)
+						for (HashSet<String> key: keys) {
+							if (key.contains(attribute.getName())) {
+								key.remove(attribute.getName());
+								key.add(newValue.toString());
+							}
 						}
-					}
 				}
 				attribute.setColumnValue(columnIndex, newValue);
 			} else {
@@ -358,9 +296,9 @@ public abstract class Designer extends Grid {
 				table.configure();
 				table.refresh();
 			}
-			int lastRowIndex = cache.size() - 1;
-			if (rowIndex == lastRowIndex && cache.get(lastRowIndex).isFilled()) {
-				cache.add(new Attribute());
+			int lastRowIndex = data.size() - 1;
+			if (rowIndex == lastRowIndex && data.get(lastRowIndex).isFilled()) {
+				data.add(new Attribute());
 				table.redraw();
 			}
 		}
@@ -372,11 +310,11 @@ public abstract class Designer extends Grid {
 
 		@Override
 		public int getRowCount() {
-			return cache.size();
+			return data.size();
 		}
 
 		public boolean isEditableNonscalarDefinition(int rowIndex) {
-			return cache.get(rowIndex).isEditableNonscalarDefinition();
+			return data.get(rowIndex).isEditableNonscalarDefinition();
 		}
 		
 		public int getKeyAttributeCount(int keyColumn) {
@@ -390,12 +328,12 @@ public abstract class Designer extends Grid {
 					deleteMe.add(n);
 			Vector<Attribute> newCache = new Vector<Attribute>();
 			int index = 0;
-			for (Attribute attribute: cache) {
-				if (deleteMe.contains(index))
+			for (Attribute attribute: data) {
+				if (deleteMe.contains(index)) {
 					if (keys != null)
 						for (HashSet<String> key: keys)
 							key.remove(attribute.getName());
-				else
+				} else
 					newCache.add(attribute);
 				index++;
 			}
@@ -408,16 +346,21 @@ public abstract class Designer extends Grid {
 				keys.addAll(newKeys);
 				// Blank key definition allows user to add keys
 				keys.add(new HashSet<String>());
+	    		lastColumnIndex = getLastColumnIndex();
 			}
-    		lastColumnIndex = 3 + ((keys != null) ? keys.size() : 0) - 1;
-			cache = newCache;
+			data = newCache;
 			table.refresh();
 		}
-    };
 
-	private boolean isNonScalar(String type) {
-		return type.equals("RELATION") || type.equals("TUPLE") || type.equals("ARRAY");	
-	}
+		// Convert this into a TypeInfo literal 
+		public String getTypeInfoLiteral() {
+			String body = "";
+			for (Attribute attribute: data)
+				if (attribute.isFilled())
+					body += ((body.length() > 0) ? "," : "") + "\n\t" + attribute.getTypeInfoLiteral();
+			return "NonScalar('RELATION', RELATION {" + body + "})";
+		}
+    };
 
 	public abstract void refresh();
 	
@@ -494,7 +437,8 @@ public abstract class Designer extends Grid {
 				askDeleteConfirm = deleteConfirmDialog.getAskDeleteConfirm();
 				doDeleteSelected();
 			}
-		}
+		} else
+			doDeleteSelected();
 	}
 	
 	public Control getControl() {
@@ -516,6 +460,8 @@ public abstract class Designer extends Grid {
 	
 	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
 	protected Tuples obtainAttributes() {
+		if (getAttributeSource().length() == 0)
+			return null;
 		return connection.getTuples(
 				"EXTEND THE_Attributes(" + getAttributeSource() + "): " +
 				"{AttrTypeName := " +
