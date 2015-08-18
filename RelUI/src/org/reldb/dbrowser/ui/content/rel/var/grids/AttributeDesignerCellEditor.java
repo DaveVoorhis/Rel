@@ -38,14 +38,11 @@ public class AttributeDesignerCellEditor extends AbstractDialogCellEditor {
 
     @Override
     public Object getEditorValue() {
-    	String newHeading = getDialogInstance().getHeadingDefinition();
-    	System.out.println("AttributeDesignerCellEditor: get heading " + newHeading);
-    	return newHeading;
+    	return getDialogInstance().getHeadingDefinition();
     }
 
     @Override
     public void setEditorValue(Object value) {
-    	System.out.println("AttributeDesignerCellEditor: set heading " + value.toString());
     	getDialogInstance().setHeadingDefinition(value.toString());
     }
 

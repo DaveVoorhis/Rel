@@ -219,23 +219,12 @@ public abstract class Designer extends Grid {
 			return 1;
 		}
     };
-	
-	protected Vector<Attribute> getData() {
-		Vector<Attribute> data = new Vector<Attribute>();
-		Tuples tuples = obtainAttributes();
-		if (tuples != null) {
-    		Iterator<Tuple> iterator = tuples.iterator();
-    		while (iterator.hasNext())
-    			data.add(new Attribute(iterator.next()));
-		}
-		data.add(new Attribute());
-		return data;
-	}
     
 	class DataProvider implements IDataProvider {
     	
     	private Vector<Attribute> data;
     	private int lastColumnIndex = 0;
+    	private String kind;
     	
     	private int getLastColumnIndex() {
     		return 3 + ((keys != null) ? keys.size() : 0) - 1;
@@ -247,7 +236,15 @@ public abstract class Designer extends Grid {
     	}
 
 		public void reload() {
-			data = getData();
+			kind = obtainKind();
+			data = new Vector<Attribute>();
+			Tuples tuples = obtainAttributes();
+			if (tuples != null) {
+	    		Iterator<Tuple> iterator = tuples.iterator();
+	    		while (iterator.hasNext())
+	    			data.add(new Attribute(iterator.next()));
+			}
+			data.add(new Attribute());
 		}
     	
 		@Override
@@ -358,7 +355,7 @@ public abstract class Designer extends Grid {
 			for (Attribute attribute: data)
 				if (attribute.isFilled())
 					body += ((body.length() > 0) ? "," : "") + "\n\t" + attribute.getTypeInfoLiteral();
-			return "NonScalar('RELATION', RELATION {" + body + "})";
+			return "NonScalar('" + kind + "', RELATION {" + body + "})";
 		}
     };
 
@@ -471,6 +468,10 @@ public abstract class Designer extends Grid {
 				"		THE_Kind(TREAT_AS_NonScalar(AttrType)) " + 
 				"	END IF} " +
 				"{AttrName, AttrTypeName, AttrType}");
+	}
+	
+	protected String obtainKind() {
+		return connection.evaluate("THE_Kind(" + getAttributeSource() + ")").toString();
 	}
 
 }
