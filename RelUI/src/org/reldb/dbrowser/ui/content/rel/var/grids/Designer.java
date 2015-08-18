@@ -59,6 +59,8 @@ public abstract class Designer extends Grid {
 	private DefaultGridLayer gridLayer;
 	private EditorConfiguration editorConfiguration;
 
+	private Vector<String> changeLog = new Vector<String>();
+	
 	class EditorConfiguration extends AbstractRegistryConfiguration {
 		private IConfigRegistry registry;
 		
@@ -257,16 +259,30 @@ public abstract class Designer extends Grid {
 		
 		@Override
 		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
+			boolean keyChange = false;
 			Attribute attribute = data.get(rowIndex);
 			if (columnIndex < 3) {
 				if (newValue == null || newValue.toString().length() == 0)
 					return;
+				switch (columnIndex) {
+				case 0:
+					logChange("RENAME " + attribute.getName() + " TO " + newValue.toString()); break;
+				case 1:
+					logChange("TYPE_OF " + attribute.getName() + " TO " +
+						(attribute.isEditableNonscalarDefinition() 
+								? " " + getHeadingDefinition(attribute.getColumnValue(2).toString()) 
+								: newValue.toString())); break;
+				case 2:
+					logChange("TYPE_OF " + attribute.getName() + " TO " + 
+							getHeadingDefinition(attribute.getColumnValue(2).toString())); break;
+				}
 				if (columnIndex == 0) {
 					if (keys != null)
 						for (HashSet<String> key: keys) {
 							if (key.contains(attribute.getName())) {
 								key.remove(attribute.getName());
 								key.add(newValue.toString());
+								keyChange = true;
 							}
 						}
 				}
@@ -280,6 +296,7 @@ public abstract class Designer extends Grid {
 					keys.get(columnIndex - 3).remove(attribute.getName());
 				else
 					keys.get(columnIndex - 3).add(attribute.getName());
+				keyChange = true;
 			}
 			if (columnIndex >= lastColumnIndex && newValue != null && newValue.equals("true")) {
 				keys.add(new HashSet<String>());
@@ -292,11 +309,25 @@ public abstract class Designer extends Grid {
 				lastColumnIndex--;
 				table.configure();
 				table.refresh();
+				if (columnIndex != lastColumnIndex)
+					keyChange = true;
 			}
 			int lastRowIndex = data.size() - 1;
 			if (rowIndex == lastRowIndex && data.get(lastRowIndex).isFilled()) {
 				data.add(new Attribute());
 				table.redraw();
+			}
+			if (keyChange) {
+				String keysDef = "";
+				for (int keyIndex = 0; keyIndex < keys.size() - 1; keyIndex++) {
+					HashSet<String> key = keys.get(keyIndex);
+					String keyDef = "";
+					for (String keyAttribute: key) {
+						keyDef += ((keyDef.length() > 0) ? ", " : "") + keyAttribute;
+					}
+					keysDef += ((keysDef.length() > 0) ? " " : "") + "KEY {" + keyDef + "}";
+				}
+				logChange(keysDef);
 			}
 		}
 
@@ -360,7 +391,15 @@ public abstract class Designer extends Grid {
     };
 
 	public abstract void refresh();
-	
+
+	public void logChange(String action) {
+		if (relvarName == null)
+			return;
+		String command = "ALTER " + relvarName + " " + action;
+		System.out.println("Designer: " + command);
+		changeLog.add(command);
+	}
+
 	// Relvar designer
 	public Designer(Composite parent, DbConnection connection, String relvarName) {
 		super(parent, connection, relvarName);
@@ -456,11 +495,9 @@ public abstract class Designer extends Grid {
 	protected abstract String getAttributeSource();
 	
 	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
-	protected Tuples obtainAttributes() {
-		if (getAttributeSource().length() == 0)
-			return null;
+	private Tuples obtainAttributesFor(String typeInfo) {
 		return connection.getTuples(
-				"EXTEND THE_Attributes(" + getAttributeSource() + "): " +
+				"EXTEND THE_Attributes(" + typeInfo + "): " +
 				"{AttrTypeName := " +
 				"	IF IS_Scalar(AttrType) THEN " +
 				"		THE_TypeName(TREAT_AS_Scalar(AttrType)) " + 
@@ -470,8 +507,39 @@ public abstract class Designer extends Grid {
 				"{AttrName, AttrTypeName, AttrType}");
 	}
 	
+	private String obtainKindFor(String typeInfo) {
+		return connection.evaluate("THE_Kind(" + typeInfo + ")").toString();		
+	}
+	
+	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
+	protected Tuples obtainAttributes() {
+		if (getAttributeSource().length() == 0)
+			return null;
+		return obtainAttributesFor(getAttributeSource());
+	}
+	
 	protected String obtainKind() {
-		return connection.evaluate("THE_Kind(" + getAttributeSource() + ")").toString();
+		if (getAttributeSource().length() == 0)
+			return null;
+		return obtainKindFor(getAttributeSource());
+	}
+	
+	public String getHeadingDefinition(String typeInfo) {
+		String kind = obtainKindFor(typeInfo);
+		Tuples tuples = obtainAttributesFor(typeInfo);
+		String body = "";
+		for (Tuple tuple: tuples) {
+			String attrName = tuple.get(0).toString();
+			String type = tuple.get(1).toString();
+			if (type.equals("RELATION") || type.equals("TUPLE") || type.equals("ARRAY"))
+				type = getHeadingDefinition(tuple.get(2).toString());
+			body += ((body.length() > 0) ? ", " : "") + attrName + " " + type; 
+		}
+		return kind + " {" + body + "}";
 	}
 
+	public Vector<String> getRelChangelog() {
+		return changeLog;
+	}
+	
 }
