@@ -30,7 +30,11 @@ public class RelvarDesignerComposite extends Composite {
 
 		Composite designerSurround = new Composite(sashForm, SWT.BORDER);
 		designerSurround.setLayout(new FillLayout(SWT.HORIZONTAL));
-		relvarDesigner = new RelvarDesigner(designerSurround, connection, relvarName);
+		relvarDesigner = new RelvarDesigner(designerSurround, connection, relvarName) {
+			protected void changedDefinition() {
+				textActions.setText(relvarDesigner.getRelDefinition());				
+			}
+		};
 		
 		Composite outputPanel = new Composite(sashForm, SWT.BORDER);
 		outputPanel.setLayout(new FormLayout());
@@ -44,12 +48,10 @@ public class RelvarDesignerComposite extends Composite {
 		btnApply.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				textActions.setText(relvarDesigner.getRelDefinition());
 			}
 		});
 		
-		textActions = new Text(outputPanel, SWT.BORDER);
-		textActions.setEditable(false);
+		textActions = new Text(outputPanel, SWT.H_SCROLL | SWT.V_SCROLL);
 		FormData fd_textActions = new FormData();
 		fd_textActions.top = new FormAttachment(0, 10);
 		fd_textActions.left = new FormAttachment(0, 10);
@@ -62,9 +64,5 @@ public class RelvarDesignerComposite extends Composite {
 
 	public RelvarDesigner getRelvarDesigner() {
 		return relvarDesigner;
-	}
-
-	@Override
-	protected void checkSubclass() {
 	}
 }

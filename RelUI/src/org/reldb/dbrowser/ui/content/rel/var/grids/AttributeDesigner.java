@@ -12,10 +12,6 @@ public class AttributeDesigner extends Designer {
 		super(parent, connection, null);
 		askDeleteConfirm = false;
 	}
-	
-	public void refresh() {
-    	table.refresh();		
-	}
 
 	protected String getAttributeSource() {
 		return headingDefinition;

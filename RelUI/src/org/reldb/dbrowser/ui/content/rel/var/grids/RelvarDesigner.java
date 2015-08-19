@@ -23,7 +23,7 @@ public class RelvarDesigner extends Designer {
 	public void refresh() {
 		syncFromDatabase();
     	dataProvider.reload();
-    	table.refresh();		
+    	super.refresh();
 	}
 	
 	protected String getAttributeSource() {

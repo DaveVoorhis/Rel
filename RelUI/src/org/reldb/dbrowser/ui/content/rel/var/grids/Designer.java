@@ -203,7 +203,7 @@ public abstract class Designer extends Grid {
 			case Attribute.HEADING_COLUMN: return "Heading";
 			default: return (columnIndex == getColumnCount() - 1 && columnIndex > Attribute.COLUMN_COUNT) 
 						? "New Key" 
-						: "Key " + (columnIndex - Attribute.COLUMN_COUNT - 1);
+						: "Key " + (columnIndex - (Attribute.COLUMN_COUNT - 1));
 			}
 		}
 		
@@ -223,6 +223,9 @@ public abstract class Designer extends Grid {
 		}
     };
     
+    /** Override to be notified when the relvar definition has (probably) changed. */
+    protected void changedDefinition() {}
+    
 	class DataProvider implements IDataProvider {
     	
     	private Vector<Attribute> data;
@@ -236,6 +239,36 @@ public abstract class Designer extends Grid {
     	public DataProvider() {
     		reload();
     		lastColumnIndex = getLastColumnIndex();
+    	}
+    	
+    	private String getKindFor(String typeInfo) {
+    		return connection.evaluate("THE_Kind(" + typeInfo + ")").toString();		
+    	}
+    	
+    	private String getKind() {
+    		if (getAttributeSource().length() == 0)
+    			return null;
+    		return getKindFor(getAttributeSource());
+    	}
+    	
+    	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
+    	private Tuples getAttributesFor(String typeInfo) {
+    		return connection.getTuples(
+    				"EXTEND THE_Attributes(" + typeInfo + "): " +
+    				"{AttrTypeName := " +
+    				"	IF IS_Scalar(AttrType) THEN " +
+    				"		THE_TypeName(TREAT_AS_Scalar(AttrType)) " + 
+    				"	ELSE " +
+    				"		THE_Kind(TREAT_AS_NonScalar(AttrType)) " + 
+    				"	END IF} " +
+    				"{AttrName, AttrTypeName, AttrType}");
+    	}
+    	
+    	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
+    	private Tuples getAttributes() {
+    		if (getAttributeSource().length() == 0)
+    			return null;
+    		return getAttributesFor(getAttributeSource());
     	}
 
 		public void reload() {
@@ -301,6 +334,7 @@ public abstract class Designer extends Grid {
 				data.add(new Attribute());
 				table.redraw();
 			}
+			changedDefinition();
 		}
 		
 		@Override
@@ -350,6 +384,7 @@ public abstract class Designer extends Grid {
 			}
 			data = newCache;
 			table.refresh();
+			changedDefinition();
 		}
 
 		// Convert this into a TypeInfo literal 
@@ -361,7 +396,7 @@ public abstract class Designer extends Grid {
 			return "NonScalar('" + kind + "', RELATION {" + body + "})";
 		}
 
-		private String getRelKeysDefinition() {
+		private String getRelKeysDefinition(Vector<HashSet<String>> keys) {
 			String keysDef = "";
 			if (keys.size() == 1)
 				keysDef = "KEY {}";
@@ -377,17 +412,35 @@ public abstract class Designer extends Grid {
 			return keysDef;
 		}
 		
+		private String getRelKeysDefinition() {
+			return getRelKeysDefinition(keys);
+		}
+		
+		private String getHeadingDefinition(String typeInfo) {
+			String kind = getKindFor(typeInfo);
+			Tuples tuples = getAttributesFor(typeInfo);
+			String body = "";
+			for (Tuple tuple: tuples) {
+				String attrName = tuple.get(Attribute.NAME_COLUMN).toString();
+				String type = tuple.get(Attribute.TYPE_COLUMN).toString();
+				if (Attribute.isNonScalar(type))
+					type = getHeadingDefinition(tuple.get(Attribute.HEADING_COLUMN).toString());
+				body += ((body.length() > 0) ? ", " : "") + attrName + " " + type; 
+			}
+			return kind + " {" + body + "}";
+		}
+		
 		private String getRelHeadingDefinition(Attribute a) {
 			return getHeadingDefinition(a.getNewColumnValue(Attribute.HEADING_COLUMN));
 		}
 		
 		private String getRelAlterClause(Attribute a) {
 			if (a.isNameChange() && a.isHeadingChange()) {
-				return "REPLACE " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " WITH " + 
-						a.getName() + " " + getRelHeadingDefinition(a);			
+				return "DROP " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + "\n\t" + 
+						"INSERT " + a.getName() + " " + getRelHeadingDefinition(a);			
 			} else if (a.isNameChange() && a.isTypeNameChange() && !a.isHeadingChange()) {
-				return "REPLACE " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " WITH " + 
-						a.getName() + " " + a.getNewColumnValue(Attribute.TYPE_COLUMN);			
+				return "DROP " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + "\n\t" + 
+						"INSERT " + a.getName() + " " + a.getNewColumnValue(Attribute.TYPE_COLUMN);			
 			} else if (a.isNameChange() && !a.isTypeNameChange() && !a.isHeadingChange()) {
 				return "RENAME " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " TO " + a.getName();
 			} else if (!a.isNameChange() && a.isHeadingChange()) {
@@ -399,13 +452,14 @@ public abstract class Designer extends Grid {
 		}
 
 		private String getRelAddClause(Attribute a) {
-			return "ADD " + a.getName() + " " + 
+			return "INSERT " + a.getName() + " " + 
 				(a.isEditableNonscalarDefinition() 
 					? getRelHeadingDefinition(a) 
 					: a.getColumnValue(Attribute.TYPE_COLUMN));	
 		}
 
 		public String getRelDefinition() {
+			// attributes
 			Tuples existingDefinitionTuples = getAttributes();
 			HashMap<String, Attribute> existingDefinition = new HashMap<String, Attribute>();
 			if (existingDefinitionTuples != null) {
@@ -430,13 +484,28 @@ public abstract class Designer extends Grid {
 			}
 			for (String attributeName: existingDefinition.keySet())
 				body += ((body.length() > 0) ? "\n" : "") + "\t" + "DROP " + attributeName;
+			// keys
+			Vector<HashSet<String>> existingKeyDefinitions = getKeyDefinitions();
+			HashSet<HashSet<String>> existingKeys = new HashSet<HashSet<String>>();
+			if (existingKeyDefinitions != null) {
+				existingKeys.addAll(existingKeyDefinitions);
+				existingKeys.add(new HashSet<String>());
+			}
+			HashSet<HashSet<String>> newKeys = new HashSet<HashSet<String>>();
+			newKeys.addAll(keys);
+			if (!existingKeys.equals(newKeys))
+				body += ((body.length() > 0) ? "\n" : "") + "\t" + getRelKeysDefinition();
+			// produce output
 			if (body.length() == 0)
 				return "";
 			return "ALTER " + relvarName + "\n" + body + ";";
 		}
     };
 
-	public abstract void refresh();
+	public void refresh() {
+    	table.refresh();	
+		changedDefinition();
+	}
 
 	// Relvar designer
 	public Designer(Composite parent, DbConnection connection, String relvarName) {
@@ -531,50 +600,6 @@ public abstract class Designer extends Grid {
 	}
 	
 	protected abstract String getAttributeSource();
-	
-	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
-	private Tuples getAttributesFor(String typeInfo) {
-		return connection.getTuples(
-				"EXTEND THE_Attributes(" + typeInfo + "): " +
-				"{AttrTypeName := " +
-				"	IF IS_Scalar(AttrType) THEN " +
-				"		THE_TypeName(TREAT_AS_Scalar(AttrType)) " + 
-				"	ELSE " +
-				"		THE_Kind(TREAT_AS_NonScalar(AttrType)) " + 
-				"	END IF} " +
-				"{AttrName, AttrTypeName, AttrType}");
-	}
-	
-	private String getKindFor(String typeInfo) {
-		return connection.evaluate("THE_Kind(" + typeInfo + ")").toString();		
-	}
-	
-	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
-	protected Tuples getAttributes() {
-		if (getAttributeSource().length() == 0)
-			return null;
-		return getAttributesFor(getAttributeSource());
-	}
-	
-	protected String getKind() {
-		if (getAttributeSource().length() == 0)
-			return null;
-		return getKindFor(getAttributeSource());
-	}
-	
-	public String getHeadingDefinition(String typeInfo) {
-		String kind = getKindFor(typeInfo);
-		Tuples tuples = getAttributesFor(typeInfo);
-		String body = "";
-		for (Tuple tuple: tuples) {
-			String attrName = tuple.get(Attribute.NAME_COLUMN).toString();
-			String type = tuple.get(Attribute.TYPE_COLUMN).toString();
-			if (Attribute.isNonScalar(type))
-				type = getHeadingDefinition(tuple.get(Attribute.HEADING_COLUMN).toString());
-			body += ((body.length() > 0) ? ", " : "") + attrName + " " + type; 
-		}
-		return kind + " {" + body + "}";
-	}
 	
 	public String getRelDefinition() {
 		return dataProvider.getRelDefinition();

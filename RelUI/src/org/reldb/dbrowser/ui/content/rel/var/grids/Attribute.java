@@ -67,7 +67,12 @@ class Attribute {
 			if (newTypeName != null && newTypeName.equals(newValue.toString()))
 				return;
 			newTypeName = newValue.toString();
-			newHeading = null;
+			if (newTypeName.equals("RELATION"))
+				newHeading = "NonScalar('RELATION', RELATION {AttrName CHAR, AttrType TypeInfo} {})";
+			else if (newTypeName.equals("TUPLE"))
+				newHeading = "NonScalar('TUPLE', RELATION {AttrName CHAR, AttrType TypeInfo} {})";
+			else
+				newHeading = null;
 			break;
 		default: newHeading = (newValue != null) ? newValue.toString() : null;
 		}
