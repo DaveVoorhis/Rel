@@ -115,38 +115,21 @@ class Attribute {
 	}
 
 	private boolean isChange(int column) {
-		return getOriginalColumnValue(column) != null && !getOriginalColumnValue(column).equals(getNewColumnValue(column));		
+		return getOriginalColumnValue(column) != null
+				&& getNewColumnValue(column) != null
+				&& !getOriginalColumnValue(column).equals(getNewColumnValue(column));		
 	}
 	
-	private boolean isNameChange() {
+	boolean isNameChange() {
 		return isChange(NAME_COLUMN);
 	}
 	
-	private boolean isTypeNameChange() {
+	boolean isTypeNameChange() {
 		return isChange(TYPE_COLUMN);
 	}
 	
-	private boolean isHeadingChange() {
+	boolean isHeadingChange() {
 		return isEditableNonscalarDefinition() && isChange(HEADING_COLUMN);
-	}
-	
-	public String getRelAlterClause() {
-		if (isNameChange() && isTypeNameChange() && isHeadingChange()) {
-			return "REPLACE " + getOriginalColumnValue(NAME_COLUMN) + " WITH " + getName() + " " + getNewColumnValue(HEADING_COLUMN);			
-		} else if (isNameChange() && isTypeNameChange() && !isHeadingChange()) {
-			return "REPLACE " + getOriginalColumnValue(NAME_COLUMN) + " WITH " + getName() + " " + getNewColumnValue(TYPE_COLUMN);			
-		} else if (isNameChange() && !isTypeNameChange() && !isHeadingChange()) {
-			return "RENAME " + getOriginalColumnValue(NAME_COLUMN) + " TO " + getName();
-		} else if (!isNameChange() && isTypeNameChange() && isHeadingChange()) {
-			return "TYPE_OF " + getOriginalColumnValue(NAME_COLUMN) + " TO " + getNewColumnValue(HEADING_COLUMN);
-		} else if (!isNameChange() && isTypeNameChange() && !isHeadingChange()) {
-			return "TYPE_OF " + getOriginalColumnValue(NAME_COLUMN) + " TO " + getNewColumnValue(TYPE_COLUMN);
-		} else 
-			return null;
-	}
-
-	public String getRelAddClause() {
-		return "ADD " + getName() + " " + (isEditableNonscalarDefinition() ? getColumnValue(HEADING_COLUMN) : getColumnValue(TYPE_COLUMN));	
 	}
 	
 }

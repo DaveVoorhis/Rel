@@ -376,6 +376,29 @@ public abstract class Designer extends Grid {
 				}			
 			return keysDef;
 		}
+		
+		private String getRelHeadingDefinition(Attribute a) {
+			return getHeadingDefinition(a.getNewColumnValue(Attribute.HEADING_COLUMN));
+		}
+		
+		private String getRelAlterClause(Attribute a) {
+			if (a.isNameChange() && a.isHeadingChange()) {
+				return "REPLACE " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " WITH " + a.getName() + " " + getRelHeadingDefinition(a);			
+			} else if (a.isNameChange() && a.isTypeNameChange() && !a.isHeadingChange()) {
+				return "REPLACE " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " WITH " + a.getName() + " " + a.getNewColumnValue(Attribute.TYPE_COLUMN);			
+			} else if (a.isNameChange() && !a.isTypeNameChange() && !a.isHeadingChange()) {
+				return "RENAME " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " TO " + a.getName();
+			} else if (!a.isNameChange() && a.isHeadingChange()) {
+				return "TYPE_OF " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " TO " + getRelHeadingDefinition(a);
+			} else if (!a.isNameChange() && a.isTypeNameChange() && !a.isHeadingChange()) {
+				return "TYPE_OF " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " TO " + a.getNewColumnValue(Attribute.TYPE_COLUMN);
+			} else 
+				return null;
+		}
+
+		private String getRelAddClause(Attribute a) {
+			return "ADD " + a.getName() + " " + (a.isEditableNonscalarDefinition() ? getRelHeadingDefinition(a) : a.getColumnValue(Attribute.TYPE_COLUMN));	
+		}
 
 		public String getRelDefinition() {
 			Tuples existingDefinitionTuples = getAttributes();
@@ -393,12 +416,12 @@ public abstract class Designer extends Grid {
 					continue;
 				String originalAttributeName = attribute.getOriginalColumnValue(Attribute.NAME_COLUMN);
 				if (originalAttributeName != null && existingDefinition.containsKey(originalAttributeName)) {
-					String alterClause = attribute.getRelAlterClause();
+					String alterClause = getRelAlterClause(attribute);
 					if (alterClause != null)
 						body += ((body.length() > 0) ? "\n" : "") + "\t" + alterClause;
 					existingDefinition.remove(originalAttributeName);
 				} else
-					body += ((body.length() > 0) ? "\n" : "") + "\t" + attribute.getRelAddClause();
+					body += ((body.length() > 0) ? "\n" : "") + "\t" + getRelAddClause(attribute);
 			}
 			for (String attributeName: existingDefinition.keySet())
 				body += ((body.length() > 0) ? "\n" : "") + "\t" + "DROP " + attributeName;
