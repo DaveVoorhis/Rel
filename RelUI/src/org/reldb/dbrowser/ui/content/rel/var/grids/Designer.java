@@ -383,9 +383,11 @@ public abstract class Designer extends Grid {
 		
 		private String getRelAlterClause(Attribute a) {
 			if (a.isNameChange() && a.isHeadingChange()) {
-				return "REPLACE " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " WITH " + a.getName() + " " + getRelHeadingDefinition(a);			
+				return "REPLACE " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " WITH " + 
+						a.getName() + " " + getRelHeadingDefinition(a);			
 			} else if (a.isNameChange() && a.isTypeNameChange() && !a.isHeadingChange()) {
-				return "REPLACE " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " WITH " + a.getName() + " " + a.getNewColumnValue(Attribute.TYPE_COLUMN);			
+				return "REPLACE " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " WITH " + 
+						a.getName() + " " + a.getNewColumnValue(Attribute.TYPE_COLUMN);			
 			} else if (a.isNameChange() && !a.isTypeNameChange() && !a.isHeadingChange()) {
 				return "RENAME " + a.getOriginalColumnValue(Attribute.NAME_COLUMN) + " TO " + a.getName();
 			} else if (!a.isNameChange() && a.isHeadingChange()) {
@@ -397,7 +399,10 @@ public abstract class Designer extends Grid {
 		}
 
 		private String getRelAddClause(Attribute a) {
-			return "ADD " + a.getName() + " " + (a.isEditableNonscalarDefinition() ? getRelHeadingDefinition(a) : a.getColumnValue(Attribute.TYPE_COLUMN));	
+			return "ADD " + a.getName() + " " + 
+				(a.isEditableNonscalarDefinition() 
+					? getRelHeadingDefinition(a) 
+					: a.getColumnValue(Attribute.TYPE_COLUMN));	
 		}
 
 		public String getRelDefinition() {
