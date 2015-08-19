@@ -24,8 +24,8 @@ public class Grid {
 		this.relvarName = relvarName;		
 	}
 	
-	protected void obtainKeyDefinitions() {
-		keys = new Vector<HashSet<String>>();
+	protected Vector<HashSet<String>> getKeyDefinitions() {
+		Vector<HashSet<String>> keys = new Vector<HashSet<String>>();
 		Tuples keyDefinitions = (Tuples)connection.evaluate("((sys.Catalog WHERE Name = '" + relvarName + "') {Keys}) UNGROUP Keys");
 		for (Tuple keyDefinition: keyDefinitions) {
 			Tuples keyAttributes = (Tuples)(keyDefinition.get("Attributes"));
@@ -36,6 +36,11 @@ public class Grid {
 			}
 			keys.add(keyAttributeNames);
 		}
+		return keys;
+	}
+	
+	protected void obtainKeyDefinitions() {
+		keys = getKeyDefinitions();
 	}
 	
 }

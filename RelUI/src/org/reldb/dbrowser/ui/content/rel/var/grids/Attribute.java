@@ -3,9 +3,10 @@ package org.reldb.dbrowser.ui.content.rel.var.grids;
 import org.reldb.rel.client.Tuple;
 
 class Attribute {
-	private static final int NAME_COLUMN = 0;
-	private static final int TYPE_COLUMN = 1;
-	private static final int HEADING_COLUMN = 2;
+	public static final int NAME_COLUMN = 0;
+	public static final int TYPE_COLUMN = 1;
+	public static final int HEADING_COLUMN = 2;
+	public static final int COLUMN_COUNT = 3;
 	
 	private String oldName;
 	private String oldTypeName;
@@ -33,10 +34,26 @@ class Attribute {
 		newHeading = null;
 	}
 	
-	Object getColumnValue(int column) {
+	String getOriginalColumnValue(int column) {
 		switch (column) {
-		case 0: return (newName != null) ? newName : oldName;
-		case 1: return (newTypeName != null) ? newTypeName : oldTypeName;
+		case NAME_COLUMN: return oldName;
+		case TYPE_COLUMN: return oldTypeName;
+		default: return oldHeading;
+		}
+	}
+	
+	String getNewColumnValue(int column) {
+		switch (column) {
+		case NAME_COLUMN: return newName;
+		case TYPE_COLUMN: return newTypeName;
+		default: return newHeading;		
+		}
+	}
+
+	String getColumnValue(int column) {
+		switch (column) {
+		case NAME_COLUMN: return (newName != null) ? newName : oldName;
+		case TYPE_COLUMN: return (newTypeName != null) ? newTypeName : oldTypeName;
 		default: return (!isEditableNonscalarDefinition()) ? null : ((newHeading != null) ? newHeading : oldHeading);
 		}
 	}
@@ -69,18 +86,24 @@ class Attribute {
 		Object typeName = getColumnValue(1);
 		if (typeName == null)
 			return false;
-		return isFilled() && isNonScalar(typeName.toString());
+		return isNameAndTypeFilled() && isNonScalar(typeName.toString());
 	}
 
 	static boolean isNonScalar(String type) {
 		return type.equals("RELATION") || type.equals("TUPLE") || type.equals("ARRAY");	
 	}
-
-	boolean isFilled() {
+	
+	boolean isNameAndTypeFilled() {
 		Object name = getColumnValue(NAME_COLUMN);
 		Object type = getColumnValue(TYPE_COLUMN);
 		return (name != null && name.toString().trim().length() > 0 && 
 				type != null && type.toString().trim().length() > 0);
+	}
+	
+	boolean isFilled() {
+		return isNameAndTypeFilled() && 
+				((isEditableNonscalarDefinition() && getColumnValue(HEADING_COLUMN) != null) ||
+				 !isEditableNonscalarDefinition());
 	}
 	
 	// Convert this into a TypeInfo literal
@@ -90,4 +113,40 @@ class Attribute {
 		else
 			return "TUPLE {AttrName '" + getColumnValue(NAME_COLUMN) + "', AttrType Scalar('" + getColumnValue(TYPE_COLUMN) + "')}";
 	}
+
+	private boolean isChange(int column) {
+		return getOriginalColumnValue(column) != null && !getOriginalColumnValue(column).equals(getNewColumnValue(column));		
+	}
+	
+	private boolean isNameChange() {
+		return isChange(NAME_COLUMN);
+	}
+	
+	private boolean isTypeNameChange() {
+		return isChange(TYPE_COLUMN);
+	}
+	
+	private boolean isHeadingChange() {
+		return isEditableNonscalarDefinition() && isChange(HEADING_COLUMN);
+	}
+	
+	public String getRelAlterClause() {
+		if (isNameChange() && isTypeNameChange() && isHeadingChange()) {
+			return "REPLACE " + getOriginalColumnValue(NAME_COLUMN) + " WITH " + getName() + " " + getNewColumnValue(HEADING_COLUMN);			
+		} else if (isNameChange() && isTypeNameChange() && !isHeadingChange()) {
+			return "REPLACE " + getOriginalColumnValue(NAME_COLUMN) + " WITH " + getName() + " " + getNewColumnValue(TYPE_COLUMN);			
+		} else if (isNameChange() && !isTypeNameChange() && !isHeadingChange()) {
+			return "RENAME " + getOriginalColumnValue(NAME_COLUMN) + " TO " + getName();
+		} else if (!isNameChange() && isTypeNameChange() && isHeadingChange()) {
+			return "TYPE_OF " + getOriginalColumnValue(NAME_COLUMN) + " TO " + getNewColumnValue(HEADING_COLUMN);
+		} else if (!isNameChange() && isTypeNameChange() && !isHeadingChange()) {
+			return "TYPE_OF " + getOriginalColumnValue(NAME_COLUMN) + " TO " + getNewColumnValue(TYPE_COLUMN);
+		} else 
+			return null;
+	}
+
+	public String getRelAddClause() {
+		return "ADD " + getName() + " " + (isEditableNonscalarDefinition() ? getColumnValue(HEADING_COLUMN) : getColumnValue(TYPE_COLUMN));	
+	}
+	
 }
