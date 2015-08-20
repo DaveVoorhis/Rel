@@ -2,6 +2,7 @@ package org.reldb.rel.client;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -167,6 +168,9 @@ public class Connection {
 				parser.setResponseHandler(new ResponseAdapter() {
 					Stack<Value> valueReceiver = new Stack<Value>();
 					Stack<Heading> headingReceiver = new Stack<Heading>();
+					HashMap<Integer, Integer> lastColumnAtDepth = new HashMap<Integer, Integer>();
+					Heading rootHeading = null;
+					int containerNesting = -1;
 					private void endData() {
 						Value value = valueReceiver.pop();
 						if (valueReceiver.size() > 0)
@@ -175,7 +179,10 @@ public class Connection {
 							response.setResult(value);
 					}
 					public void beginHeading(String typeName) {
-						headingReceiver.push(new Heading(typeName));
+						Heading heading = new Heading(typeName);
+						if (rootHeading == null)
+							rootHeading = heading;
+						headingReceiver.push(heading);
 					}
 					public void endHeading() {
 						Heading heading = headingReceiver.pop();
@@ -206,19 +213,28 @@ public class Connection {
 						valueReceiver.peek().addValue(new Scalar(value, quoted), quoted);
 					}
 					public void beginContainer(int depth, String typeName) {
-						if (depth == 0) {
-							Tuples tuples = new Tuples();
-							valueReceiver.push(tuples);
+						Tuples tuples = new Tuples();
+						valueReceiver.push(tuples);
+						if (depth == 0)
 							response.setResult(tuples);
-						} else {
-							valueReceiver.push(new Tuples(typeName));
-						}
+						containerNesting++;
 					}
 					public void endContainer(int depth) {
-						((Tuples)valueReceiver.peek()).insertNullTuple();
+						Tuples tuples = (Tuples)valueReceiver.peek();
+						tuples.insertNullTuple();
 						endData();
+						Heading heading = rootHeading;
+						int idx = 0;
+						for (int d = 0; d < containerNesting; d++) {
+							Type columnType = heading.toArray()[lastColumnAtDepth.get(idx++)].getType();
+							if (columnType instanceof Heading)
+								heading = (Heading)columnType;
+						}
+						tuples.setHeading(heading);
+						containerNesting--;
 					}
 					public void beginTuple(int depth) {
+						lastColumnAtDepth.put(containerNesting, -1);
 						valueReceiver.push(new Tuple());
 					}
 					public void endTuple(int depth) {
@@ -226,6 +242,7 @@ public class Connection {
 					}
 					public void attributeNameInTuple(int depth, String name) {
 						((Tuple)valueReceiver.peek()).addAttributeName(name);
+						lastColumnAtDepth.put(containerNesting, lastColumnAtDepth.get(containerNesting) + 1);
 					}
 				});
 				try {

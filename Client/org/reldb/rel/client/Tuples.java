@@ -6,22 +6,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class Tuples extends Value implements Iterable<Tuple>{
 
-	private ArrayBlockingQueue<Tuple> tuples = new ArrayBlockingQueue<Tuple>(50);
+	private ArrayBlockingQueue<Tuple> tuples = new ArrayBlockingQueue<Tuple>(250);
 	private ArrayBlockingQueue<Heading> headingQueue = new ArrayBlockingQueue<Heading>(1);
 	private Heading heading = null;
-	private String typeName = null;
-	private boolean cacheable = false;
 	private LinkedList<Tuple> cache = null;
-	
-	Tuples(Heading heading) {
-		this.heading = heading;
-		cacheable = true;
-	}
-	
-	Tuples(String typeName) {
-		this.typeName = typeName;
-		cacheable = true;
-	}
 	
 	public Tuples() {
 	}
@@ -33,6 +21,7 @@ public class Tuples extends Value implements Iterable<Tuple>{
 			else
 				headingQueue.put(heading);
 		} catch (InterruptedException e) {
+			System.out.println("Tuples: heading write interrupted.");
 		}
 	}
 
@@ -45,6 +34,7 @@ public class Tuples extends Value implements Iterable<Tuple>{
 		try {
 			tuples.put((Tuple)value);
 		} catch (InterruptedException e) {
+			System.out.println("Tuples: tuple write interrupted.");
 		}
 	}
 	
@@ -57,6 +47,7 @@ public class Tuples extends Value implements Iterable<Tuple>{
 			else
 				heading = headingQueue.take();
 		} catch (InterruptedException e) {
+			System.out.println("Tuples: heading read interrupted.");
 		}
 		return heading;
 	}
@@ -85,7 +76,7 @@ public class Tuples extends Value implements Iterable<Tuple>{
 		String lines = "";
 		for (Tuple tuple: this)
 			lines += ((lines.length() > 0) ? ",\n" : "") + "\t" + tuple.toString(depth + 1);
-		return ((heading != null) ? heading : (typeName != null) ? typeName : "RELATION")  + " {\n" + lines + "}"; 
+		return getHeading() + " {\n" + lines + "}"; 
 	}
 
 	public String toString() {
@@ -97,8 +88,7 @@ public class Tuples extends Value implements Iterable<Tuple>{
 	public Iterator<Tuple> iterator() {
 		if (cache != null)
 			return cache.iterator();
-		if (cacheable)
-			cache = new LinkedList<Tuple>();
+		cache = new LinkedList<Tuple>();
 		return new Iterator<Tuple>() {
 			Tuple tuple = null;
 			public boolean hasNext() {
