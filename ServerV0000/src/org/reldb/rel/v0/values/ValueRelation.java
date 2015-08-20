@@ -730,10 +730,10 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 		Heading heading = ((TypeRelation)type).getHeading();
 		TypeTuple tupleType = new TypeTuple(heading);
 		String relKeyword = "RELATION";		
-		if (depth == 0)
+//		if (depth == 0)
 			p.print(relKeyword + " " + heading + " {");
-		else
-			p.print(relKeyword + " {");
+//		else
+//			p.print(relKeyword + " {");
 		long count = 0;
 		TupleIterator iterator = iterator();
 		try {

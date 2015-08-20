@@ -24,6 +24,7 @@ Version 1.0.13:
                  about any expression e.  Uses new built-in types TypeInfo, Scalar and NonScalar. 
   - enhancement: Rel: sys.Catalog relvar now provides Attributes and Keys metadata
   - enhancement: Rel: Relvar update notices can be turned off with SET VerboseRelvarUpdates Off.
+  - enhancement: Rel: All relations now emitted with heading.  This improves readability & parse-ability.
   - fix: Rel: UNION (RELATION {x RELATION {y INT}} {}, x) returns error. It should give RELATION {y INT}} {}.
          Same for D_UNION and XUNION.  This has been corrected.
   
