@@ -2,6 +2,8 @@ package org.reldb.rel.client.parser;
 
 import java.io.InputStream;
 
+import org.reldb.rel.client.Heading;
+
 /** A special HTML generator intended for progressive generation of tabular results. */
 public abstract class ResponseToHTMLProgressive extends ResponseToHTML {
 
@@ -42,7 +44,7 @@ public abstract class ResponseToHTMLProgressive extends ResponseToHTML {
 		headingCount++;
 	}
 	
-	public void endHeading() {
+	public Heading endHeading() {
 		super.endHeading();
 		headingCount--;
 		if (headingCount == 0) {
@@ -50,6 +52,7 @@ public abstract class ResponseToHTMLProgressive extends ResponseToHTML {
 			endInitialHTML();
 			headingDone = true;
 		}
+		return null;
 	}
 	
 	public void endContainer(int depth) {

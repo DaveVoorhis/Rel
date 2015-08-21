@@ -3,6 +3,7 @@ package org.reldb.rel.client.parser.core;
 import org.reldb.rel.client.parser.ResponseHandler;
 import org.reldb.rel.client.parser.ResponseAdapter;
 import org.reldb.rel.utilities.StringUtils;
+import org.reldb.rel.client.Heading;
 @SuppressWarnings("all")
 public class ResponseParser implements ResponseParserConstants {
         private ResponseHandler responseHandler = new ResponseAdapter();
@@ -145,7 +146,7 @@ public class ResponseParser implements ResponseParserConstants {
   }
 
   final public void relation_or_array(int depth) throws ParseException {
- String htype;
+ String htype; Heading heading = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case RELATION:
       jj_consume_token(RELATION);
@@ -160,13 +161,14 @@ public class ResponseParser implements ResponseParserConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-         responseHandler.beginContainer(depth, htype);
+         responseHandler.beginContainer(depth);
     if (jj_2_2(2147483647)) {
-      heading(htype);
+      heading = heading(htype);
     } else {
       ;
     }
     jj_consume_token(LBRACE);
+                     responseHandler.beginContainerBody(depth, heading, htype);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TUPLE:
       tuple(2);
@@ -192,7 +194,8 @@ public class ResponseParser implements ResponseParserConstants {
          responseHandler.endContainer(depth);
   }
 
-  final public void heading(String htype) throws ParseException {
+  final public Heading heading(String htype) throws ParseException {
+ Heading heading = null;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IDENTIFIER:
@@ -211,13 +214,15 @@ public class ResponseParser implements ResponseParserConstants {
         jj_consume_token(COMMA);
         attribute_spec();
       }
-                   if (responseHandler.isEmitHeading()) responseHandler.endHeading();
+                   if (responseHandler.isEmitHeading()) heading = responseHandler.endHeading();
       break;
     default:
       jj_la1[11] = jj_gen;
       ;
     }
     jj_consume_token(RBRACE);
+         {if (true) return heading;}
+    throw new Error("Missing return statement in function");
   }
 
   final public void attribute_spec() throws ParseException {
@@ -461,14 +466,14 @@ public class ResponseParser implements ResponseParserConstants {
     return false;
   }
 
-  private boolean jj_3R_10() {
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
   private boolean jj_3_3() {
     if (jj_scan_token(IDENTIFIER)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_10() {
+    if (jj_3R_13()) return true;
     return false;
   }
 
@@ -484,6 +489,11 @@ public class ResponseParser implements ResponseParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_10()) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3R_20() {
+    if (jj_3R_12()) return true;
     return false;
   }
 
@@ -508,6 +518,12 @@ public class ResponseParser implements ResponseParserConstants {
     return false;
   }
 
+  private boolean jj_3R_14() {
+    if (jj_3R_21()) return true;
+    if (jj_3R_22()) return true;
+    return false;
+  }
+
   private boolean jj_3R_11() {
     if (jj_3R_14()) return true;
     Token xsp;
@@ -515,12 +531,6 @@ public class ResponseParser implements ResponseParserConstants {
       xsp = jj_scanpos;
       if (jj_3R_15()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  private boolean jj_3R_14() {
-    if (jj_3R_21()) return true;
-    if (jj_3R_22()) return true;
     return false;
   }
 
@@ -536,8 +546,13 @@ public class ResponseParser implements ResponseParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_7()) return true;
+  private boolean jj_3R_33() {
+    if (jj_3R_34()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_35()) { jj_scanpos = xsp; break; }
+    }
     return false;
   }
 
@@ -550,13 +565,8 @@ public class ResponseParser implements ResponseParserConstants {
     return false;
   }
 
-  private boolean jj_3R_33() {
-    if (jj_3R_34()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_35()) { jj_scanpos = xsp; break; }
-    }
+  private boolean jj_3_1() {
+    if (jj_3R_7()) return true;
     return false;
   }
 
@@ -569,11 +579,6 @@ public class ResponseParser implements ResponseParserConstants {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_33()) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3R_20() {
-    if (jj_3R_12()) return true;
     return false;
   }
 
@@ -619,17 +624,6 @@ public class ResponseParser implements ResponseParserConstants {
     return false;
   }
 
-  private boolean jj_3R_23() {
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_15() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
   private boolean jj_3R_28() {
     if (jj_scan_token(RELATION)) return true;
     return false;
@@ -640,7 +634,18 @@ public class ResponseParser implements ResponseParserConstants {
     return false;
   }
 
+  private boolean jj_3R_15() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
   private boolean jj_3R_26() {
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_23() {
     if (jj_3R_21()) return true;
     return false;
   }

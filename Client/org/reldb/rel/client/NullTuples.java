@@ -4,6 +4,7 @@ package org.reldb.rel.client;
 public class NullTuples extends Tuples {
 
 	public NullTuples() {
+		super(new Heading("RELATION"));
 		insertNullTuple();
 	}
 	

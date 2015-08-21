@@ -7,22 +7,16 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class Tuples extends Value implements Iterable<Tuple>{
 
 	private ArrayBlockingQueue<Tuple> tuples = new ArrayBlockingQueue<Tuple>(250);
-	private ArrayBlockingQueue<Heading> headingQueue = new ArrayBlockingQueue<Heading>(1);
 	private Heading heading = null;
+	private String typeName = null;
 	private LinkedList<Tuple> cache = null;
 	
-	public Tuples() {
+	public Tuples(String typeName) {
+		this.typeName = typeName;
 	}
-
-	void setHeading(Heading heading) {
-		try {
-			if (heading == null)
-				headingQueue = null;
-			else
-				headingQueue.put(heading);
-		} catch (InterruptedException e) {
-			System.out.println("Tuples: heading write interrupted.");
-		}
+	
+	public Tuples(Heading heading) {
+		this.heading = heading;
 	}
 
 	// Insert special end-of-set indicator tuple.
@@ -39,16 +33,6 @@ public class Tuples extends Value implements Iterable<Tuple>{
 	}
 	
 	public Heading getHeading() {
-		if (heading != null)
-			return heading;
-		try {
-			if (headingQueue == null)
-				heading = null;
-			else
-				heading = headingQueue.take();
-		} catch (InterruptedException e) {
-			System.out.println("Tuples: heading read interrupted.");
-		}
 		return heading;
 	}
 
@@ -76,7 +60,7 @@ public class Tuples extends Value implements Iterable<Tuple>{
 		String lines = "";
 		for (Tuple tuple: this)
 			lines += ((lines.length() > 0) ? ",\n" : "") + "\t" + tuple.toString(depth + 1);
-		return getHeading() + " {\n" + lines + "}"; 
+		return ((heading != null) ? heading : typeName) + " {\n" + lines + "}"; 
 	}
 
 	public String toString() {

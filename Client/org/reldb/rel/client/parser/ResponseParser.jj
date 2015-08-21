@@ -30,6 +30,7 @@ package org.reldb.rel.client.parser.core;
 import org.reldb.rel.client.parser.ResponseHandler;
 import org.reldb.rel.client.parser.ResponseAdapter;
 import org.reldb.rel.utilities.StringUtils;
+import org.reldb.rel.client.Heading;
 @SuppressWarnings("all")
 public class ResponseParser {
 	private ResponseHandler responseHandler = new ResponseAdapter();
@@ -227,24 +228,26 @@ void tuple_component(int depth) :
 }
 
 void relation_or_array(int depth) :
-{String htype;}
+{String htype; Heading heading = null;}
 {
 	( <RELATION> {htype="RELATION";} | <ARRAY> {htype="ARRAY";})
-	{responseHandler.beginContainer(depth, htype);}
-	[ LOOKAHEAD(heading() "{") heading(htype) ] "{" [ tuple(2) ( "," tuple(2) )* ] "}"
+	{responseHandler.beginContainer(depth);}
+	[ LOOKAHEAD(heading() "{") heading = heading(htype) ]
+		"{" {responseHandler.beginContainerBody(depth, heading, htype);} [ tuple(2) ( "," tuple(2) )* ] "}"
 	{responseHandler.endContainer(depth);}
 }
 
-void heading(String htype) :
-{}
+Heading heading(String htype) :
+{Heading heading = null;}
 {
 	"{" 
 		[
 		  {if (responseHandler.isEmitHeading()) responseHandler.beginHeading(htype);}
 		  attribute_spec() ( "," attribute_spec() )*
-		  {if (responseHandler.isEmitHeading()) responseHandler.endHeading();}
+		  {if (responseHandler.isEmitHeading()) heading = responseHandler.endHeading();}
 		] 
 	"}"
+	{return heading;}
 }
 
 void attribute_spec() :

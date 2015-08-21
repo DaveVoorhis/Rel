@@ -3,6 +3,7 @@ package org.reldb.rel.client.parser.core;
 import org.reldb.rel.client.parser.ResponseHandler;
 import org.reldb.rel.client.parser.ResponseAdapter;
 import org.reldb.rel.utilities.StringUtils;
+import org.reldb.rel.client.Heading;
 
 /** Token Manager. */
 public class ResponseParserTokenManager implements ResponseParserConstants

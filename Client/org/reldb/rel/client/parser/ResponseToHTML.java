@@ -2,6 +2,8 @@ package org.reldb.rel.client.parser;
 
 import java.io.InputStream;
 
+import org.reldb.rel.client.Heading;
+
 public abstract class ResponseToHTML extends ResponseProcessor {
 
 	private boolean emitHeadings = true;
@@ -80,13 +82,14 @@ public abstract class ResponseToHTML extends ResponseProcessor {
 		headingDisplayed = true;
 	}
 	
-	public void endHeading() {
+	public Heading endHeading() {
 		if (!emitHeadings)
-			return;
+			return null;
 		emitHTML("</tr>");
+		return null;
 	}
 	
-	public void beginContainer(int depth, String typeName) {
+	public void beginContainer(int depth) {
 		if (depth == 0)
 			emitHTML("<table id=\"table\" cellpadding=\"1\" cellspacing=\"0\">");
 		else

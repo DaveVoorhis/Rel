@@ -1,5 +1,7 @@
 package org.reldb.rel.client.parser;
 
+import org.reldb.rel.client.Heading;
+
 public interface ResponseHandler {
 	public boolean isEmitHeading();
 	public boolean isEmitHeadingTypes();
@@ -12,7 +14,7 @@ public interface ResponseHandler {
 	public void beginContainerDefinition();
 	public void endContainerDefinition();
 	public void beginHeading(String typeName);
-	public void endHeading();
+	public Heading endHeading();
 	public void attributeNameInTuple(int depth, String name);
 	public void beginScalar(int depth);
 	public void endScalar(int depth);
@@ -20,7 +22,8 @@ public interface ResponseHandler {
 	public void endPossrep();
 	public void separatePossrepComponent();
 	public void primitive(String value, boolean quoted);
-	public void beginContainer(int depth, String typeName);
+	public void beginContainer(int depth);
+	public void beginContainerBody(int depth, Heading hasHeading, String typeName);
 	public void endContainer(int depth);
 	public void beginTuple(int depth);
 	public void endTuple(int depth);

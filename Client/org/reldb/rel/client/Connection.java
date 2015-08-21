@@ -2,7 +2,6 @@ package org.reldb.rel.client;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.util.HashMap;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -168,9 +167,6 @@ public class Connection {
 				parser.setResponseHandler(new ResponseAdapter() {
 					Stack<Value> valueReceiver = new Stack<Value>();
 					Stack<Heading> headingReceiver = new Stack<Heading>();
-					HashMap<Integer, Integer> lastColumnAtDepth = new HashMap<Integer, Integer>();
-					Heading rootHeading = null;
-					int containerNesting = -1;
 					private void endData() {
 						Value value = valueReceiver.pop();
 						if (valueReceiver.size() > 0)
@@ -180,16 +176,13 @@ public class Connection {
 					}
 					public void beginHeading(String typeName) {
 						Heading heading = new Heading(typeName);
-						if (rootHeading == null)
-							rootHeading = heading;
 						headingReceiver.push(heading);
 					}
-					public void endHeading() {
+					public Heading endHeading() {
 						Heading heading = headingReceiver.pop();
 						if (headingReceiver.size() > 0)
 							headingReceiver.peek().addAttributeType(heading);
-						else
-							((Tuples)valueReceiver.peek()).setHeading(heading);
+						return heading;
 					}
 					public void attributeName(String name) {
 						headingReceiver.peek().addAttributeName(name);
@@ -212,29 +205,22 @@ public class Connection {
 					public void primitive(String value, boolean quoted) {
 						valueReceiver.peek().addValue(new Scalar(value, quoted), quoted);
 					}
-					public void beginContainer(int depth, String typeName) {
-						Tuples tuples = new Tuples();
-						valueReceiver.push(tuples);
+					public void beginContainerBody(int depth, Heading heading, String typeName) {
+						Tuples tuples;
+						if (heading == null)
+							tuples = new Tuples(typeName);
+						else
+							tuples = new Tuples(heading);
 						if (depth == 0)
 							response.setResult(tuples);
-						containerNesting++;
+						valueReceiver.push(tuples);
 					}
 					public void endContainer(int depth) {
 						Tuples tuples = (Tuples)valueReceiver.peek();
 						tuples.insertNullTuple();
-						endData();
-						Heading heading = rootHeading;
-						int idx = 0;
-						for (int d = 0; d < containerNesting; d++) {
-							Type columnType = heading.toArray()[lastColumnAtDepth.get(idx++)].getType();
-							if (columnType instanceof Heading)
-								heading = (Heading)columnType;
-						}
-						tuples.setHeading(heading);
-						containerNesting--;
+						endData();	
 					}
 					public void beginTuple(int depth) {
-						lastColumnAtDepth.put(containerNesting, -1);
 						valueReceiver.push(new Tuple());
 					}
 					public void endTuple(int depth) {
@@ -242,12 +228,12 @@ public class Connection {
 					}
 					public void attributeNameInTuple(int depth, String name) {
 						((Tuple)valueReceiver.peek()).addAttributeName(name);
-						lastColumnAtDepth.put(containerNesting, lastColumnAtDepth.get(containerNesting) + 1);
 					}
 				});
 				try {
 					parser.parse();
 				} catch (ParseException e) {
+					System.out.println("Connection: parse exception: " + e);
 					response.setResult(new Error(errorMessageTrap.toString()));
 				}
 				try {
