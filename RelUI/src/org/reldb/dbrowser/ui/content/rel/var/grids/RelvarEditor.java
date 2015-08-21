@@ -212,7 +212,7 @@ public class RelvarEditor extends Grid {
     		while (iterator.hasNext())
     			cache.add(new Row(iterator.next()));
     		cache.add(new Row());			
-			processRows.clear();
+			processRows.clear();			
 		}
 
 		public String getError(int row) {

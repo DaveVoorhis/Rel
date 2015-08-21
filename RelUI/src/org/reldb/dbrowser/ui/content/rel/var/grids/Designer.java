@@ -242,13 +242,7 @@ public abstract class Designer extends Grid {
     	}
     	
     	private String getKindFor(String typeInfo) {
-    		return connection.evaluate("THE_Kind(" + typeInfo + ")").toString();		
-    	}
-    	
-    	private String getKind() {
-    		if (getAttributeSource().length() == 0)
-    			return null;
-    		return getKindFor(getAttributeSource());
+    		return connection.evaluate("THE_Kind(" + typeInfo + ")").toString();	
     	}
     	
     	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
@@ -262,6 +256,12 @@ public abstract class Designer extends Grid {
     				"		THE_Kind(TREAT_AS_NonScalar(AttrType)) " + 
     				"	END IF} " +
     				"{AttrName, AttrTypeName, AttrType}");
+    	}
+    	
+    	private String getKind() {
+    		if (getAttributeSource().length() == 0)
+    			return null;
+    		return getKindFor(getAttributeSource());
     	}
     	
     	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
@@ -393,7 +393,7 @@ public abstract class Designer extends Grid {
 			for (Attribute attribute: data)
 				if (attribute.isFilled())
 					body += ((body.length() > 0) ? "," : "") + "\n\t" + attribute.getTypeInfoLiteral();
-			return "NonScalar('" + kind + "', RELATION {" + body + "})";
+			return "NonScalar('" + kind + "', RELATION {AttrName CHAR, AttrType TypeInfo} {" + body + "})";
 		}
 
 		private String getRelKeysDefinition(Vector<HashSet<String>> keys) {
@@ -420,18 +420,20 @@ public abstract class Designer extends Grid {
 			String kind = getKindFor(typeInfo);
 			Tuples tuples = getAttributesFor(typeInfo);
 			String body = "";
-			for (Tuple tuple: tuples) {
-				String attrName = tuple.get(Attribute.NAME_COLUMN).toString();
-				String type = tuple.get(Attribute.TYPE_COLUMN).toString();
-				if (Attribute.isNonScalar(type))
-					type = getHeadingDefinition(tuple.get(Attribute.HEADING_COLUMN).toString());
-				body += ((body.length() > 0) ? ", " : "") + attrName + " " + type; 
-			}
+			if (tuples != null)				
+				for (Tuple tuple: tuples) {
+					String attrName = tuple.get(Attribute.NAME_COLUMN).toString();
+					String type = tuple.get(Attribute.TYPE_COLUMN).toString();
+					if (Attribute.isNonScalar(type))
+						type = getHeadingDefinition(tuple.get(Attribute.HEADING_COLUMN).toString());
+					body += ((body.length() > 0) ? ", " : "") + attrName + " " + type; 
+				}
 			return kind + " {" + body + "}";
 		}
 		
 		private String getRelHeadingDefinition(Attribute a) {
-			return getHeadingDefinition(a.getNewColumnValue(Attribute.HEADING_COLUMN));
+			String typeInfo = a.getNewColumnValue(Attribute.HEADING_COLUMN);
+			return getHeadingDefinition(typeInfo);
 		}
 		
 		private String getRelAlterClause(Attribute a) {

@@ -74,7 +74,8 @@ class Attribute {
 			else
 				newHeading = null;
 			break;
-		default: newHeading = (newValue != null) ? newValue.toString() : null;
+		default: 
+			newHeading = (newValue != null) ? newValue.toString() : null;
 		}
 	}
 	

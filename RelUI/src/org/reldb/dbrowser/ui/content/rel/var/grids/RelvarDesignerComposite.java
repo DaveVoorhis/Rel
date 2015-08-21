@@ -16,6 +16,7 @@ import org.reldb.dbrowser.ui.DbConnection;
 public class RelvarDesignerComposite extends Composite {
 	private RelvarDesigner relvarDesigner;
 	private Text textActions;
+	private Button btnApply;
 
 	/**
 	 * Create the composite.
@@ -32,31 +33,35 @@ public class RelvarDesignerComposite extends Composite {
 		designerSurround.setLayout(new FillLayout(SWT.HORIZONTAL));
 		relvarDesigner = new RelvarDesigner(designerSurround, connection, relvarName) {
 			protected void changedDefinition() {
-				textActions.setText(relvarDesigner.getRelDefinition());				
+				String relDefinition = relvarDesigner.getRelDefinition();
+				textActions.setText(relDefinition);
+				btnApply.setEnabled(relDefinition.length() > 0);		
 			}
 		};
 		
 		Composite outputPanel = new Composite(sashForm, SWT.BORDER);
 		outputPanel.setLayout(new FormLayout());
 		
-		Button btnApply = new Button(outputPanel, SWT.NONE);
+		btnApply = new Button(outputPanel, SWT.NONE);
+		btnApply.setEnabled(false);
 		FormData fd_btnApply = new FormData();
-		fd_btnApply.left = new FormAttachment(0, 10);
-		fd_btnApply.bottom = new FormAttachment(100, -10);
+		fd_btnApply.left = new FormAttachment(0, 5);
+		fd_btnApply.bottom = new FormAttachment(100, -5);
 		btnApply.setLayoutData(fd_btnApply);
 		btnApply.setText("Apply");
 		btnApply.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				
 			}
 		});
 		
-		textActions = new Text(outputPanel, SWT.H_SCROLL | SWT.V_SCROLL);
+		textActions = new Text(outputPanel, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		FormData fd_textActions = new FormData();
-		fd_textActions.top = new FormAttachment(0, 10);
-		fd_textActions.left = new FormAttachment(0, 10);
-		fd_textActions.bottom = new FormAttachment(btnApply, -10);
-		fd_textActions.right = new FormAttachment(100, -10);
+		fd_textActions.top = new FormAttachment(0, 5);
+		fd_textActions.left = new FormAttachment(0, 5);
+		fd_textActions.bottom = new FormAttachment(btnApply, -5);
+		fd_textActions.right = new FormAttachment(100, -5);
 		textActions.setLayoutData(fd_textActions);
 		
 		sashForm.setWeights(new int[] {8, 3});
