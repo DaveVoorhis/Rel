@@ -68,9 +68,9 @@ class Attribute {
 				return;
 			newTypeName = newValue.toString();
 			if (newTypeName.equals("RELATION"))
-				newHeading = "NonScalar('RELATION', RELATION {AttrName CHAR, AttrType TypeInfo} {})";
+				newHeading = "NonScalar(\"RELATION\", RELATION {AttrName CHARACTER, AttrType TypeInfo} {})";
 			else if (newTypeName.equals("TUPLE"))
-				newHeading = "NonScalar('TUPLE', RELATION {AttrName CHAR, AttrType TypeInfo} {})";
+				newHeading = "NonScalar(\"TUPLE\", RELATION {AttrName CHARACTER, AttrType TypeInfo} {})";
 			else
 				newHeading = null;
 			break;
@@ -117,7 +117,7 @@ class Attribute {
 		if (isEditableNonscalarDefinition())
 			return "TUPLE {AttrName '" + getColumnValue(NAME_COLUMN) + "', AttrType " + getColumnValue(HEADING_COLUMN) + "}";
 		else
-			return "TUPLE {AttrName '" + getColumnValue(NAME_COLUMN) + "', AttrType Scalar('" + getColumnValue(TYPE_COLUMN) + "')}";
+			return "TUPLE {AttrName '" + getColumnValue(NAME_COLUMN) + "', AttrType Scalar(\"" + getColumnValue(TYPE_COLUMN) + "\")}";
 	}
 
 	private boolean isChange(int column) {

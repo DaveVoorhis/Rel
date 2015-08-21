@@ -393,7 +393,7 @@ public abstract class Designer extends Grid {
 			for (Attribute attribute: data)
 				if (attribute.isFilled())
 					body += ((body.length() > 0) ? "," : "") + "\n\t" + attribute.getTypeInfoLiteral();
-			return "NonScalar('" + kind + "', RELATION {AttrName CHAR, AttrType TypeInfo} {" + body + "})";
+			return "NonScalar(\"" + kind + "\", RELATION {AttrName CHARACTER, AttrType TypeInfo} {" + body + "})";
 		}
 
 		private String getRelKeysDefinition(Vector<HashSet<String>> keys) {
