@@ -206,11 +206,7 @@ public class Connection {
 						valueReceiver.peek().addValue(new Scalar(value, quoted), quoted);
 					}
 					public void beginContainerBody(int depth, Heading heading, String typeName) {
-						Tuples tuples;
-						if (heading == null)
-							tuples = new Tuples(typeName);
-						else
-							tuples = new Tuples(heading);
+						Tuples tuples = (heading == null) ? new Tuples(typeName) : new Tuples(heading);
 						if (depth == 0)
 							response.setResult(tuples);
 						valueReceiver.push(tuples);
