@@ -729,11 +729,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 	public void toStream(Context context, Type type, PrintStream p, int depth) {
 		Heading heading = ((TypeRelation)type).getHeading();
 		TypeTuple tupleType = new TypeTuple(heading);
-		String relKeyword = "RELATION";		
-//		if (depth == 0)
-			p.print(relKeyword + " " + heading + " {");
-//		else
-//			p.print(relKeyword + " {");
+		p.print("RELATION" + " " + heading + " {");
 		long count = 0;
 		TupleIterator iterator = iterator();
 		try {

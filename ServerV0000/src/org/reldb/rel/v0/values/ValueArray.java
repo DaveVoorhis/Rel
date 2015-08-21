@@ -169,11 +169,8 @@ public class ValueArray extends ValueAbstract {
 	
 	private void toStreamFromArray(Context context, Type type, PrintStream p, int depth) {
 		TypeTuple elementType = ((TypeArray)type).getElementType();
-		if (depth == 0) {
-			Heading heading = ((TypeHeading)elementType).getHeading();
-			p.print("ARRAY " + heading + " {");
-		} else
-			p.print("ARRAY {");
+		Heading heading = ((TypeHeading)elementType).getHeading();
+		p.print("ARRAY " + heading + " {");
 		long count = 0;
 		for (Value value: values) {
 			if (count++ > 0)
