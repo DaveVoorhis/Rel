@@ -419,6 +419,11 @@ public class RelvarEditor extends Grid {
 		public int countDirtyRows() {
 			return processRows.size();
 		}
+
+		public boolean isRVA(int columnIndex) {
+			String attributeType = heading[columnIndex].getType().toString();
+			return attributeType.startsWith("RELATION ");
+		}
     };
 	
     private void syncFromDatabase() {
@@ -550,6 +555,8 @@ public class RelvarEditor extends Grid {
 						registerMultiLineEditorColumn(configRegistry, columnLabel);
 					else if (type.equalsIgnoreCase("BOOLEAN"))
 						registerBooleanColumn(configRegistry, columnLabel);
+					else if (type.startsWith("RELATION "))
+						registerRvaColumn(configRegistry, columnLabel);
 					else
 						registerDefaultColumn(configRegistry, columnLabel);
     	        }
@@ -712,6 +719,40 @@ public class RelvarEditor extends Grid {
     	                DisplayMode.EDIT,
     	                columnLabel);
     	    }
+    	    
+    		private void registerRvaColumn(IConfigRegistry configRegistry, String columnLabel) {
+    			// edit or not
+    			configRegistry.registerConfigAttribute(
+    					EditConfigAttributes.CELL_EDITABLE_RULE, 
+    					new IEditableRule() {
+    						@Override
+    						public boolean isEditable(ILayerCell cell, IConfigRegistry configRegistry) {
+    							return isEditable(cell.getColumnIndex(), cell.getRowIndex());
+    						}
+    						@Override
+    						public boolean isEditable(int columnIndex, int rowIndex) {
+    							return dataProvider.isRVA(columnIndex);
+    						}
+    					}, 
+    					DisplayMode.EDIT, 
+    					columnLabel);
+    			
+    			// Button displayed if editable
+    			ImagePainter imagePainter = new ImagePainter(IconLoader.loadIcon("table"));
+    	        configRegistry.registerConfigAttribute(
+    	                CellConfigAttributes.CELL_PAINTER,
+    	                imagePainter,
+    	                DisplayMode.NORMAL,
+    	                "RVAeditor");
+
+    			// Custom dialog box
+    	        configRegistry.registerConfigAttribute(
+    	                EditConfigAttributes.CELL_EDITOR,
+    	                new RvaCellEditor(RelvarEditor.this),
+    	                DisplayMode.EDIT,
+    	                columnLabel);
+    		}
+
     	}
 	    
 	    dataProvider = new DataProvider();
@@ -733,6 +774,8 @@ public class RelvarEditor extends Grid {
 				// changed?
 				else if (dataProvider.isChanged(columnPosition, rowPosition))
 					configLabels.addLabel("changed");
+				else if (dataProvider.isRVA(columnPosition))
+					configLabels.addLabel("RVAeditor");
 			}
         }
         

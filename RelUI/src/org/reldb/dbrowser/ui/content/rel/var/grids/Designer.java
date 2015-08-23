@@ -165,7 +165,7 @@ public abstract class Designer extends Grid {
 					columnLabel);
 			
 			// Button displayed if editable
-			ImagePainter imagePainter = new ImagePainter(IconLoader.loadIcon("item_design"));
+			ImagePainter imagePainter = new ImagePainter(IconLoader.loadIcon("table_design"));
 	        configRegistry.registerConfigAttribute(
 	                CellConfigAttributes.CELL_PAINTER,
 	                imagePainter,
