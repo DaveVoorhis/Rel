@@ -3,9 +3,9 @@ package org.reldb.dbrowser.ui.content.rel.var.grids;
 import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.ui.DbConnection;
 
-public class RvaEditor extends RelvarEditor {
+public class RvaEditor extends Editor {
 	
-//	private String headingDefinition;
+	private String rvaValue;
 	
 	// Relvar attribute designer
 	public RvaEditor(Composite parent, DbConnection connection) {
@@ -13,19 +13,20 @@ public class RvaEditor extends RelvarEditor {
 		askDeleteConfirm = false;
 	}
 
-//	protected String getAttributeSource() {
-//		return headingDefinition;
-//	}
+	protected String getAttributeSource() {
+		return rvaValue;
+	}
 
 	public String getRVAValue() {
-//		headingDefinition = dataProvider.getTypeInfoLiteral();
-//		return headingDefinition;
-		return null;
+		rvaValue = dataProvider.getLiteral();
+		return rvaValue;
 	}
 
 	public void setRVAValue(String rvaValue) {
-//		this.headingDefinition = headingDefinition;
-//		init();
+		this.rvaValue = rvaValue;
+		tuples = obtainTuples();
+    	heading = tuples.getHeading().toArray();
+		init();
 	}
 	
 }

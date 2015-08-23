@@ -7,9 +7,9 @@ import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer.MoveDirectio
 public class RvaCellEditor extends AbstractDialogCellEditor {	
     private boolean dialogIsClosed = false;
 
-    private RelvarEditor parentEditor;
+    private Editor parentEditor;
     
-    public RvaCellEditor(RelvarEditor editor) {
+    public RvaCellEditor(Editor editor) {
     	this.parentEditor = editor;
     }
     

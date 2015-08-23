@@ -60,6 +60,9 @@ public class RvaEditorDialog extends Dialog {
 	}
 	
 	protected void okPressed() {
+		attributeEditor.processDirtyRows();
+		if (attributeEditor.countDirtyRows() > 0)
+			return;
 		rvaValue = attributeEditor.getRVAValue();
 		super.okPressed();
 	}
