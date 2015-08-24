@@ -194,6 +194,16 @@ public abstract class Editor extends Grid {
 		RowAction getAction() {
 			return action;
 		}
+
+		public boolean isFilled() {
+			for (int column=0; column<heading.length; column++) {
+				String type = heading[column].getType().toString();
+				HashMap<Integer, Object> data = isChanged(column) ? newData : originalData;
+				if (!type.equals("CHARACTER") && (data.get(column) == null || data.get(column).toString().trim().length() == 0))
+					return false;
+			}
+			return true;
+		}
 	}
 
     class DataProvider implements IDataProvider {
@@ -313,7 +323,6 @@ public abstract class Editor extends Grid {
 			if (relvarName == null) {
 				row.committed();
 				processRows.remove(rownum);
-				// TODO delete rows
 			} else {
 				String keyspec = getKeySelectionExpression(rownum);
 				String updateQuery = "UPDATE " + relvarName + " WHERE " + keyspec + ": {";
@@ -376,7 +385,6 @@ public abstract class Editor extends Grid {
 			if (relvarName == null) {
 				row.committed();
 				processRows.remove(rownum);
-				// TODO insert rows
 			} else {
 				String insertQuery = "D_INSERT " + relvarName + " RELATION {" + getTupleDefinitionFor(row) + "};";
 	
@@ -429,10 +437,11 @@ public abstract class Editor extends Grid {
 			for (Integer rownum: processRows.toArray(new Integer[0]))
 				if (rownum != lastRowSelected) {
 					Row row = rows.get(rownum);
-					switch (row.getAction()) {
-						case INSERT: insertRow(row, rownum); break;
-						case UPDATE: updateRow(row, rownum); break;
-					}
+					if (row.isFilled())
+						switch (row.getAction()) {
+							case INSERT: insertRow(row, rownum); break;
+							case UPDATE: updateRow(row, rownum); break;
+						}
 				}
 		}
 		
@@ -451,8 +460,8 @@ public abstract class Editor extends Grid {
 		
 		public String getLiteral() {
 			String body = "";
-			for (Row row: rows)
-				body += ((body.length() > 0) ? ",\n" : "") + "\t" + getTupleDefinitionFor(row);
+			for (int rownum = 0; rownum < rows.size() - 1; rownum++)
+				body += ((body.length() > 0) ? ",\n" : "") + "\t" + getTupleDefinitionFor(rows.get(rownum));
 			return headingString + " {" + body + "}";
 		}
     };
