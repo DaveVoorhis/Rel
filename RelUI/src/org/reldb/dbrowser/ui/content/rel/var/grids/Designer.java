@@ -469,7 +469,7 @@ public abstract class Designer extends Grid {
 			// produce output
 			if (body.length() == 0)
 				return "";
-			return "ALTER " + relvarName + "\n" + body + ";";
+			return "ALTER VAR " + relvarName + "REAL\n" + body + ";";
 		}
     };
 
