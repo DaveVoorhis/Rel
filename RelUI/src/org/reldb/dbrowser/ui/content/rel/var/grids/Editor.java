@@ -461,7 +461,7 @@ public abstract class Editor extends Grid {
 		public String getLiteral() {
 			String body = "";
 			for (int rownum = 0; rownum < rows.size() - 1; rownum++)
-				body += ((body.length() > 0) ? ",\n" : "") + "\t" + getTupleDefinitionFor(rows.get(rownum));
+				body += ((body.length() > 0) ? "," : "") + "\n\t" + getTupleDefinitionFor(rows.get(rownum));
 			return headingString + " {" + body + "}";
 		}
     };
