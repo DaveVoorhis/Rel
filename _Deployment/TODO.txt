@@ -1,6 +1,8 @@
 ** TO DO **
 
 Short term:
+	// TODO - implement VAR varname REAL ... in var designer.
+	// TODO - implement ALTER VAR varname REAL ... in Rel.
 	// TODO - improve UPDATE operator in Rev.
 	// TODO - implement (only for multiple possreps) SELECTORS and (mandatory) INIT clause 
 	//        in TYPE definitions.
