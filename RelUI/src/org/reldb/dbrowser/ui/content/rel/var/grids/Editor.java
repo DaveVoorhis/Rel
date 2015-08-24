@@ -199,40 +199,42 @@ public abstract class Editor extends Grid {
     class DataProvider implements IDataProvider {
     	
     	private HashSet<Integer> processRows = new HashSet<Integer>();
-    	private Vector<Row> cache = new Vector<Row>();
+    	private Vector<Row> rows = new Vector<Row>();
+    	private String headingString;
     	
     	public DataProvider() {
     		reload();
+    		headingString = getRelHeading();
     	}
 
 		public void reload() {
-			cache.clear();
+			rows.clear();
     		Iterator<Tuple> iterator = tuples.iterator();
     		while (iterator.hasNext())
-    			cache.add(new Row(iterator.next()));
-    		cache.add(new Row());			
+    			rows.add(new Row(iterator.next()));
+    		rows.add(new Row());			
 			processRows.clear();			
 		}
 
 		public String getError(int row) {
-			if (row >= cache.size())
+			if (row >= rows.size())
 				return null;
-			return cache.get(row).getError();
+			return rows.get(row).getError();
 		}
 
 		public boolean isChanged(int columnIndex, int rowIndex) {
-			return cache.get(rowIndex).isChanged(columnIndex);
+			return rows.get(rowIndex).isChanged(columnIndex);
 		}
     	
 		@Override
 		public Object getDataValue(int columnIndex, int rowIndex) {
-			return cache.get(rowIndex).getColumnValue(columnIndex);
+			return rows.get(rowIndex).getColumnValue(columnIndex);
 		}
 
 		private int getCountOfInsertErrors() {
 			int count = 0;
 			for (int row: processRows)
-				if (cache.get(row).getError() != null && cache.get(row).getAction() == RowAction.INSERT)
+				if (rows.get(row).getError() != null && rows.get(row).getAction() == RowAction.INSERT)
 					count++;
 			return count;
 		}
@@ -247,13 +249,13 @@ public abstract class Editor extends Grid {
 				if (newValue.toString().equals(getDataValue(columnIndex, rowIndex).toString()))
 					return;
 			if (newValue == null)
-				cache.get(rowIndex).setColumnValue(columnIndex, newValue);
+				rows.get(rowIndex).setColumnValue(columnIndex, newValue);
 			else
-				cache.get(rowIndex).setColumnValue(columnIndex, newValue.toString());
+				rows.get(rowIndex).setColumnValue(columnIndex, newValue.toString());
 			processRows.add(rowIndex);
-			int lastRowIndex = cache.size() - 1;
+			int lastRowIndex = rows.size() - 1;
 			if (rowIndex == lastRowIndex && getCountOfInsertErrors() == 0) {
-				cache.add(new Row());
+				rows.add(new Row());
 				table.redraw();
 			}
 		}
@@ -265,7 +267,7 @@ public abstract class Editor extends Grid {
 
 		@Override
 		public int getRowCount() {
-			return cache.size();
+			return rows.size();
 		}
 				
 		private String getKeySelectionExpression(int rownum) {
@@ -277,7 +279,7 @@ public abstract class Editor extends Grid {
 			}
 			else
 				key = keys.get(0);
-			Row originalValues = cache.get(rownum);
+			Row originalValues = rows.get(rownum);
 			String keyspec = "";
 			for (int column = 0; column < heading.length; column++) {
 				String attributeName = heading[column].getName();
@@ -345,35 +347,38 @@ public abstract class Editor extends Grid {
 			refreshAfterUpdate();
 		}
 		
+		private String getTupleDefinitionFor(Row row) {
+			String insertAttributes = "";
+			for (int column = 0; column < heading.length; column++) {
+				if (insertAttributes.length() > 0)
+					insertAttributes += ", ";
+				String attributeType = heading[column].getType().toString();
+				Object attributeValueRaw = row.getColumnValue(column);
+				String attributeValue = "";
+				if (attributeValueRaw != null)
+					attributeValue = attributeValueRaw.toString();
+				else if (attributeType.equals("BOOLEAN"))
+					attributeValue = "False";
+				else if (attributeType.equals("RATIONAL"))
+					attributeValue = "0.0";
+				else if (attributeType.equals("INTEGER"))
+					attributeValue = "0";
+				row.setColumnValue(column, attributeValue);
+				if (attributeType.equals("CHARACTER"))
+					attributeValue = "'" + StringUtils.quote(attributeValue) + "'";
+				String attributeName = heading[column].getName();
+				insertAttributes += attributeName + " " + attributeValue;
+			}
+			return "TUPLE {" + insertAttributes + "}";
+		}
+		
 		private synchronized void insertRow(Row row, int rownum) {		
 			if (relvarName == null) {
 				row.committed();
 				processRows.remove(rownum);
 				// TODO insert rows
 			} else {
-				String insertQuery = "D_INSERT " + relvarName + " RELATION {TUPLE {";
-				String insertAttributes = "";
-				for (int column = 0; column < heading.length; column++) {
-					if (insertAttributes.length() > 0)
-						insertAttributes += ", ";
-					String attributeType = heading[column].getType().toString();
-					Object attributeValueRaw = row.getColumnValue(column);
-					String attributeValue = "";
-					if (attributeValueRaw != null)
-						attributeValue = attributeValueRaw.toString();
-					else if (attributeType.equals("BOOLEAN"))
-						attributeValue = "False";
-					else if (attributeType.equals("RATIONAL"))
-						attributeValue = "0.0";
-					else if (attributeType.equals("INTEGER"))
-						attributeValue = "0";
-					row.setColumnValue(column, attributeValue);
-					if (attributeType.equals("CHARACTER"))
-						attributeValue = "'" + StringUtils.quote(attributeValue) + "'";
-					String attributeName = heading[column].getName();
-					insertAttributes += attributeName + " " + attributeValue;
-				}
-				insertQuery += insertAttributes + "}};";
+				String insertQuery = "D_INSERT " + relvarName + " RELATION {" + getTupleDefinitionFor(row) + "};";
 	
 				System.out.println("RelvarEditor: query is " + insertQuery);
 				
@@ -399,7 +404,7 @@ public abstract class Editor extends Grid {
 				int tupleCount = 0;
 				for (Range range: selections)
 					for (int rownum = range.start; rownum < range.end; rownum++) {
-						if (cache.get(rownum).getAction() != RowAction.INSERT) {
+						if (rows.get(rownum).getAction() != RowAction.INSERT) {
 							String keyspec = getKeySelectionExpression(rownum);
 							if (allKeysSpec.length() > 0)
 								allKeysSpec += " OR ";
@@ -423,7 +428,7 @@ public abstract class Editor extends Grid {
 		public void processDirtyRows() {
 			for (Integer rownum: processRows.toArray(new Integer[0]))
 				if (rownum != lastRowSelected) {
-					Row row = cache.get(rownum);
+					Row row = rows.get(rownum);
 					switch (row.getAction()) {
 						case INSERT: insertRow(row, rownum); break;
 						case UPDATE: updateRow(row, rownum); break;
@@ -439,12 +444,330 @@ public abstract class Editor extends Grid {
 			String attributeType = heading[columnIndex].getType().toString();
 			return attributeType.startsWith("RELATION ");
 		}
-
+		
+		private String getRelHeading() {
+			return new TypeInfo(connection).getHeadingDefinition("TYPE_OF(" + getAttributeSource() + ")");
+		}
+		
 		public String getLiteral() {
-			// TODO Auto-generated method stub
-			return null;
+			String body = "";
+			for (Row row: rows)
+				body += ((body.length() > 0) ? ",\n" : "") + "\t" + getTupleDefinitionFor(row);
+			return headingString + " {" + body + "}";
 		}
     };
+	
+	class HeaderConfiguration extends AbstractRegistryConfiguration {
+		public void configureRegistry(IConfigRegistry configRegistry) {
+			ImagePainter keyPainter = new ImagePainter(IconLoader.loadIconSmall("bullet_key")); 
+			CellPainterDecorator decorator = new CellPainterDecorator(
+					new TextPainter(), 
+					CellEdgeEnum.RIGHT, 
+					keyPainter);
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_PAINTER,
+	                new BeveledBorderDecorator(decorator),
+	                DisplayMode.NORMAL,
+	                "keycolumnintegrated");
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_PAINTER,
+	                new BeveledBorderDecorator(keyPainter),
+	                DisplayMode.NORMAL,
+	                "keycolumnalone");
+	        BorderStyle borderStyle = new BorderStyle();
+	        borderStyle.setColor(GUIHelper.COLOR_GRAY);
+			configRegistry.registerConfigAttribute(
+					CellConfigAttributes.CELL_PAINTER, 
+					new LineBorderDecorator(new TextPainter(), borderStyle), 
+					DisplayMode.NORMAL, 
+					GridRegion.CORNER);
+		}
+	}
+	
+	class EditorConfiguration extends AbstractRegistryConfiguration {
+	    @Override
+	    public void configureRegistry(IConfigRegistry configRegistry) {
+	    	// editable
+	        configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, IEditableRule.ALWAYS_EDITABLE);
+	        // style for "changed" cells
+	        Style changedStyle = new Style();
+	        changedStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_YELLOW);
+	        changedStyle.setAttributeValue(CellStyleAttributes.FOREGROUND_COLOR, GUIHelper.COLOR_BLACK);
+	        configRegistry.registerConfigAttribute(
+	        		CellConfigAttributes.CELL_STYLE,
+	        		changedStyle,
+	        		DisplayMode.NORMAL,
+	        		"changed");
+	        configRegistry.registerConfigAttribute(
+	        		CellConfigAttributes.CELL_STYLE,
+	        		changedStyle,
+	        		DisplayMode.SELECT,
+	        		"changed");
+	        // style for "error" cells
+	        Style errorStyle = new Style();
+	        errorStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_RED);
+	        errorStyle.setAttributeValue(CellStyleAttributes.FOREGROUND_COLOR, GUIHelper.COLOR_BLACK);
+	        configRegistry.registerConfigAttribute(
+	        		CellConfigAttributes.CELL_STYLE,
+	        		errorStyle,
+	        		DisplayMode.NORMAL,
+	        		"error");
+	        configRegistry.registerConfigAttribute(
+	        		CellConfigAttributes.CELL_STYLE,
+	        		errorStyle,
+	        		DisplayMode.SELECT,
+	        		"error");    	        
+	        // options for Excel export
+	        configRegistry.registerConfigAttribute(ExportConfigAttributes.EXPORTER, new HSSFExcelExporter());    	        
+	        // style for selected cells
+	        Style selectStyle = new Style();
+			configRegistry.registerConfigAttribute(
+					CellConfigAttributes.CELL_STYLE, 
+					selectStyle, 
+					DisplayMode.SELECT);
+			// default text editor
+	        configRegistry.registerConfigAttribute(
+	                EditConfigAttributes.CELL_EDITOR,
+	                new TextCellEditor(true, true) {
+	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
+	                		editorBeenOpened(getRowIndex(), getColumnIndex());
+	                		return super.activateCell(parent, originalCanonicalValue);
+	                	}
+	                	public void close() {
+	                		editorBeenClosed(getRowIndex(), getColumnIndex());
+	                		super.close();
+	                	}
+	                }, 
+	                DisplayMode.NORMAL);
+	        // open adjacent editor when we leave the current one during editing
+	        configRegistry.registerConfigAttribute(
+	                EditConfigAttributes.OPEN_ADJACENT_EDITOR,
+	                Boolean.TRUE,
+	                DisplayMode.EDIT);
+	        // for each column...
+	        for (int column = 0; column < heading.length; column++) {
+	        	Attribute attribute = heading[column];
+	        	String columnLabel = "column" + column;
+	        	String type = attribute.getType().toString();
+	        	if (type.equalsIgnoreCase("INTEGER"))
+					registerIntegerColumn(configRegistry, columnLabel);
+				else if (type.equalsIgnoreCase("RATIONAL"))
+					registerRationalColumn(configRegistry, columnLabel);
+				else if (type.equalsIgnoreCase("CHARACTER"))
+					registerMultiLineEditorColumn(configRegistry, columnLabel);
+				else if (type.equalsIgnoreCase("BOOLEAN"))
+					registerBooleanColumn(configRegistry, columnLabel);
+				else if (type.startsWith("RELATION ")) {
+					String defaultValue = type + " {}";
+					registerRvaColumn(configRegistry, columnLabel, defaultValue);
+				} else
+					registerDefaultColumn(configRegistry, columnLabel);
+	        }
+	    }
+
+		private void registerDefaultColumn(IConfigRegistry configRegistry, String columnLabel) {
+	        Style cellStyle = new Style();
+	        cellStyle.setAttributeValue(
+	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
+	                HorizontalAlignmentEnum.LEFT);
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_STYLE,
+	                cellStyle,
+	                DisplayMode.NORMAL,
+	                columnLabel);
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_STYLE,
+	                cellStyle,
+	                DisplayMode.EDIT,
+	                columnLabel);
+	    }
+	    
+	    private void registerBooleanColumn(IConfigRegistry configRegistry, String columnLabel) {
+	        // register a CheckBoxCellEditor
+	        configRegistry.registerConfigAttribute(
+	                EditConfigAttributes.CELL_EDITOR,
+	                new CheckBoxCellEditor() {
+	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
+	                		editorBeenOpened(getRowIndex(), getColumnIndex());
+	                		return super.activateCell(parent, originalCanonicalValue);
+	                	}
+	                	public void close() {
+	                		editorBeenClosed(getRowIndex(), getColumnIndex());
+	                		super.close();
+	                	}
+	                },
+	                DisplayMode.EDIT,
+	                columnLabel);
+
+	        // if you want to use the CheckBoxCellEditor, you should also consider
+	        // using the corresponding CheckBoxPainter to show the content like a
+	        // checkbox in your NatTable
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_PAINTER,
+	                new CheckBoxPainter(),
+	                DisplayMode.NORMAL,
+	                columnLabel);
+
+	        // using a CheckBoxCellEditor also needs a Boolean conversion to work
+	        // correctly
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.DISPLAY_CONVERTER,
+	                new DefaultDisplayConverter() {
+	                    @Override
+	                    public Object canonicalToDisplayValue(Object canonicalValue) {
+	                    	if (canonicalValue == null)
+	                    		return null;
+	                    	boolean isTrue = canonicalValue.toString().equalsIgnoreCase("True");
+	                    	return new Boolean(isTrue);
+	                    }
+	                    @Override
+	                    public Object displayToCanonicalValue(Object destinationValue) {
+	                    	return ((Boolean)destinationValue).booleanValue() ? "True" : "False";
+	                    }
+	                },
+	                DisplayMode.NORMAL,
+	                columnLabel);
+	    }
+
+	    private void registerRationalColumn(IConfigRegistry configRegistry, String columnLabel) {
+	        // configure the tick update dialog to use the adjust mode
+	        configRegistry.registerConfigAttribute(
+	                TickUpdateConfigAttributes.USE_ADJUST_BY,
+	                Boolean.TRUE,
+	                DisplayMode.EDIT,
+	                columnLabel);
+	        // Use Double converter
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.DISPLAY_CONVERTER,
+	                new DefaultDoubleDisplayConverter(),
+	                DisplayMode.NORMAL,
+	                columnLabel);
+	    }
+
+	    private void registerIntegerColumn(IConfigRegistry configRegistry, String columnLabel) {
+	        Style cellStyle = new Style();
+	        cellStyle.setAttributeValue(
+	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
+	                HorizontalAlignmentEnum.RIGHT);
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_STYLE,
+	                cellStyle,
+	                DisplayMode.NORMAL,
+	                columnLabel);
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_STYLE,
+	                cellStyle,
+	                DisplayMode.EDIT,
+	                columnLabel);
+	        // Use Integer converter
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.DISPLAY_CONVERTER,
+	                new DefaultIntegerDisplayConverter(),
+	                DisplayMode.NORMAL,
+	                columnLabel);
+	    }
+	    
+	    private void registerMultiLineEditorColumn(IConfigRegistry configRegistry, String columnLabel) {
+	        // configure the multi line text editor
+	        configRegistry.registerConfigAttribute(
+	                EditConfigAttributes.CELL_EDITOR,
+	                new MultiLineTextCellEditor(false) {
+	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
+	                		editorBeenOpened(getRowIndex(), getColumnIndex());
+	                		return super.activateCell(parent, originalCanonicalValue);
+	                	}
+	                	public void close() {
+	                		editorBeenClosed(getRowIndex(), getColumnIndex());
+	                		super.close();
+	                	}
+	                },
+	                DisplayMode.NORMAL,
+	                columnLabel);
+
+	        Style cellStyle = new Style();
+	        cellStyle.setAttributeValue(
+	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
+	                HorizontalAlignmentEnum.LEFT);
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_STYLE,
+	                cellStyle,
+	                DisplayMode.NORMAL,
+	                columnLabel);
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_STYLE,
+	                cellStyle,
+	                DisplayMode.EDIT,
+	                columnLabel);
+
+	        // configure custom dialog settings
+	        Display display = Display.getCurrent();
+	        Map<String, Object> editDialogSettings = new HashMap<String, Object>();
+	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_TITLE, "Edit");
+	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_ICON, display.getSystemImage(SWT.ICON_WARNING));
+	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_RESIZABLE, Boolean.TRUE);
+
+	        Point size = new Point(400, 300);
+	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_SIZE, size);
+
+	        int screenWidth = display.getBounds().width;
+	        int screenHeight = display.getBounds().height;
+	        Point location = new Point(
+	                (screenWidth / (2 * display.getMonitors().length)) - (size.x / 2),
+	                (screenHeight / 2) - (size.y / 2));
+	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_LOCATION, location);
+
+	        configRegistry.registerConfigAttribute(
+	                EditConfigAttributes.EDIT_DIALOG_SETTINGS,
+	                editDialogSettings,
+	                DisplayMode.EDIT,
+	                columnLabel);
+	    }
+	    
+		private void registerRvaColumn(IConfigRegistry configRegistry, String columnLabel, String defaultValue) {
+			// edit or not
+			configRegistry.registerConfigAttribute(
+					EditConfigAttributes.CELL_EDITABLE_RULE, 
+					new IEditableRule() {
+						@Override
+						public boolean isEditable(ILayerCell cell, IConfigRegistry configRegistry) {
+							return isEditable(cell.getColumnIndex(), cell.getRowIndex());
+						}
+						@Override
+						public boolean isEditable(int columnIndex, int rowIndex) {
+							return dataProvider.isRVA(columnIndex);
+						}
+					}, 
+					DisplayMode.EDIT, 
+					columnLabel);
+			
+			// Button displayed if editable
+			ImagePainter imagePainter = new ImagePainter(IconLoader.loadIcon("table"));
+	        configRegistry.registerConfigAttribute(
+	                CellConfigAttributes.CELL_PAINTER,
+	                imagePainter,
+	                DisplayMode.NORMAL,
+	                "RVAeditor");
+
+			// Custom dialog box
+	        configRegistry.registerConfigAttribute(
+	                EditConfigAttributes.CELL_EDITOR,
+	                new RvaCellEditor(Editor.this, defaultValue),
+	                DisplayMode.EDIT,
+	                columnLabel);
+		}
+	}
+	
+	class PopupEditorConfiguration extends AbstractRegistryConfiguration {
+	    @Override
+	    public void configureRegistry(IConfigRegistry configRegistry) {
+	        // always/never open in a subdialog depending on popupEdit value
+	    	configRegistry.unregisterConfigAttribute(EditConfigAttributes.OPEN_IN_DIALOG);
+	        configRegistry.registerConfigAttribute(
+	                EditConfigAttributes.OPEN_IN_DIALOG,
+	                popupEdit,
+	                DisplayMode.EDIT);
+	    }
+	}
     
     public void refresh() {
     	table.refresh();
@@ -455,317 +778,6 @@ public abstract class Editor extends Grid {
 	}
 	
 	protected void init() {
-    	class PopupEditorConfiguration extends AbstractRegistryConfiguration {
-    	    @Override
-    	    public void configureRegistry(IConfigRegistry configRegistry) {
-    	        // always/never open in a subdialog depending on popupEdit value
-    	    	configRegistry.unregisterConfigAttribute(EditConfigAttributes.OPEN_IN_DIALOG);
-    	        configRegistry.registerConfigAttribute(
-    	                EditConfigAttributes.OPEN_IN_DIALOG,
-    	                popupEdit,
-    	                DisplayMode.EDIT);
-    	    }
-    	}
-    	
-    	class HeaderConfiguration extends AbstractRegistryConfiguration {
-    		public void configureRegistry(IConfigRegistry configRegistry) {
-    			ImagePainter keyPainter = new ImagePainter(IconLoader.loadIconSmall("bullet_key")); 
-    			CellPainterDecorator decorator = new CellPainterDecorator(
-    					new TextPainter(), 
-    					CellEdgeEnum.RIGHT, 
-    					keyPainter);
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.CELL_PAINTER,
-    	                new BeveledBorderDecorator(decorator),
-    	                DisplayMode.NORMAL,
-    	                "keycolumnintegrated");
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.CELL_PAINTER,
-    	                new BeveledBorderDecorator(keyPainter),
-    	                DisplayMode.NORMAL,
-    	                "keycolumnalone");
-    	        BorderStyle borderStyle = new BorderStyle();
-    	        borderStyle.setColor(GUIHelper.COLOR_GRAY);
-    			configRegistry.registerConfigAttribute(
-    					CellConfigAttributes.CELL_PAINTER, 
-    					new LineBorderDecorator(new TextPainter(), borderStyle), 
-    					DisplayMode.NORMAL, 
-    					GridRegion.CORNER);
-    		}
-    	}
-    	
-    	class EditorConfiguration extends AbstractRegistryConfiguration {
-    	    @Override
-    	    public void configureRegistry(IConfigRegistry configRegistry) {
-    	    	// editable
-    	        configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, IEditableRule.ALWAYS_EDITABLE);
-    	        // style for "changed" cells
-    	        Style changedStyle = new Style();
-    	        changedStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_YELLOW);
-    	        changedStyle.setAttributeValue(CellStyleAttributes.FOREGROUND_COLOR, GUIHelper.COLOR_BLACK);
-    	        configRegistry.registerConfigAttribute(
-    	        		CellConfigAttributes.CELL_STYLE,
-    	        		changedStyle,
-    	        		DisplayMode.NORMAL,
-    	        		"changed");
-    	        configRegistry.registerConfigAttribute(
-    	        		CellConfigAttributes.CELL_STYLE,
-    	        		changedStyle,
-    	        		DisplayMode.SELECT,
-    	        		"changed");
-    	        // style for "error" cells
-    	        Style errorStyle = new Style();
-    	        errorStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_RED);
-    	        errorStyle.setAttributeValue(CellStyleAttributes.FOREGROUND_COLOR, GUIHelper.COLOR_BLACK);
-    	        configRegistry.registerConfigAttribute(
-    	        		CellConfigAttributes.CELL_STYLE,
-    	        		errorStyle,
-    	        		DisplayMode.NORMAL,
-    	        		"error");
-    	        configRegistry.registerConfigAttribute(
-    	        		CellConfigAttributes.CELL_STYLE,
-    	        		errorStyle,
-    	        		DisplayMode.SELECT,
-    	        		"error");    	        
-    	        // options for Excel export
-    	        configRegistry.registerConfigAttribute(ExportConfigAttributes.EXPORTER, new HSSFExcelExporter());    	        
-    	        // style for selected cells
-    	        Style selectStyle = new Style();
-    			configRegistry.registerConfigAttribute(
-    					CellConfigAttributes.CELL_STYLE, 
-    					selectStyle, 
-    					DisplayMode.SELECT);
-    			// default text editor
-    	        configRegistry.registerConfigAttribute(
-    	                EditConfigAttributes.CELL_EDITOR,
-    	                new TextCellEditor(true, true) {
-    	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
-    	                		editorBeenOpened(getRowIndex(), getColumnIndex());
-    	                		return super.activateCell(parent, originalCanonicalValue);
-    	                	}
-    	                	public void close() {
-    	                		editorBeenClosed(getRowIndex(), getColumnIndex());
-    	                		super.close();
-    	                	}
-    	                }, 
-    	                DisplayMode.NORMAL);
-    	        // open adjacent editor when we leave the current one during editing
-    	        configRegistry.registerConfigAttribute(
-    	                EditConfigAttributes.OPEN_ADJACENT_EDITOR,
-    	                Boolean.TRUE,
-    	                DisplayMode.EDIT);
-    	        // for each column...
-    	        for (int column = 0; column < heading.length; column++) {
-    	        	Attribute attribute = heading[column];
-    	        	String columnLabel = "column" + column;
-    	        	String type = attribute.getType().toString();
-    	        	if (type.equalsIgnoreCase("INTEGER"))
-						registerIntegerColumn(configRegistry, columnLabel);
-					else if (type.equalsIgnoreCase("RATIONAL"))
-						registerRationalColumn(configRegistry, columnLabel);
-					else if (type.equalsIgnoreCase("CHARACTER"))
-						registerMultiLineEditorColumn(configRegistry, columnLabel);
-					else if (type.equalsIgnoreCase("BOOLEAN"))
-						registerBooleanColumn(configRegistry, columnLabel);
-					else if (type.startsWith("RELATION "))
-						registerRvaColumn(configRegistry, columnLabel);
-					else
-						registerDefaultColumn(configRegistry, columnLabel);
-    	        }
-    	    }
-
-			private void registerDefaultColumn(IConfigRegistry configRegistry, String columnLabel) {
-    	        Style cellStyle = new Style();
-    	        cellStyle.setAttributeValue(
-    	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
-    	                HorizontalAlignmentEnum.LEFT);
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.CELL_STYLE,
-    	                cellStyle,
-    	                DisplayMode.NORMAL,
-    	                columnLabel);
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.CELL_STYLE,
-    	                cellStyle,
-    	                DisplayMode.EDIT,
-    	                columnLabel);
-    	    }
-    	    
-    	    private void registerBooleanColumn(IConfigRegistry configRegistry, String columnLabel) {
-    	        // register a CheckBoxCellEditor
-    	        configRegistry.registerConfigAttribute(
-    	                EditConfigAttributes.CELL_EDITOR,
-    	                new CheckBoxCellEditor() {
-    	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
-    	                		editorBeenOpened(getRowIndex(), getColumnIndex());
-    	                		return super.activateCell(parent, originalCanonicalValue);
-    	                	}
-    	                	public void close() {
-    	                		editorBeenClosed(getRowIndex(), getColumnIndex());
-    	                		super.close();
-    	                	}
-    	                },
-    	                DisplayMode.EDIT,
-    	                columnLabel);
-
-    	        // if you want to use the CheckBoxCellEditor, you should also consider
-    	        // using the corresponding CheckBoxPainter to show the content like a
-    	        // checkbox in your NatTable
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.CELL_PAINTER,
-    	                new CheckBoxPainter(),
-    	                DisplayMode.NORMAL,
-    	                columnLabel);
-
-    	        // using a CheckBoxCellEditor also needs a Boolean conversion to work
-    	        // correctly
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.DISPLAY_CONVERTER,
-    	                new DefaultDisplayConverter() {
-    	                    @Override
-    	                    public Object canonicalToDisplayValue(Object canonicalValue) {
-    	                    	if (canonicalValue == null)
-    	                    		return null;
-    	                    	boolean isTrue = canonicalValue.toString().equalsIgnoreCase("True");
-    	                    	return new Boolean(isTrue);
-    	                    }
-    	                    @Override
-    	                    public Object displayToCanonicalValue(Object destinationValue) {
-    	                    	return ((Boolean)destinationValue).booleanValue() ? "True" : "False";
-    	                    }
-    	                },
-    	                DisplayMode.NORMAL,
-    	                columnLabel);
-    	    }
-
-    	    private void registerRationalColumn(IConfigRegistry configRegistry, String columnLabel) {
-    	        // configure the tick update dialog to use the adjust mode
-    	        configRegistry.registerConfigAttribute(
-    	                TickUpdateConfigAttributes.USE_ADJUST_BY,
-    	                Boolean.TRUE,
-    	                DisplayMode.EDIT,
-    	                columnLabel);
-    	        // Use Double converter
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.DISPLAY_CONVERTER,
-    	                new DefaultDoubleDisplayConverter(),
-    	                DisplayMode.NORMAL,
-    	                columnLabel);
-    	    }
-
-    	    private void registerIntegerColumn(IConfigRegistry configRegistry, String columnLabel) {
-    	        Style cellStyle = new Style();
-    	        cellStyle.setAttributeValue(
-    	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
-    	                HorizontalAlignmentEnum.RIGHT);
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.CELL_STYLE,
-    	                cellStyle,
-    	                DisplayMode.NORMAL,
-    	                columnLabel);
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.CELL_STYLE,
-    	                cellStyle,
-    	                DisplayMode.EDIT,
-    	                columnLabel);
-    	        // Use Integer converter
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.DISPLAY_CONVERTER,
-    	                new DefaultIntegerDisplayConverter(),
-    	                DisplayMode.NORMAL,
-    	                columnLabel);
-    	    }
-    	    
-    	    private void registerMultiLineEditorColumn(IConfigRegistry configRegistry, String columnLabel) {
-    	        // configure the multi line text editor
-    	        configRegistry.registerConfigAttribute(
-    	                EditConfigAttributes.CELL_EDITOR,
-    	                new MultiLineTextCellEditor(false) {
-    	                	protected Control activateCell(Composite parent, Object originalCanonicalValue) {
-    	                		editorBeenOpened(getRowIndex(), getColumnIndex());
-    	                		return super.activateCell(parent, originalCanonicalValue);
-    	                	}
-    	                	public void close() {
-    	                		editorBeenClosed(getRowIndex(), getColumnIndex());
-    	                		super.close();
-    	                	}
-    	                },
-    	                DisplayMode.NORMAL,
-    	                columnLabel);
-
-    	        Style cellStyle = new Style();
-    	        cellStyle.setAttributeValue(
-    	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
-    	                HorizontalAlignmentEnum.LEFT);
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.CELL_STYLE,
-    	                cellStyle,
-    	                DisplayMode.NORMAL,
-    	                columnLabel);
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.CELL_STYLE,
-    	                cellStyle,
-    	                DisplayMode.EDIT,
-    	                columnLabel);
-
-    	        // configure custom dialog settings
-    	        Display display = Display.getCurrent();
-    	        Map<String, Object> editDialogSettings = new HashMap<String, Object>();
-    	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_TITLE, "Edit");
-    	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_ICON, display.getSystemImage(SWT.ICON_WARNING));
-    	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_RESIZABLE, Boolean.TRUE);
-
-    	        Point size = new Point(400, 300);
-    	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_SIZE, size);
-
-    	        int screenWidth = display.getBounds().width;
-    	        int screenHeight = display.getBounds().height;
-    	        Point location = new Point(
-    	                (screenWidth / (2 * display.getMonitors().length)) - (size.x / 2),
-    	                (screenHeight / 2) - (size.y / 2));
-    	        editDialogSettings.put(ICellEditDialog.DIALOG_SHELL_LOCATION, location);
-
-    	        configRegistry.registerConfigAttribute(
-    	                EditConfigAttributes.EDIT_DIALOG_SETTINGS,
-    	                editDialogSettings,
-    	                DisplayMode.EDIT,
-    	                columnLabel);
-    	    }
-    	    
-    		private void registerRvaColumn(IConfigRegistry configRegistry, String columnLabel) {
-    			// edit or not
-    			configRegistry.registerConfigAttribute(
-    					EditConfigAttributes.CELL_EDITABLE_RULE, 
-    					new IEditableRule() {
-    						@Override
-    						public boolean isEditable(ILayerCell cell, IConfigRegistry configRegistry) {
-    							return isEditable(cell.getColumnIndex(), cell.getRowIndex());
-    						}
-    						@Override
-    						public boolean isEditable(int columnIndex, int rowIndex) {
-    							return dataProvider.isRVA(columnIndex);
-    						}
-    					}, 
-    					DisplayMode.EDIT, 
-    					columnLabel);
-    			
-    			// Button displayed if editable
-    			ImagePainter imagePainter = new ImagePainter(IconLoader.loadIcon("table"));
-    	        configRegistry.registerConfigAttribute(
-    	                CellConfigAttributes.CELL_PAINTER,
-    	                imagePainter,
-    	                DisplayMode.NORMAL,
-    	                "RVAeditor");
-
-    			// Custom dialog box
-    	        configRegistry.registerConfigAttribute(
-    	                EditConfigAttributes.CELL_EDITOR,
-    	                new RvaCellEditor(Editor.this),
-    	                DisplayMode.EDIT,
-    	                columnLabel);
-    		}
-
-    	}
 	    
 	    dataProvider = new DataProvider();
 	    headingProvider = new HeadingProvider();

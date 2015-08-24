@@ -8,9 +8,11 @@ public class RvaCellEditor extends AbstractDialogCellEditor {
     private boolean dialogIsClosed = false;
 
     private Editor parentEditor;
+    private String defaultValue;
     
-    public RvaCellEditor(Editor editor) {
+    public RvaCellEditor(Editor editor, String defaultValue) {
     	this.parentEditor = editor;
+    	this.defaultValue = defaultValue;
     }
     
     @Override
@@ -43,7 +45,12 @@ public class RvaCellEditor extends AbstractDialogCellEditor {
 
     @Override
     public void setEditorValue(Object value) {
-    	getDialogInstance().setRVAValue(value.toString());
+    	String editorValue;
+    	if (value.toString().trim().length() == 0)
+    		editorValue = defaultValue;
+    	else
+    		editorValue = value.toString();
+    	getDialogInstance().setRVAValue(editorValue);
     }
 
     @Override

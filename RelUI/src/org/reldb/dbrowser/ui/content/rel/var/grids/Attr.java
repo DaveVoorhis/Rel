@@ -2,7 +2,7 @@ package org.reldb.dbrowser.ui.content.rel.var.grids;
 
 import org.reldb.rel.client.Tuple;
 
-class Attribute {
+class Attr {
 	public static final int NAME_COLUMN = 0;
 	public static final int TYPE_COLUMN = 1;
 	public static final int HEADING_COLUMN = 2;
@@ -16,7 +16,7 @@ class Attribute {
 	private String newTypeName;
 	private String newHeading;
 	
-	Attribute(Tuple tuple) {
+	Attr(Tuple tuple) {
 		oldName = tuple.get(NAME_COLUMN).toString();
 		oldTypeName = tuple.get(TYPE_COLUMN).toString();
 		oldHeading = tuple.get(HEADING_COLUMN).toString();
@@ -25,7 +25,7 @@ class Attribute {
 		newHeading = null;
 	}
 	
-	Attribute() {
+	Attr() {
 		oldName = null;
 		oldTypeName = null;
 		oldHeading = null;
