@@ -1,6 +1,8 @@
 ** TO DO **
 
 Short term:
+	// TODO - Fix: THE_Kind(TYPE_OF(sys.Catalog)) fails immediately after database creation.
+	//        Works when Rel is shutdown and restarted.
 	// TODO - implement VAR varname REAL ... in var designer.
 	// TODO - implement ALTER VAR varname REAL ... in Rel.
 	// TODO - improve UPDATE operator in Rev.
