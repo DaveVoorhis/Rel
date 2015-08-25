@@ -556,7 +556,7 @@ public class Generator {
 		inSelectValue = false;
 		return value;
 	}
-
+	
 	private void createTypeOperators(final TypeAlpha udt, final String owner) {
 		final String typeName = udt.getTypeName();
 		// create type's operators

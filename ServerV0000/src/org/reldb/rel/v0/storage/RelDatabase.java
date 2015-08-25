@@ -323,12 +323,23 @@ public class RelDatabase {
 	        // Catalog build phase 0
 	        catalog.generatePhase0(generator);
 	        
-	        // Construct builtin-in types and operators
+	        // Construct builtin-in primitive types and operators
 	        specialCacheMode = true;
 			BuiltinOperators.buildOperators(this);
 			BuiltinTypeBuilder.buildTypes(this);
 			operatorCachePermanent = operatorCache;
 			specialCacheMode = false;
+
+			// Construct built-in type types.
+	    	if (!isTypeExists(generator, "TypeInfo")) {
+	    		try {
+					Interpreter.executeStatementPrivileged(this, "TYPE TypeInfo UNION;", "Rel", System.out);
+		    		Interpreter.executeStatementPrivileged(this, "TYPE Scalar IS {TypeInfo POSSREP {TypeName CHAR}};", "Rel", System.out);
+		    		Interpreter.executeStatementPrivileged(this, "TYPE NonScalar IS {TypeInfo POSSREP {Kind CHAR, Attributes RELATION {AttrName CHAR, AttrType TypeInfo}}};", "Rel", System.out);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+	    	}
 			
 			// Catalog build phase 1
 	        catalog.generatePhase1(generator);
