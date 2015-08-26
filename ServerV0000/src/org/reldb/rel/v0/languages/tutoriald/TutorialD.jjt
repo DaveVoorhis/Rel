@@ -82,6 +82,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 {
   < ADD: "ADD" >
 | < ALL: "ALL" >
+| < ALTER: "ALTER" >
 | < AND: "AND" >
 | < ANNOUNCE: "ANNOUNCE" >
 | < ARRAY: "ARRAY" >
@@ -372,6 +373,7 @@ void statement_body() :
 	|	op_def()
 	|	type_def()
 	|	drop()
+	|  	alter()
 	|	var_def()
 	|	db_constraint_def()
 	|	relation_array_load()
@@ -570,6 +572,27 @@ void op_signature() #OpSignature :
 {}
 {
 	identifier() "(" type_ref_commalist() ")"
+}
+
+void alter() :
+{}
+{
+  <ALTER> alter_var()
+}
+
+void alter_var() #AlterVar :
+{}
+{
+  <VAR> identifier() <REAL> ( alter_var_action() )*
+}
+
+void alter_var_action() :
+{}
+{
+  <RENAME> identifier() <TO> identifier() 	#AlterVarActionRename(2)| <TYPE_OF> identifier() <TO> type_ref() 	#AlterVarActionChangeType(2)
+| <INSERT> attribute_spec() 				#AlterVarActionInsert(1)
+| <DROP> identifier() 						#AlterVarActionDrop(1)
+| <ALTER> var_keydeflist() 					#AlterVarActionKey()
 }
 
 void op_type() #OpType :

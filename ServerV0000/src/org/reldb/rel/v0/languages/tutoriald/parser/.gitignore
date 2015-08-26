@@ -248,3 +248,10 @@
 /TutorialDVisitor.java
 /ASTBackup.java
 /ASTTypeOf.java
+/ASTAlterVar.java
+/ASTAlterVarAction.java
+/ASTAlterVarActionChangeType.java
+/ASTAlterVarActionDrop.java
+/ASTAlterVarActionInsert.java
+/ASTAlterVarActionKey.java
+/ASTAlterVarActionRename.java

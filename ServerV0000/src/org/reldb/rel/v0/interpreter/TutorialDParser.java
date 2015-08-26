@@ -1426,6 +1426,7 @@ public class TutorialDParser implements TutorialDVisitor {
 	}
 	
 	public Object visit(ASTDatabaseConstraint node, Object data) {
+		currentNode = node;
 		// Child 0 - identifier
 		String constraintName = getTokenOfChild(node, 0);
 		// Child 1 - boolean expression
@@ -1443,6 +1444,7 @@ public class TutorialDParser implements TutorialDVisitor {
 	}
 	
 	public Object visit(ASTDropConstraint node, Object data) {
+		currentNode = node;
 		// Child 0 - identifier
 		String constraintName = getTokenOfChild(node, 0);
 		generator.dropConstraint(constraintName);
@@ -1450,9 +1452,89 @@ public class TutorialDParser implements TutorialDVisitor {
 	}
 		
 	public Object visit(ASTDropType node, Object data) {
+		currentNode = node;
 		// Child 0 - identifier
 		String typeName = getTokenOfChild(node, 0);
 		generator.dropType(typeName);
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTAlterVar node, Object data) {
+		currentNode = node;
+		// Child 0 - identifier
+		String varname = getTokenOfChild(node, 0);
+		Slot reference = generator.findReference(varname);
+		if (reference.isParameter())
+			throw new ExceptionSemantic("RS0416: Parameter cannot be ALTERed.");
+		if (!(reference.getType() instanceof TypeRelation))
+			throw new ExceptionSemantic("RS0417: VAR " + varname + " must be relation-valued.");
+		// Child 0 to n: all AlterVarAction*
+		for (int i=1; i<getChildCount(node); i++)
+			compileChild(node, i, varname);
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionRename node, Object data) {
+		currentNode = node;
+		// data is varname
+		String varname = (String)data;
+		// child 0 is old attribute name
+		String oldName = getTokenOfChild(node, 0);
+		// child 1 is new attribute name
+		String newName = getTokenOfChild(node, 1);
+		generator.alterVarRealRename(varname, oldName, newName);
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionChangeType node, Object data) {
+		currentNode = node;
+		// data is varname
+		String varname = (String)data;
+		// child 0 is attribute name
+		String attributeName = getTokenOfChild(node, 0);
+		// child 1 is new type
+		Type newType = (Type)compileChild(node, 1, data);
+		generator.alterVarRealChangeType(varname, attributeName, newType);
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionInsert node, Object data) {
+		currentNode = node;
+		// data is varname
+		String varname = (String)data;
+		// child 0 is ASTAttributeSpec; heading will contain new attribute name and type
+		Heading heading = new Heading();
+		compileChild(node, 0, heading);
+		generator.alterVarRealInsertAttributes(varname, heading);
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionDrop node, Object data) {
+		currentNode = node;
+		// data is varname
+		String varname = (String)data;
+		// child 0 is attribute name
+		String attributeName = getTokenOfChild(node, 0);
+		generator.alterVarRealDropAttribute(varname, attributeName);
+		return null;
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionKey node, Object data) {
+		currentNode = node;
+		// data is varname
+		String varname = (String)data;
+		// child 0 is ASTKeyDefList; heading contains relvar heading, returns RelvarHeading
+		Slot reference = generator.findReference(varname);
+		TypeRelation relationType = (TypeRelation)reference.getType();
+		Heading heading = relationType.getHeading();
+		RelvarHeading keydefs = (RelvarHeading)compileChild(node, 0, heading);
+		generator.alterVarRealAlterKey(varname, keydefs);
 		return null;
 	}
 	

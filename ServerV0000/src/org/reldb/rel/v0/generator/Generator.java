@@ -104,6 +104,11 @@ import org.reldb.rel.v0.vm.instructions.relation.OpRelationWhere;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationWrite;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationXunion;
 import org.reldb.rel.v0.vm.instructions.relation.OpTupleInRelation;
+import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealAlterKey;
+import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealChangeType;
+import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealDropAttribute;
+import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealInsertAttributes;
+import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealRename;
 import org.reldb.rel.v0.vm.instructions.relvar.OpRelvarDeleteGivenExpression;
 import org.reldb.rel.v0.vm.instructions.relvar.OpRelvarDeleteWhere;
 import org.reldb.rel.v0.vm.instructions.relvar.OpRelvarGlobalGet;
@@ -717,6 +722,47 @@ public class Generator {
 		endAssignment();
 	}
 
+	private void checkRelvarIsGlobalPersistent(String varname) {
+		RelvarMetadata metadata = database.getRelvarMetadata(varname);
+		if (!(metadata instanceof RelvarRealMetadata))
+			throw new ExceptionSemantic("RS0418: To ALTER VAR " + varname + ", it must be a REAL relvar.");
+	}
+	
+	public void alterVarRealRename(String varname, String oldAttributeName, String newAttributeName) {
+		checkRelvarIsGlobalPersistent(varname);
+		beginAssignment();
+		compileInstruction(new OpAlterVarRealRename(varname, oldAttributeName, newAttributeName));
+		endAssignment();
+	}
+
+	public void alterVarRealChangeType(String varname, String attributeName, Type newType) {
+		checkRelvarIsGlobalPersistent(varname);
+		beginAssignment();
+		compileInstruction(new OpAlterVarRealChangeType(varname, attributeName, newType));
+		endAssignment();
+	}
+
+	public void alterVarRealInsertAttributes(String varname, Heading heading) {
+		checkRelvarIsGlobalPersistent(varname);
+		beginAssignment();
+		compileInstruction(new OpAlterVarRealInsertAttributes(varname, heading));
+		endAssignment();
+	}
+
+	public void alterVarRealDropAttribute(String varname, String attributeName) {
+		checkRelvarIsGlobalPersistent(varname);
+		beginAssignment();
+		compileInstruction(new OpAlterVarRealDropAttribute(varname, attributeName));
+		endAssignment();
+	}
+
+	public void alterVarRealAlterKey(String varname, RelvarHeading keydefs) {
+		checkRelvarIsGlobalPersistent(varname);
+		beginAssignment();
+		compileInstruction(new OpAlterVarRealAlterKey(varname, keydefs));
+		endAssignment();
+	}
+		
 	// Define new slots in the given operator definition to expose individual possrep components (where the ValueUserdefined is assumed to be
 	// a parameter in the current operation definition, with a name specified by sourceValueParameterName).
 	private class PossrepComponentExposure {

@@ -744,6 +744,36 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTDropType node, Object data) {
 		return dump(node, data);
 	}
+
+	@Override
+	public Object visit(ASTAlterVar node, Object data) {
+		return dump(node, data);
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionRename node, Object data) {
+		return dump(node, data);
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionChangeType node, Object data) {
+		return dump(node, data);
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionInsert node, Object data) {
+		return dump(node, data);
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionDrop node, Object data) {
+		return dump(node, data);
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionKey node, Object data) {
+		return dump(node, data);
+	}
 	
 	public Object visit(ASTTypeRefCommalist node, Object data) {
 		return dump(node, data);

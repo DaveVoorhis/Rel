@@ -57,6 +57,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTVarRelvarReal.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.vm.instructions.array"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{JavaCharStream.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAlterVarActionChangeType.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAggSum.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTXor.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAggXor.java"/>
@@ -131,6 +132,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTSummarizeMin.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTPossrepDefComponent.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTReturnExpression.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAlterVarActionRename.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTSummarizeAvgDistinct.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTTypeDef.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTWhileLoop.java"/>
@@ -165,6 +167,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTTransactionRollback.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTUserOpBody.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{TutorialD.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAlterVarAction.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTNadicAnd.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{TutorialDTreeConstants.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTCharacter.java"/>
@@ -186,6 +189,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTCaseElse.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTRenamingList.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTRelationDum.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAlterVarActionKey.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAggAnd.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTVarRelvarVirtual.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTExtendItem.java"/>
@@ -207,6 +211,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTExtendList.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.backup"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTEvaluate.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAlterVar.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTStringLiteral.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.vm.instructions.possrep"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTUnaryPlus.java"/>
@@ -261,6 +266,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTDropConstraint.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTHeading.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTNadicJoin.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAlterVarActionDrop.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTUserOpUpdates.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTSet.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTOpType.java"/>
@@ -274,6 +280,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTUserOpSynonym.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{Token.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAggIntersect.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAlterVarActionInsert.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTTypeDefInternalOptOrdinal.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTVarRelvarPrivate.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTSummarizeItems.java"/>
