@@ -1469,7 +1469,7 @@ public class TutorialDParser implements TutorialDVisitor {
 			throw new ExceptionSemantic("RS0416: Parameter cannot be ALTERed.");
 		if (!(reference.getType() instanceof TypeRelation))
 			throw new ExceptionSemantic("RS0417: VAR " + varname + " must be relation-valued.");
-		// Child 0 to n: all AlterVarAction*
+		// Child 1 to n: all AlterVarAction*
 		for (int i=1; i<getChildCount(node); i++)
 			compileChild(node, i, varname);
 		return null;
