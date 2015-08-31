@@ -2,6 +2,7 @@ package org.reldb.rel.v0.vm.instructions.relvar;
 
 import org.reldb.rel.v0.vm.Context;
 import org.reldb.rel.v0.vm.Instruction;
+import org.reldb.rel.v0.vm.VirtualMachine;
 
 public class OpAlterVarRealDropAttribute extends Instruction {
 
@@ -15,8 +16,8 @@ public class OpAlterVarRealDropAttribute extends Instruction {
 
 	@Override
 	public void execute(Context context) {
-		// TODO - alter
-		System.out.println("OpAlterVarRealDropAttribute: ALTER VAR " + varname + " REAL DROP " + attributeName);
+		VirtualMachine vm = context.getVirtualMachine();
+		vm.getRelDatabase().alterVarRealDropAttribute(context.getGenerator(), varname, attributeName);
 	}
 
 }

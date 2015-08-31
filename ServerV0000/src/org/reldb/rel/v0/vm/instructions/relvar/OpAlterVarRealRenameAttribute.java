@@ -2,14 +2,15 @@ package org.reldb.rel.v0.vm.instructions.relvar;
 
 import org.reldb.rel.v0.vm.Context;
 import org.reldb.rel.v0.vm.Instruction;
+import org.reldb.rel.v0.vm.VirtualMachine;
 
-public class OpAlterVarRealRename extends Instruction {
+public class OpAlterVarRealRenameAttribute extends Instruction {
 
 	private String varname;
 	private String oldAttributeName;
 	private String newAttributeName;
 
-	public OpAlterVarRealRename(String varname, String oldAttributeName, String newAttributeName) {
+	public OpAlterVarRealRenameAttribute(String varname, String oldAttributeName, String newAttributeName) {
 		this.varname = varname;
 		this.oldAttributeName = oldAttributeName;
 		this.newAttributeName = newAttributeName;
@@ -17,8 +18,8 @@ public class OpAlterVarRealRename extends Instruction {
 
 	@Override
 	public void execute(Context context) {
-		// TODO - alter
-		System.out.println("OpAlterVarRealRename: ALTER VAR " + varname + " REAL RENAME " + oldAttributeName + " TO " + newAttributeName);
+		VirtualMachine vm = context.getVirtualMachine();
+		vm.getRelDatabase().alterVarRealRenameAttribute(context.getGenerator(), varname, oldAttributeName, newAttributeName);
 	}
 
 }

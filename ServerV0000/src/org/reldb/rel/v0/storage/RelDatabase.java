@@ -31,6 +31,7 @@ import org.reldb.rel.v0.storage.tables.RegisteredTupleIterator;
 import org.reldb.rel.v0.storage.tables.Table;
 import org.reldb.rel.v0.storage.tables.TablePrivate;
 import org.reldb.rel.v0.types.Heading;
+import org.reldb.rel.v0.types.Type;
 import org.reldb.rel.v0.types.TypeAlpha;
 import org.reldb.rel.v0.types.builtin.*;
 import org.reldb.rel.v0.values.*;
@@ -1799,5 +1800,30 @@ public class RelDatabase {
 			throw new ExceptionFatal("RS0364: RelvarReal setValue failed: " + t);
     	}    	
     }
+
+	public synchronized void alterVarRealAlterKey(Generator generator, String varname, Object keydefs) {
+		// TODO - alter
+		System.out.println("alterVarRealAlterKey: ALTER VAR " + varname + " ALTER " + keydefs.toString());
+	}
+
+	public synchronized void alterVarRealChangeAttributeType(Generator generator, String varname, String attributeName, Type newType) {
+		// TODO - alter
+		System.out.println("alterVarRealChangeAttributeType: ALTER VAR " + varname + " REAL TYPE_OF " + attributeName + " TO " + newType.getSignature());
+	}
+
+	public synchronized void alterVarRealDropAttribute(Generator generator, String varname, String attributeName) {
+		// TODO - alter
+		System.out.println("alterVarRealDropAttribute: ALTER VAR " + varname + " REAL DROP " + attributeName);
+	}
+
+	public synchronized void alterVarRealInsertAttributes(Generator generator, String varname, Object heading) {
+		// TODO - alter
+		System.out.println("alterVarRealInsertAttributes: ALTER VAR " + varname + " REAL INSERT " + heading.toString());
+	}
+
+	public synchronized void alterVarRealRenameAttribute(Generator generator, String varname, String oldAttributeName, String newAttributeName) {
+		// TODO - alter
+		System.out.println("alterVarRealRename: ALTER VAR " + varname + " REAL RENAME " + oldAttributeName + " TO " + newAttributeName);
+	}
     
 }

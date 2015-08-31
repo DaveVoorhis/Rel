@@ -3,14 +3,15 @@ package org.reldb.rel.v0.vm.instructions.relvar;
 import org.reldb.rel.v0.types.Type;
 import org.reldb.rel.v0.vm.Context;
 import org.reldb.rel.v0.vm.Instruction;
+import org.reldb.rel.v0.vm.VirtualMachine;
 
-public class OpAlterVarRealChangeType extends Instruction {
+public class OpAlterVarRealChangeAttributeType extends Instruction {
 
 	private String varname;
 	private String attributeName;
 	private Type newType;
 
-	public OpAlterVarRealChangeType(String varname, String attributeName, Type newType) {
+	public OpAlterVarRealChangeAttributeType(String varname, String attributeName, Type newType) {
 		this.varname = varname;
 		this.attributeName = attributeName;
 		this.newType = newType;
@@ -18,8 +19,8 @@ public class OpAlterVarRealChangeType extends Instruction {
 
 	@Override
 	public void execute(Context context) {
-		// TODO - alter
-		System.out.println("OpAlterVarRealChangeType: ALTER VAR " + varname + " REAL TYPE_OF " + attributeName + " TO " + newType.getSignature());
+		VirtualMachine vm = context.getVirtualMachine();
+		vm.getRelDatabase().alterVarRealChangeAttributeType(context.getGenerator(), varname, attributeName, newType);
 	}
 
 }

@@ -105,10 +105,10 @@ import org.reldb.rel.v0.vm.instructions.relation.OpRelationWrite;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationXunion;
 import org.reldb.rel.v0.vm.instructions.relation.OpTupleInRelation;
 import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealAlterKey;
-import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealChangeType;
+import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealChangeAttributeType;
 import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealDropAttribute;
 import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealInsertAttributes;
-import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealRename;
+import org.reldb.rel.v0.vm.instructions.relvar.OpAlterVarRealRenameAttribute;
 import org.reldb.rel.v0.vm.instructions.relvar.OpRelvarDeleteGivenExpression;
 import org.reldb.rel.v0.vm.instructions.relvar.OpRelvarDeleteWhere;
 import org.reldb.rel.v0.vm.instructions.relvar.OpRelvarGlobalGet;
@@ -731,14 +731,14 @@ public class Generator {
 	public void alterVarRealRename(String varname, String oldAttributeName, String newAttributeName) {
 		checkRelvarIsGlobalPersistent(varname);
 		beginAssignment();
-		compileInstruction(new OpAlterVarRealRename(varname, oldAttributeName, newAttributeName));
+		compileInstruction(new OpAlterVarRealRenameAttribute(varname, oldAttributeName, newAttributeName));
 		endAssignment();
 	}
 
 	public void alterVarRealChangeType(String varname, String attributeName, Type newType) {
 		checkRelvarIsGlobalPersistent(varname);
 		beginAssignment();
-		compileInstruction(new OpAlterVarRealChangeType(varname, attributeName, newType));
+		compileInstruction(new OpAlterVarRealChangeAttributeType(varname, attributeName, newType));
 		endAssignment();
 	}
 
