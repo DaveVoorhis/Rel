@@ -1814,7 +1814,7 @@ public class RelDatabase {
 	public synchronized void alterVarRealDropAttribute(Generator generator, String varname, String attributeName) {
 		// TODO - alter
 		System.out.println("alterVarRealDropAttribute: ALTER VAR " + varname + " REAL DROP " + attributeName);
-	}
+    }
 
 	public synchronized void alterVarRealInsertAttributes(Generator generator, String varname, Object heading) {
 		// TODO - alter
