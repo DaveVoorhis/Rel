@@ -1,6 +1,8 @@
 ** TO DO **
 
 Short term:
+	// TODO - Fix SUMMARIZE SP BY {S#}: {SUMQTY := SUM(THE_QTY(QTY))}
+	//        Gives 1300 instead of 1400 for S#('S1')
 	// TODO - implement VAR varname REAL ... in var designer.
 	// TODO - implement ALTER VAR varname REAL ... in Rel.
 	// TODO - improve UPDATE operator in Rev.
