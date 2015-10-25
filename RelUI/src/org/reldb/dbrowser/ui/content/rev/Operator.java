@@ -31,8 +31,8 @@ public abstract class Operator extends Visualiser {
 	public Parameter getParameter(int parameterNumber) {
 		return parameters.get(parameterNumber);
 	}
-    
-    public String getQueryForParameter(int parameterNumber) {
+
+	private String getQueryForParameter(int parameterNumber, boolean allowParentheses) {
     	Parameter parameter = parameters.get(parameterNumber);
     	Argument argument = parameter.getArgument();
     	if (argument == null)
@@ -40,9 +40,17 @@ public abstract class Operator extends Visualiser {
     	Visualiser operand = argument.getOperand();
     	if (operand == null)
     		return null;
-    	if (operand instanceof Operator)
+    	if (allowParentheses && operand instanceof Operator)
     		return "(" + operand.getQuery() + ")";
     	return operand.getQuery();
+	}
+	
+	public String getQueryForParameterUnparenthesised(int parameterNumber) {
+		return getQueryForParameter(parameterNumber, false);
+	}
+	
+    public String getQueryForParameter(int parameterNumber) {
+    	return getQueryForParameter(parameterNumber, true);
     }
 	
 	public Heading getHeadingOfParameter(int parameterNumber) {

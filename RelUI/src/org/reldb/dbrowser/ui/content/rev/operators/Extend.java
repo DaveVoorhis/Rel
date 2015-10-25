@@ -166,7 +166,7 @@ public class Extend extends OperatorWithControlPanel {
 	
 	@Override
 	public String getQuery() {
-		String source = getQueryForParameter(0);
+		String source = getQueryForParameterUnparenthesised(0);
 		if (source == null)
 			return null;
 		return "EXTEND " + source + ": {" + operatorLabel.getText() + "}";		
