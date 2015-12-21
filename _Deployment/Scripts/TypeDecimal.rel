@@ -1,0 +1,139 @@
+TYPE Decimal Java FOREIGN
+
+// A fixed precision decimal type. 
+
+	private double x;
+	private int decimalPlaces;
+
+	/** THE_precision(Decimal) */
+	public static ValueInteger THE_precision(Generator generator, Decimal decimal) {
+		return ValueInteger.select(generator, decimal.decimalPlaces);
+	}
+
+	/** OP_EQUALS(Decimal, Decimal) RETURNS BOOLEAN */
+	public static ValueBoolean OP_EQUALS(Generator generator, Decimal d1, Decimal d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) == 0);
+	}
+
+	/** OP_GREATERTHAN(Decimal, Decimal) RETURNS BOOLEAN */
+	public static ValueBoolean OP_GREATERTHAN(Generator generator, Decimal d1, Decimal d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) > 0);
+	}
+
+	/** OP_LESSTHAN(Decimal, Decimal) RETURNS BOOLEAN */
+	public static ValueBoolean OP_LESSTHAN(Generator generator, Decimal d1, Decimal d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) < 0);
+	}
+
+	/** OP_GREATERTHANOREQUALS(Decimal, Decimal) RETURNS BOOLEAN */
+	public static ValueBoolean OP_GREATERTHANOREQUALS(Generator generator, Decimal d1, Decimal d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) >= 0);
+	}
+
+	/** OP_LESSTHANOREQUALS(Decimal, Decimal) RETURNS BOOLEAN */
+	public static ValueBoolean OP_LESSTHANOREQUALS(Generator generator, Decimal d1, Decimal d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) <= 0);
+	}
+
+	/** OP_NOTEQUALS(Decimal, Decimal) RETURNS BOOLEAN */
+	public static ValueBoolean OP_NOTEQUALS(Generator generator, Decimal d1, Decimal d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) != 0);
+	}
+
+	private static int getLeastPrecision(Decimal d1, Decimal d2) {
+		if (d1.decimalPlaces < d2.decimalPlaces)
+			return d1.decimalPlaces;
+		return d2.decimalPlaces;
+	}
+
+	private static double round(double d, int precision) {
+ 		double multiplier = Math.pow(10.0, precision);
+		long roundedAndMultiplied = Math.round(d * multiplier);
+		return roundedAndMultiplied / multiplier; 
+	}
+
+	/** OP_PLUS(Decimal, Decimal) RETURNS Decimal */
+	public static Decimal OP_PLUS(Generator generator, Decimal d1, Decimal d2) {
+		return new Decimal(generator, d1.x + d2.x, getLeastPrecision(d1, d2));
+	}
+
+	/** OP_MINUS(Decimal, Decimal) RETURNS Decimal */
+	public static Decimal OP_MINUS(Generator generator, Decimal d1, Decimal d2) {
+		return new Decimal(generator, d1.x - d2.x, getLeastPrecision(d1, d2));
+	}
+
+	/** OP_TIMES(Decimal, Decimal) RETURNS Decimal */
+	public static Decimal OP_TIMES(Generator generator, Decimal d1, Decimal d2) {
+		return new Decimal(generator, d1.x * d2.x, getLeastPrecision(d1, d2));
+	}
+
+	/** OP_DIVIDE(Decimal, Decimal) RETURNS Decimal */
+	public static Decimal OP_DIVIDE(Generator generator, Decimal d1, Decimal d2) {
+		if (d2.x == 0.0)
+			throw new ArithmeticException();
+		return new Decimal(generator, d1.x / d2.x, getLeastPrecision(d1, d2));
+	}
+
+	public static Decimal SIN(Generator generator, Decimal d1) {
+		return new Decimal(generator, Math.sin(d1.x), d1.decimalPlaces);
+	}
+
+	public static Decimal COS(Generator generator, Decimal d1) {
+		return new Decimal(generator, Math.cos(d1.x), d1.decimalPlaces);
+	}
+
+	public static Decimal ATAN2(Generator generator, Decimal y, Decimal x) {
+		return new Decimal(generator, Math.atan2(y.x, x.x), getLeastPrecision(x, y));
+	}
+
+	public static Decimal SQRT(Generator generator, Decimal d1) {
+		return new Decimal(generator, Math.sqrt(d1.x), d1.decimalPlaces);
+	}
+
+	/** Type constructor. */
+	public Decimal(Generator generator) {
+		super(generator);
+		x = 0.0;
+		decimalPlaces = 0;
+	}
+
+	/** Value constructor. */
+	public Decimal(Generator generator, ValueRational v, ValueInteger decimalPlaces) {
+		this(generator, v.doubleValue(), (int)decimalPlaces.longValue());
+	}
+
+	private Decimal(Generator generator, double v, int decimalPlaces) {
+		super(generator);
+		this.decimalPlaces = decimalPlaces;
+		this.x = round(v, decimalPlaces);
+	}
+
+	/** Compare this Value to another Value of the same Type. */
+	public int compareTo(Value v) {
+		return Double.valueOf(x).compareTo(Double.valueOf(((Decimal)v).x));
+	}
+    
+	/** Return a parsable representation of this Value. */
+	public String toParsableString(Type type) {
+		return toString();
+	}
+    
+	/** Return a string representation of this Value. */
+	public String toString() {
+		return "Decimal(" + x + ", " + decimalPlaces + ")";
+	}
+    
+	/** Get a default Value of this Type. */
+	public Value getDefaultValue(Generator generator) {
+		return new Decimal(generator, ValueRational.select(generator, 0.0), ValueInteger.select(generator, 2));
+	}
+
+	public double doubleValue() {
+		return x;
+	}
+
+	public long longValue() {
+		return (long)x;
+	}
+
+END TYPE;

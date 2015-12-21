@@ -1,0 +1,6 @@
+TYPE Point 
+	POSSREP cartesian { X Decimal , Y Decimal } 
+	POSSREP polar { R Decimal , THETA Decimal } 
+INIT 
+	cartesian ( R := SQRT ( X * X + Y * Y ) , THETA := ATAN2 ( Y , X ) ) 
+	polar ( X := R * COS ( THETA ) , Y := R * SIN ( THETA ) );

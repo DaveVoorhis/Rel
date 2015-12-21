@@ -4,6 +4,36 @@ TYPE Date Java FOREIGN
 
 	private java.util.Date d;
 
+	/** OP_EQUALS(Date, Date) RETURNS BOOLEAN */
+	public static ValueBoolean OP_EQUALS(Generator generator, Date d1, Date d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) == 0);
+	}
+
+	/** OP_GREATERTHAN(Date, Date) RETURNS BOOLEAN */
+	public static ValueBoolean OP_GREATERTHAN(Generator generator, Date d1, Date d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) > 0);
+	}
+
+	/** OP_LESSTHAN(Date, Date) RETURNS BOOLEAN */
+	public static ValueBoolean OP_LESSTHAN(Generator generator, Date d1, Date d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) < 0);
+	}
+
+	/** OP_GREATERTHANOREQUALS(Date, Date) RETURNS BOOLEAN */
+	public static ValueBoolean OP_GREATERTHANOREQUALS(Generator generator, Date d1, Date d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) >= 0);
+	}
+
+	/** OP_LESSTHANOREQUALS(Date, Date) RETURNS BOOLEAN */
+	public static ValueBoolean OP_LESSTHANOREQUALS(Generator generator, Date d1, Date d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) <= 0);
+	}
+
+	/** OP_NOTEQUALS(Date, Date) RETURNS BOOLEAN */
+	public static ValueBoolean OP_NOTEQUALS(Generator generator, Date d1, Date d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) != 0);
+	}
+
 	/** Type constructor. */
 	public Date(Generator generator) {
 		super(generator);

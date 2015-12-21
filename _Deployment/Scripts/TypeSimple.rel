@@ -4,6 +4,36 @@ TYPE Simple Java FOREIGN
 
 	private String x;
 
+	/** OP_EQUALS(Simple, Simple) RETURNS BOOLEAN */
+	public static ValueBoolean OP_EQUALS(Generator generator, Simple d1, Simple d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) == 0);
+	}
+
+	/** OP_GREATERTHAN(Simple, Simple) RETURNS BOOLEAN */
+	public static ValueBoolean OP_GREATERTHAN(Generator generator, Simple d1, Simple d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) > 0);
+	}
+
+	/** OP_LESSTHAN(Simple, Simple) RETURNS BOOLEAN */
+	public static ValueBoolean OP_LESSTHAN(Generator generator, Simple d1, Simple d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) < 0);
+	}
+
+	/** OP_GREATERTHANOREQUALS(Simple, Simple) RETURNS BOOLEAN */
+	public static ValueBoolean OP_GREATERTHANOREQUALS(Generator generator, Simple d1, Simple d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) >= 0);
+	}
+
+	/** OP_LESSTHANOREQUALS(Simple, Simple) RETURNS BOOLEAN */
+	public static ValueBoolean OP_LESSTHANOREQUALS(Generator generator, Simple d1, Simple d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) <= 0);
+	}
+
+	/** OP_NOTEQUALS(Simple, Simple) RETURNS BOOLEAN */
+	public static ValueBoolean OP_NOTEQUALS(Generator generator, Simple d1, Simple d2) {
+		return ValueBoolean.select(generator, d1.compareTo(d2) != 0);
+	}
+
 	/** Type constructor. */
 	public Simple(Generator generator) {
 		super(generator);
