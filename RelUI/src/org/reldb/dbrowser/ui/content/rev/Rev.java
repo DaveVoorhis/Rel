@@ -279,7 +279,12 @@ public class Rev extends Composite {
 	private void loadModel() {
 		model.clear();
 		
-		modelLabel.setText(((isReadOnly()) ? "Show" : "Edit") + " " + model.getModelName());
+		String title;
+		if (isReadOnly())
+			title = "Show " + model.getModelName();
+		else
+			title = "Edit " + model.getModelName() + ".  Right-click for options.";
+		modelLabel.setText(title);
 		
 		if (getMenu() != null)
 			getMenu().dispose();
