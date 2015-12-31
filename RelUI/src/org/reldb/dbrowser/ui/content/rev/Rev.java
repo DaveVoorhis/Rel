@@ -437,9 +437,10 @@ public class Rev extends Composite {
 					return new Restrict(rev, name, xpos, ypos);
 				}
 			}),
-			new OpSelector("RENAME", new OpSelectorRun() {
+			new OpSelector(),
+			new OpSelector("COMPOSE", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Rename(rev, name, xpos, ypos);
+					return new Diadic(rev, name, "COMPOSE", xpos, ypos);
 				}
 			}),
 			/*
@@ -448,49 +449,9 @@ public class Rev extends Composite {
 			 * return new VisualiserOfOperatorDivideby(rev, name, xpos,
 			 * ypos); }}),
 			 */
-			new OpSelector("JOIN", new OpSelectorRun() {
+			new OpSelector("EXTEND", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "JOIN", xpos, ypos);
-				}
-			}),
-			new OpSelector("COMPOSE", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "COMPOSE", xpos, ypos);
-				}
-			}),
-			new OpSelector("MATCHING", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "MATCHING", xpos, ypos);
-				}
-			}),
-			new OpSelector("NOT MATCHING", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "NOT MATCHING", xpos, ypos);
-				}
-			}),
-			new OpSelector("TIMES", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "TIMES", xpos, ypos);
-				}
-			}),
-			new OpSelector("UNION", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "UNION", xpos, ypos);
-				}
-			}),
-			new OpSelector("INTERSECT", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "INTERSECT", xpos, ypos);
-				}
-			}),
-			new OpSelector("MINUS", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "MINUS", xpos, ypos);
-				}
-			}),
-			new OpSelector("ORDER", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Order(rev, name, xpos, ypos);
+					return new Extend(rev, name, xpos, ypos);
 				}
 			}),
 			new OpSelector("GROUP", new OpSelectorRun() {
@@ -498,14 +459,59 @@ public class Rev extends Composite {
 					return new GroupOrWrap(rev, name, "GROUP", xpos, ypos);
 				}
 			}),
+			new OpSelector("INTERSECT", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "INTERSECT", xpos, ypos);
+				}
+			}),
+			new OpSelector("JOIN", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "JOIN", xpos, ypos);
+				}
+			}),
+			new OpSelector("MATCHING", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "MATCHING", xpos, ypos);
+				}
+			}),
+			new OpSelector("MINUS", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "MINUS", xpos, ypos);
+				}
+			}),
+			new OpSelector("NOT MATCHING", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "NOT MATCHING", xpos, ypos);
+				}
+			}),
+			new OpSelector("ORDER", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Order(rev, name, xpos, ypos);
+				}
+			}),
+			new OpSelector("RENAME", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Rename(rev, name, xpos, ypos);
+				}
+			}),
+			new OpSelector("SUMMARIZE", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Summarize(rev, name, xpos, ypos);
+				}
+			}),
+			new OpSelector("TIMES", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Diadic(rev, name, "TIMES", xpos, ypos);
+				}
+			}),
 			new OpSelector("UNGROUP", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new UngroupOrUnwrap(rev, name, "UNGROUP", "RELATION", xpos, ypos);
 				}
 			}),
-			new OpSelector("WRAP", new OpSelectorRun() {
+			new OpSelector("UNION", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new GroupOrWrap(rev, name, "WRAP", xpos, ypos);
+					return new Diadic(rev, name, "UNION", xpos, ypos);
 				}
 			}),
 			new OpSelector("UNWRAP", new OpSelectorRun() {
@@ -518,14 +524,9 @@ public class Rev extends Composite {
 					return new Update(rev, name, xpos, ypos);
 				}
 			}),
-			new OpSelector("EXTEND", new OpSelectorRun() {
+			new OpSelector("WRAP", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Extend(rev, name, xpos, ypos);
-				}
-			}),
-			new OpSelector("SUMMARIZE", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Summarize(rev, name, xpos, ypos);
+					return new GroupOrWrap(rev, name, "WRAP", xpos, ypos);
 				}
 			}),
 			new OpSelector(),
@@ -576,14 +577,14 @@ public class Rev extends Composite {
 				}
 			}), 
 			new OpSelector(),
-			new OpSelector("TUPLE FROM", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new TupleFrom(rev, name, xpos, ypos);
-				}
-			}),
 			new OpSelector("FROM", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new From(rev, name, xpos, ypos);
+				}
+			}),
+			new OpSelector("TUPLE FROM", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new TupleFrom(rev, name, xpos, ypos);
 				}
 			}),
 			new OpSelector(),
