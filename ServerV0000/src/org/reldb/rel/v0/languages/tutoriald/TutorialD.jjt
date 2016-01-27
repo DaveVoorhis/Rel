@@ -738,7 +738,7 @@ void possrep_initialiser_assignments() #PossrepInitialiserAssignments :
 void possrep_def() #PossrepDef :
 {}
 {
-	<POSSREP> possrep_def_identifier() "{" possrep_component_def_commalist() possrep_opt_constraint_def() "}"
+	<POSSREP> possrep_def_identifier() ("{" | "(") possrep_component_def_commalist() possrep_opt_constraint_def() ("}" | ")")
 }
 
 void possrep_def_identifier() #PossrepDefIdentifier :
@@ -790,7 +790,7 @@ void derived_possrep_def_list() :
 void derived_possrep_def() #DerivedPossrepDef :
 {}
 {
-	<POSSREP> derived_possrep_def_opt_identifier() "{" derived_possrep_component_def_commalist() "}"
+	<POSSREP> derived_possrep_def_opt_identifier() ("(" | "{") derived_possrep_component_def_commalist() ("}" | ")")
 }
 
 void derived_possrep_def_opt_identifier() #DerivedPossrepDefOptIdentifier :

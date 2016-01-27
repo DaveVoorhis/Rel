@@ -9,6 +9,7 @@ Version 1.0.13:
   - enhancement: DBrowser: Default database now found in getProperty("user.home")
   - enhancement: DBrowser: "DBrowser" name now strictly internal; externally known as Rel or Rel UI.
   - enhancement: DBrowser/Rel: Backup script embedded in Rel; no longer relies on Scripts folder.
+  - enhancement: Rel: POSSREP component definitions may now be surrounded with "( ... )" (preferred) or "{ ... }" (deprecated).
   - enhancement: Rel: Updated storage engine to Oracle Berkeley DB JE version 6.3.8
   - enhancement: Rel: External Java compilation integrated; no longer requires JDK.
   - enhancement: Rel: Default database now refers to explicit path
