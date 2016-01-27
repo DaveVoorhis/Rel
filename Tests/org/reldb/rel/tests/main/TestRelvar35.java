@@ -31,11 +31,11 @@ public class TestRelvar35 extends BaseOfTest {
 			"SPQ";
 		String expected = 
 				"RELATION {SNO CHARACTER, SNAME CHARACTER, STATUS INTEGER, CITY CHARACTER, PQ RELATION {PNO CHARACTER, QTY INTEGER}} {\n" +
-				"\tTUPLE {SNO \"S2\", SNAME \"Dave\", STATUS 2, CITY \"Derby\", PQ RELATION {\n" +
+				"\tTUPLE {SNO \"S2\", SNAME \"Dave\", STATUS 2, CITY \"Derby\", PQ RELATION {PNO CHARACTER, QTY INTEGER} {\n" +
 				"\tTUPLE {PNO \"P1\", QTY 100},\n" +
 				"\tTUPLE {PNO \"P5\", QTY 250}\n" +
 				"}},\n" +
-				"\tTUPLE {SNO \"S3\", SNAME \"Bob\", STATUS 3, CITY \"London\", PQ RELATION {\n" +
+				"\tTUPLE {SNO \"S3\", SNAME \"Bob\", STATUS 3, CITY \"London\", PQ RELATION {PNO CHARACTER, QTY INTEGER} {\n" +
 				"\tTUPLE {PNO \"P2\", QTY 200}\n" +
 				"}}\n" +
 				"}";

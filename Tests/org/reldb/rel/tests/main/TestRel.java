@@ -1382,11 +1382,11 @@ public class TestRel extends BaseOfTest {
 				"tuple {x_zot 4, w_zot relation {tuple {b 'z', a 5}, tuple {b 'y', a 2}}}" + 
 			"}";
 		String result = "RELATION {w_zot RELATION {a INTEGER, b CHARACTER}, x_zot INTEGER} {" +
-			"\n\tTUPLE {w_zot RELATION {" +
+			"\n\tTUPLE {w_zot RELATION {a INTEGER, b CHARACTER} {" +
 			"\n\tTUPLE {a 1, b \"x\"}," +
 			"\n\tTUPLE {a 2, b \"y\"}" +
 			"\n}, x_zot 3}," +
-			"\n\tTUPLE {w_zot RELATION {" +
+			"\n\tTUPLE {w_zot RELATION {a INTEGER, b CHARACTER} {" +
 			"\n\tTUPLE {a 5, b \"z\"}," +
 			"\n\tTUPLE {a 2, b \"y\"}" +
 			"\n}, x_zot 4}" +
@@ -1406,11 +1406,11 @@ public class TestRel extends BaseOfTest {
 			"END;" +
 			"a";
 		String result = "RELATION {w_zot RELATION {a INTEGER, b CHARACTER}, x_zot INTEGER} {" +
-			"\n\tTUPLE {w_zot RELATION {" +
+			"\n\tTUPLE {w_zot RELATION {a INTEGER, b CHARACTER} {" +
 			"\n\tTUPLE {a 1, b \"x\"}," +
 			"\n\tTUPLE {a 2, b \"y\"}" +
 			"\n}, x_zot 3}," +
-			"\n\tTUPLE {w_zot RELATION {" +
+			"\n\tTUPLE {w_zot RELATION {a INTEGER, b CHARACTER} {" +
 			"\n\tTUPLE {a 5, b \"z\"}," +
 			"\n\tTUPLE {a 2, b \"y\"}" +
 			"\n}, x_zot 4}" +
@@ -1426,10 +1426,10 @@ public class TestRel extends BaseOfTest {
 				"tuple {x_zot 4, w_zot relation {tuple {b 'z', a 5}}}" + 
 			"}";
 		String result = "RELATION {w_zot RELATION {a INTEGER, b CHARACTER}, x_zot INTEGER} {" +
-			"\n\tTUPLE {w_zot RELATION {" +
+			"\n\tTUPLE {w_zot RELATION {a INTEGER, b CHARACTER} {" +
 			"\n\tTUPLE {a 1, b \"x\"}" +
 			"\n}, x_zot 3}," +
-			"\n\tTUPLE {w_zot RELATION {" +
+			"\n\tTUPLE {w_zot RELATION {a INTEGER, b CHARACTER} {" +
 			"\n\tTUPLE {a 5, b \"z\"}" +
 			"\n}, x_zot 4}" +
 			"\n}";
@@ -1444,10 +1444,10 @@ public class TestRel extends BaseOfTest {
 				"tuple {w_zot relation {tuple {b 'z', a 5}}}" + 
 			"}";
 		String result = "RELATION {w_zot RELATION {a INTEGER, b CHARACTER}} {" +
-			"\n\tTUPLE {w_zot RELATION {" +
+			"\n\tTUPLE {w_zot RELATION {a INTEGER, b CHARACTER} {" +
 			"\n\tTUPLE {a 1, b \"x\"}" +
 			"\n}}," +
-			"\n\tTUPLE {w_zot RELATION {" +
+			"\n\tTUPLE {w_zot RELATION {a INTEGER, b CHARACTER} {" +
 			"\n\tTUPLE {a 5, b \"z\"}" +
 			"\n}}" +
 			"\n}";
@@ -2324,8 +2324,8 @@ public class TestRel extends BaseOfTest {
         "  TUPLE {s 's2', p 'p2', q 400}," +
         "  TUPLE {s 's3', p 'p2', q 200}} GROUP {p, q} AS pq";
 		testEquals("RELATION {s CHARACTER, pq RELATION {p CHARACTER, q INTEGER}} {\n\t" + 
-				"TUPLE {s \"s2\", pq RELATION {\n\tTUPLE {p \"p1\", q 300},\n\tTUPLE {p \"p2\", q 400}\n}},\n\t" +
-				"TUPLE {s \"s3\", pq RELATION {\n\tTUPLE {p \"p2\", q 200}\n}}" + 
+				"TUPLE {s \"s2\", pq RELATION {p CHARACTER, q INTEGER} {\n\tTUPLE {p \"p1\", q 300},\n\tTUPLE {p \"p2\", q 400}\n}},\n\t" +
+				"TUPLE {s \"s3\", pq RELATION {p CHARACTER, q INTEGER} {\n\tTUPLE {p \"p2\", q 200}\n}}" + 
 					"\n}", src);
 	}
 
@@ -2336,8 +2336,8 @@ public class TestRel extends BaseOfTest {
         "  TUPLE {s 's2', p 'p2', q 400}," +
         "  TUPLE {s 's3', p 'p2', q 200}} GROUP {ALL BUT s} AS pq";
 		testEquals("RELATION {s CHARACTER, pq RELATION {p CHARACTER, q INTEGER}} {\n\t" + 
-				"TUPLE {s \"s2\", pq RELATION {\n\tTUPLE {p \"p1\", q 300},\n\tTUPLE {p \"p2\", q 400}\n}},\n\t" +
-				"TUPLE {s \"s3\", pq RELATION {\n\tTUPLE {p \"p2\", q 200}\n}}" + 
+				"TUPLE {s \"s2\", pq RELATION {p CHARACTER, q INTEGER} {\n\tTUPLE {p \"p1\", q 300},\n\tTUPLE {p \"p2\", q 400}\n}},\n\t" +
+				"TUPLE {s \"s3\", pq RELATION {p CHARACTER, q INTEGER} {\n\tTUPLE {p \"p2\", q 200}\n}}" + 
 					"\n}", src);
 	}
 
@@ -2348,7 +2348,7 @@ public class TestRel extends BaseOfTest {
         "  TUPLE {s 's2', p 'p2', q 400}," +
         "  TUPLE {s 's3', p 'p2', q 200}} GROUP {ALL BUT} AS pq";
 		testEquals("RELATION {pq RELATION {s CHARACTER, p CHARACTER, q INTEGER}} {\n\tTUPLE {" + 
-				"pq RELATION {\n\tTUPLE {s \"s2\", p \"p1\", q 300}," + 
+				"pq RELATION {s CHARACTER, p CHARACTER, q INTEGER} {\n\tTUPLE {s \"s2\", p \"p1\", q 300}," + 
 				             "\n\tTUPLE {s \"s2\", p \"p2\", q 400}," +
 				             "\n\tTUPLE {s \"s3\", p \"p2\", q 200}\n}}" + 
 					"\n}", src);
@@ -3764,15 +3764,15 @@ public class TestRel extends BaseOfTest {
 			"END;\n" +
 			"SUMMARIZE a BY {z} : {unionOfx := UNION(x)}";
 		String result = "RELATION {z CHARACTER, unionOfx RELATION {x INTEGER, y RATIONAL}} {" +
-			"\n\tTUPLE {z \"falsefalse\", unionOfx RELATION {" +
+			"\n\tTUPLE {z \"falsefalse\", unionOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n\tTUPLE {x 1, y 1.2}," +
 			"\n\tTUPLE {x 2, y 1.2}" +
 			"\n}}," +
-			"\n\tTUPLE {z \"truefalse\", unionOfx RELATION {" +
+			"\n\tTUPLE {z \"truefalse\", unionOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n\tTUPLE {x 3, y 1.3}," +
 			"\n\tTUPLE {x 2, y 1.4}" +
 			"\n}}," +
-			"\n\tTUPLE {z \"truetrue\", unionOfx RELATION {" +
+			"\n\tTUPLE {z \"truetrue\", unionOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n\tTUPLE {x 1, y 1.5}," +
 			"\n\tTUPLE {x 3, y 1.1}" +
 			"\n}}" +
@@ -3795,15 +3795,15 @@ public class TestRel extends BaseOfTest {
 			"END;\n" +
 			"SUMMARIZE a BY {z} : {unionOfx := XUNION(x)}";
 		String result = "RELATION {z CHARACTER, unionOfx RELATION {x INTEGER, y RATIONAL}} {" +
-			"\n\tTUPLE {z \"falsefalse\", unionOfx RELATION {" +
+			"\n\tTUPLE {z \"falsefalse\", unionOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n\tTUPLE {x 1, y 1.2}," +
 			"\n\tTUPLE {x 2, y 1.2}" +
 			"\n}}," +
-			"\n\tTUPLE {z \"truefalse\", unionOfx RELATION {" +
+			"\n\tTUPLE {z \"truefalse\", unionOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n\tTUPLE {x 3, y 1.3}," +
 			"\n\tTUPLE {x 2, y 1.4}" +
 			"\n}}," +
-			"\n\tTUPLE {z \"truetrue\", unionOfx RELATION {" +
+			"\n\tTUPLE {z \"truetrue\", unionOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n\tTUPLE {x 1, y 1.5}," +
 			"\n\tTUPLE {x 3, y 1.1}" +
 			"\n}}" +
@@ -3826,12 +3826,12 @@ public class TestRel extends BaseOfTest {
 			"END;\n" +
 			"SUMMARIZE a BY {z} : {intersectOfx := INTERSECT(x)}";
 		String result = "RELATION {z CHARACTER, intersectOfx RELATION {x INTEGER, y RATIONAL}} {" +
-			"\n\tTUPLE {z \"falsefalse\", intersectOfx RELATION {" +
+			"\n\tTUPLE {z \"falsefalse\", intersectOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n\tTUPLE {x 1, y 1.2}" +
 			"\n}}," +
-			"\n\tTUPLE {z \"truefalse\", intersectOfx RELATION {" +
+			"\n\tTUPLE {z \"truefalse\", intersectOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n}}," +
-			"\n\tTUPLE {z \"truetrue\", intersectOfx RELATION {" +
+			"\n\tTUPLE {z \"truetrue\", intersectOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n}}" +
 			"\n}";
 		testEquals(result, src);		
@@ -3853,14 +3853,14 @@ public class TestRel extends BaseOfTest {
 			"END;\n" +
 			"SUMMARIZE a BY {z} : {unionOfx := D_UNION(x)}";
 		String result = "RELATION {z CHARACTER, unionOfx RELATION {x INTEGER, y RATIONAL}} {" +
-			"\n\tTUPLE {z \"falsefalse\", unionOfx RELATION {" +
+			"\n\tTUPLE {z \"falsefalse\", unionOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n\tTUPLE {x 1, y 1.2}" +
 			"\n}}," +
-			"\n\tTUPLE {z \"truefalse\", unionOfx RELATION {" +
+			"\n\tTUPLE {z \"truefalse\", unionOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n\tTUPLE {x 3, y 1.3}," +
 			"\n\tTUPLE {x 2, y 1.4}" +
 			"\n}}," +
-			"\n\tTUPLE {z \"truetrue\", unionOfx RELATION {" +
+			"\n\tTUPLE {z \"truetrue\", unionOfx RELATION {x INTEGER, y RATIONAL} {" +
 			"\n\tTUPLE {x 1, y 1.5}," +
 			"\n\tTUPLE {x 3, y 1.1}" +
 			"\n}}" +
@@ -4270,7 +4270,7 @@ public class TestRel extends BaseOfTest {
 	            "END;" +
 	            "result";
 		String expected = "RELATION {r RELATION {id INTEGER, name CHARACTER}} {" +
-			"\n\tTUPLE {r RELATION {" +
+			"\n\tTUPLE {r RELATION {id INTEGER, name CHARACTER} {" +
 			"\n\tTUPLE {id 1, name \"hi\"}" +
 			"\n}}" +
 			"\n}";
@@ -4288,7 +4288,7 @@ public class TestRel extends BaseOfTest {
 				"END;" +
 				"x";
 		String expected = "RELATION {a INTEGER, b RELATION {c INTEGER}} {" +
-				"\n\tTUPLE {a 1, b RELATION {" +
+				"\n\tTUPLE {a 1, b RELATION {c INTEGER} {" +
 				"\n\tTUPLE {c 33}" +
 				"\n}}" +
 				"\n}";
