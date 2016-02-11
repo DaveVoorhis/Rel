@@ -1085,6 +1085,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTDivide node, Object data) {
 		return dump(node, data);
 	}
+	
+	// % (modulo)
+	public Object visit(ASTMod node, Object data) {
+		return dump(node, data);
+	}
 
 	// NOT
 	public Object visit(ASTUnaryNot node, Object data) {

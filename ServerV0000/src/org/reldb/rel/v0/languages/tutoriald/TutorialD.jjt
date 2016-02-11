@@ -310,6 +310,7 @@ TOKEN : /* OPERATOR SYMBOLS */
 | < SUBT: "-" >
 | < STAR: "*" >
 | < SLASH: "/" >
+| < PCNT: "%" >
 }
 
 <SCRIPT> TOKEN: /* Source code grabber */
@@ -1320,6 +1321,7 @@ void mul_expression() :
 	unary_expression() ( 
 			"*" unary_expression() #Times(2)
 		|	"/" unary_expression() #Divide(2)
+		| 	"%" unary_expression() #Mod(2)
 	)*
 }
 

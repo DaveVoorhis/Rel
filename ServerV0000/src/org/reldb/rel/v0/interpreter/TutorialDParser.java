@@ -3224,7 +3224,15 @@ public class TutorialDParser implements TutorialDVisitor {
 		Type rightType = (Type)compileChild(node, 1, data);
 		return generator.compileOperatorInvocation(BuiltinTypeBuilder.DIVIDE, leftType, rightType, rightType);
 	}
-
+	
+	// % (modulo)
+	public Object visit(ASTMod node, Object data) {
+		currentNode = node;
+		Type leftType = (Type)compileChild(node, 0, data);
+		Type rightType = (Type)compileChild(node, 1, data);
+		return generator.compileOperatorInvocation(BuiltinTypeBuilder.MODULO, leftType, rightType, rightType);
+	}
+	
 	// + (unary)  Return Type of expression.
 	public Object visit(ASTUnaryPlus node, Object data) {
 		currentNode = node;

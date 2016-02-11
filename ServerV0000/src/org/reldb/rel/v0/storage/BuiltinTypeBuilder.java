@@ -44,6 +44,7 @@ public class BuiltinTypeBuilder {
 	public final static String MINUS = "OP_MINUS";
 	public final static String TIMES = "OP_TIMES";
 	public final static String DIVIDE = "OP_DIVIDE";
+	public final static String MODULO = "OP_MODULO";
 	public final static String UNARY_PLUS = "OP_UNARY_PLUS";
 	public final static String UNARY_MINUS = "OP_UNARY_MINUS";
 
@@ -228,6 +229,13 @@ public class BuiltinTypeBuilder {
 				if (arguments[1].longValue() == 0)
 					throw new ExceptionSemantic("RS0207: Attempt to divide by zero.");
 				return ValueInteger.select(typeBuilderInteger.generator, arguments[0].longValue() / arguments[1].longValue());
+			}
+    	});
+    	typeBuilderInteger.checkTypeOperatorBinary(MODULO, TypeInteger.getInstance(), new NativeFunction() {
+			public Value evaluate(Value[] arguments) {
+				if (arguments[1].longValue() == 0)
+					throw new ExceptionSemantic("RS0419: Attempt to perform modulo by zero.");
+				return ValueInteger.select(typeBuilderInteger.generator, arguments[0].longValue() % arguments[1].longValue());
 			}
     	});
     	typeBuilderInteger.checkTypeOperatorUnary(UNARY_PLUS, TypeInteger.getInstance(), new NativeFunction() {
