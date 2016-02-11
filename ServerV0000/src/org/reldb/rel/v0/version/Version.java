@@ -12,7 +12,7 @@ public class Version {
     private static final int REVISION = 13;
     private static final String RELEASE = "Beta";
     
-	public final static String expectedBerkeleyDBVersion = "6.3.8";
+	public final static String expectedBerkeleyDBVersion = "6.4.25";
     
     /** No instances. */
     private Version() {}
