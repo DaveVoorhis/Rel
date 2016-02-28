@@ -1801,26 +1801,31 @@ public class RelDatabase {
     	}    	
     }
 
+    // Replace KEY definitions
 	public synchronized void alterVarRealAlterKey(Generator generator, String varname, Object keydefs) {
 		// TODO - alter
 		System.out.println("alterVarRealAlterKey: ALTER VAR " + varname + " ALTER " + keydefs.toString());
 	}
 
+	// Change type of an attribute
 	public synchronized void alterVarRealChangeAttributeType(Generator generator, String varname, String attributeName, Type newType) {
 		// TODO - alter
 		System.out.println("alterVarRealChangeAttributeType: ALTER VAR " + varname + " REAL TYPE_OF " + attributeName + " TO " + newType.getSignature());
 	}
 
+	// Drop an attribute
 	public synchronized void alterVarRealDropAttribute(Generator generator, String varname, String attributeName) {
 		// TODO - alter
 		System.out.println("alterVarRealDropAttribute: ALTER VAR " + varname + " REAL DROP " + attributeName);
     }
 
+	// Add an attribute
 	public synchronized void alterVarRealInsertAttributes(Generator generator, String varname, Object heading) {
 		// TODO - alter
 		System.out.println("alterVarRealInsertAttributes: ALTER VAR " + varname + " REAL INSERT " + heading.toString());
 	}
 
+	// Rename an attribute
 	public synchronized void alterVarRealRenameAttribute(Generator generator, String varname, String oldAttributeName, String newAttributeName) {
 		// TODO - alter
 		System.out.println("alterVarRealRename: ALTER VAR " + varname + " REAL RENAME " + oldAttributeName + " TO " + newAttributeName);
