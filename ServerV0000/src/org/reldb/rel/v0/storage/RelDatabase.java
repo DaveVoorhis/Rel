@@ -733,7 +733,6 @@ public class RelDatabase {
    		txn.abort();
    		if (txn.getReferenceCount() == 0)
    			transactions.remove(getThreadID());
-   		
     }
     
     /** Roll back specified transaction. */
@@ -793,9 +792,9 @@ public class RelDatabase {
 			System.out.println("\t" + folder.toUpperCase() + ": " + "lib folder not found or empty.");
 			return;
     	}
-    	for(File file : getFilesAt(libFolder))
+    	for (File file: getFilesAt(libFolder))
 			try {
-				if(file.getName().endsWith("jar")) {
+				if (file.getName().endsWith("jar")) {
 					loadSinglePath(file);
 					System.out.println("\t" + folder.toUpperCase() + ": " + file.getName() + " was loaded succesfully.");
 				} else
@@ -817,24 +816,24 @@ public class RelDatabase {
     
     private void loadPaths(File database, File home) {
     	try {
-    		if(!database.exists() && !home.exists()) {
+    		if (!database.exists() && !home.exists()) {
     			database.mkdir();
     			home.mkdir();
     			return;
     		}
-    		if(!database.exists()) {
+    		if (!database.exists()) {
     			database.mkdir();
     		}
-    		if(!home.exists()) {
+    		if (!home.exists()) {
     			home.mkdir();
     			return;
     		}
     		ArrayList<String> homeTypes = getFoldersAt(home);
-    		if(homeTypes.isEmpty())
+    		if (homeTypes.isEmpty())
     			System.out.println("No custom relvars were found in " + home);
-    		for(String folder : homeTypes) {
+    		for (String folder : homeTypes) {
     			File typeFolder = new File(home.getAbsolutePath() + java.io.File.separator + folder);
-    			if(typeFolder.list().length > 0) {
+    			if (typeFolder.list().length > 0) {
 	    			customRelvars.add(folder);
 	    			System.out.println("Custom relvar " + folder + " was succesfully loaded");
 	    			File libFolder = new File(typeFolder.getAbsolutePath() + java.io.File.separator + "lib");
@@ -844,12 +843,12 @@ public class RelDatabase {
     		}
     		
     		ArrayList<String> databaseTypes = getFoldersAt(database);
-    		if(databaseTypes.isEmpty())
+    		if (databaseTypes.isEmpty())
     			System.out.println("No custom relvars were found in " + database);
-    		for(String folder : databaseTypes)
-    			if(!homeTypes.contains(folder)) {
+    		for (String folder : databaseTypes)
+    			if (!homeTypes.contains(folder)) {
     				File typeFolder = new File(database.getAbsolutePath() + java.io.File.separator + folder);
-    				if(typeFolder.list().length > 0) {
+    				if (typeFolder.list().length > 0) {
 	    				customRelvars.add(folder);
 	    				System.out.println("Custom relvar " + folder + "was succesfully loaded");
 	    				File libFolder = new File(typeFolder.getAbsolutePath() + java.io.File.separator + "lib");
