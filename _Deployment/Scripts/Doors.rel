@@ -1,0 +1,10 @@
+OPERATOR Doors(numberOfDoors INT) RETURNS RELATION {N INT, open BOOL};
+ BEGIN;
+	VAR Doors PRIVATE INIT(EXTEND SEQUENCE(1, numberOfDoors): {open := FALSE}) KEY {N};
+	VAR pass INT;
+	DO pass := 1 TO numberOfDoors;
+		UPDATE Doors WHERE N >= pass AND N % pass = 0: {open := NOT open};
+	END DO;
+	RETURN Doors;
+ END; 
+END OPERATOR;
