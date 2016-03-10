@@ -1,6 +1,8 @@
 ** TO DO **
 
 Short term:
+	// TODO - fix intermittent getKeyForTuple exception when creating new database
+	// TODO - fix self-reference POSSREP (e.g., t = THE_t(supertype) ) bug.
 	// TODO - implement VAR varname REAL ... in var designer.
 	// TODO - implement ALTER VAR varname REAL ... in Rel.
 	// TODO - improve UPDATE operator in Rev.
