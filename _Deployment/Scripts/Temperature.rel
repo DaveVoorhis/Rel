@@ -1,0 +1,115 @@
+/* TTM type system example */
+
+//
+// Operators to provide temperature conversions
+//
+
+OPERATOR CelsiusToKelvin(celsius RATIONAL) RETURNS RATIONAL;
+	RETURN celsius + 273.15;
+END OPERATOR;
+
+OPERATOR KelvinToCelsius(kelvin RATIONAL) RETURNS RATIONAL;
+	RETURN kelvin - 273.15;
+END OPERATOR;
+
+OPERATOR CelsiusToFahrenheit(celsius RATIONAL) RETURNS RATIONAL;
+	RETURN celsius * 9.0 / 5.0 + 32.0;
+END OPERATOR;
+
+OPERATOR FahrenheitToCelsius(fahrenheit RATIONAL) RETURNS RATIONAL;
+	RETURN 5.0 / 9.0 * (fahrenheit - 32.0);
+END OPERATOR;
+
+OPERATOR KelvinToFahrenheit(kelvin RATIONAL) RETURNS RATIONAL;
+	RETURN CelsiusToFahrenheit(KelvinToCelsius(kelvin));
+END OPERATOR;
+
+OPERATOR FahrenheitToKelvin(fahrenheit RATIONAL) RETURNS RATIONAL;
+	RETURN CelsiusToKelvin(FahrenheitToCelsius(fahrenheit));
+END OPERATOR;
+
+//
+// Example of multiple POSSREPs
+//
+
+TYPE Temperature
+      POSSREP Celsius {celsius RATIONAL}
+      POSSREP Kelvin {kelvin RATIONAL}
+      POSSREP Fahrenheit {fahrenheit RATIONAL}
+  // non-Tutorial D Rel extension...
+  INIT
+      Celsius (kelvin := CelsiusToKelvin(celsius), fahrenheit := CelsiusToFahrenheit(celsius))
+      Kelvin (celsius := KelvinToCelsius(kelvin), fahrenheit := KelvinToFahrenheit(kelvin))
+      Fahrenheit (kelvin := FahrenheitToKelvin(fahrenheit), celsius := FahrenheitToCelsius(fahrenheit));
+
+OPERATOR Format(temp Temperature) RETURNS CHAR;
+	RETURN THE_celsius(temp) || " degrees C";
+END OPERATOR;
+
+//
+// Example of specialization-by-constraint
+//
+
+TYPE WaterTemperature POSSREP { temperature Temperature };
+
+TYPE Steam IS {WaterTemperature
+	CONSTRAINT THE_celsius(THE_temperature(WaterTemperature)) >= 100.0
+	POSSREP { temp = THE_temperature(WaterTemperature) }
+};
+
+TYPE Water IS {WaterTemperature
+	CONSTRAINT THE_celsius(THE_temperature(WaterTemperature)) < 100.0 AND 
+			THE_celsius(THE_temperature(WaterTemperature)) > 0.0
+	POSSREP { temp = THE_temperature(WaterTemperature) }
+};
+
+TYPE Ice IS {WaterTemperature
+	CONSTRAINT THE_celsius(THE_temperature(WaterTemperature)) <= 0.0
+	POSSREP { temp = THE_temperature(WaterTemperature) }
+};
+
+OPERATOR Format(temp Steam) RETURNS CHAR;
+	RETURN '<font color="red">' || Format(THE_temp(temp)) || '</font>';
+END OPERATOR;
+
+OPERATOR Format(temp Water) RETURNS CHAR;
+	RETURN Format(THE_temp(temp));
+END OPERATOR;
+
+OPERATOR Format(temp Ice) RETURNS CHAR;
+	RETURN '<font color="blue">' || Format(THE_temp(temp)) || '</font>';
+END OPERATOR;
+
+//
+// Example of tagged union and inheritance
+//
+
+TYPE BoilerReading UNION;
+TYPE BoilerMeasured IS {BoilerReading POSSREP {reading WaterTemperature}};
+TYPE BoilerMissing IS {BoilerReading POSSREP {}};
+TYPE BoilerOutOfRange IS {BoilerReading POSSREP {}};
+
+OPERATOR Format(reading BoilerReading) RETURNS CHAR;
+	RETURN '???';
+END OPERATOR;
+
+OPERATOR Format(reading BoilerOutOfRange) RETURNS CHAR;
+	RETURN '-out-of-range-';
+END OPERATOR;
+
+OPERATOR Format(reading BoilerMeasured) RETURNS CHAR;
+	RETURN Format(THE_reading(reading));
+END OPERATOR;
+
+//
+// Application of the above
+//
+
+VAR Readings REAL RELATION {reading BoilerReading} KEY {reading};
+
+INSERT Readings RELATION {
+	TUPLE {reading BoilerMeasured(WaterTemperature(Celsius(10.3)))},
+	TUPLE {reading BoilerMeasured(WaterTemperature(Fahrenheit(222.2)))},
+	TUPLE {reading BoilerMeasured(WaterTemperature(Celsius(-22.1)))},
+	TUPLE {reading BoilerOutOfRange()}
+};
