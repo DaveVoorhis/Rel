@@ -1,3 +1,5 @@
+// Simple illustration of 100 Doors problem.  Invoke as (e.g.) Doors(100)
+
 OPERATOR Doors(numberOfDoors INT) RETURNS RELATION {N INT, open BOOL};
  BEGIN;
 	VAR Doors PRIVATE INIT(EXTEND SEQUENCE(1, numberOfDoors): {open := FALSE}) KEY {N};

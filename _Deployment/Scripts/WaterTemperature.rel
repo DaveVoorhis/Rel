@@ -1,0 +1,42 @@
+// Example of specialization-by-constraint
+
+TYPE WaterTemperature POSSREP { temperature RATIONAL };
+
+TYPE Steam IS {WaterTemperature
+	CONSTRAINT THE_temperature(WaterTemperature) >= 100.0
+	POSSREP { temp = THE_temperature(WaterTemperature) }
+};
+
+TYPE Water IS {WaterTemperature
+	CONSTRAINT THE_temperature(WaterTemperature) < 100.0 AND THE_temperature(WaterTemperature) > 0.0
+	POSSREP { temp = THE_temperature(WaterTemperature) }
+};
+
+TYPE Ice IS {WaterTemperature
+	CONSTRAINT THE_temperature(WaterTemperature) <= 0.0
+	POSSREP { temp = THE_temperature(WaterTemperature) }
+};
+
+OPERATOR Format(temp Steam) RETURNS CHAR;
+	RETURN '<font color="red">' || THE_temp(temp) || '</font>';
+END OPERATOR;
+
+OPERATOR Format(temp Water) RETURNS CHAR;
+	RETURN CAST_AS_CHAR(THE_temp(temp));
+END OPERATOR;
+
+OPERATOR Format(temp Ice) RETURNS CHAR;
+	RETURN '<font color="blue">' || THE_temp(temp) || '</font>';
+END OPERATOR;
+
+VAR Readings REAL RELATION {reading WaterTemperature} KEY {reading};
+
+INSERT Readings RELATION {
+	TUPLE {reading WaterTemperature(10.3)},
+	TUPLE {reading WaterTemperature(102.2)},
+	TUPLE {reading WaterTemperature(-22.1)}
+};
+
+FOR Readings ORDER(ASC reading);
+	WRITELN(Format(reading));
+END FOR;
