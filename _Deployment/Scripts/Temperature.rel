@@ -33,9 +33,9 @@ END OPERATOR;
 //
 
 TYPE Temperature
-      POSSREP Celsius {celsius RATIONAL}
-      POSSREP Kelvin {kelvin RATIONAL}
-      POSSREP Fahrenheit {fahrenheit RATIONAL}
+      POSSREP Celsius {celsius RATIONAL  CONSTRAINT CelsiusToKelvin(celsius) > 273.15}
+      POSSREP Kelvin {kelvin RATIONAL  CONSTRAINT kelvin > 273.15}
+      POSSREP Fahrenheit {fahrenheit RATIONAL  CONSTRAINT FahrenheitToKelvin(fahrenheit) > 273.15}
   // non-Tutorial D Rel extension...
   INIT
       Celsius (kelvin := CelsiusToKelvin(celsius), fahrenheit := CelsiusToFahrenheit(celsius))
