@@ -1,3 +1,6 @@
+// See SampleJavaBasedTypes/TypeDecimal.rel for Decimal type.
+
+// Coordinate on a plane.
 TYPE Point 
 	POSSREP cartesian { X Decimal , Y Decimal } 
 	POSSREP polar { R Decimal , THETA Decimal } 
