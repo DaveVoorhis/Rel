@@ -1,0 +1,1 @@
+These illustrate how it's possible to create new "built-in" types.

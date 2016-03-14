@@ -1,0 +1,39 @@
+/*
+  Example of polymorphism/inheritance similar to the following in
+  a typical OO language:
+
+// Define abstract supertype
+interface Animal {string getSound();}
+
+// Define concrete subtypes
+class Cat implements Animal {string getSound() {return "meow";}}
+class Dog implements Animal {string getSound() {return "woof";}}
+class Sheep implements Animal {string getSound() {return "baaa";}}
+
+// Write code to use it.
+Animal beast;
+beast = new Cat();
+play(beast.getSound());
+
+Using the TTM IM (but not S-by-C, in this case), it might look something like this:
+
+*/
+
+// Define abstract supertype
+TYPE Animal UNION;
+
+OPERATOR getSound(animal Animal) RETURNS CHAR; RETURN "?"; END OPERATOR;
+
+// Define concrete subtypes
+TYPE Cat IS {Animal POSSREP {}};
+TYPE Dog IS {Animal POSSREP {}};
+TYPE Sheep IS {Animal POSSREP {}};
+
+OPERATOR getSound(animal Cat) RETURNS CHAR; RETURN "meow"; END OPERATOR;
+OPERATOR getSound(animal Dog) RETURNS CHAR; RETURN "woof"; END OPERATOR;
+OPERATOR getSound(animal Sheep) RETURNS CHAR; RETURN "baaa"; END OPERATOR;
+
+// Write code to use it.
+VAR beast Animal;
+beast := Cat();
+WRITELN(getSound(beast));
