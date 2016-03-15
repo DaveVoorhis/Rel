@@ -1,0 +1,15 @@
+// Recursive Fibonacci sequence demonstrating S-by-C and 
+// inheritance from built-in type.
+
+TYPE ZeroOrOne IS { INTEGER CONSTRAINT INTEGER >= 0 AND INTEGER <= 1 };
+TYPE NotZeroOrOne IS { INTEGER CONSTRAINT INTEGER < 0 OR INTEGER > 1 };
+
+OPERATOR Fib(n ZeroOrOne) RETURNS INTEGER;
+	RETURN n;
+END OPERATOR;
+
+OPERATOR Fib(n NotZeroOrOne) RETURNS INTEGER;
+	RETURN Fib(n - 1) + Fib(n - 2);
+END OPERATOR;
+
+// Try: EXTEND SEQUENCE(0, 10): {F := Fib(N)}
