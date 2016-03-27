@@ -7,3 +7,7 @@ TYPE Point
 INIT 
 	cartesian ( R := SQRT ( X * X + Y * Y ) , THETA := ATAN2 ( Y , X ) ) 
 	polar ( X := R * COS ( THETA ) , Y := R * SIN ( THETA ) );
+
+OPERATOR Distance(a Point, b Point) RETURNS Decimal;
+	RETURN SQRT(POW(THE_X(a) - THE_X(b), Decimal(2.0, 1)) + POW(THE_Y(a) - THE_Y(b), Decimal(2.0, 1)));
+END OPERATOR;

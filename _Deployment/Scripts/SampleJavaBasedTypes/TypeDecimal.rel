@@ -74,6 +74,10 @@ TYPE Decimal Java FOREIGN
 		return new Decimal(generator, d1.x / d2.x, getLeastPrecision(d1, d2));
 	}
 
+	public static Decimal POW(Generator generator, Decimal d1, Decimal d2) {
+		return new Decimal(generator, Math.pow(d1.x, d2.x), d1.decimalPlaces);
+	}
+
 	public static Decimal SIN(Generator generator, Decimal d1) {
 		return new Decimal(generator, Math.sin(d1.x), d1.decimalPlaces);
 	}
