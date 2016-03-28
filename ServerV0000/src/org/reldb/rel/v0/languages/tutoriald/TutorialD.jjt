@@ -325,10 +325,15 @@ ASTEvaluate evaluate() #Evaluate :
 	[ compound_statement_body() ";" ] expression() ( <EOT> | <EOF> ) {return jjtThis;}
 }
 
+void statement_list() #StatementList :
+{}
+{	( statement() )*
+}
+
 ASTCode code() #Code :
 {}
 {
-	statement() ( statement() )* ( <EOT> | <EOF> ) {return jjtThis;}
+	statement_list() ( <EOT> | <EOF> ) {return jjtThis;}
 }
 
 ASTStatement statement() #Statement :
@@ -447,7 +452,7 @@ void compound_statement_body() :
 {}
 {
 	<BEGIN> ";"
-		( statement() )*
+		statement_list()
 	<END>
 }
 
@@ -511,7 +516,7 @@ void op_version() #UserOpVersion :
 void op_body() #UserOpBody :
 {}
 {
-	[ statement() ]
+	statement_list()
 }
 
 void return_statement() #ReturnExpression :
@@ -983,13 +988,13 @@ void when_def_list() #CaseWhenList :
 void when_def() #CaseWhen :
 {}
 {
-	<WHEN> expression() <THEN> statement()
+	<WHEN> expression() <THEN> statement_list()
 }
 
 void case_else() #CaseElse :
 {}
 {
-	[ <ELSE> statement() ]
+	[ <ELSE> statement_list() ]
 }
 
 /* Note that THEN and ELSE are not
@@ -997,7 +1002,7 @@ followed by semicolons, but maybe should be? */
 void if_statement() #IfStatement :
 {}
 {
-	<IF> expression() <THEN> statement() 
+	<IF> expression() <THEN> statement_list() 
 	if_statement_else()
 	<END> <IF>
 }
@@ -1005,7 +1010,7 @@ void if_statement() #IfStatement :
 void if_statement_else() #ElseStatement :
 {}
 {
-	[ <ELSE> statement() ] 
+	[ <ELSE> statement_list() ] 
 }
 
 void loop() :
@@ -1018,7 +1023,7 @@ void do_statement() #DoLoop :
 {}
 {
 	<DO> identifier() ":=" expression() <TO> expression() ";"
-		statement()
+		statement_list()
 	<END> <DO>
 }
 
@@ -1026,7 +1031,7 @@ void while_statement() #WhileLoop :
 {}
 {
 	<WHILE> expression() ";"
-		statement()
+		statement_list()
 	<END> <WHILE>
 }
 
@@ -1034,7 +1039,7 @@ void for_statement() #ForLoop :
 {}
 {
 	<FOR> expression() ";"
-		statement()
+		statement_list()
 	<END> <FOR>
 }
 

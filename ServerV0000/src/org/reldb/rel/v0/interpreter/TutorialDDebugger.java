@@ -138,6 +138,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 		return dump(node, data);
 	}
 	
+	// Statement list
+	public Object visit(ASTStatementList node, Object data) {
+		return dump(node, data);
+	}
+
 	// Statement
 	public Object visit(ASTStatement node, Object data) {
 		return dump(node, data);

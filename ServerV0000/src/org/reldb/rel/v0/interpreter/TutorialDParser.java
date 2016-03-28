@@ -365,6 +365,13 @@ public class TutorialDParser implements TutorialDVisitor {
 		return generator.endCompilation();		
 	}
 	
+	// Statement list
+	public Object visit(ASTStatementList node, Object data) {
+		currentNode = node;
+		compileChildren(node, data);
+		return null;
+	}
+
 	// Statement
 	public Object visit(ASTStatement node, Object data) {
 		currentNode = node;
