@@ -351,8 +351,8 @@ void op_before_returns() :
 void op_after_returns() :
 {}
 {
-		 	op_updates() op_synonym() op_version() ";" op_body() <END> <OPERATOR>
-	  | 	identifier() <FOREIGN> ( <TEXT> )* <ENDFOREIGN> <OPERATOR>
+		 	op_updates() op_synonym() op_version() ";" op_body() <END> [ <OPERATOR> ]
+	  | 	identifier() <FOREIGN> ( <TEXT> )* <ENDFOREIGN> [ <OPERATOR> ]
 }
 
 ASTGetOperatorReturnType getoperatorreturntype() #GetOperatorReturnType(3) :
@@ -465,7 +465,7 @@ void op_def() :
 void lambda() :
 {}
 {
-    <OPERATOR> lambda_definition() <END> <OPERATOR>
+    <OPERATOR> lambda_definition() <END> [ <OPERATOR> ]
   | <LAMBDA> lambda_definition() <LAMBDAEND>}
 
 void lambda_definition() #Lambda :
@@ -476,7 +476,7 @@ void lambda_definition() #Lambda :
 void external_op_def() #ExternalOpDef(4) :
 {Token t; StringBuffer s = new StringBuffer();}
 {
-	identifier() <FOREIGN> ( t = <TEXT> {s.append(t.toString());} )* {jjtThis.tokenValue = s.toString();} <ENDFOREIGN> <OPERATOR>
+	identifier() <FOREIGN> ( t = <TEXT> {s.append(t.toString());} )* {jjtThis.tokenValue = s.toString();} <ENDFOREIGN> [ <OPERATOR> ]
 }
 
 void rel_op_def() #UserOpDef(7) :
@@ -484,7 +484,7 @@ void rel_op_def() #UserOpDef(7) :
 {
  	op_updates() op_synonym() op_version() ";"
 	op_body()
-	<END> <OPERATOR>
+	<END> [ <OPERATOR> ]
 }
 
 /* Note: op_returns() and op_updates()
@@ -628,7 +628,7 @@ void type_def_kind() :
 void type_def_external() #TypeDefExternal :
 {Token t; StringBuffer s = new StringBuffer();}
 {
-	identifier() <FOREIGN> ( t = <TEXT> {s.append(t.toString());} )* {jjtThis.tokenValue = s.toString();} <ENDFOREIGN> <TYPE>
+	identifier() <FOREIGN> ( t = <TEXT> {s.append(t.toString());} )* {jjtThis.tokenValue = s.toString();} <ENDFOREIGN> [ <TYPE> ]
 }
 
 /* User-defined (internal) types start here */
@@ -976,7 +976,7 @@ void case_statement() #CaseStatement :
 	<CASE> ";" 
 	when_def_list() 
 	case_else() 
-	<END> <CASE>
+	<END> [ <CASE> ]
 }
 
 void when_def_list() #CaseWhenList :
@@ -1004,7 +1004,7 @@ void if_statement() #IfStatement :
 {
 	<IF> expression() <THEN> statement_list() 
 	if_statement_else()
-	<END> <IF>
+	<END> [ <IF> ]
 }
 
 void if_statement_else() #ElseStatement :
@@ -1024,7 +1024,7 @@ void do_statement() #DoLoop :
 {
 	<DO> identifier() ":=" expression() <TO> expression() ";"
 		statement_list()
-	<END> <DO>
+	<END> [ <DO> ]
 }
 
 void while_statement() #WhileLoop :
@@ -1032,7 +1032,7 @@ void while_statement() #WhileLoop :
 {
 	<WHILE> expression() ";"
 		statement_list()
-	<END> <WHILE>
+	<END> [ <WHILE> ]
 }
 
 void for_statement() #ForLoop :
@@ -1040,7 +1040,7 @@ void for_statement() #ForLoop :
 {
 	<FOR> expression() ";"
 		statement_list()
-	<END> <FOR>
+	<END> [ <FOR> ]
 }
 
 void leave() :
@@ -1382,7 +1382,7 @@ void case_expression() #CaseExpression :
 	<CASE> 
 	when_def_list_expr() 
 	<ELSE> expression() 
-	<END> <CASE>
+	<END> [ <CASE> ]
 }
 
 void when_def_list_expr() #CaseWhenListExpression :
@@ -1402,7 +1402,7 @@ void if_expression() #IfExpression :
 {
 	<IF> expression() <THEN> expression() 
 	<ELSE> expression()
-	<END> <IF>
+	<END> [ <IF> ]
 }
 
 /* Update expression, *not* assignment.
