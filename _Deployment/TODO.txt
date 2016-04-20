@@ -1,6 +1,11 @@
 ** TO DO **
 
 Short term:
+	// TODO - associate a 'project' attribute with every database object, to permit
+	//        admin UIs that show only the relvars, views, types, operators, etc., in that project.
+	// TODO - provide a means to store code snippets in the database and integrate with UI
+	// TODO - associate a 'valid' attribute with every database object, to permit
+	//        changes that invalidate dependent objects.
 	// TODO - provide THE_INTEGER(INTEGER)
 	// TODO - fix intermittent getKeyForTuple exception when creating new database
 	// TODO - fix self-reference POSSREP (e.g., t = THE_t(supertype) ) bug.
