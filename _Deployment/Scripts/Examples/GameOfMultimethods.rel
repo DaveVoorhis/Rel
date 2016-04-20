@@ -1,3 +1,13 @@
+/*
+Here’s a simple illustration of use of multimethods in a videogame, 
+in order to determine the outcome of battles between various kinds of 
+player and enemy characters.
+
+Assume Fight(...) represents an operator that in an actual videogame 
+calculates (or perhaps animates) the result of pitting a particular 
+type of player against a particular type of enemy.
+*/
+
 TYPE Player UNION;
 TYPE Paladin IS {Player POSSREP {x CHAR, y INT}};
 TYPE Thief IS {Player POSSREP {a RATIONAL, b RATIONAL}};
