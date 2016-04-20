@@ -1,0 +1,18 @@
+drop operator Fight(Player, Enemy);
+drop operator Fight(Paladin, Orc);
+drop operator Fight(Thief, Orc);
+drop operator Fight(Wizard, Orc);
+drop operator Fight(Paladin, Warlock);
+drop operator Fight(Thief, Warlock);
+drop operator Fight(Wizard, Warlock);
+drop operator Fight(Paladin, Spider);
+drop operator Fight(Thief, Spider);
+drop operator Fight(Wizard, Spider);
+drop type Spider;
+drop type Orc;
+drop type Warlock;
+drop type Wizard;
+drop type Thief;
+drop type Paladin;
+drop type Player;
+drop type Enemy;
