@@ -16,10 +16,11 @@ public class IconLoader {
 	public static Image loadIconNormal(String name) {
 		Image imgBig = ResourceManager.getPluginImage("RelUI", "icons/" + name + "@2x.png");
 		Image imgSmall = ResourceManager.getPluginImage("RelUI", "icons/" + name + ".png");
+		Image imgLarge = (imgBig == null) ? imgSmall : imgBig;
 		final ImageDataProvider imageDataProvider = zoom -> {
 			switch (zoom) {
 			case 200:
-				return imgBig.getImageData();
+				return imgLarge.getImageData();
 			default:
 				return imgSmall.getImageData();
 			}
@@ -29,6 +30,9 @@ public class IconLoader {
 	}
 	
 	public static Image loadIconLarge(String name) {
-		return ResourceManager.getPluginImage("RelUI", "icons/" + name + "@2x.png");
+		Image imgBig = ResourceManager.getPluginImage("RelUI", "icons/" + name + "@2x.png");
+		if (imgBig == null)
+			return ResourceManager.getPluginImage("RelUI", "icons/" + name + ".png");
+		return imgBig;
 	}
 }
