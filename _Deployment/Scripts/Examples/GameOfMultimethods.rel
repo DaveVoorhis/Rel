@@ -1,0 +1,77 @@
+/*
+Here’s a simple illustration of use of multimethods in a videogame, 
+in order to determine the outcome of battles between various kinds of 
+player and enemy characters.
+
+Assume Fight(...) represents an operator that in an actual videogame 
+calculates (or perhaps animates) the result of pitting a particular 
+type of player against a particular type of enemy.
+*/
+
+TYPE Player UNION;
+TYPE Paladin IS {Player POSSREP {x CHAR, y INT}};
+TYPE Thief IS {Player POSSREP {a RATIONAL, b RATIONAL}};
+TYPE Wizard IS {Player POSSREP {p BOOLEAN, q RATIONAL}};
+
+TYPE Enemy UNION;
+TYPE Orc IS {Enemy POSSREP {x CHAR, p INT}};
+TYPE Warlock IS {Enemy POSSREP {p RATIONAL, y CHAR}};
+TYPE Spider IS {Enemy POSSREP {d INT}};
+
+OPERATOR Fight(p Player, e Enemy) RETURNS CHAR;
+	RETURN 'ERROR: more specific version of Fight not found.';
+END OPERATOR;
+
+OPERATOR Fight(p Paladin, e Orc) RETURNS CHAR;
+	RETURN 'Paladin fights Orc';
+END OPERATOR;
+
+OPERATOR Fight(p Thief, e Orc) RETURNS CHAR;
+	RETURN 'Thief fights Orc';
+END OPERATOR;
+
+OPERATOR Fight(p Wizard, e Orc) RETURNS CHAR;
+	RETURN 'Wizard fights Orc';
+END OPERATOR;
+
+OPERATOR Fight(p Paladin, e Warlock) RETURNS CHAR;
+	RETURN 'Paladin fights Warlock';
+END OPERATOR;
+
+OPERATOR Fight(p Thief, e Warlock) RETURNS CHAR;
+	RETURN 'Thief fights Warlock';
+END OPERATOR;
+
+OPERATOR Fight(p Wizard, e Warlock) RETURNS CHAR;
+	RETURN 'Wizard fights Warlock';
+END OPERATOR;
+
+OPERATOR Fight(p Paladin, e Spider) RETURNS CHAR;
+	RETURN 'Paladin fights Spider';
+END OPERATOR;
+
+OPERATOR Fight(p Thief, e Spider) RETURNS CHAR;
+	RETURN 'Thief fights Spider';
+END OPERATOR;
+
+OPERATOR Fight(p Wizard, e Spider) RETURNS CHAR;
+	RETURN 'Wizard fights Spider';
+END OPERATOR;
+
+VAR Enemies REAL RELATION {name CHAR, enemy Enemy} KEY {name};
+
+// Initialise game level
+INSERT Enemies RELATION {
+	TUP {name 'Azlaroc', enemy Spider(3)},
+	TUP {name 'Zazzle', enemy Warlock(2.3, 'sdflkj')},
+	TUP {name 'Uqthra', enemy Orc('sss', 2)},
+	TUP {name 'Etura', enemy Spider(4)},
+	TUP {name 'Brian', enemy Spider(3)},
+	TUP {name 'Thath', enemy Orc('sst', 5)}
+};
+
+// Choose player type
+VAR thePlayer INIT(Wizard(true, 2.3));
+
+// Play
+WRITELN EXTEND Enemies: {fightResult := Fight(thePlayer, enemy)};

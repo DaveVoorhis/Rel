@@ -6,11 +6,13 @@ If you wish to work with the source code, do this:
 
 2. Install the JavaCC Eclipse plugin via "Help | Install New Software".  The update site (i.e., the URL to put in "Work with", then press "Add") is http://eclipse-javacc.sourceforge.net/
 
-3. Install NatTable (https://eclipse.org/nattable) -- used by the RelUI subproject -- via "Help | Install New Software".  The update site is http://download.eclipse.org/nattable/releases/1.3.0/repository/
+3. Install NatTable (https://eclipse.org/nattable) -- used by the RelUI subproject -- via "Help | Install New Software".  The update site is http://download.eclipse.org/nattable/releases/1.4.0/repository/
 
-4. Select "File | Import... | Git | Projects from Git" and pick "Clone URI".  The URI is https://github.com/DaveVoorhis/Rel.git  Or, better yet, fork it on GitHub and send me a pull request when you've done something good!
+4. (Optional) If you wish to support multi-platform builds, go to https://wiki.eclipse.org/Building and follow the instructions under "Preferred way of doing multi-platform builds".
 
-5. To ensure that the relevant libraries are up-to-date in the RelUI subproject, run the /RelUI/lib/copy.bat script on Windows or /RelUI/lib/link.sh on Linux or OS X.  Build should be automatic, but it wouldn't hurt to do a "Project | Clean..." to ensure everything is freshly built.  If you're developing on Windows, you'll need to run the /RelUI/lib/copy.bat file whenever the referenced libraries are changed.
+5. Select "File | Import... | Git | Projects from Git" and pick "Clone URI".  The URI is https://github.com/DaveVoorhis/Rel.git  Or, better yet, fork it on GitHub and send me a pull request when you've done something good!
+
+6. To ensure that the relevant libraries are up-to-date in the RelUI subproject, run the /RelUI/lib/copy.bat script on Windows or /RelUI/lib/link.sh on Linux or OS X.  Build should be automatic, but it wouldn't hurt to do a "Project | Clean..." to ensure everything is freshly built.  If you're developing on Windows, you'll need to run the /RelUI/lib/copy.bat file whenever the referenced libraries are changed.
 
 You're ready to develop Rel.
 
