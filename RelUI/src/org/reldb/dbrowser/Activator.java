@@ -1,5 +1,6 @@
 package org.reldb.dbrowser;
 
+import org.eclipse.wb.swt.ResourceManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -25,6 +26,8 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
+		ResourceManager.dispose();
+		System.out.println("RelUI has left the building.");
 	}
 
 }

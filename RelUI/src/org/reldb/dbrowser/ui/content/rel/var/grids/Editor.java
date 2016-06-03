@@ -468,7 +468,7 @@ public abstract class Editor extends Grid {
 	
 	class HeaderConfiguration extends AbstractRegistryConfiguration {
 		public void configureRegistry(IConfigRegistry configRegistry) {
-			ImagePainter keyPainter = new ImagePainter(IconLoader.loadIconSmall("bullet_key")); 
+			ImagePainter keyPainter = new ImagePainter(IconLoader.loadIconNormal("bullet_key")); 
 			CellPainterDecorator decorator = new CellPainterDecorator(
 					new TextPainter(), 
 					CellEdgeEnum.RIGHT, 
