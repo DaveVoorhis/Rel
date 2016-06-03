@@ -2,13 +2,13 @@ This is the live development repository for Rel, an implementation of Date & Dar
 
 If you wish to work with the source code, do this:
 
-1. Download and install Eclipse for RCP and RAP Developers.  Run Eclipse.
+1. Download and install Eclipse for RCP and RAP Developers. Eclipse Neon or newer is required.  Run Eclipse.
 
 2. Install the JavaCC Eclipse plugin via "Help | Install New Software".  The update site (i.e., the URL to put in "Work with", then press "Add") is http://eclipse-javacc.sourceforge.net/
 
 3. Install NatTable (https://eclipse.org/nattable) -- used by the RelUI subproject -- via "Help | Install New Software".  The update site is http://download.eclipse.org/nattable/releases/1.4.0/repository/
 
-4. (Optional) If you wish to support multi-platform builds, go to https://wiki.eclipse.org/Building and follow the instructions under "Preferred way of doing multi-platform builds".
+4. (Optional) If you wish to support multi-platform builds, go to https://wiki.eclipse.org/Building and follow the instructions under "Preferred way of doing multi-platform builds". Version 4.6 or newer is required.
 
 5. Select "File | Import... | Git | Projects from Git" and pick "Clone URI".  The URI is https://github.com/DaveVoorhis/Rel.git  Or, better yet, fork it on GitHub and send me a pull request when you've done something good!
 
