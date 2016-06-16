@@ -12,18 +12,18 @@ import org.reldb.rel.v0.types.Heading;
 public class RelvarRealMetadata extends RelvarMetadata {
 	public static final long serialVersionUID = 0;
 	
-	private StorageNames tableName;
+	private StorageNames storageNames;
 	
 	public RelvarRealMetadata(RelDatabase database, RelvarHeading headingDefinition, String owner) {
 		super(database, headingDefinition, owner);
 	}
 	
-	public void setTableName(StorageNames tableName) {
-		this.tableName = tableName;
+	public void setStorageNames(StorageNames tableName) {
+		this.storageNames = tableName;
 	}
 	
-	public StorageNames getTableName() {
-		return tableName;
+	public StorageNames getStorageNames() {
+		return storageNames;
 	}
 	
 	public RelvarGlobal getRelvar(String name, RelDatabase database) {

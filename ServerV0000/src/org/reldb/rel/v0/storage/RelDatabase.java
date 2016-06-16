@@ -1490,7 +1490,7 @@ public class RelDatabase {
 			return null;
 		if (!(metadata instanceof RelvarRealMetadata))
 			throw new ExceptionFatal("RS0354: VAR " + name + " is not a REAL relvar.");
-		StorageNames tableName = ((RelvarRealMetadata)metadata).getTableName();
+		StorageNames tableName = ((RelvarRealMetadata)metadata).getStorageNames();
 		Storage table = new Storage(tableName.size());
 		for (int i=0; i<tableName.size(); i++) {
 			String tabName = tableName.getName(i);
@@ -1529,7 +1529,7 @@ public class RelDatabase {
     					throw new ExceptionSemantic("RS0218: VAR " + relvarInfo.getName() + " already exists.");
     		    	RelvarMetadata metadata = getRelvarMetadata(txn, relvarInfo.getName());
     		    	if (metadata != null && metadata instanceof RelvarRealMetadata) {
-    		    		StorageNames tableName = ((RelvarRealMetadata)metadata).getTableName();
+    		    		StorageNames tableName = ((RelvarRealMetadata)metadata).getStorageNames();
     		    		for (int i=0; i<tableName.size(); i++) {
     		    			String tabName = tableName.getName(i);
     		    			closeDatabase(tabName);
@@ -1549,7 +1549,7 @@ public class RelDatabase {
         		    	openDatabase(txn, tabName, dbConfigurationAllowCreate).close();
 	    				openStorage.remove(tabName);
     		    	}
-   		    		newMetadata.setTableName(tableName);
+   		    		newMetadata.setStorageNames(tableName);
     	    		putRelvarMetadata(txn, relvarInfo.getName(), newMetadata);
     	        	addDependencies(generator, relvarInfo.getName(), Catalog.relvarDependenciesRelvarType, relvarInfo.getReferences().getReferencedTypes());
     	    		return null;
@@ -1695,7 +1695,7 @@ public class RelDatabase {
     		    		throw new ExceptionSemantic("RS0222: VAR " + name + " may not be dropped due to dependencies:" + dependencies);
     				metadata.dropRelvar(RelDatabase.this);
     				if (metadata instanceof RelvarRealMetadata) {
-    		    		StorageNames tableName = ((RelvarRealMetadata)metadata).getTableName();
+    		    		StorageNames tableName = ((RelvarRealMetadata)metadata).getStorageNames();
     		    		for (int i=0; i<tableName.size(); i++) {
     		    			String tabName = tableName.getName(i);
     		    			closeDatabase(tabName);
@@ -1787,7 +1787,7 @@ public class RelDatabase {
 	    				environment.removeDatabase(txn, tabName);	    				
 	    			}
     		    	RelvarRealMetadata metadata = (RelvarRealMetadata)getRelvarMetadata(txn, target.getName());
-    		    	metadata.setTableName(newTableName);
+    		    	metadata.setStorageNames(newTableName);
     	    		putRelvarMetadata(txn, target.getName(), metadata);
     	    		return null;
 	    		}
