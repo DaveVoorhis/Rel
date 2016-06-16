@@ -8,19 +8,19 @@ import com.sleepycat.je.*;
 
 public class TablePrivate extends Table {
 
-	private KeyTables rawTable;
+	private Storage rawTable;
 	
-	public TablePrivate(RelDatabase database, KeyTables rawTable, RelvarHeading headingDefinition) {
+	public TablePrivate(RelDatabase database, Storage rawTable, RelvarHeading headingDefinition) {
 		super(database, headingDefinition);
 		setTable(rawTable);
 	}
 	
-	public void setTable(KeyTables rawTable) {
+	public void setTable(Storage rawTable) {
 		this.rawTable = rawTable;
 	}
 	
 	@Override
-	public KeyTables getTable(Transaction txn) {
+	public Storage getTable(Transaction txn) {
 		return rawTable;
 	}
 

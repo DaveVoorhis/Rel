@@ -19,7 +19,7 @@ public class TableReal extends Table {
 	}
 	
 	@Override
-	protected KeyTables getTable(Transaction txn) throws DatabaseException {
+	protected Storage getTable(Transaction txn) throws DatabaseException {
 		return getDatabase().getTable(txn, relvarName);
 	}
 }

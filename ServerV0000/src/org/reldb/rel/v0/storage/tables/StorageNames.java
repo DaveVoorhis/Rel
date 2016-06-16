@@ -2,14 +2,14 @@ package org.reldb.rel.v0.storage.tables;
 
 import java.io.Serializable;
 
-/** A table (Database) and associated index (also DatabaseS) names. */
-public class KeyTableNames implements Serializable {
+/** A tuple store name (name of Berkeley Database) and associated index names (also names of Berkeley DatabaseS). */
+public class StorageNames implements Serializable {
 	private final static long serialVersionUID = 0;
 	
 	private String[] names;
 	
-	public KeyTableNames(int tableCount) {
-		names = new String[tableCount];
+	public StorageNames(int storeCount) {
+		names = new String[storeCount];
 	}
 
 	public String getName(int i) {

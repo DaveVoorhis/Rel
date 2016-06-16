@@ -43,7 +43,7 @@ public abstract class Table {
 		return headingDefinition;
 	}
 	
-	protected abstract KeyTables getTable(Transaction txn) throws DatabaseException;
+	protected abstract Storage getTable(Transaction txn) throws DatabaseException;
 	
 	public RelDatabase getDatabase() {
 		return database;
@@ -60,7 +60,7 @@ public abstract class Table {
 		return theKey;
 	}
 	
-	public boolean insertTupleNoDuplicates(Generator generator, KeyTables table, Transaction txn, ValueTuple tuple, String description) throws DatabaseException {
+	public boolean insertTupleNoDuplicates(Generator generator, Storage table, Transaction txn, ValueTuple tuple, String description) throws DatabaseException {
 		DatabaseEntry theData = new DatabaseEntry();
 		database.getTupleBinding().objectToEntry(tuple, theData);
 		// Put it in the database.
@@ -73,7 +73,7 @@ public abstract class Table {
 		return true;
 	}
 
-	boolean insertTuple(Generator generator, KeyTables table, Transaction txn, ValueTuple tuple, String description) throws DatabaseException {
+	boolean insertTuple(Generator generator, Storage table, Transaction txn, ValueTuple tuple, String description) throws DatabaseException {
 		DatabaseEntry theData = new DatabaseEntry();
 		database.getTupleBinding().objectToEntry(tuple, theData);
 		// Put it in the database.  Skip it silently if duplicate.
@@ -102,7 +102,7 @@ public abstract class Table {
 	}
 
 	private static abstract class Inserter {
-		abstract boolean insert(Generator generator, KeyTables table, Transaction txn, ValueTuple tuple, String comment);
+		abstract boolean insert(Generator generator, Storage table, Transaction txn, ValueTuple tuple, String comment);
 	}
 	
 	private long insert(final Generator generator, final ValueRelation relation, final Inserter inserter) {
@@ -114,7 +114,7 @@ public abstract class Table {
 	    	    	TempTable tmp = new TempTableImplementation(database);
 	    			long insertCount = 0;
 	    	    	try {
-		    			KeyTables table = getTable(txn);
+		    			Storage table = getTable(txn);
 		    			TupleIterator iterator = relation.iterator();
 		    			try {
 		    				while (iterator.hasNext()) {
@@ -150,7 +150,7 @@ public abstract class Table {
 	
 	public long insert(final Generator generator, final ValueRelation relation) {
 		return insert(generator, relation, new Inserter() {
-			boolean insert(Generator generator, KeyTables table, Transaction txn, ValueTuple tuple, String comment) {
+			boolean insert(Generator generator, Storage table, Transaction txn, ValueTuple tuple, String comment) {
 				return insertTuple(generator, table, txn, tuple, comment);
 			}
 		});
@@ -158,7 +158,7 @@ public abstract class Table {
 
 	public long insertNoDuplicates(Generator generator, ValueRelation relation) {
 		return insert(generator, relation, new Inserter() {
-			boolean insert(Generator generator, KeyTables table, Transaction txn, ValueTuple tuple, String comment) {
+			boolean insert(Generator generator, Storage table, Transaction txn, ValueTuple tuple, String comment) {
 				return insertTupleNoDuplicates(generator, table, txn, tuple, comment);
 			}
 		});
@@ -217,7 +217,7 @@ public abstract class Table {
 
 	// Delete all tuples
 	private void purge(Transaction txn) throws DatabaseException {
-		KeyTables tables = getTable(txn);
+		Storage tables = getTable(txn);
 		for (int i=0; i<tables.size(); i++) {
 			Cursor cursor = tables.getDatabase(i).openCursor(txn, null);
 			try {
@@ -253,7 +253,7 @@ public abstract class Table {
     	try {
 	    	(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
-	    			KeyTables tables = getTable(txn);
+	    			Storage tables = getTable(txn);
 	    			for (int i=0; i<tables.size(); i++)
 	    				tables.getDatabase(i).delete(txn, getKeyValueFromTuple(generator, tuple, i));
     	    		return null;
@@ -272,7 +272,7 @@ public abstract class Table {
     	try {
 	    	return ((Long)(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
-	    			KeyTables tables = getTable(txn);
+	    			Storage tables = getTable(txn);
     				Cursor cursor = tables.getDatabase(0).openCursor(txn, null);
     				long deleteCount = 0;
     				try {
@@ -348,7 +348,7 @@ public abstract class Table {
 	    			TempTable insertionTemporaryTable = new TempTableImplementation(database);
 	    			long updateCount = 0;
 	    			try {
-		    			KeyTables tables = getTable(txn);
+		    			Storage tables = getTable(txn);
 	    			    DatabaseEntry foundKey = new DatabaseEntry();
 	    			    DatabaseEntry foundData = new DatabaseEntry();	
 		    			Cursor cursor = tables.getDatabase(0).openCursor(txn, null);

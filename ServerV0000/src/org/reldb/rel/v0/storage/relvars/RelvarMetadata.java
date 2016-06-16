@@ -14,18 +14,28 @@ public abstract class RelvarMetadata implements Serializable {
 	private long creationSequence;
 	private String source;
 
+	private void obtainSource(RelDatabase database) {
+		source = (new TypeRelation(getHeadingDefinition(database).getHeading())).toString() + " " + getHeadingDefinition(database).toString();		
+	}
+	
 	public RelvarMetadata(RelDatabase database, RelvarHeading headingDefinition, String owner) {
 		this.headingDefinition = headingDefinition;
 		headingDefinitionMetadata = new RelvarHeadingMetadata(headingDefinition);
 		this.owner = owner;
 		this.creationSequence = -1;
-		source = (new TypeRelation(getHeadingDefinition(database).getHeading())).toString() + " " + getHeadingDefinition(database).toString();
+		obtainSource(database);
 	}
 	
 	public RelvarHeading getHeadingDefinition(RelDatabase database) {
 		if (headingDefinition == null)
 			headingDefinition = headingDefinitionMetadata.getHeadingDefinition(database);
 		return headingDefinition;
+	}
+
+	public void setHeadingDefinition(RelDatabase database, RelvarHeading newHeading) {
+		headingDefinitionMetadata = new RelvarHeadingMetadata(newHeading);
+		headingDefinition = newHeading;
+		obtainSource(database);
 	}
 	
 	public String getOwner() {

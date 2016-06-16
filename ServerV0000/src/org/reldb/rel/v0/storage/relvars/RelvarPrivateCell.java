@@ -2,7 +2,7 @@ package org.reldb.rel.v0.storage.relvars;
 
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.storage.ValueRelationRelvar;
-import org.reldb.rel.v0.storage.tables.KeyTables;
+import org.reldb.rel.v0.storage.tables.Storage;
 import org.reldb.rel.v0.storage.tables.TablePrivate;
 import org.reldb.rel.v0.values.*;
 import org.reldb.rel.v0.vm.*;
@@ -28,7 +28,7 @@ public class RelvarPrivateCell implements Cell, Relvar {
 		table.getDatabase().setValue(this, relation);
 	}
 
-	public void setTable(KeyTables table) {
+	public void setTable(Storage table) {
 		this.table.setTable(table);
 	}
 

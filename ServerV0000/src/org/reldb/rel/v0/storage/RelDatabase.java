@@ -25,8 +25,8 @@ import org.reldb.rel.v0.storage.relvars.RelvarPrivate;
 import org.reldb.rel.v0.storage.relvars.RelvarPrivateCell;
 import org.reldb.rel.v0.storage.relvars.RelvarReal;
 import org.reldb.rel.v0.storage.relvars.RelvarRealMetadata;
-import org.reldb.rel.v0.storage.tables.KeyTableNames;
-import org.reldb.rel.v0.storage.tables.KeyTables;
+import org.reldb.rel.v0.storage.tables.StorageNames;
+import org.reldb.rel.v0.storage.tables.Storage;
 import org.reldb.rel.v0.storage.tables.RegisteredTupleIterator;
 import org.reldb.rel.v0.storage.tables.Table;
 import org.reldb.rel.v0.storage.tables.TablePrivate;
@@ -64,10 +64,10 @@ public class RelDatabase {
     private Database relvarDb;
     
     // open real relvar tables
-    private Hashtable<String, Database> openTables = new Hashtable<String, Database>();
+    private Hashtable<String, Database> openStorage = new Hashtable<String, Database>();
     
     // temporary private relvar table names
-    private HashSet<String> tempTables = new HashSet<String>();
+    private HashSet<String> tempStorageNames = new HashSet<String>();
  
     // active transaction per thread
     private Hashtable<Long, RelTransaction> transactions = new Hashtable<Long, RelTransaction>();
@@ -431,7 +431,7 @@ public class RelDatabase {
 			System.err.println("\t" + openTransactions + " open transactions were closed.");       	
         System.out.println("\tClosing relvars in " + homeDir);
         try {
-        	for (Database table: openTables.values())
+        	for (Database table: openStorage.values())
         		table.close();
         } catch(DatabaseException dbe) {
             System.err.println("\tError closing internal tables " + homeDir + ": " + dbe.toString());
@@ -440,7 +440,7 @@ public class RelDatabase {
         }
     	System.out.println("\tPurging temporary data in " + homeDir);
         try {
-        	for (String tableName: tempTables)
+        	for (String tableName: tempStorageNames)
         		environment.removeDatabase(null, tableName);
         } catch(DatabaseException dbe) {
             System.err.println("\tError removing temporary data storage " + homeDir + ": " + dbe.toString());
@@ -490,7 +490,7 @@ public class RelDatabase {
     
     private Database openDatabaseRaw(Transaction txn, String tabName, DatabaseConfig configuration) throws DatabaseException {
 		Database db = environment.openDatabase(txn, tabName, configuration);
-		openTables.put(tabName, db);
+		openStorage.put(tabName, db);
 		return db;
     }
     
@@ -498,7 +498,7 @@ public class RelDatabase {
     // that was rolled back, it will throw an exception when an attempt is made to open a cursor.  In that
     // case, it needs to be re-opened in the current transaction.
     private Database openDatabase(Transaction txn, String tabName, DatabaseConfig configuration) {
-		Database db = openTables.get(tabName);
+		Database db = openStorage.get(tabName);
 		try {
 			if (db == null)
 				db = openDatabaseRaw(txn, tabName, configuration);
@@ -517,10 +517,10 @@ public class RelDatabase {
     }
     
     private void closeDatabase(String tabName) throws DatabaseException {
-    	Database table = openTables.get(tabName);
+    	Database table = openStorage.get(tabName);
     	if (table != null) {
     		table.close();
-    		openTables.remove(tabName);
+    		openStorage.remove(tabName);
     	}
     }
     
@@ -1484,14 +1484,14 @@ public class RelDatabase {
     }
     
     /** Get the table for a given real relvar name. */
-    public synchronized KeyTables getTable(Transaction txn, String name) throws DatabaseException {
+    public synchronized Storage getTable(Transaction txn, String name) throws DatabaseException {
 		RelvarMetadata metadata = getRelvarMetadata(txn, name);
 		if (metadata == null)
 			return null;
 		if (!(metadata instanceof RelvarRealMetadata))
 			throw new ExceptionFatal("RS0354: VAR " + name + " is not a REAL relvar.");
-		KeyTableNames tableName = ((RelvarRealMetadata)metadata).getTableName();
-		KeyTables table = new KeyTables(tableName.size());
+		StorageNames tableName = ((RelvarRealMetadata)metadata).getTableName();
+		Storage table = new Storage(tableName.size());
 		for (int i=0; i<tableName.size(); i++) {
 			String tabName = tableName.getName(i);
 			Database db = openDatabase(txn, tabName, dbConfigurationNormal);
@@ -1529,7 +1529,7 @@ public class RelDatabase {
     					throw new ExceptionSemantic("RS0218: VAR " + relvarInfo.getName() + " already exists.");
     		    	RelvarMetadata metadata = getRelvarMetadata(txn, relvarInfo.getName());
     		    	if (metadata != null && metadata instanceof RelvarRealMetadata) {
-    		    		KeyTableNames tableName = ((RelvarRealMetadata)metadata).getTableName();
+    		    		StorageNames tableName = ((RelvarRealMetadata)metadata).getTableName();
     		    		for (int i=0; i<tableName.size(); i++) {
     		    			String tabName = tableName.getName(i);
     		    			closeDatabase(tabName);
@@ -1542,12 +1542,12 @@ public class RelDatabase {
     		    		}
     		    	}
     		    	RelvarRealMetadata newMetadata = (RelvarRealMetadata)relvarInfo.getRelvarMetadata(); 
-    		    	KeyTableNames tableName = new KeyTableNames(newMetadata.getHeadingDefinition(RelDatabase.this).getKeyCount());
+    		    	StorageNames tableName = new StorageNames(newMetadata.getHeadingDefinition(RelDatabase.this).getKeyCount());
     		    	for (int i=0; i<tableName.size(); i++) {
     		    		String tabName = getUniqueTableName();
     		    		tableName.setName(i, tabName);
         		    	openDatabase(txn, tabName, dbConfigurationAllowCreate).close();
-	    				openTables.remove(tabName);
+	    				openStorage.remove(tabName);
     		    	}
    		    		newMetadata.setTableName(tableName);
     	    		putRelvarMetadata(txn, relvarInfo.getName(), newMetadata);
@@ -1609,7 +1609,7 @@ public class RelDatabase {
 		String newTableName = getUniqueTableName();
 		Transaction txn = null;
 		Database database = openDatabase(txn, newTableName, config);
-		tempTables.add(newTableName);
+		tempStorageNames.add(newTableName);
     	return database;
 	}	
 	
@@ -1627,7 +1627,7 @@ public class RelDatabase {
 	public synchronized void destroyTempStorage(Database temp)  {
 		String tableName = temp.getDatabaseName();
 		closeDatabase(tableName);
-		tempTables.remove(tableName);
+		tempStorageNames.remove(tableName);
 	}
 	
 	/** Get new 'private' (temporary) Table. */
@@ -1635,11 +1635,11 @@ public class RelDatabase {
     	try {
 	    	return (TablePrivate)((new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
-	    			KeyTables tables = new KeyTables(keyDefinition.getKeyCount());
+	    			Storage tables = new Storage(keyDefinition.getKeyCount());
 	    			for (int i=0; i<tables.size(); i++) {
 	    				String newTableName = getUniqueTableName();
 	    				Database db = openDatabase(txn, newTableName, dbConfigurationAllowCreate);
-	    				tempTables.add(newTableName);
+	    				tempStorageNames.add(newTableName);
 	    				tables.setDatabase(i, db);
 	    			}
 	    	    	return new TablePrivate(RelDatabase.this, tables, keyDefinition);
@@ -1695,7 +1695,7 @@ public class RelDatabase {
     		    		throw new ExceptionSemantic("RS0222: VAR " + name + " may not be dropped due to dependencies:" + dependencies);
     				metadata.dropRelvar(RelDatabase.this);
     				if (metadata instanceof RelvarRealMetadata) {
-    		    		KeyTableNames tableName = ((RelvarRealMetadata)metadata).getTableName();
+    		    		StorageNames tableName = ((RelvarRealMetadata)metadata).getTableName();
     		    		for (int i=0; i<tableName.size(); i++) {
     		    			String tabName = tableName.getName(i);
     		    			closeDatabase(tabName);
@@ -1718,7 +1718,7 @@ public class RelDatabase {
     }
 
     // Copy tuples from a ValueRelation to a Table
-    private void copy(Generator generator, Transaction txn, Table table, KeyTables db, ValueRelation source) throws DatabaseException {
+    private void copy(Generator generator, Transaction txn, Table table, Storage db, ValueRelation source) throws DatabaseException {
     	TupleIterator iterator = ((ValueRelation)source.getSerializableClone()).iterator();
     	try {
     		while (iterator.hasNext())
@@ -1733,22 +1733,22 @@ public class RelDatabase {
     	try {
 	    	(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
-	    			KeyTableNames newTableName = new KeyTableNames(target.getTable().getHeadingDefinition().getKeyCount());
-	    			KeyTables newDb = new KeyTables(newTableName.size());
+	    			StorageNames newTableName = new StorageNames(target.getTable().getHeadingDefinition().getKeyCount());
+	    			Storage newDb = new Storage(newTableName.size());
 	    			for (int i=0; i<newTableName.size(); i++) {
 	    				String tabName = getUniqueTableName();
 	    				newTableName.setName(i, tabName);
 	    		    	Database db = openDatabase(txn, tabName, dbConfigurationAllowCreate);
-		    	    	tempTables.add(tabName);
+		    	    	tempStorageNames.add(tabName);
 		    	    	newDb.setDatabase(i, db);
 	    			}
 	    	    	copy(new Generator(RelDatabase.this, System.out), txn, target.getTable(), newDb, source);
-	    			KeyTables oldDb = target.getTable().getTable(txn);
+	    			Storage oldDb = target.getTable().getTable(txn);
 	    			for (int i=0; i<oldDb.size(); i++) {
 	    				Database olddb = oldDb.getDatabase(i);
 		    			String tabName = olddb.getDatabaseName();
-	    				openTables.remove(tabName);
-	    				tempTables.remove(tabName);
+	    				openStorage.remove(tabName);
+	    				tempStorageNames.remove(tabName);
 	    				olddb.close();
 	    				environment.removeDatabase(txn, tabName);	    				
 	    			}
@@ -1769,9 +1769,9 @@ public class RelDatabase {
     	try {
 	    	(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
-	    			KeyTables oldDb = getTable(txn, target.getName());
-	    			KeyTableNames newTableName = new KeyTableNames(oldDb.size());
-	    			KeyTables db = new KeyTables(oldDb.size());
+	    			Storage oldDb = getTable(txn, target.getName());
+	    			StorageNames newTableName = new StorageNames(oldDb.size());
+	    			Storage db = new Storage(oldDb.size());
 	    			for (int i=0; i<newTableName.size(); i++) {
 	    				String tabName = getUniqueTableName();
 	    				newTableName.setName(i, tabName);
@@ -1779,10 +1779,10 @@ public class RelDatabase {
 	    		    	db.setDatabase(i, dbase);
 	    			}
 	    	    	copy(new Generator(RelDatabase.this, System.out), txn, target.getTable(), db, source);
-	    			KeyTableNames oldTableName = oldDb.getDatabaseName();
+	    			StorageNames oldTableName = oldDb.getStorageNames();
 	    			for (int i=0; i<oldTableName.size(); i++) {
 	    				String tabName = oldTableName.getName(i);
-	    				openTables.remove(tabName);
+	    				openStorage.remove(tabName);
 	    				oldDb.getDatabase(i).close();
 	    				environment.removeDatabase(txn, tabName);	    				
 	    			}
@@ -1835,64 +1835,13 @@ public class RelDatabase {
     		    		throw new ExceptionSemantic("RS0420: REAL VAR '" + varname + "' does not exist.");
     		    	if (!(rawMetadata instanceof RelvarRealMetadata))
     		    		throw new ExceptionSemantic("RS0421: '" + varname + "' is not a REAL VAR.");
-    		    	if (oldAttributeName.equals(newAttributeName))
-    		    		throw new ExceptionSemantic("RS0423: old attribute name and new attribute name are the same.");
 		    		RelvarRealMetadata metadata = (RelvarRealMetadata)rawMetadata;
-		    		RelvarHeading relvarHeading = metadata.getHeadingDefinition(RelDatabase.this);
-		    		Heading heading = relvarHeading.getHeading();
-		    		
-		    		if (heading.getAttribute(newAttributeName) != null)
-		    			throw new ExceptionSemantic("RS0424: new attribute name '" + newAttributeName + "' already exists.");
-		    		
-		    		// update metadata, renaming the old attribute name to the new one
-		    		if (!heading.rename(oldAttributeName, newAttributeName))
-		    			throw new ExceptionSemantic("RS0422: attribute '" + oldAttributeName + "' not found.");
-		    		
-		    		// drop old KEY indexes
-		    		KeyTableNames tableName = metadata.getTableName();
-		    		for (int i=0; i<tableName.size(); i++) {
-		    			String tabName = tableName.getName(i);
-		    			closeDatabase(tabName);
-	    		    	try {
-	    		    		environment.removeDatabase(txn, tabName);
-	    		    	} catch (DatabaseException dbe) {
-	    		    		dbe.printStackTrace();
-	    		    		throw new ExceptionFatal("RS0356: unable to remove table " + tableName);
-	    		    	}
-		    		}
-		    		
-		    		// create new relvar heading (including updated KEY info) from freshly-updated old heading
-		    		RelvarHeading newHeading = new RelvarHeading(heading);
-		    		for (int i=0; i<relvarHeading.getKeyCount(); i++) {
-		    			SelectAttributes keyAttributes = new SelectAttributes();
-		    			Vector<String> names = relvarHeading.getKey(i).getNames();
-		    			for (int nameIndex=0; nameIndex<names.size(); nameIndex++) {
-		    				String name = names.get(nameIndex);
-		    				if (name.equals(oldAttributeName))
-		    					keyAttributes.add(newAttributeName);
-		    				else
-		    					keyAttributes.add(name);
-		    			}
-		    			newHeading.addKey(keyAttributes);
-		    		}
-		    		
-		    		// TODO - fix table naming issues here
-		    		KeyTableNames tableNames = metadata.getTableName();
-		    		metadata = new RelvarRealMetadata(RelDatabase.this, newHeading, metadata.getOwner());
-		    		
-		    		// Set new key info and metadata
-    		    	tableName = new KeyTableNames(metadata.getHeadingDefinition(RelDatabase.this).getKeyCount());
-    		    	for (int i=0; i<tableName.size(); i++) {
-    		    		String tabName = getUniqueTableName();
-    		    		tableName.setName(i, tabName);
-        		    	openDatabase(txn, tabName, dbConfigurationAllowCreate).close();
-	    				openTables.remove(tabName);
-    		    	}
+		    		// update metadata
+		    		metadata.renameAttribute(RelDatabase.this, oldAttributeName, newAttributeName);
+		    		// remove old metadata
     		    	dropRelvarMetadata(txn, varname);
-   		    		metadata.setTableName(tableName);
+    		    	// store new metadata
     	    		putRelvarMetadata(txn, varname, metadata);
-// fix dependencies on oldAttributeName to newAttributeName here    	    		
-//    	        	addDependencies(generator, relvarInfo.getName(), Catalog.relvarDependenciesRelvarType, relvarInfo.getReferences().getReferencedTypes());
     	    		return null;
 	    		}
 	    	}).execute(this);
@@ -1900,7 +1849,7 @@ public class RelDatabase {
     		throw es;
     	} catch (Throwable t) {
     		t.printStackTrace();
-    		throw new ExceptionFatal("RS0357: createRealRelvar failed: " + t);
+    		throw new ExceptionFatal("RS0425: alterVarRealRenameAttribute failed: " + t);
     	}
 	}
     
