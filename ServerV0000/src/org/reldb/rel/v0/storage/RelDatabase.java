@@ -1826,8 +1826,82 @@ public class RelDatabase {
 
 	// Rename an attribute
 	public synchronized void alterVarRealRenameAttribute(Generator generator, String varname, String oldAttributeName, String newAttributeName) {
-		// TODO - alter
-		System.out.println("alterVarRealRename: ALTER VAR " + varname + " REAL RENAME " + oldAttributeName + " TO " + newAttributeName);
+		// System.out.println("alterVarRealRename: ALTER VAR " + varname + " REAL RENAME " + oldAttributeName + " TO " + newAttributeName);
+    	try {
+	    	(new TransactionRunner() {
+	    		public Object run(Transaction txn) throws Throwable {
+    		    	RelvarMetadata rawMetadata = getRelvarMetadata(txn, varname);
+    		    	if (rawMetadata == null)
+    		    		throw new ExceptionSemantic("RS0420: REAL VAR '" + varname + "' does not exist.");
+    		    	if (!(rawMetadata instanceof RelvarRealMetadata))
+    		    		throw new ExceptionSemantic("RS0421: '" + varname + "' is not a REAL VAR.");
+    		    	if (oldAttributeName.equals(newAttributeName))
+    		    		throw new ExceptionSemantic("RS0423: old attribute name and new attribute name are the same.");
+		    		RelvarRealMetadata metadata = (RelvarRealMetadata)rawMetadata;
+		    		RelvarHeading relvarHeading = metadata.getHeadingDefinition(RelDatabase.this);
+		    		Heading heading = relvarHeading.getHeading();
+		    		
+		    		if (heading.getAttribute(newAttributeName) != null)
+		    			throw new ExceptionSemantic("RS0424: new attribute name '" + newAttributeName + "' already exists.");
+		    		
+		    		// update metadata, renaming the old attribute name to the new one
+		    		if (!heading.rename(oldAttributeName, newAttributeName))
+		    			throw new ExceptionSemantic("RS0422: attribute '" + oldAttributeName + "' not found.");
+		    		
+		    		// drop old KEY indexes
+		    		KeyTableNames tableName = metadata.getTableName();
+		    		for (int i=0; i<tableName.size(); i++) {
+		    			String tabName = tableName.getName(i);
+		    			closeDatabase(tabName);
+	    		    	try {
+	    		    		environment.removeDatabase(txn, tabName);
+	    		    	} catch (DatabaseException dbe) {
+	    		    		dbe.printStackTrace();
+	    		    		throw new ExceptionFatal("RS0356: unable to remove table " + tableName);
+	    		    	}
+		    		}
+		    		
+		    		// create new relvar heading (including updated KEY info) from freshly-updated old heading
+		    		RelvarHeading newHeading = new RelvarHeading(heading);
+		    		for (int i=0; i<relvarHeading.getKeyCount(); i++) {
+		    			SelectAttributes keyAttributes = new SelectAttributes();
+		    			Vector<String> names = relvarHeading.getKey(i).getNames();
+		    			for (int nameIndex=0; nameIndex<names.size(); nameIndex++) {
+		    				String name = names.get(nameIndex);
+		    				if (name.equals(oldAttributeName))
+		    					keyAttributes.add(newAttributeName);
+		    				else
+		    					keyAttributes.add(name);
+		    			}
+		    			newHeading.addKey(keyAttributes);
+		    		}
+		    		
+		    		// TODO - fix table naming issues here
+		    		KeyTableNames tableNames = metadata.getTableName();
+		    		metadata = new RelvarRealMetadata(RelDatabase.this, newHeading, metadata.getOwner());
+		    		
+		    		// Set new key info and metadata
+    		    	tableName = new KeyTableNames(metadata.getHeadingDefinition(RelDatabase.this).getKeyCount());
+    		    	for (int i=0; i<tableName.size(); i++) {
+    		    		String tabName = getUniqueTableName();
+    		    		tableName.setName(i, tabName);
+        		    	openDatabase(txn, tabName, dbConfigurationAllowCreate).close();
+	    				openTables.remove(tabName);
+    		    	}
+    		    	dropRelvarMetadata(txn, varname);
+   		    		metadata.setTableName(tableName);
+    	    		putRelvarMetadata(txn, varname, metadata);
+// fix dependencies on oldAttributeName to newAttributeName here    	    		
+//    	        	addDependencies(generator, relvarInfo.getName(), Catalog.relvarDependenciesRelvarType, relvarInfo.getReferences().getReferencedTypes());
+    	    		return null;
+	    		}
+	    	}).execute(this);
+    	} catch (ExceptionSemantic es) {
+    		throw es;
+    	} catch (Throwable t) {
+    		t.printStackTrace();
+    		throw new ExceptionFatal("RS0357: createRealRelvar failed: " + t);
+    	}
 	}
     
 }
