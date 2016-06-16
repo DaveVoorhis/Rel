@@ -35,7 +35,6 @@ public class RelvarRealMetadata extends RelvarMetadata {
 
 	public void renameAttribute(RelDatabase database, String oldAttributeName, String newAttributeName) {
 		RelvarHeading relvarHeading = getHeadingDefinition(database);
-		
 		Heading heading = relvarHeading.getHeading();
 		
     	if (oldAttributeName.equals(newAttributeName))
@@ -64,6 +63,19 @@ public class RelvarRealMetadata extends RelvarMetadata {
 
 		// apply new relvar heading to existing metadata
 		setHeadingDefinition(database, newHeading);
+	}
+
+	public void insertAttributes(RelDatabase database, Heading newAttributes) {
+		RelvarHeading relvarHeading = getHeadingDefinition(database);
+		Heading heading = relvarHeading.getHeading();
+		Heading intersection = newAttributes.intersect(heading);
+		if (intersection.getDegree() > 0)
+			throw new ExceptionSemantic("RS0429: attempting to INSERT one or more attributes that already exist.");
+		Heading newHeading = heading.unionDisjoint(newAttributes);
+		// create new relvar heading
+		RelvarHeading newRelvarHeading = new RelvarHeading(newHeading);
+		newRelvarHeading.setKeys(relvarHeading.getKeys());
+		setHeadingDefinition(database, newRelvarHeading);
 	}
 	
 }

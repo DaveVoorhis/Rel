@@ -8,7 +8,7 @@ import org.reldb.rel.v0.vm.VirtualMachine;
 public class OpAlterVarRealInsertAttributes extends Instruction {
 
 	private String varname;
-	private Object heading;
+	private Heading heading;
 
 	public OpAlterVarRealInsertAttributes(String varname, Heading heading) {
 		this.varname = varname;

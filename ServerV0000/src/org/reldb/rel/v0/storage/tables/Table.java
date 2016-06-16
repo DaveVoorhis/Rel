@@ -439,5 +439,11 @@ public abstract class Table {
 			}
 		};
 	}
+
+	// Alter every tuple to include the rightTuple
+	public void expandTuples(ValueTuple rightTuple) {
+		// TODO Auto-generated method stub
+		
+	}
 		
 }

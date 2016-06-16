@@ -33,6 +33,7 @@ import org.reldb.rel.v0.storage.tables.TablePrivate;
 import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.types.Type;
 import org.reldb.rel.v0.types.TypeAlpha;
+import org.reldb.rel.v0.types.TypeTuple;
 import org.reldb.rel.v0.types.builtin.*;
 import org.reldb.rel.v0.values.*;
 import org.reldb.rel.v0.version.Version;
@@ -1483,21 +1484,21 @@ public class RelDatabase {
     	}
     }
     
-    /** Get the table for a given real relvar name. */
-    public synchronized Storage getTable(Transaction txn, String name) throws DatabaseException {
+    /** Get the storage for a given real relvar name. */
+    public synchronized Storage getStorage(Transaction txn, String name) throws DatabaseException {
 		RelvarMetadata metadata = getRelvarMetadata(txn, name);
 		if (metadata == null)
 			return null;
 		if (!(metadata instanceof RelvarRealMetadata))
 			throw new ExceptionFatal("RS0354: VAR " + name + " is not a REAL relvar.");
-		StorageNames tableName = ((RelvarRealMetadata)metadata).getStorageNames();
-		Storage table = new Storage(tableName.size());
-		for (int i=0; i<tableName.size(); i++) {
-			String tabName = tableName.getName(i);
+		StorageNames storageName = ((RelvarRealMetadata)metadata).getStorageNames();
+		Storage storage = new Storage(storageName.size());
+		for (int i=0; i<storageName.size(); i++) {
+			String tabName = storageName.getName(i);
 			Database db = openDatabase(txn, tabName, dbConfigurationNormal);
-			table.setDatabase(i, db);
+			storage.setDatabase(i, db);
 		}
-		return table;
+		return storage;
     }
 
     // Retrieve a global Relvar's metadata.  Return null if not found.
@@ -1769,7 +1770,7 @@ public class RelDatabase {
     	try {
 	    	(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
-	    			Storage oldDb = getTable(txn, target.getName());
+	    			Storage oldDb = getStorage(txn, target.getName());
 	    			StorageNames newTableName = new StorageNames(oldDb.size());
 	    			Storage db = new Storage(oldDb.size());
 	    			for (int i=0; i<newTableName.size(); i++) {
@@ -1817,11 +1818,40 @@ public class RelDatabase {
 		// TODO - alter
 		System.out.println("alterVarRealDropAttribute: ALTER VAR " + varname + " REAL DROP " + attributeName);
     }
-
+	
 	// Add an attribute
-	public synchronized void alterVarRealInsertAttributes(Generator generator, String varname, Object heading) {
+	public synchronized void alterVarRealInsertAttributes(Generator generator, String varname, Heading heading) {
 		// TODO - alter
-		System.out.println("alterVarRealInsertAttributes: ALTER VAR " + varname + " REAL INSERT " + heading.toString());
+		// System.out.println("alterVarRealInsertAttributes: ALTER VAR " + varname + " REAL INSERT " + heading.toString());
+    	try {
+	    	(new TransactionRunner() {
+	    		public Object run(Transaction txn) throws Throwable {
+    		    	RelvarMetadata rawMetadata = getRelvarMetadata(txn, varname);
+    		    	if (rawMetadata == null)
+    		    		throw new ExceptionSemantic("RS0427: REAL VAR '" + varname + "' does not exist.");
+    		    	if (!(rawMetadata instanceof RelvarRealMetadata))
+    		    		throw new ExceptionSemantic("RS0428: '" + varname + "' is not a REAL VAR.");
+		    		RelvarRealMetadata metadata = (RelvarRealMetadata)rawMetadata;
+		    		// update metadata
+		    		metadata.insertAttributes(RelDatabase.this, heading);		    		
+		    		// update each tuple to hold new attributes		    		
+					RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
+					Table table = relvar.getTable();
+					ValueTuple newAttributes = new ValueTuple(generator, new TypeTuple(heading));
+					table.expandTuples(newAttributes);
+		    		// remove old metadata
+    		    	dropRelvarMetadata(txn, varname);
+    		    	// store new metadata
+    	    		putRelvarMetadata(txn, varname, metadata);
+    	    		return null;
+	    		}
+	    	}).execute(this);
+    	} catch (ExceptionSemantic es) {
+    		throw es;
+    	} catch (Throwable t) {
+    		t.printStackTrace();
+    		throw new ExceptionFatal("RS0426: alterVarRealInsertAttributes failed: " + t);
+    	}
 	}
 
 	// Rename an attribute

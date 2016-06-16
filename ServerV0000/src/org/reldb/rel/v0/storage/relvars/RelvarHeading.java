@@ -56,4 +56,14 @@ public class RelvarHeading {
 		}
 		keys.add(attributes);
 	}
+
+	@SuppressWarnings("unchecked")
+	public Vector<SelectAttributes> getKeys() {
+		return (Vector<SelectAttributes>) keys.clone();
+	}
+
+	public void setKeys(Vector<SelectAttributes> keys) {
+		this.keys = keys;
+	}
+	
 }
