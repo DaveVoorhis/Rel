@@ -49,7 +49,7 @@ public abstract class Table {
 		return database;
 	}
 	
-	private DatabaseEntry getKeyValueFromTuple(Generator generator, ValueTuple tuple, int keyNumber) {
+	public DatabaseEntry getKeyValueFromTuple(Generator generator, ValueTuple tuple, int keyNumber) {
 		DatabaseEntry theKey = new DatabaseEntry();
 		if (headingDefinition.getKeyCount() == 0)
 			database.getTupleBinding().objectToEntry(tuple, theKey);
