@@ -19,7 +19,7 @@ public class TableReal extends Table {
 	}
 	
 	@Override
-	protected Storage getTable(Transaction txn) throws DatabaseException {
+	protected Storage getStorage(Transaction txn) throws DatabaseException {
 		return getDatabase().getStorage(txn, relvarName);
 	}
 }

@@ -43,7 +43,7 @@ public abstract class Table {
 		return headingDefinition;
 	}
 	
-	protected abstract Storage getTable(Transaction txn) throws DatabaseException;
+	protected abstract Storage getStorage(Transaction txn) throws DatabaseException;
 	
 	public RelDatabase getDatabase() {
 		return database;
@@ -90,7 +90,7 @@ public abstract class Table {
     	try {
 	    	(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
-	    			insertTupleNoDuplicates(generator, getTable(txn), txn, (ValueTuple)tuple.getSerializableClone(), "Inserting");
+	    			insertTupleNoDuplicates(generator, getStorage(txn), txn, (ValueTuple)tuple.getSerializableClone(), "Inserting");
     	    		return null;
 	    		}
 	    	}).execute(database);
@@ -114,7 +114,7 @@ public abstract class Table {
 	    	    	TempTable tmp = new TempTableImplementation(database);
 	    			long insertCount = 0;
 	    	    	try {
-		    			Storage table = getTable(txn);
+		    			Storage table = getStorage(txn);
 		    			TupleIterator iterator = relation.iterator();
 		    			try {
 		    				while (iterator.hasNext()) {
@@ -168,7 +168,7 @@ public abstract class Table {
 		try {
 	    	return ((Long)(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
-	    			return new Long(getTable(txn).getDatabase(0).count());
+	    			return new Long(getStorage(txn).getDatabase(0).count());
 	    		}
 	    	}).execute(database)).longValue();
     	} catch (ExceptionSemantic se) {
@@ -185,7 +185,7 @@ public abstract class Table {
 	    	return ((ValueTuple)(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
 	    		    DatabaseEntry foundData = new DatabaseEntry();	
-    				if (getTable(txn).getDatabase(0).get(txn, getKeyValueFromTuple(generator, tuple, 0), foundData, LockMode.READ_COMMITTED) == OperationStatus.SUCCESS)
+    				if (getStorage(txn).getDatabase(0).get(txn, getKeyValueFromTuple(generator, tuple, 0), foundData, LockMode.READ_COMMITTED) == OperationStatus.SUCCESS)
 						return (ValueTuple)database.getTupleBinding().entryToObject(foundData);
     				return null;
 	    		}
@@ -204,7 +204,7 @@ public abstract class Table {
 	    		public Object run(Transaction txn) throws Throwable {
 	    		    DatabaseEntry foundData = new DatabaseEntry();	
 	    		    DatabaseEntry keyData = getKeyValueFromTuple(generator, tuple, 0);
-    				return Boolean.valueOf(getTable(txn).getDatabase(0).get(txn, keyData, foundData, LockMode.READ_COMMITTED) == OperationStatus.SUCCESS);
+    				return Boolean.valueOf(getStorage(txn).getDatabase(0).get(txn, keyData, foundData, LockMode.READ_COMMITTED) == OperationStatus.SUCCESS);
 	    		}
 	    	}).execute(database)).booleanValue();
     	} catch (ExceptionSemantic se) {
@@ -217,7 +217,7 @@ public abstract class Table {
 
 	// Delete all tuples
 	private void purge(Transaction txn) throws DatabaseException {
-		Storage tables = getTable(txn);
+		Storage tables = getStorage(txn);
 		for (int i=0; i<tables.size(); i++) {
 			Cursor cursor = tables.getDatabase(i).openCursor(txn, null);
 			try {
@@ -253,7 +253,7 @@ public abstract class Table {
     	try {
 	    	(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
-	    			Storage tables = getTable(txn);
+	    			Storage tables = getStorage(txn);
 	    			for (int i=0; i<tables.size(); i++)
 	    				tables.getDatabase(i).delete(txn, getKeyValueFromTuple(generator, tuple, i));
     	    		return null;
@@ -272,7 +272,7 @@ public abstract class Table {
     	try {
 	    	return ((Long)(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
-	    			Storage tables = getTable(txn);
+	    			Storage tables = getStorage(txn);
     				Cursor cursor = tables.getDatabase(0).openCursor(txn, null);
     				long deleteCount = 0;
     				try {
@@ -348,7 +348,7 @@ public abstract class Table {
 	    			TempTable insertionTemporaryTable = new TempTableImplementation(database);
 	    			long updateCount = 0;
 	    			try {
-		    			Storage tables = getTable(txn);
+		    			Storage tables = getStorage(txn);
 	    			    DatabaseEntry foundKey = new DatabaseEntry();
 	    			    DatabaseEntry foundData = new DatabaseEntry();	
 		    			Cursor cursor = tables.getDatabase(0).openCursor(txn, null);
@@ -414,7 +414,7 @@ public abstract class Table {
 				try {
 					if (cursor == null) {
 						txn = database.beginTransaction();
-						cursor = getTable(txn.getTransaction()).getDatabase(0).openCursor(txn.getTransaction(), null);
+						cursor = getStorage(txn.getTransaction()).getDatabase(0).openCursor(txn.getTransaction(), null);
 					}
 					if (cursor.getNext(foundKey, foundData, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 						current = (ValueTuple)database.getTupleBinding().entryToObject(foundData);

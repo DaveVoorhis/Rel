@@ -20,7 +20,7 @@ public class TablePrivate extends Table {
 	}
 	
 	@Override
-	public Storage getTable(Transaction txn) {
+	public Storage getStorage(Transaction txn) {
 		return rawTable;
 	}
 

@@ -1744,7 +1744,7 @@ public class RelDatabase {
 		    	    	newDb.setDatabase(i, db);
 	    			}
 	    	    	copy(new Generator(RelDatabase.this, System.out), txn, target.getTable(), newDb, source);
-	    			Storage oldDb = target.getTable().getTable(txn);
+	    			Storage oldDb = target.getTable().getStorage(txn);
 	    			for (int i=0; i<oldDb.size(); i++) {
 	    				Database olddb = oldDb.getDatabase(i);
 		    			String tabName = olddb.getDatabaseName();
