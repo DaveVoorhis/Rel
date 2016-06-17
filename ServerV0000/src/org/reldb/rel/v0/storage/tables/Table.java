@@ -441,9 +441,22 @@ public abstract class Table {
 	}
 
 	// Alter every tuple to include the rightTuple
-	public void expandTuples(ValueTuple rightTuple) {
-		// TODO Auto-generated method stub
-		
+	public void expandTuples(Transaction txn, ValueTuple rightTuple) {
+		Storage tables = getStorage(txn);
+	    DatabaseEntry foundKey = new DatabaseEntry();
+	    DatabaseEntry foundData = new DatabaseEntry();	
+		Cursor cursor = tables.getDatabase(0).openCursor(txn, null);
+		try {
+			while (cursor.getNext(foundKey, foundData, LockMode.RMW) == OperationStatus.SUCCESS) {
+				ValueTuple oldTuple = (ValueTuple)database.getTupleBinding().entryToObject(foundData);
+				ValueTuple newTuple = oldTuple.joinDisjoint(rightTuple);
+				DatabaseEntry theData = new DatabaseEntry();
+				database.getTupleBinding().objectToEntry(newTuple, theData);
+				cursor.putCurrent(theData);
+			}
+		} finally {
+			cursor.close();
+		}
 	}
-		
+
 }

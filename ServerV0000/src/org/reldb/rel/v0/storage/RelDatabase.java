@@ -1838,7 +1838,7 @@ public class RelDatabase {
 					RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
 					Table table = relvar.getTable();
 					ValueTuple newAttributes = new ValueTuple(generator, new TypeTuple(heading));
-					table.expandTuples(newAttributes);
+					table.expandTuples(txn, newAttributes);
 		    		// remove old metadata
     		    	dropRelvarMetadata(txn, varname);
     		    	// store new metadata
