@@ -97,5 +97,11 @@ public class RelvarRealMetadata extends RelvarMetadata {
 		setHeadingDefinition(database, newRelvarHeading);
 		return attributePosition;
 	}
+
+	public void setKeys(RelDatabase database, RelvarHeading keydefs) {
+		RelvarHeading newRelvarHeading = new RelvarHeading(getHeadingDefinition(database).getHeading());
+		newRelvarHeading.setKeys(keydefs.getKeys());
+		setHeadingDefinition(database, newRelvarHeading);
+	}
 	
 }

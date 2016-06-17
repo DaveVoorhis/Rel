@@ -1517,7 +1517,7 @@ public class RelDatabase {
     	}
     }
     
-    String getUniqueTableName() {
+    private String getUniqueTableName() {
     	return "relvar_" + getUniqueID();
     }
 	
@@ -1841,16 +1841,50 @@ public class RelDatabase {
 	// ALTER VAR <varname> REAL ALTER KEY {...}
     // Replace KEY definitions
 	public synchronized void alterVarRealAlterKey(Generator generator, String varname, RelvarHeading keydefs) {
-		// TODO - alter
 		// System.out.println("alterVarRealAlterKey: ALTER VAR " + varname + " ALTER " + keydefs.toString());
 		alterVar(generator, varname, new Alteration() {
 			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
 	    		// update metadata
-	    		int attributeIndex = metadata.setKeys(RelDatabase.this, keydefs);		    		
+				// TODO - check that ALTER KEY {...} correctly error checks per RelvarHeading.addKey()
+	    		metadata.setKeys(RelDatabase.this, keydefs);		    		
 	    		// update keys
 				RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
-				Table table = relvar.getTable();
-				table.replaceKeys(txn, generator, keydefs);
+				Table table = relvar.getTable();				
+				// set up new storage
+    			Storage oldStorage = getStorage(txn, varname);
+    			StorageNames oldStorageNames = oldStorage.getStorageNames();
+    			Storage newStorage = new Storage(keydefs.getKeyCount());
+    			StorageNames newStorageNames = new StorageNames(keydefs.getKeyCount());
+    			// use existing tuple storage
+    			newStorageNames.setName(0, oldStorageNames.getName(0));
+    			newStorage.setDatabase(0, oldStorage.getDatabase(0));
+    			// create new key storage
+    			for (int i=1; i<newStorageNames.size(); i++) {
+    				String newStorageName = getUniqueTableName();
+    				newStorageNames.setName(i, newStorageName);
+    		    	Database dbase = openDatabase(txn, newStorageName, dbConfigurationAllowCreate);
+    		    	newStorage.setDatabase(i, dbase);
+    			}
+    			// drop old key storage
+    			for (int i=1; i<oldStorageNames.size(); i++) {
+    				String tabName = oldStorageNames.getName(i);
+    				openStorage.remove(tabName);
+    				oldStorage.getDatabase(i).close();
+    				environment.removeDatabase(txn, tabName);	    				
+    			}
+		    	metadata.setStorageNames(newStorageNames);
+	    		// remove old metadata
+		    	dropRelvarMetadata(txn, varname);
+		    	// store new metadata
+	    		putRelvarMetadata(txn, varname, metadata);				
+		    	// iterate tuple storage to create new key storage
+		    	TupleIterator iterator = table.iterator(generator);
+		    	try {
+		    		while (iterator.hasNext())
+						table.insertTupleNoDuplicates(generator, newStorage, txn, iterator.next(), "Altering");    			
+		    	} finally {
+		    		iterator.close();
+		    	}
 			}
 		});
 	}
