@@ -1801,22 +1801,11 @@ public class RelDatabase {
     	}    	
     }
 
-	// Change type of an attribute
-	public synchronized void alterVarRealChangeAttributeType(Generator generator, String varname, String attributeName, Type newType) {
-		// TODO - alter
-		System.out.println("alterVarRealChangeAttributeType: ALTER VAR " + varname + " REAL TYPE_OF " + attributeName + " TO " + newType.getSignature());
+	private abstract class Alteration {
+		public abstract void alter(Transaction txn, String varname, RelvarRealMetadata metadata);
 	}
-
-    // Replace KEY definitions
-	public synchronized void alterVarRealAlterKey(Generator generator, String varname, RelvarHeading keydefs) {
-		// TODO - alter
-		System.out.println("alterVarRealAlterKey: ALTER VAR " + varname + " ALTER " + keydefs.toString());
-	}
-
-	// Drop an attribute
-	public synchronized void alterVarRealDropAttribute(Generator generator, String varname, String attributeName) {
-		// TODO - alter
-		// System.out.println("alterVarRealDropAttribute: ALTER VAR " + varname + " REAL DROP " + attributeName);
+	
+	private void alterVar(Generator generator, String varname, Alteration alteration) {
     	try {
 	    	(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
@@ -1826,16 +1815,12 @@ public class RelDatabase {
     		    	if (!(rawMetadata instanceof RelvarRealMetadata))
     		    		throw new ExceptionSemantic("RS0431: '" + varname + "' is not a REAL VAR.");
 		    		RelvarRealMetadata metadata = (RelvarRealMetadata)rawMetadata;
-		    		// update metadata - get index within tuple of removed attribute
-		    		int attributeIndex = metadata.dropAttribute(RelDatabase.this, attributeName);		    		
-		    		// update each tuple to remove attribute
-					RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
-					Table table = relvar.getTable();
-					table.shrinkTuples(txn, generator, attributeIndex);
+		    		// perform specific alteration
+		    		alteration.alter(txn, varname, metadata);
 		    		// remove old metadata
-    		    	dropRelvarMetadata(txn, varname);
-    		    	// store new metadata
-    	    		putRelvarMetadata(txn, varname, metadata);
+			    	dropRelvarMetadata(txn, varname);
+			    	// store new metadata
+		    		putRelvarMetadata(txn, varname, metadata);				
     	    		return null;
 	    		}
 	    	}).execute(this);
@@ -1843,72 +1828,76 @@ public class RelDatabase {
     		throw es;
     	} catch (Throwable t) {
     		t.printStackTrace();
-    		throw new ExceptionFatal("RS0432: alterVarRealDropAttribute failed: " + t);
-    	}
-    }
-	
-	// Add an attribute
-	public synchronized void alterVarRealInsertAttributes(Generator generator, String varname, Heading heading) {
-		// TODO - alter
-		// System.out.println("alterVarRealInsertAttributes: ALTER VAR " + varname + " REAL INSERT " + heading.toString());
-    	try {
-	    	(new TransactionRunner() {
-	    		public Object run(Transaction txn) throws Throwable {
-    		    	RelvarMetadata rawMetadata = getRelvarMetadata(txn, varname);
-    		    	if (rawMetadata == null)
-    		    		throw new ExceptionSemantic("RS0427: REAL VAR '" + varname + "' does not exist.");
-    		    	if (!(rawMetadata instanceof RelvarRealMetadata))
-    		    		throw new ExceptionSemantic("RS0428: '" + varname + "' is not a REAL VAR.");
-		    		RelvarRealMetadata metadata = (RelvarRealMetadata)rawMetadata;
-		    		// update metadata
-		    		metadata.insertAttributes(RelDatabase.this, heading);		    		
-		    		// update each tuple to hold new attributes		    		
-					RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
-					Table table = relvar.getTable();
-					ValueTuple newAttributes = new ValueTuple(generator, new TypeTuple(heading));
-					table.expandTuples(txn, newAttributes);
-		    		// remove old metadata
-    		    	dropRelvarMetadata(txn, varname);
-    		    	// store new metadata
-    	    		putRelvarMetadata(txn, varname, metadata);
-    	    		return null;
-	    		}
-	    	}).execute(this);
-    	} catch (ExceptionSemantic es) {
-    		throw es;
-    	} catch (Throwable t) {
-    		t.printStackTrace();
-    		throw new ExceptionFatal("RS0426: alterVarRealInsertAttributes failed: " + t);
-    	}
+    		throw new ExceptionFatal("RS0432: ALTER failed: " + t);
+    	}		
 	}
 
+	// Change type of an attribute
+	public synchronized void alterVarRealChangeAttributeType(Generator generator, String varname, String attributeName, Type newType) {
+		// TODO - alter
+		System.out.println("alterVarRealChangeAttributeType: ALTER VAR " + varname + " REAL TYPE_OF " + attributeName + " TO " + newType.getSignature());
+	}
+	
+	// ALTER VAR <varname> REAL ALTER KEY {...}
+    // Replace KEY definitions
+	public synchronized void alterVarRealAlterKey(Generator generator, String varname, RelvarHeading keydefs) {
+		// TODO - alter
+		// System.out.println("alterVarRealAlterKey: ALTER VAR " + varname + " ALTER " + keydefs.toString());
+		alterVar(generator, varname, new Alteration() {
+			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
+	    		// update metadata
+	    		int attributeIndex = metadata.setKeys(RelDatabase.this, keydefs);		    		
+	    		// update keys
+				RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
+				Table table = relvar.getTable();
+				table.replaceKeys(txn, generator, keydefs);
+			}
+		});
+	}
+
+	// ALTER VAR <varname> REAL DROP <attributename>
+	// Drop an attribute
+	public synchronized void alterVarRealDropAttribute(Generator generator, String varname, String attributeName) {
+		// System.out.println("alterVarRealDropAttribute: ALTER VAR " + varname + " REAL DROP " + attributeName);
+		alterVar(generator, varname, new Alteration() {
+			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
+	    		// update metadata - get index within tuple of removed attribute
+	    		int attributeIndex = metadata.dropAttribute(RelDatabase.this, attributeName);		    		
+	    		// update each tuple to remove attribute
+				RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
+				Table table = relvar.getTable();
+				table.shrinkTuples(txn, generator, attributeIndex);
+			}
+		});
+    }
+	
+	// ALTER VAR <varname> REAL INSERT <attributename> <attributetype>
+	// Add an attribute
+	public synchronized void alterVarRealInsertAttributes(Generator generator, String varname, Heading heading) {
+		// System.out.println("alterVarRealInsertAttributes: ALTER VAR " + varname + " REAL INSERT " + heading.toString());
+		alterVar(generator, varname, new Alteration() {
+			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
+	    		// update metadata
+	    		metadata.insertAttributes(RelDatabase.this, heading);		    		
+	    		// update each tuple to hold new attributes		    		
+				RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
+				Table table = relvar.getTable();
+				ValueTuple newAttributes = new ValueTuple(generator, new TypeTuple(heading));
+				table.expandTuples(txn, newAttributes);
+			}
+		});
+	}
+
+	// ALTER VAR <varname> REAL RENAME <oldattributename> TO <newattributename>
 	// Rename an attribute
 	public synchronized void alterVarRealRenameAttribute(Generator generator, String varname, String oldAttributeName, String newAttributeName) {
 		// System.out.println("alterVarRealRename: ALTER VAR " + varname + " REAL RENAME " + oldAttributeName + " TO " + newAttributeName);
-    	try {
-	    	(new TransactionRunner() {
-	    		public Object run(Transaction txn) throws Throwable {
-    		    	RelvarMetadata rawMetadata = getRelvarMetadata(txn, varname);
-    		    	if (rawMetadata == null)
-    		    		throw new ExceptionSemantic("RS0420: REAL VAR '" + varname + "' does not exist.");
-    		    	if (!(rawMetadata instanceof RelvarRealMetadata))
-    		    		throw new ExceptionSemantic("RS0421: '" + varname + "' is not a REAL VAR.");
-		    		RelvarRealMetadata metadata = (RelvarRealMetadata)rawMetadata;
-		    		// update metadata
-		    		metadata.renameAttribute(RelDatabase.this, oldAttributeName, newAttributeName);
-		    		// remove old metadata
-    		    	dropRelvarMetadata(txn, varname);
-    		    	// store new metadata
-    	    		putRelvarMetadata(txn, varname, metadata);
-    	    		return null;
-	    		}
-	    	}).execute(this);
-    	} catch (ExceptionSemantic es) {
-    		throw es;
-    	} catch (Throwable t) {
-    		t.printStackTrace();
-    		throw new ExceptionFatal("RS0425: alterVarRealRenameAttribute failed: " + t);
-    	}
+		alterVar(generator, varname, new Alteration() {
+			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
+	    		// update metadata
+	    		metadata.renameAttribute(RelDatabase.this, oldAttributeName, newAttributeName);
+			}
+		});
 	}
     
 }
