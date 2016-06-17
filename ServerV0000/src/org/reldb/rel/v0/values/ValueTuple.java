@@ -84,6 +84,14 @@ public class ValueTuple extends ValueAbstract implements Projectable {
 		return map.joinChecked(getGenerator(), this, right);
 	}
 
+	/** Create a new tuple by removing an attribute specified by a given zero-based index. */
+	public ValueTuple shrink(int attributeIndex) {
+		Value[] valueArray = new Value[values.length - 1];
+		System.arraycopy(values, 0, valueArray, 0, attributeIndex);
+		System.arraycopy(values, attributeIndex + 1, valueArray, attributeIndex, values.length - attributeIndex - 1);
+		return new ValueTuple(getGenerator(), valueArray);
+	}
+	
 	public String getTypeName() {
 		return "TUPLE";
 	}

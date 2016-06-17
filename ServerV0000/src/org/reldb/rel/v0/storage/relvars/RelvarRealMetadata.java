@@ -77,5 +77,25 @@ public class RelvarRealMetadata extends RelvarMetadata {
 		newRelvarHeading.setKeys(relvarHeading.getKeys());
 		setHeadingDefinition(database, newRelvarHeading);
 	}
+
+	// Drop attribute and return index in tuple of the dropped attribute
+	public int dropAttribute(RelDatabase database, String attributeName) {
+		RelvarHeading relvarHeading = getHeadingDefinition(database);
+		Heading heading = relvarHeading.getHeading();
+		int attributePosition = heading.getIndexOf(attributeName);
+		if (attributePosition < 0)
+			throw new ExceptionSemantic("RS0433: attribute '" + attributeName + "' not found.");
+		if (relvarHeading.isKeyUsing(attributeName))
+			throw new ExceptionSemantic("RS0434: attribute '" + attributeName + "' is referenced in a KEY.");
+		SelectAttributes removeAttribute = new SelectAttributes();
+		removeAttribute.add(attributeName);
+		Heading removeAttributeHeading = heading.project(removeAttribute);
+		Heading newHeading = heading.minus(removeAttributeHeading);
+		// create new relvar heading
+		RelvarHeading newRelvarHeading = new RelvarHeading(newHeading);
+		newRelvarHeading.setKeys(relvarHeading.getKeys());
+		setHeadingDefinition(database, newRelvarHeading);
+		return attributePosition;
+	}
 	
 }

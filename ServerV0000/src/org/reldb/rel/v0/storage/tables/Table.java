@@ -459,4 +459,23 @@ public abstract class Table {
 		}
 	}
 
+	// Alter every tuple to drop the attribute with the specified index
+	public void shrinkTuples(Transaction txn, Generator generator, int attributeIndex) {
+		Storage tables = getStorage(txn);
+	    DatabaseEntry foundKey = new DatabaseEntry();
+	    DatabaseEntry foundData = new DatabaseEntry();	
+		Cursor cursor = tables.getDatabase(0).openCursor(txn, null);
+		try {
+			while (cursor.getNext(foundKey, foundData, LockMode.RMW) == OperationStatus.SUCCESS) {
+				ValueTuple oldTuple = (ValueTuple)database.getTupleBinding().entryToObject(foundData);
+				ValueTuple newTuple = oldTuple.shrink(attributeIndex);
+				DatabaseEntry theData = new DatabaseEntry();
+				database.getTupleBinding().objectToEntry(newTuple, theData);
+				cursor.putCurrent(theData);
+			}
+		} finally {
+			cursor.close();
+		}
+	}
+
 }

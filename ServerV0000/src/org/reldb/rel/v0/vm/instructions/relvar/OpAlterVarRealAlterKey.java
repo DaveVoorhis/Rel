@@ -8,7 +8,7 @@ import org.reldb.rel.v0.vm.VirtualMachine;
 public class OpAlterVarRealAlterKey extends Instruction {
 
 	private String varname;
-	private Object keydefs;
+	private RelvarHeading keydefs;
 
 	public OpAlterVarRealAlterKey(String varname, RelvarHeading keydefs) {
 		this.varname = varname;

@@ -65,5 +65,14 @@ public class RelvarHeading {
 	public void setKeys(Vector<SelectAttributes> keys) {
 		this.keys = keys;
 	}
+
+	public boolean isKeyUsing(String attributeName) {
+		if (keys.size() == 0)
+			return true;
+		for (SelectAttributes key: keys)
+			if (key.getNames().contains(attributeName))
+				return true;
+		return false;
+	}
 	
 }
