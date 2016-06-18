@@ -1870,7 +1870,6 @@ public class RelDatabase {
     			}
 		    	metadata.setStorageNames(newStorageNames);
 		    	// iterate tuple storage to create new key storage
-<<<<<<< HEAD
 			    DatabaseEntry foundKey = new DatabaseEntry();
 			    DatabaseEntry foundData = new DatabaseEntry();	
 				Cursor cursor = oldStorage.getDatabase(0).openCursor(txn, null);
@@ -1895,8 +1894,6 @@ public class RelDatabase {
 					cursor.close();
 				}
 				/*		    			    	
-=======
->>>>>>> branch 'master' of https://github.com/DaveVoorhis/Rel.git
 				RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
 				Table table = relvar.getTable();
 		    	TupleIterator iterator = table.iterator(generator);
