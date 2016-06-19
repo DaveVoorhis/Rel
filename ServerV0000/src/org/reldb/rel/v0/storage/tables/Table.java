@@ -460,7 +460,7 @@ public abstract class Table {
 	}
 
 	// Alter every tuple to drop the attribute with the specified index
-	public void shrinkTuples(Transaction txn, Generator generator, int attributeIndex) {
+	public void shrinkTuples(Transaction txn, int attributeIndex) {
 		Storage tables = getStorage(txn);
 	    DatabaseEntry foundKey = new DatabaseEntry();
 	    DatabaseEntry foundData = new DatabaseEntry();	

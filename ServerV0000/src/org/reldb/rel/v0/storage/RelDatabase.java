@@ -1894,7 +1894,7 @@ public class RelDatabase {
 	    		// update each tuple to remove attribute
 				RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
 				Table table = relvar.getTable();
-				table.shrinkTuples(txn, generator, attributeIndex);
+				table.shrinkTuples(txn, attributeIndex);
 			}
 		});
     }
