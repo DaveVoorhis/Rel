@@ -589,16 +589,16 @@ void alter() :
 void alter_var() #AlterVar :
 {}
 {
-  <VAR> identifier() <REAL> ( alter_var_action() )*
+  <VAR> identifier() ( alter_var_action() )*
 }
 
 void alter_var_action() :
 {}
 {
-  <RENAME> identifier() <TO> identifier() 	#AlterVarActionRename(2)| <TYPE_OF> identifier() <TO> type_ref() 	#AlterVarActionChangeType(2)
-| <INSERT> attribute_spec() 				#AlterVarActionInsert(1)
-| <DROP> identifier() 						#AlterVarActionDrop(1)
-| <ALTER> var_keydeflist() 					#AlterVarActionKey()
+  <RENAME> identifier() <TO> identifier()			 	#AlterVarActionRename(2)| <TYPE_OF> identifier() <TO> type_ref() 				#AlterVarActionChangeType(2)
+| <INSERT> attribute_spec() 							#AlterVarActionInsert(1)
+| <DROP> identifier() 									#AlterVarActionDrop(1)
+| <ALTER> var_keydeflist()								#AlterVarActionKey()
 }
 
 void op_type() #OpType :

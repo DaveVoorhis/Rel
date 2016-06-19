@@ -18,7 +18,7 @@ public class TestRelvarAlter02 extends BaseOfTest {
 		testEquals("true", src);
 		src = 
 			"BEGIN;\n" +
-			" ALTER VAR myvar REAL INSERT z RATIONAL;" +
+			" ALTER VAR myvar INSERT z RATIONAL;" +
 			"END;\n" +
 			"true";
 		testEquals("true", src);

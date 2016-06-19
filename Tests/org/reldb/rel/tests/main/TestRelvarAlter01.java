@@ -18,7 +18,7 @@ public class TestRelvarAlter01 extends BaseOfTest {
 		testEquals("true", src);
 		src = 
 			"BEGIN;\n" +
-			" ALTER VAR myvar REAL RENAME x TO xx RENAME y TO yy;" +
+			" ALTER VAR myvar RENAME x TO xx RENAME y TO yy;" +
 			"END;\n" +
 			"true";
 		testEquals("true", src);

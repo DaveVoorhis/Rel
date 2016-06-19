@@ -9,9 +9,10 @@ Version 1.0.13:
   - enhancement: DBrowser: Default database now found in getProperty("user.home")
   - enhancement: DBrowser: "DBrowser" name now strictly internal; externally known as Rel or Rel UI.
   - enhancement: DBrowser/Rel: Backup script embedded in Rel; no longer relies on Scripts folder.
-  - enhancement: Rel: added ALTER VAR <var> REAL RENAME <oldattrname> AS <newattrname>
-  - enhancement: Rel: added ALTER VAR <var> REAL INSERT <newattrname> <newattrtype>
-  - enhancement: Rel: added ALTER VAR <var> REAL DROP <attrname>  
+  - enhancement: Rel: added ALTER VAR <relvar> RENAME <oldattrname> AS <newattrname>
+  - enhancement: Rel: added ALTER VAR <relvar> INSERT <newattrname> <newattrtype>
+  - enhancement: Rel: added ALTER VAR <relvar> DROP <attrname>  
+  - enhancement: Rel: added ALTER VAR <relvar> ALTER KEY {<keyspec>} [... KEY {<keyspec>}]
   - enhancement: Rel: IF, CASE, DO, WHILE, FOR and OPERATOR definitions now support multiple statements
                  without requiring BEGIN .. END blocks.
   - enhancement: Rel: IF, CASE, DO, WHILE, FOR and OPERATOR are now optional after the END that

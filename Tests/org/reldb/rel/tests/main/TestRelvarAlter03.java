@@ -18,13 +18,13 @@ public class TestRelvarAlter03 extends BaseOfTest {
 		testEquals("true", src);
 		src = 
 			"BEGIN;\n" +
-			" ALTER VAR myvar REAL DROP z;" +
+			" ALTER VAR myvar DROP z;" +
 			"END;\n" +
 			"true";
 		testEquals("true", src);
 		src = 
 			"BEGIN;\n" +
-			" ALTER VAR myvar REAL DROP y;" +
+			" ALTER VAR myvar DROP y;" +
 			"END;\n" +
 			"true";
 		testEquals("true", src);
