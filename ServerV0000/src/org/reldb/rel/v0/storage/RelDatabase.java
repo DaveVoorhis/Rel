@@ -1845,73 +1845,40 @@ public class RelDatabase {
 		alterVar(generator, varname, new Alteration() {
 			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
 	    		// update metadata
-	    		metadata.setKeys(RelDatabase.this, keydefs);		    		
-				// set up new storage
-    			Storage oldStorage = getStorage(txn, varname);
-    			StorageNames oldStorageNames = oldStorage.getStorageNames();
-    			Storage newStorage = new Storage(keydefs.getKeyCount());
-    			StorageNames newStorageNames = new StorageNames(keydefs.getKeyCount());
-    			// use existing tuple storage
-    			newStorageNames.setName(0, oldStorageNames.getName(0));
-    			newStorage.setDatabase(0, oldStorage.getDatabase(0));
-    			// create new key storage
-    			for (int i=1; i<newStorageNames.size(); i++) {
-    				String newStorageName = getUniqueTableName();
-    				newStorageNames.setName(i, newStorageName);
-    		    	Database dbase = openDatabase(txn, newStorageName, dbConfigurationAllowCreate);
-    		    	newStorage.setDatabase(i, dbase);
-    			}
-    			// drop old key storage
-    			for (int i=1; i<oldStorageNames.size(); i++) {
-    				String tabName = oldStorageNames.getName(i);
-    				openStorage.remove(tabName);
-    				oldStorage.getDatabase(i).close();
-    				environment.removeDatabase(txn, tabName);	    				
-    			}
-		    	metadata.setStorageNames(newStorageNames);
-		    	// iterate tuple storage to create new key storage
-			    DatabaseEntry foundKey = new DatabaseEntry();
-			    DatabaseEntry foundData = new DatabaseEntry();	
-				Cursor cursor = oldStorage.getDatabase(0).openCursor(txn, null);
-				Table table = new Table(RelDatabase.this, metadata.getHeadingDefinition(RelDatabase.this)) {
-					@Override
-					protected Storage getStorage(Transaction txn) throws DatabaseException {
-						return null;
-					}					
-				};
-				try {
-					while (cursor.getNext(foundKey, foundData, LockMode.RMW) == OperationStatus.SUCCESS) {
-						ValueTuple tuple = (ValueTuple)getTupleBinding().entryToObject(foundData);
-		    			for (int i=1; i<newStorageNames.size(); i++) {
-		    				Database berkeleyDb = newStorage.getDatabase(i);
-		    				DatabaseEntry entry = getKeyTableEntry();
-		    				// if this is moved back to Table, make getKeyValueFromTuple() private.
-		    				if (berkeleyDb.putNoOverwrite(txn, table.getKeyValueFromTuple(generator, tuple, i), entry) == OperationStatus.KEYEXIST)
-		    					throw new ExceptionSemantic("RS0435: ALTER KEY would violate uniqueness constraint of KEY {" + keydefs.getKey(i) + "}");
-		    			}
-					}
-				} finally {
-					cursor.close();
-				}
-				/*		    			    	
+	    		metadata.setKeys(RelDatabase.this, keydefs);
+	    		// create new storage
+		    	StorageNames storageNames = new StorageNames(keydefs.getKeyCount());
+    			Storage newStorage = new Storage(storageNames.size());
+		    	for (int i=0; i<storageNames.size(); i++) {
+		    		String tabName = getUniqueTableName();
+		    		storageNames.setName(i, tabName);
+    		    	Database berkeleyDB = openDatabase(txn, tabName, dbConfigurationAllowCreate);
+    				newStorage.setDatabase(i, berkeleyDB);
+		    	}
+		    	// copy old storage to new storage
 				RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
 				Table table = relvar.getTable();
-		    	TupleIterator iterator = table.iterator(generator);
-		    	try {
-		    		while (iterator.hasNext()) {
-		    			ValueTuple tuple = iterator.next();
-		    			for (int i=1; i<newStorageNames.size(); i++) {
-		    				Database berkeleyDb = newStorage.getDatabase(i);
-		    				DatabaseEntry entry = getKeyTableEntry();
-		    				// if this is moved back to Table, make getKeyValueFromTuple() private.
-		    				if (berkeleyDb.putNoOverwrite(txn, table.getKeyValueFromTuple(generator, tuple, i), entry) == OperationStatus.KEYEXIST)
-		    					throw new ExceptionSemantic("RS0435: ALTER KEY would violate uniqueness constraint of KEY {" + keydefs.getKey(i) + "}");
-		    			}
-		    		}
-		    	} finally {
-		    		iterator.close();
-		    	}
-		    	*/
+    	    	TupleIterator iterator = relvar.iterator(generator);
+    	    	try {
+    	    		while (iterator.hasNext())
+    					table.insertTupleNoDuplicates(generator, newStorage, txn, iterator.next(), "Altering KEY means");    			
+    	    	} finally {
+    	    		iterator.close();
+    	    	}
+	    		// remove old storage
+	    		StorageNames oldStorageNames = ((RelvarRealMetadata)metadata).getStorageNames();
+	    		for (int i=0; i<oldStorageNames.size(); i++) {
+	    			String tabName = oldStorageNames.getName(i);
+	    			closeDatabase(tabName);
+    		    	try {
+    		    		environment.removeDatabase(txn, tabName);
+    		    	} catch (DatabaseException dbe) {
+    		    		dbe.printStackTrace();
+    		    		throw new ExceptionFatal("RS0435: unable to remove table " + storageNames);
+    		    	}
+	    		}
+	    		// set metadata to reference new storage names
+		    	metadata.setStorageNames(storageNames);
 			}
 		});
 	}
