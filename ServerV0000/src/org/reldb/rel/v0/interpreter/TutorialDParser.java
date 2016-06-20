@@ -1514,14 +1514,14 @@ public class TutorialDParser implements TutorialDVisitor {
 		Alteration alteration = (Alteration)data;
 		String varname = alteration.getVarname();
 		// child 0 is ASTKeyDefList; pass and return RelvarHeading
-		alteration.setRelvarHeading((RelvarHeading)compileChild(node, 0, alteration.getRelvarHeading()));
-		generator.alterVarRealAlterKey(varname, alteration.getRelvarHeading());
+		RelvarHeading keydef = (RelvarHeading)compileChild(node, 0, new RelvarHeading(alteration.getRelvarHeading().getHeading()));
+		generator.alterVarRealAlterKey(varname, keydef);
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTAlterVarActionOptional node, Object data) {
-		// Child 1 to n: all AlterVarAction*
+		// Child 0 to n: all AlterVarAction*
 		// 'data' is an Alteration
 		for (int i=0; i<getChildCount(node); i++)
 			data = compileChild(node, i, data);
