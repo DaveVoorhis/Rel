@@ -756,6 +756,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	}
 
 	@Override
+	public Object visit(ASTAlterVarActionOptional node, Object data) {
+		return dump(node, data);
+	}
+
+	@Override
 	public Object visit(ASTAlterVarActionRename node, Object data) {
 		return dump(node, data);
 	}

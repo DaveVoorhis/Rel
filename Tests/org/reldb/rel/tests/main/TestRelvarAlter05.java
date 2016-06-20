@@ -18,7 +18,7 @@ public class TestRelvarAlter05 extends BaseOfTest {
 		testEquals("true", src);
 		src = 
 			"BEGIN;\n" +
-			" ALTER VAR myvar ALTER KEY {y, z};" +
+			" ALTER VAR myvar KEY {y, z};" +
 			"END;\n" +
 			"true";
 		testEquals("true", src);

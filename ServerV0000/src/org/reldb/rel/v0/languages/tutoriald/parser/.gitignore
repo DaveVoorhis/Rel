@@ -257,3 +257,5 @@
 /ASTAlterVarActionRename.java
 /ASTMod.java
 /ASTStatementList.java
+/ASTAlterVarActionMandatory.java
+/ASTAlterVarActionOptional.java

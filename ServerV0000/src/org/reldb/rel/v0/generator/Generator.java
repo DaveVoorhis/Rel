@@ -728,32 +728,40 @@ public class Generator {
 			throw new ExceptionSemantic("RS0418: To ALTER VAR " + varname + ", it must be a REAL relvar.");
 	}
 	
-	public void alterVarRealRename(String varname, String oldAttributeName, String newAttributeName) {
+	public RelvarHeading alterVarRealRename(String varname, RelvarHeading relvarHeading, String oldAttributeName, String newAttributeName) {
 		checkRelvarIsGlobalPersistent(varname);
+		relvarHeading.renameAttribute(oldAttributeName, newAttributeName);
 		beginAssignment();
 		compileInstruction(new OpAlterVarRealRenameAttribute(varname, oldAttributeName, newAttributeName));
 		endAssignment();
+		return relvarHeading;
 	}
 
-	public void alterVarRealChangeType(String varname, String attributeName, Type newType) {
+	public RelvarHeading alterVarRealChangeType(String varname, RelvarHeading relvarHeading, String attributeName, Type newType) {
 		checkRelvarIsGlobalPersistent(varname);
+		relvarHeading.changeTypeAttribute(attributeName, newType);
 		beginAssignment();
 		compileInstruction(new OpAlterVarRealChangeAttributeType(varname, attributeName, newType));
 		endAssignment();
+		return relvarHeading;
 	}
 
-	public void alterVarRealInsertAttributes(String varname, Heading heading) {
+	public RelvarHeading alterVarRealInsertAttributes(String varname, RelvarHeading relvarHeading, Heading heading) {
 		checkRelvarIsGlobalPersistent(varname);
+		relvarHeading.insertAttributes(heading);
 		beginAssignment();
 		compileInstruction(new OpAlterVarRealInsertAttributes(varname, heading));
 		endAssignment();
+		return relvarHeading;
 	}
 
-	public void alterVarRealDropAttribute(String varname, String attributeName) {
+	public RelvarHeading alterVarRealDropAttribute(String varname, RelvarHeading relvarHeading, String attributeName) {
 		checkRelvarIsGlobalPersistent(varname);
+		relvarHeading.dropAttribute(attributeName);
 		beginAssignment();
 		compileInstruction(new OpAlterVarRealDropAttribute(varname, attributeName));
 		endAssignment();
+		return relvarHeading;
 	}
 
 	public void alterVarRealAlterKey(String varname, RelvarHeading keydefs) {
@@ -762,7 +770,7 @@ public class Generator {
 		compileInstruction(new OpAlterVarRealAlterKey(varname, keydefs));
 		endAssignment();
 	}
-		
+
 	// Define new slots in the given operator definition to expose individual possrep components (where the ValueUserdefined is assumed to be
 	// a parameter in the current operation definition, with a name specified by sourceValueParameterName).
 	private class PossrepComponentExposure {

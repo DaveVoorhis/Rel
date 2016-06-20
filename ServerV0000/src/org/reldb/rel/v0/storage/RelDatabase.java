@@ -1835,13 +1835,13 @@ public class RelDatabase {
 	// Change type of an attribute
 	public synchronized void alterVarRealChangeAttributeType(Generator generator, String varname, String attributeName, Type newType) {
 		// TODO - alter
-		System.out.println("alterVarRealChangeAttributeType: ALTER VAR " + varname + " REAL TYPE_OF " + attributeName + " TO " + newType.getSignature());
+		System.out.println("alterVarRealChangeAttributeType: ALTER VAR " + varname + " TYPE_OF " + attributeName + " TO " + newType.getSignature());
 	}
 	
 	// ALTER VAR <varname> REAL ALTER KEY {...}
     // Replace KEY definitions
 	public synchronized void alterVarRealAlterKey(Generator generator, String varname, RelvarHeading keydefs) {
-		// System.out.println("alterVarRealAlterKey: ALTER VAR " + varname + " ALTER " + keydefs.toString());
+		// System.out.println("alterVarRealAlterKey: ALTER VAR " + varname + " " + keydefs.toString());
 		alterVar(generator, varname, new Alteration() {
 			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
 	    		// update metadata
@@ -1886,7 +1886,7 @@ public class RelDatabase {
 	// ALTER VAR <varname> REAL DROP <attributename>
 	// Drop an attribute
 	public synchronized void alterVarRealDropAttribute(Generator generator, String varname, String attributeName) {
-		// System.out.println("alterVarRealDropAttribute: ALTER VAR " + varname + " REAL DROP " + attributeName);
+		// System.out.println("alterVarRealDropAttribute: ALTER VAR " + varname + " DROP " + attributeName);
 		alterVar(generator, varname, new Alteration() {
 			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
 	    		// update metadata - get index within tuple of removed attribute
@@ -1902,7 +1902,7 @@ public class RelDatabase {
 	// ALTER VAR <varname> REAL INSERT <attributename> <attributetype>
 	// Add an attribute
 	public synchronized void alterVarRealInsertAttributes(Generator generator, String varname, Heading heading) {
-		// System.out.println("alterVarRealInsertAttributes: ALTER VAR " + varname + " REAL INSERT " + heading.toString());
+		// System.out.println("alterVarRealInsertAttributes: ALTER VAR " + varname + " INSERT " + heading.toString());
 		alterVar(generator, varname, new Alteration() {
 			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
 	    		// update metadata
@@ -1919,7 +1919,7 @@ public class RelDatabase {
 	// ALTER VAR <varname> REAL RENAME <oldattributename> TO <newattributename>
 	// Rename an attribute
 	public synchronized void alterVarRealRenameAttribute(Generator generator, String varname, String oldAttributeName, String newAttributeName) {
-		// System.out.println("alterVarRealRename: ALTER VAR " + varname + " REAL RENAME " + oldAttributeName + " TO " + newAttributeName);
+		// System.out.println("alterVarRealRename: ALTER VAR " + varname + " RENAME " + oldAttributeName + " TO " + newAttributeName);
 		alterVar(generator, varname, new Alteration() {
 			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
 	    		// update metadata

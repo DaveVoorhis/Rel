@@ -8,6 +8,8 @@ import org.reldb.rel.v0.languages.tutoriald.BaseASTNode;
 import org.reldb.rel.v0.languages.tutoriald.parser.*;
 import org.reldb.rel.v0.storage.BuiltinTypeBuilder;
 import org.reldb.rel.v0.storage.relvars.RelvarHeading;
+import org.reldb.rel.v0.storage.relvars.RelvarMetadata;
+import org.reldb.rel.v0.storage.relvars.RelvarRealMetadata;
 import org.reldb.rel.v0.types.*;
 import org.reldb.rel.v0.types.builtin.TypeBoolean;
 import org.reldb.rel.v0.types.builtin.TypeCharacter;
@@ -1312,7 +1314,7 @@ public class TutorialDParser implements TutorialDVisitor {
 			throw new ExceptionSemantic("RS0124: Relation-valued variable definition expected initialization of RELATION type, but got " + varType);			
 		Heading heading = ((TypeRelation)varType).getHeading();
 		// Child 1 - KeyDefList
-		return (RelvarHeading)compileChild(node, 1, heading);
+		return (RelvarHeading)compileChild(node, 1, new RelvarHeading(heading));
 	}
 	
 	// Relvar definition
@@ -1364,7 +1366,7 @@ public class TutorialDParser implements TutorialDVisitor {
 			throw new ExceptionSemantic("RS0125: Virtual relation-valued variable definition expected expression of RELATION type, but got " + varType);			
 		Heading heading = ((TypeRelation)varType).getHeading();
 		// Child 1 - KeyDefList
-		RelvarHeading keydef = (RelvarHeading)compileChild(node, 1, heading);
+		RelvarHeading keydef = (RelvarHeading)compileChild(node, 1, new RelvarHeading(heading));
 		generator.defineRelvarVirtual(varName, sourceCode, keydef, references);
 		return varType;
 	}
@@ -1387,10 +1389,10 @@ public class TutorialDParser implements TutorialDVisitor {
 
 	public Object visit(ASTKeyDefList node, Object data) {
 		currentNode = node;
-		// data is Heading
-		RelvarHeading keydef = new RelvarHeading((Heading)data);
+		// data is RelvarHeading
+		RelvarHeading keydef = (RelvarHeading)data;
 		for (int i=0; i<getChildCount(node); i++)
-			keydef.addKey((SelectAttributes)compileChild(node, i, data));
+			keydef.addKey((SelectAttributes)compileChild(node, i, (RelvarHeading)data));
 		return keydef;
 	}
 
@@ -1466,83 +1468,117 @@ public class TutorialDParser implements TutorialDVisitor {
 		return null;
 	}
 
+	private class Alteration {
+		private String varname;
+		private RelvarHeading relvarHeading;
+		public Alteration(String varname, RelvarHeading relvarHeading) {
+			this.varname = varname;
+			this.relvarHeading = relvarHeading;
+		}
+		public String getVarname() {
+			return varname;
+		}
+		public RelvarHeading getRelvarHeading() {
+			return relvarHeading;
+		}
+		public void setRelvarHeading(RelvarHeading relvarHeading) {
+			this.relvarHeading = relvarHeading;
+		}
+	}
+	
 	@Override
 	public Object visit(ASTAlterVar node, Object data) {
 		currentNode = node;
 		// Child 0 - identifier
 		String varname = getTokenOfChild(node, 0);
-		Slot reference = generator.findReference(varname);
-		if (reference.isParameter())
-			throw new ExceptionSemantic("RS0416: Parameter cannot be ALTERed.");
-		if (!(reference.getType() instanceof TypeRelation))
-			throw new ExceptionSemantic("RS0417: VAR " + varname + " must be relation-valued.");
-		// Child 1 to n: all AlterVarAction*
-		for (int i=1; i<getChildCount(node); i++)
-			compileChild(node, i, varname);
-		return null;
-	}
-
-	@Override
-	public Object visit(ASTAlterVarActionRename node, Object data) {
-		currentNode = node;
-		// data is varname
-		String varname = (String)data;
-		// child 0 is old attribute name
-		String oldName = getTokenOfChild(node, 0);
-		// child 1 is new attribute name
-		String newName = getTokenOfChild(node, 1);
-		generator.alterVarRealRename(varname, oldName, newName);
-		return null;
-	}
-
-	@Override
-	public Object visit(ASTAlterVarActionChangeType node, Object data) {
-		currentNode = node;
-		// data is varname
-		String varname = (String)data;
-		// child 0 is attribute name
-		String attributeName = getTokenOfChild(node, 0);
-		// child 1 is new type
-		Type newType = (Type)compileChild(node, 1, data);
-		generator.alterVarRealChangeType(varname, attributeName, newType);
-		return null;
-	}
-
-	@Override
-	public Object visit(ASTAlterVarActionInsert node, Object data) {
-		currentNode = node;
-		// data is varname
-		String varname = (String)data;
-		// child 0 is ASTAttributeSpec; heading will contain new attribute name and type
-		Heading heading = new Heading();
-		compileChild(node, 0, heading);
-		generator.alterVarRealInsertAttributes(varname, heading);
-		return null;
-	}
-
-	@Override
-	public Object visit(ASTAlterVarActionDrop node, Object data) {
-		currentNode = node;
-		// data is varname
-		String varname = (String)data;
-		// child 0 is attribute name
-		String attributeName = getTokenOfChild(node, 0);
-		generator.alterVarRealDropAttribute(varname, attributeName);
+    	RelvarMetadata rawMetadata = generator.getDatabase().getRelvarMetadata(varname);
+    	if (rawMetadata == null)
+    		throw new ExceptionSemantic("RS0439: REAL VAR '" + varname + "' does not exist.");
+    	if (!(rawMetadata instanceof RelvarRealMetadata))
+    		throw new ExceptionSemantic("RS0440: '" + varname + "' is not a REAL VAR.");
+		RelvarRealMetadata metadata = (RelvarRealMetadata)rawMetadata;		
+		RelvarHeading relvarHeading = metadata.getHeadingDefinition(generator.getDatabase());
+		Alteration alteration = new Alteration(varname, relvarHeading);
+		// Child 1 - AlterVarActionOptional
+		alteration = (Alteration)compileChild(node, 1, alteration);
+		// If there is a Child 2, it's an AlterVarActionKey
+		if (getChildCount(node) == 3)
+			compileChild(node, 2, alteration);
 		return null;
 	}
 
 	@Override
 	public Object visit(ASTAlterVarActionKey node, Object data) {
 		currentNode = node;
-		// data is varname
-		String varname = (String)data;
-		// child 0 is ASTKeyDefList; heading contains relvar heading, returns RelvarHeading
-		Slot reference = generator.findReference(varname);
-		TypeRelation relationType = (TypeRelation)reference.getType();
-		Heading heading = relationType.getHeading();
-		RelvarHeading keydefs = (RelvarHeading)compileChild(node, 0, heading);
-		generator.alterVarRealAlterKey(varname, keydefs);
+		// data is an Alteration
+		Alteration alteration = (Alteration)data;
+		String varname = alteration.getVarname();
+		// child 0 is ASTKeyDefList; pass and return RelvarHeading
+		alteration.setRelvarHeading((RelvarHeading)compileChild(node, 0, alteration.getRelvarHeading()));
+		generator.alterVarRealAlterKey(varname, alteration.getRelvarHeading());
 		return null;
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionOptional node, Object data) {
+		// Child 1 to n: all AlterVarAction*
+		// 'data' is an Alteration
+		for (int i=0; i<getChildCount(node); i++)
+			data = compileChild(node, i, data);
+		return data;
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionRename node, Object data) {
+		currentNode = node;
+		// data is an Alteration
+		Alteration alteration = (Alteration)data;
+		String varname = alteration.getVarname();
+		// child 0 is old attribute name
+		String oldName = getTokenOfChild(node, 0);
+		// child 1 is new attribute name
+		String newName = getTokenOfChild(node, 1);
+		alteration.setRelvarHeading(generator.alterVarRealRename(varname, alteration.getRelvarHeading(), oldName, newName));
+		return alteration;
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionChangeType node, Object data) {
+		currentNode = node;
+		// data is an Alteration
+		Alteration alteration = (Alteration)data;
+		String varname = alteration.getVarname();
+		// child 0 is attribute name
+		String attributeName = getTokenOfChild(node, 0);
+		// child 1 is new type
+		Type newType = (Type)compileChild(node, 1, data);
+		alteration.setRelvarHeading(generator.alterVarRealChangeType(varname, alteration.getRelvarHeading(), attributeName, newType));
+		return alteration;
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionInsert node, Object data) {
+		currentNode = node;
+		// data is an Alteration
+		Alteration alteration = (Alteration)data;
+		String varname = alteration.getVarname();
+		// child 0 is ASTAttributeSpec; heading will contain new attribute name and type
+		Heading heading = new Heading();
+		compileChild(node, 0, heading);
+		alteration.setRelvarHeading(generator.alterVarRealInsertAttributes(varname, alteration.getRelvarHeading(), heading));
+		return alteration;
+	}
+
+	@Override
+	public Object visit(ASTAlterVarActionDrop node, Object data) {
+		currentNode = node;
+		// data is an Alteration
+		Alteration alteration = (Alteration)data;
+		String varname = alteration.getVarname();
+		// child 0 is attribute name
+		String attributeName = getTokenOfChild(node, 0);
+		alteration.setRelvarHeading(generator.alterVarRealDropAttribute(varname, alteration.getRelvarHeading(), attributeName));
+		return alteration;
 	}
 	
 	public Object visit(ASTVarArray node, Object data) {

@@ -65,6 +65,16 @@ public class SelectAttributes {
 		return names;
 	}
 	
+	public void rename(String from, String to) {
+		for (int i=0; i<names.size(); i++) {
+			if (names.get(i).equals(from)) {
+				if (names.contains(to))
+					throw new ExceptionSemantic("RS0437: Name '" + to + "' already exists.");
+				names.set(i, to);
+			}
+		}
+	}
+	
 	public String toString() {
 		StringBuffer out = new StringBuffer();
 		out.append((isAllBut) ? "ALL BUT " : "");

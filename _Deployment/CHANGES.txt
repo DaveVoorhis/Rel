@@ -1,4 +1,4 @@
-Last Exception* number: RS0435
+Last used Exception* number: RS0440
 
 Version 1.0.13:
 
@@ -12,7 +12,7 @@ Version 1.0.13:
   - enhancement: Rel: added ALTER VAR <relvar> RENAME <oldattrname> AS <newattrname>
   - enhancement: Rel: added ALTER VAR <relvar> INSERT <newattrname> <newattrtype>
   - enhancement: Rel: added ALTER VAR <relvar> DROP <attrname>  
-  - enhancement: Rel: added ALTER VAR <relvar> ALTER KEY {<keyspec>} [... KEY {<keyspec>}]
+  - enhancement: Rel: added ALTER VAR <relvar> KEY {<keyspec>} [... KEY {<keyspec>}] (must be last)
   - enhancement: Rel: IF, CASE, DO, WHILE, FOR and OPERATOR definitions now support multiple statements
                  without requiring BEGIN .. END blocks.
   - enhancement: Rel: IF, CASE, DO, WHILE, FOR and OPERATOR are now optional after the END that

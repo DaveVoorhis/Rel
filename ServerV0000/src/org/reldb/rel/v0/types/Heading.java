@@ -102,7 +102,7 @@ public class Heading implements Comparable<Heading> {
 	}
 	
 	/** Remove a given attribute. */
-	private void remove(String name) {
+	public void remove(String name) {
 		int index = getIndexOf(name);
 		if (index < 0)
 			throw new ExceptionSemantic("RS0247: Attribute '" + name + "' not found.");
@@ -231,6 +231,16 @@ public class Heading implements Comparable<Heading> {
 			newHeading.add(name, mostSpecificCommonSupertype);
 		}
 		return newHeading;
+	}
+
+	public void changeTypeOfAttribute(String attributeName, Type newType) {
+		for (int i=0; i<attributes.size(); i++) {
+			if (attributes.get(i).getName().equals(attributeName)) {
+				attributes.set(i, new Attribute(attributeName, newType));
+				return;
+			}
+		}
+		throw new ExceptionSemantic("RS0252: Attribute '" + attributeName + "' not found.");
 	}
 
 	public int compareTo(Heading heading) {

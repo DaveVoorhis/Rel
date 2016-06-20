@@ -465,7 +465,7 @@ public abstract class Designer extends Grid {
 			HashSet<HashSet<String>> newKeys = new HashSet<HashSet<String>>();
 			newKeys.addAll(keys);
 			if (!existingKeys.equals(newKeys))
-				body += ((body.length() > 0) ? "\n" : "") + "\t" + "ALTER " + getRelKeysDefinition();
+				body += ((body.length() > 0) ? "\n" : "") + "\t" + getRelKeysDefinition();
 			// produce output
 			if (body.length() == 0)
 				return "";

@@ -5,6 +5,7 @@ import java.util.Vector;
 import org.reldb.rel.exceptions.*;
 import org.reldb.rel.v0.generator.SelectAttributes;
 import org.reldb.rel.v0.types.Heading;
+import org.reldb.rel.v0.types.Type;
 
 public class RelvarHeading {
 
@@ -19,7 +20,7 @@ public class RelvarHeading {
 		return heading;
 	}
 	
-	public String toString() {
+	public String getKeyString() {
 		StringBuffer outstr = new StringBuffer();
 		if (keys.size() == 0)
 			outstr.append("KEY {ALL BUT}");
@@ -29,7 +30,11 @@ public class RelvarHeading {
 				outstr.append(attributes.toString());
 				outstr.append("} ");
 			}
-		return outstr.toString().trim();
+		return outstr.toString().trim();		
+	}
+	
+	public String toString() {
+		return getKeyString();
 	}
 
 	/** Return the number of KEY definitionS in this RelvarHeading. */
@@ -74,5 +79,28 @@ public class RelvarHeading {
 				return true;
 		return false;
 	}
-	
+
+	public void renameAttribute(String oldAttributeName, String newAttributeName) {
+		if (!heading.rename(oldAttributeName, newAttributeName))
+			throw new ExceptionSemantic("RS0436: Attribute '" + oldAttributeName + "' not found.");
+		if (keys.size() == 0)
+			return;
+		for (SelectAttributes key: keys)
+			key.rename(oldAttributeName, newAttributeName);
+	}
+
+	public void changeTypeAttribute(String attributeName, Type newType) {
+		heading.changeTypeOfAttribute(attributeName, newType);
+	}
+
+	public void insertAttributes(Heading addHeading) {
+		heading = heading.unionDisjoint(addHeading);
+	}
+
+	public void dropAttribute(String attributeName) {
+		if (isKeyUsing(attributeName))
+			throw new ExceptionSemantic("RS0438: Attribute '" + attributeName + "' is referenced in " + getKeyString() + ".");
+		heading.remove(attributeName);
+	}
+
 }
