@@ -93,13 +93,14 @@ public class AboutDialog extends Dialog {
 		
 		lblImage.addPaintListener(new PaintListener() {
 	        public void paintControl(PaintEvent e) {
+	        	e.gc.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 	        	e.gc.setFont(SWTResourceManager.getFont("Arial", 18, SWT.BOLD));
 	        	int width = e.gc.textExtent(Version.getVersion()).x;
 	        	e.gc.drawText(Version.getVersion(), rightPos - width, 158, true);
 	        	e.gc.setFont(shell.getFont());
 	        	width = e.gc.textExtent(Version.getCopyright()).x;
 	        	e.gc.drawText(Version.getCopyright(), rightPos - width, 192, true);
-	        	e.gc.setForeground(SWTResourceManager.getColor(SWT.COLOR_LINK_FOREGROUND));
+	        	e.gc.setForeground(SWTResourceManager.getColor(150, 200, 255));
 	        	width = e.gc.textExtent(Version.getURL()).x;
 	        	e.gc.drawText(Version.getURL(), rightPos - width, urlTop, true);
 	        } 
