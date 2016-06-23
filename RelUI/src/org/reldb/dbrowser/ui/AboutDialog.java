@@ -66,6 +66,7 @@ public class AboutDialog extends Dialog {
 	private void createContents() {
 		shell = new Shell(getParent(), SWT.APPLICATION_MODAL);
 		shell.setText("About Rel");
+		shell.setLocation(getParent().getSize().x / 2 - 500 / 2, getParent().getSize().y / 2 - 330 / 2);
 		
 		Button btnOk = new Button(shell, SWT.NONE);
 		btnOk.setBounds(396, 289, 95, 28);
