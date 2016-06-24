@@ -78,7 +78,12 @@ public class AboutDialog extends Dialog {
 		
 		shell = new Shell(getParent(), SWT.APPLICATION_MODAL);
 		shell.setText("About Rel");
-		shell.setLocation(getParent().getSize().x / backgroundScaleX - backgroundWidth / 2, getParent().getSize().y / backgroundScaleY - backgroundHeight / 2);
+		shell.setLocation(getParent().getLocation().x + (getParent().getSize().x - backgroundWidth) / 2, 
+						  getParent().getLocation().y + (getParent().getSize().y - backgroundHeight) / 2);
+		
+		System.out.println("getParent().getSize().x = " + getParent().getSize().x);
+		System.out.println("backgroundScaleX = " + backgroundScaleX);
+		System.out.println("backgroundWidth = " + backgroundWidth);
 		
 		Button btnOk = new Button(shell, SWT.NONE);
 		btnOk.setBounds(396, 289, 95, 28);
