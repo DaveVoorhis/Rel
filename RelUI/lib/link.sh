@@ -6,7 +6,7 @@ ln -s ~/git/Rel/_Deployment/httpclient-4.1.3.jar .
 ln -s ~/git/Rel/_Deployment/httpclient-cache-4.1.3.jar .
 ln -s ~/git/Rel/_Deployment/httpcore-4.1.4.jar .
 ln -s ~/git/Rel/_Deployment/httpmime-4.1.3.jar .
-ln -s ~/git/Rel/_Deployment/je-6.4.25.jar .
+ln -s ~/git/Rel/_Deployment/je-7.0.6.jar .
 ln -s ~/git/Rel/_Deployment/rel0000.jar .
 ln -s ~/git/Rel/_Deployment/relclient.jar .
 ln -s ~/git/Rel/_Deployment/relshared.jar .

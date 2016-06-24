@@ -18,7 +18,7 @@ Version 1.0.13:
   - enhancement: Rel: IF, CASE, DO, WHILE, FOR and OPERATOR are now optional after the END that
                  closes a block.
   - enhancement: Rel: POSSREP component definitions may now be surrounded with "( ... )" (preferred) or "{ ... }" (deprecated).
-  - enhancement: Rel: Updated storage engine to Oracle Berkeley DB JE version 6.4.25
+  - enhancement: Rel: Updated storage engine to Oracle Berkeley DB JE version 7.0.6
   - enhancement: Rel: External Java compilation integrated; no longer requires JDK.
   - enhancement: Rel: Default database now refers to explicit path
   - enhancement: Rel: System startup announcement now provides more information about runtime platform.
