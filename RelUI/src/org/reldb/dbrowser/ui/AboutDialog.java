@@ -27,6 +27,9 @@ public class AboutDialog extends Dialog {
 
 	protected Shell shell;
 
+	private static final int backgroundWidth = 500;
+	private static final int backgroundHeight = 330;
+	
 	/**
 	 * Create the dialog.
 	 * @param parent
@@ -64,9 +67,18 @@ public class AboutDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
+		Image background = ResourceManager.getPluginImage("RelUI", "icons/RelAboutAndSplash.png");    	
+    	int backgroundScaleX = 1;
+    	int backgroundScaleY = 1;
+    	if (background != null) {
+			Rectangle scaledBounds = background.getBoundsInPixels();
+			backgroundScaleX = scaledBounds.width / background.getBounds().width;
+			backgroundScaleY = scaledBounds.height / background.getBounds().height;    		
+    	}
+		
 		shell = new Shell(getParent(), SWT.APPLICATION_MODAL);
 		shell.setText("About Rel");
-		shell.setLocation(getParent().getSize().x / 2 - 500 / 2, getParent().getSize().y / 2 - 330 / 2);
+		shell.setLocation(getParent().getSize().x / backgroundScaleX - backgroundWidth / 2, getParent().getSize().y / backgroundScaleY - backgroundHeight / 2);
 		
 		Button btnOk = new Button(shell, SWT.NONE);
 		btnOk.setBounds(396, 289, 95, 28);
@@ -82,13 +94,12 @@ public class AboutDialog extends Dialog {
 		
 		int urlTop = 220;
     	int rightPos = 491;
-
+    	
 		Label lblImage = new Label(shell, SWT.NONE);
 		lblImage.setBackground(SWTResourceManager.getColor(SWT.COLOR_LIST_SELECTION));
-		Image background = ResourceManager.getPluginImage("RelUI", "icons/RelAboutAndSplash.png");
 		lblImage.setImage(background);
 		if (background == null)
-			lblImage.setBounds(0, 0, 500, 330);
+			lblImage.setBounds(0, 0, backgroundWidth, backgroundHeight);
 		else
 			lblImage.setBounds(0, 0, background.getBounds().width, background.getBounds().height);
 		
