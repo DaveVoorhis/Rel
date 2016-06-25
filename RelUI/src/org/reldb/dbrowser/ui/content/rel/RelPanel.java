@@ -16,6 +16,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -23,6 +24,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.DbTab;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.content.rel.constraint.ConstraintCreator;
 import org.reldb.dbrowser.ui.content.rel.constraint.ConstraintDesigner;
 import org.reldb.dbrowser.ui.content.rel.constraint.ConstraintDropper;
@@ -100,10 +102,11 @@ public class RelPanel extends Composite {
 					playItem();
 			}
 		});
-		
+				
 		Menu menu = new Menu(this);
 		MenuItem showItem = new MenuItem(menu, SWT.POP_UP);
 		showItem.setText("Show");
+		showItem.setImage(IconLoader.loadIcon("play"));
 		showItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
 				playItem();
@@ -111,6 +114,7 @@ public class RelPanel extends Composite {
 		});
 		MenuItem createItem = new MenuItem(menu, SWT.POP_UP);
 		createItem.setText("Create");
+		createItem.setImage(IconLoader.loadIcon("item_add"));
 		createItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
 				createItem();
@@ -118,6 +122,7 @@ public class RelPanel extends Composite {
 		});
 		MenuItem dropItem = new MenuItem(menu, SWT.POP_UP);
 		dropItem.setText("Drop");
+		dropItem.setImage(IconLoader.loadIcon("item_delete"));
 		dropItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
 				dropItem();
@@ -125,6 +130,7 @@ public class RelPanel extends Composite {
 		});
 		MenuItem designItem = new MenuItem(menu, SWT.POP_UP);
 		designItem.setText("Design");
+		designItem.setImage(IconLoader.loadIcon("item_design"));
 		designItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
 				designItem();
@@ -245,10 +251,11 @@ public class RelPanel extends Composite {
 		buildDbTree();
 	}
 	
-	private void buildSubtree(String section, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer) {
+	private void buildSubtree(String section, Image image, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer) {
 		TreeItem root = treeRoots.get(section);
 		if (root == null) {
 			root = new TreeItem(tree, SWT.NONE);
+			root.setImage(image);
 			root.setText(section);
 			treeRoots.put(section, root);
 			root.setData(new DbTreeItem(section, null, creator, null, null));
@@ -260,6 +267,7 @@ public class RelPanel extends Composite {
 					String name = tuple.getAttributeValue(displayAttributeName).toString();
 					if (filter.test(name)) {
 						TreeItem item = new TreeItem(root, SWT.NONE);
+						item.setImage(image);
 						item.setText(name);
 						item.setData(new DbTreeItem(section, player, creator, dropper, designer, name));
 					}
@@ -267,8 +275,8 @@ public class RelPanel extends Composite {
 		}
 	}
 
-	private void buildSubtree(String section, String query, String displayAttributeName, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer) {
-		buildSubtree(section, query, displayAttributeName, (String attributeName) -> true, player, creator, dropper, designer);
+	private void buildSubtree(String section, Image image, String query, String displayAttributeName, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer) {
+		buildSubtree(section, image, query, displayAttributeName, (String attributeName) -> true, player, creator, dropper, designer);
 	}
 	
 	private void buildDbTree() {
@@ -281,23 +289,23 @@ public class RelPanel extends Composite {
 		
 		Predicate<String> revSysNamesFilter = (String attributeName) -> attributeName.startsWith("sys.rev") ? showSystemObjects : true; 
 		
-		buildSubtree("Variable", "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter, 
+		buildSubtree("Variable", IconLoader.loadIcon("table"), "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter, 
 			new VarRealPlayer(this), new VarRealCreator(this), new VarRealDropper(this), new VarRealDesigner(this));
 		
-		buildSubtree("View", "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
+		buildSubtree("View", IconLoader.loadIcon("view"), "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
 			new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this));
 		
-		buildSubtree("Operator", "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName",
+		buildSubtree("Operator", IconLoader.loadIcon("operator"), "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName",
 			new OperatorPlayer(this), new OperatorCreator(this), new OperatorDropper(this), new OperatorDesigner(this));
 		
-		buildSubtree("Type", "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
+		buildSubtree("Type", IconLoader.loadIcon("type"), "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
 			new TypePlayer(this), new TypeCreator(this), new TypeDropper(this), null);
 		
-		buildSubtree("Constraint", "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
+		buildSubtree("Constraint", IconLoader.loadIcon("constraint"), "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
 			new ConstraintPlayer(this), new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this));
 		
 		if (connection.hasRevExtensions() >= 0) {
-			buildSubtree("Query", "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
+			buildSubtree("Query", IconLoader.loadIcon("query"), "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
 					new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this));
 			// buildSubtree("Forms", null, null, null, null, null, null);
 			// buildSubtree("Reports", null, null, null, null, null, null);
