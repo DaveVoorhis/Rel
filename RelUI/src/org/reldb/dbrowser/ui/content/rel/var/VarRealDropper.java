@@ -2,6 +2,7 @@ package org.reldb.dbrowser.ui.content.rel.var;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
@@ -14,7 +15,7 @@ public class VarRealDropper extends DbTreeAction {
 	}
 
 	@Override
-	public void go(DbTreeItem item) {
+	public void go(DbTreeItem item, Image image) {
 		CTabItem tab = relPanel.getTab(item.getTabName());
 		if (tab != null) {
 			relPanel.getTabFolder().setSelection(tab);

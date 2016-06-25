@@ -194,12 +194,18 @@ public class RelPanel extends Composite {
 		return getTab(item.getTabName());
 	}
 	
-	private DbTreeItem getSelection() {
+	private TreeItem getTreeSelection() {
 		TreeItem items[] = tree.getSelection();
 		if (items == null || items.length == 0)
 			return null;
-		TreeItem item = items[0];
-		return (DbTreeItem)item.getData();
+		return items[0];		
+	}
+	
+	private DbTreeItem getSelection() {
+		TreeItem treeItem = getTreeSelection();
+		if (treeItem == null)
+			return null;
+		return (DbTreeItem)treeItem.getData();
 	}
 	
 	private Vector<DbTreeListener> listeners = new Vector<DbTreeListener>();
@@ -227,19 +233,20 @@ public class RelPanel extends Composite {
 	}
 	
 	public void playItem() {
-		getSelection().play();
+		TreeItem treeSelection = getTreeSelection();
+		getSelection().play(treeSelection.getImage());
 	}
 
 	public void createItem() {
-		getSelection().create();
+		getSelection().create(IconLoader.loadIcon("item_add"));
 	}
 
 	public void dropItem() {
-		getSelection().drop();
+		getSelection().drop(IconLoader.loadIcon("item_delete"));
 	}
 
 	public void designItem() {
-		getSelection().design();
+		getSelection().design(IconLoader.loadIcon("item_design"));
 	}
 
 	public boolean getShowSystemObjects() {

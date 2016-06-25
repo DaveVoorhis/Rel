@@ -1,6 +1,7 @@
 package org.reldb.dbrowser.ui.content.rel.query;
 
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
@@ -16,7 +17,7 @@ public class QueryView extends DbTreeAction {
 	}
 
 	@Override
-	public void go(DbTreeItem item) {
+	public void go(DbTreeItem item, Image image) {
 		CTabItem tab = relPanel.getTab(item);
 		if (tab != null) {
 			if (tab instanceof RevTab) {
@@ -36,6 +37,7 @@ public class QueryView extends DbTreeAction {
 			});
 			tab = revtab;
 		}
+		tab.setImage(image);
 		relPanel.getTabFolder().setSelection(tab);
 	}
 

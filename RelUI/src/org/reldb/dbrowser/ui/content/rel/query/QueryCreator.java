@@ -2,6 +2,7 @@ package org.reldb.dbrowser.ui.content.rel.query;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.NewItemDialog;
@@ -17,7 +18,7 @@ public class QueryCreator extends DbTreeAction {
 	}
 
 	@Override
-	public void go(DbTreeItem item) {
+	public void go(DbTreeItem item, Image image) {
 		RevDatabase database = new RevDatabase(relPanel.getConnection());
 		NewItemDialog namer = new NewItemDialog(relPanel.getShell(), "Query" + database.getUniqueNumber());
 		if (namer.open() != NewItemDialog.OK)
@@ -36,6 +37,7 @@ public class QueryCreator extends DbTreeAction {
 				relPanel.redisplayed();
 			}
 		});
+		revtab.setImage(image);
 		relPanel.getTabFolder().setSelection(revtab);
 	}
 

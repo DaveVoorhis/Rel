@@ -2,6 +2,7 @@ package org.reldb.dbrowser.ui.content.rel.var;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
@@ -16,7 +17,7 @@ public class VarRealCreator extends DbTreeAction {
 	}
 
 	@Override
-	public void go(DbTreeItem item) {
+	public void go(DbTreeItem item, Image image) {
 		RevDatabase database = new RevDatabase(relPanel.getConnection());
 		NewItemDialog namer = new NewItemDialog(relPanel.getShell(), "Variable" + database.getUniqueNumber());
 		if (namer.open() != NewItemDialog.OK)
@@ -37,6 +38,7 @@ public class VarRealCreator extends DbTreeAction {
 		if (tab != null)
 			tab.dispose();
 		RelvarDesignerTab varDesignTab = new RelvarDesignerTab(relPanel, newItem);
+		varDesignTab.setImage(image);
 		relPanel.getTabFolder().setSelection(varDesignTab);
 	}
 
