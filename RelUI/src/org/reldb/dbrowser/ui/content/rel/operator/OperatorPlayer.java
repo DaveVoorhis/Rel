@@ -16,7 +16,7 @@ public class OperatorPlayer extends DbTreeAction {
 
 	@Override
 	public void go(DbTreeItem item, Image image) {
-		Tuples tuples = relPanel.getConnection().getTuples("(sys.Operators WHERE Name='" + item.getName() + "') {Definition}");
+		Tuples tuples = relPanel.getConnection().getTuples("(EXTEND (sys.Operators UNGROUP Implementations): {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} WHERE opName = '" + item.getName() + "') {Definition}");
 		String definition = "???";
 		if (tuples != null)
 			for (Tuple tuple: tuples)
