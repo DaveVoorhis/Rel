@@ -21,6 +21,8 @@ public class OperatorPlayer extends DbTreeAction {
 		if (tuples != null)
 			for (Tuple tuple: tuples)
 				definition = tuple.getAttributeValue("Definition").toString();
+		if (definition.trim().length() == 0)
+			definition = "<System-generated definition is unavailable.>";
 		NaiveShowTab typetab = new NaiveShowTab(relPanel, item, definition);
 		typetab.setImage(image);
 		relPanel.getTabFolder().setSelection(typetab);
