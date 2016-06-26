@@ -42,6 +42,7 @@ public class Instance {
 		output.println(Version.getCopyright());
 		output.println("Rel is running on " + localHostName);
 		output.println("using " + System.getProperty("java.vendor") + "'s Java version " + System.getProperty("java.version") + " from " + System.getProperty("java.vendor.url"));
+		output.println("at " + System.getProperty("java.home"));
 		output.println("on " + System.getProperty("os.name") + " version " + System.getProperty("os.version") + " for " + System.getProperty("os.arch"));
 		output.println("with database format v" + Version.getDatabaseVersion() + ".");
 		output.println("Persistence is provided by " + database.getNativeDBVersion());
