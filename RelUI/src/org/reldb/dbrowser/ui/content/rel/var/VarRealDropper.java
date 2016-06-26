@@ -16,7 +16,7 @@ public class VarRealDropper extends DbTreeAction {
 
 	@Override
 	public void go(DbTreeItem item, Image image) {
-		CTabItem tab = relPanel.getTab(item.getTabName());
+		CTabItem tab = relPanel.getTab(item);
 		if (tab != null) {
 			relPanel.getTabFolder().setSelection(tab);
 			MessageDialog.openInformation(relPanel.getShell(), "Note", "You must close the '" + item.getTabName() + "' tab first.");
