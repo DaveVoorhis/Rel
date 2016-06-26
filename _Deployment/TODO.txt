@@ -12,18 +12,17 @@ Short term:
 	//        changes that invalidate dependent objects.
 	// TODO - provide THE_INTEGER(INTEGER)
 	// TODO - fix intermittent getKeyForTuple exception when creating new database
-	// TODO - fix self-reference POSSREP (e.g., t = THE_t(supertype) ) bug.
 	// TODO - check that invocation of update operators (no RETURNS) supports
 	//        multimethod invocation
-	// TODO - implement VAR varname REAL ... in var designer.
-	// TODO - implement ALTER VAR varname REAL ... in Rel.
 	// TODO - improve UPDATE operator in Rev.
 	// TODO - implement (only for multiple possreps) SELECTORS and (mandatory) INIT clause 
 	//        in TYPE definitions.
 	// TODO - Fix toolbar button enabled/selected states in RelUI.
 	// TODO - Examine org.reldb.rel.client.  Should tuple iteration close the tuple iterator?
 	// TODO - test client connection reset() on remote databases.
-	// TODO - Disallow recursive definitions like TYPE blah IS {blat CONSTRAINT p POSSREP {x = THE_x(blat)}}
+	// TODO - fix self-reference POSSREP (e.g., t = THE_t(supertype) ) bug.
+	//        I.e., prevent recursive definitions like 
+	//           TYPE blah IS {blat CONSTRAINT p POSSREP {x = THE_x(blat)}}
 	// TODO - RELATION {TUPLE {SID 1, PID 1}, TUPLE {SID 4, PID 5}} GROUP {PID} AS PARTS
 	//          UNION
 	//        RELATION {TUPLE {SID 1, PARTS RELATION {TUPLE {PID 1}}},
