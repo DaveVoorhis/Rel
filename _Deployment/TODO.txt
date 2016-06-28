@@ -1,6 +1,9 @@
 ** TO DO **
 
 Short term:
+	// TODO - fix splash screen on Windows (About works, though)
+	// TODO - fix relvar editor display on Linux
+	// TODO - fix 32bit Linux?  (Or not?) 
 	// TODO - be able to specify user-defined parameters in Rev queries
 	// TODO - be able to bring operator invocations into Rev queries
 	// TODO - be able to turn a Rev query into a relation-valued operator, or a view.
