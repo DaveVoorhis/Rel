@@ -7,10 +7,9 @@
       </xsl:copy>
    </xsl:template>
 
-   <xsl:template match="Eclipse">
+   <!-- Insert Java VM invocation in appropriate place. -->
+   <xsl:template match="string[text()='~/.eclipse_keyring']">
       <xsl:copy-of select="."/>
-      <array>
-	<string>-vm</string><string>jre/bin/java</string>
-      </array>
+		<string>-vm</string><string>jre/bin/java</string>
    </xsl:template>
 </xsl:stylesheet>
