@@ -4,11 +4,6 @@ version=8u92
 jredir=~/Documents/JavaJREs
 proddir=~/git/Rel/_Deployment/product
 
-# Linux GTK 32bit
-cp -R $jredir/jre-$version-linux-i586 $proddir/linux.gtk.x86/Rel.app/jre
-mv $proddir/linux.gtk.x86/Rel.app $proddir/linux.gtk.x86/Rel
-chmod +x $proddir/linux.gtk.x86/Rel/jre/bin/*
-
 # Linux GTK 64bit
 cp -R $jredir/jre-$version-linux-x64 $proddir/linux.gtk.x86_64/Rel.app/jre
 mv $proddir/linux.gtk.x86_64/Rel.app $proddir/linux.gtk.x86_64/Rel
