@@ -1,7 +1,6 @@
 ** TO DO **
 
 Short term:
-	// TODO - fix relvar editor on Linux
 	// TODO - be able to specify user-defined parameters in Rev queries
 	// TODO - be able to bring operator invocations into Rev queries
 	// TODO - be able to turn a Rev query into a relation-valued operator, or a view.
