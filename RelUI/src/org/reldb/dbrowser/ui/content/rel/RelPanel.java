@@ -235,18 +235,30 @@ public class RelPanel extends Composite {
 	public void playItem() {
 		TreeItem treeSelection = getTreeSelection();
 		getSelection().play(treeSelection.getImage());
+		// force redisplay for GTK; otherwise some controls in the tab don't display correctly
+		this.setSize(getSize().x + 1, getSize().y);
+		this.setSize(getSize().x - 1, getSize().y);
 	}
 
 	public void createItem() {
 		getSelection().create(IconLoader.loadIcon("item_add"));
+		// force redisplay for GTK
+		this.setSize(getSize().x + 1, getSize().y);
+		this.setSize(getSize().x - 1, getSize().y);
 	}
 
 	public void dropItem() {
 		getSelection().drop(IconLoader.loadIcon("item_delete"));
+		// force redisplay for GTK
+		this.setSize(getSize().x + 1, getSize().y);
+		this.setSize(getSize().x - 1, getSize().y);
 	}
 
 	public void designItem() {
 		getSelection().design(IconLoader.loadIcon("item_design"));
+		// force redisplay for GTK
+		this.setSize(getSize().x + 1, getSize().y);
+		this.setSize(getSize().x - 1, getSize().y);
 	}
 
 	public boolean getShowSystemObjects() {
