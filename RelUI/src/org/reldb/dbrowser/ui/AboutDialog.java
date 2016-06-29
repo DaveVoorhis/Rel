@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.wb.swt.ResourceManager;
 import org.reldb.dbrowser.ui.version.Version;
@@ -29,6 +28,9 @@ public class AboutDialog extends Dialog {
 
 	private static final int backgroundWidth = 500;
 	private static final int backgroundHeight = 330;
+	
+	private static final int urlTop = 180;
+	private static final int rightPos = backgroundWidth - 10;
 	
 	/**
 	 * Create the dialog.
@@ -69,13 +71,17 @@ public class AboutDialog extends Dialog {
 	private void createContents() {
 		shell = new Shell(getParent(), SWT.APPLICATION_MODAL);
 		shell.setText("About Rel");
+		shell.setLayout(null);
+		shell.setMinimumSize(backgroundWidth, backgroundHeight);
+		shell.setSize(backgroundWidth, backgroundHeight);
 		shell.setLocation(getParent().getLocation().x + (getParent().getSize().x - backgroundWidth) / 2, 
 						  getParent().getLocation().y + (getParent().getSize().y - backgroundHeight) / 2);
 		
-		Button btnOk = new Button(shell, SWT.NONE);
-		btnOk.setBounds(396, 289, 95, 28);
+		Button btnOk = new Button(shell, SWT.PUSH);
 		btnOk.setText("Ok");
 		btnOk.setFocus();
+		btnOk.setSize(btnOk.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		btnOk.setLocation(rightPos - btnOk.getSize().x, backgroundHeight - btnOk.getSize().y - 10);
 		btnOk.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -83,22 +89,13 @@ public class AboutDialog extends Dialog {
 			}
 		});
 		shell.setDefaultButton(btnOk);
-		
-		int urlTop = 180;
-    	int rightPos = 491;
     	
-		Image background = ResourceManager.getPluginImage("RelUI", "icons/RelAboutAndSplash.png");    	
+		Image background = ResourceManager.getPluginImage("RelUI", "icons/RelAboutAndSplash.png");
 		
-		Label lblImage = new Label(shell, SWT.NONE);
-		lblImage.setBackground(SWTResourceManager.getColor(SWT.COLOR_LIST_SELECTION));
-		lblImage.setImage(background);
-		if (background == null)
-			lblImage.setBounds(0, 0, backgroundWidth, backgroundHeight);
-		else
-			lblImage.setBounds(0, 0, background.getBounds().width, background.getBounds().height);
-		
-		lblImage.addPaintListener(new PaintListener() {
+		shell.addPaintListener(new PaintListener() {
 	        public void paintControl(PaintEvent e) {
+	        	if (background != null)
+	        		e.gc.drawImage(background, 0, 0);
 	        	e.gc.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 	        	e.gc.setFont(SWTResourceManager.getFont("Arial", 18, SWT.BOLD));
 	        	int width = e.gc.textExtent(Version.getVersion()).x;
@@ -112,23 +109,23 @@ public class AboutDialog extends Dialog {
 	        } 
 	    });
 		
-		lblImage.addMouseListener(new MouseAdapter() {
+		shell.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				if (isPointInText(lblImage, Version.getURL(), rightPos, urlTop, new Point(e.x, e.y)))
+				if (isPointInText(shell, Version.getURL(), rightPos, urlTop, new Point(e.x, e.y)))
 					org.eclipse.swt.program.Program.launch(Version.getURL());
 			}
 		});
 		
-		lblImage.addMouseMoveListener(new MouseMoveListener() {
+		shell.addMouseMoveListener(new MouseMoveListener() {
 			@Override
 			public void mouseMove(MouseEvent e) {
-				Cursor cursor = lblImage.getCursor();
+				Cursor cursor = shell.getCursor();
 				if (cursor != null)
 					cursor.dispose();
-				boolean isPointerInURL = isPointInText(lblImage, Version.getURL(), rightPos, urlTop, new Point(e.x, e.y));
+				boolean isPointerInURL = isPointInText(shell, Version.getURL(), rightPos, urlTop, new Point(e.x, e.y));
 				cursor = new Cursor(shell.getDisplay(), isPointerInURL ? SWT.CURSOR_HAND : SWT.CURSOR_ARROW); 
-				lblImage.setCursor(cursor);
+				shell.setCursor(cursor);
 			}			
 		});
 		
