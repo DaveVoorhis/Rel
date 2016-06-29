@@ -84,7 +84,7 @@ public class AboutDialog extends Dialog {
 		});
 		shell.setDefaultButton(btnOk);
 		
-		int urlTop = 220;
+		int urlTop = 180;
     	int rightPos = 491;
     	
 		Image background = ResourceManager.getPluginImage("RelUI", "icons/RelAboutAndSplash.png");    	
@@ -102,10 +102,10 @@ public class AboutDialog extends Dialog {
 	        	e.gc.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 	        	e.gc.setFont(SWTResourceManager.getFont("Arial", 18, SWT.BOLD));
 	        	int width = e.gc.textExtent(Version.getVersion()).x;
-	        	e.gc.drawText(Version.getVersion(), rightPos - width, 158, true);
-	        	e.gc.setFont(shell.getFont());
+	        	e.gc.drawText(Version.getVersion(), rightPos - width, urlTop - 62, true);
+	        	e.gc.setFont(SWTResourceManager.getFont("Arial", 12, SWT.BOLD));
 	        	width = e.gc.textExtent(Version.getCopyright()).x;
-	        	e.gc.drawText(Version.getCopyright(), rightPos - width, 192, true);
+	        	e.gc.drawText(Version.getCopyright(), rightPos - width, urlTop - 28, true);
 	        	e.gc.setForeground(SWTResourceManager.getColor(150, 200, 255));
 	        	width = e.gc.textExtent(Version.getURL()).x;
 	        	e.gc.drawText(Version.getURL(), rightPos - width, urlTop, true);
