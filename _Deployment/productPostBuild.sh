@@ -26,5 +26,5 @@ mv $proddir/win32.win32.x86_64/Rel.app $proddir/win32.win32.x86_64/Rel
 cp -R $jredir/jre-$version-macosx-x64/Contents/Home $proddir/macosx.cocoa.x86_64/Rel.app/Contents/MacOS/jre
 xsltproc -o tmp.plist ./productMacOS_updatePlist.xslt $proddir/macosx.cocoa.x86_64/Rel.app/Contents/Info.plist
 mv tmp.plist $proddir/macosx.cocoa.x86_64/Rel.app/Contents/Info.plist
-rm tmp.plist
+
 
