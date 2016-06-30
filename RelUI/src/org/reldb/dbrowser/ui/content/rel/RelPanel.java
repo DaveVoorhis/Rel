@@ -232,33 +232,32 @@ public class RelPanel extends Composite {
 		fireDbTreeSelectionEvent(new DbTreeItem());
 	}
 	
+	// Invoked to force refresh of this panel. Required by GTK (apparently...) due to
+	// failure to display widgets correctly without it.
+	private void nudge() {
+		this.setSize(getSize().x + 1, getSize().y);
+		this.setSize(getSize().x - 1, getSize().y);		
+	}
+	
 	public void playItem() {
 		TreeItem treeSelection = getTreeSelection();
 		getSelection().play(treeSelection.getImage());
-		// force redisplay for GTK; otherwise some controls in the tab don't display correctly
-		this.setSize(getSize().x + 1, getSize().y);
-		this.setSize(getSize().x - 1, getSize().y);
+		nudge();
 	}
 
 	public void createItem() {
 		getSelection().create(IconLoader.loadIcon("item_add"));
-		// force redisplay for GTK
-		this.setSize(getSize().x + 1, getSize().y);
-		this.setSize(getSize().x - 1, getSize().y);
+		nudge();
 	}
 
 	public void dropItem() {
 		getSelection().drop(IconLoader.loadIcon("item_delete"));
-		// force redisplay for GTK
-		this.setSize(getSize().x + 1, getSize().y);
-		this.setSize(getSize().x - 1, getSize().y);
+		nudge();
 	}
 
 	public void designItem() {
 		getSelection().design(IconLoader.loadIcon("item_design"));
-		// force redisplay for GTK
-		this.setSize(getSize().x + 1, getSize().y);
-		this.setSize(getSize().x - 1, getSize().y);
+		nudge();
 	}
 
 	public boolean getShowSystemObjects() {
