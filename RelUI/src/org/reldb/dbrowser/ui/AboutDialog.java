@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.SWT;
-import org.eclipse.wb.swt.ResourceManager;
 import org.reldb.dbrowser.ui.version.Version;
 import org.eclipse.wb.swt.SWTResourceManager;
 
@@ -89,13 +88,13 @@ public class AboutDialog extends Dialog {
 			}
 		});
 		shell.setDefaultButton(btnOk);
-    	
-		Image background = ResourceManager.getPluginImage("RelUI", "icons/RelAboutAndSplash.png");
+		
+		Image background = IconLoader.loadIconNormal("RelAboutAndSplash");
 		
 		shell.addPaintListener(new PaintListener() {
 	        public void paintControl(PaintEvent e) {
 	        	if (background != null)
-	        		e.gc.drawImage(background, 0, 0);
+	        		e.gc.drawImage(background, 0, 0, background.getImageData().width, background.getImageData().height, 0, 0, backgroundWidth, backgroundHeight);
 	        	e.gc.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 	        	e.gc.setFont(SWTResourceManager.getFont("Arial", 18, SWT.BOLD));
 	        	int width = e.gc.textExtent(Version.getVersion()).x;
