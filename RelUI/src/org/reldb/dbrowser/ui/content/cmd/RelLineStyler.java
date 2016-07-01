@@ -440,7 +440,7 @@ public class RelLineStyler implements LineStyleListener {
 							c = read();
 						} while (Character.isJavaIdentifierPart((char) c));
 						unread(c);
-						Integer i = (Integer) fgKeys.get(fBuffer.toString());
+						Integer i = (Integer) fgKeys.get(fBuffer.toString().toUpperCase());
 						if (i != null)
 							return i.intValue();
 						return WORD;
