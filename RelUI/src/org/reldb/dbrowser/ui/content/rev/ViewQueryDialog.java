@@ -5,6 +5,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.reldb.dbrowser.ui.content.cmd.RelLineStyler;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -38,6 +39,7 @@ public class ViewQueryDialog extends Dialog {
 		container.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		StyledText styledText = new StyledText(container, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP);
+		styledText.addLineStyleListener(new RelLineStyler());
 		styledText.setBottomMargin(5);
 		styledText.setTopMargin(5);
 		styledText.setRightMargin(5);

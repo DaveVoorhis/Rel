@@ -327,7 +327,7 @@ public class RelPanel extends Composite {
 					new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this));
 			// buildSubtree("Forms", null, null, null, null, null, null);
 			// buildSubtree("Reports", null, null, null, null, null, null);
-			// buildSubtree("Scripts", null, null, null, null, null, null);
+			buildSubtree("Scripts", null, null, null, null, null, null, null);
 		}
 		
 		fireDbTreeNoSelectionEvent();

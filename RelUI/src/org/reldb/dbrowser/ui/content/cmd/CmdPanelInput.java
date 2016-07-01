@@ -81,6 +81,7 @@ public class CmdPanelInput extends Composite {
 		toolBar.setLayoutData(fd_toolBar);
 		
 		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP);
+		inputText.addLineStyleListener(new RelLineStyler());
 		FormData fd_inputText = new FormData();
 		fd_inputText.right = new FormAttachment(toolBar, 0, SWT.RIGHT);
 		fd_inputText.top = new FormAttachment(toolBar);
