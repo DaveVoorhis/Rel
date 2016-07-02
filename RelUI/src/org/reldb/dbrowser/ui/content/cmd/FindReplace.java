@@ -28,8 +28,7 @@ import org.eclipse.swt.widgets.Button;
 
 public class FindReplace extends Dialog {
 
-	protected Object result;
-	protected Shell shlSearchreplace;
+	private Shell shell;
 	private Label lblFind;
 	private Text textFind;
 	private Label lblReplace;
@@ -92,42 +91,42 @@ public class FindReplace extends Dialog {
 	 */
 	public Object open() {
 		createContents();
-		shlSearchreplace.open();
-		shlSearchreplace.layout();
+		shell.open();
+		shell.layout();
 		Display display = getParent().getDisplay();
-		while (!shlSearchreplace.isDisposed()) {
+		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
 		}
-		return result;
+		return null;
 	}
 
 	/**
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
-		shlSearchreplace = new Shell(getParent(), getStyle());
-		shlSearchreplace.setText("Find/Replace");
-		shlSearchreplace.setLayout(new GridLayout(3, false));
+		shell = new Shell(getParent(), getStyle());
+		shell.setText("Find/Replace");
+		shell.setLayout(new GridLayout(3, false));
 	
-		new Label(shlSearchreplace, SWT.NONE);		
-		lblFind = new Label(shlSearchreplace, SWT.NONE);
+		new Label(shell, SWT.NONE);		
+		lblFind = new Label(shell, SWT.NONE);
 		lblFind.setAlignment(SWT.RIGHT);
 		lblFind.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblFind.setText("Find:");
-		textFind = new Text(shlSearchreplace, SWT.BORDER);
+		textFind = new Text(shell, SWT.BORDER);
 		textFind.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		new Label(shlSearchreplace, SWT.NONE);
-		lblReplace = new Label(shlSearchreplace, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		lblReplace = new Label(shell, SWT.NONE);
 		lblReplace.setAlignment(SWT.RIGHT);
 		lblReplace.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblReplace.setText("Replace with:");
-		textReplace = new Text(shlSearchreplace, SWT.BORDER);
+		textReplace = new Text(shell, SWT.BORDER);
 		textReplace.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		compositeDirectionScope = new Composite(shlSearchreplace, SWT.NONE);
+		compositeDirectionScope = new Composite(shell, SWT.NONE);
 		compositeDirectionScope.setLayout(new FillLayout(SWT.HORIZONTAL));
 		compositeDirectionScope.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
@@ -155,7 +154,7 @@ public class FindReplace extends Dialog {
 		btnRadioSelected.setBounds(10, 34, 119, 18);
 		btnRadioSelected.setText("Selected lines");
 		
-		compositeOptions = new Composite(shlSearchreplace, SWT.NONE);
+		compositeOptions = new Composite(shell, SWT.NONE);
 		compositeOptions.setLayout(new FillLayout(SWT.HORIZONTAL));
 		compositeOptions.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
@@ -182,14 +181,14 @@ public class FindReplace extends Dialog {
 		btnCheckIncremental.setBounds(144, 34, 138, 18);
 		btnCheckIncremental.setText("Incremental");
 		
-		compositeVerticalBuffer = new Composite(shlSearchreplace, SWT.NONE);
+		compositeVerticalBuffer = new Composite(shell, SWT.NONE);
 		GridData gd_compositeVerticalBuffer = new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1);
 		gd_compositeVerticalBuffer.heightHint = 3;
 		compositeVerticalBuffer.setLayoutData(gd_compositeVerticalBuffer);
 		
-		new Label(shlSearchreplace, SWT.NONE);
-		new Label(shlSearchreplace, SWT.NONE);
-		compositeButtons = new Composite(shlSearchreplace, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		new Label(shell, SWT.NONE);
+		compositeButtons = new Composite(shell, SWT.NONE);
 		compositeButtons.setLayout(new GridLayout(2, true));
 		compositeButtons.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, true, 1, 1));
 		
@@ -230,7 +229,7 @@ public class FindReplace extends Dialog {
 		btnReplaceAll.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnReplaceAll.setText("Replace All");
 		
-		Composite compositeStatusAndClose = new Composite(shlSearchreplace, SWT.NONE);
+		Composite compositeStatusAndClose = new Composite(shell, SWT.NONE);
 		compositeStatusAndClose.setLayout(new GridLayout(2, false));
 		compositeStatusAndClose.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, true, true, 3, 1));
 		
@@ -248,11 +247,11 @@ public class FindReplace extends Dialog {
 				text.removeLineBackgroundListener(lineBackgroundListener);
 				text.removeLineStyleListener(lineStyleListener);
 				text.redraw();
-				shlSearchreplace.dispose();
+				shell.dispose();
 			}
 		});
 		
-		shlSearchreplace.pack();
+		shell.pack();
 	}
 
 	/*
