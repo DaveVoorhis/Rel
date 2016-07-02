@@ -172,7 +172,7 @@ public class CmdPanelInput extends Composite {
 			tlitmEditSearchReplace.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					new SearchReplace(getShell(), inputText).open();
+					new FindReplace(getShell(), inputText).open();
 				}
 			});
 			

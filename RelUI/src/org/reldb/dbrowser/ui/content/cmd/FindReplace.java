@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 
-public class SearchReplace extends Dialog {
+public class FindReplace extends Dialog {
 
 	protected Object result;
 	protected Shell shlSearchreplace;
@@ -77,7 +77,7 @@ public class SearchReplace extends Dialog {
 	 * @param parent
 	 * @param style
 	 */
-	public SearchReplace(Shell parent, StyledText text) {
+	public FindReplace(Shell parent, StyledText text) {
 		super(parent, SWT.DIALOG_TRIM | SWT.RESIZE);
 		this.text = text;
 		setText("Find/Replace");
