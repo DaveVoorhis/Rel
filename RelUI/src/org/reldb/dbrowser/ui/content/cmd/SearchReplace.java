@@ -6,14 +6,19 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
+
+import java.util.Vector;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.LineBackgroundEvent;
 import org.eclipse.swt.custom.LineBackgroundListener;
 import org.eclipse.swt.custom.LineStyleEvent;
 import org.eclipse.swt.custom.LineStyleListener;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -56,6 +61,14 @@ public class SearchReplace extends Dialog {
 	private LineStyleListener lineStyleListener = new LineStyleListener() {
 		@Override
 		public void lineGetStyle(LineStyleEvent event) {
+			int line = text.getLineAtOffset(event.lineOffset);
+			if (line == 2) {
+				Vector<StyleRange> styles = new Vector<StyleRange>();
+				Color color = SWTResourceManager.getColor(180, 180, 255);
+				StyleRange style = new StyleRange(event.lineOffset + 10, 5, null, color);
+				styles.add(style);
+				event.styles = styles.toArray(new StyleRange[0]);
+			}
 		}
 	};
 	
@@ -238,15 +251,16 @@ public class SearchReplace extends Dialog {
 				shlSearchreplace.dispose();
 			}
 		});
-		shlSearchreplace.setDefaultButton(btnClose);
 		
 		shlSearchreplace.pack();
 	}
-	
+
+	/*
 	public static void main(String args[]) {
 		Display display = new Display();
 		Shell shell = new Shell(display);
 		(new SearchReplace(shell, new StyledText(shell, SWT.NONE))).open();
 	}
+	*/
 
 }
