@@ -46,6 +46,7 @@ public class CmdPanelInput extends Composite {
 	private ToolItem tlitmSaveHistory;
 	private ToolItem tlitmCopyToOutput;
 	private ToolItem tlitmWrap;
+	private ToolItem tlitmEditSearchReplace;
 	
 	private Vector<String> entryHistory = new Vector<String>();
 	private int currentHistoryItem = 0;
@@ -163,6 +164,15 @@ public class CmdPanelInput extends Composite {
 				public void widgetSelected(SelectionEvent e) {
 					inputText.setText("");
 					inputText.setFocus();
+				}
+			});
+			
+			tlitmEditSearchReplace = new ToolItem(toolBar, SWT.NONE);
+			tlitmEditSearchReplace.setToolTipText("Find/Replace");
+			tlitmEditSearchReplace.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					new SearchReplace(getShell(), inputText).open();
 				}
 			});
 			
@@ -321,6 +331,7 @@ public class CmdPanelInput extends Composite {
 		tlitmSaveHistory.setImage(IconLoader.loadIcon("saveHistoryIcon"));
 		tlitmCopyToOutput.setImage(IconLoader.loadIcon("copyToOutputIcon"));
 		tlitmWrap.setImage(IconLoader.loadIcon("wrapIcon"));
+		tlitmEditSearchReplace.setImage(IconLoader.loadIcon("edit_find_replace"));
 	}
 
 	private void setupFont() {

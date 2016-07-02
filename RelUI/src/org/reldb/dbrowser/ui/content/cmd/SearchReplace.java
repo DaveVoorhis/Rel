@@ -5,7 +5,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.LineBackgroundEvent;
+import org.eclipse.swt.custom.LineBackgroundListener;
+import org.eclipse.swt.custom.LineStyleEvent;
+import org.eclipse.swt.custom.LineStyleListener;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Label;
@@ -14,7 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
-import swing2swt.layout.BoxLayout;
 
 public class SearchReplace extends Dialog {
 
@@ -36,15 +41,36 @@ public class SearchReplace extends Dialog {
 	private Button btnReplaceAll;
 	private Composite compositeVerticalBuffer;
 	private Label lblStatus;
+	
+	private StyledText text;
 
+	private LineBackgroundListener lineBackgroundListener = new LineBackgroundListener() {
+		@Override
+		public void lineGetBackground(LineBackgroundEvent event) {
+			int line = text.getLineAtOffset(event.lineOffset);
+			if (line == 2)
+				event.lineBackground = SWTResourceManager.getColor(230, 230, 255);
+		}			
+	};
+	
+	private LineStyleListener lineStyleListener = new LineStyleListener() {
+		@Override
+		public void lineGetStyle(LineStyleEvent event) {
+		}
+	};
+	
 	/**
 	 * Create the dialog.
 	 * @param parent
 	 * @param style
 	 */
-	public SearchReplace(Shell parent) {
+	public SearchReplace(Shell parent, StyledText text) {
 		super(parent, SWT.DIALOG_TRIM | SWT.RESIZE);
+		this.text = text;
 		setText("Find/Replace");
+		text.addLineBackgroundListener(lineBackgroundListener);
+		text.addLineStyleListener(lineStyleListener);
+		text.redraw();
 	}
 
 	/**
@@ -155,35 +181,60 @@ public class SearchReplace extends Dialog {
 		compositeButtons.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, true, 1, 1));
 		
 		btnFind = new Button(compositeButtons, SWT.NONE);
+		btnFind.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+			}
+		});
 		btnFind.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnFind.setText("Find");
 		
 		btnReplaceFind = new Button(compositeButtons, SWT.NONE);
+		btnReplaceFind.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
 		btnReplaceFind.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnReplaceFind.setText("Replace/Find");
 		
 		btnReplace = new Button(compositeButtons, SWT.NONE);
+		btnReplace.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
 		btnReplace.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnReplace.setText("Replace");
 		
 		btnReplaceAll = new Button(compositeButtons, SWT.NONE);
+		btnReplaceAll.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
 		btnReplaceAll.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnReplaceAll.setText("Replace All");
 		
 		Composite compositeStatusAndClose = new Composite(shlSearchreplace, SWT.NONE);
-		compositeStatusAndClose.setLayout(new BoxLayout(BoxLayout.X_AXIS));
+		compositeStatusAndClose.setLayout(new GridLayout(2, false));
 		compositeStatusAndClose.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, true, true, 3, 1));
 		
 		lblStatus = new Label(compositeStatusAndClose, SWT.NONE);
 		lblStatus.setText("");
 		
 		Button btnClose = new Button(compositeStatusAndClose, SWT.RIGHT);
+		btnClose.setAlignment(SWT.CENTER);
 		btnClose.setText("Close");
 		btnClose.setFocus();
 		btnClose.setSize(btnClose.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		btnClose.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				text.removeLineBackgroundListener(lineBackgroundListener);
+				text.removeLineStyleListener(lineStyleListener);
+				text.redraw();
 				shlSearchreplace.dispose();
 			}
 		});
@@ -195,7 +246,7 @@ public class SearchReplace extends Dialog {
 	public static void main(String args[]) {
 		Display display = new Display();
 		Shell shell = new Shell(display);
-		(new SearchReplace(shell)).open();
+		(new SearchReplace(shell, new StyledText(shell, SWT.NONE))).open();
 	}
 
 }
