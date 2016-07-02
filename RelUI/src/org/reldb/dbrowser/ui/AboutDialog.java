@@ -76,18 +76,18 @@ public class AboutDialog extends Dialog {
 		shell.setLocation(getParent().getLocation().x + (getParent().getSize().x - backgroundWidth) / 2, 
 						  getParent().getLocation().y + (getParent().getSize().y - backgroundHeight) / 2);
 		
-		Button btnOk = new Button(shell, SWT.PUSH);
-		btnOk.setText("Ok");
-		btnOk.setFocus();
-		btnOk.setSize(btnOk.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		btnOk.setLocation(rightPos - btnOk.getSize().x, backgroundHeight - btnOk.getSize().y - 10);
-		btnOk.addSelectionListener(new SelectionAdapter() {
+		Button btnClose = new Button(shell, SWT.PUSH);
+		btnClose.setText("Close");
+		btnClose.setFocus();
+		btnClose.setSize(btnClose.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		btnClose.setLocation(rightPos - btnClose.getSize().x, backgroundHeight - btnClose.getSize().y - 10);
+		btnClose.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				shell.dispose();
 			}
 		});
-		shell.setDefaultButton(btnOk);
+		shell.setDefaultButton(btnClose);
 		
 		Image background = IconLoader.loadIconNormal("RelAboutAndSplash");
 		
