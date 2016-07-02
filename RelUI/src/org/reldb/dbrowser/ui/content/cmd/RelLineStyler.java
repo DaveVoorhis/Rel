@@ -100,9 +100,11 @@ public class RelLineStyler implements LineStyleListener {
 				if ((!color.equals(defaultFgColor)) || (token == KEYWORD)) {
 					StyleRange style = new StyleRange(scanner.getStartOffset() + event.lineOffset, scanner.getLength(),
 							color, null);
+					/*
 					if (token == KEYWORD) {
 						style.fontStyle = SWT.BOLD;
 					}
+					*/
 					if (styles.isEmpty()) {
 						styles.addElement(style);
 					} else {
