@@ -7,12 +7,18 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import java.util.NavigableSet;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeMap;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ExtendedModifyEvent;
+import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.LineBackgroundEvent;
 import org.eclipse.swt.custom.LineBackgroundListener;
 import org.eclipse.swt.custom.LineStyleEvent;
@@ -72,40 +78,85 @@ public class FindReplace extends Dialog {
 	
 	private StyledText text;
 	
-	private int currentLine = -1;
+	private int currentHitLine = 0;
+	
+	private TreeMap<Integer, Vector<StyleRange>> searchResults = new TreeMap<Integer, Vector<StyleRange>>();
 
 	private LineBackgroundListener lineBackgroundListener = new LineBackgroundListener() {
 		@Override
 		public void lineGetBackground(LineBackgroundEvent event) {
 			int line = text.getLineAtOffset(event.lineOffset);
-			if (line == currentLine)
-				event.lineBackground = SWTResourceManager.getColor(230, 230, 255);
-		}	
+			if (line == currentHitLine)
+				event.lineBackground = SWTResourceManager.getColor(230, 250, 255);
+		}
 	};
+	
+	private final static Color hitColor = SWTResourceManager.getColor(200, 200, 255);
 	
 	private LineStyleListener lineStyleListener = new LineStyleListener() {
 		@Override
 		public void lineGetStyle(LineStyleEvent event) {
-			if (textFind == null || pattern == null)
+			int line = text.getLineAtOffset(event.lineOffset);
+			Vector<StyleRange> styles = searchResults.get(line);
+			if (styles == null)
 				return;
-			Vector<StyleRange> styles = new Vector<StyleRange>();
-			Color color = SWTResourceManager.getColor(180, 180, 255);
-			String haystack = event.lineText;
-			int offset = 0;
-			Matcher matcher = pattern.matcher(haystack);
-			while (matcher.find(offset)) {
-				int hitStart = matcher.start();
-				int hitEnd = matcher.end();
-				if (hitStart == hitEnd)
-					break;
-				StyleRange style = new StyleRange(event.lineOffset + hitStart, hitEnd - hitStart, null, color);
-				styles.add(style);
-				offset = hitEnd;
-			}
 			event.styles = styles.toArray(new StyleRange[0]);
 		}
 	};
-
+	
+	private void buildSearchResults() {
+		setStatus("");
+		if (textFind == null || pattern == null)
+			return;
+		currentHitLine = -1;
+		String haystack = text.getText();
+		searchResults.clear();
+		long hitCount = 0;
+		Matcher matcher = pattern.matcher(haystack);
+		while (matcher.find()) {
+			int hitStart = matcher.start();
+			int hitEnd = matcher.end();
+			if (hitStart == hitEnd)
+				break;
+			hitCount++;
+			int line = text.getLineAtOffset(hitStart);
+			if (currentHitLine == -1)
+				currentHitLine = line;
+			Vector<StyleRange> styles = searchResults.get(line);
+			if (styles == null) {
+				styles = new Vector<StyleRange>();
+				searchResults.put(line, styles);
+			}
+			styles.add(new StyleRange(hitStart, hitEnd - hitStart, null, hitColor));
+		}
+		text.redraw();
+		if (hitCount == 0)
+			setStatus("Not found.");
+		else
+			setStatus("Found " + hitCount + " matches.");
+	}
+	
+	private Timer textModifyTimer = new Timer();
+	
+	private ExtendedModifyListener textModifyListener = new ExtendedModifyListener() {
+		@Override
+		public void modifyText(ExtendedModifyEvent event) {
+			textModifyTimer.cancel();
+			textModifyTimer = new Timer();
+			textModifyTimer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					textModifyTimer.cancel();
+					Display.getDefault().syncExec(new Runnable() {
+					    public void run() {
+							buildSearchResults();
+						}
+					});
+				}
+			}, 1000);
+		}
+	};
+	
 	private void setStatus(String error) {
 		lblStatus.setText(error);
 		compositeStatusAndClose.layout();
@@ -135,11 +186,37 @@ public class FindReplace extends Dialog {
 	private void doFind() {
 		setStatus("");
 		compilePattern();
-		text.redraw();
+		buildSearchResults();
 	}
 	
 	private void doFindNext() {
-		doFind();
+		if (pattern == null)
+			doFind();
+		setStatus("");
+		NavigableSet<Integer> keySet = searchResults.navigableKeySet();
+		if (btnRadioForward.getSelection()) {
+			Integer line = keySet.higher(currentHitLine);
+			if (line == null)
+				if (btnCheckWrapsearch.getSelection()) {
+					currentHitLine = keySet.first();
+					setStatus("Search re-started from the top.");
+				} else
+					setStatus("Reached the end.");
+			else
+				currentHitLine = line;
+		} else {
+			Integer line = keySet.lower(currentHitLine);
+			if (line == null)
+				if (btnCheckWrapsearch.getSelection()) {
+					currentHitLine = keySet.last();
+					setStatus("Search re-started from the bottom.");
+				} else
+					setStatus("Reached the beginning.");
+			else
+				currentHitLine = line;
+		}
+		text.setTopIndex(currentHitLine);
+		text.setCaretOffset(text.getOffsetAtLine(currentHitLine));
 	}
 	
 	/**
@@ -153,6 +230,7 @@ public class FindReplace extends Dialog {
 		setText("Find/Replace");
 		text.addLineBackgroundListener(lineBackgroundListener);
 		text.addLineStyleListener(lineStyleListener);
+		text.addExtendedModifyListener(textModifyListener);
 		text.redraw();
 	}
 
@@ -173,6 +251,13 @@ public class FindReplace extends Dialog {
 		return null;
 	}
 
+	private void compileSearchAndFind() {
+		compilePattern();
+		doFind();		
+	}
+	
+	private Timer searchModifyTimer = new Timer();
+	
 	/**
 	 * Create contents of the dialog.
 	 */
@@ -195,8 +280,19 @@ public class FindReplace extends Dialog {
 		});
 		textFind.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				compilePattern();
-				doFind();
+				searchModifyTimer.cancel();
+				searchModifyTimer = new Timer();
+				searchModifyTimer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						searchModifyTimer.cancel();
+						Display.getDefault().syncExec(new Runnable() {
+						    public void run() {
+								compileSearchAndFind();
+							}
+						});
+					}
+				}, 1000);
 			}
 		});
 		textFind.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -355,7 +451,6 @@ public class FindReplace extends Dialog {
 		compositeStatusAndClose.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, true, 3, 1));
 		
 		lblStatus = new Label(compositeStatusAndClose, SWT.WRAP);
-		lblStatus.setText("blah");
 		lblStatus.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
 		
 		Button btnClose = new Button(compositeStatusAndClose, SWT.RIGHT);
@@ -369,6 +464,7 @@ public class FindReplace extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				text.removeLineBackgroundListener(lineBackgroundListener);
 				text.removeLineStyleListener(lineStyleListener);
+				text.removeExtendedModifyListener(textModifyListener);
 				text.redraw();
 				shell.dispose();
 			}
