@@ -88,9 +88,6 @@ public class FindReplace extends Dialog {
 		public void lineGetStyle(LineStyleEvent event) {
 			if (textFind == null || pattern == null)
 				return;
-			String needle = textFind.getText().trim();
-			if (needle.length() == 0)
-				return;
 			Vector<StyleRange> styles = new Vector<StyleRange>();
 			Color color = SWTResourceManager.getColor(180, 180, 255);
 			String haystack = event.lineText;
@@ -115,7 +112,10 @@ public class FindReplace extends Dialog {
 	}
 
 	private void compilePattern() {
+		pattern = null;
 		String needle = textFind.getText().trim();
+		if (needle.length() == 0)
+			return;
 		String regexp;
 		if (btnCheckWholeWord.getSelection())
 			regexp = "\\b(" + Pattern.quote(needle) + ")\\b";
@@ -126,7 +126,6 @@ public class FindReplace extends Dialog {
 		try {
 			pattern = Pattern.compile(regexp, (!btnCheckCaseSensitive.getSelection()) ? Pattern.CASE_INSENSITIVE : 0);
 		} catch (PatternSyntaxException pse) {
-			pattern = null;
 			String error = "Regex error: " + pse.getMessage();
 			setStatus(error);
 			return;
