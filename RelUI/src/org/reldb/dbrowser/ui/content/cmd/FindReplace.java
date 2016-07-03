@@ -81,17 +81,18 @@ public class FindReplace extends Dialog {
 	private int currentHitLine = 0;
 	
 	private TreeMap<Integer, Vector<StyleRange>> searchResults = new TreeMap<Integer, Vector<StyleRange>>();
+	
+	private final static Color hitColor = SWTResourceManager.getColor(200, 200, 255);
+	private final static Color hitLineBackgroundColor = SWTResourceManager.getColor(230, 250, 255);
 
 	private LineBackgroundListener lineBackgroundListener = new LineBackgroundListener() {
 		@Override
 		public void lineGetBackground(LineBackgroundEvent event) {
 			int line = text.getLineAtOffset(event.lineOffset);
 			if (line == currentHitLine)
-				event.lineBackground = SWTResourceManager.getColor(230, 250, 255);
+				event.lineBackground = hitLineBackgroundColor;
 		}
 	};
-	
-	private final static Color hitColor = SWTResourceManager.getColor(200, 200, 255);
 	
 	private LineStyleListener lineStyleListener = new LineStyleListener() {
 		@Override
