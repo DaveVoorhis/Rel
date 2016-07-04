@@ -100,8 +100,9 @@ public class FindReplace extends Dialog {
 			int line = text.getLineAtOffset(event.lineOffset);
 			Vector<StyleRange> styles = searchResults.get(line);
 			if (styles == null)
-				return;
-			event.styles = styles.toArray(new StyleRange[0]);
+				event.styles = null;
+			else
+				event.styles = styles.toArray(new StyleRange[0]);
 		}
 	};
 	
@@ -133,8 +134,10 @@ public class FindReplace extends Dialog {
 		text.redraw();
 		if (hitCount == 0)
 			setStatus("Not found.");
+		else if (hitCount == 1)
+			setStatus(hitCount + " match.");
 		else
-			setStatus("Found " + hitCount + " matches.");
+			setStatus(hitCount + " matches.");
 	}
 	
 	private Timer textModifyTimer = new Timer();
@@ -142,6 +145,7 @@ public class FindReplace extends Dialog {
 	private ExtendedModifyListener textModifyListener = new ExtendedModifyListener() {
 		@Override
 		public void modifyText(ExtendedModifyEvent event) {
+			clearSearchResults();
 			textModifyTimer.cancel();
 			textModifyTimer = new Timer();
 			textModifyTimer.schedule(new TimerTask() {
@@ -183,6 +187,17 @@ public class FindReplace extends Dialog {
 			return;
 		}
 	}
+
+	private void clearSearchResults() {
+		searchResults.clear();
+		setStatus("");
+		text.redraw();
+	}
+	
+	private void clearAll() {
+		pattern = null;
+		clearSearchResults();
+	}
 	
 	private void doFind() {
 		setStatus("");
@@ -191,9 +206,9 @@ public class FindReplace extends Dialog {
 	}
 	
 	private void doFindNext() {
+		setStatus("");
 		if (pattern == null)
 			doFind();
-		setStatus("");
 		NavigableSet<Integer> keySet = searchResults.navigableKeySet();
 		if (btnRadioForward.getSelection()) {
 			Integer line = keySet.higher(currentHitLine);
@@ -281,6 +296,7 @@ public class FindReplace extends Dialog {
 		});
 		textFind.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
+				clearAll();
 				searchModifyTimer.cancel();
 				searchModifyTimer = new Timer();
 				searchModifyTimer.schedule(new TimerTask() {
