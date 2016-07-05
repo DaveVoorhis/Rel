@@ -94,22 +94,57 @@ public class FindReplace extends Dialog {
 		}
 	};
 	
+	private StyleRange[] mergeStyles(Vector<StyleRange> newStyles, StyleRange[] oldStyles, int length, int offset) {
+		if (newStyles == null)
+			return oldStyles;
+		if (oldStyles == null)
+			return newStyles.toArray(new StyleRange[0]);			
+		StyleRange[] styleBuffer = new StyleRange[length];
+		for (StyleRange styleRange: oldStyles)
+			for (int i = styleRange.start; i <= styleRange.start + styleRange.length - 1; i++)
+				styleBuffer[i - offset] = styleRange;
+		for (StyleRange styleRange: newStyles)
+			for (int i = styleRange.start; i <= styleRange.start + styleRange.length - 1; i++)
+				styleBuffer[i - offset] = styleRange;		
+		Vector<StyleRange> styles = new Vector<StyleRange>();
+		int characterPosition = 0;
+		StyleRange oldStyleRange = null;
+		StyleRange currentStyleRange = null;
+		for (StyleRange styleRange: styleBuffer) {
+			if (styleRange != oldStyleRange) {
+				if (currentStyleRange != null) {
+					currentStyleRange.length = characterPosition + offset - currentStyleRange.start;
+					styles.add(currentStyleRange);
+					currentStyleRange = null;
+				}
+				if (styleRange != null) {
+					currentStyleRange = new StyleRange(styleBuffer[characterPosition]);
+					currentStyleRange.start = characterPosition + offset;
+				}
+				oldStyleRange = styleRange;
+			}
+			characterPosition++;
+		}
+		if (currentStyleRange != null) {
+			currentStyleRange.length = characterPosition + offset - currentStyleRange.start;
+			styles.add(currentStyleRange);
+		}		
+		return styles.toArray(new StyleRange[0]);
+	}
+	
 	private LineStyleListener lineStyleListener = new LineStyleListener() {
 		@Override
 		public void lineGetStyle(LineStyleEvent event) {
 			int line = text.getLineAtOffset(event.lineOffset);
 			Vector<StyleRange> styles = searchResults.get(line);
-			if (styles == null)
-				event.styles = null;
-			else
-				event.styles = styles.toArray(new StyleRange[0]);
+			event.styles = mergeStyles(styles, event.styles, event.lineText.length(), event.lineOffset);
 		}
 	};
 	
 	private void buildSearchResults() {
-		setStatus("");
 		if (textFind == null || pattern == null)
 			return;
+		setStatus("");
 		currentHitLine = -1;
 		String haystack = text.getText();
 		searchResults.clear();
@@ -479,23 +514,16 @@ public class FindReplace extends Dialog {
 		btnClose.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				searchResults.clear();
+				text.redraw();
 				text.removeLineBackgroundListener(lineBackgroundListener);
 				text.removeLineStyleListener(lineStyleListener);
 				text.removeExtendedModifyListener(textModifyListener);
-				text.redraw();
 				shell.dispose();
 			}
 		});
 		
 		shell.pack();
 	}
-
-	/*
-	public static void main(String args[]) {
-		Display display = new Display();
-		Shell shell = new Shell(display);
-		(new SearchReplace(shell, new StyledText(shell, SWT.NONE))).open();
-	}
-	*/
 
 }
