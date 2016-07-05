@@ -35,6 +35,10 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 
 public class FindReplace extends Dialog {
@@ -78,11 +82,13 @@ public class FindReplace extends Dialog {
 	
 	private StyledText text;
 	
-	private int currentHitLine = 0;
+	private int currentHitLine = -1;
+	private int currentHitColumn = -1;
 	
 	private TreeMap<Integer, Vector<StyleRange>> searchResults = new TreeMap<Integer, Vector<StyleRange>>();
 	
 	private final static Color hitColor = SWTResourceManager.getColor(200, 200, 255);
+	private final static Color hitCurrentColor = SWTResourceManager.getColor(255, 200, 200);
 	private final static Color hitLineBackgroundColor = SWTResourceManager.getColor(230, 250, 255);
 
 	private LineBackgroundListener lineBackgroundListener = new LineBackgroundListener() {
@@ -94,7 +100,7 @@ public class FindReplace extends Dialog {
 		}
 	};
 	
-	private StyleRange[] mergeStyles(Vector<StyleRange> newStyles, StyleRange[] oldStyles, int length, int offset) {
+	private StyleRange[] mergeStyles(Vector<StyleRange> newStyles, StyleRange[] oldStyles, int length, int offset, int line) {
 		if (newStyles == null)
 			return oldStyles;
 		if (oldStyles == null)
@@ -103,9 +109,23 @@ public class FindReplace extends Dialog {
 		for (StyleRange styleRange: oldStyles)
 			for (int i = styleRange.start; i <= styleRange.start + styleRange.length - 1; i++)
 				styleBuffer[i - offset] = styleRange;
-		for (StyleRange styleRange: newStyles)
-			for (int i = styleRange.start; i <= styleRange.start + styleRange.length - 1; i++)
-				styleBuffer[i - offset] = styleRange;		
+		if (line == currentHitLine) {
+			int hitColumn = 0;
+			for (StyleRange styleRange: newStyles) {
+				if (hitColumn == currentHitColumn) {
+					System.out.println("Hit!");
+					styleRange = new StyleRange(styleRange);
+					styleRange.borderStyle = SWT.BORDER_SOLID;
+					styleRange.background = hitCurrentColor;
+				}
+				for (int i = styleRange.start; i <= styleRange.start + styleRange.length - 1; i++)
+					styleBuffer[i - offset] = styleRange;
+				hitColumn++;
+			}
+		} else
+			for (StyleRange styleRange: newStyles)
+				for (int i = styleRange.start; i <= styleRange.start + styleRange.length - 1; i++)
+					styleBuffer[i - offset] = styleRange;
 		Vector<StyleRange> styles = new Vector<StyleRange>();
 		int characterPosition = 0;
 		StyleRange oldStyleRange = null;
@@ -135,7 +155,7 @@ public class FindReplace extends Dialog {
 		public void lineGetStyle(LineStyleEvent event) {
 			int line = text.getLineAtOffset(event.lineOffset);
 			Vector<StyleRange> styles = searchResults.get(line);
-			event.styles = mergeStyles(styles, event.styles, event.lineText.length(), event.lineOffset);
+			event.styles = mergeStyles(styles, event.styles, event.lineText.length(), event.lineOffset, line);
 		}
 	};
 	
@@ -144,6 +164,7 @@ public class FindReplace extends Dialog {
 			return;
 		setStatus("");
 		currentHitLine = -1;
+		currentHitColumn = -1;
 		String haystack = text.getText();
 		searchResults.clear();
 		long hitCount = 0;
@@ -155,8 +176,10 @@ public class FindReplace extends Dialog {
 				break;
 			hitCount++;
 			int line = text.getLineAtOffset(hitStart);
-			if (currentHitLine == -1)
+			if (currentHitLine == -1) {
 				currentHitLine = line;
+				currentHitColumn = 0;
+			}
 			Vector<StyleRange> styles = searchResults.get(line);
 			if (styles == null) {
 				styles = new Vector<StyleRange>();
@@ -222,6 +245,8 @@ public class FindReplace extends Dialog {
 	}
 
 	private void clearSearchResults() {
+		currentHitLine = -1;
+		currentHitColumn = -1;
 		searchResults.clear();
 		setStatus("");
 		text.redraw();
@@ -232,42 +257,69 @@ public class FindReplace extends Dialog {
 		clearSearchResults();
 	}
 	
+	private void moveTextDisplayToCurrentHitLine() {
+		if (currentHitLine < 0)
+			return;
+		int linesVisible = text.getBounds().height / (text.getLinePixel(1) - text.getLinePixel(0));
+		text.setTopIndex(currentHitLine - linesVisible / 2);
+		Vector<StyleRange> styles = searchResults.get(currentHitLine);
+		int columnOffset = 0;
+		if (styles != null && currentHitColumn < styles.size())
+			columnOffset = styles.get(currentHitColumn).start;
+		text.setCaretOffset(text.getOffsetAtLine(currentHitLine) + columnOffset);
+	}
+	
 	private void doFind() {
+		int topIndex = text.getTopIndex();
+		text.setTopIndex(text.getLineCount() - 1);	// this twiddle of the TopIndex fixes a problem with LineStyleListener not being invoked
 		setStatus("");
 		compilePattern();
 		buildSearchResults();
+		text.setTopIndex(topIndex);
+		moveTextDisplayToCurrentHitLine();
 	}
 	
 	private void doFindNext() {
 		setStatus("");
-		if (pattern == null)
+		if (pattern == null) {
 			doFind();
+			return;
+		}
+		Vector<StyleRange> styles = searchResults.get(currentHitLine);
 		NavigableSet<Integer> keySet = searchResults.navigableKeySet();
 		if (btnRadioForward.getSelection()) {
-			Integer line = keySet.higher(currentHitLine);
-			if (line == null)
-				if (btnCheckWrapsearch.getSelection()) {
-					currentHitLine = keySet.first();
-					setStatus("Search re-started from the top.");
-				} else
-					setStatus("Reached the end.");
-			else
-				currentHitLine = line;
+			currentHitColumn++;
+			if (styles != null && currentHitColumn >= styles.size()) {
+				currentHitColumn = 0;
+				Integer line = keySet.higher(currentHitLine);
+				if (line == null)
+					if (btnCheckWrapsearch.getSelection()) {
+						currentHitLine = keySet.first();
+						setStatus("Search re-started from the top.");
+					} else
+						setStatus("Reached the end.");
+				else
+					currentHitLine = line;
+			}
 		} else {
-			Integer line = keySet.lower(currentHitLine);
-			if (line == null)
-				if (btnCheckWrapsearch.getSelection()) {
-					currentHitLine = keySet.last();
-					setStatus("Search re-started from the bottom.");
-				} else
-					setStatus("Reached the beginning.");
-			else
-				currentHitLine = line;
+			currentHitColumn--;
+			if (styles != null && currentHitColumn < 0) {
+				currentHitColumn = 0;
+				Integer line = keySet.lower(currentHitLine);
+				if (line == null)
+					if (btnCheckWrapsearch.getSelection()) {
+						currentHitLine = keySet.last();
+						setStatus("Search re-started from the bottom.");
+					} else
+						setStatus("Reached the beginning.");
+				else
+					currentHitLine = line;
+			}
 		}
-		text.setTopIndex(currentHitLine);
-		text.setCaretOffset(text.getOffsetAtLine(currentHitLine));
+		text.redraw();
+		moveTextDisplayToCurrentHitLine();
 	}
-	
+
 	/**
 	 * Create the dialog.
 	 * @param parent
@@ -321,15 +373,11 @@ public class FindReplace extends Dialog {
 		lblFind.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblFind.setText("Find:");
 		textFind = new Text(shell, SWT.BORDER);
-		textFind.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				doFindNext();
-			}
-		});
 		textFind.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				clearAll();
+				if (!btnCheckIncremental.getSelection())
+					return;
 				searchModifyTimer.cancel();
 				searchModifyTimer = new Timer();
 				searchModifyTimer.schedule(new TimerTask() {
@@ -343,6 +391,13 @@ public class FindReplace extends Dialog {
 						});
 					}
 				}, 1000);
+			}
+		});
+		textFind.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.keyCode == '\r')
+					doFindNext();
 			}
 		});
 		textFind.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -512,12 +567,21 @@ public class FindReplace extends Dialog {
 		btnClose.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				shell.dispose();
+			}
+		});
+		
+		shell.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				moveTextDisplayToCurrentHitLine();
 				searchResults.clear();
-				text.redraw();
 				text.removeLineBackgroundListener(lineBackgroundListener);
 				text.removeLineStyleListener(lineStyleListener);
 				text.removeExtendedModifyListener(textModifyListener);
-				shell.dispose();
+				text.setTopIndex(text.getLineCount() - 1);	// twiddle of the TopIndex fixes a problem with LineStyleListener not being invoked				
+				text.redraw();
+				text.setFocus();
 			}
 		});
 		
