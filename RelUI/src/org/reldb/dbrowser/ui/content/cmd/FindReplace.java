@@ -117,10 +117,8 @@ public class FindReplace extends Dialog {
 					styles.add(currentStyleRange);
 					currentStyleRange = null;
 				}
-				if (styleRange != null) {
-					currentStyleRange = new StyleRange(styleBuffer[characterPosition]);
-					currentStyleRange.start = characterPosition + offset;
-				}
+				currentStyleRange = (styleRange == null) ? new StyleRange() : new StyleRange(styleRange);
+				currentStyleRange.start = characterPosition + offset;
 				oldStyleRange = styleRange;
 			}
 			characterPosition++;
