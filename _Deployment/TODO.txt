@@ -1,6 +1,8 @@
 ** TO DO **
 
 Short term:
+	// TODO - implement selection-based find/replace
+	// TODO - test find/replace thoroughly
 	// TODO - be able to specify user-defined parameters in Rev queries
 	// TODO - be able to bring operator invocations into Rev queries
 	// TODO - be able to turn a Rev query into a relation-valued operator, or a view.
