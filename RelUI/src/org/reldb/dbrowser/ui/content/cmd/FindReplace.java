@@ -80,6 +80,8 @@ public class FindReplace extends Dialog {
 	
 	private Vector<Match> matches = null;	
 	private int lastFindIndex = -1;
+	private int lastReplacementStart = -1;
+	private int lastReplacementLength = -1;
 
 	/**
 	 * Create the dialog.
@@ -193,10 +195,10 @@ public class FindReplace extends Dialog {
 	}
 	
 	private void doFindInternal() {
+		if (text.getCaretOffset() >= text.getCharCount())
+			text.setCaretOffset(0);
 		if (matches == null)
 			buildSearchResults();
-		if (lastFindIndex < 0)
-			lastFindIndex = 0;
 		if (matches.size() == 0) {
 			setStatus("Not found.");
 			return;
@@ -210,16 +212,29 @@ public class FindReplace extends Dialog {
 				setStatus("Reached the end.");
 				return;
 			}
+		} else if (lastFindIndex < 0) {
+			lastFindIndex = 0;
+			for (Match match: matches) {
+				if (match.start >= text.getCaretOffset())
+					break;
+				lastFindIndex++;
+			}
 		}
 		Match match = matches.get(lastFindIndex);
 		text.setSelection(match.start, match.end);
+		text.setCaretOffset(match.end);
 		btnReplace.setEnabled(true);
 		btnReplaceFind.setEnabled(true);
 	}
 	
 	private void doFind() {
 		setStatus("");
-		doFindInternal();
+		if (lastReplacementStart > 0) {
+			text.setSelectionRange(lastReplacementStart, lastReplacementLength);
+			text.setCaretOffset(lastReplacementStart + lastReplacementLength);
+			lastReplacementStart = -1;
+		} else
+			doFindInternal();
 	}
 	
 	private void doFindNext() {
@@ -283,7 +298,9 @@ public class FindReplace extends Dialog {
 		int start = text.getSelectionRange().x;
 		int length = text.getSelectionRange().y;
 		text.replaceTextRange(start, length, changeBuffer.toString());
-		text.setSelectionRange(start, changeBuffer.toString().length());
+		lastReplacementStart = start;
+		lastReplacementLength = changeBuffer.toString().length();
+		lastFindIndex = -1;
 	}
 	
 	/**
