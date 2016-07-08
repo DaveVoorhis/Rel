@@ -1,35 +1,40 @@
 package org.reldb.dbrowser.ui.content.cmd;
 
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Text;
-
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.SWT;
+
 import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
+
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
+
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -72,6 +77,9 @@ public class FindReplace extends Dialog {
 	private Label lblStatus;
 	
 	private StyledText text;
+	
+	private Vector<Match> matches = null;	
+	private int lastFindIndex = -1;
 
 	/**
 	 * Create the dialog.
@@ -83,7 +91,7 @@ public class FindReplace extends Dialog {
 		this.text = text;
 		setText("Find/Replace");
 		text.addExtendedModifyListener(textModifyListener);
-		text.redraw();
+		text.addSelectionListener(textSelectionListener);
 	}
 
 	/**
@@ -108,7 +116,7 @@ public class FindReplace extends Dialog {
 	private ExtendedModifyListener textModifyListener = new ExtendedModifyListener() {
 		@Override
 		public void modifyText(ExtendedModifyEvent event) {
-			clearSearchResults();
+			clearAll();
 			textModifyTimer.cancel();
 			textModifyTimer = new Timer();
 			textModifyTimer.schedule(new TimerTask() {
@@ -117,11 +125,21 @@ public class FindReplace extends Dialog {
 					textModifyTimer.cancel();
 					Display.getDefault().syncExec(new Runnable() {
 					    public void run() {
+					    	clearAll();
 							doFind();
 						}
 					});
 				}
 			}, 250);
+		}
+	};
+	
+	private SelectionListener textSelectionListener = new SelectionAdapter() {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			boolean selected = e.y - e.x > 0;
+			btnReplace.setEnabled(selected);
+			btnReplaceFind.setEnabled(selected);			
 		}
 	};
 	
@@ -149,39 +167,79 @@ public class FindReplace extends Dialog {
 			return null;
 		}
 	}
-
-	private void clearSearchResults() {
-		setStatus("");
-		text.redraw();
-	}
 	
 	private void clearAll() {
-		clearSearchResults();
+		setStatus("");
+		matches = null;
+		text.setSelectionRange(0, 0);
 		btnReplace.setEnabled(false);
 		btnReplaceFind.setEnabled(false);
 	}
 	
-	private void doFind(int offset) {
-		setStatus("");
+	private class Match {
+		public int start;
+		public int end;
+		public Match(int start, int end) {this.start = start; this.end = end;}
+	}
+	
+	private void buildSearchResults() {
+		matches = new Vector<Match>();
 		Pattern pattern = compilePattern();
 		if (pattern == null)
 			return;
 		Matcher matcher = pattern.matcher(text.getText());
-		if (offset >= text.getCharCount())
-			offset = 0;
-		if (matcher.find(offset))
-			text.setSelection(matcher.start(), matcher.end());
-		else
-			setStatus("Not found.");
+		while (matcher.find())
+			matches.add(new Match(matcher.start(), matcher.end()));
 	}
-
+	
+	private void doFindInternal() {
+		if (matches == null)
+			buildSearchResults();
+		if (lastFindIndex < 0)
+			lastFindIndex = 0;
+		if (matches.size() == 0) {
+			setStatus("Not found.");
+			return;
+		}
+		if (lastFindIndex >= matches.size()) {
+			if (btnCheckWrapsearch.getSelection()) {
+				lastFindIndex = 0;
+				setStatus("Wrapped to the beginning.");
+			} else {
+				lastFindIndex = matches.size() - 1;
+				setStatus("Reached the end.");
+				return;
+			}
+		}
+		Match match = matches.get(lastFindIndex);
+		text.setSelection(match.start, match.end);
+		btnReplace.setEnabled(true);
+		btnReplaceFind.setEnabled(true);
+	}
+	
 	private void doFind() {
-		doFind(text.getCaretOffset());
+		setStatus("");
+		doFindInternal();
 	}
 	
 	private void doFindNext() {
 		setStatus("");
-		doFind(text.getSelectionRange().x + text.getSelectionRange().y);
+		if (btnRadioForward.getSelection())
+			lastFindIndex++;
+		else {
+			lastFindIndex--;
+			if (lastFindIndex < 0) {
+				if (btnCheckWrapsearch.getSelection()) {
+					lastFindIndex = matches.size() - 1;
+					setStatus("Wrapped to the end.");
+				} else {
+					lastFindIndex = 0;
+					setStatus("Reached the beginning.");
+					return;
+				}
+			}
+		}
+		doFindInternal();
 	}
 
 	protected void doReplaceAll() {
@@ -222,7 +280,10 @@ public class FindReplace extends Dialog {
 			setStatus("Not found.");
 			return;
 		}
-		text.replaceTextRange(text.getSelectionRange().x, text.getSelectionRange().y, changeBuffer.toString());
+		int start = text.getSelectionRange().x;
+		int length = text.getSelectionRange().y;
+		text.replaceTextRange(start, length, changeBuffer.toString());
+		text.setSelectionRange(start, changeBuffer.toString().length());
 	}
 	
 	/**
@@ -243,9 +304,9 @@ public class FindReplace extends Dialog {
 		
 		new Label(searchTextPanel, SWT.NONE);		
 		lblFind = new Label(searchTextPanel, SWT.NONE);
+		lblFind.setText("Find:");
 		lblFind.setAlignment(SWT.RIGHT);
 		lblFind.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblFind.setText("Find:");
 		textFind = new Text(searchTextPanel, SWT.BORDER);
 		textFind.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -255,6 +316,7 @@ public class FindReplace extends Dialog {
 				clearAll();
 				if (!btnCheckIncremental.getSelection())
 					return;
+				clearAll();
 				doFind();
 			}
 		});
@@ -269,9 +331,9 @@ public class FindReplace extends Dialog {
 		
 		new Label(searchTextPanel, SWT.NONE);
 		lblReplace = new Label(searchTextPanel, SWT.NONE);
+		lblReplace.setText("Replace with:");
 		lblReplace.setAlignment(SWT.RIGHT);
 		lblReplace.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblReplace.setText("Replace with:");
 		textReplace = new Text(searchTextPanel, SWT.BORDER);
 		textReplace.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 				
@@ -303,23 +365,25 @@ public class FindReplace extends Dialog {
 		grpScope.setLayout(new RowLayout(SWT.VERTICAL));
 		
 		btnRadioAll = new Button(grpScope, SWT.RADIO);
+		btnRadioAll.setText("All");
 		btnRadioAll.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				clearAll();
 				doFind();
 			}
 		});
 		btnRadioAll.setSelection(true);
-		btnRadioAll.setText("All");
 		
 		btnRadioSelected = new Button(grpScope, SWT.RADIO);
+		btnRadioSelected.setText("Selected lines");
 		btnRadioSelected.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				clearAll();
 				doFind();
 			}
 		});
-		btnRadioSelected.setText("Selected lines");
 		
 		compositeOptions = new Composite(contentPanel, SWT.NONE);
 		compositeOptions.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -330,45 +394,49 @@ public class FindReplace extends Dialog {
 		grpOptions.setLayout(new GridLayout(2, false));
 		
 		btnCheckCaseSensitive = new Button(grpOptions, SWT.CHECK);
+		btnCheckCaseSensitive.setText("Case sensitive");
 		btnCheckCaseSensitive.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				clearAll();
 				doFind();
 			}
 		});
-		btnCheckCaseSensitive.setText("Case sensitive");
 		
 		btnCheckWholeWord = new Button(grpOptions, SWT.CHECK);
+		btnCheckWholeWord.setText("Whole word");
 		btnCheckWholeWord.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				clearAll();
 				doFind();
 			}
 		});
-		btnCheckWholeWord.setText("Whole word");
 		
 		btnCheckRegexp = new Button(grpOptions, SWT.CHECK);
+		btnCheckRegexp.setText("Regular expressions");
 		btnCheckRegexp.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				clearAll();
 				doFind();
 				btnCheckIncremental.setEnabled(!btnCheckRegexp.getSelection());
 				btnCheckWholeWord.setEnabled(!btnCheckRegexp.getSelection());
 			}
 		});
-		btnCheckRegexp.setText("Regular expressions");
 		
 		btnCheckWrapsearch = new Button(grpOptions, SWT.CHECK);
 		btnCheckWrapsearch.setText("Wrap search");
 		
 		btnCheckIncremental = new Button(grpOptions, SWT.CHECK);
+		btnCheckIncremental.setText("Incremental");
 		btnCheckIncremental.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				clearAll();
 				doFind();
 			}
 		});
-		btnCheckIncremental.setText("Incremental");
 		new Label(grpOptions, SWT.NONE);
 		
 		compositeButtons = new Composite(contentPanel, SWT.NONE);
@@ -376,6 +444,7 @@ public class FindReplace extends Dialog {
 		compositeButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 3, 1));
 		
 		btnFind = new Button(compositeButtons, SWT.NONE);
+		btnFind.setText("Find");
 		btnFind.setEnabled(false);
 		btnFind.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -384,13 +453,13 @@ public class FindReplace extends Dialog {
 			}
 		});
 		btnFind.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		btnFind.setText("Find");
 		new Label(compositeButtons, SWT.NONE);
 		
 		Composite composite = new Composite(compositeButtons, SWT.NONE);
 		composite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		btnReplaceFind = new Button(compositeButtons, SWT.NONE);
+		btnReplaceFind.setText("Replace/Find");
 		btnReplaceFind.setEnabled(false);
 		btnReplaceFind.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -400,9 +469,9 @@ public class FindReplace extends Dialog {
 			}
 		});
 		btnReplaceFind.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		btnReplaceFind.setText("Replace/Find");
 		
 		btnReplace = new Button(compositeButtons, SWT.NONE);
+		btnReplace.setText("Replace");
 		btnReplace.setEnabled(false);
 		btnReplace.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -411,9 +480,9 @@ public class FindReplace extends Dialog {
 			}
 		});
 		btnReplace.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		btnReplace.setText("Replace");
 		
 		btnReplaceAll = new Button(compositeButtons, SWT.NONE);
+		btnReplaceAll.setText("Replace All");
 		btnReplaceAll.setEnabled(false);
 		btnReplaceAll.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -422,7 +491,6 @@ public class FindReplace extends Dialog {
 			}
 		});
 		btnReplaceAll.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		btnReplaceAll.setText("Replace All");
 		
 		compositeStatusAndClose = new Composite(shell, SWT.NONE);
 		fd_contentPanel.bottom = new FormAttachment(compositeStatusAndClose);
@@ -437,9 +505,9 @@ public class FindReplace extends Dialog {
 		lblStatus.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
 		
 		Button btnClose = new Button(compositeStatusAndClose, SWT.RIGHT);
+		btnClose.setText("Close");
 		btnClose.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		btnClose.setAlignment(SWT.CENTER);
-		btnClose.setText("Close");
 		btnClose.setFocus();
 		btnClose.setSize(btnClose.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		btnClose.addSelectionListener(new SelectionAdapter() {
@@ -453,6 +521,7 @@ public class FindReplace extends Dialog {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				text.removeExtendedModifyListener(textModifyListener);
+				text.removeSelectionListener(textSelectionListener);
 				text.setFocus();
 			}
 		});
