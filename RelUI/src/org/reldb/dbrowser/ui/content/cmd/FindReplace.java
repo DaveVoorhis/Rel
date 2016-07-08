@@ -28,6 +28,8 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -82,6 +84,8 @@ public class FindReplace extends Dialog {
 	private int lastFindIndex = -1;
 	private int lastReplacementStart = -1;
 	private int lastReplacementLength = -1;
+	
+	private int preservedCaretOffset;
 
 	/**
 	 * Create the dialog.
@@ -94,6 +98,7 @@ public class FindReplace extends Dialog {
 		setText("Find/Replace");
 		text.addExtendedModifyListener(textModifyListener);
 		text.addSelectionListener(textSelectionListener);
+		text.addFocusListener(textFocusListener);
 	}
 
 	/**
@@ -119,6 +124,7 @@ public class FindReplace extends Dialog {
 		@Override
 		public void modifyText(ExtendedModifyEvent event) {
 			clearAll();
+			lastFindIndex = -1;
 			textModifyTimer.cancel();
 			textModifyTimer = new Timer();
 			textModifyTimer.schedule(new TimerTask() {
@@ -144,6 +150,29 @@ public class FindReplace extends Dialog {
 			btnReplaceFind.setEnabled(selected);			
 		}
 	};
+	
+	private FocusListener textFocusListener = new FocusListener() {
+		@Override
+		public void focusLost(FocusEvent e) {
+			preservedCaretOffset = getCaretOffset();
+		}
+		@Override
+		public void focusGained(FocusEvent e) {
+			lastFindIndex = -1;
+		}
+	};
+	
+	private int getCaretOffset() {
+		if (text.isFocusControl())
+			return text.getCaretOffset();
+		else
+			return preservedCaretOffset;
+	}
+	
+	private void setCaretOffset(int position) {
+		text.setCaretOffset(position);
+		preservedCaretOffset = position;
+	}
 	
 	private void setStatus(String error) {
 		lblStatus.setText(error);
@@ -195,8 +224,8 @@ public class FindReplace extends Dialog {
 	}
 	
 	private void doFindInternal() {
-		if (text.getCaretOffset() >= text.getCharCount())
-			text.setCaretOffset(0);
+		if (getCaretOffset() >= text.getCharCount())
+			setCaretOffset(0);
 		if (matches == null)
 			buildSearchResults();
 		if (matches.size() == 0) {
@@ -213,16 +242,26 @@ public class FindReplace extends Dialog {
 				return;
 			}
 		} else if (lastFindIndex < 0) {
-			lastFindIndex = 0;
-			for (Match match: matches) {
-				if (match.start >= text.getCaretOffset())
-					break;
-				lastFindIndex++;
+			if (btnRadioForward.getSelection()) {
+				lastFindIndex = 0;
+				for (Match match: matches) {
+					if (match.start >= getCaretOffset())
+						break;
+					lastFindIndex++;
+				}
+			} else {
+				lastFindIndex = matches.size() - 1;
+				while (lastFindIndex > 0) {
+					Match match = matches.get(lastFindIndex);
+					if (match.start <= getCaretOffset())
+						break;
+					lastFindIndex--;
+				}
 			}
 		}
 		Match match = matches.get(lastFindIndex);
 		text.setSelection(match.start, match.end);
-		text.setCaretOffset(match.end);
+		setCaretOffset(match.end);
 		btnReplace.setEnabled(true);
 		btnReplaceFind.setEnabled(true);
 	}
@@ -231,7 +270,7 @@ public class FindReplace extends Dialog {
 		setStatus("");
 		if (lastReplacementStart > 0) {
 			text.setSelectionRange(lastReplacementStart, lastReplacementLength);
-			text.setCaretOffset(lastReplacementStart + lastReplacementLength);
+			setCaretOffset(lastReplacementStart + lastReplacementLength);
 			lastReplacementStart = -1;
 		} else
 			doFindInternal();
@@ -239,18 +278,20 @@ public class FindReplace extends Dialog {
 	
 	private void doFindNext() {
 		setStatus("");
-		if (btnRadioForward.getSelection())
-			lastFindIndex++;
-		else {
-			lastFindIndex--;
-			if (lastFindIndex < 0) {
-				if (btnCheckWrapsearch.getSelection()) {
-					lastFindIndex = matches.size() - 1;
-					setStatus("Wrapped to the end.");
-				} else {
-					lastFindIndex = 0;
-					setStatus("Reached the beginning.");
-					return;
+		if (lastFindIndex >= 0) {
+			if (btnRadioForward.getSelection())
+				lastFindIndex++;
+			else {
+				lastFindIndex--;
+				if (lastFindIndex < 0) {
+					if (btnCheckWrapsearch.getSelection()) {
+						lastFindIndex = matches.size() - 1;
+						setStatus("Wrapped to the end.");
+					} else {
+						lastFindIndex = 0;
+						setStatus("Reached the beginning.");
+						return;
+					}
 				}
 			}
 		}
@@ -300,6 +341,7 @@ public class FindReplace extends Dialog {
 		text.replaceTextRange(start, length, changeBuffer.toString());
 		lastReplacementStart = start;
 		lastReplacementLength = changeBuffer.toString().length();
+		setCaretOffset(lastReplacementStart + lastReplacementLength);
 		lastFindIndex = -1;
 	}
 	
@@ -333,7 +375,6 @@ public class FindReplace extends Dialog {
 				clearAll();
 				if (!btnCheckIncremental.getSelection())
 					return;
-				clearAll();
 				doFind();
 			}
 		});
@@ -539,6 +580,7 @@ public class FindReplace extends Dialog {
 			public void widgetDisposed(DisposeEvent e) {
 				text.removeExtendedModifyListener(textModifyListener);
 				text.removeSelectionListener(textSelectionListener);
+				text.removeFocusListener(textFocusListener);
 				text.setFocus();
 			}
 		});
