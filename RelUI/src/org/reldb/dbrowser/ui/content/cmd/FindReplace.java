@@ -11,12 +11,15 @@ import org.eclipse.swt.SWT;
 
 import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
+import org.eclipse.swt.custom.LineBackgroundEvent;
+import org.eclipse.swt.custom.LineBackgroundListener;
 import org.eclipse.swt.custom.StyledText;
 
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -25,6 +28,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -82,11 +87,13 @@ public class FindReplace extends Dialog {
 	
 	private Vector<Match> matches = null;	
 	private int lastFindIndex = -1;
-	private int lastReplacementStart = -1;
-	private int lastReplacementLength = -1;
+	private Point lastReplacementRange = null;
 	
 	private int preservedCaretOffset;
 
+	private Point originalTextSelection;
+	private static final Color originalSelectionHighlightColor = SWTResourceManager.getColor(255, 200, 200);
+	
 	/**
 	 * Create the dialog.
 	 * @param parent
@@ -99,6 +106,8 @@ public class FindReplace extends Dialog {
 		text.addExtendedModifyListener(textModifyListener);
 		text.addSelectionListener(textSelectionListener);
 		text.addFocusListener(textFocusListener);
+		text.addLineBackgroundListener(textLineBackgroundListener);
+		originalTextSelection = text.getSelectionRange();
 	}
 
 	/**
@@ -159,6 +168,18 @@ public class FindReplace extends Dialog {
 		@Override
 		public void focusGained(FocusEvent e) {
 			lastFindIndex = -1;
+		}
+	};
+	
+	private LineBackgroundListener textLineBackgroundListener = new LineBackgroundListener() {
+		@Override
+		public void lineGetBackground(LineBackgroundEvent event) {
+			int lineStart = event.lineOffset;
+			int lineEnd = event.lineOffset + event.lineText.length();
+			int originalSelectionStart = originalTextSelection.x;
+			int originalSelectionEnd = originalTextSelection.x + originalTextSelection.y;
+			if ((lineStart <= originalSelectionEnd) && (lineEnd >= originalSelectionStart))
+				event.lineBackground = originalSelectionHighlightColor;
 		}
 	};
 	
@@ -268,10 +289,10 @@ public class FindReplace extends Dialog {
 	
 	private void doFind() {
 		setStatus("");
-		if (lastReplacementStart > 0) {
-			text.setSelectionRange(lastReplacementStart, lastReplacementLength);
-			setCaretOffset(lastReplacementStart + lastReplacementLength);
-			lastReplacementStart = -1;
+		if (lastReplacementRange != null) {
+			text.setSelectionRange(lastReplacementRange.x, lastReplacementRange.y);
+			setCaretOffset(lastReplacementRange.x + lastReplacementRange.y);
+			lastReplacementRange = null;
 		} else
 			doFindInternal();
 	}
@@ -339,9 +360,9 @@ public class FindReplace extends Dialog {
 		int start = text.getSelectionRange().x;
 		int length = text.getSelectionRange().y;
 		text.replaceTextRange(start, length, changeBuffer.toString());
-		lastReplacementStart = start;
-		lastReplacementLength = changeBuffer.toString().length();
-		setCaretOffset(lastReplacementStart + lastReplacementLength);
+		int replacementLength = changeBuffer.toString().length();
+		lastReplacementRange = new Point(start, replacementLength);
+		setCaretOffset(start + replacementLength);
 		lastFindIndex = -1;
 	}
 	
@@ -581,6 +602,7 @@ public class FindReplace extends Dialog {
 				text.removeExtendedModifyListener(textModifyListener);
 				text.removeSelectionListener(textSelectionListener);
 				text.removeFocusListener(textFocusListener);
+				text.removeLineBackgroundListener(textLineBackgroundListener);
 				text.setFocus();
 			}
 		});
