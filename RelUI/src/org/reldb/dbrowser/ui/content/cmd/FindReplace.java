@@ -110,6 +110,12 @@ public class FindReplace extends Dialog {
 		originalTextSelection = text.getSelectionRange();
 	}
 
+	private void refreshText() {
+		int topIndex = text.getTopIndex();		// this guarantees a redraw, where text.redraw() does not
+		text.setTopIndex(text.getLineCount());
+		text.setTopIndex(topIndex);		
+	}
+	
 	/**
 	 * Open the dialog.
 	 * @return the result
@@ -118,6 +124,9 @@ public class FindReplace extends Dialog {
 		createContents();
 		shell.open();
 		shell.layout();
+		textFind.setText(text.getSelectionText());
+		textFind.setSelection(0, text.getCharCount());
+		refreshText();
 		Display display = getParent().getDisplay();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
@@ -171,14 +180,34 @@ public class FindReplace extends Dialog {
 		}
 	};
 	
+	private Point getOriginalSelectionLines() {
+		int startLine = text.getLineAtOffset(originalTextSelection.x);
+		int endLine = text.getLineAtOffset(originalTextSelection.x + originalTextSelection.y);
+		return new Point(startLine, endLine);
+	}
+	
+	private Point getOriginalSelectionLineOffsets() {
+		Point originalSelectionLines = getOriginalSelectionLines();
+		int start = text.getOffsetAtLine(originalSelectionLines.x);
+		int end = text.getOffsetAtLine(originalSelectionLines.y + 1) - 1;
+		return new Point(start, end);
+	}
+	
+	private boolean isOverlappingOriginalSelectionLineRange(int start, int length) {
+		int end = start + length;
+		Point originalSelectionLineRange = getOriginalSelectionLineOffsets();
+		return (start <= originalSelectionLineRange.y) && (end >= originalSelectionLineRange.x);
+	}
+	
 	private LineBackgroundListener textLineBackgroundListener = new LineBackgroundListener() {
 		@Override
 		public void lineGetBackground(LineBackgroundEvent event) {
+			if (!btnRadioSelected.getSelection())
+				return;
 			int lineStart = event.lineOffset;
 			int lineEnd = event.lineOffset + event.lineText.length();
-			int originalSelectionStart = originalTextSelection.x;
-			int originalSelectionEnd = originalTextSelection.x + originalTextSelection.y;
-			if ((lineStart <= originalSelectionEnd) && (lineEnd >= originalSelectionStart))
+			Point originalSelectionLines = getOriginalSelectionLines();
+			if ((lineStart <= originalSelectionLines.y) && (lineEnd >= originalSelectionLines.x))
 				event.lineBackground = originalSelectionHighlightColor;
 		}
 	};
@@ -240,8 +269,15 @@ public class FindReplace extends Dialog {
 		if (pattern == null)
 			return;
 		Matcher matcher = pattern.matcher(text.getText());
-		while (matcher.find())
-			matches.add(new Match(matcher.start(), matcher.end()));
+		if (btnRadioSelected.getSelection())
+			while (matcher.find()) {
+				if (!isOverlappingOriginalSelectionLineRange(matcher.start(), matcher.end() - matcher.start()))
+					continue;
+				matches.add(new Match(matcher.start(), matcher.end()));
+			}
+		else
+			while (matcher.find())
+				matches.add(new Match(matcher.start(), matcher.end()));
 	}
 	
 	private void doFindInternal() {
@@ -270,6 +306,8 @@ public class FindReplace extends Dialog {
 						break;
 					lastFindIndex++;
 				}
+				if (lastFindIndex >= matches.size())
+					lastFindIndex = matches.size() - 1;
 			} else {
 				lastFindIndex = matches.size() - 1;
 				while (lastFindIndex > 0) {
@@ -329,6 +367,9 @@ public class FindReplace extends Dialog {
 		Matcher matcher = pattern.matcher(haystack);
 		StringBuffer changeBuffer = new StringBuffer();
 		while (matcher.find()) {
+			if (btnRadioSelected.getSelection())
+				if (!isOverlappingOriginalSelectionLineRange(matcher.start(), matcher.end() - matcher.start()))
+					continue;
 			matcher.appendReplacement(changeBuffer, textReplace.getText());
 			hitCount++;
 		}
@@ -448,6 +489,8 @@ public class FindReplace extends Dialog {
 		btnRadioAll.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				lastFindIndex = -1;
+				refreshText();
 				clearAll();
 				doFind();
 			}
@@ -459,6 +502,8 @@ public class FindReplace extends Dialog {
 		btnRadioSelected.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				lastFindIndex = -1;
+				refreshText();
 				clearAll();
 				doFind();
 			}
@@ -603,6 +648,7 @@ public class FindReplace extends Dialog {
 				text.removeSelectionListener(textSelectionListener);
 				text.removeFocusListener(textFocusListener);
 				text.removeLineBackgroundListener(textLineBackgroundListener);
+				refreshText();
 				text.setFocus();
 			}
 		});
