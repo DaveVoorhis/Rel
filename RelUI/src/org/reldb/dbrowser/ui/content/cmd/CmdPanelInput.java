@@ -13,7 +13,6 @@ import org.eclipse.swt.custom.CaretEvent;
 import org.eclipse.swt.custom.CaretListener;
 import org.eclipse.swt.custom.LineBackgroundEvent;
 import org.eclipse.swt.custom.LineBackgroundListener;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
@@ -24,6 +23,8 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -54,7 +55,6 @@ public class CmdPanelInput extends Composite {
 	private ToolItem tlitmSaveHistory;
 	private ToolItem tlitmCopyToOutput;
 	private ToolItem tlitmWrap;
-	private ToolItem maximize;
 	
 	private Vector<String> entryHistory = new Vector<String>();
 	private int currentHistoryItem = 0;
@@ -93,13 +93,24 @@ public class CmdPanelInput extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 		
-		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-		inputText.addLineStyleListener(new RelLineStyler());
+		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);		
 		FormData fd_inputText = new FormData();
 		fd_inputText.right = new FormAttachment(toolBar, 0, SWT.RIGHT);
 		fd_inputText.top = new FormAttachment(toolBar);
 		fd_inputText.left = new FormAttachment(toolBar, 0, SWT.LEFT);
 		inputText.setLayoutData(fd_inputText);
+		
+		undoredo = new UndoRedo(inputText);
+		RelLineStyler lineStyler = new RelLineStyler();
+				
+		inputText.addLineStyleListener(lineStyler);
+		inputText.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				lineStyler.parseBlockComments(inputText.getText());
+				inputText.redraw();
+			}
+		});
 		inputText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -154,7 +165,6 @@ public class CmdPanelInput extends Composite {
 					event.lineBackground = backgroundHighlight;
 			}
 		});
-		undoredo = new UndoRedo(inputText);
 		
 		cmdPanelBottom = new CmdPanelBottom(this, SWT.NONE) {
 			@Override
@@ -330,18 +340,6 @@ public class CmdPanelInput extends Composite {
 					inputText.setWordWrap(tlitmWrap.getSelection());
 				}
 			});
-
-			if (canZoom()) {
-				(new ToolItem(toolBar, SWT.SEPARATOR)).setWidth(20);
-				maximize = new ToolItem(toolBar, SWT.PUSH);
-				maximize.setToolTipText("Zoom in/out.");
-				maximize.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						zoom();
-					}				
-				});
-			}
 			
 			setupButtons();
 		}
@@ -390,20 +388,6 @@ public class CmdPanelInput extends Composite {
 		else
 			insertInputText(inputText.getText() + selection);
 	}
-
-	protected boolean canZoom() {
-		return getParent() instanceof SashForm;
-	}
-
-	public void zoom() {
-		if (getParent() instanceof SashForm) {
-			SashForm form = ((SashForm)getParent());
-			if (form.getMaximizedControl() != this)
-				form.setMaximizedControl(this);
-			else
-				form.setMaximizedControl(null);
-		}
-	}
 	
 	public void dispose() {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, iconPreferenceChangeListener);
@@ -435,8 +419,6 @@ public class CmdPanelInput extends Composite {
 		tlitmSaveHistory.setImage(IconLoader.loadIcon("saveHistoryIcon"));
 		tlitmCopyToOutput.setImage(IconLoader.loadIcon("copyToOutputIcon"));
 		tlitmWrap.setImage(IconLoader.loadIcon("wrapIcon"));
-		if (maximize != null)
-			maximize.setImage(IconLoader.loadIcon("view_fullscreen"));
 	}
 
 	private void setupFont() {

@@ -135,7 +135,7 @@ public class CmdPanelToolbar {
 		if (cmdPanel.canZoom()) {
 			(new ToolItem(toolBar, SWT.SEPARATOR)).setWidth(20);
 			maximize = new ToolItem(toolBar, SWT.PUSH);
-			maximize.setToolTipText("Zoom in/out.");
+			maximize.setToolTipText("Zoom in or out");
 			maximize.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {

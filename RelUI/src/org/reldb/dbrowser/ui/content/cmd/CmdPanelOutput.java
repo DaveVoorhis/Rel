@@ -200,8 +200,8 @@ public class CmdPanelOutput extends Composite {
 	protected boolean canZoom() {
 		return getParent() instanceof SashForm;
 	}
-
-	public void zoom() {
+	
+	protected void zoom() {
 		if (getParent() instanceof SashForm) {
 			SashForm form = ((SashForm)getParent());
 			if (form.getMaximizedControl() != this)

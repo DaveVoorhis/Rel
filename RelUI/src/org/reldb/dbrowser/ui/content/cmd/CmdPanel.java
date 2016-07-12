@@ -48,6 +48,15 @@ public class CmdPanel extends Composite {
 			protected void notifyInputOfError(StringBuffer errorBuffer) {
 				cmdPanelInput.handleError(errorBuffer);
 			}
+			@Override
+			protected void zoom() {
+				if (sashForm.getMaximizedControl() == null)
+					sashForm.setMaximizedControl(cmdPanelInput);
+				else if (sashForm.getMaximizedControl() == cmdPanelInput)
+					sashForm.setMaximizedControl(cmdPanelOutput);
+				else
+					sashForm.setMaximizedControl(null);
+			}			
 		};
 		cmdPanelInput = new CmdPanelInput(sashForm, cmdPanelOutput, cmdstyle);
 		
