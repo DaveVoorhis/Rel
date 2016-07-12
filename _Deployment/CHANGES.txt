@@ -10,7 +10,10 @@ Version 1.0.13:
   - enhancement: DBrowser: "DBrowser" name now strictly internal; externally known as Rel or Rel UI.
   - enhancement: DBrowser: Code entry now provides syntax highlighting.
   - enhancement: DBrowser: Code entry now provides find/replace.
+<<<<<<< HEAD
   - enhancement: Dbrowser: Code entry now provides undo/redo.
+=======
+>>>>>>> branch 'master' of https://github.com/DaveVoorhis/Rel.git
   - enhancement: DBrowser: Code entry has "zoom" buttons to maximize input or output.
   - enhancement: DBrowser/Rel: Backup script embedded in Rel; no longer relies on Scripts folder.
   - enhancement: Rel: added ALTER VAR <relvar> RENAME <oldattrname> AS <newattrname>
