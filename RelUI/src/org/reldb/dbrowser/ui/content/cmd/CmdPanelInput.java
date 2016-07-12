@@ -63,6 +63,8 @@ public class CmdPanelInput extends Composite {
     private CmdPanelOutput cmdPanelOutput;
     
 	private boolean copyInputToOutput = true;
+	
+	private UndoRedo undoredo;
     
 	/**
 	 * Create the composite.
@@ -136,6 +138,7 @@ public class CmdPanelInput extends Composite {
 					run();
 			}
 		});
+		undoredo = new UndoRedo(inputText);
 		
 		cmdPanelBottom = new CmdPanelBottom(this, SWT.NONE) {
 			@Override
@@ -335,13 +338,11 @@ public class CmdPanelInput extends Composite {
 	}
 
 	private void doUndo() {
-		// TODO Auto-generated method stub
-		System.out.println("CmdPanelInput: undo not implemented yet.");
+		undoredo.undo();
 	}
 
 	private void doRedo() {
-		// TODO Auto-generated method stub
-		System.out.println("CmdPanelInput: redo not implemented yet.");		
+		undoredo.redo();
 	}
 
 	private void doSelectAll() {
