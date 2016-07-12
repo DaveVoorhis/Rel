@@ -11,6 +11,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.custom.CaretEvent;
 import org.eclipse.swt.custom.CaretListener;
+import org.eclipse.swt.custom.LineBackgroundEvent;
+import org.eclipse.swt.custom.LineBackgroundListener;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
@@ -18,10 +21,12 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.Tabs;
@@ -49,6 +54,7 @@ public class CmdPanelInput extends Composite {
 	private ToolItem tlitmSaveHistory;
 	private ToolItem tlitmCopyToOutput;
 	private ToolItem tlitmWrap;
+	private ToolItem maximize;
 	
 	private Vector<String> entryHistory = new Vector<String>();
 	private int currentHistoryItem = 0;
@@ -66,6 +72,8 @@ public class CmdPanelInput extends Composite {
 	
 	private UndoRedo undoredo;
     
+	private static final Color backgroundHighlight = SWTResourceManager.getColor(250, 255, 252);
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -136,6 +144,14 @@ public class CmdPanelInput extends Composite {
 			public void keyReleased(KeyEvent e) {
 				if (e.keyCode == 0x100000e && inputText.isEnabled())
 					run();
+			}
+		});
+		inputText.addLineBackgroundListener(new LineBackgroundListener() {
+			@Override
+			public void lineGetBackground(LineBackgroundEvent event) {
+				int line = inputText.getLineAtOffset(event.lineOffset);
+				if (!((line & 1) == 0))
+					event.lineBackground = backgroundHighlight;
 			}
 		});
 		undoredo = new UndoRedo(inputText);
@@ -314,6 +330,18 @@ public class CmdPanelInput extends Composite {
 					inputText.setWordWrap(tlitmWrap.getSelection());
 				}
 			});
+
+			if (canZoom()) {
+				(new ToolItem(toolBar, SWT.SEPARATOR)).setWidth(20);
+				maximize = new ToolItem(toolBar, SWT.PUSH);
+				maximize.setToolTipText("Zoom in/out.");
+				maximize.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						zoom();
+					}				
+				});
+			}
 			
 			setupButtons();
 		}
@@ -362,6 +390,20 @@ public class CmdPanelInput extends Composite {
 		else
 			insertInputText(inputText.getText() + selection);
 	}
+
+	protected boolean canZoom() {
+		return getParent() instanceof SashForm;
+	}
+
+	public void zoom() {
+		if (getParent() instanceof SashForm) {
+			SashForm form = ((SashForm)getParent());
+			if (form.getMaximizedControl() != this)
+				form.setMaximizedControl(this);
+			else
+				form.setMaximizedControl(null);
+		}
+	}
 	
 	public void dispose() {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, iconPreferenceChangeListener);
@@ -393,6 +435,8 @@ public class CmdPanelInput extends Composite {
 		tlitmSaveHistory.setImage(IconLoader.loadIcon("saveHistoryIcon"));
 		tlitmCopyToOutput.setImage(IconLoader.loadIcon("copyToOutputIcon"));
 		tlitmWrap.setImage(IconLoader.loadIcon("wrapIcon"));
+		if (maximize != null)
+			maximize.setImage(IconLoader.loadIcon("view_fullscreen"));
 	}
 
 	private void setupFont() {

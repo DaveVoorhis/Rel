@@ -10,6 +10,7 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Color;
 import org.reldb.dbrowser.ui.DbConnection;
@@ -196,6 +197,20 @@ public class CmdPanelOutput extends Composite {
 
 	protected void notifyInputOfError(StringBuffer errorBuffer) {}
 
+	protected boolean canZoom() {
+		return getParent() instanceof SashForm;
+	}
+
+	public void zoom() {
+		if (getParent() instanceof SashForm) {
+			SashForm form = ((SashForm)getParent());
+			if (form.getMaximizedControl() != this)
+				form.setMaximizedControl(this);
+			else
+				form.setMaximizedControl(null);
+		}
+	}
+	
 	public void clearOutput() {
 		browser.clear();
 		styledText.setText("");

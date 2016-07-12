@@ -17,6 +17,8 @@ public class CmdPanel extends Composite {
 	private CmdPanelOutput cmdPanelOutput;
 	private CmdPanelInput cmdPanelInput;
 	
+	private SashForm sashForm;
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -30,7 +32,7 @@ public class CmdPanel extends Composite {
 		super(parent, SWT.NONE);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		SashForm sashForm = new SashForm(this, SWT.VERTICAL);
+		sashForm = new SashForm(this, SWT.VERTICAL);
 
 		cmdPanelOutput = new CmdPanelOutput(sashForm, connection, SWT.NONE) {
 			@Override
@@ -51,7 +53,7 @@ public class CmdPanel extends Composite {
 		
 		sashForm.setWeights(new int[] {2, 1});
 	}
-
+	
 	/** Override to be notified of execution/evaluation success. */
 	public void notifyExecuteSuccess() {
 	}
