@@ -34,6 +34,7 @@ public class RevDatabase {
 		DbConnection.ExecuteResult result = connection.execute(query);
 		if (result.failed()) {
 			System.out.println("Rev: Error: " + result.getErrorMessage());
+			System.out.println("Rev: Query: " + query);
 			return false;
 		}
 		return true;
@@ -68,6 +69,17 @@ public class RevDatabase {
 			    "   }," +
 			    "	model CHAR" +
 			    "} key {Name};" +
+			    
+			    "var sys.rev.Script real relation {" +
+			    "   Name CHAR, " +
+			    "   text CHAR " +
+			    "} key {Name};" +
+			    
+			    "var sys.rev.ScriptHistory real relation {" +
+			    "   Name CHAR, " +
+			    "   text CHAR, " +
+			    "   timestamp CHAR " +
+			    "} key {Name, timestamp};" +
 			    
 			    "var sys.rev.Operator real relation {" +
 				"   Name CHAR, " +
@@ -114,6 +126,8 @@ public class RevDatabase {
 				"drop var sys.rev.Op_Update;" +
 				"drop var sys.rev.Op_Extend;" +
 				"drop var sys.rev.Op_Summarize;" +
+				"drop var sys.rev.Script;" +
+				"drop var sys.rev.ScriptHistory;" +
 			    "drop var sys.rev.Query;" +
 				"drop var sys.rev.Relvar;" +
 				"drop var sys.rev.Version;";
@@ -307,6 +321,17 @@ public class RevDatabase {
 		String query = "COUNT(sys.Catalog WHERE Name = '" + name + "') > 0";
 		Value result = (Value)evaluate(query);
 		return result.toBoolean();
+	}
+
+	public boolean scriptExists(String name) {
+		String query = "COUNT(sys.rev.Script WHERE Name = '" + name + "') > 0";
+		Value result = (Value)evaluate(query);
+		return result.toBoolean();		
+	}
+
+	public boolean createScript(String name) {
+		String query = "INSERT sys.rev.Script RELATION {TUPLE {Name '" + name + "', text ''}};";
+		return execute(query);
 	}
 	
 }
