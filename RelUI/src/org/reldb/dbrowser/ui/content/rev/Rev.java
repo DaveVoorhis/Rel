@@ -76,6 +76,8 @@ public class Rev extends Composite {
 	
 	private int revstyle;
 	
+	private Composite inputView;
+	
 	public Rev(Composite parent, DbConnection connection, CrashHandler crashHandler, String modelName, int revstyle) {
 		super(parent, SWT.None);
 		
@@ -99,13 +101,22 @@ public class Rev extends Composite {
 					stopBtn.setEnabled(true);
 					super.go(text, copyInputToOutput);
 				}
+				@Override
+				protected void zoom() {
+					if (revPane.getMaximizedControl() == null)
+						revPane.setMaximizedControl(inputView);
+					else if (revPane.getMaximizedControl() == inputView)
+						revPane.setMaximizedControl(outputView);
+					else
+						revPane.setMaximizedControl(null);
+				}
 			};
 		} catch (Exception e) {
 			System.out.println("Rev: Unable to open output panel.");
 			e.printStackTrace();
 		}
 
-		Composite inputView = new Composite(revPane, SWT.NONE);
+		inputView = new Composite(revPane, SWT.NONE);
 		inputView.setLayout(new FormLayout());
 		
 		ToolBar revTools = new ToolBar(inputView, SWT.NONE);
