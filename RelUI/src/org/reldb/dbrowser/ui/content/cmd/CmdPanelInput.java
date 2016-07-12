@@ -40,13 +40,15 @@ public class CmdPanelInput extends Composite {
 	private ToolItem tlitmPrevHistory;	
 	private ToolItem tlitmNextHistory;
 	private ToolItem tlitmClear;
+	private ToolItem tlitmUndo;
+	private ToolItem tlitmRedo;
+	private ToolItem tlitmFindReplace;
 	private ToolItem tlitmLoad;
 	private ToolItem tlitmGetPath;
 	private ToolItem tlitmSave;
 	private ToolItem tlitmSaveHistory;
 	private ToolItem tlitmCopyToOutput;
 	private ToolItem tlitmWrap;
-	private ToolItem tlitmEditSearchReplace;
 	
 	private Vector<String> entryHistory = new Vector<String>();
 	private int currentHistoryItem = 0;
@@ -88,6 +90,24 @@ public class CmdPanelInput extends Composite {
 		fd_inputText.top = new FormAttachment(toolBar);
 		fd_inputText.left = new FormAttachment(toolBar, 0, SWT.LEFT);
 		inputText.setLayoutData(fd_inputText);
+		inputText.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if ((e.stateMask & SWT.MODIFIER_MASK) != 0 && inputText.isEnabled()) {
+					switch (e.character) {
+					case 'a': doSelectAll(); return;
+					case 'f': doFindReplace(); return;
+					case 'y': doRedo(); return;
+					case 'z': 
+						if ((e.stateMask & SWT.SHIFT) != 0)
+							doRedo();
+						else
+							doUndo();
+						return;
+					}
+				}
+			}
+		});
 		inputText.addCaretListener(new CaretListener() {
 			@Override
 			public void caretMoved(CaretEvent event) {
@@ -166,13 +186,31 @@ public class CmdPanelInput extends Composite {
 					inputText.setFocus();
 				}
 			});
-			
-			tlitmEditSearchReplace = new ToolItem(toolBar, SWT.NONE);
-			tlitmEditSearchReplace.setToolTipText("Find/Replace");
-			tlitmEditSearchReplace.addSelectionListener(new SelectionAdapter() {
+
+			tlitmUndo = new ToolItem(toolBar, SWT.NONE);
+			tlitmUndo.setToolTipText("Undo");
+			tlitmUndo.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					new FindReplace(getShell(), inputText).open();
+					doUndo();
+				}
+			});
+			
+			tlitmRedo = new ToolItem(toolBar, SWT.NONE);
+			tlitmRedo.setToolTipText("Redo");
+			tlitmRedo.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					doRedo();
+				}
+			});
+			
+			tlitmFindReplace = new ToolItem(toolBar, SWT.NONE);
+			tlitmFindReplace.setToolTipText("Find/Replace");
+			tlitmFindReplace.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					doFindReplace();
 				}
 			});
 			
@@ -296,6 +334,26 @@ public class CmdPanelInput extends Composite {
 		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
 	}
 
+	private void doUndo() {
+		// TODO Auto-generated method stub
+		System.out.println("CmdPanelInput: undo not implemented yet.");
+	}
+
+	private void doRedo() {
+		// TODO Auto-generated method stub
+		System.out.println("CmdPanelInput: redo not implemented yet.");		
+	}
+
+	private void doSelectAll() {
+		int topIndex = inputText.getTopIndex();
+		inputText.setSelection(0, inputText.getCharCount());
+		inputText.setTopIndex(topIndex);
+	}
+
+	private void doFindReplace() {
+		new FindReplace(getShell(), inputText).open();
+	}
+
 	public void copyOutputToInput() {
 		String selection = cmdPanelOutput.getSelectionText();
 		if (selection.length() == 0)
@@ -325,13 +383,15 @@ public class CmdPanelInput extends Composite {
 		tlitmPrevHistory.setImage(IconLoader.loadIcon("previousIcon"));
 		tlitmNextHistory.setImage(IconLoader.loadIcon("nextIcon"));
 		tlitmClear.setImage(IconLoader.loadIcon("clearIcon"));
+		tlitmUndo.setImage(IconLoader.loadIcon("undo"));
+		tlitmRedo.setImage(IconLoader.loadIcon("redo"));
+		tlitmFindReplace.setImage(IconLoader.loadIcon("edit_find_replace"));
 		tlitmLoad.setImage(IconLoader.loadIcon("loadIcon"));
 		tlitmGetPath.setImage(IconLoader.loadIcon("pathIcon"));
 		tlitmSave.setImage(IconLoader.loadIcon("saveIcon"));
 		tlitmSaveHistory.setImage(IconLoader.loadIcon("saveHistoryIcon"));
 		tlitmCopyToOutput.setImage(IconLoader.loadIcon("copyToOutputIcon"));
 		tlitmWrap.setImage(IconLoader.loadIcon("wrapIcon"));
-		tlitmEditSearchReplace.setImage(IconLoader.loadIcon("edit_find_replace"));
 	}
 
 	private void setupFont() {
