@@ -12,8 +12,26 @@ import org.eclipse.swt.widgets.Display;
 /** Provide undo/redo support for a StyledText. */
 public class UndoRedo {
 
+	private static class Capture {
+		private String content;
+		private int caretOffset;
+		private int topIndex;
+		
+		public Capture(StyledText text) {
+			this.content = text.getText();
+			this.caretOffset = text.getCaretOffset();
+			this.topIndex = text.getTopIndex();
+		}
+		
+		public void restore(StyledText text) {
+			text.setText(content);
+			text.setCaretOffset(caretOffset);
+			text.setTopIndex(topIndex);
+		}
+	}
+	
 	private StyledText text;
-	private Vector<String> buffer = new Vector<String>();
+	private Vector<Capture> buffer = new Vector<Capture>();
 	private int currentUndoPoint = -1;
 
 	private Timer quietTimer = new Timer();
@@ -22,16 +40,18 @@ public class UndoRedo {
 	private boolean ignore = false;
 	
 	private void capture() {
-		if (!(buffer.size() > 0 && text.getText().equals(buffer.get(buffer.size() - 1))))
-			buffer.add(text.getText());
+		if (!(buffer.size() > 0 && text.getText().equals(buffer.get(buffer.size() - 1)))) {
+			buffer.add(new Capture(text));
+			if (buffer.size() > 100)
+				buffer.remove(0);
+		}
+		currentUndoPoint = -1;
     	captured = true;	
 	}
 	
 	private void restore() {
 		ignore = true;
-		int caretOffset = text.getCaretOffset();
-		text.setText(buffer.get(currentUndoPoint));
-		text.setCaretOffset(caretOffset);
+		buffer.get(currentUndoPoint).restore(text);
 		ignore = false;		
 	}
 	
@@ -54,7 +74,7 @@ public class UndoRedo {
 						}
 					});
 				}
-			}, 500);
+			}, 250);
 		}
 	};
 	
