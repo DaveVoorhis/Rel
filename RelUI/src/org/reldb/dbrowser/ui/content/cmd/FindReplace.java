@@ -143,6 +143,7 @@ public class FindReplace extends Dialog {
 		public void modifyText(ExtendedModifyEvent event) {
 			clearAll();
 			lastFindIndex = -1;
+			originalTextSelection = new Point(0, 0);
 			textModifyTimer.cancel();
 			textModifyTimer = new Timer();
 			textModifyTimer.schedule(new TimerTask() {
@@ -188,12 +189,17 @@ public class FindReplace extends Dialog {
 	
 	private Point getOriginalSelectionLineOffsets() {
 		Point originalSelectionLines = getOriginalSelectionLines();
+		int lineCount = text.getLineCount();
 		int start = text.getOffsetAtLine(originalSelectionLines.x);
-		int end = text.getOffsetAtLine(originalSelectionLines.y + 1) - 1;
+		int end;
+		if (originalSelectionLines.y >= lineCount - 1)
+			end = text.getCharCount();
+		else
+			end = text.getOffsetAtLine(originalSelectionLines.y + 1) - 1;
 		return new Point(start, end);
 	}
 	
-	private boolean isOverlappingOriginalSelectionLineRange(int start, int length) {
+	private boolean isOverlappingOriginalSelectionLineOffsetRange(int start, int length) {
 		int end = start + length;
 		Point originalSelectionLineRange = getOriginalSelectionLineOffsets();
 		return (start <= originalSelectionLineRange.y) && (end >= originalSelectionLineRange.x);
@@ -204,10 +210,7 @@ public class FindReplace extends Dialog {
 		public void lineGetBackground(LineBackgroundEvent event) {
 			if (!btnRadioSelected.getSelection())
 				return;
-			int lineStart = event.lineOffset;
-			int lineEnd = event.lineOffset + event.lineText.length();
-			Point originalSelectionLines = getOriginalSelectionLines();
-			if ((lineStart <= originalSelectionLines.y) && (lineEnd >= originalSelectionLines.x))
+			if (isOverlappingOriginalSelectionLineOffsetRange(event.lineOffset, event.lineText.length()))
 				event.lineBackground = originalSelectionHighlightColor;
 		}
 	};
@@ -271,7 +274,7 @@ public class FindReplace extends Dialog {
 		Matcher matcher = pattern.matcher(text.getText());
 		if (btnRadioSelected.getSelection())
 			while (matcher.find()) {
-				if (!isOverlappingOriginalSelectionLineRange(matcher.start(), matcher.end() - matcher.start()))
+				if (!isOverlappingOriginalSelectionLineOffsetRange(matcher.start(), matcher.end() - matcher.start()))
 					continue;
 				matches.add(new Match(matcher.start(), matcher.end()));
 			}
@@ -368,7 +371,7 @@ public class FindReplace extends Dialog {
 		StringBuffer changeBuffer = new StringBuffer();
 		while (matcher.find()) {
 			if (btnRadioSelected.getSelection())
-				if (!isOverlappingOriginalSelectionLineRange(matcher.start(), matcher.end() - matcher.start()))
+				if (!isOverlappingOriginalSelectionLineOffsetRange(matcher.start(), matcher.end() - matcher.start()))
 					continue;
 			matcher.appendReplacement(changeBuffer, textReplace.getText());
 			hitCount++;
