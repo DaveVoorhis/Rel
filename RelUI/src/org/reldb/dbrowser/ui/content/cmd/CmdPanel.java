@@ -56,13 +56,20 @@ public class CmdPanel extends Composite {
 					sashForm.setMaximizedControl(cmdPanelOutput);
 				else
 					sashForm.setMaximizedControl(null);
-			}			
+			}
+			@Override
+			protected void notifyEnhancedOutputChange() {
+				CmdPanel.this.notifyEnhancedOutputChange();
+			}
 		};
 		cmdPanelInput = new CmdPanelInput(sashForm, cmdPanelOutput, cmdstyle);
 		
 		sashForm.setWeights(new int[] {2, 1});
 	}
 	
+	protected void notifyEnhancedOutputChange() {
+	}
+
 	/** Override to be notified of execution/evaluation success. */
 	public void notifyExecuteSuccess() {
 	}

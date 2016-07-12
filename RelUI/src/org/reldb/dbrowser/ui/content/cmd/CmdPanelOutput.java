@@ -197,6 +197,8 @@ public class CmdPanelOutput extends Composite {
 
 	protected void notifyInputOfError(StringBuffer errorBuffer) {}
 
+	protected void notifyEnhancedOutputChange() {}
+
 	protected boolean canZoom() {
 		return getParent() instanceof SashForm;
 	}
@@ -215,11 +217,12 @@ public class CmdPanelOutput extends Composite {
 		browser.clear();
 		styledText.setText("");
 	}
-
+	
 	public void setEnhancedOutput(boolean selection) {
 		outputStackLayout.topControl = (selection) ? browser.getWidget() : styledText;
 		outputStack.layout();
 		isEnhancedOutput = selection;
+		notifyEnhancedOutputChange();
 	}
 
 	public boolean getEnhancedOutput() {

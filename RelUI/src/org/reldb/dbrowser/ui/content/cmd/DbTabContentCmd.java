@@ -17,12 +17,18 @@ import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 public class DbTabContentCmd extends Composite {
 	
 	private CmdPanel cmdPanel = null;
-
+	private ToolItem copyOutputToInputBtn;
+	
 	public DbTabContentCmd(DbTab parentTab, Composite contentParent) throws NumberFormatException, ClassNotFoundException, IOException, DatabaseFormatVersionException {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 		
-		cmdPanel = new CmdPanel(parentTab.getConnection(), this, CmdPanel.NONE);
+		cmdPanel = new CmdPanel(parentTab.getConnection(), this, CmdPanel.NONE) {
+			@Override
+			protected void notifyEnhancedOutputChange() {
+				copyOutputToInputBtn.setEnabled(!cmdPanel.getEnhancedOutput());
+			}
+		};
 
 		CmdPanelToolbar toolBar = new CmdPanelToolbar(this, cmdPanel.getCmdPanelOutput()) {
 			public void addAdditionalItems(ToolBar toolbar) {
@@ -37,7 +43,7 @@ public class DbTabContentCmd extends Composite {
 				});
 				addAdditionalItem(tlitmBackup, "safeIcon");
 				// copy output to input
-				ToolItem copyOutputToInputBtn = new ToolItem(toolbar, SWT.PUSH);
+				copyOutputToInputBtn = new ToolItem(toolbar, SWT.PUSH);
 				copyOutputToInputBtn.setToolTipText("Copy output to input");
 				copyOutputToInputBtn.setEnabled(!cmdPanel.getEnhancedOutput());
 				copyOutputToInputBtn.addSelectionListener(new SelectionAdapter() {
