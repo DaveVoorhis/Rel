@@ -391,5 +391,12 @@ public class RevDatabase {
 		String query = "DELETE sys.rev.Script WHERE Name='" + name + "';";
 		return execute(query);
 	}
+
+	public boolean renameScript(String nameFrom, String nameTo) {
+		String query = 
+			"UPDATE sys.rev.Script WHERE Name='" + nameFrom + "': {Name := '" + nameTo + "'}, " +
+			"UPDATE sys.rev.ScriptHistory WHERE Name='" + nameFrom + "': {Name := '" + nameTo + "'};";
+		return execute(query);
+	}
 	
 }

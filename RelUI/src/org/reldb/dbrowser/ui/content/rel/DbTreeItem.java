@@ -7,28 +7,30 @@ public class DbTreeItem {
 	private DbTreeAction creator;
 	private DbTreeAction dropper;
 	private DbTreeAction designer;
+	private DbTreeAction renamer;
 	private String section;
 	private String name;
 
-	DbTreeItem(String section, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, String name) {
+	DbTreeItem(String section, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, String name) {
 		this.section = section;
 		this.player = player;
 		this.creator = creator;
 		this.dropper = dropper;
 		this.designer = designer;
+		this.renamer = renamer;
 		this.name = name;
 	}
 	
-	DbTreeItem(String section, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer) {
-		this(section, player, creator, dropper, designer, null);
+	DbTreeItem(String section, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer) {
+		this(section, player, creator, dropper, designer, renamer, null);
 	}
 	
 	DbTreeItem() {
-		this(null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null);
 	}
 	
 	public DbTreeItem(DbTreeItem item, String name) {
-		this(item.section, item.player, item.creator, item.dropper, item.designer, name);
+		this(item.section, item.player, item.creator, item.dropper, item.designer, item.renamer, name);
 	}
 
 	public boolean canPlay() {
@@ -47,6 +49,10 @@ public class DbTreeItem {
 		return designer != null;
 	}
 	
+	public boolean canRename() {
+		return renamer != null;
+	}
+	
 	public void play(Image image) {
 		player.go(this, image);
 	}
@@ -61,6 +67,10 @@ public class DbTreeItem {
 
 	public void design(Image image) {
 		designer.go(this, image);
+	}
+
+	public void rename(Image image) {
+		renamer.go(this, image);
 	}
 	
 	public String getSection() {

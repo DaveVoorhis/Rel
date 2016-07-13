@@ -26,6 +26,7 @@ public class DbTabContentRel extends Composite {
 	private ToolItem tlitmNew;
 	private ToolItem tlitmDrop;
 	private ToolItem tlitmDesign;
+	private ToolItem tlitmRename;
 	private ToolItem tlitmShowSystem;
     
 	private RelPanel rel;
@@ -97,6 +98,15 @@ public class DbTabContentRel extends Composite {
 			}
 		});
 		
+		tlitmRename = new ToolItem(mainToolBar, SWT.None);
+		tlitmRename.setToolTipText("Rename");
+		tlitmRename.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				rel.renameItem();
+			}
+		});
+		
 		tlitmShowSystem = new ToolItem(mainToolBar, SWT.CHECK);
 		tlitmShowSystem.setToolTipText("Show system objects");
 		tlitmShowSystem.setSelection(rel.getShowSystemObjects());
@@ -115,6 +125,7 @@ public class DbTabContentRel extends Composite {
 				tlitmNew.setEnabled(item.canCreate());
 				tlitmDrop.setEnabled(item.canDrop());
 				tlitmDesign.setEnabled(item.canDesign());
+				tlitmRename.setEnabled(item.canRename());
 			}
 			public void tabChangeNotify() {
 				if (tabToolBar != null) {
@@ -151,6 +162,7 @@ public class DbTabContentRel extends Composite {
 		tlitmNew.setEnabled(false);
 		tlitmDrop.setEnabled(false);
 		tlitmDesign.setEnabled(false);
+		tlitmRename.setEnabled(false);
 	}
 
 	public void dispose() {
@@ -164,6 +176,7 @@ public class DbTabContentRel extends Composite {
 		tlitmNew.setImage(IconLoader.loadIcon("item_add"));
 		tlitmDrop.setImage(IconLoader.loadIcon("item_delete"));
 		tlitmDesign.setImage(IconLoader.loadIcon("item_design"));
+		tlitmRename.setImage(IconLoader.loadIcon("rename"));
 		tlitmShowSystem.setImage(IconLoader.loadIcon("gears"));
 	}
 

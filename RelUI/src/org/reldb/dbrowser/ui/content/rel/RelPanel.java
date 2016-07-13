@@ -41,6 +41,7 @@ import org.reldb.dbrowser.ui.content.rel.script.CmdCreator;
 import org.reldb.dbrowser.ui.content.rel.script.CmdDesigner;
 import org.reldb.dbrowser.ui.content.rel.script.CmdDropper;
 import org.reldb.dbrowser.ui.content.rel.script.CmdPlayer;
+import org.reldb.dbrowser.ui.content.rel.script.CmdRenamer;
 import org.reldb.dbrowser.ui.content.rel.type.TypeCreator;
 import org.reldb.dbrowser.ui.content.rel.type.TypeDropper;
 import org.reldb.dbrowser.ui.content.rel.type.TypePlayer;
@@ -140,7 +141,15 @@ public class RelPanel extends Composite {
 				designItem();
 			}
 		});
-
+		MenuItem renameItem = new MenuItem(menu, SWT.POP_UP);
+		renameItem.setText("Rename");
+		renameItem.setImage(IconLoader.loadIcon("rename"));
+		renameItem.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				renameItem();
+			}
+		});
+		
 		tree.setMenu(menu);
 		
 		tree.addMenuDetectListener(new MenuDetectListener() {
@@ -151,11 +160,13 @@ public class RelPanel extends Composite {
 					createItem.setEnabled(false);
 					dropItem.setEnabled(false);
 					designItem.setEnabled(false);
+					renameItem.setEnabled(false);
 				} else {
 					showItem.setEnabled(selection.canPlay());
 					createItem.setEnabled(selection.canCreate());
 					dropItem.setEnabled(selection.canDrop());
 					designItem.setEnabled(selection.canDesign());
+					renameItem.setEnabled(selection.canRename());
 				}
 			}
 		});
@@ -264,6 +275,11 @@ public class RelPanel extends Composite {
 		nudge();
 	}
 
+	protected void renameItem() {
+		getSelection().rename(IconLoader.loadIcon("rename"));
+		nudge();
+	}
+
 	public boolean getShowSystemObjects() {
 		return showSystemObjects;
 	}
@@ -273,14 +289,14 @@ public class RelPanel extends Composite {
 		buildDbTree();
 	}
 	
-	private void buildSubtree(String section, Image image, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer) {
+	private void buildSubtree(String section, Image image, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer) {
 		TreeItem root = treeRoots.get(section);
 		if (root == null) {
 			root = new TreeItem(tree, SWT.NONE);
 			root.setImage(image);
 			root.setText(section);
 			treeRoots.put(section, root);
-			root.setData(new DbTreeItem(section, null, creator, null, null));
+			root.setData(new DbTreeItem(section, null, creator, null, null, null));
 		}
 		if (query != null) {
 			Tuples names = connection.getTuples(query);
@@ -291,14 +307,14 @@ public class RelPanel extends Composite {
 						TreeItem item = new TreeItem(root, SWT.NONE);
 						item.setImage(image);
 						item.setText(name);
-						item.setData(new DbTreeItem(section, player, creator, dropper, designer, name));
+						item.setData(new DbTreeItem(section, player, creator, dropper, designer, renamer, name));
 					}
 				}
 		}
 	}
 
-	private void buildSubtree(String section, Image image, String query, String displayAttributeName, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer) {
-		buildSubtree(section, image, query, displayAttributeName, (String attributeName) -> true, player, creator, dropper, designer);
+	private void buildSubtree(String section, Image image, String query, String displayAttributeName, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer) {
+		buildSubtree(section, image, query, displayAttributeName, (String attributeName) -> true, player, creator, dropper, designer, renamer);
 	}
 	
 	private void buildDbTree() {
@@ -312,27 +328,27 @@ public class RelPanel extends Composite {
 		Predicate<String> revSysNamesFilter = (String attributeName) -> attributeName.startsWith("sys.rev") ? showSystemObjects : true; 
 		
 		buildSubtree("Variable", IconLoader.loadIcon("table"), "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter, 
-			new VarRealPlayer(this), new VarRealCreator(this), new VarRealDropper(this), new VarRealDesigner(this));
+			new VarRealPlayer(this), new VarRealCreator(this), new VarRealDropper(this), new VarRealDesigner(this), null);
 		
 		buildSubtree("View", IconLoader.loadIcon("view"), "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
-			new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this));
+			new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this), null);
 		
 		buildSubtree("Operator", IconLoader.loadIcon("operator"), "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName",
-			new OperatorPlayer(this), new OperatorCreator(this), new OperatorDropper(this), new OperatorDesigner(this));
+			new OperatorPlayer(this), new OperatorCreator(this), new OperatorDropper(this), new OperatorDesigner(this), null);
 		
 		buildSubtree("Type", IconLoader.loadIcon("type"), "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
-			new TypePlayer(this), new TypeCreator(this), new TypeDropper(this), null);
+			new TypePlayer(this), new TypeCreator(this), new TypeDropper(this), null, null);
 		
 		buildSubtree("Constraint", IconLoader.loadIcon("constraint"), "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
-			new ConstraintPlayer(this), new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this));
+			new ConstraintPlayer(this), new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this), null);
 		
 		if (connection.hasRevExtensions() >= 0) {
 			buildSubtree("Query", IconLoader.loadIcon("query"), "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
-					new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this));
+					new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this), null);
 			// buildSubtree("Forms", null, null, null, null, null, null);
 			// buildSubtree("Reports", null, null, null, null, null, null);
 			buildSubtree("Script", IconLoader.loadIcon("script"), "sys.rev.Script {Name} ORDER (ASC Name)", "Name", 
-				new CmdPlayer(this), new CmdCreator(this), new CmdDropper(this), new CmdDesigner(this));
+				new CmdPlayer(this), new CmdCreator(this), new CmdDropper(this), new CmdDesigner(this), new CmdRenamer(this));
 		}
 		
 		fireDbTreeNoSelectionEvent();

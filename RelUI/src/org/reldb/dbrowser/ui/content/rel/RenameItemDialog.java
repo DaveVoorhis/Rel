@@ -2,14 +2,14 @@ package org.reldb.dbrowser.ui.content.rel;
 
 import org.eclipse.swt.widgets.Shell;
 
-public class NewItemDialog extends FieldDialog {
+public class RenameItemDialog extends FieldDialog {
 
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public NewItemDialog(Shell parentShell, String name) {
-		super(parentShell, "Create", "Name:", name);
+	public RenameItemDialog(Shell parentShell, String name) {
+		super(parentShell, "Rename", "New name:", name);
 	}
 
 	public String getName() {
