@@ -1,6 +1,7 @@
 ** TO DO **
 
 Short term:
+	// TODO - Script drop/rename/play(execute) needed
 	// TODO - test find/replace thoroughly
 	// TODO - be able to specify user-defined parameters in Rev queries
 	// TODO - be able to bring operator invocations into Rev queries
