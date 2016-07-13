@@ -4,11 +4,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.DbConnection;
+import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.NewItemDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
-import org.reldb.dbrowser.ui.content.rel.RevDatabase;
 
 public class VarRealCreator extends DbTreeAction {
 

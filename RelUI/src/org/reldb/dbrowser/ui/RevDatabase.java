@@ -1,10 +1,9 @@
-package org.reldb.dbrowser.ui.content.rel;
+package org.reldb.dbrowser.ui;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
-import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;

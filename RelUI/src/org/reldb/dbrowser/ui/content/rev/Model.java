@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
-import org.reldb.dbrowser.ui.content.rel.RevDatabase;
+import org.reldb.dbrowser.ui.RevDatabase;
 
 /**
  * Defines a layered pane in which visualised classes may be manipulated.

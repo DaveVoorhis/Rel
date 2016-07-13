@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.reldb.dbrowser.ui.content.rel.RevDatabase;
+import org.reldb.dbrowser.ui.RevDatabase;
 
 public abstract class Visualiser extends Composite implements Comparable<Visualiser> {
 	

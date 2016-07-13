@@ -4,13 +4,13 @@ import java.io.IOException;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
+import org.reldb.dbrowser.ui.RevDatabase;
+import org.reldb.dbrowser.ui.RevDatabase.Script;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanel;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
-import org.reldb.dbrowser.ui.content.rel.RevDatabase;
-import org.reldb.dbrowser.ui.content.rel.RevDatabase.Script;
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class CmdTab extends DbTreeTab {
