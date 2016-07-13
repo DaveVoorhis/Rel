@@ -7,9 +7,9 @@ import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.NewItemDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
+import org.reldb.dbrowser.ui.content.rel.RevDatabase;
 import org.reldb.dbrowser.ui.content.rev.ModelChangeListener;
 import org.reldb.dbrowser.ui.content.rev.Rev;
-import org.reldb.dbrowser.ui.content.rev.RevDatabase;
 
 public class QueryCreator extends DbTreeAction {
 

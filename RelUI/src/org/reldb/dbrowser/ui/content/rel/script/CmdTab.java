@@ -9,8 +9,8 @@ import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
-import org.reldb.dbrowser.ui.content.rev.RevDatabase;
-import org.reldb.dbrowser.ui.content.rev.RevDatabase.Script;
+import org.reldb.dbrowser.ui.content.rel.RevDatabase;
+import org.reldb.dbrowser.ui.content.rel.RevDatabase.Script;
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class CmdTab extends DbTreeTab {

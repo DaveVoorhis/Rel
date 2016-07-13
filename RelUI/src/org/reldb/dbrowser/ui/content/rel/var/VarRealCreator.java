@@ -8,7 +8,7 @@ import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.NewItemDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
-import org.reldb.dbrowser.ui.content.rev.RevDatabase;
+import org.reldb.dbrowser.ui.content.rel.RevDatabase;
 
 public class VarRealCreator extends DbTreeAction {
 

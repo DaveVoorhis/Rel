@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
+import org.reldb.dbrowser.ui.content.rel.RevDatabase;
 import org.reldb.dbrowser.ui.content.rev.operators.Diadic;
 import org.reldb.dbrowser.ui.content.rev.operators.Expression;
 import org.reldb.dbrowser.ui.content.rev.operators.Extend;

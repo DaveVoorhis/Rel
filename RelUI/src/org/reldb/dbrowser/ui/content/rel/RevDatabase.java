@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui.content.rev;
+package org.reldb.dbrowser.ui.content.rel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
