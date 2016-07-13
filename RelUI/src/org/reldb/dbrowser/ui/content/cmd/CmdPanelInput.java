@@ -513,10 +513,6 @@ public class CmdPanelInput extends Composite {
 		currentHistoryItem = entryHistory.size() - 1;
 		setupButtons();
 	}
-	
-	public Vector<String> getHistory() {
-		return entryHistory;
-	}
 
 	private void showRunningStart() {
 		cmdPanelBottom.setEnabledRunButton(false);		
@@ -570,6 +566,8 @@ public class CmdPanelInput extends Composite {
 		return getHistoryItemAt(currentHistoryItem);
 	}
 
+	protected void notifyHistoryAdded(String historyItem) {}
+	
 	/** Add a history item. */
 	private void addHistoryItem(String s) {
 		if (entryHistory.size() > 0 && s.equals(entryHistory.get(entryHistory.size() - 1)))
@@ -577,6 +575,7 @@ public class CmdPanelInput extends Composite {
 		entryHistory.add(s);
 		currentHistoryItem = entryHistory.size() - 1;
 		setupButtons();
+		notifyHistoryAdded(s);
 	}
 
 	/** Set up history button status. */

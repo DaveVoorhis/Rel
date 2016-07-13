@@ -63,11 +63,19 @@ public class CmdPanel extends Composite {
 				CmdPanel.this.notifyEnhancedOutputChange();
 			}
 		};
-		cmdPanelInput = new CmdPanelInput(sashForm, cmdPanelOutput, cmdstyle);
+		cmdPanelInput = new CmdPanelInput(sashForm, cmdPanelOutput, cmdstyle) {
+			@Override
+			protected void notifyHistoryAdded(String historyItem) {
+				CmdPanel.this.notifyHistoryAdded(historyItem);
+			}
+		};
 		
 		sashForm.setWeights(new int[] {2, 1});
 	}
 	
+	protected void notifyHistoryAdded(String historyItem) {
+	}
+
 	protected void notifyEnhancedOutputChange() {
 	}
 
@@ -112,10 +120,6 @@ public class CmdPanel extends Composite {
 	public void setContent(Script script) {
 		setInputText(script.getContent());
 		cmdPanelInput.setHistory(script.getHistory());
-	}
-
-	public Script getContent() {
-		return new Script(getInputText(), cmdPanelInput.getHistory());
 	}
 
 }

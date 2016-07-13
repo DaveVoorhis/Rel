@@ -1,17 +1,16 @@
 ** TO DO **
 
 Short term:
-	// TODO - instead of replacing command-line history, add each new entry iteratively
 	// TODO - test find/replace thoroughly
 	// TODO - be able to specify user-defined parameters in Rev queries
 	// TODO - be able to bring operator invocations into Rev queries
 	// TODO - be able to turn a Rev query into a relation-valued operator, or a view.
 	// TODO - associate a 'project' attribute with every database object, to permit
 	//        admin UIs that show only the relvars, views, types, operators, etc., in that project.
-	// TODO - provide a means to store code snippets (scripts) in the database and integrate with UI
 	// TODO - provide a means to store code generation 'wizards' in the database and integrate with UI
 	// TODO - save every DDL statement in the database, for versioning, etc.
 	// TODO - provide Welcome tab on every database to turn on/off Rev extensions and provide instructions.
+	//        Do not display Rev items until explicitly activated.
 	// TODO - associate a 'valid' attribute with every database object, to permit
 	//        changes that invalidate dependent objects.
 	// TODO - provide THE_INTEGER(INTEGER)

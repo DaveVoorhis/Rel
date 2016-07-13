@@ -358,38 +358,33 @@ public class RevDatabase {
 		Tuples tuples = (Tuples)evaluate(query);
 		for (Tuple tuple: tuples)
 			content = StringUtils.unquote(tuple.get("text").toString());
-		query = "sys.rev.ScriptHistory WHERE Name='" + name + "' ORDER (DESC timestemp)";
+		query = "sys.rev.ScriptHistory WHERE Name='" + name + "' ORDER (DESC timestamp)";
+		tuples = (Tuples)evaluate(query);
 		Vector<String> history = new Vector<String>();
 		for (Tuple tuple: tuples)
 			history.add(StringUtils.unquote(tuple.get("text").toString()));
 		return new Script(content, history);
 	}
 
-	public void setScript(String name, Script script) {
-		String text = StringUtils.quote(script.getContent());
-		boolean commaNeeded = false;
-		String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-		int sequence = 0;
-		String historyRelationText = "REL {Name CHAR, text CHAR, timestamp CHAR} {";
-		for (String historyItem: script.getHistory()) {
-			if (commaNeeded)
-				historyRelationText += ", ";
-			historyRelationText += "TUP {" +
-					"Name '" + name + "', " +
-					"text '" + StringUtils.quote(historyItem) + "', " +
-					"timestamp '" + timestamp + "-" + String.format("%09d", sequence++) + "'" +
-					"}";
-			commaNeeded = true;
-		}
-		historyRelationText += "}";
+	public void setScript(String name, String content) {
+		String text = StringUtils.quote(content);
 		String query = 
 			"IF COUNT(sys.rev.Script WHERE Name='" + name + "') = 0 THEN " +
 			"  INSERT sys.rev.Script REL {TUP {Name '" + name + "', text '" + text + "'}}; " +
 			"ELSE " +
 			"  UPDATE sys.rev.Script WHERE Name='" + name + "': {text := '" + text + "'}; " +
-			"END IF; " +
-			"DELETE sys.rev.ScriptHistory WHERE Name='" + name + "'; " +
-			"INSERT sys.rev.ScriptHistory " + historyRelationText + ";";
+			"END IF;";
+		execute(query);
+	}
+	
+	public void addScriptHistory(String name, String historyItem) {
+		String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
+		String query = 
+			"INSERT sys.rev.ScriptHistory " + "REL {TUP {" +
+			"  Name '" + name + "', " +
+			"  text '" + StringUtils.quote(historyItem) + "', " +
+			"  timestamp '" + timestamp + "'" +
+			"}};";
 		execute(query);
 	}
 	
