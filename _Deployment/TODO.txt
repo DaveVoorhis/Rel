@@ -10,6 +10,7 @@ Short term:
 	// TODO - provide a means to store code snippets (scripts) in the database and integrate with UI
 	// TODO - provide a means to store code generation 'wizards' in the database and integrate with UI
 	// TODO - save every DDL statement in the database, for versioning, etc.
+	// TODO - provide Welcome tab on every database to turn on/off Rev extensions and provide instructions.
 	// TODO - associate a 'valid' attribute with every database object, to permit
 	//        changes that invalidate dependent objects.
 	// TODO - provide THE_INTEGER(INTEGER)

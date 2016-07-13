@@ -9,10 +9,10 @@ import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
+import org.reldb.dbrowser.ui.content.rev.RevDatabase;
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class CmdTab extends DbTreeTab {
-//	private Rev rev;
 	private CmdPanel cmdPanel;
 	
 	public CmdTab(RelPanel parent, DbTreeItem item, int revstyle) {
@@ -20,12 +20,13 @@ public class CmdTab extends DbTreeTab {
 		try {
 			cmdPanel = new CmdPanel(parent.getConnection(), parent.getTabFolder(), CmdPanel.NONE);
 		} catch (NumberFormatException | ClassNotFoundException | IOException | DatabaseFormatVersionException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Error: unable to launch command-line panel: " + e.getMessage());
 			e.printStackTrace();
 			return;
 		}
-//	    rev = new Rev(parent.getTabFolder(), parent.getConnection(), parent.getCrashHandler(), item.getName(), revstyle);  
 	    setControl(cmdPanel);
+	    RevDatabase database = new RevDatabase(relPanel.getConnection());
+	//    cmdPanel.setContent(database.getScript(item.getName()));
 	    ready();
 	}
 	

@@ -333,5 +333,29 @@ public class RevDatabase {
 		String query = "INSERT sys.rev.Script RELATION {TUPLE {Name '" + name + "', text ''}};";
 		return execute(query);
 	}
+
+	public static class Script {
+		private String content;
+		private Vector<String> history;
+		public Script(String content, Vector<String> history) {
+			this.content = content;
+			this.history = history;
+		}
+		public Vector<String> getHistory() {
+			return history;
+		}
+		public String getContent() {
+			return content;
+		}
+	}
+	
+	public Script getScript(String name) {
+		String query = "sys.rev.Script WHERE Name='" + name + "'";
+		Tuples tuples = (Tuples)evaluate(query);
+		String content = "";
+	//	for (Tuple tuple: tuples)
+	//		content = tuple.get())
+		return null;
+	}
 	
 }
