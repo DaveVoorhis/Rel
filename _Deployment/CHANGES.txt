@@ -12,6 +12,7 @@ Version 1.0.13:
   - enhancement: DBrowser: Code entry now provides find/replace.
   - enhancement: DBrowser: Code entry now provides undo/redo.
   - enhancement: DBrowser: Code entry has "zoom" buttons to maximize input or output.
+  - enhancement: DBrowser: Scripts can be edited and saved in the database.
   - enhancement: DBrowser/Rel: Backup script embedded in Rel; no longer relies on Scripts folder.
   - enhancement: Rel: added ALTER VAR <relvar> RENAME <oldattrname> AS <newattrname>
   - enhancement: Rel: added ALTER VAR <relvar> INSERT <newattrname> <newattrtype>
