@@ -387,5 +387,10 @@ public class RevDatabase {
 			"}};";
 		execute(query);
 	}
+
+	public boolean scriptDelete(String name) {
+		String query = "DELETE sys.rev.Script WHERE Name='" + name + "';";
+		return execute(query);
+	}
 	
 }

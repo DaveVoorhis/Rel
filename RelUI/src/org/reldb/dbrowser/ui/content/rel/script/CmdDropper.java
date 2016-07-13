@@ -21,11 +21,11 @@ public class CmdDropper extends DbTreeAction {
 			relPanel.getTabFolder().setSelection(tab);
 			MessageDialog.openInformation(relPanel.getShell(), "Note", "You must close the '" + item.getTabName() + "' tab first.");
 		} else {
-			if (!MessageDialog.openConfirm(relPanel.getShell(), "Confirm DROP", "Are you sure you wish to drop query " + item.getName() + "?"))
+			if (!MessageDialog.openConfirm(relPanel.getShell(), "Confirm DROP", "Are you sure you wish to drop script " + item.getName() + "?"))
 				return;
 			RevDatabase database = new RevDatabase(relPanel.getConnection());
-			if (!database.modelDelete(item.getName()))
-				MessageDialog.openError(relPanel.getShell(), "Error", "Unable to drop query " + item.getName() + ". Check the system log for details.");
+			if (!database.scriptDelete(item.getName()))
+				MessageDialog.openError(relPanel.getShell(), "Error", "Unable to drop script " + item.getName() + ". Check the system log for details.");
 			else
 				relPanel.redisplayed();
 		}
