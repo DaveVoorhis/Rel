@@ -1,11 +1,14 @@
 package org.reldb.dbrowser.ui.content.rev;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
+import org.reldb.rel.utilities.StringUtils;
 
 public class RevDatabase {
 
@@ -351,11 +354,43 @@ public class RevDatabase {
 	
 	public Script getScript(String name) {
 		String query = "sys.rev.Script WHERE Name='" + name + "'";
-		Tuples tuples = (Tuples)evaluate(query);
 		String content = "";
-	//	for (Tuple tuple: tuples)
-	//		content = tuple.get())
-		return null;
+		Tuples tuples = (Tuples)evaluate(query);
+		for (Tuple tuple: tuples)
+			content = StringUtils.unquote(tuple.get("text").toString());
+		query = "sys.rev.ScriptHistory WHERE Name='" + name + "' ORDER (DESC timestemp)";
+		Vector<String> history = new Vector<String>();
+		for (Tuple tuple: tuples)
+			history.add(StringUtils.unquote(tuple.get("text").toString()));
+		return new Script(content, history);
+	}
+
+	public void setScript(String name, Script script) {
+		String text = StringUtils.quote(script.getContent());
+		boolean commaNeeded = false;
+		String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+		int sequence = 0;
+		String historyRelationText = "REL {Name CHAR, text CHAR, timestamp CHAR} {";
+		for (String historyItem: script.getHistory()) {
+			if (commaNeeded)
+				historyRelationText += ", ";
+			historyRelationText += "TUP {" +
+					"Name '" + name + "', " +
+					"text '" + StringUtils.quote(historyItem) + "', " +
+					"timestamp '" + timestamp + "-" + String.format("%09d", sequence++) + "'" +
+					"}";
+			commaNeeded = true;
+		}
+		historyRelationText += "}";
+		String query = 
+			"IF COUNT(sys.rev.Script WHERE Name='" + name + "') = 0 THEN " +
+			"  INSERT sys.rev.Script REL {TUP {Name '" + name + "', text '" + text + "'}}; " +
+			"ELSE " +
+			"  UPDATE sys.rev.Script WHERE Name='" + name + "': {text := '" + text + "'}; " +
+			"END IF; " +
+			"DELETE sys.rev.ScriptHistory WHERE Name='" + name + "'; " +
+			"INSERT sys.rev.ScriptHistory " + historyRelationText + ";";
+		execute(query);
 	}
 	
 }

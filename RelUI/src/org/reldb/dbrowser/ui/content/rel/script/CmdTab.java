@@ -14,6 +14,8 @@ import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class CmdTab extends DbTreeTab {
 	private CmdPanel cmdPanel;
+	private RevDatabase database;
+	private String name;
 	
 	public CmdTab(RelPanel parent, DbTreeItem item, int revstyle) {
 		super(parent, item);
@@ -25,9 +27,15 @@ public class CmdTab extends DbTreeTab {
 			return;
 		}
 	    setControl(cmdPanel);
-	    RevDatabase database = new RevDatabase(relPanel.getConnection());
-	//    cmdPanel.setContent(database.getScript(item.getName()));
+	    name = item.getName();
+	    database = new RevDatabase(relPanel.getConnection());
+	    cmdPanel.setContent(database.getScript(name));
 	    ready();
+	}
+	
+	public void dispose() {
+		database.setScript(name, cmdPanel.getContent());
+		super.dispose();
 	}
 	
 	public ToolBar getToolBar(Composite parent) {

@@ -1,6 +1,7 @@
 ** TO DO **
 
 Short term:
+	// TODO - instead of replacing command-line history, add each new entry iteratively
 	// TODO - test find/replace thoroughly
 	// TODO - be able to specify user-defined parameters in Rev queries
 	// TODO - be able to bring operator invocations into Rev queries

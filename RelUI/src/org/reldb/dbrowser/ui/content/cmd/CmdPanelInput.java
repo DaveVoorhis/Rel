@@ -504,6 +504,20 @@ public class CmdPanelInput extends Composite {
 		inputText.setText(text);
 	}
 
+	public String getText() {
+		return inputText.getText();
+	}
+
+	public void setHistory(Vector<String> history) {
+		entryHistory = history;
+		currentHistoryItem = entryHistory.size() - 1;
+		setupButtons();
+	}
+	
+	public Vector<String> getHistory() {
+		return entryHistory;
+	}
+
 	private void showRunningStart() {
 		cmdPanelBottom.setEnabledRunButton(false);		
 	}

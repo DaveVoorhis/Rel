@@ -7,6 +7,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.reldb.dbrowser.ui.DbConnection;
+import org.reldb.dbrowser.ui.content.rev.RevDatabase.Script;
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class CmdPanel extends Composite {
@@ -102,6 +103,19 @@ public class CmdPanel extends Composite {
 
 	public void setInputText(String text) {
 		cmdPanelInput.setText(text);
+	}
+
+	public String getInputText() {
+		return cmdPanelInput.getText();
+	}
+	
+	public void setContent(Script script) {
+		setInputText(script.getContent());
+		cmdPanelInput.setHistory(script.getHistory());
+	}
+
+	public Script getContent() {
+		return new Script(getInputText(), cmdPanelInput.getHistory());
 	}
 
 }
