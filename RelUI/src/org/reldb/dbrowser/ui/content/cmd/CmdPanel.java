@@ -51,12 +51,16 @@ public class CmdPanel extends Composite {
 			}
 			@Override
 			protected void zoom() {
-				if (sashForm.getMaximizedControl() == null)
+				if (sashForm.getMaximizedControl() == null) {
 					sashForm.setMaximizedControl(cmdPanelInput);
-				else if (sashForm.getMaximizedControl() == cmdPanelInput)
+					zoomInParent();
+				} else if (sashForm.getMaximizedControl() == cmdPanelInput) {
 					sashForm.setMaximizedControl(cmdPanelOutput);
-				else
+					zoomInParent();
+				} else {
 					sashForm.setMaximizedControl(null);
+					unzoomInParent();
+				}
 			}
 			@Override
 			protected void notifyEnhancedOutputChange() {
@@ -71,6 +75,24 @@ public class CmdPanel extends Composite {
 		};
 		
 		sashForm.setWeights(new int[] {2, 1});
+	}
+	
+	private void setZoomedParent(Composite parent, Composite setTo) {
+		Composite parentparent = parent.getParent();
+		if (parentparent instanceof SashForm) {
+			SashForm parentSash = (SashForm)parentparent;
+			parentSash.setMaximizedControl(setTo);
+		}
+	}
+	
+	private void zoomInParent() {
+		Composite parent = getParent();
+		setZoomedParent(parent, parent);
+	}
+	
+	private void unzoomInParent() {
+		Composite parent = getParent();
+		setZoomedParent(parent, null);
 	}
 	
 	protected void notifyHistoryAdded(String historyItem) {
