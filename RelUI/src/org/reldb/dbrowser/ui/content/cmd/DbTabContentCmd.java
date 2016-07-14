@@ -12,11 +12,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbTab;
+import org.reldb.dbrowser.ui.RevDatabase;
+import org.reldb.dbrowser.ui.RevDatabase.Script;
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class DbTabContentCmd extends Composite {
 	
 	private CmdPanel cmdPanel = null;
+	private RevDatabase database = null;
+	private String name;
+	private String oldScript;
+	
 	private ToolItem copyOutputToInputBtn;
 	
 	public DbTabContentCmd(DbTab parentTab, Composite contentParent) throws NumberFormatException, ClassNotFoundException, IOException, DatabaseFormatVersionException {
@@ -27,6 +33,11 @@ public class DbTabContentCmd extends Composite {
 			@Override
 			protected void notifyEnhancedOutputChange() {
 				copyOutputToInputBtn.setEnabled(!cmdPanel.getEnhancedOutput());
+			}
+			@Override
+			protected void notifyHistoryAdded(String historyItem) {
+				database.addScriptHistory(name, historyItem);
+				oldScript = historyItem;
 			}
 		};
 
@@ -68,9 +79,23 @@ public class DbTabContentCmd extends Composite {
 		fd_composite.right = new FormAttachment(100);
 		fd_composite.bottom = new FormAttachment(100);
 		cmdPanel.setLayoutData(fd_composite);
+		
+	    if (parentTab.getConnection().hasRevExtensions() >= 0) {
+		    name = "scratchpad";
+		    database = new RevDatabase(parentTab.getConnection());
+		    Script script = database.getScript(name);
+		    oldScript = script.getContent();
+		    cmdPanel.setContent(script);
+	    }
 	}
 
 	public void dispose() {
+		if (database != null) {
+			String newScript = cmdPanel.getInputText();
+			if (!oldScript.equals(newScript))
+				database.addScriptHistory(name, oldScript);
+			database.setScript(name, cmdPanel.getInputText());
+		}
 		cmdPanel.dispose();
 		super.dispose();
 	}
