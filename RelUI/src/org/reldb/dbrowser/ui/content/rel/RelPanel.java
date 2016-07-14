@@ -37,11 +37,11 @@ import org.reldb.dbrowser.ui.content.rel.query.QueryCreator;
 import org.reldb.dbrowser.ui.content.rel.query.QueryDesigner;
 import org.reldb.dbrowser.ui.content.rel.query.QueryDropper;
 import org.reldb.dbrowser.ui.content.rel.query.QueryPlayer;
-import org.reldb.dbrowser.ui.content.rel.script.CmdCreator;
-import org.reldb.dbrowser.ui.content.rel.script.CmdDesigner;
-import org.reldb.dbrowser.ui.content.rel.script.CmdDropper;
-import org.reldb.dbrowser.ui.content.rel.script.CmdPlayer;
-import org.reldb.dbrowser.ui.content.rel.script.CmdRenamer;
+import org.reldb.dbrowser.ui.content.rel.script.ScriptCreator;
+import org.reldb.dbrowser.ui.content.rel.script.ScriptDesigner;
+import org.reldb.dbrowser.ui.content.rel.script.ScriptDropper;
+import org.reldb.dbrowser.ui.content.rel.script.ScriptPlayer;
+import org.reldb.dbrowser.ui.content.rel.script.ScriptRenamer;
 import org.reldb.dbrowser.ui.content.rel.type.TypeCreator;
 import org.reldb.dbrowser.ui.content.rel.type.TypeDropper;
 import org.reldb.dbrowser.ui.content.rel.type.TypePlayer;
@@ -348,7 +348,7 @@ public class RelPanel extends Composite {
 			// buildSubtree("Forms", null, null, null, null, null, null);
 			// buildSubtree("Reports", null, null, null, null, null, null);
 			buildSubtree("Script", IconLoader.loadIcon("script"), "sys.rev.Script {Name} ORDER (ASC Name)", "Name", 
-				new CmdPlayer(this), new CmdCreator(this), new CmdDropper(this), new CmdDesigner(this), new CmdRenamer(this));
+				new ScriptPlayer(this), new ScriptCreator(this), new ScriptDropper(this), new ScriptDesigner(this), new ScriptRenamer(this));
 		}
 		
 		fireDbTreeNoSelectionEvent();

@@ -8,9 +8,9 @@ import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 
-public class CmdDropper extends DbTreeAction {
+public class ScriptDropper extends DbTreeAction {
 
-	public CmdDropper(RelPanel relPanel) {
+	public ScriptDropper(RelPanel relPanel) {
 		super(relPanel);
 	}
 

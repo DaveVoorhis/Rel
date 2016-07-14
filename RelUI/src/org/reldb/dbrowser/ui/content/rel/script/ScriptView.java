@@ -7,9 +7,9 @@ import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 
-public class CmdView extends DbTreeAction {
+public class ScriptView extends DbTreeAction {
 	
-	public CmdView(RelPanel relPanel, int revstyle) {
+	public ScriptView(RelPanel relPanel, int revstyle) {
 		super(relPanel);
 	}
 
@@ -17,7 +17,7 @@ public class CmdView extends DbTreeAction {
 	public void go(DbTreeItem item, Image image) {
 		CTabItem tab = relPanel.getTab(item);
 		if (tab == null) {
-			CmdTab revtab = new CmdTab(relPanel, item, Rev.EDITABLE);
+			ScriptTab revtab = new ScriptTab(relPanel, item, Rev.EDITABLE);
 			tab = revtab;
 		}
 		tab.setImage(image);

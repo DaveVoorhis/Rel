@@ -10,9 +10,9 @@ import org.reldb.dbrowser.ui.content.rel.NewItemDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.dbrowser.ui.content.rel.RenameItemDialog;
 
-public class CmdRenamer extends DbTreeAction {
+public class ScriptRenamer extends DbTreeAction {
 
-	public CmdRenamer(RelPanel relPanel) {
+	public ScriptRenamer(RelPanel relPanel) {
 		super(relPanel);
 	}
 

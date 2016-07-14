@@ -10,9 +10,9 @@ import org.reldb.dbrowser.ui.content.rel.NewItemDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 
-public class CmdCreator extends DbTreeAction {
+public class ScriptCreator extends DbTreeAction {
 
-	public CmdCreator(RelPanel relPanel) {
+	public ScriptCreator(RelPanel relPanel) {
 		super(relPanel);
 	}
 
@@ -36,7 +36,7 @@ public class CmdCreator extends DbTreeAction {
 		CTabItem tab = relPanel.getTab(newItem);
 		if (tab != null)
 			tab.dispose();
-		CmdTab revtab = new CmdTab(relPanel, newItem, Rev.EDITABLE);
+		ScriptTab revtab = new ScriptTab(relPanel, newItem, Rev.EDITABLE);
 		revtab.setImage(image);
 		relPanel.getTabFolder().setSelection(revtab);
 	}

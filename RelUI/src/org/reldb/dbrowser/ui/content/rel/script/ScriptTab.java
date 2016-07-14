@@ -13,13 +13,13 @@ import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
-public class CmdTab extends DbTreeTab {
+public class ScriptTab extends DbTreeTab {
 	private CmdPanel cmdPanel;
 	private RevDatabase database;
 	private String name;
 	private String oldScript;
 	
-	public CmdTab(RelPanel parent, DbTreeItem item, int revstyle) {
+	public ScriptTab(RelPanel parent, DbTreeItem item, int revstyle) {
 		super(parent, item);
 		try {
 			cmdPanel = new CmdPanel(parent.getConnection(), parent.getTabFolder(), CmdPanel.NONE) {
