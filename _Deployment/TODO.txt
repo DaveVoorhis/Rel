@@ -1,6 +1,8 @@
 ** TO DO **
 
 Short term:
+	// TODO - put Zoom button on DbTabContentRev, DbTabContentCmd, and DbTabContentRel. Remove from CmdTab.
+	//        This will allow it to work on any content, and not disappear when all tabs disappear.
 	// TODO - test relvar contents editing. Delete doesn't refresh?  Refresh doesn't refresh?
 	// TODO - test script editing thoroughly, including history
 	// TODO - test find/replace thoroughly
