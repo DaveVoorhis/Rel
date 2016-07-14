@@ -357,7 +357,7 @@ public class RevDatabase {
 		Tuples tuples = (Tuples)evaluate(query);
 		for (Tuple tuple: tuples)
 			content = StringUtils.unquote(tuple.get("text").toString());
-		query = "sys.rev.ScriptHistory WHERE Name='" + name + "' ORDER (DESC timestamp)";
+		query = "sys.rev.ScriptHistory WHERE Name='" + name + "' ORDER (ASC timestamp)";
 		tuples = (Tuples)evaluate(query);
 		Vector<String> history = new Vector<String>();
 		for (Tuple tuple: tuples)
