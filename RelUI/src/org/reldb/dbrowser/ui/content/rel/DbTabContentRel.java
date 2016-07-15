@@ -63,6 +63,7 @@ public class DbTabContentRel extends Composite {
 				rel.zoom();
 			}
 		});
+		tlitmZoom.setEnabled(false);
 	
 		tlitmBackup = new ToolItem(mainToolBar, SWT.None);
 		tlitmBackup.setToolTipText("Make backup");
@@ -144,6 +145,8 @@ public class DbTabContentRel extends Composite {
 					tabToolBar = null;
 				}
 				CTabFolder tabs = rel.getTabFolder();
+				if (!tlitmZoom.isDisposed())
+					tlitmZoom.setEnabled(tabs.getItemCount() > 0);
 				CTabItem selectedTab = tabs.getSelection();
 				if (selectedTab != null) {
 					if (selectedTab instanceof DbTreeTab) {

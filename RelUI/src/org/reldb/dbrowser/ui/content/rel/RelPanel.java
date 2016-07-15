@@ -66,8 +66,9 @@ public class RelPanel extends Composite {
 	private SashForm sashForm;
 	
 	private CTabFolder tabFolder;
-	private Tree tree;
+	private CTabFolder treeFolder;
 	
+	private Tree tree;
 	private HashMap<String, TreeItem> treeRoots;
 	
 	/**
@@ -84,8 +85,15 @@ public class RelPanel extends Composite {
 		crashHandler = parentTab.getCrashHandler();
 		
 		sashForm = new SashForm(this, SWT.NONE);
+	
+		treeFolder = new CTabFolder(sashForm, SWT.BORDER);
+		CTabItem treeTab = new CTabItem(treeFolder, SWT.NONE);
+		treeTab.setText("Database");
+		treeTab.setImage(IconLoader.loadIcon("DatabaseIcon"));
+		tree = new Tree(treeFolder, SWT.NONE);		
+		treeTab.setControl(tree);
+		treeFolder.setSelection(0);
 		
-		tree = new Tree(sashForm, SWT.NONE);
 		tree.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
 				DbTreeItem selection = getSelection();
@@ -188,6 +196,10 @@ public class RelPanel extends Composite {
 		buildDbTree();
 	}
 
+	public void notifyTabCreated() {
+		fireDbTreeTabchangeEvent();
+	}
+
 	public DbConnection getConnection() {
 		return connection;
 	}
@@ -245,7 +257,7 @@ public class RelPanel extends Composite {
 			listener.select(item);
 	}
 	
-	protected void fireDbTreeNoSelectionEvent() {
+	private void fireDbTreeNoSelectionEvent() {
 		fireDbTreeSelectionEvent(new DbTreeItem());
 	}
 	
@@ -361,16 +373,16 @@ public class RelPanel extends Composite {
 		tree.setFocus();
 	}
 
-	private void zoomMainOnly() {
+	private void zoomMain() {
 		if (sashForm.getMaximizedControl() == null)
-			sashForm.setMaximizedControl(tree);
-		else if (sashForm.getMaximizedControl() == tree)
 			sashForm.setMaximizedControl(tabFolder);
 		else
 			sashForm.setMaximizedControl(null);
 	}
 	
 	public void zoom() {
+		if (tabFolder.getItemCount() == 0)
+			return;
 		CTabItem tabItem = tabFolder.getSelection();
 		if (tabItem != null && tabItem instanceof DbTreeTab) {
 			DbTreeTab currentTab = (DbTreeTab)tabItem;
@@ -379,6 +391,7 @@ public class RelPanel extends Composite {
 				return;
 			}
 		}
-		zoomMainOnly();
+		zoomMain();
 	}
+	
 }

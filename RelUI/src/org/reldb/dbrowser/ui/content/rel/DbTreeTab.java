@@ -16,6 +16,7 @@ public class DbTreeTab extends CTabItem {
 		this.relPanel = parent;
 		this.dbTreeItem = dbTreeItem;
 		setText(dbTreeItem.getTabName());
+		relPanel.notifyTabCreated();
 	}
 
 	public void ready() {
