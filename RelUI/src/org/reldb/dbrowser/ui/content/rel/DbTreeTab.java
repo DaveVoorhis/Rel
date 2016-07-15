@@ -31,5 +31,10 @@ public class DbTreeTab extends CTabItem {
 	public ToolBar getToolBar(Composite parent) {
 		return null;
 	}
-	
+
+	public boolean isSelfZoomable() {
+		return false;
+	}
+
+	public void zoom() {}
 }

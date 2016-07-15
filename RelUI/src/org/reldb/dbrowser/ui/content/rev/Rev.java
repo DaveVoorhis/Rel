@@ -62,7 +62,7 @@ public class Rev extends Composite {
 	private Connection connection;
 	private Model model;
 	private CmdPanelOutput outputView;
-	private SashForm revPane;
+	private SashForm sashForm;
 	private RevDatabase database;
     
     private PreferenceChangeListener preferenceChangeListener;
@@ -88,11 +88,11 @@ public class Rev extends Composite {
 		
 		setLayout(new FillLayout());
 				
-		revPane = new SashForm(this, SWT.NONE);
-		revPane.setOrientation(SWT.VERTICAL);
+		sashForm = new SashForm(this, SWT.NONE);
+		sashForm.setOrientation(SWT.VERTICAL);
 		
 		try {
-			outputView = new CmdPanelOutput(revPane, connection, SWT.NONE) {
+			outputView = new CmdPanelOutput(sashForm, connection, SWT.NONE) {
 				@Override
 				protected void notifyInputDone() {
 					stopBtn.setEnabled(false);
@@ -104,12 +104,12 @@ public class Rev extends Composite {
 				}
 				@Override
 				protected void zoom() {
-					if (revPane.getMaximizedControl() == null)
-						revPane.setMaximizedControl(inputView);
-					else if (revPane.getMaximizedControl() == inputView)
-						revPane.setMaximizedControl(outputView);
+					if (sashForm.getMaximizedControl() == null)
+						sashForm.setMaximizedControl(inputView);
+					else if (sashForm.getMaximizedControl() == inputView)
+						sashForm.setMaximizedControl(outputView);
 					else
-						revPane.setMaximizedControl(null);
+						sashForm.setMaximizedControl(null);
 				}
 			};
 		} catch (Exception e) {
@@ -117,7 +117,7 @@ public class Rev extends Composite {
 			e.printStackTrace();
 		}
 
-		inputView = new Composite(revPane, SWT.NONE);
+		inputView = new Composite(sashForm, SWT.NONE);
 		inputView.setLayout(new FormLayout());
 		
 		ToolBar revTools = new ToolBar(inputView, SWT.NONE);
@@ -184,7 +184,7 @@ public class Rev extends Composite {
 		scrollPanel.setExpandVertical(true);
 		scrollPanel.setMinSize(model.getSize());
 
-		revPane.setWeights(new int[] {1, 1});
+		sashForm.setWeights(new int[] {1, 1});
 
 		setupIcons();
 		
@@ -199,6 +199,37 @@ public class Rev extends Composite {
 		pack();
 
 		loadModel();
+	}
+	
+	private void setZoomedParent(Composite parent, Composite setTo) {
+		Composite parentparent = parent.getParent();
+		if (parentparent instanceof SashForm) {
+			SashForm parentSash = (SashForm)parentparent;
+			parentSash.setMaximizedControl(setTo);
+		}
+	}
+	
+	private void zoomInParent() {
+		Composite parent = getParent();
+		setZoomedParent(parent, parent);
+	}
+	
+	private void unzoomInParent() {
+		Composite parent = getParent();
+		setZoomedParent(parent, null);
+	}
+
+	public void zoom() {
+		if (sashForm.getMaximizedControl() == null) {
+			sashForm.setMaximizedControl(inputView);
+			zoomInParent();
+		} else if (sashForm.getMaximizedControl() == inputView) {
+			sashForm.setMaximizedControl(outputView);
+			zoomInParent();
+		} else {
+			sashForm.setMaximizedControl(null);
+			unzoomInParent();
+		}
 	}
 
 	public int getRevStyle() {

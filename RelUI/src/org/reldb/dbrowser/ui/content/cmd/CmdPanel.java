@@ -95,6 +95,19 @@ public class CmdPanel extends Composite {
 		setZoomedParent(parent, null);
 	}
 	
+	public void zoom() {
+		if (sashForm.getMaximizedControl() == null) {
+			sashForm.setMaximizedControl(cmdPanelInput);
+			zoomInParent();
+		} else if (sashForm.getMaximizedControl() == cmdPanelInput) {
+			sashForm.setMaximizedControl(cmdPanelOutput);
+			zoomInParent();
+		} else {
+			sashForm.setMaximizedControl(null);
+			unzoomInParent();
+		}
+	}
+	
 	protected void notifyHistoryAdded(String historyItem) {
 	}
 

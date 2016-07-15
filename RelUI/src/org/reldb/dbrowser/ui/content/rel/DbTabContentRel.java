@@ -21,6 +21,7 @@ import org.reldb.dbrowser.ui.preferences.Preferences;
 
 public class DbTabContentRel extends Composite {
 
+	private ToolItem tlitmZoom;
 	private ToolItem tlitmBackup;
 	private ToolItem tlitmShow;
 	private ToolItem tlitmNew;
@@ -52,6 +53,16 @@ public class DbTabContentRel extends Composite {
 		fd_composite.right = new FormAttachment(100);
 		fd_composite.bottom = new FormAttachment(100);
 		rel.setLayoutData(fd_composite);
+		
+		// zoom
+		tlitmZoom = new ToolItem(mainToolBar, SWT.NONE);
+		tlitmZoom.setToolTipText("Zoom in or out");
+		tlitmZoom.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				rel.zoom();
+			}
+		});
 	
 		tlitmBackup = new ToolItem(mainToolBar, SWT.None);
 		tlitmBackup.setToolTipText("Make backup");
@@ -171,6 +182,7 @@ public class DbTabContentRel extends Composite {
 	}
 	
 	private void setupIcons() {
+		tlitmZoom.setImage(IconLoader.loadIcon("view_fullscreen"));
 		tlitmBackup.setImage(IconLoader.loadIcon("safeIcon"));
 		tlitmShow.setImage(IconLoader.loadIcon("play"));
 		tlitmNew.setImage(IconLoader.loadIcon("item_add"));

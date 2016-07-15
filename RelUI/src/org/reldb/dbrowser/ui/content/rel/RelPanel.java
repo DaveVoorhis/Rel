@@ -62,10 +62,12 @@ public class RelPanel extends Composite {
 	private DbConnection connection;
 	private CrashHandler crashHandler;
 	private boolean showSystemObjects = false;
-
-	private CTabFolder tabFolder;
 	
+	private SashForm sashForm;
+	
+	private CTabFolder tabFolder;
 	private Tree tree;
+	
 	private HashMap<String, TreeItem> treeRoots;
 	
 	/**
@@ -81,7 +83,7 @@ public class RelPanel extends Composite {
 		connection = parentTab.getConnection();
 		crashHandler = parentTab.getCrashHandler();
 		
-		SashForm sashForm = new SashForm(this, SWT.NONE);
+		sashForm = new SashForm(this, SWT.NONE);
 		
 		tree = new Tree(sashForm, SWT.NONE);
 		tree.addSelectionListener(new SelectionAdapter() {
@@ -358,5 +360,25 @@ public class RelPanel extends Composite {
 		buildDbTree();
 		tree.setFocus();
 	}
+
+	private void zoomMainOnly() {
+		if (sashForm.getMaximizedControl() == null)
+			sashForm.setMaximizedControl(tree);
+		else if (sashForm.getMaximizedControl() == tree)
+			sashForm.setMaximizedControl(tabFolder);
+		else
+			sashForm.setMaximizedControl(null);
+	}
 	
+	public void zoom() {
+		CTabItem tabItem = tabFolder.getSelection();
+		if (tabItem != null && tabItem instanceof DbTreeTab) {
+			DbTreeTab currentTab = (DbTreeTab)tabItem;
+			if (currentTab.isSelfZoomable()) {
+				currentTab.zoom();
+				return;
+			}
+		}
+		zoomMainOnly();
+	}
 }

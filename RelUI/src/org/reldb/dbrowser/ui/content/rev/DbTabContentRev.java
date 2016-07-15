@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbTab;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 
 public class DbTabContentRev extends Composite {
@@ -24,6 +25,16 @@ public class DbTabContentRev extends Composite {
 
 		CmdPanelToolbar toolBar = new CmdPanelToolbar(this, rev.getCmdPanelOutput()) {
 			public void addAdditionalItems(ToolBar toolbar) {
+				// zoom
+				ToolItem maximize = new ToolItem(toolbar, SWT.NONE);
+				maximize.setImage(IconLoader.loadIcon("view_fullscreen"));
+				maximize.setToolTipText("Zoom in or out");
+				maximize.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						zoom();
+					}
+				});
 				// backup icon
 				ToolItem tlitmBackup = new ToolItem(toolbar, SWT.NONE);
 				tlitmBackup.setToolTipText("Make backup");
@@ -49,6 +60,10 @@ public class DbTabContentRev extends Composite {
 		fd_composite.right = new FormAttachment(100);
 		fd_composite.bottom = new FormAttachment(100);
 		rev.setLayoutData(fd_composite);
+	}
+
+	private void zoom() {
+		rev.zoom();
 	}
 
 	public void redisplayed() {

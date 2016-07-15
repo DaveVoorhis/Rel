@@ -31,4 +31,14 @@ public class RevTab extends DbTreeTab {
 		return rev.getRevStyle();
 	}
 	
+	@Override
+	public boolean isSelfZoomable() {
+		return true;
+	}
+	
+	@Override
+	public void zoom() {
+		rev.zoom();
+	}
+	
 }

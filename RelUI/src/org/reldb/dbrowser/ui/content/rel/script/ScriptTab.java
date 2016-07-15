@@ -55,4 +55,15 @@ public class ScriptTab extends DbTreeTab {
 		return new CmdPanelToolbar(parent, cmdPanel.getCmdPanelOutput()).getToolBar();
 	}
 	
+	
+	@Override
+	public boolean isSelfZoomable() {
+		return true;
+	}
+	
+	@Override
+	public void zoom() {
+		cmdPanel.zoom();
+	}
+	
 }

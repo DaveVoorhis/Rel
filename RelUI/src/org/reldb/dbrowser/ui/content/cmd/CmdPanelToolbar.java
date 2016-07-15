@@ -27,7 +27,6 @@ public class CmdPanelToolbar {
 	private ToolItem autoclearToggle = null;
 	private ToolItem headingToggle = null;
 	private ToolItem headingTypesToggle = null;
-	private ToolItem maximize = null;
 
 	private ToolBar toolBar;
 	
@@ -131,18 +130,6 @@ public class CmdPanelToolbar {
 						.getSelection());
 			}
 		});
-
-		if (cmdPanel.canZoom()) {
-			(new ToolItem(toolBar, SWT.SEPARATOR)).setWidth(20);
-			maximize = new ToolItem(toolBar, SWT.PUSH);
-			maximize.setToolTipText("Zoom in or out");
-			maximize.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					cmdPanel.zoom();
-				}
-			});
-		}
 		
 		setupIcons();
 
@@ -191,8 +178,6 @@ public class CmdPanelToolbar {
 		autoclearToggle.setImage(IconLoader.loadIcon("autoclearIcon"));
 		headingToggle.setImage(IconLoader.loadIcon("headingIcon"));
 		headingTypesToggle.setImage(IconLoader.loadIcon("typeSuppressIcon"));
-		if (maximize != null)
-			maximize.setImage(IconLoader.loadIcon("view_fullscreen"));
 	}
 
 	public ToolBar getToolBar() {
