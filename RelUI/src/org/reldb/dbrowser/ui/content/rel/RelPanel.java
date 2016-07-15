@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
+import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.content.rel.constraint.ConstraintCreator;
 import org.reldb.dbrowser.ui.content.rel.constraint.ConstraintDesigner;
 import org.reldb.dbrowser.ui.content.rel.constraint.ConstraintDropper;
@@ -53,6 +54,7 @@ import org.reldb.dbrowser.ui.content.rel.view.VarViewCreator;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewDesigner;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewDropper;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewPlayer;
+import org.reldb.dbrowser.ui.content.rel.welcome.WelcomeView;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.connection.CrashHandler;
@@ -364,8 +366,26 @@ public class RelPanel extends Composite {
 			buildSubtree("Script", IconLoader.loadIcon("script"), "sys.rev.Script {Name} ORDER (ASC Name)", "Name", 
 				new ScriptPlayer(this), new ScriptCreator(this), new ScriptDropper(this), new ScriptDesigner(this), new ScriptRenamer(this));
 		}
+
+		buildSubtree("Welcome", IconLoader.loadIcon("smile"), "REL {TUP {Name 'Introduction'}}", "Name",
+				new WelcomeView(this), null, null, null, null);
 		
-		fireDbTreeNoSelectionEvent();
+		boolean displayWelcome = true;
+		if (connection.hasRevExtensions() >= 0) {
+			RevDatabase db = new RevDatabase(connection);
+			if (db.getSetting(getClass().getName() + "-showWelcome").equals("no"))
+				displayWelcome = false;
+		}
+		
+		if (displayWelcome) {
+			TreeItem lastItem = tree.getItem(tree.getItemCount() - 1);
+			lastItem.setExpanded(true);
+			lastItem = lastItem.getItem(lastItem.getItemCount() - 1);
+			tree.setSelection(lastItem);
+			playItem();
+			fireDbTreeTabchangeEvent();
+		} else
+			fireDbTreeNoSelectionEvent();
 	}
 
 	public void redisplayed() {

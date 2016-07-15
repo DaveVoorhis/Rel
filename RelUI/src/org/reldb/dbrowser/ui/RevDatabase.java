@@ -52,6 +52,11 @@ public class RevDatabase {
 				"	ver INTEGER" +
 				"} INIT(relation {tuple {ver " + EXPECTED_REV_VERSION + "}}) key {ver};" +
 				
+				"var sys.rev.Settings real relation {" +
+				"   Name CHAR, " +
+				"   value CHAR " +
+				"} key {Name};" +
+			    
 			    "var sys.rev.Relvar real relation {" +
 			    "   Name CHAR, " +
 			    "   relvarName CHAR, " +
@@ -132,6 +137,7 @@ public class RevDatabase {
 				"drop var sys.rev.ScriptHistory;" +
 			    "drop var sys.rev.Query;" +
 				"drop var sys.rev.Relvar;" +
+			    "drop var sys.rev.Settings;" +
 				"drop var sys.rev.Version;";
 		return execute(query);
 	}
@@ -397,6 +403,23 @@ public class RevDatabase {
 			"UPDATE sys.rev.Script WHERE Name='" + nameFrom + "': {Name := '" + nameTo + "'}, " +
 			"UPDATE sys.rev.ScriptHistory WHERE Name='" + nameFrom + "': {Name := '" + nameTo + "'};";
 		return execute(query);
+	}
+	
+	public void setSetting(String name, String value) {
+		String query = 
+			"IF COUNT(sys.rev.Settings WHERE Name='" + name + "') = 0 THEN " +
+			"   INSERT sys.rev.Settings REL {TUP {Name '" + name + "', value '" + StringUtils.quote(value) + "'}}; " +
+			"ELSE " +
+			"   UPDATE sys.rev.Settings WHERE Name='" + name + "': {value := '" + StringUtils.quote(value) + "'}};";
+		execute(query);
+	}
+	
+	public String getSetting(String name) {
+		String query = "sys.rev.Settings WHERE Name='" + name + "'";
+		Tuples tuples = (Tuples)evaluate(query);
+		for (Tuple tuple: tuples)
+			 return StringUtils.unquote(tuple.get("value").toString());
+		return "";
 	}
 	
 }
