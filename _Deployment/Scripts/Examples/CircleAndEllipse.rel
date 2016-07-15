@@ -1,0 +1,15 @@
+/* Circle and Ellipse, based on the canonical examples. */
+
+TYPE Point POSSREP {x INT, y INT};
+
+TYPE PlaneFigure UNION;
+
+TYPE Ellipse IS { 
+	PlaneFigure 
+	POSSREP {major INT, minor INT, center Point CONSTRAINT major >= minor}
+}; 
+
+TYPE Circle IS { 
+	Ellipse CONSTRAINT THE_major(Ellipse) = THE_minor(Ellipse)
+	POSSREP {radius = THE_major(Ellipse), center = THE_center(Ellipse) }
+};
