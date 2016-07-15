@@ -410,7 +410,8 @@ public class RevDatabase {
 			"IF COUNT(sys.rev.Settings WHERE Name='" + name + "') = 0 THEN " +
 			"   INSERT sys.rev.Settings REL {TUP {Name '" + name + "', value '" + StringUtils.quote(value) + "'}}; " +
 			"ELSE " +
-			"   UPDATE sys.rev.Settings WHERE Name='" + name + "': {value := '" + StringUtils.quote(value) + "'}};";
+			"   UPDATE sys.rev.Settings WHERE Name='" + name + "': {value := '" + StringUtils.quote(value) + "'}; " +
+			"END IF;";
 		execute(query);
 	}
 	

@@ -1,6 +1,8 @@
 package org.reldb.dbrowser.ui.content.rel.welcome;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.RowLayout;
@@ -42,6 +44,15 @@ public class WelcomeTab extends DbTreeTab {
 			);
 			Button removeRev = new Button(mainPanel, SWT.PUSH);
 			removeRev.setText("Remove Rev");
+			Button welcomeShow = new Button(mainPanel, SWT.CHECK);
+			welcomeShow.setText("Check this box to display this Welcome tab next time this database is opened.");
+			welcomeShow.setSelection(!database.getSetting(parent.getClass().getName() + "-showWelcome").equals("no"));
+			welcomeShow.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					database.setSetting(parent.getClass().getName() + "-showWelcome", (welcomeShow.getSelection()) ? "yes" : "no");
+				}
+			});
 		} else {
 			lbl.setText(
 				"The Rev database development extensions are not installed.\n\nIf you'd like to develop this database,\n" +
