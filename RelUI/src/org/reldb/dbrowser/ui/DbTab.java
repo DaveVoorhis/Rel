@@ -376,6 +376,13 @@ public class DbTab extends CTabItem {
     public void refresh() {
     	tltmModeRev.setEnabled(connection.client.hasRevExtensions() >= 0);
     }
+
+	public void switchToCmdMode() {
+		tltmModeRev.setSelection(false);
+		tltmModeRel.setSelection(false);
+		tltmModeCmd.setSelection(true);
+		showCmd();
+	}
     
     public String getStatus() {
     	return status;

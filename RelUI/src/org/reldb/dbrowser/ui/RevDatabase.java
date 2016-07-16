@@ -454,7 +454,12 @@ public class RevDatabase {
 	public boolean createOverview() {
 		String query = 
 			"VAR pub.Overview REAL RELATION {content CHAR, revPrompt BOOLEAN} KEY {}; " +
-			"INSERT pub.Overview RELATION {TUP {content 'Database overview goes here.', revPrompt TRUE}};";
+			"INSERT pub.Overview RELATION {TUP {content '" + 
+				StringUtils.quote(
+					"Edit the pub.Overview variable to change this text.\n" +
+					"The 'contents' attribute value will appear here.\n" +
+					"Set the 'revPrompt' attribute to FALSE to only display this overview."
+				) + "', revPrompt TRUE}};";
 		return execute(query);
 	}
 	

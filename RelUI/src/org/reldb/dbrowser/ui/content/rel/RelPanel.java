@@ -438,5 +438,9 @@ public class RelPanel extends Composite {
 		}
 		zoomMain();
 	}
+
+	public void switchToCmdMode() {
+		parentTab.switchToCmdMode();
+	}
 	
 }
