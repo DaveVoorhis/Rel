@@ -1,6 +1,7 @@
 ** TO DO **
 
 Short term:
+	// TODO - zoom window on fields in relvar contents editing?
 	// TODO - test relvar contents editing. Delete doesn't refresh?  Refresh doesn't refresh?
 	// TODO - test script editing thoroughly, including history
 	// TODO - test find/replace thoroughly
