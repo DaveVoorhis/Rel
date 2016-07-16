@@ -325,7 +325,7 @@ public abstract class Editor extends Grid {
 				processRows.remove(rownum);
 			} else {
 				String keyspec = getKeySelectionExpression(rownum);
-				String updateQuery = "UPDATE " + relvarName + " WHERE " + keyspec + ": {";
+				String updateQuery = "UPDATE " + relvarName + ((keyspec.length() > 0) ? " WHERE " + keyspec : "") + ": {";
 				String updateAttributes = "";
 				for (int column = 0; column < heading.length; column++) {
 					if (row.isChanged(column)) {
