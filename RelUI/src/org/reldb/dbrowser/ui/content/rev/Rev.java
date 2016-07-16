@@ -10,6 +10,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -120,6 +122,13 @@ public class Rev extends Composite {
 		inputView = new Composite(sashForm, SWT.NONE);
 		inputView.setLayout(new FormLayout());
 		
+		inputView.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				setTitle();
+			}
+		});
+		
 		ToolBar revTools = new ToolBar(inputView, SWT.NONE);
 		
 		if ((revstyle & SAVE_AND_LOAD_BUTTONS) != 0) {
@@ -201,6 +210,17 @@ public class Rev extends Composite {
 		loadModel();
 	}
 	
+	private void setTitle() {
+		String title;
+		if (isReadOnly())
+			title = "Show " + model.getModelName();
+		else
+			title = "Edit " + model.getModelName() + ".  Right-click for options.";
+		if (database.hasRevExtensions() < 0)
+			title += " WARNING: Rev extensions are not installed, so nothing will be saved!";
+		modelLabel.setText(title);		
+	}
+	
 	private void setZoomedParent(Composite parent, Composite setTo) {
 		Composite parentparent = parent.getParent();
 		if (parentparent instanceof SashForm) {
@@ -250,6 +270,10 @@ public class Rev extends Composite {
 	}
 
 	protected void doSaveAs() {
+		if (database.hasRevExtensions() < 0) {
+			MessageDialog.openError(this.getShell(), "Rev", "Rev extensions are not installed, so queries can't be saved.");
+			return;
+		}
 		String oldName = model.getModelName();
 		SaveQueryAsDialog saveAs = new SaveQueryAsDialog(getShell(), oldName);
 		if (saveAs.open() == Dialog.OK) {
@@ -280,6 +304,10 @@ public class Rev extends Composite {
 	}
 	
 	protected void doLoad() {
+		if (database.hasRevExtensions() < 0) {
+			MessageDialog.openError(this.getShell(), "Rev", "Rev extensions are not installed, so queries can't be loaded.");
+			return;
+		}
 		LoadQueryDialog load = new LoadQueryDialog(getShell(), database.getModels());
 		if (load.open() == Dialog.OK && load.getSelectedItem() != null && load.getSelectedItem().trim().length() > 0) {
 			model.setModelName(load.getSelectedItem());
@@ -322,12 +350,7 @@ public class Rev extends Composite {
 	private void loadModel() {
 		model.clear();
 		
-		String title;
-		if (isReadOnly())
-			title = "Show " + model.getModelName();
-		else
-			title = "Edit " + model.getModelName() + ".  Right-click for options.";
-		modelLabel.setText(title);
+		setTitle();
 		
 		if (getMenu() != null)
 			getMenu().dispose();
@@ -393,26 +416,13 @@ public class Rev extends Composite {
 
 		// load
 		int version = hasRevExtensions();
-		if (version < 0) {
-			if (!installRevExtensions())
-				MessageDialog.openError(getShell(), "Rev", "Unable to install Rev extensions.  Check the system log.");
-			else
-				refresh();
-		} else if (version < RevDatabase.EXPECTED_REV_VERSION) {
-			upgrade(version);
-		} else {
-			presentRelvars();
-			presentQueries();
-			
-			// Uninstall
-			MenuItem uninstallRev = new MenuItem(menuBar, SWT.PUSH);
-			uninstallRev.setText("Re-install Rev extensions");
-			uninstallRev.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					uninstall();
-				}
-			});	
+		if (version >= 0) {
+			if (version < RevDatabase.EXPECTED_REV_VERSION) {
+				upgrade(version);
+			} else {
+				presentRelvars();
+				presentQueries();
+			}
 		}
 	}
 	
@@ -709,31 +719,6 @@ public class Rev extends Composite {
 	// Return version number of Rev extensions.  Return -1 if not installed.
 	private int hasRevExtensions() {
 		return database.hasRevExtensions();
-	}
-	
-	private boolean installRevExtensions() {
-		boolean pass = database.installRevExtensions();
-		if (pass)
-			loadModel();
-		return pass;
-	}
-
-	private boolean removeRevExtensions() {
-		boolean pass = database.removeRevExtensions();
-		if (pass)
-			loadModel();
-		return pass;
-	}
-	
-	private void uninstall() {
-		if (hasRevExtensions() < 0)
-        	MessageDialog.openInformation(getShell(), "Rev", "Rev is not installed.");
-		if (!MessageDialog.openConfirm(getShell(), "Rev", "Are you sure?  This will remove all Rev query definitions."))
-			return;
-		if (removeRevExtensions())
-			refresh();
-		else
-			MessageDialog.openError(getShell(), "Rev", "Unable to remove Rev extensions.  You may have to remove them manually.");
 	}
 	
 	private void upgrade(int currentVersionOfRevFromDatabase) {

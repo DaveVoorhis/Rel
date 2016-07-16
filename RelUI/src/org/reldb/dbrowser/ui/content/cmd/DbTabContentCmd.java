@@ -37,7 +37,8 @@ public class DbTabContentCmd extends Composite {
 			}
 			@Override
 			protected void notifyHistoryAdded(String historyItem) {
-				database.addScriptHistory(name, historyItem);
+				if (database != null)
+					database.addScriptHistory(name, historyItem);
 				oldScript = historyItem;
 			}
 		};

@@ -344,6 +344,8 @@ public class DbTab extends CTabItem {
         setStatus("Ok");
         toolBarMode.setEnabled(true);
 
+        refresh();
+        
         if (tltmModeRel.getSelection())
         	showRel();
         else if (tltmModeRev.getSelection())
@@ -369,6 +371,10 @@ public class DbTab extends CTabItem {
 		});
 		
 		DBrowser.createNewTabIfNeeded();
+    }
+    
+    public void refresh() {
+    	tltmModeRev.setEnabled(connection.client.hasRevExtensions() >= 0);
     }
     
     public String getStatus() {

@@ -61,6 +61,8 @@ import org.reldb.rel.client.connection.CrashHandler;
 
 public class RelPanel extends Composite {
 	
+	private DbTab parentTab;
+	
 	private DbConnection connection;
 	private CrashHandler crashHandler;
 	private boolean showSystemObjects = false;
@@ -81,6 +83,7 @@ public class RelPanel extends Composite {
 	 */
 	public RelPanel(DbTab parentTab, Composite parent, int style) {
 		super(parent, style);
+		this.parentTab = parentTab;
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		connection = parentTab.getConnection();
@@ -196,6 +199,24 @@ public class RelPanel extends Composite {
 		sashForm.setWeights(new int[] {1, 4});
 		
 		buildDbTree();
+		
+		boolean displayWelcome = true;
+		if (connection.hasRevExtensions() >= 0) {
+			RevDatabase db = new RevDatabase(connection);
+			if (db.getSetting(getClass().getName() + "-showWelcome").equals("no"))
+				displayWelcome = false;
+		}
+		
+		if (displayWelcome) {
+			TreeItem lastItem = tree.getItem(tree.getItemCount() - 1);
+			lastItem.setExpanded(true);
+			if (lastItem.getItemCount() > 0) {
+				lastItem = lastItem.getItem(lastItem.getItemCount() - 1);
+				tree.setSelection(lastItem);
+				playItem();
+				fireDbTreeTabchangeEvent();
+			}
+		}
 	}
 
 	public void notifyTabCreated() {
@@ -329,6 +350,13 @@ public class RelPanel extends Composite {
 		}
 	}
 
+	private void removeSubtree(String section) {
+		TreeItem root = treeRoots.get(section);
+		if (root != null)
+			treeRoots.remove(section);
+		root.dispose();
+	}
+	
 	private void buildSubtree(String section, Image image, String query, String displayAttributeName, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer) {
 		buildSubtree(section, image, query, displayAttributeName, (String attributeName) -> true, player, creator, dropper, designer, renamer);
 	}
@@ -336,7 +364,7 @@ public class RelPanel extends Composite {
 	private void buildDbTree() {
 		for (TreeItem root: treeRoots.values())
 			root.removeAll();
-
+		
 		String sysStr = (showSystemObjects) ? null : "Owner <> 'Rel'";
 		String andSysStr = ((sysStr != null) ? (" AND " + sysStr) : "");
 		String whereSysStr = ((sysStr != null) ? (" WHERE " + sysStr) : "");
@@ -358,34 +386,13 @@ public class RelPanel extends Composite {
 		buildSubtree("Constraint", IconLoader.loadIcon("constraint"), "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
 			new ConstraintPlayer(this), new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this), null);
 		
-		if (connection.hasRevExtensions() >= 0) {
-			buildSubtree("Query", IconLoader.loadIcon("query"), "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
-					new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this), null);
-			// buildSubtree("Forms", null, null, null, null, null, null);
-			// buildSubtree("Reports", null, null, null, null, null, null);
-			buildSubtree("Script", IconLoader.loadIcon("script"), "sys.rev.Script {Name} ORDER (ASC Name)", "Name", 
-				new ScriptPlayer(this), new ScriptCreator(this), new ScriptDropper(this), new ScriptDesigner(this), new ScriptRenamer(this));
-		}
-
+		if (connection.hasRevExtensions() >= 0)
+			handleRevAddition();
+		
 		buildSubtree("Welcome", IconLoader.loadIcon("smile"), "REL {TUP {Name 'Introduction'}}", "Name",
 				new WelcomeView(this), null, null, null, null);
 		
-		boolean displayWelcome = true;
-		if (connection.hasRevExtensions() >= 0) {
-			RevDatabase db = new RevDatabase(connection);
-			if (db.getSetting(getClass().getName() + "-showWelcome").equals("no"))
-				displayWelcome = false;
-		}
-		
-		if (displayWelcome) {
-			TreeItem lastItem = tree.getItem(tree.getItemCount() - 1);
-			lastItem.setExpanded(true);
-			lastItem = lastItem.getItem(lastItem.getItemCount() - 1);
-			tree.setSelection(lastItem);
-			playItem();
-			fireDbTreeTabchangeEvent();
-		} else
-			fireDbTreeNoSelectionEvent();
+		fireDbTreeNoSelectionEvent();
 	}
 
 	public void redisplayed() {
@@ -393,6 +400,24 @@ public class RelPanel extends Composite {
 		tree.setFocus();
 	}
 
+	public void handleRevAddition() {
+		parentTab.refresh();
+		buildSubtree("Query", IconLoader.loadIcon("query"), "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
+				new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this), null);
+		// buildSubtree("Forms", null, null, null, null, null, null);
+		// buildSubtree("Reports", null, null, null, null, null, null);
+		buildSubtree("Script", IconLoader.loadIcon("script"), "sys.rev.Script {Name} ORDER (ASC Name)", "Name", 
+			new ScriptPlayer(this), new ScriptCreator(this), new ScriptDropper(this), new ScriptDesigner(this), new ScriptRenamer(this));		
+	}
+	
+	public void handleRevRemoval() {
+		parentTab.refresh();
+		removeSubtree("Query");
+		// removeSubtree("Forms");
+		// removeSubtree("Reports");
+		removeSubtree("Script");
+	}
+	
 	private void zoomMain() {
 		if (sashForm.getMaximizedControl() == null)
 			sashForm.setMaximizedControl(tabFolder);
