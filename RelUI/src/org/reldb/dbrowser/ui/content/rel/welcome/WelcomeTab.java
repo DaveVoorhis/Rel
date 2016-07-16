@@ -35,8 +35,14 @@ public class WelcomeTab extends DbTreeTab {
 		lbl.setText("Welcome to the Rel database at " + connection.getDbURL());
 		
 		lbl = new Label(mainPanel, SWT.WRAP);
-		if (database.relvarExists("pub.Overview"))
-			lbl.setText(database.getOverview());
+		if (database.relvarExists("pub.Overview")) {
+			RevDatabase.Overview overview = database.getOverview();
+			lbl.setText(overview.getContent());
+			if (!overview.getRevPrompt()) {
+				mainPanel.pack();
+				return;
+			}
+		}
 
 		lbl = new Label(mainPanel, SWT.WRAP);
 		lbl.setText("_______________________________");
@@ -108,7 +114,8 @@ public class WelcomeTab extends DbTreeTab {
 				"No overview description has been set for this database.\n" +
 				"To create one, press the 'Create Overview' button.\n" +
 				"That will create a variable called pub.Overview, which you can edit.\n" +
-				"Its contents will appear at the top of this Introduction tab."
+				"The 'contents' attribute value will appear at the top of this Introduction tab.\n" +
+				"Set the 'revPrompt' attribute to FALSE to stop being prompted to install Rev."
 			);
 			Button installOverview = new Button(mainPanel, SWT.PUSH);
 			installOverview.setText("Create Overview");

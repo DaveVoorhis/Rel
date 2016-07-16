@@ -423,20 +423,39 @@ public class RevDatabase {
 		return "";
 	}
 
-	public String getOverview() {
+	public static class Overview {
+		private String content;
+		private boolean revPrompt;
+		public Overview(String content, boolean revPrompt) {
+			this.content = content;
+			this.revPrompt = revPrompt;
+		}
+		public String getContent() {
+			return content;
+		}
+		public boolean getRevPrompt() {
+			return revPrompt;
+		}
+	}
+	
+	public Overview getOverview() {
 		String query = "pub.Overview";
 		Tuples tuples = (Tuples)evaluate(query);
-		String content = "";
-		for (Tuple tuple: tuples)
-			content += StringUtils.unquote(tuple.get("content").toString());
-		return content;
+		try {
+			for (Tuple tuple: tuples) {
+				String content = StringUtils.unquote(tuple.get("content").toString());
+				boolean revPrompt = tuple.get("revPrompt").toBoolean();
+				return new Overview(content, revPrompt);
+			}
+		} catch (Exception e) {}
+		return new Overview("", true);
 	}
 
 	public boolean createOverview() {
 		String query = 
-			"VAR pub.Overview REAL RELATION {content CHAR} KEY {content}; " +
-			"INSERT pub.Overview RELATION {TUP {content 'Database overview goes here.'}};";
-		return execute(query);		
+			"VAR pub.Overview REAL RELATION {content CHAR, revPrompt BOOLEAN} KEY {}; " +
+			"INSERT pub.Overview RELATION {TUP {content 'Database overview goes here.', revPrompt TRUE}};";
+		return execute(query);
 	}
 	
 }
