@@ -422,5 +422,21 @@ public class RevDatabase {
 			 return StringUtils.unquote(tuple.get("value").toString());
 		return "";
 	}
+
+	public String getOverview() {
+		String query = "pub.Overview";
+		Tuples tuples = (Tuples)evaluate(query);
+		String content = "";
+		for (Tuple tuple: tuples)
+			content += StringUtils.unquote(tuple.get("content").toString());
+		return content;
+	}
+
+	public boolean createOverview() {
+		String query = 
+			"VAR pub.Overview REAL RELATION {content CHAR} KEY {content}; " +
+			"INSERT pub.Overview RELATION {TUP {content 'Database overview goes here.'}};";
+		return execute(query);		
+	}
 	
 }

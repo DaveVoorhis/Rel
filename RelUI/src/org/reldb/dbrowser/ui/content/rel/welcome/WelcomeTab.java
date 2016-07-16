@@ -35,6 +35,13 @@ public class WelcomeTab extends DbTreeTab {
 		lbl.setText("Welcome to the Rel database at " + connection.getDbURL());
 		
 		lbl = new Label(mainPanel, SWT.WRAP);
+		if (database.relvarExists("pub.Overview"))
+			lbl.setText(database.getOverview());
+
+		lbl = new Label(mainPanel, SWT.WRAP);
+		lbl.setText("_______________________________");
+		
+		lbl = new Label(mainPanel, SWT.WRAP);
 		if (database.hasRevExtensions() >= 0) {
 			lbl.setText(
 				"The Rev database development extensions are installed.\n\n" +
@@ -48,10 +55,10 @@ public class WelcomeTab extends DbTreeTab {
 			removeRev.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					if (!MessageDialog.openConfirm(mainPanel.getShell(), "Rev", "Are you sure?\n\nThis will remove everything except variables, views, operators, types and constraints."))
+					if (!MessageDialog.openConfirm(mainPanel.getShell(), "Rel", "Are you sure?\n\nThis will remove everything except variables, views, operators, types and constraints."))
 						return;
 					if (!database.removeRevExtensions())
-						MessageDialog.openError(mainPanel.getShell(), "Rev", "Unable to remove Rev extensions.  You may have to remove them manually.");
+						MessageDialog.openError(mainPanel.getShell(), "Rel", "Unable to remove Rev extensions.  You may have to remove them manually.");
 					else {
 						setContents(mainPanel);
 						parent.handleRevRemoval();
@@ -60,7 +67,7 @@ public class WelcomeTab extends DbTreeTab {
 				}
 			});
 			
-			String checkedMessage = "Uncheck this box, and this Introduction tab won't be automatically displayed the next time this database is opened.";
+			String checkedMessage = "To stop automatically displaying this Introduction tab when this database is opened, uncheck this box.";
 			String uncheckedMessage = "Check this box to automatically display this Introduction tab the next time this database is opened.";
 			Button welcomeShow = new Button(mainPanel, SWT.CHECK);
 			welcomeShow.setSelection(!database.getSetting(parent.getClass().getName() + "-showWelcome").equals("no"));
@@ -73,6 +80,7 @@ public class WelcomeTab extends DbTreeTab {
 					welcomeShow.pack();
 				}
 			});
+			
 		} else {
 			lbl.setText(
 				"The Rev database development extensions are not installed.\n\n" +
@@ -86,12 +94,35 @@ public class WelcomeTab extends DbTreeTab {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					if (!database.installRevExtensions())
-						MessageDialog.openError(mainPanel.getShell(), "Rev", "Unable to install Rev extensions. Check the Rel system log (under Tools on the main menu) for details.");
+						MessageDialog.openError(mainPanel.getShell(), "Rel", "Unable to install Rev extensions. Check the Rel system log (under Tools on the main menu) for details.");
 					setContents(mainPanel);
 					parent.handleRevAddition();
 					return;
 				}
 			});
+		}
+		
+		if (!database.relvarExists("pub.Overview")) {
+			lbl = new Label(mainPanel, SWT.NONE);
+			lbl.setText(
+				"No overview description has been set for this database.\n" +
+				"To create one, press the 'Create Overview' button.\n" +
+				"That will create a variable called pub.Overview, which you can edit.\n" +
+				"Its contents will appear at the top of this Introduction tab."
+			);
+			Button installOverview = new Button(mainPanel, SWT.PUSH);
+			installOverview.setText("Create Overview");
+			installOverview.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					if (!database.createOverview())
+						MessageDialog.openError(mainPanel.getShell(), "Rel", "Unable to create pub.Overview. Check the Rel system log (under Tools on the main menu) for details.");
+					setContents(mainPanel);
+					parent.redisplayed();
+					return;
+				}
+			});
+						
 		}
 		
 		mainPanel.pack();		
