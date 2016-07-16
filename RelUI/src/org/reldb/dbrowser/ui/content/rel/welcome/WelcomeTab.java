@@ -61,6 +61,13 @@ public class WelcomeTab extends DbTreeTab {
 		lbl.setText("_______________________________");
 		
 		lbl = new Label(mainPanel, SWT.WRAP);
+		lbl.setText(
+			"Welcome also to this new Rel interface. This version is an early release, still incomplete\n" +
+			"but hopefully useful, and suggestive of the kind of functionality that will be available in\n" +
+			"forthcoming updates."
+		);
+		
+		lbl = new Label(mainPanel, SWT.WRAP);
 		if (database.hasRevExtensions() >= 0) {
 			lbl.setText(
 				"The Rev database development extensions are installed.\n\n" +
