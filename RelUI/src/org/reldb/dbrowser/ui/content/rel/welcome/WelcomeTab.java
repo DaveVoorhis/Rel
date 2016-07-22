@@ -3,10 +3,8 @@ package org.reldb.dbrowser.ui.content.rel.welcome;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import org.reldb.dbrowser.ui.DbConnection;
@@ -91,17 +89,15 @@ public class WelcomeTab extends DbTreeTab {
 			
 			String checkedMessage = "To stop automatically displaying this Introduction tab when this database is opened, uncheck this box.";
 			String uncheckedMessage = "Check this box to automatically display this Introduction tab the next time this database is opened.";
-			Button welcomeShow = new Button(mainPanel, SWT.CHECK);
-			welcomeShow.setSelection(!database.getSetting(parent.getClass().getName() + "-showWelcome").equals("no"));
-			welcomeShow.setText(welcomeShow.getSelection() ? checkedMessage : uncheckedMessage);
-			welcomeShow.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					database.setSetting(parent.getClass().getName() + "-showWelcome", (welcomeShow.getSelection()) ? "yes" : "no");
-					welcomeShow.setText(welcomeShow.getSelection() ? checkedMessage : uncheckedMessage);
-					welcomeShow.pack();
-				}
-			});
+			String welcomeSettingKey = parent.getClass().getName() + "-showWelcome";
+			boolean showWelcome = !database.getSetting(welcomeSettingKey).equals("no");
+			String welcomeShowText = showWelcome ? checkedMessage : uncheckedMessage;
+			(new WelcomeButton(mainPanel, welcomeShowText, SWT.CHECK, (SelectionEvent e) -> {
+				WelcomeButton button = (WelcomeButton)e.getSource();
+				database.setSetting(welcomeSettingKey, button.getSelection() ? "yes" : "no");
+				button.setText(button.getSelection() ? checkedMessage : uncheckedMessage);
+				button.pack();				
+			})).setSelection(showWelcome);
 			
 		} else {
 			new WelcomeText(mainPanel,
