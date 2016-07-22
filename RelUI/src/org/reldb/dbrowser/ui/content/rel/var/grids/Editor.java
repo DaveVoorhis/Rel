@@ -58,6 +58,7 @@ import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.nebula.widgets.nattable.style.HorizontalAlignmentEnum;
 import org.eclipse.nebula.widgets.nattable.style.Style;
 import org.eclipse.nebula.widgets.nattable.tickupdate.TickUpdateConfigAttributes;
+import org.eclipse.nebula.widgets.nattable.tooltip.NatTableContentTooltip;
 import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
 import org.eclipse.nebula.widgets.nattable.ui.util.CellEdgeEnum;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
@@ -844,6 +845,7 @@ public abstract class Editor extends Grid {
         	public void fill(Menu menu, int index) {
             	MenuItem doesPopupEdit = new MenuItem(menu, SWT.CHECK);
             	doesPopupEdit.setText("Pop-up Edit Box");
+            	doesPopupEdit.setImage(IconLoader.loadIcon("popup"));
             	doesPopupEdit.setSelection(popupEdit);
             	doesPopupEdit.addSelectionListener(new SelectionAdapter() {
             		public void widgetSelected(SelectionEvent evt) {
@@ -854,6 +856,7 @@ public abstract class Editor extends Grid {
             	});
             	MenuItem export = new MenuItem(menu, SWT.PUSH);
             	export.setText("Export");
+            	export.setImage(IconLoader.loadIcon("export"));
             	export.addSelectionListener(new SelectionAdapter() {
             		public void widgetSelected(SelectionEvent evt) {
             			export();
@@ -870,6 +873,7 @@ public abstract class Editor extends Grid {
         	public void fill(Menu menu, int index) {
             	MenuItem doesDelete = new MenuItem(menu, SWT.PUSH);
             	doesDelete.setText("Delete");
+            	doesDelete.setImage(IconLoader.loadIcon("table_row_delete"));
             	doesDelete.addSelectionListener(new SelectionAdapter() {
             		public void widgetSelected(SelectionEvent evt) {
             			askDeleteSelected();
@@ -877,6 +881,7 @@ public abstract class Editor extends Grid {
             	});
             	MenuItem export = new MenuItem(menu, SWT.PUSH);
             	export.setText("Export");
+            	export.setImage(IconLoader.loadIcon("export"));
             	export.addSelectionListener(new SelectionAdapter() {
             		public void widgetSelected(SelectionEvent evt) {
             			export();
@@ -926,6 +931,13 @@ public abstract class Editor extends Grid {
 			}
         });
 
+        // Tooltip for row/column headings
+        new NatTableContentTooltip(table, GridRegion.COLUMN_HEADER, GridRegion.ROW_HEADER) {
+        	protected String getText(Event event) {
+        		return "Right-click for options.";
+        	}
+        };
+        
         // Tooltip shows dataProvider update errors
 		new DefaultToolTip(table, ToolTip.NO_RECREATE, false) {
 			@Override
