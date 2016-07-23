@@ -20,6 +20,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.reldb.dbrowser.ui.DbConnection;
@@ -191,10 +193,22 @@ public class RelPanel extends Composite {
 		tabFolder = new CTabFolder(sashForm, SWT.BORDER | SWT.CLOSE);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		tabFolder.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent evt) {
 				fireDbTreeTabchangeEvent();
 			}
 		});
+		
+		ToolBar zoomer = new ToolBar(tabFolder, SWT.NONE);
+		ToolItem zoomItem = new ToolItem(zoomer, SWT.NONE);
+		zoomItem.setImage(IconLoader.loadIcon("view_fullscreen"));
+		zoomItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent evt) {
+				zoom();
+			}
+		});
+		tabFolder.setTopRight(zoomer);
 		
 		sashForm.setWeights(new int[] {1, 4});
 		

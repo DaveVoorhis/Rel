@@ -33,7 +33,7 @@ public class CmdPanelToolbar {
 	public CmdPanelToolbar(Composite parent, CmdPanelOutput cmdPanel) {
 		toolBar = new ToolBar(parent, SWT.None);
 
-		addAdditionalItems(toolBar);
+		addAdditionalItemsBefore(toolBar);
 		
 		clearOutputBtn = new ToolItem(toolBar, SWT.PUSH);
 		clearOutputBtn.setToolTipText("Clear");
@@ -131,6 +131,8 @@ public class CmdPanelToolbar {
 			}
 		});
 		
+		addAdditionalItemsAfter(toolBar);
+		
 		setupIcons();
 
 		preferenceChangeListener = new PreferenceChangeAdapter("CmdPanelToolbar") {
@@ -161,8 +163,11 @@ public class CmdPanelToolbar {
 	}
 	
 	/** Override to add additional toolbar items before the default items. */
-	protected void addAdditionalItems(ToolBar toolBar) {}
+	protected void addAdditionalItemsBefore(ToolBar toolBar) {}
 
+	/** Override to add additional toolbar items after the default items. */
+	protected void addAdditionalItemsAfter(ToolBar toolBar) {}	
+	
 	public void dispose() {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 	}

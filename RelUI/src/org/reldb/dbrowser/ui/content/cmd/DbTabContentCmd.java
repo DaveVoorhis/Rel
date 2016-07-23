@@ -44,17 +44,7 @@ public class DbTabContentCmd extends Composite {
 		};
 
 		CmdPanelToolbar toolBar = new CmdPanelToolbar(this, cmdPanel.getCmdPanelOutput()) {
-			public void addAdditionalItems(ToolBar toolbar) {
-				// zoom
-				ToolItem maximize = new ToolItem(toolbar, SWT.NONE);
-				maximize.setImage(IconLoader.loadIcon("view_fullscreen"));
-				maximize.setToolTipText("Zoom in or out");
-				maximize.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						zoom();
-					}
-				});
+			public void addAdditionalItemsBefore(ToolBar toolbar) {
 				// backup icon
 				ToolItem tlitmBackup = new ToolItem(toolbar, SWT.NONE);
 				tlitmBackup.setToolTipText("Make backup");
@@ -76,6 +66,19 @@ public class DbTabContentCmd extends Composite {
 					}
 				});
 				addAdditionalItem(copyOutputToInputBtn, "copyToInputIcon");
+			}
+			public void addAdditionalItemsAfter(ToolBar toolbar) {
+				new ToolItem(toolbar, SWT.SEPARATOR_FILL);
+				// zoom
+				ToolItem maximize = new ToolItem(toolbar, SWT.NONE);
+				maximize.setImage(IconLoader.loadIcon("view_fullscreen"));
+				maximize.setToolTipText("Zoom in or out");
+				maximize.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						zoom();
+					}
+				});
 			}
 		};
 		
