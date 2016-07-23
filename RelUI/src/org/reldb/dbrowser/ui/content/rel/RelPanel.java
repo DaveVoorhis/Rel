@@ -17,7 +17,10 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
@@ -76,6 +79,9 @@ public class RelPanel extends Composite {
 	
 	private Tree tree;
 	private HashMap<String, TreeItem> treeRoots;
+	
+	private CTabItem itemSelectedByMenu;
+	private int itemSelectedByMenuIndex;
 	
 	/**
 	 * Create the composite.
@@ -199,6 +205,70 @@ public class RelPanel extends Composite {
 			}
 		});
 		
+		Menu tabControlMenu = new Menu(tabFolder);
+		tabFolder.setMenu(tabControlMenu);
+		MenuItem closer = new MenuItem(tabControlMenu, SWT.NONE);
+		MenuItem closeOthers = new MenuItem(tabControlMenu, SWT.NONE);
+		MenuItem closeLeft = new MenuItem(tabControlMenu, SWT.NONE);
+		MenuItem closeRight = new MenuItem(tabControlMenu, SWT.NONE);
+		new MenuItem(tabControlMenu, SWT.SEPARATOR);
+		MenuItem closeAll = new MenuItem(tabControlMenu, SWT.NONE);
+		
+		closer.setText("Close");
+		closeOthers.setText("Close others");
+		closeLeft.setText("Close left tabs");
+		closeRight.setText("Close right tabs");
+		closeAll.setText("Close all");
+		
+		tabFolder.addListener(SWT.MenuDetect, new Listener() {
+			public void handleEvent(Event e) {
+				Point clickPosition = Display.getDefault().map(null, tabFolder, new Point(e.x, e.y));
+				itemSelectedByMenu = tabFolder.getItem(clickPosition);
+				itemSelectedByMenuIndex = getTabIndex(tabFolder, itemSelectedByMenu);
+				closer.setEnabled(itemSelectedByMenuIndex >= 0);
+				closeOthers.setEnabled(tabFolder.getItemCount() > 1 && itemSelectedByMenuIndex >= 0);
+				closeLeft.setEnabled(itemSelectedByMenuIndex > 0);
+				closeRight.setEnabled(itemSelectedByMenuIndex >= 0 && itemSelectedByMenuIndex < tabFolder.getItemCount() - 1);
+				closeAll.setEnabled(tabFolder.getItemCount() > 0);
+			}
+		});
+		
+		closer.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (itemSelectedByMenu != null)
+					itemSelectedByMenu.dispose();
+			}
+		});
+		closeOthers.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		closeLeft.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		closeRight.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		closeAll.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		ToolBar zoomer = new ToolBar(tabFolder, SWT.NONE);
 		ToolItem zoomItem = new ToolItem(zoomer, SWT.NONE);
 		zoomItem.setImage(IconLoader.loadIcon("view_fullscreen"));
@@ -231,6 +301,15 @@ public class RelPanel extends Composite {
 				fireDbTreeTabchangeEvent();
 			}
 		}
+	}
+
+	private static int getTabIndex(CTabFolder tabFolder, CTabItem item) {
+		if (item == null)
+			return -1;
+		for (int index = 0; index < tabFolder.getItemCount(); index++)
+			if (tabFolder.getItem(index) == item)
+				return index;
+		return -1;
 	}
 
 	public void notifyTabCreated() {
