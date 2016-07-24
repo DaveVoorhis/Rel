@@ -243,29 +243,46 @@ public class RelPanel extends Composite {
 		closeOthers.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
+				tabFolder.setSelection(itemSelectedByMenuIndex);
+				for (CTabItem tab: tabFolder.getItems())
+					if (tab != itemSelectedByMenu)
+						tab.dispose();
 			}
 		});
 		closeLeft.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
+				// TODO - fix
+				if (itemSelectedByMenuIndex > 0) {
+					CTabItem[] closers = new CTabItem[itemSelectedByMenuIndex + 1];
+					for (int i=0; i<itemSelectedByMenuIndex; i++)
+						closers[i] = tabFolder.getItem(i);
+					tabFolder.setSelection(itemSelectedByMenuIndex);
+					for (CTabItem close: closers)
+						close.dispose();
+				}
 			}
 		});
 		closeRight.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
+				// TODO - fix
+				if (itemSelectedByMenuIndex < tabFolder.getItemCount() - 1) {
+					CTabItem[] closers = new CTabItem[tabFolder.getItemCount() - itemSelectedByMenuIndex];
+					int index = 0;
+					for (int i = itemSelectedByMenuIndex + 1; i<tabFolder.getItemCount(); i++)
+						closers[index++] = tabFolder.getItem(i);
+					tabFolder.setSelection(itemSelectedByMenuIndex);
+					for (CTabItem close: closers)
+						close.dispose();
+				}
 			}
 		});
 		closeAll.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
+				while (tabFolder.getItemCount() > 0)
+					tabFolder.getItem(0).dispose();
 			}
 		});
 		
