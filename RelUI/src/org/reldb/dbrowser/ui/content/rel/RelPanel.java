@@ -252,11 +252,10 @@ public class RelPanel extends Composite {
 		closeLeft.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO - fix
 				if (itemSelectedByMenuIndex > 0) {
-					CTabItem[] closers = new CTabItem[itemSelectedByMenuIndex + 1];
+					Vector<CTabItem> closers = new Vector<CTabItem>();
 					for (int i=0; i<itemSelectedByMenuIndex; i++)
-						closers[i] = tabFolder.getItem(i);
+						closers.add(tabFolder.getItem(i));
 					tabFolder.setSelection(itemSelectedByMenuIndex);
 					for (CTabItem close: closers)
 						close.dispose();
@@ -266,12 +265,10 @@ public class RelPanel extends Composite {
 		closeRight.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO - fix
 				if (itemSelectedByMenuIndex < tabFolder.getItemCount() - 1) {
-					CTabItem[] closers = new CTabItem[tabFolder.getItemCount() - itemSelectedByMenuIndex];
-					int index = 0;
+					Vector<CTabItem> closers = new Vector<CTabItem>();
 					for (int i = itemSelectedByMenuIndex + 1; i<tabFolder.getItemCount(); i++)
-						closers[index++] = tabFolder.getItem(i);
+						closers.add(tabFolder.getItem(i));
 					tabFolder.setSelection(itemSelectedByMenuIndex);
 					for (CTabItem close: closers)
 						close.dispose();

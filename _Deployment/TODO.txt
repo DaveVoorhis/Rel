@@ -1,7 +1,6 @@
 ** TO DO **
 
 Short term:
-	// TODO - provide tab menus: close, close others, close tabs left, close tabs right, close all, etc.
 	// TODO - test relvar contents editing. Delete doesn't refresh?  Refresh doesn't refresh?
 	// TODO - test script editing thoroughly, including history
 	// TODO - test find/replace thoroughly
