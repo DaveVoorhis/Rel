@@ -48,6 +48,9 @@ public class CmdPanelInput extends Composite {
 	private ToolItem tlitmClear;
 	private ToolItem tlitmUndo;
 	private ToolItem tlitmRedo;
+	private ToolItem tlitmCut;
+	private ToolItem tlitmCopy;
+	private ToolItem tlitmPaste;
 	private ToolItem tlitmFindReplace;
 	private ToolItem tlitmLoad;
 	private ToolItem tlitmGetPath;
@@ -233,6 +236,33 @@ public class CmdPanelInput extends Composite {
 					doRedo();
 				}
 			});
+
+			tlitmCut = new ToolItem(toolBar, SWT.NONE);
+			tlitmCut.setToolTipText("Cut");
+			tlitmCut.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					doCut();
+				}
+			});
+			
+			tlitmCopy = new ToolItem(toolBar, SWT.NONE);
+			tlitmCopy.setToolTipText("Copy");
+			tlitmCopy.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					doCopy();
+				}
+			});
+			
+			tlitmPaste = new ToolItem(toolBar, SWT.NONE);
+			tlitmPaste.setToolTipText("Paste");
+			tlitmPaste.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					doPaste();
+				}
+			});
 			
 			tlitmFindReplace = new ToolItem(toolBar, SWT.NONE);
 			tlitmFindReplace.setToolTipText("Find/Replace");
@@ -371,6 +401,18 @@ public class CmdPanelInput extends Composite {
 		undoredo.redo();
 	}
 
+	protected void doPaste() {
+		inputText.paste();
+	}
+
+	protected void doCopy() {
+		inputText.copy();
+	}
+
+	protected void doCut() {
+		inputText.cut();
+	}
+
 	private void doSelectAll() {
 		int topIndex = inputText.getTopIndex();
 		inputText.setSelection(0, inputText.getCharCount());
@@ -412,6 +454,9 @@ public class CmdPanelInput extends Composite {
 		tlitmClear.setImage(IconLoader.loadIcon("clearIcon"));
 		tlitmUndo.setImage(IconLoader.loadIcon("undo"));
 		tlitmRedo.setImage(IconLoader.loadIcon("redo"));
+		tlitmCut.setImage(IconLoader.loadIcon("cut"));
+		tlitmCopy.setImage(IconLoader.loadIcon("copy"));
+		tlitmPaste.setImage(IconLoader.loadIcon("paste"));		
 		tlitmFindReplace.setImage(IconLoader.loadIcon("edit_find_replace"));
 		tlitmLoad.setImage(IconLoader.loadIcon("loadIcon"));
 		tlitmGetPath.setImage(IconLoader.loadIcon("pathIcon"));
