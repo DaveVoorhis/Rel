@@ -1,7 +1,7 @@
 ** TO DO **
 
 Short term:
-	// TODO - test relvar contents editing. Delete doesn't refresh?  Refresh doesn't refresh?
+	// TODO - test relvar contents editing. Check relvar definition, in particular.
 	// TODO - test script editing thoroughly, including history
 	// TODO - test find/replace thoroughly
 	// TODO - be able to specify user-defined parameters in Rev queries
