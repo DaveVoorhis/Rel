@@ -1,139 +1,170 @@
 ** TO DO **
 
-Short term:
-	// TODO - test relvar contents editing. Check relvar definition, in particular.
-	// TODO - test script editing thoroughly, including history
-	// TODO - test find/replace thoroughly
-	// TODO - be able to specify user-defined parameters in Rev queries
-	// TODO - be able to bring operator invocations into Rev queries
-	// TODO - be able to turn a Rev query into a relation-valued operator, or a view.
-	// TODO - provide facility to associate predicate expressions (and/or general comments)
-	//        with relvar definitions in the catalog.
-	// TODO - associate a 'project' attribute with every database object, to permit
-	//        admin UIs that show only the relvars, views, types, operators, etc., in that project.
-	// TODO - provide a means to store code generation 'wizards' in the database and integrate with UI
-	// TODO - save every DDL statement in the database, for versioning, etc.
-	// TODO - associate a 'valid' attribute with every database object, to permit
-	//        changes that invalidate dependent objects.
-	// TODO - provide THE_INTEGER(INTEGER)
-	// TODO - fix intermittent getKeyForTuple exception when creating new database
-	// TODO - check that invocation of update operators (no RETURNS) supports
-	//        multimethod invocation
-	// TODO - improve UPDATE operator in Rev.
-	// TODO - implement (only for multiple possreps) SELECTORS and (mandatory) INIT clause 
-	//        in TYPE definitions.
-	// TODO - Fix toolbar button enabled/selected states in RelUI.
-	// TODO - Examine org.reldb.rel.client.  Should tuple iteration close the tuple iterator?
-	// TODO - test client connection reset() on remote databases.
-	// TODO - fix self-reference POSSREP (e.g., t = THE_t(supertype) ) bug.
-	//        I.e., prevent recursive definitions like 
-	//           TYPE blah IS {blat CONSTRAINT p POSSREP {x = THE_x(blat)}}
-	// TODO - RELATION {TUPLE {SID 1, PID 1}, TUPLE {SID 4, PID 5}} GROUP {PID} AS PARTS
-	//          UNION
-	//        RELATION {TUPLE {SID 1, PARTS RELATION {TUPLE {PID 1}}},
-    //                    TUPLE {SID 4, PARTS RELATION {TUPLE {PID 5}}}}
-    //        Produces bogus result, apparently due to GROUP.  Fix!
-	// TODO - Currently, it seems that Rel does not fully support the parallel execution of individual renamings 
-	//        which is specified in Tutorial D. For instance,
-	//        TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x}
-    //        does not evaluate to tuple with x and y interchanged as it should (Rel reports an error).
-    // TODO - enhancement:  Use the following TCLOSE:
-    //    // By Vilem Vychodil, Palacky University in Olomouc (Czech Republic)
-	//			OPERATOR tr (r RELATION {x INT, y INT}) RETURNS SAME_TYPE_AS (r);
-	//			  BEGIN;
-	//			    VAR result PRIVATE INIT (r) KEY {x,y};
-	//			    VAR work PRIVATE INIT (r) KEY {x,y};
-	//			    WHILE NOT (IS_EMPTY (work));
-	//			      BEGIN;
-	//			        work := (r RENAME {y AS z}) COMPOSE (work RENAME {x AS z});
-	//			        work := work MINUS result;
-	//			        result := result UNION work;
-	//			      END;
-	//			    END WHILE;
-	//			    RETURN result;
-	//			  END;
-	//			END OPERATOR;
-	// TODO - provide \t\n\r translation in DBrowser, so that string literals like...
-	//          WRITELN("blah
-	//                blah
-	//                blah");
-	//        ...translate to WRITELN("blah\nblah\nblah");
-    // TODO - Fix needed:
-    //   OPERATOR LENGTH(s CHAR) RETURNS INTEGER Java FOREIGN
-    //    return ValueInteger.select(context.getGenerator(), s.stringValue().length());
-    //   END OPERATOR;
-    //   TYPE BDT_symbolic POSSREP { VALUE CHAR } ;
-    //   TYPE identifier IS { BDT_symbolic CONSTRAINT LENGTH ( THE_VALUE ( BDT_symbolic ) ) <= 64 
-    //   POSSREP { VALUE = THE_VALUE ( BDT_symbolic) } } ;
-    //   VAR Base_data_type BASE RELATION { name identifier } KEY { name } ;
-    //   // Rel goes into an infinite loop on the final definition.
-    //   // Appears to be due to VALUE = THE_VALUE (...) which results in unresolved
-    //   // recursive reference.
-	// TODO - Optimise TupleIteratorCount
-	// TODO - complete anonymous operator support
-	// TODO - allow operator names to be used as identifiers to obtain ValueOperator values.
-	//        Maybe... What does this do to polymorphism?
-    // TODO - replace OPERATOR BOOLEAN(BOOLEAN) RETURNS BOOLEAN with
-    //        OPERATOR BOOLEAN(RELATION {}) RETURNS BOOLEAN, such that
-    //        we can have:
-    //           CONST TRUE INIT(BOOLEAN(TABLE_DEE));
-    //           CONST FALSE INIT(BOOLEAN(TABLE_DUM));
-    //      - on the other hand, what do we do with the other
-    //        built-in types?
-	// TODO - create ATTRIBUTES_OF(rel_expr) keyword as alternative to 
-	//        attribute_name_commalist.
-	// TODO - fix multiple assignment
-	// TODO - Fix bug reported by Hugh re OP_EQUALS() etc.
-	// TODO - UNION {x, y} should work where x and y define attributes
-	//        that have the same name and differing type but have
-	//        a common supertype.
-	// TODO - Alter inference of most specific common supertype, such that evaluating:
-	//  RELATION {
-	//    TUPLE {x 1, y 2.3, z 'two'},
-	//    TUPLE {x 2.3, y 1, z true}
-	//  }
-	//     ...returns...
-	//  RELATION {x ALPHA, y ALPHA, z ALPHA} {
-	//    TUPLE {x 1, y 2.3, z 'two'},
-	//    TUPLE {x 2.3, y 1, z true}
-	//  }
-	// TODO - Rewrite areas where high-cardinality relations currently run out of RAM. 
-	// TODO - INTERSECT {c CHARACTER} {} should either return maximal relation or throw exception
-	// TODO - ...or implement 'INTERSECT {h} {} WHERE boolexp' as "relation comprehension"
-	// TODO - implement multiple inheritance
-	// TODO - check constraints when used on Catalog, e.g., "CONSTRAINT blah COUNT(Catalog) = 6;"
-	// TODO - implement leave statement
-	// TODO - implement operator UPDATE parameters
-	// TODO - implement RANK - (page 221)
-	// TODO - implement partial evaluation and memoization
+- Provide facility to associate predicate expressions (and/or general comments) with relvar definitions in the catalog.
 
-Enhancements:
+- Test relvar contents editing. Check relvar definition, in particular.
+
+- Test script editing thoroughly, including history.
+
+- Test find/replace thoroughly.
+
+- Be able to specify user-defined parameters in Rev queries.
+
+- Be able to bring operator invocations into Rev queries.
+
+- Be able to turn a Rev query into a relation-valued operator, or a view.
+
+- Associate a 'project' attribute with every database object, to permit admin UIs that 
+  show only the relvars, views, types, operators, etc., in that project.
+
+- Provide a means to store code generation 'wizards' in the database and integrate with UI.
+
+- Save every DDL statement in the database, for versioning, etc.
+
+- Associate a 'valid' attribute with every database object, to permit changes that invalidate dependent objects.
+
+- Provide THE_INTEGER(INTEGER)
+
+- Fix intermittent getKeyForTuple exception when creating new database.
+
+- Check that invocation of update operators (no RETURNS) supports multimethod invocation.
+
+- Improve UPDATE operator in Rev.
+
+- Implement (only for multiple possreps) SELECTORS and (mandatory) INIT clause in TYPE definitions.
+
+- Fix toolbar button enabled/selected states in RelUI.
+
+- Examine org.reldb.rel.client.  Should tuple iteration close the tuple iterator?
+
+- Test client connection reset() on remote databases.
+
+- Fix self-reference POSSREP (e.g., t = THE_t(supertype) ) bug.
+       I.e., prevent recursive definitions like 
+           TYPE blah IS {blat CONSTRAINT p POSSREP {x = THE_x(blat)}}
+
+  Another example:
+	   OPERATOR LENGTH(s CHAR) RETURNS INTEGER Java FOREIGN
+	    return ValueInteger.select(context.getGenerator(), s.stringValue().length());
+	   END OPERATOR;
+	   TYPE BDT_symbolic POSSREP { VALUE CHAR } ;
+	   TYPE identifier IS { BDT_symbolic CONSTRAINT LENGTH ( THE_VALUE ( BDT_symbolic ) ) <= 64 
+	   POSSREP { VALUE = THE_VALUE ( BDT_symbolic) } } ;
+	   VAR Base_data_type BASE RELATION { name identifier } KEY { name } ;
+  Rel goes into an infinite loop on the final definition.
+  Appears to be due to VALUE = THE_VALUE (...) which results in unresolved recursive reference.
+
+- RELATION {TUPLE {SID 1, PID 1}, TUPLE {SID 4, PID 5}} GROUP {PID} AS PARTS
+          UNION
+        RELATION {TUPLE {SID 1, PARTS RELATION {TUPLE {PID 1}}},
+                    TUPLE {SID 4, PARTS RELATION {TUPLE {PID 5}}}}
+        Produces bogus result, apparently due to GROUP.  Fix!
+
+- Currently, it seems that Rel does not fully support the parallel execution of individual renamings 
+  which is specified in Tutorial D. For instance,
+	        TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x}
+  does not evaluate to tuple with x and y interchanged as it should (Rel reports an error).
+  
+- Enhancement:  Use the following TCLOSE:
+  // By Vilem Vychodil, Palacky University in Olomouc (Czech Republic)
+			OPERATOR tr (r RELATION {x INT, y INT}) RETURNS SAME_TYPE_AS (r);
+			  BEGIN;
+			    VAR result PRIVATE INIT (r) KEY {x,y};
+			    VAR work PRIVATE INIT (r) KEY {x,y};
+			    WHILE NOT (IS_EMPTY (work));
+			      BEGIN;
+			        work := (r RENAME {y AS z}) COMPOSE (work RENAME {x AS z});
+			        work := work MINUS result;
+			        result := result UNION work;
+			      END;
+			    END WHILE;
+			    RETURN result;
+			  END;
+			END OPERATOR;
+
+- Provide \t\n\r translation in DBrowser, so that string literals like...
+          WRITELN("blah
+                blah
+                blah");
+        ...translate to WRITELN("blah\nblah\nblah");
+
+- Optimise TupleIteratorCount.
+
+- Complete anonymous operator support.
+
+- Allow operator names to be used as identifiers to obtain ValueOperator values.
+	Maybe... What does this do to polymorphism?
+	
+- Replace OPERATOR BOOLEAN(BOOLEAN) RETURNS BOOLEAN with
+        OPERATOR BOOLEAN(RELATION {}) RETURNS BOOLEAN, such that
+        we can have:
+           CONST TRUE INIT(BOOLEAN(TABLE_DEE));
+           CONST FALSE INIT(BOOLEAN(TABLE_DUM));
+      - on the other hand, what do we do with the other built-in types?
+
+- Create ATTRIBUTES_OF(rel_expr) keyword as alternative to attribute_name_commalist.
+
+- Fix multiple assignment.
+
+- Fix bug reported by Hugh re OP_EQUALS() etc.
+
+- UNION {x, y} should work where x and y define attributes
+	        that have the same name and differing type but have a common supertype.
+	        
+- Alter inference of most specific common supertype, such that evaluating:
+  RELATION {
+    TUPLE {x 1, y 2.3, z 'two'},
+    TUPLE {x 2.3, y 1, z true}
+  }
+     ...returns...
+  RELATION {x ALPHA, y ALPHA, z ALPHA} {
+    TUPLE {x 1, y 2.3, z 'two'},
+    TUPLE {x 2.3, y 1, z true}
+  }
+
+- Rewrite areas where high-cardinality relations currently run out of RAM. 
+
+- INTERSECT {c CHARACTER} {} should either return maximal relation or throw exception or 
+  implement 'INTERSECT {h} {} WHERE boolexp' as "relation comprehension"
+  
+- Implement multiple inheritance.
+
+- Check constraints when used on Catalog, e.g., "CONSTRAINT blah COUNT(Catalog) = 6;".
+
+- Implement leave statement.
+
+- Implement operator UPDATE parameters.
+
+- Implement RANK - (page 221)
+
+- Implement partial evaluation and memoization.
 
 - Implement triggers.  Maybe.
-- Optimise constraints that implement semantics of
-  SQL's "foreign key" constraints.
+
+- Optimise constraints that implement semantics of SQL's "foreign key" constraints.
+
 - Quote strings on all generated error messages.
-- Implement security restrictions.
-- Implement named arguments and default parameters
-  for operator invocation?
-- Test user-defined types with Array and Relation 
-  parameters and return values.
+  
+- Implement users, groups and authorisation
+
+- Implement named arguments and default parameters for operator invocation?
+
+- Test user-defined types with Array and Relation parameters and return values.
+
 - Build 'EVALUATE' -- like EXECUTE but returns a value.
-- Create a view to represent active
-  connections, including statistics.
-- Create a view to represent system information, such
-  as host name, current date, unique ID, etc.
+
+- Create a view to represent active connections, including statistics.
+
+- Create a view to represent system information, such as host name, current date, unique ID, etc.
+
 - Create a relvar to contain all log messages.
+
 - Create a "KILL" operator to kill a connection.
-- Replacing an Operator should immediately update
-  any references to that Operator in the running
-  code.  Implementing this may be deferred until
-  everything (code, data, types) is stored in the
-  catalog, with appropriate triggers and
-  foreign key constraints.
-- Eliminate the Rel VM and compile directly to Java
-  bytecode.
+
+- Replacing an Operator should immediately update any references to that Operator in the running code.
+  Implementing this may be deferred until everything (code, data, types) is stored in the catalog,
+  with appropriate triggers and foreign key constraints.
+  
+- Eliminate the Rel VM and compile directly to Java bytecode.
+  
 - Build JDBC and/or ODBC drivers.
-- Build a front end for users and application 
-  development.
- 
