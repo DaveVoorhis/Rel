@@ -1,8 +1,8 @@
 ** TO DO **
 
-- Test relvar contents editing. Check relvar definition, in particular.
+- Provide built-in facility to report bugs
 
-- Test script editing thoroughly, including history.
+- Wire crash handling into RelUI/DBrowser?
 
 - Test find/replace thoroughly.
 
