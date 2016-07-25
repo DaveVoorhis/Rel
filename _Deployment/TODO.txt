@@ -1,12 +1,12 @@
 ** TO DO **
 
-- Provide facility to associate predicate expressions (and/or general comments) with relvar definitions in the catalog.
-
 - Test relvar contents editing. Check relvar definition, in particular.
 
 - Test script editing thoroughly, including history.
 
 - Test find/replace thoroughly.
+
+- Save every DDL statement in the database, for versioning, etc.
 
 - Be able to specify user-defined parameters in Rev queries.
 
@@ -14,12 +14,12 @@
 
 - Be able to turn a Rev query into a relation-valued operator, or a view.
 
+- Provide facility to associate predicate expressions (and/or general comments) with relvar definitions in the catalog.
+
 - Associate a 'project' attribute with every database object, to permit admin UIs that 
   show only the relvars, views, types, operators, etc., in that project.
 
 - Provide a means to store code generation 'wizards' in the database and integrate with UI.
-
-- Save every DDL statement in the database, for versioning, etc.
 
 - Associate a 'valid' attribute with every database object, to permit changes that invalidate dependent objects.
 
