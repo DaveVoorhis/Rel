@@ -7,6 +7,8 @@ Short term:
 	// TODO - be able to specify user-defined parameters in Rev queries
 	// TODO - be able to bring operator invocations into Rev queries
 	// TODO - be able to turn a Rev query into a relation-valued operator, or a view.
+	// TODO - provide facility to associate predicate expressions (and/or general comments)
+	//        with relvar definitions in the catalog.
 	// TODO - associate a 'project' attribute with every database object, to permit
 	//        admin UIs that show only the relvars, views, types, operators, etc., in that project.
 	// TODO - provide a means to store code generation 'wizards' in the database and integrate with UI
