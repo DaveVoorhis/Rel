@@ -37,6 +37,7 @@ import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.nebula.widgets.nattable.style.HorizontalAlignmentEnum;
 import org.eclipse.nebula.widgets.nattable.style.Style;
+import org.eclipse.nebula.widgets.nattable.tooltip.NatTableContentTooltip;
 import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.swt.SWT;
@@ -44,6 +45,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.ui.DbConnection;
@@ -519,6 +521,7 @@ public abstract class Designer extends Grid {
         	public void fill(Menu menu, int index) {
             	MenuItem doesDelete = new MenuItem(menu, SWT.PUSH);
             	doesDelete.setText("Delete");
+            	doesDelete.setImage(IconLoader.loadIcon("table_row_delete"));
             	doesDelete.addSelectionListener(new SelectionAdapter() {
             		public void widgetSelected(SelectionEvent evt) {
             			askDeleteSelected();
@@ -536,6 +539,13 @@ public abstract class Designer extends Grid {
 			    		ITraversalStrategy.TABLE_CYCLE_TRAVERSAL_STRATEGY));
                 
         table.configure();
+        
+        // Tooltip for row/column headings
+        new NatTableContentTooltip(table, GridRegion.ROW_HEADER) {
+        	protected String getText(Event event) {
+        		return "Right-click for options.";
+        	}
+        };
 	}
 	
 	private void doDeleteSelected() {
