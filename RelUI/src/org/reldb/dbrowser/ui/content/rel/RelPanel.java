@@ -223,13 +223,17 @@ public class RelPanel extends Composite {
 		tabFolder.addListener(SWT.MenuDetect, new Listener() {
 			public void handleEvent(Event e) {
 				Point clickPosition = Display.getDefault().map(null, tabFolder, new Point(e.x, e.y));
-				itemSelectedByMenu = tabFolder.getItem(clickPosition);
-				itemSelectedByMenuIndex = getTabIndex(tabFolder, itemSelectedByMenu);
-				closer.setEnabled(itemSelectedByMenuIndex >= 0);
-				closeOthers.setEnabled(tabFolder.getItemCount() > 1 && itemSelectedByMenuIndex >= 0);
-				closeLeft.setEnabled(itemSelectedByMenuIndex > 0);
-				closeRight.setEnabled(itemSelectedByMenuIndex >= 0 && itemSelectedByMenuIndex < tabFolder.getItemCount() - 1);
-				closeAll.setEnabled(tabFolder.getItemCount() > 0);
+				if (clickPosition.y > tabFolder.getTabHeight())
+					e.doit = false;
+				else {
+					itemSelectedByMenu = tabFolder.getItem(clickPosition);
+					itemSelectedByMenuIndex = getTabIndex(tabFolder, itemSelectedByMenu);
+					closer.setEnabled(itemSelectedByMenuIndex >= 0);
+					closeOthers.setEnabled(tabFolder.getItemCount() > 1 && itemSelectedByMenuIndex >= 0);
+					closeLeft.setEnabled(itemSelectedByMenuIndex > 0);
+					closeRight.setEnabled(itemSelectedByMenuIndex >= 0 && itemSelectedByMenuIndex < tabFolder.getItemCount() - 1);
+					closeAll.setEnabled(tabFolder.getItemCount() > 0);
+				}
 			}
 		});
 		
