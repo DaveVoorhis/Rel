@@ -87,7 +87,7 @@ public class WelcomeTab extends DbTreeTab {
 				}
 			});
 			
-			String checkedMessage = "To stop automatically displaying this Introduction tab when this database is opened, uncheck this box.";
+			String checkedMessage = "Uncheck this box to stop automatic display of this Introduction tab when this database is opened.";
 			String uncheckedMessage = "Check this box to automatically display this Introduction tab the next time this database is opened.";
 			String welcomeSettingKey = parent.getClass().getName() + "-showWelcome";
 			boolean showWelcome = !database.getSetting(welcomeSettingKey).equals("no");
