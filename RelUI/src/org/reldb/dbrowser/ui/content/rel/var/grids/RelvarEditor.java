@@ -19,6 +19,7 @@ public class RelvarEditor extends Editor {
 		obtainKeyDefinitions();		
 		tuples = obtainTuples();
     	heading = tuples.getHeading().toArray();
+    	super.refresh();
 	}
 
 	protected String getAttributeSource() {

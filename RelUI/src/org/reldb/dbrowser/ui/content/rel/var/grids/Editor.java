@@ -50,6 +50,8 @@ import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.CellPainterDec
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.LineBorderDecorator;
 import org.eclipse.nebula.widgets.nattable.selection.ITraversalStrategy;
 import org.eclipse.nebula.widgets.nattable.selection.MoveCellSelectionCommandHandler;
+import org.eclipse.nebula.widgets.nattable.selection.command.ClearAllSelectionsCommand;
+import org.eclipse.nebula.widgets.nattable.selection.command.SelectCellCommand;
 import org.eclipse.nebula.widgets.nattable.selection.event.CellSelectionEvent;
 import org.eclipse.nebula.widgets.nattable.selection.event.RowSelectionEvent;
 import org.eclipse.nebula.widgets.nattable.style.BorderStyle;
@@ -62,7 +64,6 @@ import org.eclipse.nebula.widgets.nattable.tooltip.NatTableContentTooltip;
 import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
 import org.eclipse.nebula.widgets.nattable.ui.util.CellEdgeEnum;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
-import org.eclipse.nebula.widgets.nattable.viewport.command.ShowRowInViewportCommand;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -406,7 +407,8 @@ public abstract class Editor extends Grid {
 
 		public void deleteRows(Set<Range> selections) {
 			if (relvarName == null) {
-				// TODO delete rows
+				// TODO - implement this
+				System.out.println("Editor: deleteRows() for relvarName == null not implemented yet.");
 			} else {
 				String deleteQuery = "DELETE " + relvarName + " WHERE ";
 				String allKeysSpec = "";
@@ -780,7 +782,10 @@ public abstract class Editor extends Grid {
 	}
     
     public void refresh() {
-    	table.refresh();
+    	if (table != null) {
+    		dataProvider.reload();
+    		table.refresh();
+    	}
     }
     
 	public Editor(Composite parent, DbConnection connection, String relvarName) {
@@ -1023,8 +1028,11 @@ public abstract class Editor extends Grid {
 	}
 	
 	public void goToInsertRow() {
-		ShowRowInViewportCommand cmd = new ShowRowInViewportCommand(gridLayer.getBodyLayer(), dataProvider.getRowCount() - 1);
-		table.doCommand(cmd);
+		if (table.commitAndCloseActiveCellEditor()) {
+			table.doCommand(new ClearAllSelectionsCommand());
+			table.doCommand(new SelectCellCommand(gridLayer.getBodyLayer(), 0, dataProvider.getRowCount() - 1, true, true));
+			table.setFocus();
+		}
 	}
 
 	private void doDeleteSelected() {
