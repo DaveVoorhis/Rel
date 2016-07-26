@@ -4,6 +4,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -13,8 +16,10 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.reldb.dbrowser.ui.StatusPanel;
+import org.reldb.dbrowser.ui.crash.CrashTrap;
 import org.reldb.dbrowser.ui.log.LogWin;
 import org.reldb.dbrowser.ui.preferences.Preferences;
+import org.reldb.dbrowser.ui.version.Version;
 
 public class MainPanel extends Composite {
 	
@@ -52,9 +57,23 @@ public class MainPanel extends Composite {
 				Preferences.setPreference(rectPrefName, getShell().getBounds());
 			}
 		});
-		
+
+		// Install logging
 		LogWin.install(parent);
 
+		// Install platform logging and UI error trapping
+		CrashTrap uiTrap = new CrashTrap(getShell(), Version.getVersion());
+		Platform.addLogListener(new ILogListener() {
+			@Override
+			public void logging(IStatus status, String plugin) {
+				String logMessage = "RCP log: " + status + " in " + plugin;
+				System.out.println(logMessage);
+				if (status.isOK() || status.matches(IStatus.CANCEL | IStatus.INFO | IStatus.WARNING))
+					return;
+				uiTrap.process(status.getException(), logMessage);
+			}
+		});
+		
 		Rectangle rect = Preferences.getPreferenceRectangle(rectPrefName);
 		if (rect.height > 0 && rect.width > 0)
 			getShell().setBounds(rect);
