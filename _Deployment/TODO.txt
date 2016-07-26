@@ -33,8 +33,6 @@
 
 - Implement (only for multiple possreps) SELECTORS and (mandatory) INIT clause in TYPE definitions.
 
-- Fix toolbar button enabled/selected states in RelUI.
-
 - Examine org.reldb.rel.client.  Should tuple iteration close the tuple iterator?
 
 - Test client connection reset() on remote databases.
@@ -131,7 +129,7 @@
 
 - Check constraints when used on Catalog, e.g., "CONSTRAINT blah COUNT(Catalog) = 6;".
 
-- Implement leave statement.
+- Implement LEAVE statement.
 
 - Implement operator UPDATE parameters.
 
