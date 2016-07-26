@@ -1,6 +1,6 @@
 ** TO DO **
 
-- Provide built-in facility to report bugs
+- Provide built-in facility to report bugs and request features.
 
 - Test find/replace thoroughly.
 
