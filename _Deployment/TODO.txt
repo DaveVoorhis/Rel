@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Provide built-in facility to report bugs and request features.
-
 - Provide built-in facility to check for updates.
 
 - Test find/replace thoroughly.
