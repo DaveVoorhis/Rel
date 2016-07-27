@@ -78,7 +78,7 @@ public class BugReportDialog extends FeedbackDialog {
 		
 		Label lblIcon = new Label(panelIntro, SWT.NONE);
 		lblIcon.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-		lblIcon.setImage(IconLoader.loadIcon("bug"));
+		lblIcon.setImage(IconLoader.loadIcon("Bug"));
 		
 		Label lblInstructions = new Label(panelIntro, SWT.WRAP);
 		lblInstructions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
