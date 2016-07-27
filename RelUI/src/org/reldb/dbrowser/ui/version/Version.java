@@ -16,5 +16,9 @@ public class Version {
 	public static String getPreferencesRepositoryName() {
 		return "rel.reldb.org";
 	}
+
+	public static String getReportLogURL() {
+	    return "http://rel.armchair.mb.ca/errorlog/";		
+	}
 	
 }

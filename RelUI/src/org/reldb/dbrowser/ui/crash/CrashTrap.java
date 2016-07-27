@@ -2,6 +2,7 @@ package org.reldb.dbrowser.ui.crash;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.reldb.dbrowser.ui.feedback.CrashDialog;
 import org.reldb.rel.client.connection.CrashHandler;
 
 public class CrashTrap implements CrashHandler {

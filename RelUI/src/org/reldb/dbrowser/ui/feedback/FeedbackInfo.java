@@ -1,18 +1,32 @@
-package org.reldb.dbrowser.ui.crash;
+package org.reldb.dbrowser.ui.feedback;
+
+import java.util.Vector;
 
 import org.eclipse.swt.widgets.TreeItem;
 
-public class CrashInfo {
-	private String whatHappened;
-	private String userEmail;
-	private TreeItem report;
+public class FeedbackInfo {	
+	private static class NameValue {
+		String name;
+		String value;
+		public NameValue(String name, String value) {this.name = name; this.value = value;}
+	}
+	
+	private String reportType;
+	private Vector<NameValue> strings = new Vector<NameValue>();
+	private Vector<TreeItem> trees = new Vector<TreeItem>();
 
-	public CrashInfo(String whatHappened, String userEmail, TreeItem report) {
-		this.whatHappened = whatHappened;
-		this.userEmail = userEmail;
-		this.report = report;
+	public FeedbackInfo(String reportType) {
+		this.reportType = reportType;
 	}
 
+	public void addString(String name, String content) {
+		strings.add(new NameValue(name, content));
+	}
+
+	public void addTree(TreeItem content) {
+		trees.add(content);
+	}
+	
 	// &amp;	&	ampersand 
 	// &lt;		<	less than
 	// &gt;		>	greater than
@@ -76,17 +90,16 @@ public class CrashInfo {
 	
 	public String toString() {
 		StringBuffer out = new StringBuffer();
-		out.append("<RelErrorReport>\n");
-		out.append("\t<WhatHappened>");
-		if (whatHappened.trim().length() > 0)
-			out.append("\n\t" + strXMLEncode(whatHappened).replace("\n", "\n\t") + "\n\t");
-		out.append("</WhatHappened>\n");
-		emitTreeItems(out, 1, report);
-		out.append("\t<UserEmail>");
-		if (userEmail.trim().length() > 0)
-			out.append("\n\t" + strXMLEncode(userEmail) + "\n\t");
-		out.append("</UserEmail>\n");
-		out.append("</RelErrorReport>");
+		out.append("<" + reportType + ">\n");
+		for (NameValue nameValue: strings) {
+			out.append("\t<" + nameValue.name + ">");
+			if (nameValue.value.trim().length() > 0)
+				out.append("\n\t" + strXMLEncode(nameValue.value).replace("\n", "\n\t") + "\n\t");
+			out.append("</" + nameValue.name + ">\n");			
+		}
+		for (TreeItem treeItem: trees)
+			emitTreeItems(out, 1, treeItem);
+		out.append("</" + reportType + ">");
 		return out.toString();
 	}
 }
