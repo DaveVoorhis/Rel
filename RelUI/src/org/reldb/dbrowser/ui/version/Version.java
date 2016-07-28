@@ -1,8 +1,13 @@
 package org.reldb.dbrowser.ui.version;
 
 public class Version {
+	
+	public static double getVersionNumber() {
+		return 3.00;
+	}
+	
 	public static String getVersion() {
-		return "User interface version 3.00";
+		return String.format("Version %.2f", getVersionNumber());
 	}
 
 	public static String getCopyright() {
@@ -18,7 +23,11 @@ public class Version {
 	}
 
 	public static String getReportLogURL() {
-	    return "http://rel.armchair.mb.ca/errorlog/";		
+	    return "http://reldb.org/feedback/";		
+	}
+	
+	public static String getUpdateURL() {
+		return "http://reldb.org/updates/";
 	}
 	
 }

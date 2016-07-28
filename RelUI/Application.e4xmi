@@ -12,15 +12,16 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_YysdELqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openLocalDatabase" label="Open local database" iconURI="platform:/plugin/RelUI/icons/OpenDBLocalIcon.png" tooltip="Open local database" mnemonics="M1+l" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_aF044LqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openRemoteDatabase" label="Open remote database" iconURI="platform:/plugin/RelUI/icons/OpenDBRemoteIcon.png" tooltip="Open remote database" mnemonics="M1+r" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_4_VjsLqZEeSSsbhT1QHqRQ" elementId="relui.menuseparator.0"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_Ng_nkFPKEeatz8M60Y6h3Q" elementId="relui.handledmenuitem.checkForUpdates" label="Check for Updates" tooltip="Check for Updates" command="_7_8BEFPIEeatz8M60Y6h3Q"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_-x_hUMfrEeSqd4GfyFqaAQ" elementId="relui.handledmenuitem.about" label="About" tooltip="About" command="_1_YZiqbsEeSFCpZI3OEurw"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_58XzsLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.exit" label="Exit" tooltip="Exit application" mnemonics="M1+x" command="_1_YZgKbsEeSFCpZI3OEurw"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_V4OQALqZEeSSsbhT1QHqRQ" elementId="relui.menu.tools" label="Tools" tooltip="">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_giqZcLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.options" label="Preferences" iconURI="platform:/plugin/RelUI/icons/settingsIcon.png" tooltip="Preferences" mnemonics="M1+p" command="_85hu4No2EeSw-PA_k-Gusw"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_68AVkNiyEeSgZfqMAYQ1XA" elementId="relui.handledmenuitem.viewLog" label="View log" tooltip="View system log messages" command="_sr9-cNiyEeSgZfqMAYQ1XA"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_GfP-EFTFEeaDhoqRIUbUGw" elementId="relui.menuseparator.1"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_Hc4ksFP5Eeatz8M60Y6h3Q" elementId="relui.handledmenuitem.submitFeedback" label="Submit Feedback" iconURI="platform:/plugin/RelUI/icons/ButterflyIcon.png" tooltip="Submit feedback or feature request" command="_6cuhEFP4Eeatz8M60Y6h3Q"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_uOE-QFPJEeatz8M60Y6h3Q" elementId="relui.handledmenuitem.submitReport" label="Bug Report" iconURI="platform:/plugin/RelUI/icons/BugIcon.png" tooltip="Submit bug report" command="_ws_GIFPIEeatz8M60Y6h3Q"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_AGDAUFTFEeaDhoqRIUbUGw" elementId="relui.handledmenuitem.checkForUpdates" label="Check for Updates" tooltip="Check for Updates" command="_7_8BEFPIEeatz8M60Y6h3Q"/>
       </children>
     </mainMenu>
   </children>

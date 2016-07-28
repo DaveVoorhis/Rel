@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Provide built-in facility to check for updates.
-
 - Test find/replace thoroughly.
 
 - Save every DDL statement in the database, for versioning, etc.

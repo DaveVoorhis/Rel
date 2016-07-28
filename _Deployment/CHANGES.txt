@@ -1,7 +1,8 @@
 Last used Exception* number: RS0440
 
-Version 1.0.13:
+Version 3.00 (1.0.13):
 
+  - note: RelUI version 3.00 now covers the product; the RelDBMS version numbering continues from before.
   - enhancement: All: now requires Java 8
   - enhancement: All: source now on GitHub; trivial to load into Eclipse.
   - enhancement: All: major package re-basing from ca.mb.armchair.rel3 to org.reldb.rel

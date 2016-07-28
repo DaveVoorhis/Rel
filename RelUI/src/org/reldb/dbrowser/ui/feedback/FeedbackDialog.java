@@ -175,25 +175,26 @@ public abstract class FeedbackDialog extends Dialog {
 	}
 	
 	protected void completed(Feedback.SendStatus sendStatus) {
+		String failHeading = "Feedback Failed";
 		try {
 			if (sendStatus.getResponse() != null && sendStatus.getResponse().startsWith("Success")) {
 				Shell parent = getParent();
 				quit();
-	    		MessageDialog.openInformation(parent, "Report Sent", sendStatus.getResponse());
+	    		MessageDialog.openInformation(parent, "Feedback Sent", sendStatus.getResponse());
 	    		return;
 	        } else
 	        	if (sendStatus.getException() != null) {
         			sendStatus.getException().printStackTrace();
-	        		MessageDialog.openError(getParent(), "Report Failed", "Unable to send report: " + sendStatus.getException().toString());
+	        		MessageDialog.openError(getParent(), failHeading, "Unable to send feedback: " + sendStatus.getException().toString());
 	        	} else
-	        		MessageDialog.openError(getParent(), "Report Failed", "Unable to send report: " + sendStatus.getResponse());
+	        		MessageDialog.openError(getParent(), failHeading, "Unable to send feedback: " + sendStatus.getResponse());
 		} catch (Exception e1) {
     		String exceptionName = e1.getClass().getName().toString(); 
     		if (exceptionName.equals("java.lang.InterruptedException"))
-    			MessageDialog.openError(getParent(), "Report Failed", "Send Report Cancelled");
+    			MessageDialog.openError(getParent(), failHeading, "Send Cancelled");
     		else {
     			e1.printStackTrace();
-    			MessageDialog.openError(getParent(), "Report Failed", "Unable to send report: " + e1.toString());
+    			MessageDialog.openError(getParent(), failHeading, "Unable to send feedback: " + e1.toString());
     		}
 		}
 	}
