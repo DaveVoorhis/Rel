@@ -64,21 +64,18 @@ public class UpdatesCheckDialog extends Dialog {
 		try {
 			if (sendStatus.getResponse() != null && sendStatus.getResponse().startsWith("Success")) {
 				String updateURL = sendStatus.getResponse().substring("Success".length() + 1).trim();
-				if (!updateURL.startsWith("http")) {
-					Shell parent = getParent();
-					quit();
-					MessageDialog.openInformation(parent,  "Check for Updates", "No new updates available.");
-				} else {
-					lblNewUpdatesAvailable.setVisible(true);
+				if (updateURL.startsWith("http")) {
 					lblNewUpdateURL.setVisible(true);
 					lblNewUpdateURL.setText(updateURL);
-					btnGo.setText("Exit");
-					btnCancel.setVisible(false);
-					lblProgress.setVisible(false);
-					progressBar.setVisible(false);
-					lblInstructions.setVisible(false);
+				} else {
+					lblNewUpdatesAvailable.setText("No new updates available.");
 				}
-	    		return;
+				lblNewUpdatesAvailable.setVisible(true);
+				btnGo.setText("Exit");
+				btnCancel.setVisible(false);
+				lblProgress.setVisible(false);
+				progressBar.setVisible(false);
+				lblInstructions.setVisible(false);
 	        } else
 	        	if (sendStatus.getException() != null) {
         			sendStatus.getException().printStackTrace();
@@ -126,7 +123,7 @@ public class UpdatesCheckDialog extends Dialog {
 	}
 
 	protected void doSend() {
-		if (lblNewUpdateURL.isVisible())
+		if (lblNewUpdatesAvailable.isVisible())
 			quit();
 		else
 			checker.doSend();
