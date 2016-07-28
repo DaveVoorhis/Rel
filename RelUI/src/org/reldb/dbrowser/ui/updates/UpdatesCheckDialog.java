@@ -65,8 +65,9 @@ public class UpdatesCheckDialog extends Dialog {
 			if (sendStatus.getResponse() != null && sendStatus.getResponse().startsWith("Success")) {
 				String updateURL = sendStatus.getResponse().substring("Success".length() + 1).trim();
 				if (!updateURL.startsWith("http")) {
-					MessageDialog.openInformation(getParent(),  "Check for Updates", "No new updates available.");
+					Shell parent = getParent();
 					quit();
+					MessageDialog.openInformation(parent,  "Check for Updates", "No new updates available.");
 				} else {
 					lblNewUpdatesAvailable.setVisible(true);
 					lblNewUpdateURL.setVisible(true);
