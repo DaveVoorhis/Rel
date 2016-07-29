@@ -229,6 +229,20 @@ public class CmdPanelOutput extends Composite {
 		return isEnhancedOutput;
 	}
 
+	public Composite getAlternativeViewParent() {
+		return outputStack;
+	}
+	
+	public void useAlternativeView(Composite alternative) {
+		outputStackLayout.topControl = alternative;
+		outputStack.layout();
+	}
+	
+	public void removeAlternativeView(Composite alternative) {
+		setEnhancedOutput(isEnhancedOutput);
+		alternative.dispose();
+	}
+	
 	public void setShowOk(boolean selection) {
 		showOk = selection;
 	}

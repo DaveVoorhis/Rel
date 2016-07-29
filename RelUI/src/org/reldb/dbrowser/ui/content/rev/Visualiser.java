@@ -137,7 +137,7 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 		btnEdit.setText("+");
 		btnEdit.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
-				System.out.println("Visualiser: edit " + Visualiser.this.toString());
+				model.getRev().showEditorFor(title);
 			}
 		});
 		
