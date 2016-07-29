@@ -170,6 +170,7 @@ public class CmdPanelToolbar {
 	
 	public void dispose() {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
+		toolBar.dispose();
 	}
 
 	private void setupIcons() {
@@ -188,5 +189,4 @@ public class CmdPanelToolbar {
 	public ToolBar getToolBar() {
 		return toolBar;
 	}
-
 }
