@@ -1,6 +1,6 @@
 ** TO DO **
 
-- Implement relvar editor grid on Rev '+' button.
+- Implementing relvar editor grid on Rev '+' button: toolbar integration.
 
 - Test find/replace thoroughly.
 
