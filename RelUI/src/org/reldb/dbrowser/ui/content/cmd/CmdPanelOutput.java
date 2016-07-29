@@ -191,6 +191,9 @@ public class CmdPanelOutput extends Composite {
 		return (s.charAt(endPosn) == c);
 	}
 	
+	/** Invoke to force toolbar holder to reload our toolbar, because it's probably changed. */
+	public void changeToolbar() {}
+	
 	protected void notifyInputDone() {}
 
 	protected void notifyInputOfSuccess() {}
@@ -236,11 +239,13 @@ public class CmdPanelOutput extends Composite {
 	public void useAlternativeView(Composite alternative) {
 		outputStackLayout.topControl = alternative;
 		outputStack.layout();
+		changeToolbar();
 	}
 	
 	public void removeAlternativeView(Composite alternative) {
 		setEnhancedOutput(isEnhancedOutput);
 		alternative.dispose();
+		changeToolbar();
 	}
 	
 	public void setShowOk(boolean selection) {

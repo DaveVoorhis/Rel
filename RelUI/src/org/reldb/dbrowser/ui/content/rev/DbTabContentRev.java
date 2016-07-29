@@ -16,14 +16,15 @@ import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 public class DbTabContentRev extends Composite {
 	
     private Rev rev;
+    private CmdPanelToolbar toolBar = null;
     
-	public DbTabContentRev(DbTab parentTab, Composite contentParent) {
-		super(contentParent, SWT.None);
-		setLayout(new FormLayout());
-
-	    rev = new Rev(this, parentTab.getConnection(), parentTab.getCrashHandler(), "scratchpad", Rev.SAVE_AND_LOAD_BUTTONS);	    
-
-		CmdPanelToolbar toolBar = new CmdPanelToolbar(this, rev.getCmdPanelOutput()) {
+    private void makeToolbar(DbTab parentTab) {
+    	if (toolBar != null) {
+    		toolBar.dispose();
+    		toolBar = null;
+    	}
+    	
+		toolBar = new CmdPanelToolbar(this, rev.getCmdPanelOutput()) {
 			public void addAdditionalItemsBefore(ToolBar toolbar) {
 				// backup icon
 				ToolItem tlitmBackup = new ToolItem(toolbar, SWT.NONE);
@@ -63,6 +64,23 @@ public class DbTabContentRev extends Composite {
 		fd_composite.right = new FormAttachment(100);
 		fd_composite.bottom = new FormAttachment(100);
 		rev.setLayoutData(fd_composite);
+		
+		layout();
+    }
+    
+	public DbTabContentRev(DbTab parentTab, Composite contentParent) {
+		super(contentParent, SWT.None);
+		setLayout(new FormLayout());
+
+	    rev = new Rev(this, parentTab.getConnection(), parentTab.getCrashHandler(), "scratchpad", Rev.SAVE_AND_LOAD_BUTTONS) {
+	    	@Override
+	    	public void changeToolbar() {
+	    		System.out.println("DbTabContentRev: need to update toolbar here.");
+	    		makeToolbar(parentTab);
+	    	}
+	    };
+	    
+	    makeToolbar(parentTab);
 	}
 
 	private void zoom() {

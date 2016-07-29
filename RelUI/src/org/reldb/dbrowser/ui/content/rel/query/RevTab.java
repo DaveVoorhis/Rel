@@ -14,13 +14,14 @@ public class RevTab extends DbTreeTab {
 	
 	public RevTab(RelPanel parent, DbTreeItem item, int revstyle) {
 		super(parent, item);
-	    rev = new Rev(parent.getTabFolder(), parent.getConnection(), parent.getCrashHandler(), item.getName(), revstyle);  
+	    rev = new Rev(parent.getTabFolder(), parent.getConnection(), parent.getCrashHandler(), item.getName(), revstyle) {
+	    	@Override
+	    	public void changeToolbar() {
+	    		parent.changeToolbar();
+	    	}
+	    };
 	    setControl(rev);
 	    ready();
-	}
-	
-	public ToolBar getToolBar(Composite parent) {
-		return new CmdPanelToolbar(parent, rev.getCmdPanelOutput()).getToolBar();
 	}
 
 	public void addModelChangeListener(ModelChangeListener modelChangeListener) {
@@ -29,6 +30,11 @@ public class RevTab extends DbTreeTab {
 
 	public int getRevStyle() {
 		return rev.getRevStyle();
+	}
+
+	@Override
+	public ToolBar getToolBar(Composite parent) {
+		return new CmdPanelToolbar(parent, rev.getCmdPanelOutput()).getToolBar();
 	}
 	
 	@Override

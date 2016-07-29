@@ -100,6 +100,10 @@ public class Rev extends Composite {
 		try {
 			outputView = new CmdPanelOutput(sashForm, connection, SWT.NONE) {
 				@Override
+				public void changeToolbar() {
+					Rev.this.changeToolbar();
+				}
+				@Override
 				protected void notifyInputDone() {
 					stopBtn.setEnabled(false);
 				}
@@ -216,6 +220,10 @@ public class Rev extends Composite {
 		pack();
 
 		loadModel();
+	}
+
+	/** Invoke to force toolbar holder to reload our toolbar, which has probably changed. */
+	public void changeToolbar() {
 	}
 
 	public void showEditorFor(String title) {

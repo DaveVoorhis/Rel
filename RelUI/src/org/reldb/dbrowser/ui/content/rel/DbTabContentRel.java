@@ -34,18 +34,25 @@ public class DbTabContentRel extends Composite {
     private PreferenceChangeListener preferenceChangeListener;
 	
     private ToolBar tabToolBar = null;
+
+    private ToolBar mainToolBar;
     
 	public DbTabContentRel(DbTab parentTab, Composite contentParent) {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 
-		ToolBar mainToolBar = new ToolBar(this, SWT.None);
+		mainToolBar = new ToolBar(this, SWT.None);
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);
 		fd_toolBar.top = new FormAttachment(0);
 		mainToolBar.setLayoutData(fd_toolBar);
 		
-		rel = new RelPanel(parentTab, this, SWT.None);
+		rel = new RelPanel(parentTab, this, SWT.None) {
+			@Override
+			public void changeToolbar() {
+				DbTabContentRel.this.changeToolbar();
+			}
+		};
 		FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
 		fd_composite.top = new FormAttachment(mainToolBar, 4);
@@ -128,25 +135,7 @@ public class DbTabContentRel extends Composite {
 				tlitmRename.setEnabled(item.canRename());
 			}
 			public void tabChangeNotify() {
-				if (tabToolBar != null) {
-					tabToolBar.dispose();
-					tabToolBar = null;
-				}
-				CTabFolder tabs = rel.getTabFolder();
-				CTabItem selectedTab = tabs.getSelection();
-				if (selectedTab != null) {
-					if (selectedTab instanceof DbTreeTab) {
-						tabToolBar = ((DbTreeTab)selectedTab).getToolBar(DbTabContentRel.this);
-						if (tabToolBar != null) {
-							FormData fd_toolBar = new FormData();
-							fd_toolBar.left = new FormAttachment(mainToolBar);
-							fd_toolBar.top = new FormAttachment(0);
-							fd_toolBar.right = new FormAttachment(100);
-							tabToolBar.setLayoutData(fd_toolBar);
-						}
-					}
-				}
-				layout();
+				changeToolbar();
 			}
 		});
 		
@@ -165,6 +154,29 @@ public class DbTabContentRel extends Composite {
 		tlitmRename.setEnabled(false);
 	}
 
+	public void changeToolbar() {
+		System.out.println("DbTabContentRel: need to update toolbar here.");		
+		if (tabToolBar != null) {
+			tabToolBar.dispose();
+			tabToolBar = null;
+		}
+		CTabFolder tabs = rel.getTabFolder();
+		CTabItem selectedTab = tabs.getSelection();
+		if (selectedTab != null) {
+			if (selectedTab instanceof DbTreeTab) {
+				tabToolBar = ((DbTreeTab)selectedTab).getToolBar(DbTabContentRel.this);
+				if (tabToolBar != null) {
+					FormData fd_toolBar = new FormData();
+					fd_toolBar.left = new FormAttachment(mainToolBar);
+					fd_toolBar.top = new FormAttachment(0);
+					fd_toolBar.right = new FormAttachment(100);
+					tabToolBar.setLayoutData(fd_toolBar);
+				}
+			}
+		}
+		layout();		
+	}
+	
 	public void dispose() {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 		super.dispose();
