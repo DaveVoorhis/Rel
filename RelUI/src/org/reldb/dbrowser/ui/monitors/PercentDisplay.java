@@ -113,7 +113,7 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 			percentageHistory.removeFirst();
 	}
 
-	private Point preferredSize() {
+	public Point preferredSize() {
 		GC gc = new GC(this);
 		String sampleText = "100% CPU";
 		Point textExtent = gc.textExtent(sampleText);

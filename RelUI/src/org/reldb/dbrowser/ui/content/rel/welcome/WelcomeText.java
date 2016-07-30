@@ -2,10 +2,8 @@ package org.reldb.dbrowser.ui.content.rel.welcome;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.wb.swt.SWTResourceManager;
+import org.reldb.dbrowser.utilities.FontSize;
 
 public class WelcomeText extends StyledText {
 	
@@ -23,9 +21,7 @@ public class WelcomeText extends StyledText {
 
 	public WelcomeText(Composite parent, String text, int size) {
 		this(parent, text);
-		FontData[] fontdata = getFont().getFontData();
-		Font newFont = SWTResourceManager.getFont(fontdata[0].getName(), 18, SWT.BOLD); 
-		setFont(newFont);
+		setFont(FontSize.getThisFontInNewSize(getFont(), 18, SWT.BOLD));
 	}
 	
 }

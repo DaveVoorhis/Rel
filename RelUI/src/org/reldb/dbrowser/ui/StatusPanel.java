@@ -6,12 +6,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
+import org.reldb.dbrowser.ui.monitors.CheckForUpdates;
 import org.reldb.dbrowser.ui.monitors.FreeCPUDisplay;
 import org.reldb.dbrowser.ui.monitors.FreeMemoryDisplay;
 
 public class StatusPanel extends Composite {
 	private FreeCPUDisplay freeCPU;
 	private FreeMemoryDisplay freeRAM;
+	private CheckForUpdates updateCheck;
 	private Label lblStatus;
 	
 	/**
@@ -42,6 +44,13 @@ public class StatusPanel extends Composite {
 		fd_cpu.top = new FormAttachment(0);
 		fd_cpu.right = new FormAttachment(freeRAM);
 		freeCPU.setLayoutData(fd_cpu);
+		
+		updateCheck = new CheckForUpdates(this, SWT.BORDER);
+		FormData fd_update = new FormData();
+		fd_update.top = new FormAttachment(0);
+		fd_update.right = new FormAttachment(freeCPU);
+		fd_update.bottom = new FormAttachment(100);
+		updateCheck.setLayoutData(fd_update);
 	}
 
 	public void setStatus(String s) {

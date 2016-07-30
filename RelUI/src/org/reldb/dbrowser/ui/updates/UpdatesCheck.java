@@ -14,12 +14,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.reldb.dbrowser.ui.version.Version;
 
 /** Check for updates. */
 public class UpdatesCheck {
+	
+	private Display display;
 	
 	private Button btnGo;
 	private Label lblProgress;
@@ -29,12 +32,19 @@ public class UpdatesCheck {
 	private Object sendWorkerMutex = new Integer(0);
 
 	public UpdatesCheck(Button btnSend, Label lblProgress, ProgressBar progressBar) {
+		this.display = lblProgress.getDisplay();
 		this.btnGo = btnSend;
 		this.lblProgress = lblProgress;
 		this.progressBar = progressBar;
 	}
 	
+	public UpdatesCheck(Display display) {
+		this.display = display;
+	}
+	
 	protected void initialiseProgress(String msg, int steps) {
+		if (lblProgress == null)
+			return;
 		btnGo.setEnabled(false);
 		lblProgress.setEnabled(true);
 		progressBar.setEnabled(true);
@@ -43,11 +53,15 @@ public class UpdatesCheck {
 	}
 	
 	protected void updateProgress(String msg, int step) {
+		if (lblProgress == null)
+			return;
 		lblProgress.setText(msg);
 		progressBar.setSelection(step);
 	}
 	
 	protected void resetProgress() {
+		if (lblProgress == null)
+			return;
 		updateProgress("Progress...", 0);
 		lblProgress.setEnabled(false);
 		progressBar.setEnabled(false);
@@ -90,7 +104,7 @@ public class UpdatesCheck {
     	public SendWorker() {}
     	
     	public void publish(SendProgress progressMessage) {
-    		lblProgress.getDisplay().asyncExec(new Runnable() {
+    		display.asyncExec(new Runnable() {
 				@Override
 				public void run() {
 			    	updateProgress(progressMessage.msg, progressMessage.progress);  		
@@ -106,7 +120,7 @@ public class UpdatesCheck {
     		} catch (Exception e) {
     			status = new SendStatus(e);
     		}
-    		lblProgress.getDisplay().asyncExec(new Runnable() {
+    		display.asyncExec(new Runnable() {
 				@Override
 				public void run() {
 					done(status);
@@ -165,7 +179,14 @@ public class UpdatesCheck {
     public void completed(SendStatus sendStatus) {}
 
 	public void quit() {}
-    
+
+	public static String getUpdateURL(SendStatus sendStatus) {
+		String updateURL = sendStatus.getResponse().substring("Success".length() + 1).trim();
+		if (updateURL.startsWith("http"))
+			return updateURL;
+		return null;
+	}
+	
 	public void doSend() {
 		initialiseProgress("Sending...", 100);
 		synchronized (sendWorkerMutex) {

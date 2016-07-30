@@ -63,12 +63,12 @@ public class UpdatesCheckDialog extends Dialog {
 		String failHeading = "Check for Updates Failed";
 		try {
 			if (sendStatus.getResponse() != null && sendStatus.getResponse().startsWith("Success")) {
-				String updateURL = sendStatus.getResponse().substring("Success".length() + 1).trim();
-				if (updateURL.startsWith("http")) {
+				String updateURL = UpdatesCheck.getUpdateURL(sendStatus);
+				if (updateURL == null)
+					lblNewUpdatesAvailable.setText("No new updates available.");
+				else {
 					lblNewUpdateURL.setVisible(true);
 					lblNewUpdateURL.setText(updateURL);
-				} else {
-					lblNewUpdatesAvailable.setText("No new updates available.");
 				}
 				lblNewUpdatesAvailable.setVisible(true);
 				btnGo.setText("Exit");
@@ -91,6 +91,7 @@ public class UpdatesCheckDialog extends Dialog {
     			MessageDialog.openError(getParent(), failHeading, "Unable to send request: " + e1.toString());
     		}
 		}
+		lblProgress.setText("Ready...");
 	}
 
 	protected void open() {
@@ -199,7 +200,7 @@ public class UpdatesCheckDialog extends Dialog {
 		FormData fd_lblProgress = new FormData();
 		fd_lblProgress.right = new FormAttachment(100);
 		lblProgress.setLayoutData(fd_lblProgress);
-		lblProgress.setText("Progress...");
+		lblProgress.setText("Ready...");
 		
 		progressBar = new ProgressBar(shell, SWT.NONE);
 		FormData fd_progressBar = new FormData();
