@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.IconLoader;
+import org.reldb.dbrowser.ui.ManagedToolbar;
 import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarEditor;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
@@ -14,7 +15,7 @@ import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
 import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
-public class RelvarEditorToolbar {
+public class RelvarEditorToolbar implements ManagedToolbar {
     
     private PreferenceChangeListener preferenceChangeListener;
 
@@ -67,6 +68,7 @@ public class RelvarEditorToolbar {
 
 	public void dispose() {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
+		toolBar.dispose();
 	}
 
 	private void setupIcons() {

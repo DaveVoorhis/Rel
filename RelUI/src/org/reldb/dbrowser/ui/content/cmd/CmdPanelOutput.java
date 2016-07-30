@@ -14,6 +14,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Color;
 import org.reldb.dbrowser.ui.DbConnection;
+import org.reldb.dbrowser.ui.content.rev.RelvarEditorPanel;
 import org.reldb.dbrowser.ui.html.BrowserManager;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
@@ -27,7 +28,8 @@ import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 public class CmdPanelOutput extends Composite {
 
 	private BrowserManager browser;
-	private StyledText styledText;
+	private StyledText styledText;	
+	private RelvarEditorPanel relvarEditor;
 	
 	private Composite outputStack;
 	private StackLayout outputStackLayout;
@@ -192,7 +194,7 @@ public class CmdPanelOutput extends Composite {
 	}
 	
 	/** Invoke to force toolbar holder to reload our toolbar, because it's probably changed. */
-	public void changeToolbar() {}
+	protected void changeToolbar() {}
 	
 	protected void notifyInputDone() {}
 
@@ -232,19 +234,21 @@ public class CmdPanelOutput extends Composite {
 		return isEnhancedOutput;
 	}
 
-	public Composite getAlternativeViewParent() {
-		return outputStack;
-	}
-	
-	public void useAlternativeView(Composite alternative) {
-		outputStackLayout.topControl = alternative;
+	public void useRelvarEditorView(DbConnection connection, String title, int style) {
+		relvarEditor = new RelvarEditorPanel(outputStack, connection, title, style);
+		outputStackLayout.topControl = relvarEditor;
 		outputStack.layout();
 		changeToolbar();
 	}
 	
-	public void removeAlternativeView(Composite alternative) {
+	public RelvarEditorPanel getRelvarEditorView() {
+		return relvarEditor;
+	}
+	
+	public void removeRelvarEditorView() {
 		setEnhancedOutput(isEnhancedOutput);
-		alternative.dispose();
+		relvarEditor.dispose();
+		relvarEditor = null;
 		changeToolbar();
 	}
 	

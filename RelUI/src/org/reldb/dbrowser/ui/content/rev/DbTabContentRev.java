@@ -11,12 +11,28 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
+import org.reldb.dbrowser.ui.ManagedToolbar;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
+import org.reldb.dbrowser.ui.content.rel.var.RelvarEditorToolbar;
 
 public class DbTabContentRev extends Composite {
 	
     private Rev rev;
-    private CmdPanelToolbar toolBar = null;
+    private ManagedToolbar toolBar = null;
+    
+	private void addZoom(ToolBar toolbar) {
+		new ToolItem(toolbar, SWT.SEPARATOR_FILL);
+		// zoom
+		ToolItem maximize = new ToolItem(toolbar, SWT.NONE);
+		maximize.setImage(IconLoader.loadIcon("view_fullscreen"));
+		maximize.setToolTipText("Zoom in or out");
+		maximize.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				zoom();
+			}
+		});
+	}
     
     private void makeToolbar(DbTab parentTab) {
     	if (toolBar != null) {
@@ -24,33 +40,28 @@ public class DbTabContentRev extends Composite {
     		toolBar = null;
     	}
     	
-		toolBar = new CmdPanelToolbar(this, rev.getCmdPanelOutput()) {
-			public void addAdditionalItemsBefore(ToolBar toolbar) {
-				// backup icon
-				ToolItem tlitmBackup = new ToolItem(toolbar, SWT.NONE);
-				tlitmBackup.setToolTipText("Make backup");
-				tlitmBackup.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						parentTab.makeBackup();
-					}
-				});
-				addAdditionalItem(tlitmBackup, "safeIcon");
-			}
-			public void addAdditionalItemsAfter(ToolBar toolbar) {
-				new ToolItem(toolbar, SWT.SEPARATOR_FILL);
-				// zoom
-				ToolItem maximize = new ToolItem(toolbar, SWT.NONE);
-				maximize.setImage(IconLoader.loadIcon("view_fullscreen"));
-				maximize.setToolTipText("Zoom in or out");
-				maximize.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						zoom();
-					}
-				});
-			}
-		};
+		RelvarEditorPanel relvarEditorView = rev.getCmdPanelOutput().getRelvarEditorView();
+    	if (relvarEditorView != null) {
+			toolBar = new RelvarEditorToolbar(this, relvarEditorView.getRelvarEditor());
+			addZoom(toolBar.getToolBar());
+    	} else
+			toolBar = new CmdPanelToolbar(this, rev.getCmdPanelOutput()) {
+				public void addAdditionalItemsBefore(ToolBar toolbar) {
+					// backup icon
+					ToolItem tlitmBackup = new ToolItem(toolbar, SWT.NONE);
+					tlitmBackup.setToolTipText("Make backup");
+					tlitmBackup.addSelectionListener(new SelectionAdapter() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							parentTab.makeBackup();
+						}
+					});
+					addAdditionalItem(tlitmBackup, "safeIcon");
+				}
+				public void addAdditionalItemsAfter(ToolBar toolbar) {
+					addZoom(toolbar);
+				}
+			};
 		
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);
@@ -67,15 +78,14 @@ public class DbTabContentRev extends Composite {
 		
 		layout();
     }
-    
+
 	public DbTabContentRev(DbTab parentTab, Composite contentParent) {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 
 	    rev = new Rev(this, parentTab.getConnection(), parentTab.getCrashHandler(), "scratchpad", Rev.SAVE_AND_LOAD_BUTTONS) {
 	    	@Override
-	    	public void changeToolbar() {
-	    		System.out.println("DbTabContentRev: need to update toolbar here.");
+	    	protected void changeToolbar() {
 	    		makeToolbar(parentTab);
 	    	}
 	    };

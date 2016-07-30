@@ -322,8 +322,7 @@ public class RelPanel extends Composite {
 	}
 
 	/** Invoke to force reload of toolbar. */
-	public void changeToolbar() {
-	}
+	public void changeToolbar() {}
 	
 	private static int getTabIndex(CTabFolder tabFolder, CTabItem item) {
 		if (item == null)

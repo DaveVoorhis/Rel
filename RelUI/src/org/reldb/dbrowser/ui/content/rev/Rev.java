@@ -26,12 +26,10 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.wb.swt.SWTResourceManager;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
-import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarEditor;
 import org.reldb.dbrowser.ui.content.rev.operators.Diadic;
 import org.reldb.dbrowser.ui.content.rev.operators.Expression;
 import org.reldb.dbrowser.ui.content.rev.operators.Extend;
@@ -82,8 +80,6 @@ public class Rev extends Composite {
 	
 	private Composite inputView;
 	
-	private Composite gridEditor;
-	
 	public Rev(Composite parent, DbConnection connection, CrashHandler crashHandler, String modelName, int revstyle) {
 		super(parent, SWT.None);
 		
@@ -100,7 +96,7 @@ public class Rev extends Composite {
 		try {
 			outputView = new CmdPanelOutput(sashForm, connection, SWT.NONE) {
 				@Override
-				public void changeToolbar() {
+				protected void changeToolbar() {
 					Rev.this.changeToolbar();
 				}
 				@Override
@@ -109,10 +105,8 @@ public class Rev extends Composite {
 				}
 				@Override
 				public void go(String text, boolean copyInputToOutput) {
-					if (gridEditor != null) {
-						outputView.removeAlternativeView(gridEditor);
-						gridEditor = null;
-					}
+					if (outputView.getRelvarEditorView() != null)
+						outputView.removeRelvarEditorView();
 					stopBtn.setEnabled(true);
 					super.go(text, copyInputToOutput);
 				}
@@ -223,37 +217,11 @@ public class Rev extends Composite {
 	}
 
 	/** Invoke to force toolbar holder to reload our toolbar, which has probably changed. */
-	public void changeToolbar() {
+	protected void changeToolbar() {
 	}
 
 	public void showEditorFor(String title) {
-		gridEditor = new Composite(outputView.getAlternativeViewParent(), SWT.BORDER);
-		gridEditor.setLayout(new FormLayout());
-		
-		Label editorTitle = new Label(gridEditor, SWT.NONE);
-		editorTitle.setText(title);
-		editorTitle.setAlignment(SWT.CENTER);
-		editorTitle.setBackground(SWTResourceManager.getColor(SWT.COLOR_GRAY));
-		
-		FormData fd_editorTitle = new FormData();
-		fd_editorTitle.top = new FormAttachment(0);
-		fd_editorTitle.left = new FormAttachment(0);
-		fd_editorTitle.right = new FormAttachment(100);
-		editorTitle.setLayoutData(fd_editorTitle);
-		
-		Composite editorComposite = new Composite(gridEditor, SWT.NONE);
-		editorComposite.setLayout(new FillLayout());
-		RelvarEditor editor = new RelvarEditor(editorComposite, connection, title);		
-		editor.refresh();
-		
-		FormData fd_editor = new FormData();
-		fd_editor.top = new FormAttachment(editorTitle);
-		fd_editor.left = new FormAttachment(0);
-		fd_editor.right = new FormAttachment(100);
-		fd_editor.bottom = new FormAttachment(100);
-		editorComposite.setLayoutData(fd_editor);
-		
-		outputView.useAlternativeView(gridEditor);
+		outputView.useRelvarEditorView(connection, title, SWT.BORDER);
 	}
 	
 	private void setTitle() {

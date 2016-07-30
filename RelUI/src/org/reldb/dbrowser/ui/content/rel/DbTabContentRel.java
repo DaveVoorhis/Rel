@@ -154,8 +154,7 @@ public class DbTabContentRel extends Composite {
 		tlitmRename.setEnabled(false);
 	}
 
-	public void changeToolbar() {
-		System.out.println("DbTabContentRel: need to update toolbar here.");		
+	protected void changeToolbar() {
 		if (tabToolBar != null) {
 			tabToolBar.dispose();
 			tabToolBar = null;
