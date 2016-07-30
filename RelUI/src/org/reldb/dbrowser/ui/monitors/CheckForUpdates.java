@@ -26,7 +26,6 @@ public class CheckForUpdates extends Composite {
 	private MouseAdapter mouseHandler = new MouseAdapter() {
 		@Override
 		public void mouseUp(MouseEvent event) {
-			super.mouseUp(event);
 			UpdatesCheckDialog.launch(getShell());
 		}
 	};
