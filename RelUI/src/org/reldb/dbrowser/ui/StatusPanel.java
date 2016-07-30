@@ -45,7 +45,7 @@ public class StatusPanel extends Composite {
 		fd_cpu.right = new FormAttachment(freeRAM);
 		freeCPU.setLayoutData(fd_cpu);
 		
-		updateCheck = new CheckForUpdates(this, SWT.BORDER);
+		updateCheck = new CheckForUpdates(this, SWT.NONE);
 		FormData fd_update = new FormData();
 		fd_update.top = new FormAttachment(0);
 		fd_update.right = new FormAttachment(freeCPU);

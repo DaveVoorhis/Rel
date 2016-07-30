@@ -8,8 +8,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.layout.FillLayout;
-
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import org.reldb.dbrowser.ui.updates.UpdatesCheck;
@@ -57,7 +57,7 @@ public class CheckForUpdates extends Composite {
 	 */
 	public CheckForUpdates(Composite parent, int style) {
 		super(parent, style);
-		setLayout(new FillLayout());
+		setLayout(new GridLayout());
 		
 		txtStatus = new Text(this, SWT.WRAP | SWT.CENTER);
 		txtStatus.setEditable(false);
@@ -65,6 +65,8 @@ public class CheckForUpdates extends Composite {
 		txtStatus.setText("Check for updates");
 		txtStatus.setFont(FontSize.getThisFontInNewSize(txtStatus.getFont(), 10, SWT.NORMAL));
 		txtStatus.addMouseListener(mouseHandler);
+		
+		txtStatus.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));		
 		
 		updateChecker = new UpdatesCheck(parent.getDisplay()) {
 			@Override
