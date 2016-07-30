@@ -19,6 +19,9 @@
 
 - Provide a means to store code generation 'wizards' in the database and integrate with UI.
 
+- Provide a means to easily import/export from other databases. Being able to define external database contents as local
+  relvars will make this straightforward.
+
 - Associate a 'valid' attribute with every database object, to permit changes that invalidate dependent objects.
 
 - Provide THE_INTEGER(INTEGER)
