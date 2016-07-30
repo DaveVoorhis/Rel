@@ -53,6 +53,7 @@ public class CmdPanelInput extends Composite {
 	private ToolItem tlitmPaste;
 	private ToolItem tlitmFindReplace;
 	private ToolItem tlitmLoad;
+	private ToolItem tlitmLoadInsert;
 	private ToolItem tlitmGetPath;
 	private ToolItem tlitmSave;
 	private ToolItem tlitmSaveHistory;
@@ -288,6 +289,21 @@ public class CmdPanelInput extends Composite {
 				}
 			});
 			
+			tlitmLoadInsert = new ToolItem(toolBar, SWT.NONE);
+			tlitmLoadInsert.setToolTipText("Load and insert file");
+			tlitmLoadInsert.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					ensureLoadDialogExists();
+					loadDialog.setFileName("");
+					loadDialog.setText("Load and Insert File");
+					String fname = loadDialog.open();
+					if (fname == null)
+						return;
+					loadInsertFile(fname);
+				}
+			});
+			
 			tlitmGetPath = new ToolItem(toolBar, SWT.NONE);
 			tlitmGetPath.setToolTipText("Get file path");
 			tlitmGetPath.addSelectionListener(new SelectionAdapter() {
@@ -459,6 +475,7 @@ public class CmdPanelInput extends Composite {
 		tlitmPaste.setImage(IconLoader.loadIcon("paste"));		
 		tlitmFindReplace.setImage(IconLoader.loadIcon("edit_find_replace"));
 		tlitmLoad.setImage(IconLoader.loadIcon("loadIcon"));
+		tlitmLoadInsert.setImage(IconLoader.loadIcon("loadInsertIcon"));
 		tlitmGetPath.setImage(IconLoader.loadIcon("pathIcon"));
 		tlitmSave.setImage(IconLoader.loadIcon("saveIcon"));
 		tlitmSaveHistory.setImage(IconLoader.loadIcon("saveHistoryIcon"));
@@ -481,6 +498,10 @@ public class CmdPanelInput extends Composite {
 		cmdPanelOutput.go(text, copyInputToOutput);
 	}
 	
+	private void replaceInputText(String newText) {
+		inputText.setText(newText);
+	}
+	
 	private void insertInputText(String newText) {
 		int insertionStart;
 		int insertionEnd;
@@ -500,23 +521,38 @@ public class CmdPanelInput extends Composite {
 	public void setFocused() {
 		inputText.setFocus();
 	}
+
+	private String loadFileImage(String fname) throws Exception {
+		BufferedReader f = new BufferedReader(new FileReader(fname));
+		StringBuffer fileImage = new StringBuffer();
+		String line;
+		while ((line = f.readLine()) != null) {
+			if (fileImage.length() > 0)
+				fileImage.append('\n');
+			fileImage.append(line);
+		}
+		f.close();
+		return fileImage.toString();
+	}
 	
 	public void loadFile(String fname) {
 		try {
-			BufferedReader f = new BufferedReader(new FileReader(fname));
-			StringBuffer fileImage = new StringBuffer();
-			String line;
-			while ((line = f.readLine()) != null) {
-				if (fileImage.length() > 0)
-					fileImage.append('\n');
-				fileImage.append(line);
-			}
-			f.close();
+			String fileImage = loadFileImage(fname);
+			replaceInputText(fileImage.toString());
+			announcement("Loaded " + fname);
+		} catch (Exception ioe) {
+			announceError(ioe.toString(), ioe);
+		}		
+	}
+	
+	public void loadInsertFile(String fname) {
+		try {
+			String fileImage = loadFileImage(fname);
 			insertInputText(fileImage.toString());
 			announcement("Loaded " + fname);
 		} catch (Exception ioe) {
 			announceError(ioe.toString(), ioe);
-		}
+		}		
 	}
 
 	public void handleError(StringBuffer errorBuffer) {
