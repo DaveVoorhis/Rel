@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Put check-for-updates in box to left of free CPU & memory display
+
 - Remove duplication from implementors of ManagedToolbar.
 
 - Test find/replace thoroughly.
