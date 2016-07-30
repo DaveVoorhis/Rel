@@ -9,10 +9,8 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbTab;
-import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.RevDatabase.Script;
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
@@ -44,20 +42,17 @@ public class DbTabContentCmd extends Composite {
 		};
 
 		CmdPanelToolbar toolBar = new CmdPanelToolbar(this, cmdPanel.getCmdPanelOutput()) {
-			public void addAdditionalItemsBefore(ToolBar toolbar) {
+			@Override
+			public void addAdditionalItemsBefore() {
 				// backup icon
-				ToolItem tlitmBackup = new ToolItem(toolbar, SWT.NONE);
-				tlitmBackup.setToolTipText("Make backup");
-				tlitmBackup.addSelectionListener(new SelectionAdapter() {
+				addItem("Make backup", "safeIcon", SWT.PUSH).addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						parentTab.makeBackup();
 					}
 				});
-				addAdditionalItem(tlitmBackup, "safeIcon");
 				// copy output to input
-				copyOutputToInputBtn = new ToolItem(toolbar, SWT.PUSH);
-				copyOutputToInputBtn.setToolTipText("Copy output to input");
+				copyOutputToInputBtn = addItem("Copy output to input", "copyToInputIcon", SWT.PUSH);
 				copyOutputToInputBtn.setEnabled(!cmdPanel.getEnhancedOutput());
 				copyOutputToInputBtn.addSelectionListener(new SelectionAdapter() {
 					@Override
@@ -65,15 +60,12 @@ public class DbTabContentCmd extends Composite {
 						cmdPanel.copyOutputToInput();
 					}
 				});
-				addAdditionalItem(copyOutputToInputBtn, "copyToInputIcon");
 			}
-			public void addAdditionalItemsAfter(ToolBar toolbar) {
-				new ToolItem(toolbar, SWT.SEPARATOR_FILL);
+			@Override
+			public void addAdditionalItemsAfter() {
+				addSeparatorFill();
 				// zoom
-				ToolItem maximize = new ToolItem(toolbar, SWT.NONE);
-				maximize.setImage(IconLoader.loadIcon("view_fullscreen"));
-				maximize.setToolTipText("Zoom in or out");
-				maximize.addSelectionListener(new SelectionAdapter() {
+				addItem("Zoom in or out", "view_fullscreen", SWT.PUSH).addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						zoom();

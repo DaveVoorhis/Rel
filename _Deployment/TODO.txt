@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Remove duplication from implementors of ManagedToolbar.
-
 - Test find/replace thoroughly.
 
 - Save every DDL statement in the database, for versioning, etc.

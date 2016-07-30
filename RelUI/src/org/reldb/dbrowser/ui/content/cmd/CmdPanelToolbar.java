@@ -1,43 +1,29 @@
 package org.reldb.dbrowser.ui.content.cmd;
 
-import java.util.Vector;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.ManagedToolbar;
-import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
-import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
-import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
-import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
-import org.reldb.dbrowser.ui.preferences.Preferences;
 
-public class CmdPanelToolbar implements ManagedToolbar {
-    
-    private PreferenceChangeListener preferenceChangeListener;
+public class CmdPanelToolbar extends ManagedToolbar {
 
-	private ToolItem clearOutputBtn = null;
-	private ToolItem saveOutputAsHTMLBtn = null;
-	private ToolItem saveOutputAsTextBtn = null;
-	private ToolItem enhancedOutputToggle = null;
-	private ToolItem showOkToggle = null;
-	private ToolItem autoclearToggle = null;
-	private ToolItem headingToggle = null;
-	private ToolItem headingTypesToggle = null;
-
-	private ToolBar toolBar;
+	private ToolItem clearOutputBtn;
+	private ToolItem saveOutputAsHTMLBtn;
+	private ToolItem saveOutputAsTextBtn;
+	private ToolItem enhancedOutputToggle;
+	private ToolItem showOkToggle;
+	private ToolItem autoclearToggle;
+	private ToolItem headingToggle;
+	private ToolItem headingTypesToggle;
 	
 	public CmdPanelToolbar(Composite parent, CmdPanelOutput cmdPanel) {
-		toolBar = new ToolBar(parent, SWT.None);
-
-		addAdditionalItemsBefore(toolBar);
+		super(parent);
 		
-		clearOutputBtn = new ToolItem(toolBar, SWT.PUSH);
-		clearOutputBtn.setToolTipText("Clear");
+		addAdditionalItemsBefore();
+
+		clearOutputBtn = addItem("Clear", "clearIcon", SWT.PUSH);
 		clearOutputBtn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -45,8 +31,7 @@ public class CmdPanelToolbar implements ManagedToolbar {
 			}
 		});
 
-		saveOutputAsHTMLBtn = new ToolItem(toolBar, SWT.PUSH);
-		saveOutputAsHTMLBtn.setToolTipText("Save as HTML");
+		saveOutputAsHTMLBtn = addItem("Save as HTML", "saveHTMLIcon", SWT.PUSH);
 		saveOutputAsHTMLBtn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -54,8 +39,7 @@ public class CmdPanelToolbar implements ManagedToolbar {
 			}
 		});
 
-		saveOutputAsTextBtn = new ToolItem(toolBar, SWT.PUSH);
-		saveOutputAsTextBtn.setToolTipText("Save as text");
+		saveOutputAsTextBtn = addItem("Save as text", "saveTextIcon", SWT.PUSH);
 		saveOutputAsTextBtn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -63,10 +47,9 @@ public class CmdPanelToolbar implements ManagedToolbar {
 			}
 		});
 
-		new ToolItem(toolBar, SWT.SEPARATOR);
+		addSeparator();
 
-		enhancedOutputToggle = new ToolItem(toolBar, SWT.CHECK);
-		enhancedOutputToggle.setToolTipText("Display enhanced output");
+		enhancedOutputToggle = addItem("Display enhanced output", "enhancedIcon", SWT.CHECK);
 		enhancedOutputToggle.setSelection(cmdPanel.getEnhancedOutput());
 		enhancedOutputToggle.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -82,8 +65,7 @@ public class CmdPanelToolbar implements ManagedToolbar {
 			}
 		});
 
-		showOkToggle = new ToolItem(toolBar, SWT.CHECK);
-		showOkToggle.setToolTipText("Write 'Ok.' after execution");
+		showOkToggle = addItem("Write 'Ok.' after execution", "showOkIcon", SWT.CHECK);
 		showOkToggle.setSelection(cmdPanel.getShowOk());
 		showOkToggle.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -92,8 +74,7 @@ public class CmdPanelToolbar implements ManagedToolbar {
 			}
 		});
 
-		autoclearToggle = new ToolItem(toolBar, SWT.CHECK);
-		autoclearToggle.setToolTipText("Automatically clear output");
+		autoclearToggle = addItem("Automatically clear output", "autoclearIcon", SWT.CHECK);
 		autoclearToggle.setSelection(cmdPanel.getAutoclear());
 		autoclearToggle.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -102,8 +83,7 @@ public class CmdPanelToolbar implements ManagedToolbar {
 			}
 		});
 
-		headingToggle = new ToolItem(toolBar, SWT.CHECK);
-		headingToggle.setToolTipText("Show relation headings");
+		headingToggle = addItem("Show relation headings", "headingIcon", SWT.CHECK);
 		headingToggle.setEnabled(enhancedOutputToggle.getSelection());
 		headingToggle.setSelection(cmdPanel.getHeadingVisible()
 				&& headingToggle.getEnabled());
@@ -117,9 +97,7 @@ public class CmdPanelToolbar implements ManagedToolbar {
 			}
 		});
 		
-		headingTypesToggle = new ToolItem(toolBar, SWT.CHECK);
-		headingTypesToggle
-				.setToolTipText("Suppress attribute types in relation headings");
+		headingTypesToggle = addItem("Suppress attribute types in relation headings", "typeSuppressIcon", SWT.CHECK);
 		headingTypesToggle.setEnabled(headingToggle.getSelection()
 				&& enhancedOutputToggle.getSelection());
 		headingTypesToggle.setSelection(cmdPanel.getHeadingTypesVisible()
@@ -132,62 +110,12 @@ public class CmdPanelToolbar implements ManagedToolbar {
 			}
 		});
 		
-		addAdditionalItemsAfter(toolBar);
-		
-		setupIcons();
-
-		preferenceChangeListener = new PreferenceChangeAdapter("CmdPanelToolbar") {
-			@Override
-			public void preferenceChange(PreferenceChangeEvent evt) {
-				setupIcons();
-			}
-		};
-		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
-	}
-
-	private static class ToolbarItem {
-		private ToolItem toolItem;
-		private String iconName;
-		public ToolbarItem(ToolItem toolItem, String iconName) {
-			this.toolItem = toolItem;
-			this.iconName = iconName;
-		}
-		ToolItem getToolItem() {return toolItem;}
-		String getIconName() {return iconName;}
-	}
-	
-	private Vector<ToolbarItem> additionalItems = new Vector<ToolbarItem>();
-	
-	/** Add an additional toolbar item. */
-	protected void addAdditionalItem(ToolItem item, String iconName) {
-		additionalItems.add(new ToolbarItem(item, iconName));
+		addAdditionalItemsAfter();
 	}
 	
 	/** Override to add additional toolbar items before the default items. */
-	protected void addAdditionalItemsBefore(ToolBar toolBar) {}
+	protected void addAdditionalItemsBefore() {}
 
 	/** Override to add additional toolbar items after the default items. */
-	protected void addAdditionalItemsAfter(ToolBar toolBar) {}	
-	
-	public void dispose() {
-		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
-		toolBar.dispose();
-	}
-
-	private void setupIcons() {
-		for (ToolbarItem tbi: additionalItems)
-			tbi.getToolItem().setImage(IconLoader.loadIcon(tbi.getIconName()));
-		clearOutputBtn.setImage(IconLoader.loadIcon("clearIcon"));
-		saveOutputAsHTMLBtn.setImage(IconLoader.loadIcon("saveHTMLIcon"));
-		saveOutputAsTextBtn.setImage(IconLoader.loadIcon("saveTextIcon"));
-		enhancedOutputToggle.setImage(IconLoader.loadIcon("enhancedIcon"));
-		showOkToggle.setImage(IconLoader.loadIcon("showOkIcon"));
-		autoclearToggle.setImage(IconLoader.loadIcon("autoclearIcon"));
-		headingToggle.setImage(IconLoader.loadIcon("headingIcon"));
-		headingTypesToggle.setImage(IconLoader.loadIcon("typeSuppressIcon"));
-	}
-
-	public ToolBar getToolBar() {
-		return toolBar;
-	}
+	protected void addAdditionalItemsAfter() {}	
 }

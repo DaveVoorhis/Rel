@@ -7,10 +7,8 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbTab;
-import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.ManagedToolbar;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 import org.reldb.dbrowser.ui.content.rel.var.RelvarEditorToolbar;
@@ -20,13 +18,10 @@ public class DbTabContentRev extends Composite {
     private Rev rev;
     private ManagedToolbar toolBar = null;
     
-	private void addZoom(ToolBar toolbar) {
-		new ToolItem(toolbar, SWT.SEPARATOR_FILL);
+	private void addZoom(ManagedToolbar toolbar) {
+		toolbar.addSeparatorFill();
 		// zoom
-		ToolItem maximize = new ToolItem(toolbar, SWT.NONE);
-		maximize.setImage(IconLoader.loadIcon("view_fullscreen"));
-		maximize.setToolTipText("Zoom in or out");
-		maximize.addSelectionListener(new SelectionAdapter() {
+		toolbar.addItem("Zoom in or out", "view_fullscreen", SWT.PUSH).addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				zoom();
@@ -43,23 +38,23 @@ public class DbTabContentRev extends Composite {
 		RelvarEditorPanel relvarEditorView = rev.getCmdPanelOutput().getRelvarEditorView();
     	if (relvarEditorView != null) {
 			toolBar = new RelvarEditorToolbar(this, relvarEditorView.getRelvarEditor());
-			addZoom(toolBar.getToolBar());
+			addZoom(toolBar);
     	} else
 			toolBar = new CmdPanelToolbar(this, rev.getCmdPanelOutput()) {
-				public void addAdditionalItemsBefore(ToolBar toolbar) {
+    			@Override
+				public void addAdditionalItemsBefore() {
 					// backup icon
-					ToolItem tlitmBackup = new ToolItem(toolbar, SWT.NONE);
-					tlitmBackup.setToolTipText("Make backup");
+					ToolItem tlitmBackup = addItem("Make backup", "safeIcon", SWT.PUSH);
 					tlitmBackup.addSelectionListener(new SelectionAdapter() {
 						@Override
 						public void widgetSelected(SelectionEvent e) {
 							parentTab.makeBackup();
 						}
 					});
-					addAdditionalItem(tlitmBackup, "safeIcon");
 				}
-				public void addAdditionalItemsAfter(ToolBar toolbar) {
-					addZoom(toolbar);
+    			@Override
+				public void addAdditionalItemsAfter() {
+					addZoom(toolBar);
 				}
 			};
 		
