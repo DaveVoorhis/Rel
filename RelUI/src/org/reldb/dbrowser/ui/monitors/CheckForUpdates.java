@@ -1,16 +1,17 @@
 package org.reldb.dbrowser.ui.monitors;
 
-import org.eclipse.swt.widgets.Composite;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.FillLayout;
+
 import org.eclipse.wb.swt.SWTResourceManager;
+
 import org.reldb.dbrowser.ui.updates.UpdatesCheck;
 import org.reldb.dbrowser.ui.updates.UpdatesCheckDialog;
 import org.reldb.dbrowser.ui.updates.UpdatesCheck.SendStatus;
@@ -20,11 +21,12 @@ public class CheckForUpdates extends Composite {
 
 	private UpdatesCheck updateChecker;
 	
-	private Label lblStatus;
+	private Text txtStatus;
 	
 	private MouseAdapter mouseHandler = new MouseAdapter() {
 		@Override
-		public void mouseUp(MouseEvent e) {
+		public void mouseUp(MouseEvent event) {
+			super.mouseUp(event);
 			UpdatesCheckDialog.launch(getShell());
 		}
 	};
@@ -35,12 +37,12 @@ public class CheckForUpdates extends Composite {
 				String updateURL = UpdatesCheck.getUpdateURL(sendStatus);
 				if (updateURL != null) {
 					System.out.println("CheckForUpdates: updates available: " + updateURL);
-					lblStatus.setText("Updates Available");
-					lblStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
+					txtStatus.setText("Update available");
+					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
 				} else {
 					System.out.println("CheckForUpdates: no new updates.");
-					lblStatus.setText("Up to date");
-					lblStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
+					txtStatus.setText("Up to date");
+					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
 				}
 				getParent().layout();
 	        }
@@ -58,11 +60,12 @@ public class CheckForUpdates extends Composite {
 		super(parent, style);
 		setLayout(new FillLayout());
 		
-		lblStatus = new Label(this, SWT.WRAP);
-		lblStatus.setAlignment(SWT.CENTER);
-		lblStatus.setText("Check for updates");
-		lblStatus.setFont(FontSize.getThisFontInNewSize(lblStatus.getFont(), 10, SWT.NORMAL));
-		lblStatus.addMouseListener(mouseHandler);
+		txtStatus = new Text(this, SWT.WRAP | SWT.CENTER);
+		txtStatus.setEditable(false);
+		txtStatus.setBackground(getBackground());
+		txtStatus.setText("Check for updates");
+		txtStatus.setFont(FontSize.getThisFontInNewSize(txtStatus.getFont(), 10, SWT.NORMAL));
+		txtStatus.addMouseListener(mouseHandler);
 		
 		updateChecker = new UpdatesCheck(parent.getDisplay()) {
 			@Override
