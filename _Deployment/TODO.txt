@@ -10,7 +10,7 @@
 
 - Be able to bring operator invocations into Rev queries.
 
-- Be able to turn a Rev query into a relation-valued operator, or a view.
+- Be able to turn a Rev query into a relation-valued operator definition script, or a view definition script.
 
 - Provide facility to associate predicate expressions (and/or general comments) with relvar definitions in the catalog.
 
