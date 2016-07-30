@@ -1,5 +1,7 @@
 ** TO DO **
 
+- In source editor, distinguish load file from insert file.
+
 - Remove duplication from implementors of ManagedToolbar.
 
 - Test find/replace thoroughly.
