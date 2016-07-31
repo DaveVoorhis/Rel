@@ -227,7 +227,7 @@ public class Rev extends Composite {
 	private void setTitle() {
 		String title;
 		if (isReadOnly())
-			title = "Show " + model.getModelName();
+			title = "Showing " + model.getModelName() + ".  Queries may be evaluated but not be edited.";
 		else
 			title = "Edit " + model.getModelName() + ".  Right-click for options.";
 		if (database.hasRevExtensions() < 0)
