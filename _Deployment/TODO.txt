@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Save every DDL statement in the database, for versioning, etc.
-
 - Be able to specify user-defined parameters in Rev queries.
 
 - Be able to bring operator invocations into Rev queries.

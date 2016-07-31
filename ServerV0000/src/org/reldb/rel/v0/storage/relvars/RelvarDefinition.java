@@ -25,4 +25,8 @@ public class RelvarDefinition {
 		return metadata;
 	}
 	
+	public String toString() {
+		return "VAR " + getName() + " " + metadata.getSourceDefinition() + ";";
+	}
+	
 }
