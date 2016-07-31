@@ -17,6 +17,7 @@ public class Catalog {
 	public final static String relvarOperators = "sys.Operators";
 	public final static String relvarOperatorsBuiltin = "sys.OperatorsBuiltin";
 	public final static String relvarTypes = "sys.Types";
+	public final static String relvarDefinitionHistory = "sys.DefinitionHistory";
 	public final static String relvarDependenciesRelvarOperator = "sys.DependenciesRelvarOperator";
 	public final static String relvarDependenciesRelvarRelvar = "sys.DependenciesRelvarRelvar";
 	public final static String relvarDependenciesRelvarType = "sys.DependenciesRelvarType";

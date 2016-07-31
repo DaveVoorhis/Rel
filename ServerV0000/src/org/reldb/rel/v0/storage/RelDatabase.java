@@ -331,10 +331,19 @@ public class RelDatabase {
 			BuiltinTypeBuilder.buildTypes(this);
 			operatorCachePermanent = operatorCache;
 			specialCacheMode = false;
+			
+	    	// Construct DDL log relvar.
+	    	try {
+    			System.out.println("Creating " + Catalog.relvarDefinitionHistory + " relvar.");
+	    		Interpreter.executeStatementPrivileged(this, "VAR " + Catalog.relvarDefinitionHistory + " REAL RELATION {Definition CHAR, SerialNumber INTEGER} KEY {SerialNumber};", "Rel", System.out);
+	    	} catch (ParseException e) {
+	    		e.printStackTrace();
+	    	}
 
 			// Construct built-in type types.
 	    	if (!isTypeExists(generator, "TypeInfo")) {
 	    		try {
+	    			System.out.println("Creating TypeInfo types.");
 					Interpreter.executeStatementPrivileged(this, "TYPE TypeInfo UNION;", "Rel", System.out);
 		    		Interpreter.executeStatementPrivileged(this, "TYPE Scalar IS {TypeInfo POSSREP {TypeName CHAR}};", "Rel", System.out);
 		    		Interpreter.executeStatementPrivileged(this, "TYPE NonScalar IS {TypeInfo POSSREP {Kind CHAR, Attributes RELATION {AttrName CHAR, AttrType TypeInfo}}};", "Rel", System.out);
@@ -342,7 +351,7 @@ public class RelDatabase {
 					e.printStackTrace();
 				}
 	    	}
-			
+	    	
 			// Catalog build phase 1
 	        catalog.generatePhase1(generator);
 
@@ -1926,6 +1935,14 @@ public class RelDatabase {
 	    		metadata.renameAttribute(RelDatabase.this, oldAttributeName, newAttributeName);
 			}
 		});
+	}
+	
+	public void recordDDL(String newDefinition) {
+		try {
+			Interpreter.executeStatementPrivileged(this, "INSERT sys.DefinitionHistory REL {TUP {Definition '" + StringUtils.quote(newDefinition) + "', SerialNumber GET_UNIQUE_NUMBER()}};", "Rel", System.out);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
     
 }

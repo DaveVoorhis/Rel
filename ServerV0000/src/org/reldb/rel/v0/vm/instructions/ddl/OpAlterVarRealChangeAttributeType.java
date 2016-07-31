@@ -1,4 +1,4 @@
-package org.reldb.rel.v0.vm.instructions.relvar;
+package org.reldb.rel.v0.vm.instructions.ddl;
 
 import org.reldb.rel.v0.types.Type;
 import org.reldb.rel.v0.vm.Context;

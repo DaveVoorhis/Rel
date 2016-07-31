@@ -116,6 +116,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTTransactionCommit.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAlterVarActionOptional.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTCaseStatement.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.vm.instructions.ddl"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTSummarizeCountDistinct.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTRelationHeading.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{TutorialDTokenManager.java"/>

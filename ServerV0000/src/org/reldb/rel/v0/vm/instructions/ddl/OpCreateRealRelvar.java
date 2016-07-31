@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.reldb.rel.v0.vm.instructions.system;
+package org.reldb.rel.v0.vm.instructions.ddl;
 
 import java.util.HashMap;
 
