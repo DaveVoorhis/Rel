@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.updates.UpdatesCheck.SendStatus;
+import org.reldb.dbrowser.utilities.FontSize;
 
 public class UpdatesCheckDialog extends Dialog {
 	
@@ -159,6 +160,7 @@ public class UpdatesCheckDialog extends Dialog {
 		
 		lblInstructions = new Label(panelIntro, SWT.WRAP);
 		lblInstructions.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
+		lblInstructions.setFont(FontSize.getThisFontInNewSize(lblInstructions.getFont(), 16, SWT.BOLD));
 		lblInstructions.setText("Press the Check for Updates button to check for updates.");
 		
 		lblNewUpdatesAvailable = new Label(shell, SWT.WRAP);
