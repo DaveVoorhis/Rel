@@ -1119,7 +1119,7 @@ public class RelDatabase {
 				public void write(int b) throws IOException {
 				}				
 			});
-			Interpreter.executeStatementPrivileged(this, "INSERT " + Catalog.relvarDefinitionHistory + " REL {TUP {Definition '" + StringUtils.quote(newDefinition) + "', SerialNumber GET_UNIQUE_NUMBER()}};", "Rel", devnull);
+			Interpreter.executeStatementPrivileged(this, "INSERT " + Catalog.relvarDefinitionHistory + " REL {TUP {Definition '" + StringUtils.quote(newDefinition) + "', SerialNumber IF COUNT(" + Catalog.relvarDefinitionHistory + ") = 0 THEN 1 ELSE MAX(" + Catalog.relvarDefinitionHistory + ", SerialNumber) + 1 END IF}};", "Rel", devnull);
 		} catch (Exception e) {
 			System.out.println("DefinitionHistory not logged due to " + e + ": " + newDefinition);
 		}
