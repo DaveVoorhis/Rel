@@ -539,6 +539,19 @@ public class BuiltinOperators {
 			);		
 	}
 	
+	private void setuniquenumber(final RelDatabase database) {
+		database.defineBuiltinOperator(
+				new OperatorDefinitionNativeProcedure("SET_UNIQUE_NUMBER", 
+						new Type[] {TypeInteger.getInstance()}, 
+						new NativeProcedure() {
+							public void execute(Value arguments[]) {
+								database.setUniqueID(((ValueInteger)arguments[0]).longValue());
+							}
+						}
+				)
+			);
+	}
+	
 	private void sequence2(final RelDatabase database, Type[] parameters) {
 		Heading resultHeading = new Heading();
 		resultHeading.add("N", TypeInteger.getInstance());
@@ -604,6 +617,7 @@ public class BuiltinOperators {
 		lessthan(database);
 		greaterthan(database);
 		getuniquenumber(database);
+		setuniquenumber(database);
 		sequence(database);
 	}
 	

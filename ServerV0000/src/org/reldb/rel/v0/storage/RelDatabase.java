@@ -647,10 +647,39 @@ public class RelDatabase {
 		if (relvarDb.delete(txn, theKey) != OperationStatus.SUCCESS)
 			throw new ExceptionFatal("RS0330: unable to drop relvar metadata for " + relvarName);
     }
+
+    private final File getUniqueIDFile() {
+        return new File(databaseHome + java.io.File.separatorChar + "unique.id");    	
+    }
+    
+    // Set the next unique ID. No-op if the value is less than what the next ID would have been.
+	public synchronized void setUniqueID(long newid) {
+		File uniquidFile = getUniqueIDFile();
+        long id = 0, nextid = 1;
+        try {
+            DataInputStream dis = new DataInputStream(new FileInputStream(uniquidFile));
+            id = dis.readLong();
+            nextid = id + 1;
+            dis.close();
+        } catch (Throwable t) {
+            System.out.println("Creating new ID file.");
+        }
+        try {
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(uniquidFile));
+            if (newid < nextid)
+            	dos.writeLong(nextid);
+            else
+            	dos.writeLong(newid);
+        	dos.close();
+        } catch (Throwable t) {
+    		t.printStackTrace();
+            throw new ExceptionFatal("RS0331: " + t.toString());
+        }
+	}
     
     // Obtain a unique ID
     public synchronized long getUniqueID() {
-        File uniquidFile = new File(databaseHome + java.io.File.separatorChar + "unique.id");
+		File uniquidFile = getUniqueIDFile();
         long id = 0, nextid = 1;
         try {
             DataInputStream dis = new DataInputStream(new FileInputStream(uniquidFile));
