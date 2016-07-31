@@ -36,13 +36,24 @@ public class DbTabContentRev extends Composite {
     	}
     	
 		RelvarEditorPanel relvarEditorView = rev.getCmdPanelOutput().getRelvarEditorView();
-    	if (relvarEditorView != null) {
-			toolBar = new RelvarEditorToolbar(this, relvarEditorView.getRelvarEditor());
-			addZoom(toolBar);
-    	} else
+    	if (relvarEditorView != null)
+			toolBar = new RelvarEditorToolbar(this, relvarEditorView.getRelvarEditor()) {
+	   			@Override
+					public void addAdditionalItemsBefore(RelvarEditorToolbar toolbar) {
+						// backup icon
+						ToolItem tlitmBackup = addItem("Make backup", "safeIcon", SWT.PUSH);
+						tlitmBackup.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+								parentTab.makeBackup();
+							}
+						});
+					}				
+			};
+    	else
 			toolBar = new CmdPanelToolbar(this, rev.getCmdPanelOutput()) {
     			@Override
-				public void addAdditionalItemsBefore() {
+				public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
 					// backup icon
 					ToolItem tlitmBackup = addItem("Make backup", "safeIcon", SWT.PUSH);
 					tlitmBackup.addSelectionListener(new SelectionAdapter() {
@@ -52,11 +63,8 @@ public class DbTabContentRev extends Composite {
 						}
 					});
 				}
-    			@Override
-				public void addAdditionalItemsAfter() {
-					addZoom(toolBar);
-				}
-			};
+ 			};
+		addZoom(toolBar);
 		
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);

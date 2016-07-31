@@ -43,7 +43,7 @@ public class DbTabContentCmd extends Composite {
 
 		CmdPanelToolbar toolBar = new CmdPanelToolbar(this, cmdPanel.getCmdPanelOutput()) {
 			@Override
-			public void addAdditionalItemsBefore() {
+			public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
 				// backup icon
 				addItem("Make backup", "safeIcon", SWT.PUSH).addSelectionListener(new SelectionAdapter() {
 					@Override
@@ -62,7 +62,7 @@ public class DbTabContentCmd extends Composite {
 				});
 			}
 			@Override
-			public void addAdditionalItemsAfter() {
+			public void addAdditionalItemsAfter(CmdPanelToolbar toolbar) {
 				addSeparatorFill();
 				// zoom
 				addItem("Zoom in or out", "view_fullscreen", SWT.PUSH).addSelectionListener(new SelectionAdapter() {

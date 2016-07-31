@@ -21,7 +21,7 @@ public class CmdPanelToolbar extends ManagedToolbar {
 	public CmdPanelToolbar(Composite parent, CmdPanelOutput cmdPanel) {
 		super(parent);
 		
-		addAdditionalItemsBefore();
+		addAdditionalItemsBefore(this);
 
 		clearOutputBtn = addItem("Clear", "clearIcon", SWT.PUSH);
 		clearOutputBtn.addSelectionListener(new SelectionAdapter() {
@@ -110,12 +110,12 @@ public class CmdPanelToolbar extends ManagedToolbar {
 			}
 		});
 		
-		addAdditionalItemsAfter();
+		addAdditionalItemsAfter(this);
 	}
 	
 	/** Override to add additional toolbar items before the default items. */
-	protected void addAdditionalItemsBefore() {}
+	protected void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {}
 
 	/** Override to add additional toolbar items after the default items. */
-	protected void addAdditionalItemsAfter() {}	
+	protected void addAdditionalItemsAfter(CmdPanelToolbar toolbar) {}	
 }

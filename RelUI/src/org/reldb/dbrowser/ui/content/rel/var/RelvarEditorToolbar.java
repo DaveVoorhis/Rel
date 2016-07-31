@@ -11,6 +11,8 @@ public class RelvarEditorToolbar extends ManagedToolbar {
 	
 	public RelvarEditorToolbar(Composite parent, RelvarEditor relvarEditor) {
 		super(parent);
+		
+		addAdditionalItemsBefore(this);
 
 		addItem("Refresh", "arrow_refresh", SWT.PUSH).addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -33,5 +35,8 @@ public class RelvarEditorToolbar extends ManagedToolbar {
 			}
 		});
 	}
+	
+	/** Override to add additional toolbar items before the default items. */
+	protected void addAdditionalItemsBefore(RelvarEditorToolbar toolbar) {}
 
 }
