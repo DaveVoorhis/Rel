@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Check that RelUI error trapping works on production Rel.
-
 - Test find/replace thoroughly.
 
 - Save every DDL statement in the database, for versioning, etc.
