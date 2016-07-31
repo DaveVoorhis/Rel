@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Fix: ALTER VAR <name> INSERT ... logs incorrect syntax in sys.DefinitionHistory.
-
 - Be able to specify user-defined parameters in Rev queries.
 
 - Be able to bring operator invocations into Rev queries.

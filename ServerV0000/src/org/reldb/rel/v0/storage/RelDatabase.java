@@ -1951,7 +1951,7 @@ public class RelDatabase {
 				Table table = relvar.getTable();
 				ValueTuple newAttributes = new ValueTuple(generator, new TypeTuple(heading));
 				table.expandTuples(txn, newAttributes);
-				recordDDL("ALTER VAR " + varname + " INSERT " + heading.toString() + ";");
+				recordDDL("ALTER VAR " + varname + " INSERT " + heading.getSpecification() + ";");
 			}
 		});
 	}

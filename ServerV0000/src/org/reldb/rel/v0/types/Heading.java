@@ -258,11 +258,15 @@ public class Heading implements Comparable<Heading> {
 		return attributes.size();
 	}
 	
-	public String getSignature() {
+	public String getSpecification() {
 		String out = null;
 		for (Attribute attribute: attributes)
 			out = (out == null) ? attribute.toString() : (out + ", " + attribute.toString());
-		return "{" + ((out == null) ? "" : out) + "}";
+		return ((out == null) ? "" : out);		
+	}
+	
+	public String getSignature() {
+		return "{" + getSpecification() + "}";
 	}
 
 	public String toString() {
