@@ -1,16 +1,19 @@
-// Version 0.3.4 Database Backup Script
+// Version 0.3.6 Database Backup Script
 
 WRITELN "/*** Rel Database Backup ***/";
 WRITELN;
 
 WRITELN "// Created in Rel Version " || (ver FROM TUPLE FROM (EXTEND sys.Version : {ver := major || "." || minor || "." || revision || " " || release}));
-WRITELN "// Using DatabaseToScript version 0.3.5";
+WRITELN "// Using DatabaseToScript version 0.3.6";
 WRITELN;
 
 WRITELN "BEGIN TRANSACTION;";
 WRITELN;
 
 BEGIN TRANSACTION;
+
+WRITELN "CALL SET_UNIQUE_NUMBER(" || CAST_AS_CHAR(GET_UNIQUE_NUMBER() + 1) || ");";
+WRITELN;
 
 FOR
 	UNION {
