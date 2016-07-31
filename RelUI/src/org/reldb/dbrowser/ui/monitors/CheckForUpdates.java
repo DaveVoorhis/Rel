@@ -8,14 +8,16 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.wb.swt.SWTResourceManager;
-
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.updates.UpdatesCheck;
 import org.reldb.dbrowser.ui.updates.UpdatesCheckDialog;
 import org.reldb.dbrowser.ui.updates.UpdatesCheck.SendStatus;
 import org.reldb.dbrowser.utilities.FontSize;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.widgets.Label;
 
 public class CheckForUpdates extends Composite {
 
@@ -35,12 +37,12 @@ public class CheckForUpdates extends Composite {
 			if (sendStatus.getResponse() != null && sendStatus.getResponse().startsWith("Success")) {
 				String updateURL = UpdatesCheck.getUpdateURL(sendStatus);
 				if (updateURL != null) {
-					System.out.println("CheckForUpdates: updates available: " + updateURL);
-					txtStatus.setText("Update available");
+					System.out.println("CheckForUpdates: Rel update is available at " + updateURL);
+					txtStatus.setText("update is available.");
 					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
 				} else {
-					System.out.println("CheckForUpdates: no new updates.");
-					txtStatus.setText("Up to date");
+					System.out.println("CheckForUpdates: Rel is up to date.");
+					txtStatus.setText("is up to date.");
 					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
 				}
 				getParent().layout();
@@ -57,16 +59,28 @@ public class CheckForUpdates extends Composite {
 	 */
 	public CheckForUpdates(Composite parent, int style) {
 		super(parent, style);
-		setLayout(new GridLayout());
+		setLayout(new FormLayout());
 		
-		txtStatus = new Text(this, SWT.WRAP | SWT.CENTER);
+		Label lblIcon = new Label(this, SWT.NONE);
+		lblIcon.setImage(IconLoader.loadIcon("RelIconSmall"));
+		lblIcon.addMouseListener(mouseHandler);
+		
+		FormData fd_lblIcon = new FormData();
+		fd_lblIcon.bottom = new FormAttachment(100, -2);
+		fd_lblIcon.left = new FormAttachment(0);
+		lblIcon.setLayoutData(fd_lblIcon);
+		
+		txtStatus = new Text(this, SWT.WRAP);
 		txtStatus.setEditable(false);
 		txtStatus.setBackground(getBackground());
-		txtStatus.setText("Check for updates");
+		txtStatus.setText("updates?");
 		txtStatus.setFont(FontSize.getThisFontInNewSize(txtStatus.getFont(), 10, SWT.NORMAL));
 		txtStatus.addMouseListener(mouseHandler);
 		
-		txtStatus.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));		
+		FormData fd_txtStatus = new FormData();
+		fd_txtStatus.bottom = new FormAttachment(100, -3);
+		fd_txtStatus.left = new FormAttachment(lblIcon, -3);
+		txtStatus.setLayoutData(fd_txtStatus);
 		
 		updateChecker = new UpdatesCheck(parent.getDisplay()) {
 			@Override
