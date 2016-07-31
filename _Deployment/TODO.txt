@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Be able to initialise unique ID; must be first operation after db is created.
+
 - Be able to specify user-defined parameters in Rev queries.
 
 - Be able to bring operator invocations into Rev queries.
