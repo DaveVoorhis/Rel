@@ -48,7 +48,7 @@ public class Feedback {
 	}
 	
 	protected void resetProgress() {
-		updateProgress("Progress...", 0);
+		updateProgress("Ready...", 0);
 		lblProgress.setEnabled(false);
 		progressBar.setEnabled(false);
 		btnSend.setEnabled(true);

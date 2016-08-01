@@ -48,6 +48,7 @@ public abstract class FeedbackDialog extends Dialog {
 			}
 		};
 		report = newTreeItem(treeDetails, "Details");
+		phoneHome.resetProgress();
 	}
 	
 	protected void open() {
