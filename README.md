@@ -20,9 +20,6 @@ For further information, see the Rel home page at http://reldb.org
 
 See the _Deployment directory for conventional installable versions of Rel.  These are currently executable Java .jar files, with names of the form RelInstall-x.y.z.jar  As of version 1.0.13 or later this might be replaced by a Web Start installer (see below), or something else.
 
-See the _Deployment/WebDeployment directory for a Web Start installable version of Rel.  Download Rel.jnlp and invoke it with
-javaws (e.g., javaws Rel.jnlp) to run the Java Web Start installation, or use the Launch button on http://reldb.org/
-
 Read the _Deployment/README.txt file for further information on running Rel.
 
 For support or to discuss Rel, see the Rel Forum at http://reldb.org/forum
