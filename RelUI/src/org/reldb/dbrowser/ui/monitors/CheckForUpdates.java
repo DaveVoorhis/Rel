@@ -51,6 +51,7 @@ public class CheckForUpdates extends Composite {
 		txtStatus.setText(text);
 		makeRelItalic();
 		centreText();
+		getParent().layout();
 	}
 	
 	protected void completed(SendStatus sendStatus) {
@@ -67,7 +68,6 @@ public class CheckForUpdates extends Composite {
 					setText("Rel is up to date.");
 					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
 				}
-				getParent().layout();
 	        }
 		} catch (Exception e) {
 			System.out.println("CheckForUpdates: exception: " + e);
@@ -97,6 +97,7 @@ public class CheckForUpdates extends Composite {
 		txtStatus.setFont(FontSize.getThisFontInNewSize(txtStatus.getFont(), 10, SWT.NORMAL));
 		txtStatus.addMouseListener(mouseHandler);
 		txtStatus.setCaret(new Caret(txtStatus, SWT.NONE));
+		setText("Rel updates?");
 		
 		updateChecker = new UpdatesCheck(parent.getDisplay()) {
 			@Override
