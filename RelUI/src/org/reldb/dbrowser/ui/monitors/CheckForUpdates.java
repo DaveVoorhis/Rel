@@ -17,7 +17,8 @@ import org.reldb.dbrowser.ui.updates.UpdatesCheck;
 import org.reldb.dbrowser.ui.updates.UpdatesCheckDialog;
 import org.reldb.dbrowser.ui.updates.UpdatesCheck.SendStatus;
 import org.reldb.dbrowser.utilities.FontSize;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
 
 public class CheckForUpdates extends Composite {
 
@@ -31,28 +32,6 @@ public class CheckForUpdates extends Composite {
 			UpdatesCheckDialog.launch(getShell());
 		}
 	};
-	
-	protected void completed(SendStatus sendStatus) {
-		try {
-			if (sendStatus.getResponse() != null && sendStatus.getResponse().startsWith("Success")) {
-				String updateURL = UpdatesCheck.getUpdateURL(sendStatus);
-				if (updateURL != null) {
-					System.out.println("CheckForUpdates: Rel update is available at " + updateURL);
-					txtStatus.setText("Rel update is available.");
-					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
-					txtStatus.setBackground(SWTResourceManager.getColor(255, 220, 220));
-				} else {
-					System.out.println("CheckForUpdates: Rel is up to date.");
-					txtStatus.setText("Rel is up to date.");
-					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
-				}
-				makeRelItalic();
-				getParent().layout();
-	        }
-		} catch (Exception e) {
-			System.out.println("CheckForUpdates: exception: " + e);
-		}
-	}
 
 	private void makeRelItalic() {
 		StyleRange italic = new StyleRange();
@@ -62,6 +41,39 @@ public class CheckForUpdates extends Composite {
 		txtStatus.setStyleRange(italic);		
 	}
 	
+	private void centreText() {
+		GC gc = new GC(txtStatus);
+		Point textExtent = gc.textExtent(txtStatus.getText());
+		txtStatus.setMargins(2, (CheckForUpdates.this.getSize().y - textExtent.y) / 2, 2, 0);		
+	}
+	
+	private void setText(String text) {
+		txtStatus.setText(text);
+		makeRelItalic();
+		centreText();
+	}
+	
+	protected void completed(SendStatus sendStatus) {
+		try {
+			if (sendStatus.getResponse() != null && sendStatus.getResponse().startsWith("Success")) {
+				String updateURL = UpdatesCheck.getUpdateURL(sendStatus);
+				if (updateURL != null) {
+					System.out.println("CheckForUpdates: Rel update is available at " + updateURL);
+					setText("Rel update is available.");
+					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
+					txtStatus.setBackground(SWTResourceManager.getColor(255, 200, 200));
+				} else {
+					System.out.println("CheckForUpdates: Rel is up to date.");
+					setText("Rel is up to date.");
+					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
+				}
+				getParent().layout();
+	        }
+		} catch (Exception e) {
+			System.out.println("CheckForUpdates: exception: " + e);
+		}
+	}
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -69,16 +81,20 @@ public class CheckForUpdates extends Composite {
 	 */
 	public CheckForUpdates(Composite parent, int style) {
 		super(parent, style);
-		setLayout(new FillLayout());
+		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.marginHeight = 0;
+		gridLayout.marginWidth = 0;
+		gridLayout.verticalSpacing = 0;
+		gridLayout.horizontalSpacing = 0;
+		setLayout(gridLayout);
+		setVisible(false);
 		
 		txtStatus = new StyledText(this, SWT.WRAP);
+		txtStatus.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		txtStatus.setEditable(false);
-		txtStatus.setMargins(2, 2, 2, 2);
 		txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
 		txtStatus.setBackground(getBackground());
-		txtStatus.setText("Rel updates?");
 		txtStatus.setFont(FontSize.getThisFontInNewSize(txtStatus.getFont(), 10, SWT.NORMAL));
-		makeRelItalic();
 		txtStatus.addMouseListener(mouseHandler);
 		txtStatus.setCaret(new Caret(txtStatus, SWT.NONE));
 		
@@ -92,14 +108,21 @@ public class CheckForUpdates extends Composite {
 		TimerTask checkForUpdates = new TimerTask() {
 			@Override
 			public void run() {
-				System.out.println("CheckForUpdates: check for updates.");
-				updateChecker.doCancel();
-				updateChecker.doSend();
+	    		getDisplay().asyncExec(new Runnable() {
+					@Override
+					public void run() {						
+						setVisible(true);
+						setText("Rel updates?");
+						System.out.println("CheckForUpdates: check for updates.");
+						updateChecker.doCancel();
+						updateChecker.doSend();
+					}
+	    		});
 			}
 		};
 		
 		// Check for updates after 10 seconds, then every 12 hours
 		Timer checkTimer = new Timer();
-		checkTimer.schedule(checkForUpdates, 1000 * 10, 1000 * 60 * 60 * 12);
+		checkTimer.schedule(checkForUpdates, 1000 * 5, 1000 * 60 * 60 * 12);
 	}
 }
