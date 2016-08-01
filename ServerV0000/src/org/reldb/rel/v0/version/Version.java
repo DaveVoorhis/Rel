@@ -64,7 +64,7 @@ public class Version {
     
     /** Get copyright string. */
     public static String getCopyright() {
-        return "Rel version " + getVersion() + "\n" +
+        return "Rel DBMS version " + getVersion() + "\n" +
             "Copyright (c) 2004 - 2016 Dave Voorhis\n" +
             "All Rights Reserved\n" +
             "For further information, please see http://reldb.org";
