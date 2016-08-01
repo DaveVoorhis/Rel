@@ -1,19 +1,15 @@
 package org.reldb.dbrowser.ui;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
 import org.reldb.dbrowser.ui.monitors.CheckForUpdates;
 import org.reldb.dbrowser.ui.monitors.FreeCPUDisplay;
 import org.reldb.dbrowser.ui.monitors.FreeMemoryDisplay;
 
 public class StatusPanel extends Composite {
-	private FreeCPUDisplay freeCPU;
-	private FreeMemoryDisplay freeRAM;
-	private CheckForUpdates updateCheck;
 	private Label lblStatus;
 	
 	/**
@@ -23,34 +19,25 @@ public class StatusPanel extends Composite {
 	 */
 	public StatusPanel(Composite parent, int style) {
 		super(parent, style);
-		setLayout(new FormLayout());
+		GridLayout gridLayout = new GridLayout(4, false);
+		gridLayout.marginHeight = 0;
+		gridLayout.marginWidth = 2;
+		gridLayout.horizontalSpacing = 1;
+		gridLayout.verticalSpacing = 0;
+		setLayout(gridLayout);
 		
 		lblStatus = new Label(this, SWT.NONE);
-		FormData fd_lblStatus = new FormData();
-		fd_lblStatus.top = new FormAttachment(0);
-		fd_lblStatus.left = new FormAttachment(0);
-		lblStatus.setLayoutData(fd_lblStatus);
-		lblStatus.setText("Status");
+		lblStatus.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		lblStatus.setText("New Label");
 		
-		freeRAM = new FreeMemoryDisplay(this, SWT.BORDER);
-		FormData fd_ram = new FormData();
-		fd_ram.top = new FormAttachment(0);
-		fd_ram.right = new FormAttachment(100);
-		freeRAM.setLayoutData(fd_ram);
+		CheckForUpdates updateCheck = new CheckForUpdates(this, SWT.NONE);
+		updateCheck.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		
-		freeCPU = new FreeCPUDisplay(this, SWT.BORDER);
-		fd_lblStatus.right = new FormAttachment(freeCPU);
-		FormData fd_cpu = new FormData();
-		fd_cpu.top = new FormAttachment(0);
-		fd_cpu.right = new FormAttachment(freeRAM);
-		freeCPU.setLayoutData(fd_cpu);
+		FreeCPUDisplay freeCPU = new FreeCPUDisplay(this, SWT.BORDER);
+		freeCPU.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		
-		updateCheck = new CheckForUpdates(this, SWT.NONE);
-		FormData fd_update = new FormData();
-		fd_update.top = new FormAttachment(0);
-		fd_update.right = new FormAttachment(freeCPU);
-		fd_update.bottom = new FormAttachment(100);
-		updateCheck.setLayoutData(fd_update);
+		FreeMemoryDisplay freeRAM = new FreeMemoryDisplay(this, SWT.BORDER);
+		freeRAM.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 	}
 
 	public void setStatus(String s) {

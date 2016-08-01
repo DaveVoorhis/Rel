@@ -3,27 +3,25 @@ package org.reldb.dbrowser.ui.monitors;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.eclipse.swt.widgets.Caret;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.updates.UpdatesCheck;
 import org.reldb.dbrowser.ui.updates.UpdatesCheckDialog;
 import org.reldb.dbrowser.ui.updates.UpdatesCheck.SendStatus;
 import org.reldb.dbrowser.utilities.FontSize;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.layout.FillLayout;
 
 public class CheckForUpdates extends Composite {
 
 	private UpdatesCheck updateChecker;
 	
-	private Text txtStatus;
+	private StyledText txtStatus;
 	
 	private MouseAdapter mouseHandler = new MouseAdapter() {
 		@Override
@@ -38,20 +36,29 @@ public class CheckForUpdates extends Composite {
 				String updateURL = UpdatesCheck.getUpdateURL(sendStatus);
 				if (updateURL != null) {
 					System.out.println("CheckForUpdates: Rel update is available at " + updateURL);
-					txtStatus.setText("update is available.");
+					txtStatus.setText("Rel update is available.");
 					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
 				} else {
 					System.out.println("CheckForUpdates: Rel is up to date.");
-					txtStatus.setText("is up to date.");
+					txtStatus.setText("Rel is up to date.");
 					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
 				}
+				makeRelItalic();
 				getParent().layout();
 	        }
 		} catch (Exception e) {
 			System.out.println("CheckForUpdates: exception: " + e);
 		}
 	}
-		
+
+	private void makeRelItalic() {
+		StyleRange italic = new StyleRange();
+		italic.start = 0;
+		italic.length = 3;
+		italic.fontStyle = SWT.ITALIC;
+		txtStatus.setStyleRange(italic);		
+	}
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -59,28 +66,17 @@ public class CheckForUpdates extends Composite {
 	 */
 	public CheckForUpdates(Composite parent, int style) {
 		super(parent, style);
-		setLayout(new FormLayout());
+		setLayout(new FillLayout());
 		
-		Label lblIcon = new Label(this, SWT.NONE);
-		lblIcon.setImage(IconLoader.loadIcon("RelIconSmall"));
-		lblIcon.addMouseListener(mouseHandler);
-		
-		FormData fd_lblIcon = new FormData();
-		fd_lblIcon.bottom = new FormAttachment(100, -2);
-		fd_lblIcon.left = new FormAttachment(0);
-		lblIcon.setLayoutData(fd_lblIcon);
-		
-		txtStatus = new Text(this, SWT.WRAP);
+		txtStatus = new StyledText(this, SWT.WRAP);
 		txtStatus.setEditable(false);
+		txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
 		txtStatus.setBackground(getBackground());
-		txtStatus.setText("updates?");
+		txtStatus.setText("Rel updates?");
 		txtStatus.setFont(FontSize.getThisFontInNewSize(txtStatus.getFont(), 10, SWT.NORMAL));
+		makeRelItalic();
 		txtStatus.addMouseListener(mouseHandler);
-		
-		FormData fd_txtStatus = new FormData();
-		fd_txtStatus.bottom = new FormAttachment(100, -3);
-		fd_txtStatus.left = new FormAttachment(lblIcon, -3);
-		txtStatus.setLayoutData(fd_txtStatus);
+		txtStatus.setCaret(new Caret(txtStatus, SWT.NONE));
 		
 		updateChecker = new UpdatesCheck(parent.getDisplay()) {
 			@Override
