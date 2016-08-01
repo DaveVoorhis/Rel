@@ -117,7 +117,7 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 		btnInfo.setText("?");
 		btnInfo.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
-	        	(new ViewQueryDialog(getShell(), getQuery())).open();
+	        	(new ViewQueryDialog(Visualiser.this)).open();
 			}
 		});
 		

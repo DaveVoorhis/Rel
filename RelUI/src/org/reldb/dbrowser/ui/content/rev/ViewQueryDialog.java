@@ -11,22 +11,28 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 
 public class ViewQueryDialog extends Dialog {
+	
+	private final static String saveToViewPrompt = "Export View script";
+	private final static String saveToOperatorPrompt = "Export Operator script";
 
-	private String query;
+	private final static int BTN_SaveAsView = IDialogConstants.CLIENT_ID + 0;
+	private final static int BTN_SaveAsOperator = IDialogConstants.CLIENT_ID + 1;
+
+	private Visualiser visualiser;
 	
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public ViewQueryDialog(Shell parentShell, String query) {
-		super(parentShell);
+	public ViewQueryDialog(Visualiser visualiser) {
+		super(visualiser.getShell());
 		setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.APPLICATION_MODAL);
-		this.query = query;
+		this.visualiser = visualiser;
 	}
 	
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
-		shell.setText("View Query");
+		shell.setText("View and Export Query");
 	}
 
 	/**
@@ -44,18 +50,38 @@ public class ViewQueryDialog extends Dialog {
 		styledText.setTopMargin(5);
 		styledText.setRightMargin(5);
 		styledText.setLeftMargin(5);
-		styledText.setText(query);
+		styledText.setText(visualiser.getQuery());
 
 		return container;
 	}
-
+	
+	@Override
+	protected void buttonPressed(int buttonid) {
+		switch (buttonid) {
+		case BTN_SaveAsView:
+			SaveToDialog saveToView = new SaveToDialog(getShell(), saveToViewPrompt, visualiser.getID());
+			if (saveToView.open() == IDialogConstants.OK_ID)
+				close();
+			break;
+		case BTN_SaveAsOperator: 
+			SaveToDialog saveToOperator = new SaveToDialog(getShell(), saveToOperatorPrompt, visualiser.getID());
+			if (saveToOperator.open() == IDialogConstants.OK_ID)
+				close();
+			break;
+		default:
+			super.buttonPressed(buttonid);
+		}
+	}
+	
 	/**
 	 * Create contents of the button bar.
 	 * @param parent
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+		createButton(parent, BTN_SaveAsView, saveToViewPrompt, false);
+		createButton(parent, BTN_SaveAsOperator, saveToOperatorPrompt, false);
+		createButton(parent, IDialogConstants.OK_ID, "Close", true);
 	}
 
 }
