@@ -3,11 +3,11 @@ package org.reldb.dbrowser.ui.version;
 public class Version {
 	
 	public static double getVersionNumber() {
-		return 3.00;
+		return 3.000;
 	}
 	
 	public static String getVersion() {
-		return String.format("Version %.2f", getVersionNumber());
+		return String.format("Version %.3f", getVersionNumber());
 	}
 
 	public static String getCopyright() {
