@@ -28,16 +28,16 @@ public class StatusPanel extends Composite {
 		
 		lblStatus = new Label(this, SWT.NONE);
 		lblStatus.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblStatus.setText("New Label");
+		lblStatus.setText("Ok");
 		
 		CheckForUpdates updateCheck = new CheckForUpdates(this, SWT.NONE);
-		updateCheck.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		updateCheck.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, true, 1, 1));
 		
 		FreeCPUDisplay freeCPU = new FreeCPUDisplay(this, SWT.BORDER);
-		freeCPU.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		freeCPU.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
 		
 		FreeMemoryDisplay freeRAM = new FreeMemoryDisplay(this, SWT.BORDER);
-		freeRAM.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		freeRAM.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
 	}
 
 	public void setStatus(String s) {

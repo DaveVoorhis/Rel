@@ -10,6 +10,8 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.reldb.dbrowser.ui.updates.UpdatesCheck;
 import org.reldb.dbrowser.ui.updates.UpdatesCheckDialog;
@@ -37,7 +39,8 @@ public class CheckForUpdates extends Composite {
 				if (updateURL != null) {
 					System.out.println("CheckForUpdates: Rel update is available at " + updateURL);
 					txtStatus.setText("Rel update is available.");
-					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
+					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
+					txtStatus.setBackground(SWTResourceManager.getColor(255, 220, 220));
 				} else {
 					System.out.println("CheckForUpdates: Rel is up to date.");
 					txtStatus.setText("Rel is up to date.");
@@ -70,6 +73,7 @@ public class CheckForUpdates extends Composite {
 		
 		txtStatus = new StyledText(this, SWT.WRAP);
 		txtStatus.setEditable(false);
+		txtStatus.setMargins(2, 2, 2, 2);
 		txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
 		txtStatus.setBackground(getBackground());
 		txtStatus.setText("Rel updates?");
