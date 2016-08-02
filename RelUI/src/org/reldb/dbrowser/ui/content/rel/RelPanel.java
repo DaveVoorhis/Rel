@@ -549,8 +549,13 @@ public class RelPanel extends Composite {
 							TreeItem item = new TreeItem(itemHeading, SWT.NONE);
 							item.setImage(image);
 							lastFullSignature = detailTuple.getAttributeValue("Sig").toString();
-							String lastPartialSignature = detailTuple.getAttributeValue("Signature").toString();
-							lastitem = new DbTreeItem(section, new OperatorPlayer(this), creator, new OperatorDropper(this), new OperatorDesigner(this), null, lastPartialSignature);
+							lastitem = new DbTreeItem(section, 
+									new OperatorPlayer(this), 
+									creator, 
+									new OperatorDropper(this), 
+									new OperatorDesigner(this), 
+									null, 
+									detailTuple.getAttributeValue("Signature").toString());
 							item.setText(lastFullSignature);
 							item.setData(lastitem);
 							implementationCount++;
