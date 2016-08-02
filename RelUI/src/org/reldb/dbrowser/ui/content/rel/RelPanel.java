@@ -527,7 +527,7 @@ public class RelPanel extends Composite {
 	}
 	
 	private void buildSubtreeOperator(String whereSysStr, Predicate<String> filter) {
-		String query = "EXTEND sys.Operators: {Impl := EXTEND Implementations " + whereSysStr + ": {Sig := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF}} {Name, Impl} ORDER (ASC Name)";
+		String query = "EXTEND sys.Operators: {Impl := EXTEND Implementations " + whereSysStr + ": {SigReturn := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF}} {Name, Impl} ORDER (ASC Name)";
 		OperatorCreator creator = new OperatorCreator(this);
 		String section = CATEGORY_OPERATOR;
 		Image image = IconLoader.loadIcon("operator");
@@ -543,12 +543,12 @@ public class RelPanel extends Composite {
 						itemHeading.setText(name);
 						itemHeading.setData(new DbTreeItem(section, null, creator, null, null, null, name));
 						int implementationCount = 0;
-						String lastFullSignature = "";
+						String lastSignatureWithReturns = "";
 						DbTreeItem lastitem = null;
 						for (Tuple detailTuple: (Tuples)tuple.get("Impl")) {
 							TreeItem item = new TreeItem(itemHeading, SWT.NONE);
 							item.setImage(image);
-							lastFullSignature = detailTuple.getAttributeValue("Sig").toString();
+							lastSignatureWithReturns = detailTuple.getAttributeValue("SigReturn").toString();
 							lastitem = new DbTreeItem(section, 
 									new OperatorPlayer(this), 
 									creator, 
@@ -556,7 +556,7 @@ public class RelPanel extends Composite {
 									new OperatorDesigner(this), 
 									null, 
 									detailTuple.getAttributeValue("Signature").toString());
-							item.setText(lastFullSignature);
+							item.setText(lastSignatureWithReturns);
 							item.setData(lastitem);
 							implementationCount++;
 						}
@@ -564,7 +564,7 @@ public class RelPanel extends Composite {
 							itemHeading.dispose();
 						else if (implementationCount == 1) {
 							itemHeading.removeAll();
-							itemHeading.setText(lastFullSignature);
+							itemHeading.setText(lastSignatureWithReturns);
 							itemHeading.setData(lastitem);
 						}
 					}
