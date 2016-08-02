@@ -19,6 +19,8 @@ public class ScriptTab extends DbTreeTab {
 	private String name;
 	private String oldScript;
 	
+	private boolean noreload = false;
+	
 	public ScriptTab(RelPanel parent, DbTreeItem item, int revstyle) {
 		super(parent, item);
 		try {
@@ -30,8 +32,14 @@ public class ScriptTab extends DbTreeTab {
 				}
 				@Override
 				public void notifyExecuteSuccess() {
-					parent.redisplayed();
-					cmdPanel.focusOnInput();
+					getDisplay().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							noreload = true;
+							parent.redisplayed();
+							noreload = false;
+						}
+					});
 				}
 			};
 		} catch (NumberFormatException | ClassNotFoundException | IOException | DatabaseFormatVersionException e) {
@@ -49,12 +57,15 @@ public class ScriptTab extends DbTreeTab {
 	}
 	
 	public void reload() {
+		if (noreload)
+			return;
 		String newScript = cmdPanel.getInputText();
 		if (!oldScript.equals(newScript))
 			database.addScriptHistory(name, oldScript);
 		Script script = database.getScript(name);
 		oldScript = script.getContent();
 		cmdPanel.setContent(script);
+		System.out.println("Finish reload");
 	}
 	
 	public void dispose() {

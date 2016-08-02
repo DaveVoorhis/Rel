@@ -427,18 +427,24 @@ public class RelPanel extends Composite {
 			tab.dispose();		
 	}
 	
-	public void openTabForDesign(String category, String name) {
+	public boolean selectItem(String category, String name) {
 		DbTreeTab tab = getTab(category, name);
 		if (tab != null)
 			tab.reload();
 		TreeItem item = treeRoots.get(category);
 		if (item == null)
-			return;
+			return false;
 		for (TreeItem subtreeItem: item.getItems())
 			if (subtreeItem.getText().equals(name)) {
 				tree.setSelection(subtreeItem);
-				designItem();
+				return true;
 			}
+		return false;
+	}
+	
+	public void openTabForDesign(String category, String name) {
+		if (selectItem(category, name))
+			designItem();
 	}
 	
 	public void playItem() {
@@ -589,8 +595,19 @@ public class RelPanel extends Composite {
 	}
 
 	public void redisplayed() {
+		TreeItem[] selections = tree.getSelection();
+		String section = null;
+		String name = null;
+		if (selections != null && selections.length > 0) {
+			DbTreeItem item = (DbTreeItem)selections[0].getData();
+			if (item != null) {
+				section = item.getSection();
+				name = item.getName();
+			}
+		}
 		buildDbTree();
-		tree.setFocus();
+		if (section != null)
+			selectItem(section, name);
 	}
 
 	public void handleRevAddition() {
