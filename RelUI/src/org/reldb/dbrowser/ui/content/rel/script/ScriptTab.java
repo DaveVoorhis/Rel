@@ -43,6 +43,15 @@ public class ScriptTab extends DbTreeTab {
 	    ready();
 	}
 	
+	public void reload() {
+		String newScript = cmdPanel.getInputText();
+		if (!oldScript.equals(newScript))
+			database.addScriptHistory(name, oldScript);
+		Script script = database.getScript(name);
+		oldScript = script.getContent();
+		cmdPanel.setContent(script);
+	}
+	
 	public void dispose() {
 		String newScript = cmdPanel.getInputText();
 		if (!oldScript.equals(newScript))
@@ -54,7 +63,6 @@ public class ScriptTab extends DbTreeTab {
 	public ToolBar getToolBar(Composite parent) {
 		return new CmdPanelToolbar(parent, cmdPanel.getCmdPanelOutput()).getToolBar();
 	}
-	
 	
 	@Override
 	public boolean isSelfZoomable() {

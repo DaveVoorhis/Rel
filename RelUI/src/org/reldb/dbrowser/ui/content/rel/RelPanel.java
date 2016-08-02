@@ -414,7 +414,23 @@ public class RelPanel extends Composite {
 		this.setSize(getSize().x - 1, getSize().y);		
 	}
 
+	public DbTreeTab getTab(String category, String name) {
+		CTabItem tab = getTab(category + ": " + name);
+		if (tab instanceof DbTreeTab)
+			return (DbTreeTab)tab;
+		return null;
+	}
+	
+	public void closeTab(String category, String name) {
+		DbTreeTab tab = getTab(category, name);
+		if (tab != null)
+			tab.dispose();		
+	}
+	
 	public void openTabForDesign(String category, String name) {
+		DbTreeTab tab = getTab(category, name);
+		if (tab != null)
+			tab.reload();
 		TreeItem item = treeRoots.get(category);
 		if (item == null)
 			return;

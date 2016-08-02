@@ -19,6 +19,8 @@ public class DbTreeTab extends CTabItem {
 		relPanel.notifyTabCreated();
 	}
 
+	public void reload() {}
+	
 	public void ready() {
 		relPanel.getTabFolder().setSelection(this);
 		relPanel.fireDbTreeTabchangeEvent();
