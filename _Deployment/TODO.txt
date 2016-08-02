@@ -1,5 +1,7 @@
 ** TO DO **
 
+- In RelPanel, show OPERATORs as hierarchy based on sys.Operators structure
+
 - Be able to specify user-defined parameters in Rev queries.
 
 - Be able to bring operator invocations into Rev queries.
