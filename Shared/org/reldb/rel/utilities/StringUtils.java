@@ -12,6 +12,11 @@ package org.reldb.rel.utilities;
 
 public class StringUtils {
 
+	/* Turn spaces to _ */
+	public static String nospaces(String s) {
+		return s.replace(' ', '_');
+	}
+	
 	/** Quote the given string by replacing unprintable characters by escape
 	sequences.
 	 

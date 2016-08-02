@@ -66,6 +66,15 @@ import org.reldb.rel.client.connection.CrashHandler;
 
 public class RelPanel extends Composite {
 	
+	public final static String CATEGORY_VARIABLE = "Variable";
+	public final static String CATEGORY_VIEW = "View";
+	public final static String CATEGORY_OPERATOR = "Operator";
+	public final static String CATEGORY_TYPE = "Type";
+	public final static String CATEGORY_CONSTRAINT = "Constraint";
+	public final static String CATEGORY_SCRIPT = "Script";
+	public final static String CATEGORY_QUERY = "Query";
+	public final static String CATEGORY_WELCOME = "Welcome";
+		
 	private DbTab parentTab;
 	
 	private DbConnection connection;
@@ -404,6 +413,17 @@ public class RelPanel extends Composite {
 		this.setSize(getSize().x + 1, getSize().y);
 		this.setSize(getSize().x - 1, getSize().y);		
 	}
+
+	public void openTabForDesign(String category, String name) {
+		TreeItem item = treeRoots.get(category);
+		if (item == null)
+			return;
+		for (TreeItem subtreeItem: item.getItems())
+			if (subtreeItem.getText().equals(name)) {
+				tree.setSelection(subtreeItem);
+				designItem();
+			}
+	}
 	
 	public void playItem() {
 		TreeItem treeSelection = getTreeSelection();
@@ -485,25 +505,25 @@ public class RelPanel extends Composite {
 		
 		Predicate<String> revSysNamesFilter = (String attributeName) -> attributeName.startsWith("sys.rev") ? showSystemObjects : true; 
 		
-		buildSubtree("Variable", IconLoader.loadIcon("table"), "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter, 
+		buildSubtree(CATEGORY_VARIABLE, IconLoader.loadIcon("table"), "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter, 
 			new VarRealPlayer(this), new VarRealCreator(this), new VarRealDropper(this), new VarRealDesigner(this), null);
 		
-		buildSubtree("View", IconLoader.loadIcon("view"), "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
+		buildSubtree(CATEGORY_VIEW, IconLoader.loadIcon("view"), "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
 			new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this), null);
 		
-		buildSubtree("Operator", IconLoader.loadIcon("operator"), "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName",
+		buildSubtree(CATEGORY_OPERATOR, IconLoader.loadIcon("operator"), "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName",
 			new OperatorPlayer(this), new OperatorCreator(this), new OperatorDropper(this), new OperatorDesigner(this), null);
 		
-		buildSubtree("Type", IconLoader.loadIcon("type"), "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
+		buildSubtree(CATEGORY_TYPE, IconLoader.loadIcon("type"), "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
 			new TypePlayer(this), new TypeCreator(this), new TypeDropper(this), null, null);
 		
-		buildSubtree("Constraint", IconLoader.loadIcon("constraint"), "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
+		buildSubtree(CATEGORY_CONSTRAINT, IconLoader.loadIcon("constraint"), "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
 			new ConstraintPlayer(this), new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this), null);
 		
 		if (connection.hasRevExtensions() >= 0)
 			handleRevAddition();
 		
-		buildSubtree("Welcome", IconLoader.loadIcon("smile"), "REL {TUP {Name 'Introduction'}}", "Name",
+		buildSubtree(CATEGORY_WELCOME, IconLoader.loadIcon("smile"), "REL {TUP {Name 'Introduction'}}", "Name",
 				new WelcomeView(this), null, null, null, null);
 		
 		fireDbTreeNoSelectionEvent();
@@ -516,20 +536,20 @@ public class RelPanel extends Composite {
 
 	public void handleRevAddition() {
 		parentTab.refresh();
-		buildSubtree("Query", IconLoader.loadIcon("query"), "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
+		buildSubtree(CATEGORY_QUERY, IconLoader.loadIcon("query"), "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
 				new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this), null);
 		// buildSubtree("Forms", null, null, null, null, null, null);
 		// buildSubtree("Reports", null, null, null, null, null, null);
-		buildSubtree("Script", IconLoader.loadIcon("script"), "sys.rev.Script {Name} ORDER (ASC Name)", "Name", 
+		buildSubtree(CATEGORY_SCRIPT, IconLoader.loadIcon("script"), "sys.rev.Script {Name} ORDER (ASC Name)", "Name", 
 			new ScriptPlayer(this), new ScriptCreator(this), new ScriptDropper(this), new ScriptDesigner(this), new ScriptRenamer(this));		
 	}
 	
 	public void handleRevRemoval() {
 		parentTab.refresh();
-		removeSubtree("Query");
+		removeSubtree(CATEGORY_QUERY);
 		// removeSubtree("Forms");
 		// removeSubtree("Reports");
-		removeSubtree("Script");
+		removeSubtree(CATEGORY_SCRIPT);
 	}
 	
 	private void zoomMain() {

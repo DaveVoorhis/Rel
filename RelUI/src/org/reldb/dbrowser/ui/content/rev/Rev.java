@@ -220,6 +220,10 @@ public class Rev extends Composite {
 	protected void changeToolbar() {
 	}
 
+	/** Invoke to force holder of this widget to reload any display of the database catalog, which has changed. */
+	protected void changeCatalog(String category, String name) {
+	}
+	
 	public void showEditorFor(String title) {
 		outputView.useRelvarEditorView(connection, title, SWT.BORDER);
 	}

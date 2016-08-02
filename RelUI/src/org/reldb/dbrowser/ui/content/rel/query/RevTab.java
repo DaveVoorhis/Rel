@@ -21,6 +21,11 @@ public class RevTab extends DbTreeTab {
 	    	protected void changeToolbar() {
 	    		parent.changeToolbar();
 	    	}
+	    	@Override
+	    	protected void changeCatalog(String category, String name) {
+	    		parent.redisplayed();
+	    		parent.openTabForDesign(category, name);
+	    	}
 	    };
 	    setControl(rev);
 	    ready();
