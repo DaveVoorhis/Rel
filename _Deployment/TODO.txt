@@ -1,10 +1,10 @@
 ** TO DO **
 
-- In RelPanel, fix OPERATOR 'play' mode.
-
 - Be able to specify user-defined parameters in Rev queries.
 
 - Be able to bring operator invocations into Rev queries.
+
+- Be able to invoke operators via Operator entries in tree of database objects.
 
 - Provide facility to associate predicate expressions (and/or general comments) with relvar definitions in the catalog.
 
