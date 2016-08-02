@@ -58,18 +58,20 @@ public class ViewQueryDialog extends Dialog {
 	}
 	
 	protected boolean allowOverwrite(String scriptName) {
+		if (scriptName.equals("scratchpad"))
+			return true;
 		return MessageDialog.openConfirm(getShell(), "Overwrite?", "A script named '" + scriptName + "' already exists.  Overwrite it?");		
 	}
 	
-	protected void doSaveToView(String scriptName) {
-		String source = "VAR " + scriptName.replace(' ', '_') + " VIEW " + visualiser.getQuery() + ';'; 
+	protected void doSaveToView(String viewName, String scriptName) {
+		String source = "VAR " + viewName.replace(' ', '_') + " VIEW " + visualiser.getQuery() + ';'; 
 		visualiser.getDatabase().setScript(scriptName, source);
 		visualiser.getModel().getRev().changeCatalog(RelPanel.CATEGORY_SCRIPT, scriptName);
 	}
 	
-	protected void doSaveToOperator(String scriptName) {
+	protected void doSaveToOperator(String operatorName, String scriptName) {
 		String source = 
-				"OPERATOR " + scriptName.replace(' ', '_') + "() RETURNS SAME_TYPE_AS(" + visualiser.getQuery() + ");\n" +
+				"OPERATOR " + operatorName.replace(' ', '_') + "() RETURNS SAME_TYPE_AS(" + visualiser.getQuery() + ");\n" +
 						"\tRETURN " + visualiser.getQuery() + ";\n" +
 				"END OPERATOR;";
 		visualiser.getDatabase().setScript(scriptName, source);
@@ -84,7 +86,7 @@ public class ViewQueryDialog extends Dialog {
 			if (saveToView.open() == IDialogConstants.OK_ID) {
 				String scriptName = saveToView.getName();
 				if (!visualiser.getDatabase().scriptExists(scriptName) || allowOverwrite(scriptName)) {
-					doSaveToView(scriptName);
+					doSaveToView(visualiser.getID(), scriptName);
 					close();
 				}
 			}
@@ -94,7 +96,7 @@ public class ViewQueryDialog extends Dialog {
 			if (saveToOperator.open() == IDialogConstants.OK_ID) {
 				String scriptName = saveToOperator.getName();
 				if (!visualiser.getDatabase().scriptExists(scriptName) || allowOverwrite(scriptName)) {
-					doSaveToOperator(scriptName);
+					doSaveToOperator(visualiser.getID(), scriptName);
 					close();
 				}
 			}

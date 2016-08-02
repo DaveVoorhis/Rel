@@ -2,12 +2,15 @@ package org.reldb.dbrowser.ui.content.rev;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Text;
@@ -50,6 +53,24 @@ public class SaveToDialog extends Dialog {
 		fd_lblNewLabel.left = new FormAttachment(0, 10);
 		lblNewLabel.setLayoutData(fd_lblNewLabel);
 		lblNewLabel.setText("Script name:");
+		
+		Button chkUseScratchpad = new Button(container, SWT.CHECK);
+		chkUseScratchpad.setText("Use scratchpad");
+		FormData fd_chkKeepOriginal = new FormData();
+		fd_chkKeepOriginal.top = new FormAttachment(lblNewLabel, 10);
+		fd_chkKeepOriginal.right = new FormAttachment(100);
+		chkUseScratchpad.setLayoutData(fd_chkKeepOriginal);
+		chkUseScratchpad.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				if (chkUseScratchpad.getSelection()) {
+					text.setText("scratchpad");
+					text.setEnabled(false);
+				} else {
+					text.setText(name);
+					text.setEnabled(true);
+				}
+			}
+		});
 		
 		text = new Text(container, SWT.BORDER);
 		FormData fd_text = new FormData();
