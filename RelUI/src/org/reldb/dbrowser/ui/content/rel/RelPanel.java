@@ -414,36 +414,51 @@ public class RelPanel extends Composite {
 		this.setSize(getSize().x - 1, getSize().y);		
 	}
 
-	public DbTreeTab getTab(String category, String name) {
-		CTabItem tab = getTab(category + ": " + name);
+	private DbTreeTab getTab(String category, String text) {
+		CTabItem tab = getTab(category + ": " + text);
 		if (tab instanceof DbTreeTab)
 			return (DbTreeTab)tab;
 		return null;
 	}
-	
-	public void closeTab(String category, String name) {
-		DbTreeTab tab = getTab(category, name);
-		if (tab != null)
-			tab.dispose();		
+
+	private TreeItem getTreeItemRecursive(TreeItem item, String text) {
+		if (item == null)
+			return null;
+		if (item.getText().equals(text))
+			return item;		
+		for (TreeItem subtreeItem: item.getItems()) {
+			TreeItem result = getTreeItemRecursive(subtreeItem, text);
+			if (result != null)
+				return result;
+		}
+		return null;		
 	}
 	
-	public boolean selectItem(String category, String name) {
-		DbTreeTab tab = getTab(category, name);
+	private TreeItem getTreeItem(String category, String text) {
+		DbTreeTab tab = getTab(category, text);
 		if (tab != null)
 			tab.reload();
 		TreeItem item = treeRoots.get(category);
-		if (item == null)
-			return false;
-		for (TreeItem subtreeItem: item.getItems())
-			if (subtreeItem.getText().equals(name)) {
-				tree.setSelection(subtreeItem);
-				return true;
-			}
+		return getTreeItemRecursive(item, text);
+	}
+	
+	private boolean selectItem(String category, String text) {
+		TreeItem item = getTreeItem(category, text);
+		if (item != null) {
+			tree.setSelection(item);
+			return true;
+		}
 		return false;
 	}
 	
-	public void openTabForDesign(String category, String name) {
-		if (selectItem(category, name))
+	private void setTopItem(String category, String text) {
+		TreeItem item = getTreeItem(category, text);
+		if (item != null)
+			tree.setTopItem(item);
+	}
+	
+	public void openTabForDesign(String category, String text) {
+		if (selectItem(category, text))
 			designItem();
 	}
 	
@@ -511,27 +526,32 @@ public class RelPanel extends Composite {
 		}
 	}
 	
-	private void buildSubtree(String section, Image image, String query, String displayAttributeName, String rvaAttributeName, String detailInRVAAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer) {
+	private void buildSubtreeOperator(String whereSysStr, Predicate<String> filter) {
+		String query = "EXTEND sys.Operators: {Impl := EXTEND Implementations " + whereSysStr + ": {Sig := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF}} {Name, Impl} ORDER (ASC Name)";
+		OperatorCreator creator = new OperatorCreator(this);
+		String section = CATEGORY_OPERATOR;
+		Image image = IconLoader.loadIcon("operator");
 		TreeItem root = getRoot(section, image, creator);
 		if (query != null) {
 			Tuples names = connection.getTuples(query);
 			if (names != null)
 				for (Tuple tuple: names) {
-					String name = tuple.getAttributeValue(displayAttributeName).toString();
+					String name = tuple.getAttributeValue("Name").toString();
 					if (filter.test(name)) {
 						TreeItem itemHeading = new TreeItem(root, SWT.NONE);
 						itemHeading.setImage(image);
 						itemHeading.setText(name);
 						itemHeading.setData(new DbTreeItem(section, null, creator, null, null, null, name));
 						int implementationCount = 0;
-						String lasttext = "";
+						String lastFullSignature = "";
 						DbTreeItem lastitem = null;
-						for (Tuple detailTuple: (Tuples)tuple.get(rvaAttributeName)) {
+						for (Tuple detailTuple: (Tuples)tuple.get("Impl")) {
 							TreeItem item = new TreeItem(itemHeading, SWT.NONE);
 							item.setImage(image);
-							lasttext = detailTuple.getAttributeValue(detailInRVAAttributeName).toString();
-							lastitem = new DbTreeItem(section, player, creator, dropper, designer, renamer, lasttext);
-							item.setText(lasttext);
+							lastFullSignature = detailTuple.getAttributeValue("Sig").toString();
+							String lastPartialSignature = detailTuple.getAttributeValue("Signature").toString();
+							lastitem = new DbTreeItem(section, new OperatorPlayer(this), creator, new OperatorDropper(this), new OperatorDesigner(this), null, lastPartialSignature);
+							item.setText(lastFullSignature);
 							item.setData(lastitem);
 							implementationCount++;
 						}
@@ -539,7 +559,7 @@ public class RelPanel extends Composite {
 							itemHeading.dispose();
 						else if (implementationCount == 1) {
 							itemHeading.removeAll();
-							itemHeading.setText(lasttext);
+							itemHeading.setText(lastFullSignature);
 							itemHeading.setData(lastitem);
 						}
 					}
@@ -574,10 +594,7 @@ public class RelPanel extends Composite {
 		buildSubtree(CATEGORY_VIEW, IconLoader.loadIcon("view"), "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
 			new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this), null);
 		
-		buildSubtree(CATEGORY_OPERATOR, IconLoader.loadIcon("operator"), 
-				"EXTEND sys.Operators: {Impl := EXTEND Implementations " + whereSysStr + ": {Sig := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF}} {Name, Impl} ORDER (ASC Name)", 
-				"Name", "Impl", "Sig", revSysNamesFilter,
-			new OperatorPlayer(this), new OperatorCreator(this), new OperatorDropper(this), new OperatorDesigner(this), null);
+		buildSubtreeOperator(whereSysStr, revSysNamesFilter);
 		
 		buildSubtree(CATEGORY_TYPE, IconLoader.loadIcon("type"), "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
 			new TypePlayer(this), new TypeCreator(this), new TypeDropper(this), null, null);
@@ -593,21 +610,33 @@ public class RelPanel extends Composite {
 		
 		fireDbTreeNoSelectionEvent();
 	}
-
+	
 	public void redisplayed() {
 		TreeItem[] selections = tree.getSelection();
-		String section = null;
-		String name = null;
+		String selectedSection = null;
+		String selectedText = null;
 		if (selections != null && selections.length > 0) {
 			DbTreeItem item = (DbTreeItem)selections[0].getData();
 			if (item != null) {
-				section = item.getSection();
-				name = item.getName();
+				selectedSection = item.getSection();
+				selectedText = selections[0].getText();
 			}
 		}
+		TreeItem topItem = tree.getTopItem();
+		String topSection = null;
+		String topText = null;
+		if (topItem != null) {
+			DbTreeItem item = (DbTreeItem)topItem.getData();
+			if (item != null) {
+				topSection = item.getSection();
+				topText = topItem.getText();
+			}			
+		}
 		buildDbTree();
-		if (section != null)
-			selectItem(section, name);
+		if (selectedSection != null)
+			selectItem(selectedSection, selectedText);
+		if (topSection != null)
+			setTopItem(topSection, topText);
 	}
 
 	public void handleRevAddition() {
