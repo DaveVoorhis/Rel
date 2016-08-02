@@ -475,8 +475,8 @@ public class RelPanel extends Composite {
 		showSystemObjects = selection;
 		buildDbTree();
 	}
-	
-	private void buildSubtree(String section, Image image, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer) {
+
+	private TreeItem getRoot(String section, Image image, DbTreeAction creator) {
 		TreeItem root = treeRoots.get(section);
 		if (root == null) {
 			root = new TreeItem(tree, SWT.NONE);
@@ -485,6 +485,11 @@ public class RelPanel extends Composite {
 			treeRoots.put(section, root);
 			root.setData(new DbTreeItem(section, null, creator, null, null, null));
 		}
+		return root;
+	}
+	
+	private void buildSubtree(String section, Image image, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer) {
+		TreeItem root = getRoot(section, image, creator);
 		if (query != null) {
 			Tuples names = connection.getTuples(query);
 			if (names != null)
@@ -499,7 +504,43 @@ public class RelPanel extends Composite {
 				}
 		}
 	}
-
+	
+	private void buildSubtree(String section, Image image, String query, String displayAttributeName, String rvaAttributeName, String detailInRVAAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer) {
+		TreeItem root = getRoot(section, image, creator);
+		if (query != null) {
+			Tuples names = connection.getTuples(query);
+			if (names != null)
+				for (Tuple tuple: names) {
+					String name = tuple.getAttributeValue(displayAttributeName).toString();
+					if (filter.test(name)) {
+						TreeItem itemHeading = new TreeItem(root, SWT.NONE);
+						itemHeading.setImage(image);
+						itemHeading.setText(name);
+						itemHeading.setData(new DbTreeItem(section, null, creator, null, null, null, name));
+						int implementationCount = 0;
+						String lasttext = "";
+						DbTreeItem lastitem = null;
+						for (Tuple detailTuple: (Tuples)tuple.get(rvaAttributeName)) {
+							TreeItem item = new TreeItem(itemHeading, SWT.NONE);
+							item.setImage(image);
+							lasttext = detailTuple.getAttributeValue(detailInRVAAttributeName).toString();
+							lastitem = new DbTreeItem(section, player, creator, dropper, designer, renamer, name);
+							item.setText(lasttext);
+							item.setData(lastitem);
+							implementationCount++;
+						}
+						if (implementationCount == 0)
+							itemHeading.dispose();
+						else if (implementationCount == 1) {
+							itemHeading.removeAll();
+							itemHeading.setText(lasttext);
+							itemHeading.setData(lastitem);
+						}
+					}
+				}
+		}
+	}
+	
 	private void removeSubtree(String section) {
 		TreeItem root = treeRoots.get(section);
 		if (root != null)
@@ -527,7 +568,9 @@ public class RelPanel extends Composite {
 		buildSubtree(CATEGORY_VIEW, IconLoader.loadIcon("view"), "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
 			new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this), null);
 		
-		buildSubtree(CATEGORY_OPERATOR, IconLoader.loadIcon("operator"), "EXTEND (sys.Operators UNGROUP Implementations)" + whereSysStr + ": {opName := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF} {opName} ORDER (ASC opName)", "opName",
+		buildSubtree(CATEGORY_OPERATOR, IconLoader.loadIcon("operator"), 
+				"EXTEND sys.Operators: {Impl := EXTEND Implementations " + whereSysStr + ": {Sig := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF}} {Name, Impl} ORDER (ASC Name)", 
+				"Name", "Impl", "Sig", revSysNamesFilter,
 			new OperatorPlayer(this), new OperatorCreator(this), new OperatorDropper(this), new OperatorDesigner(this), null);
 		
 		buildSubtree(CATEGORY_TYPE, IconLoader.loadIcon("type"), "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",

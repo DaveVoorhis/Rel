@@ -1,6 +1,6 @@
 ** TO DO **
 
-- In RelPanel, show OPERATORs as hierarchy based on sys.Operators structure
+- In RelPanel, fix OPERATOR 'play' mode.
 
 - Be able to specify user-defined parameters in Rev queries.
 
