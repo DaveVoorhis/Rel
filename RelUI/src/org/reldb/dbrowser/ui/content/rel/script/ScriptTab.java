@@ -28,6 +28,11 @@ public class ScriptTab extends DbTreeTab {
 					database.addScriptHistory(name, historyItem);
 					oldScript = historyItem;
 				}
+				@Override
+				public void notifyExecuteSuccess() {
+					parent.redisplayed();
+					cmdPanel.focusOnInput();
+				}
 			};
 		} catch (NumberFormatException | ClassNotFoundException | IOException | DatabaseFormatVersionException e) {
 			System.out.println("Error: unable to launch command-line panel: " + e.getMessage());

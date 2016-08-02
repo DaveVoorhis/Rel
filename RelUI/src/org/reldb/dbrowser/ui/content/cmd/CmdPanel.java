@@ -128,8 +128,12 @@ public class CmdPanel extends Composite {
 		super.dispose();
 	}
 
+	public void focusOnInput() {
+		cmdPanelInput.setFocused();		
+	}
+	
 	public void redisplayed() {
-		cmdPanelInput.setFocused();
+		focusOnInput();
 	}
 
 	public void load(String fname) {

@@ -524,7 +524,7 @@ public class RelPanel extends Composite {
 							TreeItem item = new TreeItem(itemHeading, SWT.NONE);
 							item.setImage(image);
 							lasttext = detailTuple.getAttributeValue(detailInRVAAttributeName).toString();
-							lastitem = new DbTreeItem(section, player, creator, dropper, designer, renamer, name);
+							lastitem = new DbTreeItem(section, player, creator, dropper, designer, renamer, lasttext);
 							item.setText(lasttext);
 							item.setData(lastitem);
 							implementationCount++;
