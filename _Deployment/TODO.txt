@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Remove errant border on Splash.
-
 - Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
 
 - Be able to specify user-defined parameters in Rev queries.
