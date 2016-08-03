@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
-import org.reldb.rel.v0.interpreter.ClassPathHack;
 
 /** Convenient access point for running an embedded or stand-alone interpreter. */
 
