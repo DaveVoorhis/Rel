@@ -1,6 +1,6 @@
 ** TO DO **
 
-- Fix external Java compilation with stand-alone Rel server.
+- Keep list of recently opened databases in main menu.
 
 - Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
 
