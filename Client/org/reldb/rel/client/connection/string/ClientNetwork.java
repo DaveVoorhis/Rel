@@ -39,7 +39,6 @@ public class ClientNetwork implements StringReceiverClient {
 	
 	public void reset() throws IOException {
 		connection.reset();
-		input.reset();
 	}
 
 	public String getServerAnnouncement() throws IOException {
