@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Widen "Feedback and Suggestions", "Bug Report" and "Crash Dialog" to fit prompt #2.
-
 - Widen all "Use scratchpad" dialogs.
 
 - Remove errant border on Splash.

@@ -64,7 +64,7 @@ public class CrashDialog extends FeedbackDialog {
 	/** Create contents of the dialog. */
 	protected Shell createContents() {
 		Shell shlCrashNotification = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.RESIZE | SWT.APPLICATION_MODAL);
-		shlCrashNotification.setSize(600, 500);
+		shlCrashNotification.setSize(700, 500);
 		shlCrashNotification.setText(getText());
 		shlCrashNotification.setLayout(new FormLayout());
 		

@@ -64,7 +64,7 @@ public class BugReportDialog extends FeedbackDialog {
 	/** Create contents of the dialog. */
 	protected Shell createContents() {
 		Shell shlBugReport = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.RESIZE | SWT.APPLICATION_MODAL);
-		shlBugReport.setSize(600, 500);
+		shlBugReport.setSize(700, 500);
 		shlBugReport.setText(getText());
 		shlBugReport.setLayout(new FormLayout());
 		
