@@ -58,7 +58,7 @@ public class SaveToDialog extends Dialog {
 		chkUseScratchpad.setText("Use scratchpad");
 		FormData fd_chkKeepOriginal = new FormData();
 		fd_chkKeepOriginal.top = new FormAttachment(lblNewLabel, 10);
-		fd_chkKeepOriginal.right = new FormAttachment(100);
+		fd_chkKeepOriginal.right = new FormAttachment(100, -10);
 		chkUseScratchpad.setLayoutData(fd_chkKeepOriginal);
 		chkUseScratchpad.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
@@ -77,6 +77,7 @@ public class SaveToDialog extends Dialog {
 		fd_text.top = new FormAttachment(0, 10);
 		fd_text.left = new FormAttachment(lblNewLabel, 6);
 		fd_text.right = new FormAttachment(100, -10);
+		fd_text.width = 300;
 		text.setLayoutData(fd_text);
 		text.setText(name);
 		
