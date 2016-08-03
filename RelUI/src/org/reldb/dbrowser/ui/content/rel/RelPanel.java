@@ -530,7 +530,7 @@ public class RelPanel extends Composite {
 		String query = "EXTEND sys.Operators: {Impl := EXTEND Implementations " + whereSysStr + ": {SigReturn := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF}} {Name, Impl} ORDER (ASC Name)";
 		OperatorCreator creator = new OperatorCreator(this);
 		String section = CATEGORY_OPERATOR;
-		Image image = IconLoader.loadIcon("op");
+		Image image = IconLoader.loadIcon("flow_chart");
 		TreeItem root = getRoot(section, image, creator);
 		if (query != null) {
 			Tuples names = connection.getTuples(query);
