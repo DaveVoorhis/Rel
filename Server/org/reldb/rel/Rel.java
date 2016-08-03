@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
+import org.reldb.rel.v0.interpreter.ClassPathHack;
 
 /** Convenient access point for running an embedded or stand-alone interpreter. */
 
@@ -15,6 +16,7 @@ public class Rel {
 	private static void buildClasspath() throws IOException {
 		ClassPathHack.addFile("relshared.jar");
 		ClassPathHack.addFile("rel0000.jar");		
+		ClassPathHack.addFile("ecj-4.4.2.jar");
 	}
 	
 	/** Convenient runner for a stand-alone Rel interpreter. 
