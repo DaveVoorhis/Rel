@@ -104,6 +104,7 @@ public class AllTests {
 			ClassPathHack.addFile("relshared.jar");
 			ClassPathHack.addFile(Version.getBerkeleyDbJarFilename());
 			ClassPathHack.addFile("junit.jar");
+			ClassPathHack.addFile("ecj-4.4.2.jar");
 		} catch (IOException ioe) {
 			System.out.println(ioe.toString());
 			return;
