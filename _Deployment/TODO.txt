@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Widen all "Use scratchpad" dialogs.
-
 - Remove errant border on Splash.
 
 - Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
