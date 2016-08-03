@@ -601,7 +601,7 @@ public class RelPanel extends Composite {
 		
 		buildSubtreeOperator(whereSysStr, revSysNamesFilter);
 		
-		buildSubtree(CATEGORY_TYPE, IconLoader.loadIcon("type"), "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
+		buildSubtree(CATEGORY_TYPE, IconLoader.loadIcon("tau"), "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
 			new TypePlayer(this), new TypeCreator(this), new TypeDropper(this), null, null);
 		
 		buildSubtree(CATEGORY_CONSTRAINT, IconLoader.loadIcon("constraint"), "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
