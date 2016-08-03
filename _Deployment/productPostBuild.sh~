@@ -6,7 +6,7 @@ jredir=~/Documents/JavaJREs
 proddir=~/git/Rel/_Deployment/product
 
 # Scripts
-cp -R Scripts $proddir/RelScripts
+cp -R ../Scripts $proddir/RelScripts
 pushd $proddir/
 zip -9r RelScripts
 popd
