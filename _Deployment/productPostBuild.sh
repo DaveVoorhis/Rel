@@ -6,9 +6,10 @@ jredir=~/Documents/JavaJREs
 proddir=~/git/Rel/_Deployment/product
 
 # Scripts
+rm -rf Scripts/.DS_Store
 cp -R Scripts $proddir/RelScripts
 pushd $proddir/
-zip -9r RelScripts
+zip -9r Examples RelScripts
 popd
 
 # Linux GTK 64bit
