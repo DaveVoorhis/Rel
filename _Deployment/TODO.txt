@@ -4,6 +4,8 @@
 
 - Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
 
+- Expose external relvars
+
 - Be able to specify user-defined parameters in Rev queries.
 
 - Be able to bring operator invocations into Rev queries.
