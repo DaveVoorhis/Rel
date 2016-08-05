@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Update and review *.txt files, like README.txt
+
 - Keep list of recently opened databases in main menu.
 
 - Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
