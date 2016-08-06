@@ -1,20 +1,20 @@
 Rel -- An implementation of Date and Darwen's Tutorial D.
 
-NOTE: As of version 1.0.12, Rel requires Oracle Java 
-      version 1.8.x (also known as Java 8) or a higher version, 
-      or a compatible equivalent.
-
+NOTE: As of version 1.0.12, the standalone Rel DBMS requires Oracle
+      Java version 1.8.x (also known as Java 8) or a higher version,
+      or a compatible equivalent. The full Rel distribution, including
+      the graphical user interface (aka "DBrowser"), includes a Java
+      runtime, so there's no need to download Java.
 
 *** IMPORTANT INSTRUCTIONS FOR UPGRADING: ***
 
-1.  If you are upgrading from an older version of Rel, you *MUST* back
-up your database *BEFORE* you install an upgrade!  
+1.  You *MUST* back up your database *BEFORE* you install an upgrade!
 
-If you're using Rel version 0.3.8 or higher, you can make a backup
-via DBrowser's "Backup" button.
+If you are using Rel version 0.3.8 or higher, you can make a backup
+via the graphical user interface's (aka DBrowser) "Backup" button.
 
-If you're using Rel version 0.3.0 to 0.3.7, run the DatabaseToScript.d 
-script in the Scripts directory.  This script will
+If you are using Rel version 0.3.0 to 0.3.7, run the
+DatabaseToScript.d script in the Scripts directory.  This script will
 emit your database as a new Tutorial D script.  To back up your
 database, save the generated script.  To restore your database, run
 the saved script.
@@ -25,43 +25,47 @@ old version's Samples directory.  The script will emit your database
 in a format that can be read by the 0.3.x versions of Rel, though it
 may require some modifications.
 
-2.  Once you have made a back-up, you must delete the current
-database.  Delete all the "*.jdb" files in versions prior to
-0.3.5.  Delete the Database subdirectory and its contents in
-version 0.3.5 or higher.
+Rel user interface (aka DBrowser) version 3.001 or above (which
+includes the Rel DBMS version 1.0.13 or above) will automatically
+attempt to upgrade any database created using Rel user interface
+version 3.000 or above, or the Rel DBMS version 1.0.13 or
+above. Normally, the database upgrade is completely
+automatic. However, in some cases the upgrade may not be able to
+complete automatically. If this happens, it will tell you, and you may
+need to edit the database backup script before you can successfully
+restore the database.
 
-3.  Install the upgrade.  A new database will be created.
-
-4.  To restore your database, run the script you created and saved in
-Step 1, above.
-
+However, Rel user interface version 3.000 and above cannot
+automatically upgrade databases made with older Rel versions. You must
+go to the command-line, load the backup script created in Step 1
+above, and execute it.
 
 *** GETTING STARTED ***
 
-To get started immediately, run DBrowser.  DBrowser will automatically
-start a Rel server.
+** To run the Rel user interface, open the Rel folder or directory and
+   run the Rel executable. It's normally shown with a Rel icon.
 
-** To run DBrowser from the command line:
+** To run the stand-alone command-line Rel language interpreter from
+   your operating system command-line, go to the Rel folder or
+   directory and run:
 
-     DBrowser
+   RelDBMS
 
-** DBrowser provides various options.  To see these, type:
+** The stand-alone command-line Rel language interpreter provides
+   various options.  To see these, type:
+   
+   RelDBMS -?
 
-     DBrowser -?
+** To run the stand-alone Rel DBMS server from the command line:
 
-** To run the stand-alone Rel server from the command line:
+   RelDBMSServer
 
-     RelServer
+** The stand-alone Rel DBMS server provides various options.  To see
+   these, type:
 
-** The Rel server provides various options.  To see these,
-   type:
+   RelDBMSServer -?
 
-     Rel -?
+For more information, please see http://reldb.org
 
-** To back up a Rel database, run the DatabaseToScript.d script
-   in the Samples directory, or use the Backup button in DBrowser. **
-
-For more information, please see http://dbappbuilder.sourceforge.net
-
-Copyright (c) 2004-2015 Dave Voorhis
+Copyright (c) 2004-2016 Dave Voorhis
 All Rights Reserved
