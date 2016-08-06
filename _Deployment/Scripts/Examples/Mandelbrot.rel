@@ -1,3 +1,6 @@
+/** Generate Mandelbrot set representation for visualisation.
+      NOTE: painfully slow.
+*/
 OPERATOR mandelbrot(iterations INT) RETURNS RELATION {row INT, content CHAR};
 	VAR row INT;
 	VAR column INT;
