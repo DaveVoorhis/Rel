@@ -1,0 +1,37 @@
+/** Generate Mandelbrot set representation for visualisation. */
+OPERATOR Mandelbrot(iterations INT) RETURNS RELATION {row INT, content CHAR};
+	VAR row INT;
+	VAR column INT;
+	VAR maxIterations INT;
+	VAR out PRIVATE RELATION {row INT, content CHAR} KEY {row};
+
+	IF iterations > 32 THEN
+		maxIterations := 32;
+	ELSE
+		maxIterations := iterations;
+	END IF;
+
+	DO row := 0 TO 32;
+		VAR outstr INIT("");
+		DO column := 0 TO 85;
+			VAR zi INIT(0.0);
+			VAR zr INIT(0.0);
+			VAR zni INIT(0.0);
+			VAR znr INIT(0.0);
+			VAR x INIT(CAST_AS_RATIONAL(column - 50) / 20.0);    
+			VAR y INIT(CAST_AS_RATIONAL(row - 16) / 10.0);  
+ 			VAR iteration INIT(1); 
+			WHILE iteration < maxIterations AND zi * zi + zr * zr <= 4.0;
+				zni := 2.0 * zi * zr + CAST_AS_RATIONAL(y);
+				znr := zr * zr - zi * zi + CAST_AS_RATIONAL(x);  
+				zi := zni; 
+				zr := znr; 
+				iteration := iteration + 1;
+			END WHILE;
+			VAR charpos INIT(iteration / 2);
+			outstr := outstr || IF iteration >= maxIterations THEN ' ' ELSE SUBSTRING(" .:-;!/>)|&IH%*#", charpos, charpos + 1) END IF;
+		END DO;
+		INSERT out REL {TUP {row row, content outstr}};
+	END DO;
+	RETURN out;
+END OPERATOR;
