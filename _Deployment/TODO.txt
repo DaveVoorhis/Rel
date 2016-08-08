@@ -1,5 +1,11 @@
 ** TO DO **
 
+- Check where scirpts are being saved.  Are they winding up in the right place?
+
+- Something says "Finish reload".  What?
+
+- Check handling of scripts. Switching views reverts to old versions.
+
 - Keep list of recently opened databases in main menu.
 
 - Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
