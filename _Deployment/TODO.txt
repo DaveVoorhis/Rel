@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Search for "updateable" and change to "updatable".
-
 - Keep list of recently opened databases in main menu.
 
 - Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
