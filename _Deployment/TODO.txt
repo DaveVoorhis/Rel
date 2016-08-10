@@ -21,6 +21,8 @@
 
 - Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
 
+- Replace VM with generation of native Java code, compiled with ecj.
+
 - Expose external relvars
 
 - Be able to specify user-defined parameters in Rev queries.
