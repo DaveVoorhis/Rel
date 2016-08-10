@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Check where scripts are being saved with file-save-as.  Are they winding up in the right place?
-
 - Something says "Finish reload".  What?
 
 - Check handling of scripts. Switching views reverts to old versions.

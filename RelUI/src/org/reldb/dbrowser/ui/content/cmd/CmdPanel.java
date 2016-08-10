@@ -72,11 +72,19 @@ public class CmdPanel extends Composite {
 			protected void notifyHistoryAdded(String historyItem) {
 				CmdPanel.this.notifyHistoryAdded(historyItem);
 			}
+			@Override
+			protected String getDefaultSaveFileName() {
+				return CmdPanel.this.getDefaultSaveFileName();
+			}
 		};
 		
 		sashForm.setWeights(new int[] {2, 1});
 	}
 	
+	protected String getDefaultSaveFileName() {
+		return "Untitled";
+	}
+
 	private void setZoomedParent(Composite parent, Composite setTo) {
 		Composite parentparent = parent.getParent();
 		if (parentparent instanceof SashForm) {

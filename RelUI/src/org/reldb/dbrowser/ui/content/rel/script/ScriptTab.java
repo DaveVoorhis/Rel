@@ -41,6 +41,10 @@ public class ScriptTab extends DbTreeTab {
 						}
 					});
 				}
+				@Override
+				protected String getDefaultSaveFileName() {
+					return name;
+				}
 			};
 		} catch (NumberFormatException | ClassNotFoundException | IOException | DatabaseFormatVersionException e) {
 			System.out.println("Error: unable to launch command-line panel: " + e.getMessage());

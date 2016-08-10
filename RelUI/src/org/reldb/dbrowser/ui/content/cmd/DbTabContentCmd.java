@@ -19,7 +19,7 @@ public class DbTabContentCmd extends Composite {
 	
 	private CmdPanel cmdPanel = null;
 	private RevDatabase database = null;
-	private String name;
+	private String name = "Untitled";
 	private String oldScript;
 	
 	private ToolItem copyOutputToInputBtn;
@@ -38,6 +38,10 @@ public class DbTabContentCmd extends Composite {
 				if (database != null)
 					database.addScriptHistory(name, historyItem);
 				oldScript = historyItem;
+			}
+			@Override
+			protected String getDefaultSaveFileName() {
+				return name;
 			}
 		};
 

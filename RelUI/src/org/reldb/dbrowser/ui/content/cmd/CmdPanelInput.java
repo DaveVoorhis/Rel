@@ -66,6 +66,7 @@ public class CmdPanelInput extends Composite {
 	private FileDialog loadDialog = null;
 	private FileDialog loadPathDialog = null;
 	private FileDialog saveDialog = null;
+	private FileDialog saveHistoryDialog = null;
     
     private PreferenceChangeListener iconPreferenceChangeListener;
     private PreferenceChangeListener fontPreferenceChangeListener;
@@ -326,6 +327,8 @@ public class CmdPanelInput extends Composite {
 				public void widgetSelected(SelectionEvent e) {
 					ensureSaveDialogExists();
 					saveDialog.setText("Save Input");
+					if (saveDialog.getFileName().length() == 0)
+						saveDialog.setFileName(getDefaultSaveFileName());
 					String fname = saveDialog.open();
 					if (fname == null)
 						return;
@@ -345,9 +348,11 @@ public class CmdPanelInput extends Composite {
 			tlitmSaveHistory.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					ensureSaveDialogExists();
-					saveDialog.setText("Save History");
-					String fname = saveDialog.open();
+					ensureSaveHistoryDialogExists();
+					saveHistoryDialog.setText("Save History");
+					if (saveHistoryDialog.getFileName().length() == 0)
+						saveHistoryDialog.setFileName("InputHistory");
+					String fname = saveHistoryDialog.open();
 					if (fname == null)
 						return;
 					try {
@@ -407,6 +412,10 @@ public class CmdPanelInput extends Composite {
 			}
 		};
 		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
+	}
+
+	protected String getDefaultSaveFileName() {
+		return "Untitled";
 	}
 
 	private void doUndo() {
@@ -686,6 +695,17 @@ public class CmdPanelInput extends Composite {
 			saveDialog.setFilterNames(new String[] {"Rel script", "All Files"});
 			saveDialog.setText("Save");
 			saveDialog.setOverwrite(true);
+		}		
+	}
+
+	private void ensureSaveHistoryDialogExists() {
+		if (saveHistoryDialog == null) {
+			saveHistoryDialog = new FileDialog(getShell(), SWT.SAVE);
+			saveHistoryDialog.setFilterPath(System.getProperty("user.home"));
+			saveHistoryDialog.setFilterExtensions(new String[] {"*.rel", "*.*"});
+			saveHistoryDialog.setFilterNames(new String[] {"Rel script", "All Files"});
+			saveHistoryDialog.setText("Save Input History");
+			saveHistoryDialog.setOverwrite(true);
 		}		
 	}
 
