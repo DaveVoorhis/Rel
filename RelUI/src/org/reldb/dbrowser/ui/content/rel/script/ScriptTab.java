@@ -69,7 +69,6 @@ public class ScriptTab extends DbTreeTab {
 		Script script = database.getScript(name);
 		oldScript = script.getContent();
 		cmdPanel.setContent(script);
-		System.out.println("Finish reload");
 	}
 	
 	public void dispose() {

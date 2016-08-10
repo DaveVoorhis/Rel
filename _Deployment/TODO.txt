@@ -1,8 +1,6 @@
 ** TO DO **
 
-- Something says "Finish reload".  What?
-
-- Check handling of scripts. Switching views reverts to old versions.
+- Check handling of scripts. Switching views reverts to old versions. History doesn't work right.
 
 - Create general aggregation operator:
     <type> AGGREGATE(<relation_or_array>, <expr>,
