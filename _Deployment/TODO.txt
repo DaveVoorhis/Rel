@@ -1,10 +1,21 @@
 ** TO DO **
 
-- Check where scirpts are being saved.  Are they winding up in the right place?
+- Check where scripts are being saved with file-save-as.  Are they winding up in the right place?
 
 - Something says "Finish reload".  What?
 
 - Check handling of scripts. Switching views reverts to old versions.
+
+- Create general aggregation operator:
+    <type> AGGREGATE(<relation_or_array>, <expr>,
+    	OPERATOR(v1 SAME_TYPE_AS(<expr>), v2 SAME_TYPE_AS(<expr>)) RETURNS SAME_TYPE_AS(<expr>);
+    		RETURN ...;
+    	END OPERATOR;
+    	
+  A possible shorthand:
+  	<type> AGGREGATE(<relation_or_array>, <expr>,
+  		RETURN ...<expr of <type> using VALUE1 and VALUE2>;
+  	END AGGREGATE;
 
 - Keep list of recently opened databases in main menu.
 
