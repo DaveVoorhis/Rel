@@ -1620,28 +1620,27 @@ void arglist() #ArgList :
 void aggregate_operator() :
 {}
 {
-		<COUNT> "(" expression() ")"											#AggCount(1)
-	|	<SUM> "(" expression() "," expression() ")"								#AggSum(2)
-	|	<AVG> "(" expression() "," expression() ")"								#AggAvg(2)
-	|	<MAX> "(" expression() "," expression() ")"								#AggMax(2)
-	|	<MIN> "(" expression() "," expression() ")"								#AggMin(2)				
-	|	<AND> "(" expression() "," expression() ")"								#AggAnd(2)
-	|	<OR> "(" expression() "," expression() ")"								#AggOr(2)
-	|	<XOR> "(" expression() "," expression() ")"								#AggXor(2)
-	|	<UNION> "(" expression() "," expression() ")"							#AggUnion(2)
-	|	<XUNION> "(" expression() "," expression() ")"							#AggXunion(2)
-	|	<D_UNION> "(" expression() "," expression() ")"							#AggDUnion(2)
-	|	<INTERSECT> "(" expression() "," expression() ")"						#AggIntersect(2)
-	| 	<AGGREGATE> "(" agg_identity() "," expression() "," expression() ")"	#AggAggregate(3)
-			<RETURN> expression() ";"
-		<END> [ <AGGREGATE> ]
+		<COUNT> "(" expression() ")"												#AggCount(1)
+	|	<SUM> "(" expression() "," expression() ")"									#AggSum(2)
+	|	<AVG> "(" expression() "," expression() ")"									#AggAvg(2)
+	|	<MAX> "(" expression() "," expression() ")"									#AggMax(2)
+	|	<MIN> "(" expression() "," expression() ")"									#AggMin(2)				
+	|	<AND> "(" expression() "," expression() ")"									#AggAnd(2)
+	|	<OR> "(" expression() "," expression() ")"									#AggOr(2)
+	|	<XOR> "(" expression() "," expression() ")"									#AggXor(2)
+	|	<UNION> "(" expression() "," expression() ")"								#AggUnion(2)
+	|	<XUNION> "(" expression() "," expression() ")"								#AggXunion(2)
+	|	<D_UNION> "(" expression() "," expression() ")"								#AggDUnion(2)
+	|	<INTERSECT> "(" expression() "," expression() ")"							#AggIntersect(2)
+	| 	agg_aggregate()
 }
 
-void agg_identity() :
+void agg_aggregate() #AggAggregate :
 {}
 {
-  <NOEMPTY>
-| expression()
+	<AGGREGATE> "(" expression() "," expression() [ "," expression() ] ")" ";"	
+		<RETURN> expression() ";"			// VALUE1 and VALUE2 introduced
+	<END> [ <AGGREGATE> ]
 }
 
 void literal() :

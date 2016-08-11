@@ -1,13 +1,7 @@
 ** TO DO **
 
 - Create general aggregation operator:
-    <type> AGGREGATE(<identity expr | NOEMPTY>, <relation_or_array>, <attribute expr>,
-    	OPERATOR(v1 SAME_TYPE_AS(<expr>), v2 SAME_TYPE_AS(<expr>)) RETURNS SAME_TYPE_AS(<expr>);
-    		RETURN ...;
-    	END OPERATOR;
-    	
-  A possible shorthand:
-  	<type> AGGREGATE(<identity expr | NOEMPTY>, <relation_or_array>, <attribute expr>,
+  	<type> AGGREGATE(<relation_or_array>, <attribute expr> [, <identity expr>]);
   		RETURN ...<expr of <type> using VALUE1 and VALUE2>;
   	END AGGREGATE;
 

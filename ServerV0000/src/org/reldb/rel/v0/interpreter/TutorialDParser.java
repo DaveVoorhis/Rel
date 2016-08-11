@@ -2695,6 +2695,25 @@ public class TutorialDParser implements TutorialDVisitor {
 		currentNode = node;
 		return new AggregatorIntersect().createAggregator(node).getAttributeType();
 	}
+
+	// aggregate AGGREGATE (generic aggregation)
+	public Object visit(ASTAggAggregate node, Object data) {
+		currentNode = node;
+		System.out.println("TutorialDParser: AGGREGATE child count = " + getChildCount(node));
+		if (getChildCount(node) == 3) {
+			System.out.println("TutorialDParser: AGGREGATE(<rel | ARRAY>, <attr expr>) ... END AGGREGATE not implemented yet.");
+			// Child 0 - relation or ARRAY
+			// Child 1 - attribute expression
+			// Child 2 - aggregate expression
+		} else {
+			System.out.println("TutorialDParser: AGGREGATE(<rel | ARRAY>, <attr expr>, <identity expr>) ... END AGGREGATE not implemented yet.");
+			// Child 0 - relation or ARRAY
+			// Child 1 - attribute expression
+			// Child 2 - identity expression 
+			// Child 3 - aggregate expression
+		}
+		return null;
+	}
 	
 	// EXACTLY.  Return TypeBoolean.
 	public Object visit(ASTExactly node, Object data) {

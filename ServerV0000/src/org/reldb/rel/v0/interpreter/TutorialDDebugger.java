@@ -423,6 +423,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTAggIntersect node, Object data) {
 		return dump(node, data);
 	}
+
+	// aggregate AGGREGATE (generic aggregation)
+	public Object visit(ASTAggAggregate node, Object data) {
+		return dump(node, data);
+	}
 	
 	// EXACTLY
 	public Object visit(ASTExactly node, Object data) {
