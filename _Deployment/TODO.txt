@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Find out why running recordDDL() in RelDatabase blows up defining/loading user-defined Java-based types!
-
 - Create general aggregation operator:
     <type> AGGREGATE(<relation_or_array>, <expr>,
     	OPERATOR(v1 SAME_TYPE_AS(<expr>), v2 SAME_TYPE_AS(<expr>)) RETURNS SAME_TYPE_AS(<expr>);
