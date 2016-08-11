@@ -259,3 +259,4 @@
 /ASTStatementList.java
 /ASTAlterVarActionMandatory.java
 /ASTAlterVarActionOptional.java
+/ASTAggAggregate.java
