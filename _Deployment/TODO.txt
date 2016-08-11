@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Check handling of scripts. Switching views reverts to old versions. History doesn't work right.
-
 - Create general aggregation operator:
     <type> AGGREGATE(<relation_or_array>, <expr>,
     	OPERATOR(v1 SAME_TYPE_AS(<expr>), v2 SAME_TYPE_AS(<expr>)) RETURNS SAME_TYPE_AS(<expr>);

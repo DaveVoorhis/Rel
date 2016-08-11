@@ -2,6 +2,7 @@ package org.reldb.dbrowser.ui.content.rel.script;
 
 import java.io.IOException;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.reldb.dbrowser.ui.RevDatabase;
@@ -63,12 +64,20 @@ public class ScriptTab extends DbTreeTab {
 	public void reload() {
 		if (noreload)
 			return;
-		String newScript = cmdPanel.getInputText();
-		if (!oldScript.equals(newScript))
-			database.addScriptHistory(name, oldScript);
+		String savedText = "";
 		Script script = database.getScript(name);
-		oldScript = script.getContent();
-		cmdPanel.setContent(script);
+		if (script != null)
+			savedText = script.getContent();
+		String editorText = cmdPanel.getInputText();
+		if (editorText.equals(savedText))
+			return;
+		if (!oldScript.equals(savedText)) {
+			if (!MessageDialog.openConfirm(relPanel.getShell(), "Script Changed", "The script has changed since you loaded it. Reload it from the database, losing current changes?"))
+				return;
+			database.addScriptHistory(name, editorText);
+			cmdPanel.setInputText(savedText);
+			oldScript = savedText;
+		}
 	}
 	
 	public void dispose() {
