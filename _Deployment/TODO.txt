@@ -5,6 +5,8 @@
   		RETURN ...<expr of <type> using VALUE1 and VALUE2>;
   	END AGGREGATE;
 
+- Allow general aggregation operator to be used in SUMMARIZE.
+
 - Keep list of recently opened databases in main menu.
 
 - Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
