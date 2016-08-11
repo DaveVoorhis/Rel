@@ -1108,18 +1108,25 @@ public class RelDatabase {
     	return (typesRelvar.getTupleForKey(generator, typeName) != null);
     }
 	
-	private void recordDDL(String newDefinition) {
+	private void recordDDL(Generator generator, Transaction txn, String newDefinition) {
 		try {
 			if (newDefinition.trim().length() == 0)
 				return;
-			if (!isRelvarExists(Catalog.relvarDefinitionHistory))
-				return;
-			PrintStream devnull = new PrintStream(new OutputStream() {
-				@Override
-				public void write(int b) throws IOException {
-				}				
-			});
-			Interpreter.executeStatementPrivileged(this, "INSERT " + Catalog.relvarDefinitionHistory + " REL {TUP {Definition '" + StringUtils.quote(newDefinition) + "', SerialNumber IF COUNT(" + Catalog.relvarDefinitionHistory + ") = 0 THEN 1 ELSE MAX(" + Catalog.relvarDefinitionHistory + ", SerialNumber) + 1 END IF}};", "Rel", devnull);
+    		RelvarMetadata metadata = getRelvarMetadata(txn, Catalog.relvarDefinitionHistory);
+    		if (metadata == null)
+    			return;
+    		RelvarGlobal relvarDefinitionHistory = metadata.getRelvar(Catalog.relvarDefinitionHistory, RelDatabase.this);
+    		ValueRelation currentValue = relvarDefinitionHistory.getValue(generator);
+    		long nextID;
+    		if (currentValue.getCardinality() > 0)
+    			nextID = currentValue.max(1).longValue() + 1; 	// index 1 is SerialNumber attribute
+    		else
+    			nextID = 1;
+			Value[] rawTuple = new Value[] {
+					ValueCharacter.select(generator, newDefinition),	// Definition attribute
+					ValueInteger.select(generator, nextID)				// SerialNumber attribute
+			};
+			relvarDefinitionHistory.insert(generator, new ValueTuple(generator, rawTuple));
 		} catch (Exception e) {
 			System.out.println("DefinitionHistory not logged due to " + e + ": " + newDefinition);
 		}
@@ -1148,7 +1155,7 @@ public class RelDatabase {
 	    	    		// TODO - maybe force reload of supertype here?
 	    	    		typesRelvar.addSubtype(generator, superTypeName, typeName);
 	    	    	}
-	    	    	recordDDL(src);
+	    	    	recordDDL(generator, txn, src);
 	    			return null;
 	    		}
 	    	}).execute(this);
@@ -1229,7 +1236,7 @@ public class RelDatabase {
 	    	    		}
 	    	    	}
 	    	    	typeCache.remove(typeName);
-	    	    	recordDDL("DROP TYPE typeName;");
+	    	    	recordDDL(generator, txn, "DROP TYPE typeName;");
 	    			return null;
 	    		}
 	    	}).execute(this);
@@ -1262,7 +1269,7 @@ public class RelDatabase {
 	    	    	addDependencies(generator, constraintName, Catalog.relvarDependenciesConstraintRelvar, references.getReferencedRelvars());    	
 	    	    	addDependencies(generator, constraintName, Catalog.relvarDependenciesConstraintType, references.getReferencedTypes());    	
 	    			constraints.put(constraintName, operator);
-	    			recordDDL("CONSTRAINT " + constraintName + " " + sourceCode + ";");
+	    			recordDDL(generator, txn, "CONSTRAINT " + constraintName + " " + sourceCode + ";");
 	    			return null;
 	    		}
 	    	}).execute(this);
@@ -1285,7 +1292,7 @@ public class RelDatabase {
 	    	    	removeDependencies(generator, constraintName, Catalog.relvarDependenciesConstraintRelvar);
 	    	    	removeDependencies(generator, constraintName, Catalog.relvarDependenciesConstraintType);
 	    			constraints.remove(constraintName);
-	    			recordDDL("DROP CONSTRAINT " + constraintName + ";");
+	    			recordDDL(generator, txn, "DROP CONSTRAINT " + constraintName + ";");
 	    			return null;
 	    		}
 	    	}).execute(this);
@@ -1326,7 +1333,7 @@ public class RelDatabase {
 	    	    	addDependencies(generator, opsig, Catalog.relvarDependenciesOperatorOperator, references.getReferencedOperators());
 	    	    	addDependencies(generator, opsig, Catalog.relvarDependenciesOperatorRelvar, references.getReferencedRelvars());
 	    	    	addDependencies(generator, opsig, Catalog.relvarDependenciesOperatorType, references.getReferencedTypes());
-	    	    	recordDDL(operator.getSourceCode());
+	    	    	recordDDL(generator, txn, operator.getSourceCode());
 	    			return null;
 	    		}
 	    	}).execute(this);
@@ -1358,12 +1365,12 @@ public class RelDatabase {
     }
     
     /** Drop operator. */
-    public synchronized void dropOperator(final OperatorSignature signature) {
+    public synchronized void dropOperator(Generator generator, final OperatorSignature signature) {
     	try {
 	    	(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
 	    			dropOperatorInternal(new Generator(RelDatabase.this, System.out), signature);
-	    			recordDDL("DROP OPERATOR " + signature.toRelLookupString() + ";");
+	    			recordDDL(generator, txn, "DROP OPERATOR " + signature.toRelLookupString() + ";");
 	    			return null;
 	    		}
 	    	}).execute(this);
@@ -1615,7 +1622,7 @@ public class RelDatabase {
    		    		newMetadata.setStorageNames(storageNames);
     	    		putRelvarMetadata(txn, relvarInfo.getName(), newMetadata);
     	        	addDependencies(generator, relvarInfo.getName(), Catalog.relvarDependenciesRelvarType, relvarInfo.getReferences().getReferencedTypes());
-    	        	recordDDL(relvarInfo.toString());
+    	        	recordDDL(generator, txn, relvarInfo.toString());
     	    		return null;
 	    		}
 	    	}).execute(this);
@@ -1638,7 +1645,7 @@ public class RelDatabase {
     	        	addDependencies(generator, information.getName(), Catalog.relvarDependenciesRelvarOperator, information.getReferences().getReferencedOperators());
     	        	addDependencies(generator, information.getName(), Catalog.relvarDependenciesRelvarRelvar, information.getReferences().getReferencedRelvars());
     	        	addDependencies(generator, information.getName(), Catalog.relvarDependenciesRelvarType, information.getReferences().getReferencedTypes());
-    	        	recordDDL(information.toString());
+    	        	recordDDL(generator, txn, information.toString());
     	        	return null;
 	    		}
 	    	}).execute(this);
@@ -1658,7 +1665,7 @@ public class RelDatabase {
     					throw new ExceptionSemantic("RS0220: VAR " + relvarInfo.getName() + " already exists.");
     	    		putRelvarMetadata(txn, relvarInfo.getName(), relvarInfo.getRelvarMetadata());
     	        	addDependencies(generator, relvarInfo.getName(), Catalog.relvarDependenciesRelvarType, relvarInfo.getReferences().getReferencedTypes());
-    	        	recordDDL(relvarInfo.toString());
+    	        	recordDDL(generator, txn, relvarInfo.toString());
     	    		return null;
 	    		}
 	    	}).execute(this);
@@ -1772,7 +1779,7 @@ public class RelDatabase {
     	        	removeDependencies(generator, name, Catalog.relvarDependenciesRelvarOperator);
     	        	removeDependencies(generator, name, Catalog.relvarDependenciesRelvarRelvar);
     	        	removeDependencies(generator, name, Catalog.relvarDependenciesRelvarType);
-    	        	recordDDL("DROP VAR " + name + ";");
+    	        	recordDDL(generator, txn, "DROP VAR " + name + ";");
     	    		return null;
 	    		}
 	    	}).execute(this);
@@ -1945,7 +1952,7 @@ public class RelDatabase {
 	    		}
 	    		// set metadata to reference new storage names
 		    	metadata.setStorageNames(storageNames);
-		    	recordDDL("ALTER VAR " + varname + " " + keydefs.toString() + ";");
+		    	recordDDL(generator, txn, "ALTER VAR " + varname + " " + keydefs.toString() + ";");
 			}
 		});
 	}
@@ -1962,7 +1969,7 @@ public class RelDatabase {
 				RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
 				Table table = relvar.getTable();
 				table.shrinkTuples(txn, attributeIndex);
-				recordDDL("ALTER VAR " + varname + " DROP " + attributeName);
+				recordDDL(generator, txn, "ALTER VAR " + varname + " DROP " + attributeName);
 			}
 		});
     }
@@ -1980,7 +1987,7 @@ public class RelDatabase {
 				Table table = relvar.getTable();
 				ValueTuple newAttributes = new ValueTuple(generator, new TypeTuple(heading));
 				table.expandTuples(txn, newAttributes);
-				recordDDL("ALTER VAR " + varname + " INSERT " + heading.getSpecification() + ";");
+				recordDDL(generator, txn, "ALTER VAR " + varname + " INSERT " + heading.getSpecification() + ";");
 			}
 		});
 	}
@@ -1993,7 +2000,7 @@ public class RelDatabase {
 			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
 	    		// update metadata
 	    		metadata.renameAttribute(RelDatabase.this, oldAttributeName, newAttributeName);
-	    		recordDDL("ALTER VAR " + varname + " RENAME " + oldAttributeName + " TO " + newAttributeName + ";");
+	    		recordDDL(generator, txn, "ALTER VAR " + varname + " RENAME " + oldAttributeName + " TO " + newAttributeName + ";");
 			}
 		});
 	}

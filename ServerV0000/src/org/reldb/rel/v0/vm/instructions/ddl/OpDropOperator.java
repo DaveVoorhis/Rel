@@ -16,6 +16,6 @@ public final class OpDropOperator extends Instruction {
 	}
 	
 	public void execute(Context context) {
-		context.getVirtualMachine().getRelDatabase().dropOperator(signature);
+		context.getVirtualMachine().getRelDatabase().dropOperator(context.getGenerator(), signature);
 	}
 }

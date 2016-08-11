@@ -987,8 +987,12 @@ public class Generator {
 	
 	public Type findType(String typeName) {
 		Type type = locateType(typeName);
-		if (type == null)
-			throw new ExceptionSemantic("RS0052: Type '" + typeName + "' has not been defined.");
+		if (type == null) {
+			
+			ExceptionSemantic e = new ExceptionSemantic("RS0052: Type '" + typeName + "' has not been defined.");
+			e.printStackTrace();
+			throw e;
+		}
 		return type;
 	}
 
