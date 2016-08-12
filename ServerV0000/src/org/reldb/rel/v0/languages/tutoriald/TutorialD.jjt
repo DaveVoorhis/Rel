@@ -1639,7 +1639,7 @@ void agg_aggregate() #AggAggregate :
 {}
 {
 	<AGGREGATE> "(" expression() "," expression() [ "," expression() ] ")" ";"	
-		<RETURN> expression() ";"			// VALUE1 and VALUE2 introduced
+		op_body()			// VALUE1 and VALUE2 introduced
 	<END> [ <AGGREGATE> ]
 }
 

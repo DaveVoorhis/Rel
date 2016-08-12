@@ -1077,7 +1077,7 @@ public class Generator {
 		return new OperatorInvocation(fn);
 	}
 	
-	private Type compileEvaluate(OperatorDefinition operator) {
+	public Type compileEvaluate(OperatorDefinition operator) {
 		return operator.compileEvaluate(this);
 	}	
 	
@@ -1104,8 +1104,7 @@ public class Generator {
 				throw new ExceptionSemantic("RS0055: Could not find operator " + signature);
 			compileInstruction(new OpInvokeDynamicEvaluate(this, invocation.getOperatorSignature()));
 			return lastFoundReturnType;
-		}
-		else {
+		} else {
 			OperatorDefinition operator = invocation.getStaticOperatorDefinition();
 			return compileEvaluate(operator);
 		}
@@ -1795,9 +1794,14 @@ public class Generator {
 			extendedHeading.add(identifier, expressionType);
 		}
 		
+		/** Get extended heading. */
+		public Heading getExtendedHeading() {
+			return sourceHeading.unionDisjoint(extendedHeading);
+		}
+		
 		/** End extend definition.  This is invoked immediately after any extend expressions. */
 		void endExtendDefinition() {
-			setDeclaredReturnType(new TypeTuple(sourceHeading.unionDisjoint(extendedHeading)));
+			setDeclaredReturnType(new TypeTuple(getExtendedHeading()));
 			// Compile tuple join
 			compileGet(sourceTupleParmName);
 			compileGet(extendTupleParmName);

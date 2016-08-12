@@ -17,7 +17,10 @@ import org.reldb.rel.v0.types.builtin.TypeInteger;
 import org.reldb.rel.v0.types.builtin.TypeRational;
 import org.reldb.rel.v0.types.userdefined.*;
 import org.reldb.rel.v0.values.*;
+import org.reldb.rel.v0.vm.Context;
+import org.reldb.rel.v0.vm.NativeFunction;
 import org.reldb.rel.v0.vm.Operator;
+import org.reldb.rel.v0.vm.VirtualMachine;
 
 public class TutorialDParser implements TutorialDVisitor {
 
@@ -2460,12 +2463,14 @@ public class TutorialDParser implements TutorialDVisitor {
 	private abstract class Aggregator {
 		private String opName;
 		private Type returnType;
+		private Type extendedRelationExprType;
+		private String introducedAttributeName;
+		private Type attributeExprType;
 		Aggregator(String operatorName) {
 			opName = operatorName;
 		}
 		// SUMMARIZE aggregator
 		AggregateResult createAggregator(SimpleNode node, Object data, boolean distinct) {
-			currentNode = node;
 			// data is Generator.SummarizeItem
 			Generator.Summarize.SummarizeItem item = (Generator.Summarize.SummarizeItem)data;
 			// Child 0 - expression
@@ -2474,22 +2479,30 @@ public class TutorialDParser implements TutorialDVisitor {
 			Type aggExpType = item.endSummarizeItemExpression(exprType, distinct);
 			return createAggregator(aggExpType, item.getExtendAttributeName());
 		}
-		// aggregate operator invocation
-		AggregateResult createAggregator(SimpleNode node) {
-			currentNode = node;
+		// extend source
+		Generator.Extend buildAggregator(SimpleNode node) {
 			// Child 0 - Relational expression
 			Type relationExprType = (Type)compileChild(node, 0, null);
 			if (!(relationExprType instanceof TypeRelation))
 				throw new ExceptionSemantic("RS0171: Aggregate " + opName + " expected RELATION, but got " + relationExprType);
 			// Child 1 - Attribute expression
 			Generator.Extend extend = generator.new Extend(((TypeRelation)relationExprType).getHeading());
-			String introducedAttributeName = "%attributeName" + (introducedAttributeNameSerial++);
-			Type attributeExprType = (Type)compileChild(node, 1, null);
+			introducedAttributeName = "%attributeName" + (introducedAttributeNameSerial++);
+			attributeExprType = (Type)compileChild(node, 1, null);
 			extend.addExtendItem(introducedAttributeName, attributeExprType);
-			Type extendedRelationExprType = generator.endRelationExtend(extend);
-			return createAggregator((TypeRelation)extendedRelationExprType, introducedAttributeName);
+			extendedRelationExprType = generator.endRelationExtend(extend);
+			return extend;
 		}
-		private AggregateResult createAggregator(Type exprType, String attributeName) {
+		// implement operator invocation
+		AggregateResult buildInvocation(Generator.Extend extend, OperatorDefinition aggregator) {
+			return createAggregator((TypeRelation)extendedRelationExprType, introducedAttributeName, aggregator);
+		}
+		// aggregate operator invocation
+		AggregateResult createAggregator(SimpleNode node) {
+			buildAggregator(node);
+			return createAggregator((TypeRelation)extendedRelationExprType, introducedAttributeName);			
+		}
+		private Type obtainAttribute(Type exprType, String attributeName) {
 			Heading source = ((TypeRelation)exprType).getHeading();
 			// Get index of attribute in relation's tuples
 			int attributeIndex = source.getIndexOf(attributeName);
@@ -2498,6 +2511,15 @@ public class TutorialDParser implements TutorialDVisitor {
 			Type attributeType = source.getAttributes().get(attributeIndex).getType();
 			checkAttributeType(attributeType);
 			generator.compilePush(ValueInteger.select(generator, attributeIndex));
+			return attributeType;
+		}
+		private AggregateResult createAggregator(Type exprType, String attributeName, OperatorDefinition aggregator) {
+			Type attributeType = obtainAttribute(exprType, attributeName);
+			returnType = generator.compileEvaluate(aggregator);
+			return new AggregateResult(attributeType, getReturnType(attributeType));
+		}
+		private AggregateResult createAggregator(Type exprType, String attributeName) {
+			Type attributeType = obtainAttribute(exprType, attributeName);
 			String operatorName = getOpNameForType(attributeType);
 			OperatorSignature sig = new OperatorSignature(operatorName);
 			sig.addParameterType(exprType);
@@ -2511,6 +2533,9 @@ public class TutorialDParser implements TutorialDVisitor {
 		}
 		Type getReturnType(Type attributeType) {
 			return returnType;
+		}
+		Type getAttributeExpressionType() {
+			return attributeExprType;
 		}
 	}
 	
@@ -2630,6 +2655,15 @@ public class TutorialDParser implements TutorialDVisitor {
 		}
 	}	
 	
+	class AggregatorAggregate extends Aggregator {
+		AggregatorAggregate(String name) {
+			super(name);
+		}
+		Type getReturnType(Type attributeType) {
+			return attributeType;
+		}
+	}
+	
 	// aggregate SUM
 	public Object visit(ASTAggSum node, Object data) {
 		currentNode = node;
@@ -2695,24 +2729,67 @@ public class TutorialDParser implements TutorialDVisitor {
 		currentNode = node;
 		return new AggregatorIntersect().createAggregator(node).getAttributeType();
 	}
+	
+	private static long introducedAggregateOperatorNameSerial = 0; 
 
 	// aggregate AGGREGATE (generic aggregation)
 	public Object visit(ASTAggAggregate node, Object data) {
-		currentNode = node;
-		System.out.println("TutorialDParser: AGGREGATE child count = " + getChildCount(node));
-		if (getChildCount(node) == 3) {
-			System.out.println("TutorialDParser: AGGREGATE(<rel | ARRAY>, <attr expr>) ... END AGGREGATE not implemented yet.");
-			// Child 0 - relation or ARRAY
-			// Child 1 - attribute expression
-			// Child 2 - aggregate expression
-		} else {
-			System.out.println("TutorialDParser: AGGREGATE(<rel | ARRAY>, <attr expr>, <identity expr>) ... END AGGREGATE not implemented yet.");
-			// Child 0 - relation or ARRAY
-			// Child 1 - attribute expression
-			// Child 2 - identity expression 
-			// Child 3 - aggregate expression
-		}
-		return null;
+		currentNode = node;		
+		String aggOpName = "%AGGREGATE" + introducedAggregateOperatorNameSerial++;
+		
+		// Child 0 - relation or ARRAY
+		Type sourceType = (Type)compileChild(node, 0, data);
+		if (!(sourceType instanceof TypeRelation || sourceType instanceof TypeArray))
+			throw new ExceptionSemantic("RS0441: Expected RELATION or ARRAY for AGGREGATE but got " + sourceType);
+				
+		AggregatorAggregate agg = new AggregatorAggregate(aggOpName);
+		
+		Generator.Extend extend = agg.buildAggregator(node);
+
+		// TODO - finish AGGREGATE
+		// if getChildCount(node) == 4 then getChild(3) is identity expression
+
+		final OperatorDefinition attributeFold = generator.beginAnonymousOperator();
+		attributeFold.defineParameter("VALUE1", agg.getAttributeExpressionType());
+		attributeFold.defineParameter("VALUE2", agg.getAttributeExpressionType());
+		attributeFold.setDeclaredReturnType(agg.getAttributeExpressionType());
+		// last child - aggregator's op_body()
+		compileChild(node, getChildCount(node) - 1, data);
+		generator.endOperator();
+		
+		VirtualMachine vm = new VirtualMachine(generator, generator.getDatabase(), System.out);
+		Context context = new Context(generator, vm);
+		Operator attributeFoldOperator = attributeFold.getOperator();
+		
+		NativeFunction aggregatorFunction = new NativeFunction() {
+			@Override
+			public Value evaluate(Value[] arguments) {
+				ValueRelation relation = (ValueRelation)arguments[0];
+				int attributeIndex = (int)((ValueInteger)arguments[1]).longValue();
+				TupleFoldFirstIsIdentity folder = new TupleFoldFirstIsIdentity("AGGREGATE requires at least one tuple.", relation.iterator(), attributeIndex) {
+					@Override
+					public Value fold(Value left, Value right) {
+						context.push(left);
+						context.push(right);
+						context.call(attributeFoldOperator);
+						return context.pop();
+					}
+				};
+				folder.run();
+				return folder.getResult();
+			}
+		};
+		OperatorDefinitionNativeFunction aggregator = 
+				new OperatorDefinitionNativeFunction(
+						aggOpName, 
+						new Type[] {new TypeRelation(extend.getExtendedHeading()), TypeInteger.getInstance()}, 
+						agg.getAttributeExpressionType(), 
+						aggregatorFunction);
+		
+		// compile invocation of aggregator
+		AggregateResult result = agg.buildInvocation(extend, aggregator);
+		
+		return result.getAttributeType();
 	}
 	
 	// EXACTLY.  Return TypeBoolean.

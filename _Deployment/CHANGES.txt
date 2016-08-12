@@ -1,4 +1,4 @@
-Last used Exception* number: RS0440
+Last used Exception* number: RS0441
 
 Version 3.00 (1.0.13):
 
@@ -15,6 +15,10 @@ Version 3.00 (1.0.13):
   - enhancement: DBrowser: Code entry has "zoom" buttons to maximize input or output.
   - enhancement: DBrowser: Scripts can be edited and saved in the database.
   - enhancement: DBrowser/Rel: Backup script embedded in Rel; no longer relies on Scripts folder.
+  - enhancement: Rel: added general aggregation operator:
+					<type> AGGREGATE(<relation_or_array>, <attribute expr> [, <identity expr>]);
+  						RETURN ...<expr of <type> using VALUE1 and VALUE2>;
+  					END AGGREGATE
   - enhancement: Rel: added ALTER VAR <relvar> RENAME <oldattrname> AS <newattrname>
   - enhancement: Rel: added ALTER VAR <relvar> INSERT <newattrname> <newattrtype>
   - enhancement: Rel: added ALTER VAR <relvar> DROP <attrname>  

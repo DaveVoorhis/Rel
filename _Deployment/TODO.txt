@@ -1,10 +1,5 @@
 ** TO DO **
 
-- Create general aggregation operator:
-  	<type> AGGREGATE(<relation_or_array>, <attribute expr> [, <identity expr>]);
-  		RETURN ...<expr of <type> using VALUE1 and VALUE2>;
-  	END AGGREGATE;
-
 - Allow general aggregation operator to be used in SUMMARIZE.
 
 - Keep list of recently opened databases in main menu.
@@ -14,6 +9,8 @@
 - Replace VM with generation of native Java code, compiled with ecj.
 
 - Expose external relvars
+
+- Implement image relation operators.
 
 - Be able to specify user-defined parameters in Rev queries.
 
