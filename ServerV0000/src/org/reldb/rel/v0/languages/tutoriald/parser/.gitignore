@@ -260,3 +260,4 @@
 /ASTAlterVarActionMandatory.java
 /ASTAlterVarActionOptional.java
 /ASTAggAggregate.java
+/ASTSummarizeAggregate.java

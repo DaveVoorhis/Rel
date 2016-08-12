@@ -329,6 +329,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 		return dump(node, data);
 	}
 	
+	// AGGREGATE aggregation
+	public Object visit(ASTSummarizeAggregate node, Object data) {
+		return dump(node, data);
+	}
+		
 	// UPDATE statement
 	public Object visit(ASTUpdateStatement node, Object data) {
 		return dump(node, data);		

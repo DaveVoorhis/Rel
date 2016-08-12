@@ -3011,6 +3011,13 @@ public class TutorialDParser implements TutorialDVisitor {
 		currentNode = node;
 		return new AggregatorIntersect().createAggregator(node, data, false).getAttributeType();
 	}
+	
+	// SUMMARIZE - AGGREGATE
+	public Object visit(ASTSummarizeAggregate node, Object data) {
+		currentNode = node;
+		
+		return new AggregatorAggregate("AGGREGATE").createAggregator(node, data, false).getAttributeType();
+	}
 
 	private class SummarizeExactlyAggregator extends Aggregator {
 		SummarizeExactlyAggregator() {

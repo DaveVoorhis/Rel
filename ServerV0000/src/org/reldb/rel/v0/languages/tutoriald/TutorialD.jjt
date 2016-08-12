@@ -1603,6 +1603,15 @@ void summary() :
 	|	<XUNION> "(" expression() ")"						 #SummarizeXunion(1)
 	|	<D_UNION> "(" expression() ")" 						#SummarizeDUnion(1)
 	|	<INTERSECT> "(" expression() ")" 					#SummarizeIntersect(1)
+	|   summarize_aggregate()
+}
+
+void summarize_aggregate() #SummarizeAggregate :
+{}
+{
+	<AGGREGATE> "(" expression() [ "," expression() ] ")" ";"	
+		op_body()			// VALUE1 and VALUE2 introduced
+	<END> [ <AGGREGATE> ]
 }
 
 void fn_invoke() #FnInvoke :
