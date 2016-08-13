@@ -50,6 +50,66 @@ public class TestAggregate extends BaseOfTest {
 		testEquals(expected, src);						
 	}
 	
+	@Test
+	public void testAggregate03() {
+		String src =
+			"COUNT(myvar) = 6";
+		String expected = "true";
+		testEquals(expected, src);						
+	}
+	
+	@Test
+	public void testAggregate04() {
+		String src =
+			"COUNT(REL {x INT} {}) = 0";
+		String expected = "true";
+		testEquals(expected, src);						
+	}
+	
+	@Test
+	public void testAggregate05() {
+		String src =
+			"COUNT(REL {x INT} {}) = AGGREGATE(REL {x INT} {}, 1, 0); RETURN VALUE1 + VALUE2; END AGGREGATE";
+		String expected = "true";
+		testEquals(expected, src);						
+	}
+		
+	@Test
+	public void testAggregate06() {
+		String src =
+			"COUNT(myvar) = AGGREGATE(myvar, 1, 0); RETURN VALUE1 + VALUE2; END AGGREGATE";
+		String expected = "true";
+		testEquals(expected, src);						
+	}
+	
+	@Test
+	public void testAggregate07() {
+		String src =
+			"arithmeticMean FROM TUPLE FROM EXTEND " + 
+			"	SUMMARIZE myvar:  " + 
+			"	{ " + 
+			"		total := AGGREGATE(x); RETURN VALUE1 + VALUE2; END AGGREGATE, " + 
+			"		N := AGGREGATE(1); RETURN VALUE1 + VALUE2; END AGGREGATE " + 
+			"	} " + 
+			": {arithmeticMean := CAST_AS_RATIONAL(total) / CAST_AS_RATIONAL(N)} ";
+		String expected = "3.5";
+		testEquals(expected, src);						
+	}
+	
+	@Test
+	public void testAggregate08() {
+		String src =
+			"arithmeticMean FROM TUPLE FROM EXTEND " + 
+			"	SUMMARIZE myvar:  " + 
+			"	{ " + 
+			"		total := AGGREGATE(x, 0); RETURN VALUE1 + VALUE2; END AGGREGATE, " + 
+			"		N := AGGREGATE(1, 0); RETURN VALUE1 + VALUE2; END AGGREGATE " + 
+			"	} " + 
+			": {arithmeticMean := CAST_AS_RATIONAL(total) / CAST_AS_RATIONAL(N)} ";
+		String expected = "3.5";
+		testEquals(expected, src);						
+	}
+		
 	@AfterClass
 	public static void testSummarizeComplexTeardown() {
 		String src =

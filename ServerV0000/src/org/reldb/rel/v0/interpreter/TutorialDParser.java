@@ -2672,16 +2672,22 @@ public class TutorialDParser implements TutorialDVisitor {
 	private static long introducedAggregateOperatorNameSerial = 0; 
 	
 	class AggregatorAggregate extends Aggregator {
+		
 		AggregatorAggregate() {
 			super("%AGGREGATE" + introducedAggregateOperatorNameSerial++);
 		}
+		
 		Type getReturnType(Type attributeType) {
 			return attributeType;
 		}
-		public OperatorDefinition buildGenericAggregator(SimpleNode node, String aggOpName, TypeRelation aggExpType) {
-			// TODO - finish AGGREGATE
-			// if getChildCount(node) == 4 then getChild(3) is identity expression
-
+		
+		private OperatorDefinition buildGenericAggregator(SimpleNode node, TypeRelation aggExpType, int initialValueNodeNumber) {
+			if (initialValueNodeNumber >= 0) {
+				Type initialValueType = (Type)compileChild(node, initialValueNodeNumber, null);
+				if (!getAttributeExpressionType().canAccept(initialValueType))
+					throw new ExceptionSemantic("RS0442: Expected type of initial value to be " + getAttributeExpressionType() + " but got " + initialValueType);
+			}
+			
 			final OperatorDefinition attributeFold = generator.beginAnonymousOperator();
 			attributeFold.defineParameter("VALUE1", getAttributeExpressionType());
 			attributeFold.defineParameter("VALUE2", getAttributeExpressionType());
@@ -2694,35 +2700,85 @@ public class TutorialDParser implements TutorialDVisitor {
 			Context context = new Context(generator, vm);
 			Operator attributeFoldOperator = attributeFold.getOperator();
 			
-			NativeFunction aggregatorFunction = new NativeFunction() {
-				@Override
-				public Value evaluate(Value[] arguments) {
-					ValueRelation relation = (ValueRelation)arguments[0];
-					int attributeIndex = (int)((ValueInteger)arguments[1]).longValue();
-					TupleFoldFirstIsIdentity folder = new TupleFoldFirstIsIdentity("AGGREGATE requires at least one tuple.", relation.iterator(), attributeIndex) {
-						@Override
-						public Value fold(Value left, Value right) {
-							context.push(left);
-							context.push(right);
-							context.call(attributeFoldOperator);
-							return context.pop();
-						}
-					};
-					folder.run();
-					return folder.getResult();
-				}
-			};
-			return new OperatorDefinitionNativeFunction(aggOpName,
-					new Type[] {aggExpType, TypeInteger.getInstance()}, getAttributeExpressionType(), aggregatorFunction);
+			NativeFunction aggregatorFunction;
+			if (initialValueNodeNumber < 0)
+				aggregatorFunction = new NativeFunction() {
+					@Override
+					public Value evaluate(Value[] arguments) {
+						ValueRelation relation = (ValueRelation)arguments[0];
+						int attributeIndex = (int)((ValueInteger)arguments[1]).longValue();
+						TupleFoldFirstIsIdentity folder = new TupleFoldFirstIsIdentity("AGGREGATE requires at least one tuple.", relation.iterator(), attributeIndex) {
+							@Override
+							public Value fold(Value left, Value right) {
+								context.push(left);
+								context.push(right);
+								context.call(attributeFoldOperator);
+								return context.pop();
+							}
+						};
+						folder.run();
+						return folder.getResult();
+					}
+				};
+			else
+				aggregatorFunction = new NativeFunction() {
+					@Override
+					public Value evaluate(Value[] arguments) {
+						ValueRelation relation = (ValueRelation)arguments[0];
+						Value initialValue = arguments[1];
+						int attributeIndex = (int)((ValueInteger)arguments[2]).longValue();
+						TupleFold folder = new TupleFold(relation.iterator(), attributeIndex) {
+							@Override
+							public Value fold(Value left, Value right) {
+								context.push(left);
+								context.push(right);
+								context.call(attributeFoldOperator);
+								return context.pop();
+							}
+							@Override
+							public Value getIdentity() {
+								return initialValue;
+							}	
+						};
+						folder.run();
+						return folder.getResult();
+					}
+				};			
+			return new OperatorDefinitionNativeFunction(
+					getName(),
+					(initialValueNodeNumber < 0) ? new Type[] {aggExpType, TypeInteger.getInstance()} :
+												   new Type[] {getAttributeExpressionType(), aggExpType, TypeInteger.getInstance()}, 
+					getAttributeExpressionType(), aggregatorFunction);
 		}
+		
+		// node assumed to have two or three children.
+		// if two:
+		//    child 0 - expression
+		//    child 1 - AGGREGATE body
+		// if three:
+		//    child 0 - expression
+		//    child 1 - initial accumulator
+		//    child 2 - AGGREGATE body
 		public AggregateResult makeAggregator(SimpleNode node, SummarizeItem summarizeItem, boolean b) {			
 			TypeRelation aggExpType = (TypeRelation)buildAggregator(node, summarizeItem, false);
-			OperatorDefinition aggregator = buildGenericAggregator(node, getName(), aggExpType);
+			OperatorDefinition aggregator = buildGenericAggregator(node, aggExpType, getChildCount(node) == 3 ? 1 : -1);
 			return buildInvocation(aggExpType, summarizeItem, aggregator);
 		}
+		
+		// node assumed to have three or four children.
+		// if three:
+		//    child 0 - relation
+		//    child 1 - expression
+		//    child 2 - AGGREGATE body
+		// if four:
+		//    child 0 - relation
+		//    child 1 - expression
+		//    child 2 - initial accumulator
+		//    child 3 - AGGREGATE body		
 		public AggregateResult makeAggregator(SimpleNode node) {
 			Generator.Extend extend = buildAggregator(node);
-			OperatorDefinition aggregator = buildGenericAggregator(node, getName(), new TypeRelation(extend.getExtendedHeading()));
+			OperatorDefinition aggregator = buildGenericAggregator(node, 
+					new TypeRelation(extend.getExtendedHeading()), getChildCount(node) == 4 ? 2 : -1);
 			return buildInvocation(extend, aggregator);
 		}
 	}
