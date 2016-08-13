@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.reldb.rel.exceptions.*;
 import org.reldb.rel.v0.generator.*;
+import org.reldb.rel.v0.generator.Generator.Summarize.SummarizeItem;
 import org.reldb.rel.v0.languages.tutoriald.BaseASTNode;
 import org.reldb.rel.v0.languages.tutoriald.parser.*;
 import org.reldb.rel.v0.storage.BuiltinTypeBuilder;
@@ -2469,15 +2470,25 @@ public class TutorialDParser implements TutorialDVisitor {
 		Aggregator(String operatorName) {
 			opName = operatorName;
 		}
-		// SUMMARIZE aggregator
-		AggregateResult createAggregator(SimpleNode node, Object data, boolean distinct) {
-			// data is Generator.SummarizeItem
-			Generator.Summarize.SummarizeItem item = (Generator.Summarize.SummarizeItem)data;
+		// SUMMARIZE aggregator build
+		Type buildAggregator(SimpleNode node, Generator.Summarize.SummarizeItem item, boolean distinct) {
 			// Child 0 - expression
 			item.beginSummarizeItemExpression();
-			Type exprType = (Type)compileChild(node, 0, data);
-			Type aggExpType = item.endSummarizeItemExpression(exprType, distinct);
-			return createAggregator(aggExpType, item.getExtendAttributeName());
+			attributeExprType = (Type)compileChild(node, 0, item);
+			return item.endSummarizeItemExpression(attributeExprType, distinct);			
+		}
+		// SUMMARIZE aggregator invocation
+		private AggregateResult buildInvocation(Type aggExpType, Generator.Summarize.SummarizeItem item) {
+			return createAggregator(aggExpType, item.getExtendAttributeName());			
+		}
+		// SUMMARIZE aggregator invocation
+		AggregateResult buildInvocation(TypeRelation aggExpType, Generator.Summarize.SummarizeItem item, OperatorDefinition aggregator) {
+			return createAggregator(aggExpType, item.getExtendAttributeName(), aggregator);
+		}
+		// SUMMARIZE aggregator
+		AggregateResult createAggregator(SimpleNode node, Generator.Summarize.SummarizeItem item, boolean distinct) {
+			Type aggExpType = buildAggregator(node, item, distinct);
+			return buildInvocation(aggExpType, item);
 		}
 		// extend source
 		Generator.Extend buildAggregator(SimpleNode node) {
@@ -2536,6 +2547,9 @@ public class TutorialDParser implements TutorialDVisitor {
 		}
 		Type getAttributeExpressionType() {
 			return attributeExprType;
+		}
+		String getName() {
+			return opName;
 		}
 	}
 	
@@ -2653,14 +2667,63 @@ public class TutorialDParser implements TutorialDVisitor {
 			if (!(t instanceof TypeRelation))
 				throw new ExceptionSemantic("RS0176: Aggregate INTERSECT expected attribute of type RELATION; got " + t);
 		}
-	}	
+	}
+	
+	private static long introducedAggregateOperatorNameSerial = 0; 
 	
 	class AggregatorAggregate extends Aggregator {
-		AggregatorAggregate(String name) {
-			super(name);
+		AggregatorAggregate() {
+			super("%AGGREGATE" + introducedAggregateOperatorNameSerial++);
 		}
 		Type getReturnType(Type attributeType) {
 			return attributeType;
+		}
+		public OperatorDefinition buildGenericAggregator(SimpleNode node, String aggOpName, TypeRelation aggExpType) {
+			// TODO - finish AGGREGATE
+			// if getChildCount(node) == 4 then getChild(3) is identity expression
+
+			final OperatorDefinition attributeFold = generator.beginAnonymousOperator();
+			attributeFold.defineParameter("VALUE1", getAttributeExpressionType());
+			attributeFold.defineParameter("VALUE2", getAttributeExpressionType());
+			attributeFold.setDeclaredReturnType(getAttributeExpressionType());
+			// last child - aggregator's op_body()
+			compileChild(node, getChildCount(node) - 1, null);
+			generator.endOperator();
+			
+			VirtualMachine vm = new VirtualMachine(generator, generator.getDatabase(), generator.getPrintStream());
+			Context context = new Context(generator, vm);
+			Operator attributeFoldOperator = attributeFold.getOperator();
+			
+			NativeFunction aggregatorFunction = new NativeFunction() {
+				@Override
+				public Value evaluate(Value[] arguments) {
+					ValueRelation relation = (ValueRelation)arguments[0];
+					int attributeIndex = (int)((ValueInteger)arguments[1]).longValue();
+					TupleFoldFirstIsIdentity folder = new TupleFoldFirstIsIdentity("AGGREGATE requires at least one tuple.", relation.iterator(), attributeIndex) {
+						@Override
+						public Value fold(Value left, Value right) {
+							context.push(left);
+							context.push(right);
+							context.call(attributeFoldOperator);
+							return context.pop();
+						}
+					};
+					folder.run();
+					return folder.getResult();
+				}
+			};
+			return new OperatorDefinitionNativeFunction(aggOpName,
+					new Type[] {aggExpType, TypeInteger.getInstance()}, getAttributeExpressionType(), aggregatorFunction);
+		}
+		public AggregateResult makeAggregator(SimpleNode node, SummarizeItem summarizeItem, boolean b) {			
+			TypeRelation aggExpType = (TypeRelation)buildAggregator(node, summarizeItem, false);
+			OperatorDefinition aggregator = buildGenericAggregator(node, getName(), aggExpType);
+			return buildInvocation(aggExpType, summarizeItem, aggregator);
+		}
+		public AggregateResult makeAggregator(SimpleNode node) {
+			Generator.Extend extend = buildAggregator(node);
+			OperatorDefinition aggregator = buildGenericAggregator(node, getName(), new TypeRelation(extend.getExtendedHeading()));
+			return buildInvocation(extend, aggregator);
 		}
 	}
 	
@@ -2729,67 +2792,11 @@ public class TutorialDParser implements TutorialDVisitor {
 		currentNode = node;
 		return new AggregatorIntersect().createAggregator(node).getAttributeType();
 	}
-	
-	private static long introducedAggregateOperatorNameSerial = 0; 
 
 	// aggregate AGGREGATE (generic aggregation)
 	public Object visit(ASTAggAggregate node, Object data) {
-		currentNode = node;		
-		String aggOpName = "%AGGREGATE" + introducedAggregateOperatorNameSerial++;
-		
-		// Child 0 - relation or ARRAY
-		Type sourceType = (Type)compileChild(node, 0, data);
-		if (!(sourceType instanceof TypeRelation || sourceType instanceof TypeArray))
-			throw new ExceptionSemantic("RS0441: Expected RELATION or ARRAY for AGGREGATE but got " + sourceType);
-				
-		AggregatorAggregate agg = new AggregatorAggregate(aggOpName);
-		
-		Generator.Extend extend = agg.buildAggregator(node);
-
-		// TODO - finish AGGREGATE
-		// if getChildCount(node) == 4 then getChild(3) is identity expression
-
-		final OperatorDefinition attributeFold = generator.beginAnonymousOperator();
-		attributeFold.defineParameter("VALUE1", agg.getAttributeExpressionType());
-		attributeFold.defineParameter("VALUE2", agg.getAttributeExpressionType());
-		attributeFold.setDeclaredReturnType(agg.getAttributeExpressionType());
-		// last child - aggregator's op_body()
-		compileChild(node, getChildCount(node) - 1, data);
-		generator.endOperator();
-		
-		VirtualMachine vm = new VirtualMachine(generator, generator.getDatabase(), System.out);
-		Context context = new Context(generator, vm);
-		Operator attributeFoldOperator = attributeFold.getOperator();
-		
-		NativeFunction aggregatorFunction = new NativeFunction() {
-			@Override
-			public Value evaluate(Value[] arguments) {
-				ValueRelation relation = (ValueRelation)arguments[0];
-				int attributeIndex = (int)((ValueInteger)arguments[1]).longValue();
-				TupleFoldFirstIsIdentity folder = new TupleFoldFirstIsIdentity("AGGREGATE requires at least one tuple.", relation.iterator(), attributeIndex) {
-					@Override
-					public Value fold(Value left, Value right) {
-						context.push(left);
-						context.push(right);
-						context.call(attributeFoldOperator);
-						return context.pop();
-					}
-				};
-				folder.run();
-				return folder.getResult();
-			}
-		};
-		OperatorDefinitionNativeFunction aggregator = 
-				new OperatorDefinitionNativeFunction(
-						aggOpName, 
-						new Type[] {new TypeRelation(extend.getExtendedHeading()), TypeInteger.getInstance()}, 
-						agg.getAttributeExpressionType(), 
-						aggregatorFunction);
-		
-		// compile invocation of aggregator
-		AggregateResult result = agg.buildInvocation(extend, aggregator);
-		
-		return result.getAttributeType();
+		currentNode = node;
+		return new AggregatorAggregate().makeAggregator(node).getAttributeType();
 	}
 	
 	// EXACTLY.  Return TypeBoolean.
@@ -2937,86 +2944,85 @@ public class TutorialDParser implements TutorialDVisitor {
 	// SUMMARIZE - SUM
 	public Object visit(ASTSummarizeSum node, Object data) {
 		currentNode = node;
-		return new AggregatorSum().createAggregator(node, data, false).getReturnType();
+		return new AggregatorSum().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getReturnType();
 	}
 	
 	// SUMMARIZE - SUMD
 	public Object visit(ASTSummarizeSumDistinct node, Object data) {
 		currentNode = node;
-		return new AggregatorSum().createAggregator(node, data, true).getReturnType();
+		return new AggregatorSum().createAggregator(node, (Generator.Summarize.SummarizeItem)data, true).getReturnType();
 	}
 
 	// SUMMARIZE - AVG
 	public Object visit(ASTSummarizeAvg node, Object data) {
 		currentNode = node;
-		return new AggregatorAvg().createAggregator(node, data, false).getReturnType();
+		return new AggregatorAvg().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getReturnType();
 	}
 	
 	// SUMMARIZE - AVGD
 	public Object visit(ASTSummarizeAvgDistinct node, Object data) {
 		currentNode = node;
-		return new AggregatorAvg().createAggregator(node, data, true).getReturnType();
+		return new AggregatorAvg().createAggregator(node, (Generator.Summarize.SummarizeItem)data, true).getReturnType();
 	}
 
 	// SUMMARIZE - MAX
 	public Object visit(ASTSummarizeMax node, Object data) {
 		currentNode = node;
-		return new AggregatorMax().createAggregator(node, data, false).getReturnType();
+		return new AggregatorMax().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getReturnType();
 	}
 	
 	// SUMMARIZE - MIN
 	public Object visit(ASTSummarizeMin node, Object data) {
 		currentNode = node;
-		return new AggregatorMin().createAggregator(node, data, false).getReturnType();
+		return new AggregatorMin().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getReturnType();
 	}
 
 	// SUMMARIZE - AND
 	public Object visit(ASTSummarizeAnd node, Object data) {
 		currentNode = node;
-		return new AggregatorAnd().createAggregator(node, data, false).getReturnType();
+		return new AggregatorAnd().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getReturnType();
 	}
 
 	// SUMMARIZE - OR
 	public Object visit(ASTSummarizeOr node, Object data) {
 		currentNode = node;
-		return new AggregatorOr().createAggregator(node, data, false).getReturnType();
+		return new AggregatorOr().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getReturnType();
 	}
 	
 	// SUMMARIZE - XOR
 	public Object visit(ASTSummarizeXor node, Object data) {
 		currentNode = node;
-		return new AggregatorXor().createAggregator(node, data, false).getReturnType();
+		return new AggregatorXor().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getReturnType();
 	}
 
 	// SUMMARIZE - UNION
 	public Object visit(ASTSummarizeUnion node, Object data) {
 		currentNode = node;
-		return new AggregatorUnion().createAggregator(node, data, false).getAttributeType();
+		return new AggregatorUnion().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getAttributeType();
 	}
 
 	// SUMMARIZE - XUNION
 	public Object visit(ASTSummarizeXunion node, Object data) {
 		currentNode = node;
-		return new AggregatorXunion().createAggregator(node, data, false).getAttributeType();
+		return new AggregatorXunion().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getAttributeType();
 	}
 
 	// SUMMARIZE - D_UNION
 	public Object visit(ASTSummarizeDUnion node, Object data) {
 		currentNode = node;
-		return new AggregatorDUnion().createAggregator(node, data, false).getAttributeType();
+		return new AggregatorDUnion().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getAttributeType();
 	}
 	
 	// SUMMARIZE - INTERSECT
 	public Object visit(ASTSummarizeIntersect node, Object data) {
 		currentNode = node;
-		return new AggregatorIntersect().createAggregator(node, data, false).getAttributeType();
+		return new AggregatorIntersect().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getAttributeType();
 	}
 	
 	// SUMMARIZE - AGGREGATE
 	public Object visit(ASTSummarizeAggregate node, Object data) {
 		currentNode = node;
-		
-		return new AggregatorAggregate("AGGREGATE").createAggregator(node, data, false).getAttributeType();
+		return new AggregatorAggregate().makeAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getAttributeType();
 	}
 
 	private class SummarizeExactlyAggregator extends Aggregator {
