@@ -81,7 +81,8 @@ SPECIAL_TOKEN : /* COMMENTS */
 TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 {
   < ADD: "ADD" >
-| < AGGREGATE: "AGGREGATE" > 
+| < AGGREGATE: "AGGREGATE" >
+| < AGGREGATED: "AGGREGATED" >
 | < ALL: "ALL" >
 | < ALTER: "ALTER" >
 | < AND: "AND" >
@@ -1604,6 +1605,7 @@ void summary() :
 	|	<D_UNION> "(" expression() ")" 						#SummarizeDUnion(1)
 	|	<INTERSECT> "(" expression() ")" 					#SummarizeIntersect(1)
 	|   summarize_aggregate()
+	| 	summarize_aggregated()
 }
 
 void summarize_aggregate() #SummarizeAggregate :
@@ -1612,6 +1614,14 @@ void summarize_aggregate() #SummarizeAggregate :
 	<AGGREGATE> "(" expression() [ "," expression() ] ")" ";"	
 		op_body()			// VALUE1 and VALUE2 introduced
 	<END> [ <AGGREGATE> ]
+}
+
+void summarize_aggregated() #SummarizeAggregateDistinct :
+{}
+{
+	<AGGREGATED> "(" expression() [ "," expression() ] ")" ";"	
+		op_body()			// VALUE1 and VALUE2 introduced
+	<END> [ <AGGREGATED> ]
 }
 
 void fn_invoke() #FnInvoke :

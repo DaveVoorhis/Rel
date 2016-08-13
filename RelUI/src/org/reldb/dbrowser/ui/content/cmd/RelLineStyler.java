@@ -19,6 +19,7 @@ public class RelLineStyler implements LineStyleListener {
 	private static final String[] fgKeywords = {   
 	    "ADD",
 	    "AGGREGATE",
+	    "AGGREGATED",
 	    "ALL",
 	    "ALTER",
 	    "AND",

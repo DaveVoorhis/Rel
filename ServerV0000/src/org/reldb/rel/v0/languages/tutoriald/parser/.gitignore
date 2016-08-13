@@ -261,3 +261,4 @@
 /ASTAlterVarActionOptional.java
 /ASTAggAggregate.java
 /ASTSummarizeAggregate.java
+/ASTSummarizeAggregateDistinct.java

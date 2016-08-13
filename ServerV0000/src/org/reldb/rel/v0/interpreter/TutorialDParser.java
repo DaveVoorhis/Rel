@@ -3080,6 +3080,12 @@ public class TutorialDParser implements TutorialDVisitor {
 		currentNode = node;
 		return new AggregatorAggregate().makeAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getAttributeType();
 	}
+	
+	// SUMMARIZE - AGGREGATED
+	public Object visit(ASTSummarizeAggregateDistinct node, Object data) {
+		currentNode = node;
+		return new AggregatorAggregate().makeAggregator(node, (Generator.Summarize.SummarizeItem)data, true).getAttributeType();
+	}
 
 	private class SummarizeExactlyAggregator extends Aggregator {
 		SummarizeExactlyAggregator() {
