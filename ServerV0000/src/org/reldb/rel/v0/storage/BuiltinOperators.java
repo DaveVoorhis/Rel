@@ -61,27 +61,25 @@ public class BuiltinOperators {
 	
 	private void sum(RelDatabase database) {
 		database.defineBuiltinOperator(
-				new OperatorDefinitionNativeFunction("SUM_INTEGER", 
-						new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+				new OperatorDefinitionNativeFunction("AGGREGATE_SUM_INTEGER", 
+						new Type[] {TypeRelation.getEmptyRelationType()}, 
 						TypeInteger.getInstance(), 
 						new NativeFunction() {
 							public Value evaluate(Value arguments[]) {
 								ValueRelation relation = (ValueRelation)arguments[0];
-								int attributeIndex = (int)arguments[1].longValue();
-								return relation.sumInteger(attributeIndex);
+								return relation.sumInteger(0);
 							}
 						}
 				)
 			);
 		database.defineBuiltinOperator(
-				new OperatorDefinitionNativeFunction("SUM_RATIONAL", 
-						new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+				new OperatorDefinitionNativeFunction("AGGREGATE_SUM_RATIONAL", 
+						new Type[] {TypeRelation.getEmptyRelationType()}, 
 						TypeRational.getInstance(), 
 						new NativeFunction() {
 							public Value evaluate(Value arguments[]) {
 								ValueRelation relation = (ValueRelation)arguments[0];
-								int attributeIndex = (int)arguments[1].longValue();
-								return relation.sumRational(attributeIndex);
+								return relation.sumRational(0);
 							}
 						}
 				)
@@ -90,27 +88,25 @@ public class BuiltinOperators {
 	
 	private void avg(RelDatabase database) {
 		database.defineBuiltinOperator(
-				new OperatorDefinitionNativeFunction("AVG_INTEGER", 
-						new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+				new OperatorDefinitionNativeFunction("AGGREGATE_AVG_INTEGER", 
+						new Type[] {TypeRelation.getEmptyRelationType()}, 
 						TypeRational.getInstance(), 
 						new NativeFunction() {
 							public Value evaluate(Value arguments[]) {
 								ValueRelation relation = (ValueRelation)arguments[0];
-								int attributeIndex = (int)arguments[1].longValue();
-								return relation.avgInteger(attributeIndex);
+								return relation.avgInteger(0);
 							}
 						}
 				)
 			);
 		database.defineBuiltinOperator(
-				new OperatorDefinitionNativeFunction("AVG_RATIONAL", 
-						new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+				new OperatorDefinitionNativeFunction("AGGREGATE_AVG_RATIONAL", 
+						new Type[] {TypeRelation.getEmptyRelationType()}, 
 						TypeRational.getInstance(), 
 						new NativeFunction() {
 							public Value evaluate(Value arguments[]) {
 								ValueRelation relation = (ValueRelation)arguments[0];
-								int attributeIndex = (int)arguments[1].longValue();
-								return relation.avgRational(attributeIndex);
+								return relation.avgRational(0);
 							}
 						}
 				)
@@ -119,14 +115,13 @@ public class BuiltinOperators {
 
 	private void max(RelDatabase database) {
 		database.defineBuiltinOperator(
-			new OperatorDefinitionNativeFunction("MAX", 
-					new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+			new OperatorDefinitionNativeFunction("AGGREGATE_MAX", 
+					new Type[] {TypeRelation.getEmptyRelationType()}, 
 					TypeRational.getInstance(), 
 					new NativeFunction() {
 						public Value evaluate(Value arguments[]) {
 							ValueRelation relation = (ValueRelation)arguments[0];
-							int attributeIndex = (int)arguments[1].longValue();
-							return relation.max(attributeIndex);
+							return relation.max(0);
 						}
 					}
 			)
@@ -135,14 +130,13 @@ public class BuiltinOperators {
 	
 	private void min(RelDatabase database) {
 		database.defineBuiltinOperator(
-			new OperatorDefinitionNativeFunction("MIN", 
-					new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+			new OperatorDefinitionNativeFunction("AGGREGATE_MIN", 
+					new Type[] {TypeRelation.getEmptyRelationType()}, 
 					TypeRational.getInstance(), 
 					new NativeFunction() {
 						public Value evaluate(Value arguments[]) {
 							ValueRelation relation = (ValueRelation)arguments[0];
-							int attributeIndex = (int)arguments[1].longValue();
-							return relation.min(attributeIndex);
+							return relation.min(0);
 						}
 					}
 			)
@@ -151,14 +145,13 @@ public class BuiltinOperators {
 	
 	private void and(RelDatabase database) {
 		database.defineBuiltinOperator(
-			new OperatorDefinitionNativeFunction("AND", 
-					new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+			new OperatorDefinitionNativeFunction("AGGREGATE_AND", 
+					new Type[] {TypeRelation.getEmptyRelationType()}, 
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
 						public Value evaluate(Value arguments[]) {
 							ValueRelation relation = (ValueRelation)arguments[0];
-							int attributeIndex = (int)arguments[1].longValue();
-							return relation.and(attributeIndex);
+							return relation.and(0);
 						}
 					}
 			)
@@ -167,14 +160,13 @@ public class BuiltinOperators {
 	
 	private void or(RelDatabase database) {
 		database.defineBuiltinOperator(
-			new OperatorDefinitionNativeFunction("OR", 
-					new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+			new OperatorDefinitionNativeFunction("AGGREGATE_OR", 
+					new Type[] {TypeRelation.getEmptyRelationType()}, 
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
 						public Value evaluate(Value arguments[]) {
 							ValueRelation relation = (ValueRelation)arguments[0];
-							int attributeIndex = (int)arguments[1].longValue();
-							return relation.or(attributeIndex);
+							return relation.or(0);
 						}
 					}
 			)
@@ -183,14 +175,13 @@ public class BuiltinOperators {
 	
 	private void xor(RelDatabase database) {
 		database.defineBuiltinOperator(
-			new OperatorDefinitionNativeFunction("XOR", 
-					new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+			new OperatorDefinitionNativeFunction("AGGREGATE_XOR", 
+					new Type[] {TypeRelation.getEmptyRelationType()}, 
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
 						public Value evaluate(Value arguments[]) {
 							ValueRelation relation = (ValueRelation)arguments[0];
-							int attributeIndex = (int)arguments[1].longValue();
-							return relation.xor(attributeIndex);
+							return relation.xor(0);
 						}
 					}
 			)
@@ -199,14 +190,13 @@ public class BuiltinOperators {
 	
 	private void union(RelDatabase database) {
 		database.defineBuiltinOperator(
-			new OperatorDefinitionNativeFunction("UNION", 
-					new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+			new OperatorDefinitionNativeFunction("AGGREGATE_UNION", 
+					new Type[] {TypeRelation.getEmptyRelationType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
 						public Value evaluate(Value arguments[]) {
 							ValueRelation relation = (ValueRelation)arguments[0];
-							int attributeIndex = (int)arguments[1].longValue();
-							return relation.union(attributeIndex);
+							return relation.union(0);
 						}
 					}
 			)
@@ -215,14 +205,13 @@ public class BuiltinOperators {
 	
 	private void xunion(RelDatabase database) {
 		database.defineBuiltinOperator(
-			new OperatorDefinitionNativeFunction("XUNION", 
-					new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+			new OperatorDefinitionNativeFunction("AGGREGATE_XUNION", 
+					new Type[] {TypeRelation.getEmptyRelationType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
 						public Value evaluate(Value arguments[]) {
 							ValueRelation relation = (ValueRelation)arguments[0];
-							int attributeIndex = (int)arguments[1].longValue();
-							return relation.xunion(attributeIndex);
+							return relation.xunion(0);
 						}
 					}
 			)
@@ -231,14 +220,13 @@ public class BuiltinOperators {
 	
 	private void d_union(RelDatabase database) {
 		database.defineBuiltinOperator(
-			new OperatorDefinitionNativeFunction("D_UNION", 
-					new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+			new OperatorDefinitionNativeFunction("AGGREGATE_D_UNION", 
+					new Type[] {TypeRelation.getEmptyRelationType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
 						public Value evaluate(Value arguments[]) {
 							ValueRelation relation = (ValueRelation)arguments[0];
-							int attributeIndex = (int)arguments[1].longValue();
-							return relation.d_union(attributeIndex);
+							return relation.d_union(0);
 						}
 					}
 			)
@@ -247,14 +235,13 @@ public class BuiltinOperators {
 	
 	private void intersect(RelDatabase database) {
 		database.defineBuiltinOperator(
-			new OperatorDefinitionNativeFunction("INTERSECT", 
-					new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance()}, 
+			new OperatorDefinitionNativeFunction("AGGREGATE_INTERSECT", 
+					new Type[] {TypeRelation.getEmptyRelationType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
 						public Value evaluate(Value arguments[]) {
 							ValueRelation relation = (ValueRelation)arguments[0];
-							int attributeIndex = (int)arguments[1].longValue();
-							return relation.intersect(attributeIndex);
+							return relation.intersect(0);
 						}
 					}
 			)

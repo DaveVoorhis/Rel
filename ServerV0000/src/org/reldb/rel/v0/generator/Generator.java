@@ -39,6 +39,7 @@ import org.reldb.rel.v0.types.TypeRelation;
 import org.reldb.rel.v0.types.TypeTuple;
 import org.reldb.rel.v0.types.builtin.TypeBoolean;
 import org.reldb.rel.v0.types.builtin.TypeCharacter;
+import org.reldb.rel.v0.types.builtin.TypeInteger;
 import org.reldb.rel.v0.types.userdefined.DerivedPossrep;
 import org.reldb.rel.v0.types.userdefined.Possrep;
 import org.reldb.rel.v0.types.userdefined.PossrepComponent;
@@ -67,6 +68,7 @@ import org.reldb.rel.v0.vm.instructions.core.OpConcatenate;
 import org.reldb.rel.v0.vm.instructions.core.OpDuplicate;
 import org.reldb.rel.v0.vm.instructions.core.OpDuplicateUnder;
 import org.reldb.rel.v0.vm.instructions.core.OpExactly;
+import org.reldb.rel.v0.vm.instructions.core.OpGetTemporarilyUniqueInteger;
 import org.reldb.rel.v0.vm.instructions.core.OpInvokeAnonymousEvaluate;
 import org.reldb.rel.v0.vm.instructions.core.OpInvokeDynamicCall;
 import org.reldb.rel.v0.vm.instructions.core.OpInvokeDynamicEvaluate;
@@ -1792,6 +1794,12 @@ public class Generator {
 			compileSet(newSlot);
 			// add to extend heading
 			extendedHeading.add(identifier, expressionType);
+		}
+
+		/** Compile generation of a unique tuple number, and assign it. */
+		public void addExtendSerialiser(String attributeName) {
+			compileInstruction(new OpGetTemporarilyUniqueInteger());
+			addExtendItem(attributeName, TypeInteger.getInstance());
 		}
 		
 		/** Get extended heading. */

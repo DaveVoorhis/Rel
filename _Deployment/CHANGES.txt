@@ -19,6 +19,11 @@ Version 3.00 (1.0.13):
 					<type> AGGREGATE(<relation_or_array>, <attribute expr> [, <identity expr>]);
   						RETURN ...<expr of <type> using VALUE1 and VALUE2>;
   					END AGGREGATE
+  - enhancement: Rel: can now create user-defined aggregate operators such that 
+                    SUM(<relexpr>, <attribute expr of <type>>) and 
+                    SUMMARIZE <relexpr>: {r := SUM(<attribute expr of <type>>)} now
+                    invokes user-defined AGGREGATE_SUM(RELATION {AGGREGAND <type>, AGGREGATION_SERIAL}) RETURNS <type2>
+                    where <type> is any other than INT or RATIONAL.
   - enhancement: Rel: added ALTER VAR <relvar> RENAME <oldattrname> AS <newattrname>
   - enhancement: Rel: added ALTER VAR <relvar> INSERT <newattrname> <newattrtype>
   - enhancement: Rel: added ALTER VAR <relvar> DROP <attrname>  
