@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Allow user-defined aggregate operators to work on ARRAY operand.
+
 - RelUI: if Rel view is zoomed and we are about to close the last tab, unzoom first.
 
 - Keep list of recently opened databases in main menu.
