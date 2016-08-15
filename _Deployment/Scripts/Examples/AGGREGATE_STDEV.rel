@@ -1,0 +1,10 @@
+OPERATOR AGGREGATE_STDEV(r RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}) RETURNS RATIONAL;
+	RETURN WITH (
+		data := r RENAME {AGGREGAND AS X, AGGREGATION_SERIAL AS serial},
+		mean := AVG(data, X),
+		squarediffs := EXTEND data: {
+			squaredifference := WITH (difference := CAST_AS_RATIONAL(X) - mean):
+				difference * difference
+		}
+	): SQRT(AVG(squarediffs, squaredifference));
+END OPERATOR;
