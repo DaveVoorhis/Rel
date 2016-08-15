@@ -2466,11 +2466,11 @@ public class TutorialDParser implements TutorialDVisitor {
 		private Type returnType;
 		private TypeRelation extendedRelationExprType;
 		private String introducedAttributeName;
-		private Type attributeExprType;
+		protected Type attributeExprType;
 		Aggregator(String operatorName) {
 			opName = operatorName;
 		}
-		private TypeRelation extendAndProjectToAggregatable(TypeRelation source, String aggregandName) {
+		protected TypeRelation extendAndProjectToAggregatable(TypeRelation source, String aggregandName) {
 			final String aggregandAttributeName = "AGGREGAND";
 			final String aggregationSerialAttributeName = "AGGREGATION_SERIAL";
 			Generator.Extend extend = generator.new Extend(source.getHeading());
@@ -2485,10 +2485,10 @@ public class TutorialDParser implements TutorialDVisitor {
 			return extendedRelationExprType;
 		}
 		// SUMMARIZE aggregator build
-		Type buildAggregator(SimpleNode node, Generator.Summarize.SummarizeItem item, boolean distinct) {
-			// Child 0 - expression
+		Type buildAggregator(SimpleNode node, Generator.Summarize.SummarizeItem item, boolean distinct, int attributeExpressionNodeNumber) {
+			// Child attributeExpressionNodeNumber - expression
 			item.beginSummarizeItemExpression();
-			attributeExprType = (Type)compileChild(node, 0, item);
+			attributeExprType = (Type)compileChild(node, attributeExpressionNodeNumber, item);
 			return item.endSummarizeItemExpression(attributeExprType, distinct);
 		}
 		// SUMMARIZE aggregator invocation
@@ -2501,7 +2501,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		}
 		// SUMMARIZE aggregator
 		AggregateResult createAggregator(SimpleNode node, Generator.Summarize.SummarizeItem item, boolean distinct) {
-			Type aggExpType = buildAggregator(node, item, distinct);
+			Type aggExpType = buildAggregator(node, item, distinct, 0);
 			return buildInvocation(aggExpType, item);
 		}
 		// extend source
@@ -2759,8 +2759,8 @@ public class TutorialDParser implements TutorialDVisitor {
 		//    child 0 - expression
 		//    child 1 - initial accumulator
 		//    child 2 - AGGREGATE body
-		public AggregateResult makeAggregator(SimpleNode node, SummarizeItem summarizeItem, boolean b) {			
-			TypeRelation aggExpType = (TypeRelation)buildAggregator(node, summarizeItem, false);
+		public AggregateResult makeAggregator(SimpleNode node, SummarizeItem summarizeItem, boolean distinct) {			
+			TypeRelation aggExpType = (TypeRelation)buildAggregator(node, summarizeItem, distinct, 0);
 			int initialValueNodeNumber = getChildCount(node) == 3 ? 1 : -1;
 			OperatorDefinition aggregator = buildGenericAggregator(node, aggExpType, initialValueNodeNumber);
 			return buildInvocation(aggExpType, summarizeItem, aggregator, node, initialValueNodeNumber);
@@ -2781,6 +2781,37 @@ public class TutorialDParser implements TutorialDVisitor {
 			int initialValueNodeNumber = getChildCount(node) == 4 ? 2 : -1;
 			OperatorDefinition aggregator = buildGenericAggregator(node, aggExpType, initialValueNodeNumber);
 			return buildInvocation(aggExpType, aggregator, node, initialValueNodeNumber);
+		}
+	}
+	
+	class AggregatorUserdefined extends Aggregator {
+		AggregatorUserdefined(String opName) {
+			super(opName);
+		}
+		Type getReturnType(Type attributeType) {
+			return attributeType;
+		}
+		public AggregateResult makeAggregator(SimpleNode node, SummarizeItem summarizeItem, boolean distinct) {
+			// Child 2 - expression
+			// Child 3 - [optional] initial value
+			TypeRelation aggExpType = (TypeRelation)buildAggregator(node, summarizeItem, distinct, 2);
+			int initialValueNodeNumber = getChildCount(node) == 4 ? 3 : -1;
+			// implement operator invocation
+			String introducedAttributeName = summarizeItem.getExtendAttributeName();
+			TypeRelation aggregatableType = extendAndProjectToAggregatable((TypeRelation)aggExpType, introducedAttributeName);
+			Type initialValueType = null;
+			if (initialValueNodeNumber >= 0) {
+				initialValueType = (Type)compileChild(node, initialValueNodeNumber, null);
+				if (!getAttributeExpressionType().canAccept(initialValueType))
+					throw new ExceptionSemantic("RS0443: Expected type of initial value to be " + getAttributeExpressionType() + " but got " + initialValueType);
+			}
+			String operatorName = getOpNameForType(attributeExprType);
+			OperatorSignature sig = new OperatorSignature("AGGREGATE_" + operatorName);
+			sig.addParameterType(aggregatableType);
+			if (initialValueType != null)
+				sig.addParameterType(initialValueType);
+			Type returnType = generator.compileEvaluate(sig);
+			return new AggregateResult(attributeExprType, returnType);
 		}
 	}
 	
@@ -3086,6 +3117,32 @@ public class TutorialDParser implements TutorialDVisitor {
 	public Object visit(ASTSummarizeAggregateDistinct node, Object data) {
 		currentNode = node;
 		return new AggregatorAggregate().makeAggregator(node, (Generator.Summarize.SummarizeItem)data, true).getAttributeType();
+	}
+
+	// SUMMARIZE - user-defined aggregation operator
+	public Object visit(ASTSummarizeUserdefined node, Object data) {
+		currentNode = node;
+		// Child 0 - identifier
+		String aggOpName = getTokenOfChild(node, 0);
+		// Child 1 - SummarizeUserdefinedDistinct
+		compileChild(node, 1, data);
+		// Child 2 - expression
+		// Child 3 - [optional] initial value
+		Generator.Summarize.SummarizeItem summarizeItem = (Generator.Summarize.SummarizeItem)data;		
+		return new AggregatorUserdefined(aggOpName).makeAggregator(node, summarizeItem, summarizeItem.isDistinct()).getAttributeType();
+	}
+	
+	// SUMMARIZE aggregation - user-defined aggregation operator invocation optional DISTINCT keyword
+	public Object visit(ASTSummarizeUserdefinedDistinct node, Object data) {
+		compileChildren(node, data);	// SummarizeUserDefinedDistinctTrue, if it's there
+		return null;
+	}
+	
+	// SUMMARIZE aggregation - user-defined aggregation operator invocation specified DISTINCT keyword
+	public Object visit(ASTSummarizeUserdefinedDistinctTrue node, Object data) {
+		Generator.Summarize.SummarizeItem summarizeItem = (Generator.Summarize.SummarizeItem)data;
+		summarizeItem.setDistinct(true);
+		return null;
 	}
 
 	private class SummarizeExactlyAggregator extends Aggregator {

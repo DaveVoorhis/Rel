@@ -262,3 +262,6 @@
 /ASTAggAggregate.java
 /ASTSummarizeAggregate.java
 /ASTSummarizeAggregateDistinct.java
+/ASTSummarizeUserdefined.java
+/ASTSummarizeUserdefinedDistinct.java
+/ASTSummarizeUserdefinedDistinctTrue.java

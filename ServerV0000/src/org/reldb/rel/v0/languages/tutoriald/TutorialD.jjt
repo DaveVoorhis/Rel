@@ -106,6 +106,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < COUNTD: "COUNTD" >
 | < DELETE: "DELETE" >
 | < DESC: "DESC" >
+| < DISTINCT: "DISTINCT" >
 | < DIVIDEBY: "DIVIDEBY" >
 | < DO: "DO" >
 | < DROP: "DROP" >
@@ -1606,6 +1607,7 @@ void summary() :
 	|	<INTERSECT> "(" expression() ")" 					#SummarizeIntersect(1)
 	|   summarize_aggregate()
 	| 	summarize_aggregated()
+	|   summarize_userdefined()
 }
 
 void summarize_aggregate() #SummarizeAggregate :
@@ -1622,6 +1624,24 @@ void summarize_aggregated() #SummarizeAggregateDistinct :
 	<AGGREGATED> "(" expression() [ "," expression() ] ")" ";"	
 		op_body()			// VALUE1 and VALUE2 introduced
 	<END> [ <AGGREGATED> ]
+}
+
+void summarize_userdefined() #SummarizeUserdefined :
+{}
+{
+	identifier() "(" SummarizeItemDistinct() expression() [ "," expression() ] ")" 
+}
+
+void SummarizeItemDistinct() #SummarizeUserdefinedDistinct :
+{}
+{
+	[ SummarizeItemDistinctTrue() ]
+}
+
+void SummarizeItemDistinctTrue() #SummarizeUserdefinedDistinctTrue :
+{}
+{
+	<DISTINCT>
 }
 
 void fn_invoke() #FnInvoke :

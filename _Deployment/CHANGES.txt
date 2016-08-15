@@ -1,4 +1,4 @@
-Last used Exception* number: RS0442
+Last used Exception* number: RS0443
 
 Version 3.000 (1.0.13):
 
@@ -24,6 +24,18 @@ Version 3.000 (1.0.13):
                     SUMMARIZE <relexpr>: {r := SUM(<attribute expr of <type>>)} now
                     invokes user-defined AGGREGATE_SUM(RELATION {AGGREGAND <type>, AGGREGATION_SERIAL}) RETURNS <type2>
                     where <type> is any other than INT or RATIONAL.
+  - enhancement: Rel: can now invoke user-defined aggregate operators from SUMMARIZE, such that
+                    SUMMARIZE <relexpr>: {r := STDEV(<attribute expr of <type>>)} now
+                    invokes user-defined AGGREGATE_STDEV(RELATION {AGGREGAND <type>, AGGREGATION_SERIAL}) RETURNS <type2>
+                    and
+                    SUMMARIZE <relexpr>: {r := STDEV(<attribute expr of <type>>, 1)} now
+                    invokes user-defined AGGREGATE_STDEV(RELATION {AGGREGAND <type>, AGGREGATION_SERIAL}, INT) RETURNS <type2>
+                    and
+                    SUMMARIZE <relexpr>: {r := STDEV(DISTINCT <attribute expr of <type>>)} or
+                    SUMMARIZE <relexpr>: {r := STDEV(DISTINCT <attribute expr of <type>>, 1)}
+                    specifies that <attribute expr of <type>> is to have duplicates removed before aggregation.
+                    This is not required (or supported) for built-in aggops, because SUM vs SUMD, AVG vs AVGD, etc., 
+                    expresses this.
   - enhancement: Rel: added ALTER VAR <relvar> RENAME <oldattrname> AS <newattrname>
   - enhancement: Rel: added ALTER VAR <relvar> INSERT <newattrname> <newattrtype>
   - enhancement: Rel: added ALTER VAR <relvar> DROP <attrname>  

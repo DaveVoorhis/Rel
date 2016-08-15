@@ -44,6 +44,7 @@ public class RelLineStyler implements LineStyleListener {
 	    "DELETE",
 	    "DESC",
 	    "DIVIDEBY",
+	    "DISTINCT",
 	    "DO",
 	    "DROP",
 	    "D_INSERT",

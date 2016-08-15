@@ -1676,6 +1676,7 @@ public class Generator {
 			private Extend innerExtend;
 			private TypeRelation typeOfY;
 			private String extendAttributeName;
+			private boolean isDistinct;
 			
 			/** Begin a SUMMARIZE item definition. */
 			public SummarizeItem() {
@@ -1725,6 +1726,14 @@ public class Generator {
 			public void endSummarizeItem(Type aggReturnType, String aggResultName) {
 				// Extend with aggResultName
 				outerExtend.addExtendItem(aggResultName, aggReturnType);
+			}
+
+			public void setDistinct(boolean b) {
+				isDistinct = b;
+			}
+			
+			public boolean isDistinct() {
+				return isDistinct;
 			}
 		}
 	}

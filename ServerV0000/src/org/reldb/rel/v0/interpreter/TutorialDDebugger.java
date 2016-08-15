@@ -339,6 +339,21 @@ public class TutorialDDebugger implements TutorialDVisitor {
 		return dump(node, data);
 	}
 
+	// SUMMARIZE aggregation - user-defined aggregation operator
+	public Object visit(ASTSummarizeUserdefined node, Object data) {
+		return dump(node, data);
+	}
+
+	// SUMMARIZE aggregation - user-defined aggregation operator invocation optional DISTINCT keyword
+	public Object visit(ASTSummarizeUserdefinedDistinct node, Object data) {
+		return dump(node, data);
+	}
+	
+	// SUMMARIZE aggregation - user-defined aggregation operator invocation specified DISTINCT keyword
+	public Object visit(ASTSummarizeUserdefinedDistinctTrue node, Object data) {
+		return dump(node, data);
+	}
+
 	// UPDATE statement
 	public Object visit(ASTUpdateStatement node, Object data) {
 		return dump(node, data);		
