@@ -453,6 +453,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTAggAggregate node, Object data) {
 		return dump(node, data);
 	}
+
+	// aggregate AGGREGATE (invoke user-defined aggregate operator)
+	public Object visit(ASTAggAggregateUserdefined node, Object data) {
+		return dump(node, data);
+	}
 	
 	// EXACTLY
 	public Object visit(ASTExactly node, Object data) {
@@ -1231,17 +1236,14 @@ public class TutorialDDebugger implements TutorialDVisitor {
 		return dump(node, data);
 	}
 
-	@Override
 	public Object visit(ASTLambda node, Object data) {
 		return dump(node, data);
 	}
 
-	@Override
 	public Object visit(ASTOpType node, Object data) {
 		return dump(node, data);
 	}
 
-	@Override
 	public Object visit(ASTFnInvokeAnonymous node, Object data) {
 		return dump(node, data);
 	}

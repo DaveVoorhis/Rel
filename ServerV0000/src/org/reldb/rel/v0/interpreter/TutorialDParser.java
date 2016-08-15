@@ -2465,7 +2465,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		private String opName;
 		private Type returnType;
 		private TypeRelation extendedRelationExprType;
-		private String introducedAttributeName;
+		protected String introducedAttributeName;
 		protected Type attributeExprType;
 		Aggregator(String operatorName) {
 			opName = operatorName;
@@ -2505,15 +2505,15 @@ public class TutorialDParser implements TutorialDVisitor {
 			return buildInvocation(aggExpType, item);
 		}
 		// extend source
-		TypeRelation buildAggregator(SimpleNode node) {
-			// Child 0 - Relational expression
-			Type relationExprType = (Type)compileChild(node, 0, null);
+		TypeRelation buildAggregator(SimpleNode node, int relationalExpressionNodeNumber, int attributeExpressionNodeNumber) {
+			// Child relationalExpressionNodeNumber - Relational expression
+			Type relationExprType = (Type)compileChild(node, relationalExpressionNodeNumber, null);
 			if (!(relationExprType instanceof TypeRelation))
 				throw new ExceptionSemantic("RS0171: Aggregate " + opName + " expected RELATION, but got " + relationExprType);
-			// Child 1 - Attribute expression
+			// Child attributeExpressionNodeNumber - Attribute expression
 			Generator.Extend extend = generator.new Extend(((TypeRelation)relationExprType).getHeading());
 			introducedAttributeName = "%AGG" + introducedAttributeNameSerial++;
-			attributeExprType = (Type)compileChild(node, 1, null);
+			attributeExprType = (Type)compileChild(node, attributeExpressionNodeNumber, null);
 			checkAttributeType(attributeExprType);
 			extend.addExtendItem(introducedAttributeName, attributeExprType);
 			extendedRelationExprType = generator.endRelationExtend(extend);
@@ -2525,7 +2525,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		}
 		// aggregate operator invocation
 		AggregateResult createAggregator(SimpleNode node) {
-			buildAggregator(node);
+			buildAggregator(node, 0, 1);
 			return createAggregator((TypeRelation)extendedRelationExprType, introducedAttributeName);			
 		}
 		private AggregateResult createAggregator(Type exprType, String attributeName, OperatorDefinition aggregator, SimpleNode node, int initialValueNodeNumber) {
@@ -2777,7 +2777,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		//    child 2 - initial accumulator
 		//    child 3 - AGGREGATE body		
 		public AggregateResult makeAggregator(SimpleNode node) {
-			TypeRelation aggExpType = buildAggregator(node);
+			TypeRelation aggExpType = buildAggregator(node, 0, 1);
 			int initialValueNodeNumber = getChildCount(node) == 4 ? 2 : -1;
 			OperatorDefinition aggregator = buildGenericAggregator(node, aggExpType, initialValueNodeNumber);
 			return buildInvocation(aggExpType, aggregator, node, initialValueNodeNumber);
@@ -2793,12 +2793,22 @@ public class TutorialDParser implements TutorialDVisitor {
 		}
 		public AggregateResult makeAggregator(SimpleNode node, SummarizeItem summarizeItem, boolean distinct) {
 			// Child 2 - expression
-			// Child 3 - [optional] initial value
 			TypeRelation aggExpType = (TypeRelation)buildAggregator(node, summarizeItem, distinct, 2);
+			// Child 3 - [optional] initial value
 			int initialValueNodeNumber = getChildCount(node) == 4 ? 3 : -1;
-			// implement operator invocation
-			String introducedAttributeName = summarizeItem.getExtendAttributeName();
-			TypeRelation aggregatableType = extendAndProjectToAggregatable((TypeRelation)aggExpType, introducedAttributeName);
+			introducedAttributeName = summarizeItem.getExtendAttributeName();
+			return createOperatorInvocation(node, aggExpType, initialValueNodeNumber);
+		}
+		public AggregateResult makeAggregator(SimpleNode node) {
+			// Child 1 - relation expression
+			// Child 2 - attribute expression
+			TypeRelation aggExpType = buildAggregator(node, 1, 2);
+			// Child 3 - initial value (optional)
+			int initialValueNodeNumber = getChildCount(node) == 4 ? 3 : -1;
+			return createOperatorInvocation(node, aggExpType, initialValueNodeNumber);
+		}
+		private AggregateResult createOperatorInvocation(SimpleNode node, TypeRelation aggExpType, int initialValueNodeNumber) {
+			TypeRelation aggregatableType = extendAndProjectToAggregatable(aggExpType, introducedAttributeName);
 			Type initialValueType = null;
 			if (initialValueNodeNumber >= 0) {
 				initialValueType = (Type)compileChild(node, initialValueNodeNumber, null);
@@ -2885,6 +2895,14 @@ public class TutorialDParser implements TutorialDVisitor {
 	public Object visit(ASTAggAggregate node, Object data) {
 		currentNode = node;
 		return new AggregatorAggregate().makeAggregator(node).getAttributeType();
+	}
+	
+	// aggregate AGGREGATE (invoke user-defined aggregate operator)
+	public Object visit(ASTAggAggregateUserdefined node, Object data) {
+		currentNode = node;
+		// Child 0 - operator name
+		String aggOpName = getTokenOfChild(node, 0);
+		return new AggregatorUserdefined(aggOpName).makeAggregator(node).getAttributeType();
 	}
 	
 	// EXACTLY.  Return TypeBoolean.

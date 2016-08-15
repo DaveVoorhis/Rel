@@ -36,6 +36,15 @@ Version 3.000 (1.0.13):
                     specifies that <attribute expr of <type>> is to have duplicates removed before aggregation.
                     This is not required (or supported) for built-in aggops, because SUM vs SUMD, AVG vs AVGD, etc., 
                     expresses this.
+  - enhancement: Rel: can now invoke arbitrary aggregate operators of the form
+                 AGGREGATE_<op>(RELATION {AGGREGAND <type>, AGGREGATION_SERIAL INT}) RETURNS <type2> 
+                 or
+                 AGGREGATE_<op>(RELATION {AGGREGAND <type>, AGGREGATION_SERIAL INT}, x <type3>) RETURNS <type2>
+                 via 
+                 AGGREGATE <op>(<relexpr>, <attribute expr of <type>>)
+                 or
+                 AGGREGATE <op>(<relexpr>, <attribute expr of <type>>, <initial value of <type3>>)
+                 respectively.
   - enhancement: Rel: added ALTER VAR <relvar> RENAME <oldattrname> AS <newattrname>
   - enhancement: Rel: added ALTER VAR <relvar> INSERT <newattrname> <newattrtype>
   - enhancement: Rel: added ALTER VAR <relvar> DROP <attrname>  

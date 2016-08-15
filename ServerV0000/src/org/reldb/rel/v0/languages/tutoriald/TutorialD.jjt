@@ -1590,19 +1590,19 @@ void summary() :
 {
 		<COUNT>	"("	")"										#SummarizeCount
 	|	<COUNTD> "(" expression() ")" 						#SummarizeCountDistinct(1)
-	|	<SUM> "(" expression() ")"							 #SummarizeSum(1)
-	|	<SUMD> "(" expression() ")"							 #SummarizeSumDistinct(1)
-	|	<AVG> "(" expression() ")"							 #SummarizeAvg(1)
-	|	<AVGD> "(" expression() ")"							 #SummarizeAvgDistinct(1)
-	|	<MAX> "(" expression() ")"							 #SummarizeMax(1)
-	|	<MIN> "(" expression() ")"							 #SummarizeMin(1)
+	|	<SUM> "(" expression() ")"							#SummarizeSum(1)
+	|	<SUMD> "(" expression() ")"							#SummarizeSumDistinct(1)
+	|	<AVG> "(" expression() ")"							#SummarizeAvg(1)
+	|	<AVGD> "(" expression() ")"							#SummarizeAvgDistinct(1)
+	|	<MAX> "(" expression() ")"							#SummarizeMax(1)
+	|	<MIN> "(" expression() ")"							#SummarizeMin(1)
 	|	<AND> "(" expression() ")"					 		#SummarizeAnd(1)
-	|	<OR> "(" expression() ")"							 #SummarizeOr(1)
-	|	<XOR> "(" expression() ")"							 #SummarizeXor(1)
+	|	<OR> "(" expression() ")"							#SummarizeOr(1)
+	|	<XOR> "(" expression() ")"							#SummarizeXor(1)
 	|	<EXACTLY> "(" expression() "," expression() ")"	 	#SummarizeExactly(2)
-	|	<EXACTLYD> "(" expression() "," expression() ")"	 #SummarizeExactlyDistinct(2)
-	|	<UNION> "(" expression() ")"						 #SummarizeUnion(1)
-	|	<XUNION> "(" expression() ")"						 #SummarizeXunion(1)
+	|	<EXACTLYD> "(" expression() "," expression() ")"	#SummarizeExactlyDistinct(2)
+	|	<UNION> "(" expression() ")"						#SummarizeUnion(1)
+	|	<XUNION> "(" expression() ")"						#SummarizeXunion(1)
 	|	<D_UNION> "(" expression() ")" 						#SummarizeDUnion(1)
 	|	<INTERSECT> "(" expression() ")" 					#SummarizeIntersect(1)
 	|   summarize_aggregate()
@@ -1610,6 +1610,7 @@ void summary() :
 	|   summarize_userdefined()
 }
 
+/* Rel extension. */
 void summarize_aggregate() #SummarizeAggregate :
 {}
 {
@@ -1618,6 +1619,7 @@ void summarize_aggregate() #SummarizeAggregate :
 	<END> [ <AGGREGATE> ]
 }
 
+/* Rel extension. */
 void summarize_aggregated() #SummarizeAggregateDistinct :
 {}
 {
@@ -1626,18 +1628,21 @@ void summarize_aggregated() #SummarizeAggregateDistinct :
 	<END> [ <AGGREGATED> ]
 }
 
+/* Rel extension. */
 void summarize_userdefined() #SummarizeUserdefined :
 {}
 {
 	identifier() "(" SummarizeItemDistinct() expression() [ "," expression() ] ")" 
 }
 
+/* Rel extension. */
 void SummarizeItemDistinct() #SummarizeUserdefinedDistinct :
 {}
 {
 	[ SummarizeItemDistinctTrue() ]
 }
 
+/* Rel extension. */
 void SummarizeItemDistinctTrue() #SummarizeUserdefinedDistinctTrue :
 {}
 {
@@ -1674,12 +1679,30 @@ void aggregate_operator() :
 	| 	agg_aggregate()
 }
 
-void agg_aggregate() #AggAggregate :
+void agg_aggregate() :
 {}
 {
-	<AGGREGATE> "(" expression() "," expression() [ "," expression() ] ")" ";"	
+ 	<AGGREGATE>
+ 	(
+ 	  	agg_aggregate_inline()
+ 	| 	agg_aggregate_userdefined()
+	) 
+}
+
+/* Rel extension. */
+void agg_aggregate_inline() #AggAggregate :
+{}
+{
+	"(" expression() "," expression() [ "," expression() ] ")" ";"	
 		op_body()			// VALUE1 and VALUE2 introduced
 	<END> [ <AGGREGATE> ]
+}
+
+/* Rel extension. */
+void agg_aggregate_userdefined() #AggAggregateUserdefined() :
+{}
+{
+	identifier() "(" expression() "," expression() [ "," expression() ] ")"
 }
 
 void literal() :
