@@ -1,9 +1,8 @@
 ** TO DO **
 
-- Be table to invoke arbitrary aggregate operators of the form
+- Be able to invoke arbitrary aggregate operators of the form
   AGGREGATE_<op>(RELATION {AGGREGAND <type>, AGGREGATION_SERIAL INT}) RETURNS <type2>
-  via AGGREGATE <op>(<relexpr>, <attribute expr of <type>>) or
-  SUMMARIZE <relexpr>: {r := <op>(<attribute expr of <type>>)}
+  via AGGREGATE <op>(<relexpr>, <attribute expr of <type>>)
 
 - Keep list of recently opened databases in main menu.
 
