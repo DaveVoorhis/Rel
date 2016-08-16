@@ -16,8 +16,6 @@
 
 - Implement image relation operators.
 
-- Implement user-defined aggregate operators.  E.g., SUMMARIZE p: {q := USER(x)} or USER(p, x)
-
 - Be able to specify user-defined parameters in Rev queries.
 
 - Be able to bring operator invocations into Rev queries.
