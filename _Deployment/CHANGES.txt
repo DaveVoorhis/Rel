@@ -15,6 +15,7 @@ Version 3.000 (1.0.13):
   - enhancement: DBrowser: Code entry has "zoom" buttons to maximize input or output.
   - enhancement: DBrowser: Scripts can be edited and saved in the database.
   - enhancement: DBrowser/Rel: Backup script embedded in Rel; no longer relies on Scripts folder.
+  - enhancement: Rel: ARRAY TUPLE {...} is now a valid parameter type.
   - enhancement: Rel: added general aggregation operator (also works with SUMMARIZE):
 					<type> AGGREGATE(<relation_or_array>, <attribute expr> [, <identity expr>]);
   						RETURN ...<expr of <type> using VALUE1 and VALUE2>;

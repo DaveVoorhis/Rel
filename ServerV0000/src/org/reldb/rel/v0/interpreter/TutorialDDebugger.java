@@ -833,6 +833,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTType node, Object data) {
 		return dump(node, data);
 	}
+	
+	// Type ARRAY
+	public Object visit(ASTTypeArray node, Object data) {
+		return dump(node, data);
+	}
 
 	// TYPE_OF pseudo-operator
 	public Object visit(ASTTypeOf node, Object data) {

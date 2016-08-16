@@ -1584,20 +1584,6 @@ public class TutorialDParser implements TutorialDVisitor {
 		alteration.setRelvarHeading(generator.alterVarRealDropAttribute(varname, alteration.getRelvarHeading(), attributeName));
 		return alteration;
 	}
-	
-	public Object visit(ASTVarArray node, Object data) {
-		currentNode = node;
-		// data is varName
-		String varName = (String)data;
-		// Child 0 - Type
-		Type arrayType = (Type)compileChild(node, 0, data);
-		if (!(arrayType instanceof TypeTuple))
-			throw new ExceptionSemantic("RS0128: VAR " + varName + " ARRAY expected type TUPLE, but got " + arrayType);
-		TypeArray array = new TypeArray((TypeTuple)arrayType);
-		generator.compilePush(array.getDefaultValue(generator));
-		generator.defineVariable(varName, array);
-		return null;
-	}
 
 	// Type specification
 	public Object visit(ASTType node, Object data) {
@@ -1605,6 +1591,15 @@ public class TutorialDParser implements TutorialDVisitor {
 		// Child 0 - type name
 		String typeName = getTokenOfChild(node, 0);
 		return generator.findType(typeName);
+	}
+	
+	public Object visit(ASTTypeArray node, Object data) {
+		currentNode = node;
+		// Child 0 - Type
+		Type maybeArrayType = (Type)compileChild(node, 0, data);
+		if (!(maybeArrayType instanceof TypeTuple))
+			throw new ExceptionSemantic("RS0128: ARRAY expected type TUPLE, but got " + maybeArrayType);
+		return new TypeArray((TypeTuple)maybeArrayType);
 	}
 	
 	// TYPE_OF pseudo-operator.  Return TypeInfo for given expression.

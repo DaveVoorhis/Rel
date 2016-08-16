@@ -831,7 +831,6 @@ void derived_possrep_component_def() #DerivedPossrepComponentDef :
 
 /* Includes scalar_var_def,
 relation_var_def,
-array_var_def and
 tuple_var_def */
 void var_def() #VarDef :
 {}
@@ -839,7 +838,6 @@ void var_def() #VarDef :
 	<VAR> identifier() 
 	(
 			var_scalar_or_tuple()
-		|	var_array()
 		|	var_relvar()
 	)
 }
@@ -901,12 +899,6 @@ void var_init() #VarInit :
 	<INIT> "(" expression() ")"
 }
 
-void var_array() #VarArray :
-{}
-{
-	<ARRAY> type_ref()
-}
-
 void db_constraint_def() #DatabaseConstraint :
 {}
 {
@@ -922,8 +914,15 @@ void type_ref() :
 	|	tuple_type()
 	|	relation_type()
 	| 	op_type()
+	| 	type_array()
 }
 
+void type_array() #TypeArray :
+{}
+{
+  	<ARRAY> type_ref()
+}
+  
 void type_same_type_as() #TypeSameTypeAs :
 {}
 {
