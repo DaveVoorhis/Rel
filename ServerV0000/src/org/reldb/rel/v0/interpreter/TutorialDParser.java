@@ -2889,7 +2889,7 @@ public class TutorialDParser implements TutorialDVisitor {
 	// aggregate AGGREGATE (generic aggregation)
 	public Object visit(ASTAggAggregate node, Object data) {
 		currentNode = node;
-		return new AggregatorAggregate().makeAggregator(node).getAttributeType();
+		return new AggregatorAggregate().makeAggregator(node).getReturnType();
 	}
 	
 	// aggregate AGGREGATE (invoke user-defined aggregate operator)
@@ -2897,7 +2897,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		currentNode = node;
 		// Child 0 - operator name
 		String aggOpName = getTokenOfChild(node, 0);
-		return new AggregatorUserdefined(aggOpName).makeAggregator(node).getAttributeType();
+		return new AggregatorUserdefined(aggOpName).makeAggregator(node).getReturnType();
 	}
 	
 	// EXACTLY.  Return TypeBoolean.
@@ -3123,13 +3123,13 @@ public class TutorialDParser implements TutorialDVisitor {
 	// SUMMARIZE - AGGREGATE
 	public Object visit(ASTSummarizeAggregate node, Object data) {
 		currentNode = node;
-		return new AggregatorAggregate().makeAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getAttributeType();
+		return new AggregatorAggregate().makeAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getReturnType();
 	}
 	
 	// SUMMARIZE - AGGREGATED
 	public Object visit(ASTSummarizeAggregateDistinct node, Object data) {
 		currentNode = node;
-		return new AggregatorAggregate().makeAggregator(node, (Generator.Summarize.SummarizeItem)data, true).getAttributeType();
+		return new AggregatorAggregate().makeAggregator(node, (Generator.Summarize.SummarizeItem)data, true).getReturnType();
 	}
 
 	// SUMMARIZE - user-defined aggregation operator
@@ -3142,7 +3142,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		// Child 2 - expression
 		// Child 3 - [optional] initial value
 		Generator.Summarize.SummarizeItem summarizeItem = (Generator.Summarize.SummarizeItem)data;		
-		return new AggregatorUserdefined(aggOpName).makeAggregator(node, summarizeItem, summarizeItem.isDistinct()).getAttributeType();
+		return new AggregatorUserdefined(aggOpName).makeAggregator(node, summarizeItem, summarizeItem.isDistinct()).getReturnType();
 	}
 	
 	// SUMMARIZE aggregation - user-defined aggregation operator invocation optional DISTINCT keyword
