@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Make sure invocations of user-defined aggregate types returns type of user-defined aggregate operator.
-
 - Allow user-defined aggregate operators to work on ARRAY operand.
 
 - RelUI: if Rel view is zoomed and we are about to close the last tab, unzoom first.
