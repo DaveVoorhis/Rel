@@ -8,7 +8,7 @@ import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.types.*;
 import org.reldb.rel.v0.vm.Context;
 
-public class ValueArray extends ValueAbstract {
+public class ValueArray extends ValueAbstract implements TupleIteratable {
 
 	private static final long serialVersionUID = 0;
 

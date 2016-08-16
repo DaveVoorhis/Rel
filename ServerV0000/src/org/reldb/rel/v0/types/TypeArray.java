@@ -4,7 +4,7 @@ import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.values.*;
 
-public class TypeArray extends TypeAbstract {
+public class TypeArray extends TypeAbstract implements TypeTupleIteratable {
 
 	private TypeTuple elementType;
 

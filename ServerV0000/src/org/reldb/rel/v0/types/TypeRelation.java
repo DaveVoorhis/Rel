@@ -3,7 +3,7 @@ package org.reldb.rel.v0.types;
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.values.*;
 
-public class TypeRelation extends TypeHeading {
+public class TypeRelation extends TypeHeading implements TypeTupleIteratable {
 
 	private static TypeRelation emptyType = new TypeRelation(new Heading());
 	
