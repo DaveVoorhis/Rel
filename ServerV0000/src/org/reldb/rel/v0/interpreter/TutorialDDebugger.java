@@ -756,10 +756,6 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTVarInit node, Object data) {
 		return dump(node, data);
 	}
-
-	public Object visit(ASTVarArray node, Object data) {
-		return dump(node, data);
-	}
 	
 	public Object visit(ASTDropRelvar node, Object data) {
 		return dump(node, data);
