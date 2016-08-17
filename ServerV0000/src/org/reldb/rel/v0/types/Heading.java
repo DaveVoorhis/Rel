@@ -272,4 +272,11 @@ public class Heading implements Comparable<Heading> {
 	public String toString() {
 		return getSignature();
 	}
+
+	public String getRandomFreeAttributeName() {
+		String uuid = UUID.randomUUID().toString();
+		while (getIndexOf(uuid) >= 0)
+			uuid = UUID.randomUUID().toString();
+		return uuid;
+	}
 }

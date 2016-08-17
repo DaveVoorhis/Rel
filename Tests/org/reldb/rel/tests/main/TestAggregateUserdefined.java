@@ -24,12 +24,11 @@ public class TestAggregateUserdefined extends BaseOfTest {
 	public static void testAggregateSetup2() {
 		String src =
 			"begin;" +
-			"OPERATOR AGGREGATE_STDEV(r RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}) RETURNS RATIONAL; " +
+			"OPERATOR AGGREGATE_STDEV(data RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}) RETURNS RATIONAL; " +
 			"	RETURN WITH ( " +
-			"		data := r RENAME {AGGREGAND AS X, AGGREGATION_SERIAL AS serial}, " +
-			"		mean := AVG(data, X), " +
+			"		mean := AVG(data, AGGREGAND), " +
 			"		squarediffs := EXTEND data: { " +
-			"			squaredifference := WITH (difference := CAST_AS_RATIONAL(X) - mean): " +
+			"			squaredifference := WITH (difference := CAST_AS_RATIONAL(AGGREGAND) - mean): " +
 			"				difference * difference " +
 			"		} " +
 			"	): SQRT(AVG(squarediffs, squaredifference)); " +
@@ -43,10 +42,8 @@ public class TestAggregateUserdefined extends BaseOfTest {
 	public static void testAggregateSetup3() {
 		String src =
 			"begin;" +
-			"OPERATOR AGGREGATE_TEST(r RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}, i INT) RETURNS INT; " +
-			"	RETURN WITH ( " +
-			"		data := r RENAME {AGGREGAND AS X, AGGREGATION_SERIAL AS serial} " +
-			"	): AGGREGATE(data, X, i); RETURN VALUE1 + VALUE2; END AGGREGATE; " +
+			"OPERATOR AGGREGATE_TEST(data RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}, i INT) RETURNS INT; " +
+			"	RETURN AGGREGATE(data, AGGREGAND, i); RETURN VALUE1 + VALUE2; END AGGREGATE; " +
 			"END OPERATOR; " +
 			"end;" +
 			"true";
@@ -57,10 +54,8 @@ public class TestAggregateUserdefined extends BaseOfTest {
 	public static void testAggregateSetup4() {
 		String src =
 			"begin;" +
-			"OPERATOR AGGREGATE_TEST(r RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}) RETURNS INT; " +
-			"	RETURN WITH ( " +
-			"		data := r RENAME {AGGREGAND AS X, AGGREGATION_SERIAL AS serial} " +
-			"	): AGGREGATE(data, X); RETURN VALUE1 + VALUE2; END AGGREGATE; " +
+			"OPERATOR AGGREGATE_TEST(data RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}) RETURNS INT; " +
+			"	RETURN AGGREGATE(data, AGGREGAND); RETURN VALUE1 + VALUE2; END AGGREGATE; " +
 			"END OPERATOR; " +
 			"end;" +
 			"true";
