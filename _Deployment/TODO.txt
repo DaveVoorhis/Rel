@@ -13,7 +13,7 @@
 - Expose external relvars
 
 - Implement image relation operators.
-  See "Re: [TTM] RFC: A TD proposal for TUPLE{*} and image relations" 22 Jun 2016 at 15:13.
+  See "Re: [TTM] RFC: A TD proposal for TUPLE{*} and image relations" 22 Jun 2016 at 15:13 by HD.
 
 - Be able to specify user-defined parameters in Rev queries.
 
