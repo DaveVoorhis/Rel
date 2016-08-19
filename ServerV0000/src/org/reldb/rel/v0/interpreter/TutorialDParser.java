@@ -2485,7 +2485,7 @@ public class TutorialDParser implements TutorialDVisitor {
 			Heading renamed = extendedType.getHeading();
 			renamed.rename(aggregandName, aggregandAttributeName);
 			
-			// extendedRelationExprType := renamed {ALL BUT AGGREGAND, AGGREGATION_SERIAL}
+			// extendedRelationExprType := renamed {AGGREGAND, AGGREGATION_SERIAL}
 			SelectAttributes attributes = new SelectAttributes();
 			attributes.add(aggregandAttributeName);
 			attributes.add(aggregationSerialAttributeName);
