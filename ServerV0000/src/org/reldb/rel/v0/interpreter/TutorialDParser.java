@@ -1077,9 +1077,10 @@ public class TutorialDParser implements TutorialDVisitor {
 		Type sourceType = (Type)compileChild(node, 0, data);
 		// Child 1 - SelectOrder via ASTOrderItemCommalist
 		SelectOrder orderItems = (SelectOrder)compileChild(node, 1, data);
-		if (!(sourceType instanceof TypeRelation))
-			throw new ExceptionSemantic("RS0117: Unable to perform ORDER on " + sourceType + "; expected a RELATION.");		
-		return generator.compileRelationOrder((TypeRelation)sourceType, orderItems);
+		if (sourceType instanceof TypeRelation || sourceType instanceof TypeArray)
+			return generator.compileOrder((TypeHeading)sourceType, orderItems);
+		else
+			throw new ExceptionSemantic("RS0117: Unable to perform ORDER on " + sourceType + "; expected a RELATION or ARRAY.");		
 	}
 	
 	// UNORDER
@@ -2511,7 +2512,7 @@ public class TutorialDParser implements TutorialDVisitor {
 			attributeExprType = (Type)compileChild(node, attributeExpressionNodeNumber, item);
 			TypeRelation extendedSourceType = item.endSummarizeItemExpression(attributeExprType, distinct);
 			// convert to ARRAY ... consider using this to define specific SelectOrder as part of SUMMARIZE syntax
-			return generator.compileRelationOrder(extendedSourceType, new SelectOrder());
+			return generator.compileOrder(extendedSourceType, new SelectOrder());
 		}
 		
 		// SUMMARIZE aggregator invocation
@@ -2546,7 +2547,7 @@ public class TutorialDParser implements TutorialDVisitor {
 				checkAttributeType(attributeExprType);
 				extend.addExtendItem(introducedAttributeName, attributeExprType);
 				TypeRelation extendedSourceType = generator.endRelationExtend(extend);
-				extendedRelationExprType = generator.compileRelationOrder(extendedSourceType, new SelectOrder());
+				extendedRelationExprType = generator.compileOrder(extendedSourceType, new SelectOrder());
 				return extendedRelationExprType;				
 			} else
 				throw new ExceptionSemantic("RS0171: Aggregate " + (opName.startsWith("%") ? "" : opName + " ") + "expected RELATION or ARRAY, but got " + attributeExpressionType);

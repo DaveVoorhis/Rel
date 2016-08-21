@@ -2134,11 +2134,11 @@ public class Generator {
 		sourceType = compileRelationProject(new TypeRelation(resultType), excludeRVA);
 		return sourceType;
 	}
-	
-	public TypeArray compileRelationOrder(TypeRelation sourceType, SelectOrder orderItems) {
+
+	public TypeArray compileOrder(TypeHeading sourceType, SelectOrder orderItems) {
 		Heading sourceHeading = sourceType.getHeading();
 		compileInstruction(new OpTupleIteratableOrder(new OrderMap(sourceHeading, orderItems)));
-		return new TypeArray(sourceHeading);
+		return new TypeArray(sourceHeading);		
 	}
 
 	public TypeRelation compileArrayUnorder(TypeArray sourceType) {
