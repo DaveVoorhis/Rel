@@ -1,16 +1,16 @@
-OPERATOR AGGREGATE_STDEV(data RELATION {AGGREGAND RATIONAL, AGGREGATION_SERIAL INTEGER}) RETURNS RATIONAL;
+OPERATOR AGGREGATE_STDEV(data ARRAY TUPLE {AGGREGAND RATIONAL, AGGREGATION_SERIAL INTEGER}) RETURNS RATIONAL;
 	RETURN WITH (
 		mean := AVG(data, AGGREGAND),
-		squarediffs := EXTEND data: {
+		squarediffs := EXTEND data UNORDER(): {
 			squaredifference := WITH (difference := AGGREGAND - mean): difference * difference
 		}
 	): SQRT(AVG(squarediffs, squaredifference));
 END OPERATOR;
 
-OPERATOR AGGREGATE_STDEV(data RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}) RETURNS RATIONAL;
+OPERATOR AGGREGATE_STDEV(data ARRAY TUPLE {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}) RETURNS RATIONAL;
 	RETURN WITH (
 		mean := AVG(data, AGGREGAND),
-		squarediffs := EXTEND data: {
+		squarediffs := EXTEND data UNORDER(): {
 			squaredifference := WITH (difference := CAST_AS_RATIONAL(AGGREGAND) - mean): difference * difference
 		}
 	): SQRT(AVG(squarediffs, squaredifference));
