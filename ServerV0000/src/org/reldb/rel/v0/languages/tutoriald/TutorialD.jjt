@@ -185,6 +185,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < TYPE_OF: "TYPE_OF" >
 | < UNGROUP: "UNGROUP" >
 | < UNION: "UNION" >
+| < UNORDER: "UNORDER" >
 | < UNWRAP: "UNWRAP" >
 | < UPDATES: "UPDATES" >
 | < UPDATE: "UPDATE" >
@@ -1157,7 +1158,10 @@ void basic_expression() :
 void order_expression() :
 {}
 {
-	where_expression() [ <ORDER> "(" order_item_commalist() ")"   #AlgOrder(2) ]		
+	where_expression() [ (
+	  <ORDER> "(" order_item_commalist() ")"   	#AlgOrder(2)
+	| <UNORDER> "(" ")"							#AlgUnorder(1)
+	) ]		
 }
 
 void where_expression() :

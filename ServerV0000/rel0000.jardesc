@@ -168,6 +168,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTBooleanExpressionCommalist.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTDropOperator.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.vm.instructions.system"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.vm.instructions.tupleIteratable"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTCompLT.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTDeleteParameter.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTInsert.java"/>
@@ -209,6 +210,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTNadicXunion.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAlgMinus.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAlgIMinus.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAlgUnorder.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTWith.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTTClose.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTUpdateAssignment.java"/>

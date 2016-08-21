@@ -1,28 +1,28 @@
 /**
  * 
  */
-package org.reldb.rel.v0.vm.instructions.relation;
+package org.reldb.rel.v0.vm.instructions.tupleIteratable;
 
 import org.reldb.rel.v0.values.*;
 import org.reldb.rel.v0.vm.Context;
 import org.reldb.rel.v0.vm.Instruction;
 import org.reldb.rel.v0.vm.Operator;
 
-public final class OpRelationMap extends Instruction {
+public final class OpTupleIteratableMap extends Instruction {
 	private Operator tupleOperator;
 	
 	// ValueOperator of the form OPERATOR(TUPLE x) RETURNS TUPLE
-	public OpRelationMap(Operator tupleOperator) {
+	public OpTupleIteratableMap(Operator tupleOperator) {
 		this.tupleOperator = tupleOperator;
 	}
 	
 	public final void execute(Context context) {
-		// Relation MAP.
+		// TupleIteratable MAP.
 		//
 		// Applies an operator to each tuple in a relation to produce a new relation.
 		// POP - ValueRelation
 		// PUSH - ValueRelation
 		//
-		context.push(((ValueRelation)context.pop()).map(new RelTupleMap(context, tupleOperator)));
+		context.push(((TupleIteratable)context.pop()).map(new RelTupleMap(context, tupleOperator)));
 	}
 }

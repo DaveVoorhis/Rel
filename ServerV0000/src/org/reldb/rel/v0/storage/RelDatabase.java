@@ -31,6 +31,7 @@ import org.reldb.rel.v0.storage.tables.RegisteredTupleIterator;
 import org.reldb.rel.v0.storage.tables.Table;
 import org.reldb.rel.v0.storage.tables.TablePrivate;
 import org.reldb.rel.v0.types.Heading;
+import org.reldb.rel.v0.types.OrderMap;
 import org.reldb.rel.v0.types.Type;
 import org.reldb.rel.v0.types.TypeAlpha;
 import org.reldb.rel.v0.types.TypeTuple;
@@ -1118,9 +1119,11 @@ public class RelDatabase {
     		RelvarGlobal relvarDefinitionHistory = metadata.getRelvar(Catalog.relvarDefinitionHistory, RelDatabase.this);
     		ValueRelation currentValue = relvarDefinitionHistory.getValue(generator);
     		long nextID;
-    		if (currentValue.getCardinality() > 0)
-    			nextID = currentValue.max(1).longValue() + 1; 	// index 1 is SerialNumber attribute
-    		else
+    		if (currentValue.getCardinality() > 0) {
+    			SelectOrder orderSelection = new SelectOrder();
+				OrderMap map = new OrderMap(relvarDefinitionHistory.getHeadingDefinition().getHeading(), orderSelection );
+				nextID = currentValue.sort(map).max(1).longValue() + 1; 	// index 1 is SerialNumber attribute
+    		} else
     			nextID = 1;
 			Value[] rawTuple = new Value[] {
 					ValueCharacter.select(generator, newDefinition),	// Definition attribute

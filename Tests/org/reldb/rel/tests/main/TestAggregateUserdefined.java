@@ -24,10 +24,10 @@ public class TestAggregateUserdefined extends BaseOfTest {
 	public static void testAggregateSetup2() {
 		String src =
 			"begin;" +
-			"OPERATOR AGGREGATE_STDEV(data RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}) RETURNS RATIONAL; " +
+			"OPERATOR AGGREGATE_STDEV(data ARRAY TUPLE {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}) RETURNS RATIONAL; " +
 			"	RETURN WITH ( " +
 			"		mean := AVG(data, AGGREGAND), " +
-			"		squarediffs := EXTEND data: { " +
+			"		squarediffs := EXTEND data UNORDER(): { " +
 			"			squaredifference := WITH (difference := CAST_AS_RATIONAL(AGGREGAND) - mean): " +
 			"				difference * difference " +
 			"		} " +
@@ -42,7 +42,7 @@ public class TestAggregateUserdefined extends BaseOfTest {
 	public static void testAggregateSetup3() {
 		String src =
 			"begin;" +
-			"OPERATOR AGGREGATE_TEST(data RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}, i INT) RETURNS INT; " +
+			"OPERATOR AGGREGATE_TEST(data ARRAY TUPLE {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}, i INT) RETURNS INT; " +
 			"	RETURN AGGREGATE(data, AGGREGAND, i); RETURN VALUE1 + VALUE2; END AGGREGATE; " +
 			"END OPERATOR; " +
 			"end;" +
@@ -54,7 +54,7 @@ public class TestAggregateUserdefined extends BaseOfTest {
 	public static void testAggregateSetup4() {
 		String src =
 			"begin;" +
-			"OPERATOR AGGREGATE_TEST(data RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}) RETURNS INT; " +
+			"OPERATOR AGGREGATE_TEST(data ARRAY TUPLE {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}) RETURNS INT; " +
 			"	RETURN AGGREGATE(data, AGGREGAND); RETURN VALUE1 + VALUE2; END AGGREGATE; " +
 			"END OPERATOR; " +
 			"end;" +
@@ -152,9 +152,9 @@ public class TestAggregateUserdefined extends BaseOfTest {
 	public static void testSummarizeComplexTeardown() {
 		String src =
 			"begin;" +
-			"  DROP OPERATOR AGGREGATE_TEST(RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER});" +
-			"  DROP OPERATOR AGGREGATE_TEST(RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}, INT);" +
-			"  DROP OPERATOR AGGREGATE_STDEV(RELATION {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER});" +
+			"  DROP OPERATOR AGGREGATE_TEST(ARRAY TUPLE {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER});" +
+			"  DROP OPERATOR AGGREGATE_TEST(ARRAY TUPLE {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER}, INT);" +
+			"  DROP OPERATOR AGGREGATE_STDEV(ARRAY TUPLE {AGGREGAND INTEGER, AGGREGATION_SERIAL INTEGER});" +
 			"  DROP OPERATOR SQRT(RATIONAL);" +
 			"end;" +
 			"true";

@@ -3,13 +3,11 @@ package org.reldb.rel.v0.values;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 
 import org.reldb.rel.exceptions.*;
 import org.reldb.rel.v0.generator.Generator;
-import org.reldb.rel.v0.generator.SelectOrder;
 import org.reldb.rel.v0.storage.RelDatabase;
 import org.reldb.rel.v0.storage.temporary.TempIndex;
 import org.reldb.rel.v0.storage.temporary.TempIndexImplementation;
@@ -448,7 +446,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 	 * @param map - a TupleMap
 	 * @return - a ValueRelation
 	 */
-	public ValueRelation map(final TupleMap map) {
+	public TupleIteratable map(final TupleMap map) {
 		return new ValueRelation(getGenerator()) {
 			private final static long serialVersionUID = 0;
 
@@ -658,26 +656,6 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 		return sequence(generator, start, end, ValueInteger.select(generator, 1));
 	}
 	
-	private static class Sorter implements Comparator<Value> {
-		private int map[];
-		private SelectOrder.Order order[];
-		public Sorter(OrderMap orderMap) {
-			map = orderMap.getMap();
-			order = orderMap.getOrder();
-		}
-		public int compare(Value t1, Value t2) {
-			Value[] v1 = ((ValueTuple)t1).getValues();
-			Value[] v2 = ((ValueTuple)t2).getValues();
-			for (int i=0; i<map.length; i++) {
-				int attributeIndex = map[i];
-				int c = v1[attributeIndex].compareTo(v2[attributeIndex]);
-				if (c != 0)
-					return (order[i] == SelectOrder.Order.ASC) ? c : -c;
-			}
-			return 0;
-		}
-	}
-	
 	/** Return a new, possibly-sorted ValueArray */
 	public ValueArray sort(OrderMap map) {
 		if (map.getMap().length == 0)
@@ -867,195 +845,6 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 		}
 	}
 	
-	/** Aggregate operator */
-	public Value sumInteger(final int attributeIndex) {
-		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
-			public Value getIdentity() {
-				return ValueInteger.select(getGenerator(), 0);
-			}
-			public Value fold(Value left, Value right) {
-				return ValueInteger.select(getGenerator(), left.longValue() + right.longValue());
-			}
-		};
-		folder.run();
-		return folder.getResult();
-	}
-
-	/** Aggregate operator */
-	public Value sumRational(final int attributeIndex) {
-		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
-			public Value getIdentity() {
-				return ValueRational.select(getGenerator(), 0);
-			}
-			public Value fold(Value left, Value right) {
-				return ValueRational.select(getGenerator(), left.doubleValue() + right.doubleValue());
-			}
-		};
-		folder.run();
-		return folder.getResult();
-	}
-
-	/** Aggregate operator */
-	public ValueRational avgInteger(int attributeIndex) {
-		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
-			public Value getIdentity() {
-				return ValueInteger.select(getGenerator(), 0);
-			}
-			public Value fold(Value left, Value right) {
-				return ValueInteger.select(getGenerator(), left.longValue() + right.longValue());
-			}
-		};
-		folder.run();
-		Value sum = folder.getResult();
-		if (folder.getCount() == 0)
-			throw new ExceptionSemantic("RS0276: Result of AVG on no values is undefined.");
-		else
-			return (ValueRational)ValueRational.select(getGenerator(), sum.doubleValue() / (double)folder.getCount());
-	}
-
-	/** Aggregate operator */
-	public ValueRational avgRational(int attributeIndex) {
-		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
-			public Value getIdentity() {
-				return ValueRational.select(getGenerator(), 0);
-			}
-			public Value fold(Value left, Value right) {
-				return ValueRational.select(getGenerator(), left.doubleValue() + right.doubleValue());
-			}
-		};
-		folder.run();
-		Value sum = folder.getResult();
-		if (folder.getCount() == 0)
-			throw new ExceptionSemantic("RS0277: Result of AVG on no values is undefined.");
-		else
-			return (ValueRational)ValueRational.select(getGenerator(), sum.doubleValue() / (double)folder.getCount());
-	}
-
-	/** Aggregate operator */
-	public Value max(int attributeIndex) {
-		TupleFold folder = new TupleFoldFirstIsIdentity("Result of MAX on no values is undefined.", iterator(), attributeIndex) {
-			public Value fold(Value left, Value right) {
-				if (left.compareTo(right) > 0)
-					return left;
-				else
-					return right;
-			}
-		};
-		folder.run();
-		return folder.getResult();
-	}
-
-	/** Aggregate operator */
-	public Value min(int attributeIndex) {
-		TupleFold folder = new TupleFoldFirstIsIdentity("Result of MIN on no values is undefined.", iterator(), attributeIndex) {
-			public Value fold(Value left, Value right) {
-				if (left.compareTo(right) < 0)
-					return left;
-				else
-					return right;
-			}
-		};
-		folder.run();
-		return folder.getResult();
-	}
-
-	/** Aggregate operator */
-	public ValueBoolean and(int attributeIndex) {
-		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
-			public Value getIdentity() {
-				return ValueBoolean.select(getGenerator(), true);
-			}
-			public Value fold(Value left, Value right) {
-				return ValueBoolean.select(getGenerator(), left.booleanValue() & right.booleanValue());
-			}
-		};
-		folder.run();
-		return (ValueBoolean)folder.getResult();
-	}
-
-	/** Aggregate operator */
-	public ValueBoolean or(int attributeIndex) {
-		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
-			public Value getIdentity() {
-				return ValueBoolean.select(getGenerator(), false);
-			}
-			public Value fold(Value left, Value right) {
-				return ValueBoolean.select(getGenerator(), left.booleanValue() | right.booleanValue());
-			}
-		};
-		folder.run();
-		return (ValueBoolean)folder.getResult();
-	}
-
-	/** Aggregate operator */
-	public ValueBoolean xor(int attributeIndex) {
-		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
-			public Value getIdentity() {
-				return ValueBoolean.select(getGenerator(), false);
-			}
-			public Value fold(Value left, Value right) {
-				return ValueBoolean.select(getGenerator(), left.booleanValue() ^ right.booleanValue());
-			}
-		};
-		folder.run();
-		return (ValueBoolean)folder.getResult();
-	}
-
-	/** Aggregate operator */
-	public ValueRelation union(int attributeIndex) {
-		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
-			public Value fold(Value left, Value right) {
-				return ((ValueRelation)left).union((ValueRelation)right);
-			}
-			@Override
-			public Value getIdentity() {
-				return new ValueRelationLiteral(getGenerator());
-			}
-		};
-		folder.run();
-		return (ValueRelation)folder.getResult();
-	}
-
-	/** Aggregate operator */
-	public Value xunion(int attributeIndex) {
-		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
-			public Value fold(Value left, Value right) {
-				return ((ValueRelation)left).xunion((ValueRelation)right);
-			}
-			public Value getIdentity() {
-				return new ValueRelationLiteral(getGenerator());
-			}
-		};
-		folder.run();
-		return (ValueRelation)folder.getResult();
-	}
-
-	/** Aggregate operator */
-	public ValueRelation d_union(int attributeIndex) {
-		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
-			public Value fold(Value left, Value right) {
-				return ((ValueRelation)left).dunion((ValueRelation)right);
-			}
-			@Override
-			public Value getIdentity() {
-				return new ValueRelationLiteral(getGenerator());
-			}
-		};
-		folder.run();
-		return (ValueRelation)folder.getResult();
-	}
-
-	/** Aggregate operator */
-	public ValueRelation intersect(int attributeIndex) {
-		TupleFold folder = new TupleFoldFirstIsIdentity("Result of INTERSECT on no values is undefined.", iterator(), attributeIndex) {
-			public Value fold(Value left, Value right) {
-				return ((ValueRelation)left).intersect((ValueRelation)right);
-			}
-		};
-		folder.run();
-		return (ValueRelation)folder.getResult();
-	}
-
 	/** Aggregate operator */
 	public ValueBoolean exactly(long nCount, int attributeIndex) {
 		long trueCount = 0;

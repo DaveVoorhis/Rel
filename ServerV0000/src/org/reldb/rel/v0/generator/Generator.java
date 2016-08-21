@@ -108,11 +108,8 @@ import org.reldb.rel.v0.vm.instructions.relation.OpRelationIMinus;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationIntersect;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationJoin;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationLiteralInsertTuple;
-import org.reldb.rel.v0.vm.instructions.relation.OpRelationMap;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationMinus;
-import org.reldb.rel.v0.vm.instructions.relation.OpRelationOrder;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationProduct;
-import org.reldb.rel.v0.vm.instructions.relation.OpRelationProject;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationPushLiteral;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationTClose;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationUngroup;
@@ -142,6 +139,9 @@ import org.reldb.rel.v0.vm.instructions.tuple.OpTupleJoinDisjoint;
 import org.reldb.rel.v0.vm.instructions.tuple.OpTupleProject;
 import org.reldb.rel.v0.vm.instructions.tuple.OpTuplePushLiteral;
 import org.reldb.rel.v0.vm.instructions.tuple.OpTupleSetAttribute;
+import org.reldb.rel.v0.vm.instructions.tupleIteratable.OpTupleIteratableProject;
+import org.reldb.rel.v0.vm.instructions.tupleIteratable.OpTupleIteratableOrder;
+import org.reldb.rel.v0.vm.instructions.tupleIteratable.OpTupleIteratableMap;
 
 /** Code generator. */
 public class Generator {
@@ -1422,7 +1422,7 @@ public class Generator {
 			if (destinationType instanceof TypeTuple && sourceType instanceof TypeTuple) {
 				compileInstruction(new OpTupleProject(reformatMap));
 			} else if (destinationType instanceof TypeRelation && sourceType instanceof TypeRelation) {
-				compileInstruction(new OpRelationProject(reformatMap));
+				compileInstruction(new OpTupleIteratableProject(reformatMap));
 			} else 
 				throw new ExceptionFatal("RS0299: compileReformat doesn't know how to deal with a " + destinationType + " and a " + sourceType);
 		}
@@ -1832,8 +1832,16 @@ public class Generator {
 		if (attributes.isEverything())
 			return operand;
 		Heading destination = operand.getHeading().project(attributes);
-		compileInstruction(new OpRelationProject(new AttributeMap(destination, operand.getHeading())));
+		compileInstruction(new OpTupleIteratableProject(new AttributeMap(destination, operand.getHeading())));
 		return new TypeRelation(destination);
+	}
+
+	public TypeArray compileArrayProject(TypeArray operand, SelectAttributes attributes) {
+		if (attributes.isEverything())
+			return operand;
+		Heading destination = operand.getHeading().project(attributes);
+		compileInstruction(new OpTupleIteratableProject(new AttributeMap(destination, operand.getHeading())));
+		return new TypeArray(destination);
 	}
 
 	public class Where {
@@ -1992,8 +2000,8 @@ public class Generator {
 		return compileRelationMinus(leftType, compileRelationSemijoin(leftType, rightType));
 	}
 	
-	/** End relation extend. */
-	public TypeRelation endRelationExtend(Extend extend) {
+	/** End TupleIterable extend. */
+	private Heading endTupleIteratableExtend(Extend extend) {
 		final String sourceParameterName = "%source";
 		extend.endExtendDefinition();
 		Heading extendedHeading = extend.sourceHeading.unionDisjoint(extend.extendedHeading);
@@ -2011,8 +2019,20 @@ public class Generator {
 		compileEvaluate(extend.extendOp);
 		compileReturnValue(getDeclaredReturnType());
 		endOperator();
-		compileInstruction(new OpRelationMap(mapOp.getOperator()));
+		compileInstruction(new OpTupleIteratableMap(mapOp.getOperator()));
+		return extendedHeading;
+	}
+	
+	/** End relation extend. */
+	public TypeRelation endRelationExtend(Extend extend) {
+		Heading extendedHeading = endTupleIteratableExtend(extend);
 		return new TypeRelation(extendedHeading);
+	}
+	
+	/** End ARRAY extend. (Used by aggregation.) */
+	public TypeArray endArrayExtend(Extend extend) {
+		Heading extendedHeading = endTupleIteratableExtend(extend);
+		return new TypeArray(extendedHeading);		
 	}
 	
 	public TypeRelation compileRelationWrap(TypeRelation sourceType, SelectAttributes selection, String name) {
@@ -2028,7 +2048,7 @@ public class Generator {
 		TypeTuple tupleType = compileTupleWrap(new TypeTuple(sourceType.getHeading()), selection, name);
 		compileReturnValue(getDeclaredReturnType());
 		endOperator();
-		compileInstruction(new OpRelationMap(mapOp.getOperator()));
+		compileInstruction(new OpTupleIteratableMap(mapOp.getOperator()));
 		return new TypeRelation(tupleType.getHeading());	
 	}
 
@@ -2045,7 +2065,7 @@ public class Generator {
 		TypeTuple tupleType = compileTupleUnwrap(new TypeTuple(operand.getHeading()), attributeName);
 		compileReturnValue(getDeclaredReturnType());
 		endOperator();
-		compileInstruction(new OpRelationMap(mapOp.getOperator()));
+		compileInstruction(new OpTupleIteratableMap(mapOp.getOperator()));
 		return new TypeRelation(tupleType.getHeading());	
 	}
 
@@ -2117,8 +2137,14 @@ public class Generator {
 	
 	public TypeArray compileRelationOrder(TypeRelation sourceType, SelectOrder orderItems) {
 		Heading sourceHeading = sourceType.getHeading();
-		compileInstruction(new OpRelationOrder(new OrderMap(sourceHeading, orderItems)));
-		return new TypeArray(new TypeTuple(sourceHeading));
+		compileInstruction(new OpTupleIteratableOrder(new OrderMap(sourceHeading, orderItems)));
+		return new TypeArray(sourceHeading);
+	}
+
+	public TypeRelation compileArrayUnorder(TypeArray sourceType) {
+		Heading sourceHeading = sourceType.getHeading();
+		compileInstruction(new OpArrayToRelation());
+		return new TypeRelation(sourceHeading);
 	}
 	
 	public class RelationSubstitute {
@@ -2145,7 +2171,7 @@ public class Generator {
 		 */	
 		public TypeRelation endRelationSubstitute() {
 			updateOp.end();
-			compileInstruction(new OpRelationMap(updateOp.getOperator()));
+			compileInstruction(new OpTupleIteratableMap(updateOp.getOperator()));
 			return sourceType;
 		}
 	}

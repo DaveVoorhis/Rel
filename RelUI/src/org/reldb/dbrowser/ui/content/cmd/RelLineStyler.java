@@ -126,6 +126,7 @@ public class RelLineStyler implements LineStyleListener {
 	    "TYPE_OF",
 	    "UNGROUP",
 	    "UNION",
+	    "UNORDER",
 	    "UNWRAP",
 	    "UPDATES",
 	    "UPDATE",
