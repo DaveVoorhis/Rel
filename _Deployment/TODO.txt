@@ -1,5 +1,8 @@
 ** TO DO **
 
+- Implement LEAD, LAG, iTH etc. Maybe these return the whole tuple, rather than an attribute?  (If so, what
+  does 'null' look like?)
+
 - RelUI: if Rel view is zoomed and we are about to close the last tab, unzoom first.
 
 - Keep list of recently opened databases in main menu.
