@@ -10,6 +10,9 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabFolder2Adapter;
+import org.eclipse.swt.custom.CTabFolder2Listener;
+import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -211,6 +214,13 @@ public class RelPanel extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent evt) {
 				fireDbTreeTabchangeEvent();
+			}
+		});
+		tabFolder.addCTabFolder2Listener(new CTabFolder2Adapter() {
+			@Override
+			public void close(CTabFolderEvent event) {
+				if (tabFolder.getItemCount() <= 1)
+					unzoom();
 			}
 		});
 		
@@ -660,6 +670,10 @@ public class RelPanel extends Composite {
 		// removeSubtree("Forms");
 		// removeSubtree("Reports");
 		removeSubtree(CATEGORY_SCRIPT);
+	}
+
+	private void unzoom() {
+		sashForm.setMaximizedControl(null);
 	}
 	
 	private void zoomMain() {
