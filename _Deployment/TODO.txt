@@ -2,8 +2,6 @@
 
 - Implement image relation operators.
 
-- Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
-
   See "Re: [TTM] RFC: A TD proposal for TUPLE{*} and image relations" 22 Jun 2016 at 15:13 by HD.
   
 	1. TUPLE{*} is equivalent to ​​TUPLE{A1 A1, ..., An An}, where A1, ..., An are the attributes of an implied 
@@ -15,6 +13,8 @@
 
 	3. In contexts where TUPLE{*} is permitted, the tuple operand to IMAGE_IN may be omitted,
 	defaulting to TUPLE{*}.  (Thus, IMAGE_IN(r) is equivalent to !!r as proposed by Chris Date in DBE, Chapter 14.)
+
+- Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
 
 - Implement LEAD, LAG, iTH etc. Maybe these return the whole tuple, rather than an attribute?  (If so, what
   does 'null' look like?)
