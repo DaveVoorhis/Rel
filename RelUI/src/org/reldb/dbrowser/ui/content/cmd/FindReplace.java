@@ -257,7 +257,7 @@ public class FindReplace extends Dialog {
 		matches = null;
 		text.setSelectionRange(0, 0);
 		btnReplace.setEnabled(false);
-		btnReplaceFind.setEnabled(false);
+		btnReplaceFind.setEnabled(false);		
 	}
 	
 	private class Match {
@@ -359,7 +359,7 @@ public class FindReplace extends Dialog {
 		}
 		doFindInternal();
 	}
-
+	 
 	protected void doReplaceAll() {
 		setStatus("");
 		Pattern pattern = compilePattern();
@@ -376,15 +376,21 @@ public class FindReplace extends Dialog {
 			matcher.appendReplacement(changeBuffer, textReplace.getText());
 			hitCount++;
 		}
+		matcher.appendTail(changeBuffer);
+		
+		text.removeExtendedModifyListener(textModifyListener);
+		int topLine = text.getTopIndex();
 		text.setText(changeBuffer.toString());
 		text.redraw();
+		text.setTopIndex(topLine);
+		text.addExtendedModifyListener(textModifyListener);
+		
 		if (hitCount == 0)
 			setStatus("Not found.");
 		else if (hitCount == 1)
 			setStatus(hitCount + " match replaced.");
 		else
 			setStatus(hitCount + " matches replaced.");
-		clearAll();
 	}
 
 	protected void doReplace() {
