@@ -75,21 +75,16 @@
   does not evaluate to tuple with x and y interchanged as it should (Rel reports an error).
   
 - Enhancement:  Use the following TCLOSE:
-  // By Vilem Vychodil, Palacky University in Olomouc (Czech Republic)
-			OPERATOR tr (r RELATION {x INT, y INT}) RETURNS SAME_TYPE_AS (r);
-			  BEGIN;
-			    VAR result PRIVATE INIT (r) KEY {x,y};
-			    VAR work PRIVATE INIT (r) KEY {x,y};
-			    WHILE NOT (IS_EMPTY (work));
-			      BEGIN;
-			        work := (r RENAME {y AS z}) COMPOSE (work RENAME {x AS z});
-			        work := work MINUS result;
-			        result := result UNION work;
-			      END;
-			    END WHILE;
-			    RETURN result;
-			  END;
-			END OPERATOR;
+  // Based on submission by Vilem Vychodil, Palacky University in Olomouc (Czech Republic)
+	OPERATOR TCLOSE(r RELATION {x INT, y INT}) RETURNS SAME_TYPE_AS(r);
+		VAR result PRIVATE INIT(r) KEY {x, y};
+		VAR work PRIVATE INIT(r) KEY {x, y};
+		WHILE NOT IS_EMPTY(work);
+			work := ((r RENAME {y AS z}) COMPOSE (work RENAME {x AS z})) MINUS result;
+			INSERT result work;
+		END WHILE;
+		RETURN result;
+	END OPERATOR;
 
 - Provide \t\n\r translation in DBrowser, so that string literals like...
           WRITELN("blah
