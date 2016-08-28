@@ -17,8 +17,11 @@ import org.reldb.rel.v0.storage.temporary.TempTable;
 import org.reldb.rel.v0.storage.temporary.TempTableImplementation;
 import org.reldb.rel.v0.types.AttributeMap;
 import org.reldb.rel.v0.types.Heading;
+import org.reldb.rel.v0.types.Type;
 import org.reldb.rel.v0.values.*;
 import org.reldb.rel.v0.vm.Context;
+import org.reldb.rel.v0.vm.Instruction;
+import org.reldb.rel.v0.vm.VirtualMachine;
 
 /** An updatable collection of ValueTupleS; a wrapper around Berkeley DB's "Database". */
 public abstract class Table {
@@ -471,6 +474,34 @@ public abstract class Table {
 				ValueTuple newTuple = oldTuple.shrink(attributeIndex);
 				DatabaseEntry theData = new DatabaseEntry();
 				database.getTupleBinding().objectToEntry(newTuple, theData);
+				cursor.putCurrent(theData);
+			}
+		} finally {
+			cursor.close();
+		}
+	}
+
+	// Alter every tuple to set attribute at newAttributeIndex to the result of invoking selector newAttributeSelector
+	// with an argument of the attribute at oldAttributeIndex.
+	public void convertTuples(Generator generator, Transaction txn, Type oldType, int oldAttributeIndex, int newAttributeIndex, Instruction selector) {
+		Storage tables = getStorage(txn);
+	    DatabaseEntry foundKey = new DatabaseEntry();
+	    DatabaseEntry foundData = new DatabaseEntry();	
+		Cursor cursor = tables.getDatabase(0).openCursor(txn, null);
+		VirtualMachine vm = new VirtualMachine(generator, database, System.out);
+		Context context = new Context(generator, vm);
+		try {
+			while (cursor.getNext(foundKey, foundData, LockMode.RMW) == OperationStatus.SUCCESS) {
+				ValueTuple oldTuple = (ValueTuple)database.getTupleBinding().entryToObject(foundData);
+
+				Value oldValue = ValueCharacter.select(generator, oldTuple.getValues()[oldAttributeIndex].toParsableString(oldType));
+				context.push(oldValue);
+				selector.execute(context);
+				Value newValue = context.pop();
+				oldTuple.getValues()[newAttributeIndex] = newValue;
+				
+				DatabaseEntry theData = new DatabaseEntry();
+				database.getTupleBinding().objectToEntry(oldTuple, theData);
 				cursor.putCurrent(theData);
 			}
 		} finally {

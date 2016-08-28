@@ -39,8 +39,11 @@ import org.reldb.rel.v0.types.builtin.*;
 import org.reldb.rel.v0.values.*;
 import org.reldb.rel.v0.version.Version;
 import org.reldb.rel.v0.vm.Context;
+import org.reldb.rel.v0.vm.Instruction;
 import org.reldb.rel.v0.vm.Operator;
 import org.reldb.rel.v0.vm.VirtualMachine;
+import org.reldb.rel.v0.vm.instructions.core.OpInvoke;
+import org.reldb.rel.v0.vm.instructions.core.OpInvokeDynamicEvaluate;
 
 import com.sleepycat.bind.EntryBinding;
 import com.sleepycat.bind.serial.SerialBinding;
@@ -1908,10 +1911,95 @@ public class RelDatabase {
     	}		
 	}
 
+	private void reindex(Transaction txn, Generator generator, String varname, RelvarRealMetadata metadata, RelvarHeading keydefs) {
+		// create new storage
+    	StorageNames storageNames = new StorageNames(keydefs.getKeyCount());
+		Storage newStorage = new Storage(storageNames.size());
+    	for (int i=0; i<storageNames.size(); i++) {
+    		String tabName = getUniqueTableName();
+    		storageNames.setName(i, tabName);
+	    	Database berkeleyDB = openDatabase(txn, tabName, dbConfigurationAllowCreate);
+			newStorage.setDatabase(i, berkeleyDB);
+    	}
+    	// copy old storage to new storage
+		RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
+		Table table = relvar.getTable();
+    	TupleIterator iterator = relvar.iterator(generator);
+    	try {
+    		while (iterator.hasNext())
+				table.insertTupleNoDuplicates(generator, newStorage, txn, iterator.next(), "Altering KEY means");    			
+    	} finally {
+    		iterator.close();
+    	}
+		// remove old storage
+		StorageNames oldStorageNames = ((RelvarRealMetadata)metadata).getStorageNames();
+		for (int i=0; i<oldStorageNames.size(); i++) {
+			String tabName = oldStorageNames.getName(i);
+			closeDatabase(tabName);
+	    	try {
+	    		environment.removeDatabase(txn, tabName);
+	    	} catch (DatabaseException dbe) {
+	    		dbe.printStackTrace();
+	    		throw new ExceptionFatal("RS0435: unable to remove table " + storageNames);
+	    	}
+		}
+		// set metadata to reference new storage names
+    	metadata.setStorageNames(storageNames);
+	}
+
 	// Change type of an attribute
 	public synchronized void alterVarRealChangeAttributeType(Generator generator, String varname, String attributeName, Type newType) {
-		// TODO - alter
-		System.out.println("alterVarRealChangeAttributeType: ALTER VAR " + varname + " TYPE_OF " + attributeName + " TO " + newType.getSignature());
+		// System.out.println("alterVarRealChangeAttributeType: ALTER VAR " + varname + " TYPE_OF " + attributeName + " TO " + newType.getSignature());
+		alterVar(generator, varname, new Alteration() {
+			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {				
+				OperatorSignature signature = new OperatorSignature(newType.getSignature());
+				signature.addParameterType(TypeCharacter.getInstance());
+				OperatorInvocation newAttributeSelector = generator.findOperator(signature);
+				if (newAttributeSelector == null)
+					throw new ExceptionSemantic("RS0447: ALTER VAR " + varname + " TYPE_OF " + attributeName + " TO " + newType.getSignature() + " requires selector " + signature);
+				Instruction selector;
+				if (newAttributeSelector.useDynamicDispatch())
+					selector = new OpInvokeDynamicEvaluate(generator, newAttributeSelector.getOperatorSignature());
+				else
+					selector = new OpInvoke(newAttributeSelector.getStaticOperatorDefinition().getOperator());
+				
+				RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
+				Table table = relvar.getTable();
+				Heading headingForConvertedAttribute = new Heading();
+				String tempName = "%tempname";
+				headingForConvertedAttribute.add(tempName, newType);
+				
+				// update metadata to add new temporary attribute of new type
+				metadata.insertAttributes(RelDatabase.this, headingForConvertedAttribute);
+				
+				// update each tuple to hold new attribute
+				ValueTuple newAttributes = new ValueTuple(generator, new TypeTuple(headingForConvertedAttribute));
+				table.expandTuples(txn, newAttributes);
+				
+				// convert old attribute to new attribute
+				Heading heading = metadata.getHeadingDefinition(RelDatabase.this).getHeading();
+				int oldAttributeIndex = heading.getIndexOf(attributeName);
+				Type oldAttributeType = heading.getAttributes().get(oldAttributeIndex).getType();
+				int newAttributeIndex = heading.getIndexOf(tempName);
+				table.convertTuples(generator, txn, oldAttributeType, oldAttributeIndex, newAttributeIndex, selector);
+
+				// update metadata to drop old attribute
+	    		int attributeIndex = metadata.dropAttribute(RelDatabase.this, attributeName);
+	    		
+	    		// update each tuple to remove attribute
+				table.shrinkTuples(txn, attributeIndex);
+				
+				// rename temp attribute to old name
+				metadata.renameAttribute(RelDatabase.this, tempName, attributeName);
+
+				// reindex?
+				RelvarHeading keydefs = metadata.getHeadingDefinition(RelDatabase.this);
+				if (keydefs.isKeyUsing(attributeName))
+		    		reindex(txn, generator, varname, metadata, keydefs);
+				
+				recordDDL(generator, txn, "ALTER VAR " + varname + " TYPE_OF " + attributeName + " TO " + newType.getSignature());
+			}
+		});
 	}
 	
 	// ALTER VAR <varname> REAL ALTER KEY {...}
@@ -1922,39 +2010,8 @@ public class RelDatabase {
 			public void alter(Transaction txn, String varname, RelvarRealMetadata metadata) {
 	    		// update metadata
 	    		metadata.setKeys(RelDatabase.this, keydefs);
-	    		// create new storage
-		    	StorageNames storageNames = new StorageNames(keydefs.getKeyCount());
-    			Storage newStorage = new Storage(storageNames.size());
-		    	for (int i=0; i<storageNames.size(); i++) {
-		    		String tabName = getUniqueTableName();
-		    		storageNames.setName(i, tabName);
-    		    	Database berkeleyDB = openDatabase(txn, tabName, dbConfigurationAllowCreate);
-    				newStorage.setDatabase(i, berkeleyDB);
-		    	}
-		    	// copy old storage to new storage
-				RelvarReal relvar = (RelvarReal)metadata.getRelvar(varname, RelDatabase.this);
-				Table table = relvar.getTable();
-    	    	TupleIterator iterator = relvar.iterator(generator);
-    	    	try {
-    	    		while (iterator.hasNext())
-    					table.insertTupleNoDuplicates(generator, newStorage, txn, iterator.next(), "Altering KEY means");    			
-    	    	} finally {
-    	    		iterator.close();
-    	    	}
-	    		// remove old storage
-	    		StorageNames oldStorageNames = ((RelvarRealMetadata)metadata).getStorageNames();
-	    		for (int i=0; i<oldStorageNames.size(); i++) {
-	    			String tabName = oldStorageNames.getName(i);
-	    			closeDatabase(tabName);
-    		    	try {
-    		    		environment.removeDatabase(txn, tabName);
-    		    	} catch (DatabaseException dbe) {
-    		    		dbe.printStackTrace();
-    		    		throw new ExceptionFatal("RS0435: unable to remove table " + storageNames);
-    		    	}
-	    		}
-	    		// set metadata to reference new storage names
-		    	metadata.setStorageNames(storageNames);
+	    		// reindex
+	    		reindex(txn, generator, varname, metadata, keydefs);
 		    	recordDDL(generator, txn, "ALTER VAR " + varname + " " + keydefs.toString() + ";");
 			}
 		});

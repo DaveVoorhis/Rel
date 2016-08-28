@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Implement ALTER VAR <name> TYPE_OF <from> TO <to>.
-
 - Implement LEAD, LAG, iTH etc. Maybe these return the whole tuple, rather than an attribute?  (If so, what
   does 'null' look like?)
 
