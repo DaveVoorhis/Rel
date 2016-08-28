@@ -1,9 +1,9 @@
 ** TO DO **
 
+- Keep list of recently opened databases in main menu.
+
 - Implement LEAD, LAG, iTH etc. Maybe these return the whole tuple, rather than an attribute?  (If so, what
   does 'null' look like?)
-
-- Keep list of recently opened databases in main menu.
 
 - Replace VM with generation of native Java code, compiled with ecj.
 
