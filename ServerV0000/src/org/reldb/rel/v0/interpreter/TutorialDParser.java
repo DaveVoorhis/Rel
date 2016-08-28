@@ -1630,6 +1630,34 @@ public class TutorialDParser implements TutorialDVisitor {
 		return typeInfo;
 	}
 
+	// IMAGE_IN pseudo-operator
+	public Object visit(ASTImageIn node, Object data) {
+		currentNode = node;
+		// Child 0 - relational expression
+		Type maybeRelationType = (Type)compileChild(node, 0, data);
+		if (!(maybeRelationType instanceof TypeRelation))
+			throw new ExceptionSemantic("RS0445: IMAGE_IN expected first operand of type RELATION, but got " + maybeRelationType);
+		TypeRelation leftType = (TypeRelation)maybeRelationType;
+		Generator.RelationDefinition relation = generator.new RelationDefinition(null);
+		// Child 1 - optional tuple expression. If absent, it's TUPLE {*}
+		if (getChildCount(node) == 2) {
+			Type maybeTupleType = (Type)compileChild(node, 1, data);
+			if (!(maybeTupleType instanceof TypeTuple))
+				throw new ExceptionSemantic("RS0446: IMAGE_IN expected second operand of type TUPLE, but got " + maybeTupleType);
+			relation.addTupleToRelation((TypeTuple)maybeTupleType);
+		} else {
+			Generator.TupleDefinition tuple = generator.new TupleDefinition();
+			tuple.setWildcard();
+			relation.addTupleToRelation(tuple.endTuple());
+		}
+		TypeRelation rightType = relation.endRelation();
+		TypeRelation joinType = generator.compileRelationJoin(leftType, rightType);
+		SelectAttributes attributes = new SelectAttributes();
+		attributes.setAllBut(true);
+		attributes.add(rightType.getHeading().getAttributes());
+		return generator.compileRelationProject(joinType, attributes);
+	}
+	
 	// SAME TYPE AS.  Return Type.
 	public Object visit(ASTTypeSameTypeAs node, Object data) {
 		currentNode = node;

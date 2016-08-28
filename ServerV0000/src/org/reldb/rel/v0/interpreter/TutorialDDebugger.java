@@ -844,6 +844,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTTypeOf node, Object data) {
 		return dump(node, data);
 	}
+
+	// IMAGE_IN pseudo-operator
+	public Object visit(ASTImageIn node, Object data) {
+		return dump(node, data);
+	}
 	
 	// SAME TYPE AS
 	public Object visit(ASTTypeSameTypeAs node, Object data) {

@@ -112,6 +112,17 @@ public class TestTupleStar extends BaseOfTest {
 		testEquals(expected, src);
 	}
 	
+	@Test
+	public void testTupleStar05() {
+		String src = "IMAGE_IN(myvar, TUP {c 'A'})";
+		String expected = 
+				"RELATION {x INTEGER} {\n" +
+				"\tTUPLE {x 1},\n" +
+				"\tTUPLE {x 2}\n" +
+				"}";
+		testEquals(expected, src);
+	}
+	
 	@AfterClass
 	public static void testSummarizeComplexTeardown() {
 		String src =

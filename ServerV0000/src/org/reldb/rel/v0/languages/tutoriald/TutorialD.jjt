@@ -128,6 +128,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < I_DELETE: "I_DELETE" >
 | < I_MINUS: "I_MINUS" >
 | < IF: "IF" >
+| < IMAGE_IN: "IMAGE_IN" >
 | < IN: "IN" >
 | < INIT: "INIT" >
 | < INSERT: "INSERT" >
@@ -1378,6 +1379,7 @@ void primary_expression() :
 	|	case_expression()
 	|	if_expression()
 	|  	type_of()
+	| 	image_in()
 	|	LOOKAHEAD(2) fn_invoke() 
 	| 	dereference() 
 	| 	"(" expression() ")"
@@ -1385,7 +1387,13 @@ void primary_expression() :
 
 void type_of() #TypeOf :
 {}
-{  		<TYPE_OF> "(" expression() ")"
+{  	<TYPE_OF> "(" expression() ")"
+}
+
+void image_in() #ImageIn :
+{}
+{
+  	<IMAGE_IN> "(" expression() [ "," expression() ] ")"
 }
 
 void case_expression() #CaseExpression :

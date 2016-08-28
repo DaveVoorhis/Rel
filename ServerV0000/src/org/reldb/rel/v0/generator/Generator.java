@@ -2800,7 +2800,7 @@ public class Generator {
 						if (name.startsWith("%tuple") || name.startsWith("%source_tuple"))
 							return (TypeTuple)compileGet(name);
 					}
-					currentOperator = currentOperatorDefinition.getParentOperatorDefinition();
+					currentOperator = currentOperator.getParentOperatorDefinition();
 				}
 			}
 			compileInstruction(new OpTuplePushLiteral(heading.getDegree()));
