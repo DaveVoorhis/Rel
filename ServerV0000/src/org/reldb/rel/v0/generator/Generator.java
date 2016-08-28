@@ -2773,6 +2773,7 @@ public class Generator {
 	
 	public class TupleDefinition {
 		private Heading heading;
+		private boolean wildcard = false;
 		
 		// Begin tuple literal
 		public TupleDefinition() {
@@ -2787,11 +2788,31 @@ public class Generator {
 		
 		// End tuple literal.  Return the tuple's type.
 		public TypeTuple endTuple() {
+			if (wildcard) {
+				OperatorDefinition currentOperator = getCurrentOperatorDefinition();
+				while (currentOperator != null) {
+					OperatorSignature currentOperatorSignature = currentOperator.getSignature();
+					int parmCount = currentOperatorSignature.getParmCount();
+					for (int parm = 0; parm < parmCount; parm++) {
+						String name = currentOperatorSignature.getParameterName(parm);
+						// Are we in an open expression context? If so, a parm "%tuple<n>" or "%source_tuple<n>" will exist.
+						// Let TUP {*} refer to it.
+						if (name.startsWith("%tuple") || name.startsWith("%source_tuple"))
+							return (TypeTuple)compileGet(name);
+					}
+					currentOperator = currentOperatorDefinition.getParentOperatorDefinition();
+				}
+			}
 			compileInstruction(new OpTuplePushLiteral(heading.getDegree()));
 			return new TypeTuple(heading);
 		}
+
+		// Identify this as a "wildcard" tuple, i.e., TUPLE {*}, which should close over its scope
+		public void setWildcard() {
+			wildcard = true;
+		}
 	}
-		
+
 	// Push delimited string literal to stack
 	public void compilePushDelimitedString(String value) {
 		compilePush(ValueCharacter.stripDelimited(Generator.this, value));

@@ -1212,6 +1212,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 		return dump(node, data);
 	}
 	
+	// tuple wildcard, i.e., TUPLE {*}
+	public Object visit(ASTTupleComponentWildcard node, Object data) {
+		return dump(node, data);
+	}
+	
 	// String literal
 	public Object visit(ASTStringLiteral node, Object data) {
 		return dump(node, data);

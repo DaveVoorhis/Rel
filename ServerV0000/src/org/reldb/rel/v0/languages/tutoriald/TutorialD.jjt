@@ -1723,7 +1723,13 @@ void literal() :
 void tuple() #Tuple :
 {}
 {
-	<TUPLE> "{" [ tuple_component_commalist() ] "}"
+	<TUPLE> "{" ( tuple_component_wildcard() | [ tuple_component_commalist() ] ) "}"
+}
+
+void tuple_component_wildcard() #TupleComponentWildcard :
+{}
+{
+  	"*"
 }
 
 void tuple_component_commalist() :

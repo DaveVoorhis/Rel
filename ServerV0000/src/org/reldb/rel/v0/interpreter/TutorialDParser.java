@@ -3717,6 +3717,15 @@ public class TutorialDParser implements TutorialDVisitor {
 		return null;
 	}
 	
+	// tuple wildcard, i.e., TUPLE {*}
+	public Object visit(ASTTupleComponentWildcard node, Object data) {
+		currentNode = node;
+		// data is Generator.TupleDefinition
+		Generator.TupleDefinition tuple = (Generator.TupleDefinition)data;
+		tuple.setWildcard();
+		return null;
+	}
+	
 	// Capture string literal.  Return String.
 	public Object visit(ASTStringLiteral node, Object data) {
 		currentNode = node;
