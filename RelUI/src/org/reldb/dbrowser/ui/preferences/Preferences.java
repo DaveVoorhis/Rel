@@ -3,6 +3,7 @@ package org.reldb.dbrowser.ui.preferences;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Vector;
 
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.preference.PreferenceDialog;
@@ -52,6 +53,21 @@ public class Preferences {
 		save();
 	}
 	
+	public static void setPreference(String name, String[] value) {
+		int n = 0;
+		for (String string: value)
+			getPreferences().setValue(name + "[" + (n++) + "]", string);
+		while (true) {
+			String string = getPreferences().getString(name + "[" + n + "]");
+			if (string.length() == 0)
+				break;
+			else
+				getPreferences().setToDefault(name + "[" + n + "]");
+			n++;
+		}
+		save();
+	}
+	
 	public static void setPreference(String name, String value) {
 		getPreferences().setValue(name, value);
 		save();
@@ -74,6 +90,19 @@ public class Preferences {
 		int width = prefs.getInt(name + "_width");
 		int height = prefs.getInt(name + "_height");
 		return new Rectangle(x, y, width, height);
+	}
+	
+	public static String[] getPreferenceStringArray(String name) {
+		int n = 0;
+		Vector<String> strings = new Vector<String>();
+		while (true) {
+			String string = getPreferences().getString(name + "[" + (n++) + "]");
+			if (string.length() == 0)
+				break;
+			else
+				strings.add(string);
+		}
+		return strings.toArray(new String[0]);
 	}
 	
 	public static String getPreferenceString(String name) {

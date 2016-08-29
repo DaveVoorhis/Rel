@@ -130,7 +130,6 @@ public class DbTab extends CTabItem {
 					if (textDbLocation.getText().trim().length() == 0)
 						textDbLocation.setText(lastURI);
 					else {
-						close();
 						openDatabaseAtURI(textDbLocation.getText(), false);
 					}
 				}
@@ -371,6 +370,8 @@ public class DbTab extends CTabItem {
 		});
 		
 		DBrowser.createNewTabIfNeeded();
+		
+		DBrowser.updateRecentlyUsedDatabaseList(dbURL);
     }
     
     public void refresh() {
@@ -472,6 +473,8 @@ public class DbTab extends CTabItem {
     }
 
 	public boolean openDatabaseAtURI(String uri, boolean canCreate) {
+		close();
+		textDbLocation.setText(uri);
 		lastURI = uri;
 		setShowClose(true);
 		return openConnection(uri, true, canCreate);
@@ -503,27 +506,19 @@ public class DbTab extends CTabItem {
 	}
 	
 	public boolean newDatabase(String string) {
-		close();
-		textDbLocation.setText("local:" + string);
-		return openDatabaseAtURI(textDbLocation.getText(), true);
+		return openDatabaseAtURI("local:" + string, true);
 	}
 
 	public boolean openLocalDatabase(String string) {
-		close();
-		textDbLocation.setText("local:" + string);
-		return openDatabaseAtURI(textDbLocation.getText(), false);
+		return openDatabaseAtURI("local:" + string, false);
 	}
 
 	public boolean openRemoteDatabase(String string) {
-		close();
-		textDbLocation.setText(string);
-		return openDatabaseAtURI(textDbLocation.getText(), false);
+		return openDatabaseAtURI(string, false);
 	}
 
 	public boolean openDefaultDatabase(String string) {
-		close();
-		textDbLocation.setText("local:" + string);
-		return openDatabaseAtURI(textDbLocation.getText(), true);		
+		return openDatabaseAtURI("local:" + string, true);		
 	}
 
 	public void makeBackup() {

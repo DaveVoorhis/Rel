@@ -11,10 +11,7 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_XU6QcLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.newDatabase" label="New database" iconURI="platform:/plugin/RelUI/icons/NewDBIcon.png" tooltip="New database" mnemonics="M1+n" command="_eqs_ALqpEeSSsbhT1QHqRQ"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_YysdELqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openLocalDatabase" label="Open local database" iconURI="platform:/plugin/RelUI/icons/OpenDBLocalIcon.png" tooltip="Open local database" mnemonics="M1+l" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_aF044LqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openRemoteDatabase" label="Open remote database" iconURI="platform:/plugin/RelUI/icons/OpenDBRemoteIcon.png" tooltip="Open remote database" mnemonics="M1+r" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
-        <children xsi:type="menu:MenuSeparator" xmi:id="_4_VjsLqZEeSSsbhT1QHqRQ" elementId="relui.menuseparator.0"/>
         <children xsi:type="menu:DynamicMenuContribution" xmi:id="_eKiEMG3KEea3U5Pl8kuzZg" elementId="relui.dynamicmenucontribution.recentlyUsed" label="Open recently used databases" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.ObtainRecentlyUsedDatabaseList"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_SNSZoG3LEea3U5Pl8kuzZg" elementId="relui.handledmenuitem.clearRecentlyUsed" label="Clear recently-opened list" tooltip="Clear list of recently-opened databases" command="_sbek0G3LEea3U5Pl8kuzZg"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_eVHKQG3PEea3U5Pl8kuzZg" elementId="relui.handledmenuitem.manageRecentlyUsedDatabase" label="Manage recently-opened list" tooltip="Manage list of recently-opened databases" command="_pYPggG3PEea3U5Pl8kuzZg"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_XDnE0G3KEea3U5Pl8kuzZg" elementId="relui.menuseparator.2"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_-x_hUMfrEeSqd4GfyFqaAQ" elementId="relui.handledmenuitem.about" label="About" tooltip="About" command="_1_YZiqbsEeSFCpZI3OEurw"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_58XzsLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.exit" label="Exit" tooltip="Exit application" mnemonics="M1+x" command="_1_YZgKbsEeSFCpZI3OEurw"/>
@@ -39,8 +36,6 @@
   <handlers xmi:id="_s3rogFPIEeatz8M60Y6h3Q" elementId="relui.handler.submitReport" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.SubmitBugReport" command="_ws_GIFPIEeatz8M60Y6h3Q"/>
   <handlers xmi:id="_S3VPkFPJEeatz8M60Y6h3Q" elementId="relui.handler.checkForUpdates" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.CheckForUpdates" command="_7_8BEFPIEeatz8M60Y6h3Q"/>
   <handlers xmi:id="_A06LIFP5Eeatz8M60Y6h3Q" elementId="relui.handler.submitFeedback" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.SubmitFeedback" command="_6cuhEFP4Eeatz8M60Y6h3Q"/>
-  <handlers xmi:id="_0JQI0G3LEea3U5Pl8kuzZg" elementId="relui.handler.clearRecentlyUsed" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.ClearRecentlyUsed" command="_sbek0G3LEea3U5Pl8kuzZg"/>
-  <handlers xmi:id="_tjtbYG3PEea3U5Pl8kuzZg" elementId="relui.handler.manageRecentlyUsedCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.ManageRecentlyUsedDatabase" command="_pYPggG3PEea3U5Pl8kuzZg"/>
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
     <bindings xmi:id="_1_YZg6bsEeSFCpZI3OEurw" keySequence="M1+Q" command="_1_YZgKbsEeSFCpZI3OEurw"/>
     <bindings xmi:id="_1_YZhqbsEeSFCpZI3OEurw" keySequence="M1+O" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
@@ -59,8 +54,6 @@
   <commands xmi:id="_ws_GIFPIEeatz8M60Y6h3Q" elementId="relui.command.submitBugReportCommand" commandName="submitBugReportCommand" description="Submit bug report"/>
   <commands xmi:id="_7_8BEFPIEeatz8M60Y6h3Q" elementId="relui.command.checkForUpdates" commandName="checkForUpdates" description="Check for updates"/>
   <commands xmi:id="_6cuhEFP4Eeatz8M60Y6h3Q" elementId="relui.command.submitFeedback" commandName="submitFeedback" description="Submit feedback or feature request"/>
-  <commands xmi:id="_sbek0G3LEea3U5Pl8kuzZg" elementId="relui.command.clearRecentlyUsed" commandName="clearRecentlyUsedCommand" description="Clear recently-used database list"/>
-  <commands xmi:id="_pYPggG3PEea3U5Pl8kuzZg" elementId="relui.command.manageRecentlyUsedCommand" commandName="manageRecentlyUsedCommand" description="Manage recently-used database list"/>
   <addons xmi:id="_1_XycqbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_1_Xyc6bsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_1_XydKbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

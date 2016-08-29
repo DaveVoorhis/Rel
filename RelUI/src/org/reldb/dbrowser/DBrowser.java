@@ -1,6 +1,8 @@
 package org.reldb.dbrowser;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -13,9 +15,12 @@ import org.reldb.dbrowser.hooks.OpenDocumentEventProcessor;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.MainPanel;
 import org.reldb.dbrowser.ui.RemoteDatabaseDialog;
+import org.reldb.dbrowser.ui.preferences.Preferences;
 
 /** Root of RelUI. */
 public class DBrowser {
+	private final static String recentlyUsedDatabaseListPreference = "recentlyUsedDatabaseList";
+	
 	private static MainPanel mainPanel;
 	private static DirectoryDialog openDatabaseDialog;
 	private static DirectoryDialog newDatabaseDialog;
@@ -167,9 +172,23 @@ public class DBrowser {
 		getCurrentDbTab().openDatabaseAtURI(dbURI, false);
 	}
 
+	// Add this to the recently-used list if it's not there; move it up if it is
+	public static void updateRecentlyUsedDatabaseList(String dbURL) {
+		LinkedList<String> recentlyUsed = new LinkedList<String>();
+		recentlyUsed.addAll(Arrays.asList(Preferences.getPreferenceStringArray(recentlyUsedDatabaseListPreference)));
+		int indexOfDBURL = recentlyUsed.indexOf(dbURL);
+		if (indexOfDBURL >= 0)
+			recentlyUsed.remove(dbURL);
+		recentlyUsed.addFirst(dbURL);
+		if (recentlyUsed.size() > 15)	// arbitrary maximum 15 items in the recently used database list
+			recentlyUsed.removeLast();
+		Preferences.setPreference(recentlyUsedDatabaseListPreference, recentlyUsed.toArray(new String[0]));		
+	}
+
 	public static void clearRecentlyUsedDatabaseList() {
-		// TODO Auto-generated method stub
-		System.out.println("DBrowser: clearRecentlyUsedDatabaseList not implemented yet.");
+		if (MessageDialog.openConfirm(getShell(), "Clear list of recently-opened databases?", 
+				"Are you sure you wish to clear the list of recently-opened databases?"))		
+			Preferences.setPreference(recentlyUsedDatabaseListPreference, new String[0]);
 	}
 
 	public static void manageRecentlyUsedDatabaseList() {
@@ -178,10 +197,7 @@ public class DBrowser {
 	}
 
 	public static String[] getRecentlyUsedDatabaseList() {
-		return new String[] {
-			"local://blah",
-			"remote://blah.com/db"
-		};
+		return Preferences.getPreferenceStringArray(recentlyUsedDatabaseListPreference);
 	}
 	
 }
