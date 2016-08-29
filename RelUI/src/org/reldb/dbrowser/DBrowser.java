@@ -135,7 +135,7 @@ public class DBrowser {
 		if (result != null)
 			getCurrentDbTab().openRemoteDatabase(result.toString());
 	}
-
+	
 	public static void createNewTabIfNeeded() {
 		CTabItem[] tabs = mainPanel.getTabFolder().getItems();
 		if (tabs.length == 0 || ((DbTab)tabs[tabs.length - 1]).isOpenOnADatabase())
@@ -161,6 +161,27 @@ public class DBrowser {
 				dbTab.openLocalDatabase(fname.substring(0, fnamePos));
 			}
 		}
+	}
+
+	public static void openDatabase(String dbURI) {
+		getCurrentDbTab().openDatabaseAtURI(dbURI, false);
+	}
+
+	public static void clearRecentlyUsedDatabaseList() {
+		// TODO Auto-generated method stub
+		System.out.println("DBrowser: clearRecentlyUsedDatabaseList not implemented yet.");
+	}
+
+	public static void manageRecentlyUsedDatabaseList() {
+		// TODO Auto-generated method stub
+		System.out.println("DBrowser: manageRecentlyUsedDatabaseList not implemented yet.");		
+	}
+
+	public static String[] getRecentlyUsedDatabaseList() {
+		return new String[] {
+			"local://blah",
+			"remote://blah.com/db"
+		};
 	}
 	
 }
