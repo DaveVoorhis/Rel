@@ -1,0 +1,21 @@
+// Create family tree relvar
+VAR family_tree REAL RELATION {id INTEGER, firstname CHARACTER, lastname CHARACTER, year_of_birth INTEGER, year_of_death INTEGER, father_id INTEGER, mother_id INTEGER} KEY {id};
+
+// Populate with data
+family_tree := RELATION {id INTEGER, firstname CHARACTER, lastname CHARACTER, year_of_birth INTEGER, year_of_death INTEGER, father_id INTEGER, mother_id INTEGER} {
+	TUPLE {id 1, firstname "Karl", lastname "Miller", year_of_birth 1855, year_of_death 1905, father_id 0, mother_id 0},
+	TUPLE {id 2, firstname "Lisa", lastname "Miller", year_of_birth 1851, year_of_death 1912, father_id 0, mother_id 0},
+	TUPLE {id 3, firstname "Ruth", lastname "Miller", year_of_birth 1878, year_of_death 1888, father_id 1, mother_id 2},
+	TUPLE {id 4, firstname "Helen", lastname "Miller", year_of_birth 1880, year_of_death 1884, father_id 1, mother_id 2},
+	TUPLE {id 5, firstname "Carl", lastname "Miller", year_of_birth 1882, year_of_death 1935, father_id 1, mother_id 2},
+	TUPLE {id 6, firstname "John", lastname "Miller", year_of_birth 1883, year_of_death 1900, father_id 1, mother_id 2},
+	TUPLE {id 7, firstname "Emily", lastname "Newton", year_of_birth 1880, year_of_death 1940, father_id 0, mother_id 0},
+	TUPLE {id 8, firstname "Charly", lastname "Miller", year_of_birth 1908, year_of_death 1978, father_id 5, mother_id 7},
+	TUPLE {id 9, firstname "Deborah", lastname "Brown", year_of_birth 1910, year_of_death 1980, father_id 0, mother_id 0},
+	TUPLE {id 10, firstname "Chess", lastname "Miller", year_of_birth 1948, year_of_death 0, father_id 8, mother_id 9}
+};
+
+// Determine and write paternal lineage
+WRITELN (TCLOSE((family_tree RENAME {id AS X, father_id AS Y}) {X, Y}))
+	RENAME {X AS id, Y AS father_id} 
+	JOIN family_tree WHERE id = 1 OR father_id > 0;
