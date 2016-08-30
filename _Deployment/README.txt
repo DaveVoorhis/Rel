@@ -2,9 +2,12 @@ Rel -- An implementation of Date and Darwen's Tutorial D.
 
 NOTE: As of version 1.0.12, the standalone Rel DBMS requires Oracle
       Java version 1.8.x (also known as Java 8) or a higher version,
-      or a compatible equivalent. The full Rel distribution, including
-      the graphical user interface (aka "DBrowser"), includes a Java
-      runtime, so there's no need to download Java.
+      or a compatible equivalent. The full Rel distribution --
+      including the graphical user interface (aka "DBrowser") --
+      includes Java, so there's normally no need to download
+      Java. However, the first time you run Rel on Mac OS X, you may
+      be asked to install Java 1.6, which (oddly) is not actually used
+      by Rel, but is required in order to run it.
 
 *** IMPORTANT INSTRUCTIONS FOR UPGRADING: ***
 
@@ -28,8 +31,8 @@ may require some modifications.
 Rel user interface (aka DBrowser) version 3.001 or above (which
 includes the Rel DBMS version 1.0.13 or above) will automatically
 attempt to upgrade any database created using Rel user interface
-version 3.000 or above, or the Rel DBMS version 1.0.13 or
-above. Normally, the database upgrade is completely
+version 3.000 or above, or with the standalone Rel DBMS version 1.0.13
+or above. Normally, the database upgrade is completely
 automatic. However, in some cases the upgrade may not be able to
 complete automatically. If this happens, it will tell you, and you may
 need to edit the database backup script before you can successfully
