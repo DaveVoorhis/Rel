@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.reldb.dbrowser.hooks.OpenDocumentEventProcessor;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.MainPanel;
+import org.reldb.dbrowser.ui.ManageRecentlyUsedDialog;
 import org.reldb.dbrowser.ui.RemoteDatabaseDialog;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
@@ -192,12 +193,16 @@ public class DBrowser {
 	}
 
 	public static void manageRecentlyUsedDatabaseList() {
-		// TODO Auto-generated method stub
-		System.out.println("DBrowser: manageRecentlyUsedDatabaseList not implemented yet.");		
+		ManageRecentlyUsedDialog dialog = new ManageRecentlyUsedDialog(getShell());
+		dialog.open();
 	}
 
 	public static String[] getRecentlyUsedDatabaseList() {
 		return Preferences.getPreferenceStringArray(recentlyUsedDatabaseListPreference);
+	}
+
+	public static void setRecentlyUsedDatabaseList(String[] usedList) {
+		Preferences.setPreference(recentlyUsedDatabaseListPreference, usedList);
 	}
 	
 }
