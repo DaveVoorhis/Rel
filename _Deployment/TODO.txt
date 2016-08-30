@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Implement recently-opened database list management dialog.
-
 - Implement LEAD, LAG, iTH etc. Maybe these return the whole tuple, rather than an attribute?  (If so, what
   does 'null' look like?)
 
