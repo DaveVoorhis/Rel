@@ -68,7 +68,7 @@ public class AboutDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
-		shell = new Shell(getParent(), SWT.NONE);
+		shell = new Shell(getParent(), SWT.NO_TRIM);
 		shell.setText("About Rel");
 		shell.setLayout(null);
 		shell.setMinimumSize(backgroundWidth, backgroundHeight);
