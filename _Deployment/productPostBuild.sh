@@ -9,7 +9,7 @@ proddir=~/git/Rel/_Deployment/product
 rm -rf Scripts/.DS_Store
 cp -R Scripts $proddir/RelScripts
 pushd $proddir/
-zip -9r Examples RelScripts
+zip -9r RelExamples_$relversion RelScripts
 popd
 
 # Linux GTK 64bit
