@@ -21,12 +21,14 @@ public class ObtainRecentlyUsedDatabaseList {
 				MDirectMenuItem menuItem = MMenuFactory.INSTANCE.createDirectMenuItem();
 				menuItem.setLabel("Open " + dbURL);
 				menuItem.setIconURI("platform:/plugin/RelUI/icons/" + 
-						(dbURL.startsWith("local:") ? "OpenDBLocalIcon.png" : "OpenDBRemoteIcon.png"));
+						(dbURL.startsWith("db:") ? "OpenDBLocalIcon.png" : "OpenDBRemoteIcon.png"));
 				menuItem.setContributionURI("bundleclass://RelUI/org.reldb.dbrowser.handlers.OpenRecentlyUsed");
 				items.add(menuItem);
 			}
+			separator = MMenuFactory.INSTANCE.createMenuSeparator();
+			items.add(separator);
 			MDirectMenuItem managementItem = MMenuFactory.INSTANCE.createDirectMenuItem();
-			managementItem.setLabel("Clear above list of recently-opened databases.");
+			managementItem.setLabel("Clear above list of recently-opened databases");
 			managementItem.setContributionURI("bundleclass://RelUI/org.reldb.dbrowser.handlers.ClearRecentlyUsed");
 			items.add(managementItem);
 			managementItem = MMenuFactory.INSTANCE.createDirectMenuItem();

@@ -12,11 +12,11 @@ public class ClientFromURL {
 
     /** Open a connection. */
     public static StreamReceiverClient openConnection(String databaseURL, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws NumberFormatException, IOException, MalformedURLException, DatabaseFormatVersionException {
-    	if (databaseURL.toLowerCase().startsWith("local:"))
-    		if (databaseURL.length() > 6)
-    			return new ClientLocalConnection(databaseURL.substring(6).trim(), createDbAllowed, crashHandler, additionalJars);
+    	if (databaseURL.toLowerCase().startsWith("db:"))
+    		if (databaseURL.length() > 3)
+    			return new ClientLocalConnection(databaseURL.substring(3).trim(), createDbAllowed, crashHandler, additionalJars);
     		else
-    			throw new MalformedURLException("Please specify a local database as local:<directory>");
+    			throw new MalformedURLException("Please specify a local database as db:<directory>");
     	else {
     		ClassPathHack.addFile("relshared.jar");
         	String hostName = databaseURL;

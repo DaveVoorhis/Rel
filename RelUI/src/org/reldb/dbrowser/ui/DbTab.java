@@ -325,7 +325,7 @@ public class DbTab extends CTabItem {
 
         setStatus("Requires conversion to the current database format.");
 
-        showConversion(message, dbURL.substring("local:".length()));
+        showConversion(message, dbURL.substring("db:".length()));
         
 		DBrowser.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
 			public void close(CTabFolderEvent event) {
@@ -448,7 +448,7 @@ public class DbTab extends CTabItem {
 		getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
     	try {
 			setText(dbURL);
-	    	if (DBrowser.isNoLocalRel() && dbURL.startsWith("local:")) {
+	    	if (DBrowser.isNoLocalRel() && dbURL.startsWith("db:")) {
 	    		doConnectionResultFailed(new Throwable("Local Rel server is not installed."), dbURL);
 	    		return false;
 	    	}
@@ -506,11 +506,11 @@ public class DbTab extends CTabItem {
 	}
 	
 	public boolean newDatabase(String string) {
-		return openDatabaseAtURI("local:" + string, true);
+		return openDatabaseAtURI("db:" + string, true);
 	}
 
 	public boolean openLocalDatabase(String string) {
-		return openDatabaseAtURI("local:" + string, false);
+		return openDatabaseAtURI("db:" + string, false);
 	}
 
 	public boolean openRemoteDatabase(String string) {
@@ -518,7 +518,7 @@ public class DbTab extends CTabItem {
 	}
 
 	public boolean openDefaultDatabase(String string) {
-		return openDatabaseAtURI("local:" + string, true);		
+		return openDatabaseAtURI("db:" + string, true);		
 	}
 
 	public void makeBackup() {

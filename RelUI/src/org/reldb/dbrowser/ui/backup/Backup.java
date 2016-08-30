@@ -21,8 +21,8 @@ public class Backup {
 	
 	static String getSuggestedBackupFileName(String dbURL) {
 		String fname;
-		if (dbURL.startsWith("local:"))
-			fname = dbURL.substring(6).replace('.', '_').replace('/', '_').replace('\\', '_').replace(':', '_').replace(' ', '_');
+		if (dbURL.startsWith("db:"))
+			fname = dbURL.substring(3).replace('.', '_').replace('/', '_').replace('\\', '_').replace(':', '_').replace(' ', '_');
 		else
 			fname = dbURL.replace('.', '_').replace('/', '_').replace('\\', '_').replace(':', '_').replace(' ', '_');
 		fname = fname.replace("__", "_");
