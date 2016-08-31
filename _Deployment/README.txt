@@ -1,15 +1,46 @@
 Rel -- An implementation of Date and Darwen's Tutorial D.
 
+== If you are upgrading from a previous version of Rel, please ==
+== see IMPORTANT INSTRUCTIONS FOR UPGRADING, below. ==
+
+*** GETTING STARTED ***
+
+** To run Rel, open the Rel folder or directory and run the Rel
+   executable. It's normally shown with a Rel icon.
+
+** To run the stand-alone command-line Rel language interpreter from
+   your operating system command-line, go to the Rel folder or
+   directory and run:
+
+   RelDBMS
+
+** The stand-alone command-line Rel language interpreter provides
+   various options.  To see these, type:
+   
+   RelDBMS -?
+
+** To run the stand-alone Rel DBMS server from the command line:
+
+   RelDBMSServer
+
+** The stand-alone Rel DBMS server provides various options.  To see
+   these, type:
+
+   RelDBMSServer -?
+
 NOTE: As of version 1.0.12, the standalone Rel DBMS requires Oracle
       Java version 1.8.x (also known as Java 8) or a higher version,
       or a compatible equivalent. The full Rel distribution --
       including the graphical user interface (aka "DBrowser") --
-      includes Java, so there's normally no need to download
+      includes Java, so there's usually no need to download
       Java. However, the first time you run Rel on Mac OS X, you may
       be asked to install Java 1.6, which (oddly) is not actually used
-      by Rel, but is required in order to run it.
+      by Rel, but is apparently required in order to launch it.
 
 *** IMPORTANT INSTRUCTIONS FOR UPGRADING: ***
+
+== If you are upgrading from a previous version of Rel, please ==
+== pay attention to the following! ==
 
 1.  You *MUST* back up your database *BEFORE* you install an upgrade!
 
@@ -42,31 +73,6 @@ However, Rel user interface version 3.000 and above cannot
 automatically upgrade databases made with older Rel versions. You must
 go to the command-line, load the backup script created in Step 1
 above, and execute it.
-
-*** GETTING STARTED ***
-
-** To run the Rel user interface, open the Rel folder or directory and
-   run the Rel executable. It's normally shown with a Rel icon.
-
-** To run the stand-alone command-line Rel language interpreter from
-   your operating system command-line, go to the Rel folder or
-   directory and run:
-
-   RelDBMS
-
-** The stand-alone command-line Rel language interpreter provides
-   various options.  To see these, type:
-   
-   RelDBMS -?
-
-** To run the stand-alone Rel DBMS server from the command line:
-
-   RelDBMSServer
-
-** The stand-alone Rel DBMS server provides various options.  To see
-   these, type:
-
-   RelDBMSServer -?
 
 For more information, please see http://reldb.org
 
