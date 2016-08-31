@@ -18,7 +18,8 @@ Rel -- An implementation of Date and Darwen's Tutorial D.
    RelExamples_3.xxx.zip
 
 4. (Optional) If you wish to run a standalone Rel DBMS server,
-   download the following:
+   download the following and extract it to a suitable
+   directory on your host machine:
 
    Rel3.xxx.DBMS.tar.gz
 
