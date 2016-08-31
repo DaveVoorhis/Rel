@@ -1,10 +1,11 @@
 == Version 3.000 Release Notes ==
 
 This is a major release of Rel, an implementation of Date & Darwen's
-"Tutorial D" database language. It introduces a brand new "front end"
-user interface that provides rich desktop database management
+"Tutorial D" database language. It introduces a new graphical "front
+end" user interface that provides rich desktop database management
 functionality and a native look-and-feel on Windows, Mac OS X, and
-Linux.
+Linux. It is the starting point for what will be a significant focus
+on friendly, end-user oriented functionality in forthcoming updates.
 
 As part of this release, the version numbering system has changed. The
 entire Rel release, including the standalone DBMS and the
@@ -12,12 +13,12 @@ user-interface, is version 3.000. The standalone DBMS carries on the
 Rel version numbering from before; the last release was version 1.0.12
 so the standalone DBMS is now version 1.0.13.
 
-Rel now runs under Java 8. The standalone DBMS requires that it be
-installed, but a typical Rel distribution including the user interface
-bundles a Java runtime, so it's normally not necessary to download
-Java separately.
+Rel now runs under Java 8. Running a standalone Rel DBMS requires that
+it be installed, but a typical Rel distribution including the user
+interface bundles a Java runtime, so it's usually not necessary to
+download Java separately.
 
-The source is now available on GitHub under
+The source code is now available on GitHub under
 https://github.com/DaveVoorhis/Rel and is easily loaded into the
 Eclipse IDE to facilitate further development.
 
@@ -29,9 +30,9 @@ database objects can now be done via a graphical interface, in
 addition to the traditional command-line.
 
 2. Code entry is now enhanced with syntax highlighting, find/replace,
-undo/redo, persistent edit history, "zoom" buttons to maximize the
-input or output display, and scripts may be edited and saved in the
-database.
+undo/redo, persistent edit history, and "zoom" buttons to maximize the
+input or output display. Rel scripts may be saved in and retrieved
+from the database.
 
 3. A graphical query language called Rev, based on a data-flow
 metaphor, is fully integrated and generates Tutorial D / Rel code.
@@ -43,20 +44,20 @@ script.
 5. The default database is created in the user's home directory,
 rather than inside the Rel program folder or directory. Other
 databases can be easily loaded from the user interface and multiple
-databases can be used simultaneously.
+local and remote databases can be used simultaneously.
 
 Significant enhancements have also been made to the Rel implementation
 of the Tutorial D database language:
 
 1. TUPLE {*} now returns the "current tuple" in any open
-expression. TUPLE {*} is equivalent to ​​TUP LE{A1 A1, ..., AAn},
-where A1, ..., An are the attributes of an implied relation such as
-the relation operand to an invocation of WHERE or EXTEND.  The key
-word TUPLE can be abbreviated to TUP, as in other places where it
-appears in the language.
+expression. TUPLE {*} is equivalent to ​​PLE {A1 A1, ..., AAn}, where
+A1, ..., An are the attributes of an implied relation such as the
+relation operand to an invocation of WHERE or EXTEND.  The keyword
+TUPLE can be abbreviated to TUP, as in other places where it appears
+in the language.
 
 2. IMAGE_IN(r, t) where r is a relation and t is a tuple, is
-equivalent to (r JOIN RELATION{t}) {ALL BUT A1, ..., An}, where A1,
+equivalent to (r JOIN RELATION {t}) {ALL BUT A1, ..., An}, where A1,
 ..., An are the attributes of t. The tuple operand to IMAGE_IN may be
 omitted, defaulting to TUPLE {*}. Thus, IMAGE_IN(r) is equivalent to
 !!r as proposed in Date & Darwen's Database Explorations, Chapter 14.
@@ -76,7 +77,7 @@ http://reldb.org/c/wp-content/uploads/2016/06/User-Defined-Aggregate-Operators-i
 6. All data definition statements are now logged in sys.DefinitionHistory.
 
 7. SET_UNIQUE_NUMBER(INT) built-in operator has been provided and is
-used in DatabaseToScript.rel script.
+used in the DatabaseToScript.rel script.
 
 8. IF, CASE, DO, WHILE, FOR and OPERATOR definitions now support
 multiple statements without requiring BEGIN .. END blocks.
@@ -93,7 +94,7 @@ after the END that closes a block.
 longer required.
 
 13. System startup announcement now provides more information about
-runtime platform.
+the runtime platform.
 
 14. Removed octal and hex integer representations, as these were a
 source of confusion.
@@ -114,7 +115,7 @@ expression using new built-in types TypeInfo, Scalar and NonScalar.
 20. Relvar update notices can be turned off with 
 SET VerboseRelvarUpdates Off.
 
-21. All relations now emitted with their heading. This improves
+21. All relations are now emitted with their heading. This improves
 readability & parse-ability.
 
 22. A modulo operator (%) is now built-in. E.g., 3 % 4 is a valid
