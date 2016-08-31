@@ -1,6 +1,6 @@
 Rel -- An implementation of Date and Darwen's Tutorial D.
 
-1. Download the installation file appropriate for your platform:
+1. Download the file appropriate for your platform:
 
    Rel3.xxx.win32.win32.x86_64.zip      Windows 64 bit
    Rel3.xxx.win32.win32.x86.zip         Windows 32 bit
