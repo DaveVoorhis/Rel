@@ -1,5 +1,25 @@
 Rel -- An implementation of Date and Darwen's Tutorial D.
 
+1. Download the installation file appropriate for your platform:
+
+   Rel3.xxx.win32.win32.x86_64.zip      Windows 64 bit
+   Rel3.xxx.win32.win32.x86.zip         Windows 32 bit
+   Rel3.xxx.dmg                         Mac OS X 64 bit
+   Rel3.xxx.linux.gtk.x86_64.tar.gz     Linux 64 bit
+
+2. Open the downloaded archive to extract the Rel folder.
+   On Mac OS X, it will help you copy the application to 
+   your Applications folder.
+
+3. Download the Rel / Tutorial D source code examples:
+
+   RelExamples_3.xxx.zip
+
+4. (Optional) If you wish to run a standalone Rel DBMS server,
+   download the following:
+
+   Rel3.xxx.DBMS.tar.gz
+
 == If you are upgrading from a previous version of Rel, please ==
 == see IMPORTANT INSTRUCTIONS FOR UPGRADING, below. ==
 
