@@ -50,7 +50,7 @@ Significant enhancements have also been made to the Rel implementation
 of the Tutorial D database language:
 
 1. TUPLE {*} now returns the "current tuple" in any open
-expression. TUPLE {*} is equivalent to ​​PLE {A1 A1, ..., AAn}, where
+expression. TUPLE {*} is equivalent to TUPLE {A1 A1, ..., AAn}, where
 A1, ..., An are the attributes of an implied relation such as the
 relation operand to an invocation of WHERE or EXTEND.  The keyword
 TUPLE can be abbreviated to TUP, as in other places where it appears
