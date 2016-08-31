@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Rel" uid="RelUI_ID" id="RelUI.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" version="1.0.13.beta" useFeatures="false" includeLaunchers="true">
+<product name="Rel" uid="RelUI_ID" id="RelUI.product" application="org.eclipse.e4.ui.workbench.swt.E4Application" version="1.0.14.beta" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/RelUI/icons/RelAppIcon/128x128.png"/>
