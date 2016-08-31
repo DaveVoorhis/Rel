@@ -5,7 +5,7 @@ This is a major release of Rel, an implementation of Date & Darwen's
 end" user interface that provides rich desktop database management
 functionality and a native look-and-feel on Windows, Mac OS X, and
 Linux. It is the starting point for what will be a significant focus
-on friendly, end-user oriented functionality in forthcoming updates.
+on friendly, end-user oriented functionality in forthcoming releases.
 
 As part of this release, the version numbering system has changed. The
 entire Rel release, including the standalone DBMS and the
