@@ -8,6 +8,8 @@ Rel -- An implementation of Date and Darwen's Tutorial D.
    Rel3.xxx.linux.gtk.x86_64.tar.gz     Linux 64 bit
 
 2. Open the downloaded archive to extract the Rel folder.
+   Move the Rel folder to a convenient location.
+   
    On Mac OS X, it will help you copy the application to 
    your Applications folder.
 
