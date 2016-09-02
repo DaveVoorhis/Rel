@@ -18,7 +18,7 @@ You're ready to develop Rel.
 
 For further information, see the Rel home page at http://reldb.org
 
-See the _Deployment directory for conventional installable versions of Rel.  These are currently executable Java .jar files, with names of the form RelInstall-x.y.z.jar  As of version 1.0.13 or later this might be replaced by something else.
+Ready-to-run distributions of Rel are available on SourceForge at https://sourceforge.net/projects/dbappbuilder/files/Rel/
 
 Read the _Deployment/README.txt file for further information on running Rel.
 
