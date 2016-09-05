@@ -5,6 +5,10 @@ javaversion=8u101
 jredir=~/Documents/JavaJREs
 proddir=~/git/Rel/_Deployment/product
 
+# Grammar
+~/bin/jjdoc ../ServerV0000/src/org/reldb/rel/v0/languages/tutoriald/parser/TutorialD.jj
+mv TutorialD.html $proddir
+
 # Scripts
 rm -rf Scripts/.DS_Store
 cp -R Scripts $proddir/RelScripts
