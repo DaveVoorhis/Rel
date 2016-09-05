@@ -17,11 +17,18 @@ Rel -- An implementation of Date and Darwen's Tutorial D.
 
    RelExamples_3.xxx.zip
 
-4. (Optional) If you wish to run a standalone Rel DBMS server,
-   download the following and extract it to a suitable
-   directory on your host machine:
+4. (Optional) Rel is a self-contained, complete, desktop database
+   management system with a user-friendly graphical user
+   interface. You can optionally also run a standalone, "headless" Rel
+   DBMS server that can be accessed from the Rel desktop database
+   management system and/or from software you write. If you wish to
+   use the standalone Rel DBMS -- which is not needed to use Rel --
+   download the following and extract it to a suitable directory on
+   your host machine:
 
    Rel3.xxx.DBMS.tar.gz
+
+   It requires a Java 8 runtime.
 
 == If you are upgrading from a previous version of Rel, please ==
 == see IMPORTANT INSTRUCTIONS FOR UPGRADING, below. ==
