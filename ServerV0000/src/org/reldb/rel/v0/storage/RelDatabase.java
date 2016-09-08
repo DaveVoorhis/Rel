@@ -1567,6 +1567,8 @@ public class RelDatabase {
 		if (!(metadata instanceof RelvarRealMetadata))
 			throw new ExceptionFatal("RS0354: VAR " + name + " is not a REAL relvar.");
 		StorageNames storageNames = ((RelvarRealMetadata)metadata).getStorageNames();
+		if (storageNames == null)
+			return null;
 		Storage storage = new Storage(storageNames.size());
 		for (int i=0; i<storageNames.size(); i++) {
 			String tabName = storageNames.getName(i);

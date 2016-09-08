@@ -188,7 +188,10 @@ public abstract class Table {
 	    	return ((ValueTuple)(new TransactionRunner() {
 	    		public Object run(Transaction txn) throws Throwable {
 	    		    DatabaseEntry foundData = new DatabaseEntry();	
-    				if (getStorage(txn).getDatabase(0).get(txn, getKeyValueFromTuple(generator, tuple, 0), foundData, LockMode.READ_COMMITTED) == OperationStatus.SUCCESS)
+	    		    Storage storage = getStorage(txn);
+	    		    if (storage == null)
+	    		    	return null;
+    				if (storage.getDatabase(0).get(txn, getKeyValueFromTuple(generator, tuple, 0), foundData, LockMode.READ_COMMITTED) == OperationStatus.SUCCESS)
 						return (ValueTuple)database.getTupleBinding().entryToObject(foundData);
     				return null;
 	    		}
