@@ -5,11 +5,13 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -30,7 +32,12 @@ public class DeleteConfirmDialog extends Dialog {
 		this.whatToDelete = whatToDelete;
 		setBlockOnOpen(true);
 	}
-
+	
+	protected void configureShell(Shell shell) {
+	      super.configureShell(shell);
+	      shell.setText("Delete");
+	}
+	
 	public boolean getAskDeleteConfirm() {
 		return !noAskAgain;
 	}
@@ -44,14 +51,14 @@ public class DeleteConfirmDialog extends Dialog {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new FormLayout());
 		
-		Composite image = new Composite(container, SWT.NONE);
+		Label image = new Label(container, SWT.TRANSPARENT);
 		FormData fd_composite = new FormData();
 		fd_composite.top = new FormAttachment(0, 10);
 		fd_composite.left = new FormAttachment(0, 10);
-		fd_composite.bottom = new FormAttachment(0, 42);
-		fd_composite.right = new FormAttachment(0, 42);
 		image.setLayoutData(fd_composite);
-		image.setBackgroundImage(parent.getDisplay().getSystemImage(SWT.ICON_QUESTION));
+		Image question = IconLoader.loadIcon("question");
+		image.setImage(question);
+		image.setSize(question.getBounds().width, question.getBounds().height);
 		
 		Label lblPrompt = new Label(container, SWT.NONE);
 		FormData fd_lblPrompt = new FormData();
