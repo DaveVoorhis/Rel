@@ -2,9 +2,10 @@ Last used Exception* number: RS0447
 
 Version 3.001 (1.0.14):
 
-  - fix: fixed Case #91, 92, 93: crash in Windows when showing row/tuple delete confirmation.
-  - fix: fixed Case #94: org.reldb.rel.v0.languages.tutoriald.parser.TokenMgrError should be ExceptionSemantic,
+  - fix: DBrowser: fixed Case #91, 92, 93: crash in Windows when showing row/tuple delete confirmation.
+  - fix: Rel: fixed Case #94: org.reldb.rel.v0.languages.tutoriald.parser.TokenMgrError should be ExceptionSemantic,
     not ExceptionFatal.
+  - enhancement: DBrowser: more detailed crash reporting.
 
 Version 3.000 (1.0.13):
 
