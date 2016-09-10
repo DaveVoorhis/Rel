@@ -18,7 +18,6 @@
 	<classpathentry kind="lib" path="lib/rel0000.jar" sourcepath="/ServerV0000/src"/>
 	<classpathentry kind="lib" path="lib/relclient.jar" sourcepath="/Client"/>
 	<classpathentry kind="lib" path="lib/RelDBMS.jar" sourcepath="/Server"/>
-	<classpathentry exported="true" kind="lib" path="swing2swt.jar"/>
 	<classpathentry kind="lib" path="lib/je-7.0.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
