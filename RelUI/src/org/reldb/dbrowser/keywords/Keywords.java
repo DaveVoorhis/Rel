@@ -14,6 +14,7 @@ public class Keywords {
 	    "ARRAY",
 	    "AS",
 	    "ASC",
+	    "ATTRIBUTES_OF",
 	    "AVG",
 	    "AVGD",
 	    "BASE",

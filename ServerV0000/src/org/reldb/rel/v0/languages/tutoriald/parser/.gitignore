@@ -270,3 +270,5 @@
 /ASTAlgUnorder.java
 /ASTTupleComponentWildcard.java
 /ASTImageIn.java
+/ASTAttributeNameCommalistList.java
+/ASTAttributeNameCommalistListAttributesOf.java

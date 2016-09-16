@@ -1,11 +1,13 @@
-Last used Exception* number: RS0447
+Last used Exception* number: RS0448
 
 Version 3.001 (1.0.14):
 
+  - enhancement: DBrowser: more detailed crash reporting; includes system platform info.
+  - enhancement: Rel: ATTRIBUTES_OF(r) or ALL BUT ATTRIBUTES_OF(r) may be used in place of an attribute commalist,
+    where r is a non-scalar expression.
   - fix: DBrowser: fixed Case #91, 92, 93: crash in Windows when showing row/tuple delete confirmation.
   - fix: Rel: fixed Case #94: org.reldb.rel.v0.languages.tutoriald.parser.TokenMgrError should be ExceptionSemantic,
     not ExceptionFatal.
-  - enhancement: DBrowser: more detailed crash reporting.
 
 Version 3.000 (1.0.13):
 

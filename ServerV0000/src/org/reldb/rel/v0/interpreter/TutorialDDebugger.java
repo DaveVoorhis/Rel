@@ -712,8 +712,13 @@ public class TutorialDDebugger implements TutorialDVisitor {
 		return dump(node, data);
 	}
 
-	// Attribute name commalist
-	public Object visit(ASTAttributeNameCommalist node, Object data) {
+	// ATTRIBUTES_OF(r)
+	public Object visit(ASTAttributeNameCommalistListAttributesOf node, Object data) {
+		return dump(node, data);
+	}
+
+	// name1, name2, ..., nameN
+	public Object visit(ASTAttributeNameCommalistList node, Object data) {
 		return dump(node, data);
 	}
 	

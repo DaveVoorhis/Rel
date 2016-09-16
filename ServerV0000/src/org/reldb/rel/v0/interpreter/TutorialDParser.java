@@ -1287,8 +1287,26 @@ public class TutorialDParser implements TutorialDVisitor {
 		return null;
 	}
 
-	// Attribute name commalist
-	public Object visit(ASTAttributeNameCommalist node, Object data) {
+	// ATTRIBUTES_OF(r)
+	public Object visit(ASTAttributeNameCommalistListAttributesOf node, Object data) {
+		currentNode = node;
+		// data is AttributeSelection
+		SelectAttributes attributes = (SelectAttributes)data;
+		try {
+			generator.setCompilingOff();
+			Type type = (Type)compileChild(node, 0, data);
+			if (!(type instanceof TypeHeading))
+				throw new ExceptionSemantic("RS0448: Expected RELATION, TUPLE or ARRAY as ATTRIBUTES_OF operand, but got " + type);
+			TypeHeading typeHeading = (TypeHeading)type;
+			attributes.add(typeHeading.getHeading().getAttributes());
+		} finally {
+			generator.setCompilingOn();
+		}
+		return null;
+	}
+
+	// name1, name2, ..., nameN
+	public Object visit(ASTAttributeNameCommalistList node, Object data) {
 		currentNode = node;
 		// data is AttributeSelection
 		SelectAttributes attributes = (SelectAttributes)data;

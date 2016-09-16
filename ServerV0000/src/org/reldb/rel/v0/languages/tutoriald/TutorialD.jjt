@@ -90,6 +90,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < ARRAY: "ARRAY" >
 | < AS: "AS" >
 | < ASC: "ASC" >
+| < ATTRIBUTES_OF: "ATTRIBUTES_OF" >
 | < AVG: "AVG" >
 | < AVGD: "AVGD" >
 | < BASE: "BASE" >
@@ -1317,7 +1318,20 @@ void optional_all_but() #AllBut :
 	[ <ALL> <BUT> #AllBut ]
 }
 
-void attribute_name_commalist() #AttributeNameCommalist :
+void attribute_name_commalist() :
+{}
+{
+		attribute_name_commalist_attributes_of()
+	|	attribute_name_commalist_list() 
+}
+
+void attribute_name_commalist_attributes_of() #AttributeNameCommalistListAttributesOf :
+{}
+{
+	<ATTRIBUTES_OF> "(" expression() ")"
+}
+
+void attribute_name_commalist_list() #AttributeNameCommalistList :
 {}
 {
 	[ identifier() ( "," identifier() )* ]
