@@ -120,9 +120,13 @@ public class UpdatesCheck {
     		} catch (Exception e) {
     			status = new SendStatus(e);
     		}
+    		if (display.isDisposed())
+    			return;
     		display.asyncExec(new Runnable() {
 				@Override
 				public void run() {
+					if (display.isDisposed())
+						return;
 					done(status);
 				}
     		});
