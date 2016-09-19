@@ -111,7 +111,9 @@ public class CheckForUpdates extends Composite {
 			public void run() {
 	    		getDisplay().asyncExec(new Runnable() {
 					@Override
-					public void run() {						
+					public void run() {
+						if (CheckForUpdates.this.isDisposed())
+							return;
 						setVisible(true);
 						setText("Rel updates?");
 						System.out.println("CheckForUpdates: check for updates.");
