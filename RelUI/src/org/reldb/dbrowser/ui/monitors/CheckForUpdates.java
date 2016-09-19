@@ -109,6 +109,8 @@ public class CheckForUpdates extends Composite {
 		TimerTask checkForUpdates = new TimerTask() {
 			@Override
 			public void run() {
+				if (CheckForUpdates.this.isDisposed())
+					return;
 	    		getDisplay().asyncExec(new Runnable() {
 					@Override
 					public void run() {
