@@ -25,7 +25,7 @@ Version 3.000 (1.0.13):
   - enhancement: DBrowser: Scripts can be edited and saved in the database.
   - enhancement: DBrowser/Rel: Backup script embedded in Rel; no longer relies on Scripts folder.
   - enhancement: Rel: TUPLE {*} now returns the "current tuple" in any open expression. I.e., 
-    TUPLE{*} is equivalent to ​​TUPLE{A1 A1, ..., An An}, where A1, ..., An are the attributes of an implied 
+    TUPLE{*} is equivalent to TUPLE{A1 A1, ..., An An}, where A1, ..., An are the attributes of an implied 
 	relation such as the relation operand to an invocation of WHERE or EXTEND.  The key word TUPLE can be 
 	abbreviated to TUP, as in other places where it appears in the language.
   - enhancement: Rel: IMAGE_IN(r, t) where r is a relation and t is a tuple, is equivalent to 
