@@ -114,7 +114,7 @@ public class UpdatesCheck {
     	
     	private SendStatus status = null;
     	
-    	public void run() {
+    	public synchronized void run() {
     		try {
     			status = doInBackground();
     		} catch (Exception e) {
