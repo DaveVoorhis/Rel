@@ -66,7 +66,8 @@ public class Loading {
 	}
 
 	private void refresh() {
-		while (loadingShell.getDisplay().readAndDispatch());		
+//		while (loadingShell.getDisplay().readAndDispatch())
+//			Thread.yield();	
 	}
 	
 	private Shell createLoadingShell() {
@@ -119,18 +120,23 @@ public class Loading {
 	
 	private void setMessageInstance(final String message) {
 		if (lblAction != null && !lblAction.isDisposed()) {
-			loadingShell.getDisplay().syncExec(new Runnable() {
-				@Override
+			(new Thread() {
 				public void run() {
-					String msg = message.trim().replaceAll("\n", "");
-					if (msg.length() == 0)
-						return;
-					lblAction.setText(msg);
-					progressBar.setSelection(count++);
-					loadingShell.update();
-					refresh();
+					loadingShell.getDisplay().syncExec(new Runnable() {
+						@Override
+						public void run() {
+							String msg = message.trim().replaceAll("\n", "");
+							if (msg.length() == 0)
+								return;
+							lblAction.setText(msg);
+							progressBar.setSelection(count++);
+							loadingShell.update();
+							loadingShell.redraw();
+							refresh();
+						}
+					});					
 				}
-			});
+			}).start();
 		}
 	}
 
