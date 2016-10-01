@@ -51,7 +51,7 @@ public class Loading {
 
 	public static void action(String message) {
 		if (loading != null)
-			loading.setMessageInstance(message);
+			loading.setMessage(message);
 	}
 	
 	public static boolean isDisplayed() {
@@ -60,18 +60,13 @@ public class Loading {
 	
 	private void openInstance() {
 		loadingShell = createLoadingShell();
+		loadingShell.layout();
 		loadingShell.open();
 		count = 0;
-		refresh();
-	}
-
-	private void refresh() {
-//		while (loadingShell.getDisplay().readAndDispatch())
-//			Thread.yield();	
 	}
 	
 	private Shell createLoadingShell() {
-		final Shell shell = new Shell(SWT.TOOL | SWT.NO_TRIM);
+		final Shell shell = new Shell(SWT.NO_TRIM);
 
 		shell.setLayout(new FormLayout());
 		shell.setMinimumSize(backgroundWidth, backgroundHeight);
@@ -79,8 +74,9 @@ public class Loading {
 		
 		Image background = IconLoader.loadIconNormal("loading");
 		shell.setBackgroundImage(background);
+		shell.setBackgroundMode(SWT.INHERIT_FORCE);
 		
-		Label lblTitle = new Label(shell, SWT.NONE);
+		Label lblTitle = new Label(shell, SWT.TRANSPARENT);
 		lblTitle.setFont(FontSize.getThisFontInNewSize(lblTitle.getFont(), 24, SWT.BOLD));
 		lblTitle.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		FormData fd_lblTitle = new FormData();
@@ -92,13 +88,15 @@ public class Loading {
 		
 		progressBar = new ProgressBar(shell, SWT.NONE);
 		progressBar.setMaximum(expectedMessageCount);
+		progressBar.setMinimum(0);
+		progressBar.setSelection(0);
 		FormData fd_progressBar = new FormData();
 		fd_progressBar.bottom = new FormAttachment(100, -10);
 		fd_progressBar.left = new FormAttachment(0, 10);
 		fd_progressBar.right = new FormAttachment(100, -10);
 		progressBar.setLayoutData(fd_progressBar);
 		
-		lblAction = new Label(shell, SWT.WRAP);
+		lblAction = new Label(shell, SWT.WRAP | SWT.TRANSPARENT);
 		lblAction.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		FormData fd_lblAction = new FormData();
 		fd_lblAction.top = new FormAttachment(progressBar, -60);
@@ -110,6 +108,7 @@ public class Loading {
 		
 		shell.setSize(background.getBounds().x, background.getBounds().y);
 		shell.setLocation(getMonitorCenter(shell));
+		
 		return shell;
 	}
 
@@ -118,25 +117,14 @@ public class Loading {
 		loadingShell = null;
 	}
 	
-	private void setMessageInstance(final String message) {
+	private void setMessage(final String message) {
 		if (lblAction != null && !lblAction.isDisposed()) {
-			(new Thread() {
-				public void run() {
-					loadingShell.getDisplay().syncExec(new Runnable() {
-						@Override
-						public void run() {
-							String msg = message.trim().replaceAll("\n", "");
-							if (msg.length() == 0)
-								return;
-							lblAction.setText(msg);
-							progressBar.setSelection(count++);
-							loadingShell.update();
-							loadingShell.redraw();
-							refresh();
-						}
-					});					
-				}
-			}).start();
+			String msg = message.trim().replaceAll("\n", "");
+			if (msg.length() == 0)
+				return;
+			lblAction.setText(msg);
+			progressBar.setSelection(++count);
+			loadingShell.layout();
 		}
 	}
 
