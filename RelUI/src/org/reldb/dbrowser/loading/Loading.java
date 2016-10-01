@@ -125,6 +125,7 @@ public class Loading {
 			lblAction.setText(msg);
 			progressBar.setSelection(++count);
 			loadingShell.layout();
+			loadingShell.getDisplay().readAndDispatch();	// needed on OS X
 		}
 	}
 
