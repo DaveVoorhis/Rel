@@ -15,7 +15,7 @@ public class Version {
 	}
 	
 	public static String getURL() {
-		return "http://reldb.org";
+		return "https://reldb.org";
 	}
 	
 	public static String getPreferencesRepositoryName() {
@@ -23,11 +23,11 @@ public class Version {
 	}
 
 	public static String getReportLogURL() {
-	    return "http://reldb.org/feedback/";		
+	    return "https://reldb.org/feedback/";		
 	}
 	
 	public static String getUpdateURL() {
-		return "http://reldb.org/updates/";
+		return "https://reldb.org/updates/";
 	}
 	
 }
