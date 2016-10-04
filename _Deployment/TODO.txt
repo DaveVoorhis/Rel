@@ -1,5 +1,9 @@
 ** TO DO **
 
+- Implement user-defined physreps and user-defined THE_<x> operators. Treat
+  RM Pre 4's “shall not be visible” as having a reasonable definition, perhaps 
+  one involving as-yet-unimplemented security features.
+
 - Have values under S-by-C display declared type; use MST_OF(v) to obtain MST of v.
 
 - Implement LEAD, LAG, iTH etc. Maybe these return the whole tuple, rather than an attribute?  (If so, what
