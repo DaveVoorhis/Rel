@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Expose external relvars
+
 - Implement user-defined physreps and user-defined THE_<x> operators. Treat
   RM Pre 4's “shall not be visible” as having a reasonable definition, perhaps 
   one involving as-yet-unimplemented security features.
@@ -10,8 +12,6 @@
   does 'null' look like?)
 
 - Replace VM with generation of native Java code, compiled with ecj.
-
-- Expose external relvars
 
 - Be able to specify user-defined parameters in Rev queries.
 
