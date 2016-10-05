@@ -2,7 +2,6 @@ Last used Exception* number: RS0448
 
 Version 3.001 (1.0.14):
 
-  - enhancement: DBrowser: feedback and updates now over https
   - enhancement: DBrowser: startup shows progress bar, for better feedback on slow machines.
   - enhancement: DBrowser: more detailed crash reporting; includes system platform info.
   - enhancement: Rel: ATTRIBUTES_OF(r) or ALL BUT ATTRIBUTES_OF(r) may be used in place of an attribute commalist,
