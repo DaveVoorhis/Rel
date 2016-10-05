@@ -23,11 +23,11 @@ public class Version {
 	}
 
 	public static String getReportLogURL() {
-	    return "https://reldb.org/feedback/";		
+	    return "http://reldb.org/feedback/";		
 	}
 	
 	public static String getUpdateURL() {
-		return "https://reldb.org/updates/";
+		return "http://reldb.org/updates/";
 	}
 	
 }
