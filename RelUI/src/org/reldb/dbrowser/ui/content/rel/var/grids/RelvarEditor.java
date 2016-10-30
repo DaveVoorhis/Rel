@@ -2,6 +2,7 @@ package org.reldb.dbrowser.ui.content.rel.var.grids;
 
 import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.ui.DbConnection;
+import org.reldb.rel.client.Heading;
 
 public class RelvarEditor extends Editor {
     
@@ -18,7 +19,11 @@ public class RelvarEditor extends Editor {
 	public void refresh() {
 		obtainKeyDefinitions();		
 		tuples = obtainTuples();
-    	heading = tuples.getHeading().toArray();
+		if (tuples != null) {
+			Heading relvarHeading = tuples.getHeading();
+			if (relvarHeading != null)
+				heading = relvarHeading.toArray();
+		}
     	super.refresh();
 	}
 

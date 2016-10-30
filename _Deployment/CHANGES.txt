@@ -7,6 +7,7 @@ Version 3.001 (1.0.14):
   - enhancement: Rel: ATTRIBUTES_OF(r) or ALL BUT ATTRIBUTES_OF(r) may be used in place of an attribute commalist,
     where r is a non-scalar expression.
   - fix: DBrowser: fixed Case #91, 92, 93: crash in Windows when showing row/tuple delete confirmation.
+  - fix: DBrowser: fixed Case #113 - #118 (approx): crash when editing a relvar with no attributes.
   - fix: Rel: fixed Case #94: org.reldb.rel.v0.languages.tutoriald.parser.TokenMgrError should be ExceptionSemantic,
     not ExceptionFatal.
 

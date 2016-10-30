@@ -48,6 +48,8 @@ import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.BeveledBorderDecorator;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.CellPainterDecorator;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.LineBorderDecorator;
+import org.eclipse.nebula.widgets.nattable.resize.command.InitializeAutoResizeColumnsCommand;
+import org.eclipse.nebula.widgets.nattable.resize.command.InitializeAutoResizeRowsCommand;
 import org.eclipse.nebula.widgets.nattable.selection.ITraversalStrategy;
 import org.eclipse.nebula.widgets.nattable.selection.MoveCellSelectionCommandHandler;
 import org.eclipse.nebula.widgets.nattable.selection.command.ClearAllSelectionsCommand;
@@ -63,6 +65,7 @@ import org.eclipse.nebula.widgets.nattable.tickupdate.TickUpdateConfigAttributes
 import org.eclipse.nebula.widgets.nattable.tooltip.NatTableContentTooltip;
 import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
 import org.eclipse.nebula.widgets.nattable.ui.util.CellEdgeEnum;
+import org.eclipse.nebula.widgets.nattable.util.GCFactory;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -274,6 +277,8 @@ public abstract class Editor extends Grid {
 
 		@Override
 		public int getColumnCount() {
+			if (heading == null)
+				return 0;
 			return heading.length;
 		}
 
@@ -557,24 +562,25 @@ public abstract class Editor extends Grid {
 	                Boolean.TRUE,
 	                DisplayMode.EDIT);
 	        // for each column...
-	        for (int column = 0; column < heading.length; column++) {
-	        	Attribute attribute = heading[column];
-	        	String columnLabel = "column" + column;
-	        	String type = attribute.getType().toString();
-	        	if (type.equalsIgnoreCase("INTEGER"))
-					registerIntegerColumn(configRegistry, columnLabel);
-				else if (type.equalsIgnoreCase("RATIONAL"))
-					registerRationalColumn(configRegistry, columnLabel);
-				else if (type.equalsIgnoreCase("CHARACTER"))
-					registerMultiLineEditorColumn(configRegistry, columnLabel);
-				else if (type.equalsIgnoreCase("BOOLEAN"))
-					registerBooleanColumn(configRegistry, columnLabel);
-				else if (type.startsWith("RELATION ")) {
-					String defaultValue = type + " {}";
-					registerRvaColumn(configRegistry, columnLabel, defaultValue);
-				} else
-					registerDefaultColumn(configRegistry, columnLabel);
-	        }
+	        if (heading != null)
+		        for (int column = 0; column < heading.length; column++) {
+		        	Attribute attribute = heading[column];
+		        	String columnLabel = "column" + column;
+		        	String type = attribute.getType().toString();
+		        	if (type.equalsIgnoreCase("INTEGER"))
+						registerIntegerColumn(configRegistry, columnLabel);
+					else if (type.equalsIgnoreCase("RATIONAL"))
+						registerRationalColumn(configRegistry, columnLabel);
+					else if (type.equalsIgnoreCase("CHARACTER"))
+						registerMultiLineEditorColumn(configRegistry, columnLabel);
+					else if (type.equalsIgnoreCase("BOOLEAN"))
+						registerBooleanColumn(configRegistry, columnLabel);
+					else if (type.startsWith("RELATION ")) {
+						String defaultValue = type + " {}";
+						registerRvaColumn(configRegistry, columnLabel, defaultValue);
+					} else
+						registerDefaultColumn(configRegistry, columnLabel);
+		        }
 	    }
 
 		private void registerDefaultColumn(IConfigRegistry configRegistry, String columnLabel) {
@@ -792,8 +798,71 @@ public abstract class Editor extends Grid {
 		super(parent, connection, relvarName);
 	}
 	
+	private static class EmptyGridData implements IDataProvider {
+		@Override
+		public Object getDataValue(int columnIndex, int rowIndex) {
+			return "Variable is not editable because it has no attributes. Select Design from the toolbar to add attributes.";
+		}
+
+		@Override
+		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
+		}
+
+		@Override
+		public int getColumnCount() {
+			return 1;
+		}
+
+		@Override
+		public int getRowCount() {
+			return 1;
+		}
+	}
+	
+	private static class EmptyGridHeading implements IDataProvider {
+		@Override
+		public Object getDataValue(int columnIndex, int rowIndex) {
+			return null;
+		}
+
+		@Override
+		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
+		}
+
+		@Override
+		public int getColumnCount() {
+			return 1;
+		}
+
+		@Override
+		public int getRowCount() {
+			return 0;
+		}		
+	}
+	
 	protected void init() {
-	    
+		if (heading == null) {
+			gridLayer = new DefaultGridLayer(new EmptyGridData(), new EmptyGridHeading());
+			table = new NatTable(parent, gridLayer, true);
+			table.addListener(SWT.Paint, new Listener(){ 		
+				@Override public void handleEvent(Event arg0) { 
+					for (int i=0; i < table.getColumnCount(); i++) { 
+						InitializeAutoResizeColumnsCommand columnCommand = 
+							new InitializeAutoResizeColumnsCommand(table, i, table.getConfigRegistry(), new GCFactory(table)); 
+						table.doCommand(columnCommand); 
+					}		
+					for (int i=0; i < table.getRowCount(); i++) { 
+						InitializeAutoResizeRowsCommand rowCommand = 
+							new InitializeAutoResizeRowsCommand(table, i, table.getConfigRegistry(), new GCFactory(table)); 
+						table.doCommand(rowCommand); 
+					}	
+					table.removeListener(SWT.Paint, this);
+				} 
+			});	
+			table.configure();
+			return;
+		}
+		
 	    dataProvider = new DataProvider();
 	    headingProvider = new HeadingProvider();
 	    
