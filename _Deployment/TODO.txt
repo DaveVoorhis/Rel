@@ -1,5 +1,8 @@
 ** TO DO **
 
+- Fix bug report 113 - 118 (approx): Create a relvar with no attributes, then
+  attempt to edit it with "Play" button in RelUI. NPE on line 21 of RelvarEditor.
+
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
   CGI scripts, etc.
 
