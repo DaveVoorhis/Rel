@@ -1,8 +1,5 @@
 ** TO DO **
 
-- Fix Case ID #119: VAR test BASE RELATION {x INTEGER, y INTEGER} INIT (TUPLE {x 10, y 20}) KEY {}; throws fatal
-  exception. Should be semantic exception.
-
 - Check: create relvar with KEY {}, attempt to INSERT rows, then ALTER to KEY {x}. Do
   the tuples we tried to INSERT now appear?
 

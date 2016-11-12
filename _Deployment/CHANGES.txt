@@ -10,6 +10,8 @@ Version 3.001 (1.0.14):
   - fix: DBrowser: fixed Case #113 - #118 (approx): crash when editing a relvar with no attributes.
   - fix: Rel: fixed Case #94: org.reldb.rel.v0.languages.tutoriald.parser.TokenMgrError should be ExceptionSemantic,
     not ExceptionFatal.
+  - fix: Rel: fixed Case ID #119: VAR test BASE RELATION {x INTEGER, y INTEGER} INIT (TUPLE {x 10, y 20}) KEY {}; 
+    threw fatal exception. Should have been semantic exception.
 
 Version 3.000 (1.0.13):
 

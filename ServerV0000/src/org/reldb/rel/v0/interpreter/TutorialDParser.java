@@ -3479,7 +3479,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		Type rightType = (Type)compileChild(node, 1, data);
 		if (!(rightType instanceof TypeRelation))
 			throw new ExceptionSemantic("RS0193: Expected RELATION on right side of IN, but got " + rightType);
-		if (!(leftType.canAccept(rightType)))
+		if (!(new TypeRelation(((TypeTuple)leftType).getHeading()).canAccept(rightType)))
 			throw new ExceptionSemantic("RS0194: " + leftType + " does not have the same heading as " + rightType);
 		return generator.compileTupleIn((TypeTuple)leftType, (TypeRelation)rightType);
 	}

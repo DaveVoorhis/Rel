@@ -21,6 +21,8 @@ public abstract class TypeHeading extends TypeAbstract {
 	public boolean canAccept(Type type) {
 		if (!(type instanceof TypeHeading))
 			throw new ExceptionSemantic("RS0261: Expected something with a heading but got a " + type + " in an operator invocation.");
+		if (!getClass().equals(type.getClass()))
+			return false;
 		return heading.canAccept(((TypeHeading)type).getHeading());
 	}
 	
