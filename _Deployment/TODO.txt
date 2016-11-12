@@ -1,8 +1,5 @@
 ** TO DO **
 
-- Check: create relvar with KEY {}, attempt to INSERT rows, then ALTER to KEY {x}. Do
-  the tuples we tried to INSERT now appear?
-
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
   CGI scripts, etc.
 
