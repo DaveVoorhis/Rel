@@ -1,16 +1,37 @@
 == Version 3.001 Release Notes ==
 
-This is a minor maintenance release of Rel, an implementation of Date & Darwen's
-"Tutorial D" database language. Changes include a startup progress bar, more 
-detailed crash reporting, an ATTRIBUTES_OF(r) or ALL BUT ATTRIBUTES_OF(r) 
-operator that may be used in place of an attribute commalist, and multiple
-bug fixes:
-  - A crash in Windows when showing row/tuple delete confirmation has been fixed.
-  - Case #113 - #118 (approx) fixed: crash when editing a relvar with no attributes.
-  - Case #94: org.reldb.rel.v0.languages.tutoriald.parser.TokenMgrError should 
-    have been ExceptionSemantic, not ExceptionFatal.
-  - Case ID #119: VAR test BASE RELATION {x INTEGER, y INTEGER} INIT (TUPLE {x 10, y 20}) KEY {}; 
-    threw a fatal exception, but should have been a semantic exception.
+This is a minor maintenance release of Rel, an implementation of Date
+& Darwen's "Tutorial D" database language.
+
+The following enhancements have been made:
+
+- A startup progress bar displays whilst the Rel user interface is
+  loading. On slow machines, this makes it clear that loading is
+  progressing and not stuck.
+
+- More detailed crash reporting has been implemented, to help the
+  development team find and fix bugs.
+
+- An ATTRIBUTES_OF(r) pseudo-operator has been provided. It may be
+  used anywhere a comma-separated list of attributes can appear.
+  E.g., WITH (t := TUPLE {STATUS 20}): (S JOIN RELATION {t})
+  {ATTRIBUTES_OF(t)} or WITH (t := TUPLE {STATUS 20}): (S JOIN
+  RELATION {t}) {ALL BUT ATTRIBUTES_OF(t)}
+
+The following bugs have been fixed:
+
+- In the Rel user interface, a crash occurred in Windows when showing
+  row/tuple delete confirmation. This has been fixed.
+
+- Case #94: org.reldb.rel.v0.languages.tutoriald.parser.TokenMgrError
+  should have been ExceptionSemantic, not ExceptionFatal.
+
+- Case #113 - #118: A crash in the Rel UI when editing a relvar with
+  no attributes has been fixed.
+
+- Case ID #119: VAR test BASE RELATION {x INTEGER, y INTEGER} INIT
+  (TUPLE {x 10, y 20}) KEY {}; threw a fatal exception that should
+  have been a semantic exception. This has been fixed.
 
 == Version 3.000 Release Notes ==
 
