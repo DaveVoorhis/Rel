@@ -1,5 +1,7 @@
 ** TO DO **
 
+- fix: new Rel UI db tab hides mode (Rel/Rev/Cmd) buttons.
+
 - check: command-line "ClickToOpen.rdb" under Windows.
 
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
