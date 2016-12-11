@@ -157,12 +157,14 @@ public class DBrowser {
 	
 	public static void openFile(String fname) {
 		if (fname.toLowerCase().endsWith(".rel")) {
+			System.out.println("Request received to open " + fname);
 			DbTab dbTab = selectEmptyTab();
 			if (dbTab.openDefaultDatabase(defaultDatabasePath))
 				dbTab.openFile(fname);
 		} else {
 			int fnamePos = fname.toLowerCase().indexOf("ClickToOpen.rdb".toLowerCase());
 			if (fnamePos >= 0) {
+				System.out.println("Request received to open " + fname);
 				DbTab dbTab = selectEmptyTab();
 				dbTab.openLocalDatabase(fname.substring(0, fnamePos));
 			}

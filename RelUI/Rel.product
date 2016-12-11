@@ -18,7 +18,7 @@
 --launcher.defaultAction
 openFile
 -name
-REL Rel
+Rel Rel
       </programArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
