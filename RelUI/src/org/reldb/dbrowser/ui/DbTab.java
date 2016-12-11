@@ -192,6 +192,8 @@ public class DbTab extends CTabItem {
 			}
 		};		
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
+		
+		core.pack();
 	}
 	
     private void setupIcons() {
