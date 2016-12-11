@@ -2,6 +2,8 @@ Last used Exception* number: RS0448
 
 Version 3.002 (1.0.15):
 
+  - fix: Rel: Spaces in database path caused external Java-based operator compilation to fail. Fixed.
+
 Version 3.001 (1.0.14):
 
   - enhancement: DBrowser: startup shows progress bar, for better feedback on slow machines.

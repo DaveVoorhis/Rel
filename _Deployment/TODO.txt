@@ -2,8 +2,6 @@
 
 - check: command-line "ClickToOpen.rdb" under Windows.
 
-- fix: External Java compilation fails if the database is in a path with spaces
-
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
   CGI scripts, etc.
 
