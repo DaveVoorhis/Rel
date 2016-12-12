@@ -17,7 +17,7 @@ public class OpenDocumentEventProcessor implements Listener {
 			else
 				filesToOpen.add(event.text);
 	}
-
+	
 	public synchronized String[] retrieveFilesToOpen() {
 		try {
 			return filesToOpen.toArray(new String[filesToOpen.size()]);
@@ -25,5 +25,10 @@ public class OpenDocumentEventProcessor implements Listener {
 			filesToOpen.clear();
 			retrieved = true;
 		}
+	}
+
+	public synchronized void addFilesToOpen(String[] fileNames) {
+		for (String argument: fileNames)
+			filesToOpen.add(argument);
 	}
 }
