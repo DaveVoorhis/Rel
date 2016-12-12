@@ -1,5 +1,6 @@
 package org.reldb.dbrowser;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -159,17 +160,23 @@ public class DBrowser {
 	}
 	
 	public static void openFile(String fname) {
+		final String clickToOpenName = "ClickToOpen.rdb";
 		if (fname.toLowerCase().endsWith(".rel")) {
 			System.out.println("Request received to open " + fname);
 			DbTab dbTab = selectEmptyTab();
 			if (dbTab.openDefaultDatabase(defaultDatabasePath))
 				dbTab.openFile(fname);
 		} else {
-			int fnamePos = fname.toLowerCase().indexOf("ClickToOpen.rdb".toLowerCase());
+			int fnamePos = fname.toLowerCase().indexOf(clickToOpenName.toLowerCase());
 			if (fnamePos >= 0) {
 				System.out.println("Request received to open " + fname);
-				DbTab dbTab = selectEmptyTab();
-				dbTab.openLocalDatabase(fname.substring(0, fnamePos));
+				selectEmptyTab().openLocalDatabase(fname.substring(0, fnamePos));
+			} else {
+				String fnameWithRdb = fname + File.pathSeparator + clickToOpenName;
+				if (new File(fnameWithRdb).exists()) {
+					System.out.println("Request received to open database at " + fname);
+					selectEmptyTab().openLocalDatabase(fname);
+				}
 			}
 		}
 	}
