@@ -2,8 +2,10 @@ Last used Exception* number: RS0448
 
 Version 3.002 (1.0.15):
 
+  - enhancement: DBrowser: Default database tab now optionally displayed via option in Preferences.
   - fix: Rel: Spaces in database path caused external Java-based operator compilation to fail. Fixed.
   - fix: DBrowser: Opening new database tab hides mode (Rel/Rev/Cmd) buttons. Fixed.
+  - fix: DBrowser: Clicking on *.rdb or *.rel files now correctly starts up Rel and loads files.
 
 Version 3.001 (1.0.14):
 

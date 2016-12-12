@@ -16,6 +16,7 @@ import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.MainPanel;
 import org.reldb.dbrowser.ui.ManageRecentlyUsedDialog;
 import org.reldb.dbrowser.ui.RemoteDatabaseDialog;
+import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
 /** Root of RelUI. */
@@ -102,12 +103,14 @@ public class DBrowser {
     		noLocalRel = true;
         }
     	
-    	DbTab tab = new DbTab();
- 		if (tab.openDefaultDatabase(defaultDatabasePath)) {
-			String[] filesToOpen = openDocProcessor.retrieveFilesToOpen();
-			for (String fname: filesToOpen)
-				openFile(fname);
-		}
+    	DbTab dbTab = new DbTab();
+    	if (!Preferences.getPreferenceBoolean(PreferencePageGeneral.SKIP_DEFAULT_DB_LOAD))
+    		dbTab.openDefaultDatabase(defaultDatabasePath);
+
+ 		openDocProcessor.addFilesToOpen(Activator.getApplicationArguments());
+		String[] filesToOpen = openDocProcessor.retrieveFilesToOpen();
+		for (String fname: filesToOpen)
+			openFile(fname);
 		
 		DBrowser.setSelection(0);
 	}
