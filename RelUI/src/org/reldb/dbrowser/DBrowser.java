@@ -172,7 +172,7 @@ public class DBrowser {
 				System.out.println("Request received to open " + fname);
 				selectEmptyTab().openLocalDatabase(fname.substring(0, fnamePos));
 			} else {
-				String fnameWithRdb = fname + File.pathSeparator + clickToOpenName;
+				String fnameWithRdb = fname + File.separator + clickToOpenName;
 				if (new File(fnameWithRdb).exists()) {
 					System.out.println("Request received to open database at " + fname);
 					selectEmptyTab().openLocalDatabase(fname);
