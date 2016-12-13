@@ -2,6 +2,8 @@ Last used Exception* number: RS0448
 
 Version 3.003 (1.0.16):
 
+  - fix: Rel UI: Spaces in application path caused external Java-based operator compilation to fail. Fixed.
+
 Version 3.002 (1.0.15):
 
   - enhancement: DBrowser: Default database tab now optionally displayed via option in Preferences.

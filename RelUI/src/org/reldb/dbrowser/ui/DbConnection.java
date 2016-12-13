@@ -47,7 +47,7 @@ public class DbConnection {
 				if (urls != null)
 					while (urls.hasMoreElements()) {
 						URL fileURL = FileLocator.toFileURL(urls.nextElement());
-						File file = new File(fileURL.toURI());
+						File file = new File(fileURL.getFile());
 						System.out.println("DbConnection: found " + file.getPath());
 						jarPaths.add(file.getAbsolutePath());
 					}
