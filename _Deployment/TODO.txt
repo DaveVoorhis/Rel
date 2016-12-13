@@ -1,5 +1,7 @@
 ** TO DO **
 
+- DbConnection::getBundleJarPath fails if Rel is launched from a directory pathspec with spaces in it. Fix?
+
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
   CGI scripts, etc.
 
