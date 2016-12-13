@@ -1,5 +1,7 @@
 Last used Exception* number: RS0448
 
+Version 3.003 (1.0.16):
+
 Version 3.002 (1.0.15):
 
   - enhancement: DBrowser: Default database tab now optionally displayed via option in Preferences.
