@@ -1,4 +1,4 @@
-package plugins.relvars.CSV;
+package Relplugins.relvars.CSV;
 
 import java.io.BufferedReader;
 import java.io.File;

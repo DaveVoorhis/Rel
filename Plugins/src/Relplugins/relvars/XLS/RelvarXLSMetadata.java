@@ -1,4 +1,4 @@
-package plugins.relvars.XLS;
+package Relplugins.relvars.XLS;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,4 +1,4 @@
-package plugins.relvars.JDBC;
+package Relplugins.relvars.JDBC;
 
 import java.io.IOException;
 import java.sql.Connection;
