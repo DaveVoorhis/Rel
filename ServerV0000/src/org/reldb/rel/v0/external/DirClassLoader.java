@@ -76,7 +76,7 @@ public class DirClassLoader extends ClassLoader {
 			}
 			reader.close();
 		} catch (FileNotFoundException fnfe) {
-			throw new ExceptionFatal("RS0290: File " + f + " not found.");
+			throw new ExceptionFatal("RS0290: File " + f + " not found for " + name);
 		} catch (IOException ioe) {
 			throw new ExceptionFatal("RS0291: Error reading " + f + ": " + ioe.toString());
 		}
