@@ -5,7 +5,7 @@ import org.reldb.rel.v0.storage.RelDatabase;
 public abstract class RelvarCustomMetadata extends RelvarMetadata implements RelvarExternalMetadata {
 	private static final long serialVersionUID = 0;
 
-	public RelvarCustomMetadata(RelDatabase database,RelvarHeading headingDefinition, String owner) {
+	public RelvarCustomMetadata(RelDatabase database, RelvarHeading headingDefinition, String owner) {
 		super(database, headingDefinition, owner);
 	}
 	
