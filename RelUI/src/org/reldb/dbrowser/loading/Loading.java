@@ -17,7 +17,7 @@ import org.reldb.dbrowser.utilities.FontSize;
 
 public class Loading {
 
-	private static final int expectedMessageCount = 6;
+	private static final int expectedMessageCount = 4;
 
 	private static final int backgroundWidth = 600;
 	private static final int backgroundHeight = 183;

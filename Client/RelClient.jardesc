@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="_Deployment/relclient.jar"/>
+    <jar path="_Deployment/plugins.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/Client/RelClient.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -11,22 +11,13 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{ParseException.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.connection.stream"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.connection.string"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseToHTML.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseToHTMLProgressive.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseAdapter.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{ResponseParserConstants.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{ResponseParserTokenManager.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.connection"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{Token.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseProcessor.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseHandler.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.utilities"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{TokenMgrError.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{JavaCharStream.java"/>
-        <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{ResponseParser.java"/>
+        <javaElement handleIdentifier="=Plugins/src&lt;Relplugins.relvars.CSV"/>
+        <javaElement handleIdentifier="=Plugins/src&lt;Relplugins.relvars.Hadoop"/>
+        <javaElement handleIdentifier="=Plugins/src&lt;Relplugins.relvars.JDBC"/>
+        <file path="/Plugins/.classpath"/>
+        <file path="/Plugins/plugins.jardesc"/>
+        <javaElement handleIdentifier="=Plugins/src&lt;Relplugins.relvars.XLS"/>
+        <file path="/Plugins/.gitignore"/>
+        <file path="/Plugins/.project"/>
     </selectedElements>
 </jardesc>

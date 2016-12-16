@@ -4,11 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 
 import org.reldb.rel.exceptions.*;
@@ -118,11 +114,6 @@ public class RelDatabase {
     
     // Special mode for caching permanent operators and types
     private boolean specialCacheMode = true;
-    
-    // Custom types folder
-    private String customRelvarsDatabase;
-    private String customRelvarsHome;
-    private ArrayList<String> customRelvars;
     
 	// Additional JAR files for the Java compiler to include in the classpath when compiling.
 	private String[] additionalJarsForJavaCompilerClasspath = null;
@@ -362,21 +353,7 @@ public class RelDatabase {
 
 			// Prepare for battle.
 			reset();
-
-			// Set up plugin directories
-			File homePlugins = new File(System.getProperty("user.home") + java.io.File.separator + "Relplugins");
-			File databasePlugins = new File(homeDir + java.io.File.separator + "Relplugins");
 			
-			if (!homePlugins.exists())
-				homePlugins.mkdir();
-			if (!databasePlugins.exists())
-				databasePlugins.mkdir();
-			
-			customRelvarsHome = homePlugins.getAbsolutePath() + java.io.File.separator + "relvars";
-			customRelvarsDatabase = databasePlugins.getAbsolutePath() + java.io.File.separator + "relvars";
-			customRelvars = new ArrayList<String>();
-			
-			loadPaths(new File(customRelvarsDatabase), new File(customRelvarsHome));
 			loadConstraints(outputStream);
 
 		   	System.out.println("Database " + envHome + " is open.");
@@ -801,112 +778,6 @@ public class RelDatabase {
     		throw new ExceptionSemantic("RS0209: No transaction is active.");
     	rollbackTransactionUnsynchronized(currentTransaction);    	
     }
-    
-    private ArrayList<String> getFoldersAt(File f) {
-    	ArrayList<String> list = new ArrayList<String>();
-		for(File file : f.listFiles())
-			if(file.isDirectory())
-				list.add(file.getName().trim());
-		return list;
-    }
-    
-    private ArrayList<File> getFilesAt(File f) {
-    	ArrayList<File> list = new ArrayList<File>();
-		for(File file : f.listFiles())
-			if(!file.isDirectory())
-				list.add(file);
-		return list;
-    }
-    
-    public ArrayList<String> getAllCustomTypes() {
-		return customRelvars;
-    }
-    
-    private void loadSinglePath(File file) throws MalformedURLException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-    	URL u = file.toURI().toURL();
-		URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-		Class<?> urlClass = URLClassLoader.class;
-		Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
-		method.setAccessible(true);
-		method.invoke(urlClassLoader, new Object[]{u});
-    }
-    
-    private void loadLibFolderContents(String folder, File libFolder) {
-    	if(!libFolder.exists() || libFolder.list().length == 0 || !libFolder.isDirectory()) {
-			System.out.println("\t" + folder.toUpperCase() + ": " + "lib folder not found or empty.");
-			return;
-    	}
-    	for (File file: getFilesAt(libFolder))
-			try {
-				if (file.getName().endsWith("jar")) {
-					loadSinglePath(file);
-					System.out.println("\t" + folder.toUpperCase() + ": " + file.getName() + " was loaded succesfully.");
-				} else
-					System.out.println("\t" + folder.toUpperCase() + ": " + "Ignored: " + file.getName());
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
-    }
-    
-    private void loadPaths(File database, File home) {
-    	try {
-    		if (!database.exists() && !home.exists()) {
-    			database.mkdir();
-    			home.mkdir();
-    			return;
-    		}
-    		if (!database.exists()) {
-    			database.mkdir();
-    		}
-    		if (!home.exists()) {
-    			home.mkdir();
-    			return;
-    		}
-    		ArrayList<String> homeTypes = getFoldersAt(home);
-    		if (homeTypes.isEmpty())
-    			System.out.println("No custom relvars were found in " + home);
-    		for (String folder : homeTypes) {
-    			File typeFolder = new File(home.getAbsolutePath() + java.io.File.separator + folder);
-    			if (typeFolder.list().length > 0) {
-	    			customRelvars.add(folder);
-	    			System.out.println("Custom relvar " + folder + " was succesfully loaded");
-	    			File libFolder = new File(typeFolder.getAbsolutePath() + java.io.File.separator + "lib");
-	    			loadLibFolderContents(folder, libFolder);
-    			} else
-    				System.out.println("Custom relvar " + folder + " was not loaded. Folder is empty.");
-    		}
-    		
-    		ArrayList<String> databaseTypes = getFoldersAt(database);
-    		if (databaseTypes.isEmpty())
-    			System.out.println("No custom relvars were found in " + database);
-    		for (String folder : databaseTypes)
-    			if (!homeTypes.contains(folder)) {
-    				File typeFolder = new File(database.getAbsolutePath() + java.io.File.separator + folder);
-    				if (typeFolder.list().length > 0) {
-	    				customRelvars.add(folder);
-	    				System.out.println("Custom relvar " + folder + "was succesfully loaded");
-	    				File libFolder = new File(typeFolder.getAbsolutePath() + java.io.File.separator + "lib");
-	    				loadLibFolderContents(folder, libFolder);
-    				} else
-        				System.out.println("Custom relvar " + folder + " was not loaded. Folder is empty.");
-    			} else
-    				System.out.println("Duplicate custom relvar " + folder + " found!");
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		}
-	}
     
     /** Obtain Catalog as a TupleIterator */
     public synchronized TupleIterator getCatalogTupleIterator(final Generator generator) {

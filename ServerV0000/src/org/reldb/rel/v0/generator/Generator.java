@@ -2,7 +2,6 @@ package org.reldb.rel.v0.generator;
 
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -51,6 +50,7 @@ import org.reldb.rel.v0.values.ValueInteger;
 import org.reldb.rel.v0.values.ValueRational;
 import org.reldb.rel.v0.values.ValueRelationLiteral;
 import org.reldb.rel.v0.values.ValueTuple;
+import org.reldb.rel.v0.version.Version;
 import org.reldb.rel.v0.vm.Instruction;
 import org.reldb.rel.v0.vm.NativeFunction;
 import org.reldb.rel.v0.vm.Operator;
@@ -392,37 +392,28 @@ public class Generator {
 		if (relvarsInProgress.containsKey(varname) || database.isRelvarExists(varname))
 			throw new ExceptionSemantic("RS0025: " + varname + " already exists.");
 
-		boolean typeIsRegistered = false;
-		ArrayList<String> customTypes = database.getAllCustomTypes();
-		for (String type : customTypes)
-			if (externalRelvarType.compareToIgnoreCase(type) == 0) {
-				typeIsRegistered = true;
-				try {
-					RelvarDefinition relvar = new RelvarDefinition(varname, (RelvarCustomMetadata)Class.forName("Relplugins.relvars." + type.toUpperCase() + ".Relvar"+ type.toUpperCase() +"Metadata").getConstructors()[0].newInstance(database, userRelvarOwner, externalRelvarSpecification, handler), new References());
-					relvarsInProgress.put(varname, relvar);
-					beginAssignment();
-					compileInstruction(new OpCreateExternalRelvar(relvarsInProgress, relvar));
-					endAssignment();
-				} catch(NoClassDefFoundError e) {
-					throw new ExceptionSemantic("RS0026: " + e.toString());
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (SecurityException e) {
-					e.printStackTrace();
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					throw new ExceptionSemantic("RS0027: Loaded class has thrown an exception");
-				} catch (ClassNotFoundException e) {
-					throw new ExceptionSemantic("RS0028: class relvar " + type.toUpperCase() + " metadata expected but not found. Check if file exists and the name is correct");
-				} catch(ClassCastException e) {
-					throw new ExceptionSemantic("RS0029: Relvar " + type.toUpperCase() + " metadata does not extend RelvarCustomMetadata");
-				}
-			}
-		if (!typeIsRegistered)
-			throw new ExceptionSemantic("RS0030: EXTERNAL relvar type '" + externalRelvarType + "' is not recognised.");
+		String className = "org.reldb.rel.v" + Version.getDatabaseVersion() + ".storage.relvars.external." + externalRelvarType.toLowerCase() + ".Relvar" + externalRelvarType.toUpperCase() + "Metadata";
+		Class<?> clazz;
+		try {
+			clazz = Class.forName(className);
+		} catch (ClassNotFoundException e1) {
+			throw new ExceptionSemantic("RS0451: Can't find " + className + " to handle external relvar of type " + externalRelvarType);
+		}
+		
+		RelvarCustomMetadata metadata = null;
+		try {
+			metadata = (RelvarCustomMetadata)clazz.getConstructors()[0].newInstance(database, userRelvarOwner, externalRelvarSpecification, handler);
+		} catch (InvocationTargetException ite) {
+			throw new ExceptionFatal("RS0450: EXTERNAL relvar definition failed due to: " + ite.getCause());
+		} catch (Exception e) {
+			throw new ExceptionFatal("RS0449: EXTERNAL relvar definition failed due to: " + e);
+		}
+
+		RelvarDefinition relvar = new RelvarDefinition(varname, metadata, new References());
+		relvarsInProgress.put(varname, relvar);
+		beginAssignment();
+		compileInstruction(new OpCreateExternalRelvar(relvarsInProgress, relvar));
+		endAssignment();
 	}
 	
 	public void dropRelvar(String varName) {

@@ -14,6 +14,7 @@ import org.reldb.rel.v0.values.TupleFilter;
 import org.reldb.rel.v0.values.TupleIterator;
 import org.reldb.rel.v0.values.ValueRelation;
 import org.reldb.rel.v0.values.ValueTuple;
+import org.reldb.rel.v0.version.Version;
 import org.reldb.rel.v0.vm.Context;
 import org.reldb.rel.v0.vm.Operator;
 
@@ -26,7 +27,7 @@ public class RelvarExternal extends RelvarGlobal {
 			String tableName = metadata.tableClassName();
 			String type = metadata.getType();
 			try {
-				table = (TableCustom)Class.forName("Relplugins.relvars." + type.toUpperCase() + "." + tableName).getConstructors()[0].newInstance(name, metadata, generator, duplicates);
+				table = (TableCustom)Class.forName("org.reldb.rel.v" + Version.getDatabaseVersion() + ".storage.relvars.external." + type.toLowerCase() + "." + tableName).getConstructors()[0].newInstance(name, metadata, generator, duplicates);
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (SecurityException e) {
