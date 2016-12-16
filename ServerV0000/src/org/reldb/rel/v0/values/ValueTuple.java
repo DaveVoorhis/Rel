@@ -1,7 +1,9 @@
 package org.reldb.rel.v0.values;
 
 import java.io.PrintStream;
+import java.util.Vector;
 
+import org.reldb.rel.exceptions.ExceptionFatal;
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.types.*;
 import org.reldb.rel.v0.vm.Context;
@@ -99,8 +101,11 @@ public class ValueTuple extends ValueAbstract implements Projectable {
 	/** Output this Value to a PrintStream. */
 	public void toStream(Context context, Type type, PrintStream p, int depth) {
 		p.print("TUPLE {");
+		Vector<Attribute> attributes = ((TypeTuple)type).getHeading().getAttributes();
+		if (values.length != attributes.size())
+			throw new ExceptionFatal("RS0452: Bad tuple. Heading says degree = " + attributes.size() + " but tuple says degree = " + values.length + ".");
 		int i = 0;
-		for (Attribute attribute: ((TypeTuple)type).getHeading().getAttributes()) {
+		for (Attribute attribute: attributes) {
 			if (i > 0)
 				p.print(", ");
 			p.print(attribute.getName() + " ");
