@@ -9,24 +9,22 @@ import java.net.*;
 
 public class ClassPathHack {
 
-	@SuppressWarnings("rawtypes")
-	private static final Class[] parameters = new Class[] {URL.class};
+	private static final Class<?>[] parameters = new Class[] {URL.class};
 	
 	public static void addFile(String s) throws IOException {
 		File f = new File(s);
 		addFile(f);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static void addFile(File f) throws IOException {
-		addURL(f.toURL());
+		URI uri = f.toURI();
+		URL url = uri.toURL();
+		addURL(url);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static void addURL(URL u) throws IOException {
 		URLClassLoader sysloader = (URLClassLoader)ClassLoader.getSystemClassLoader();
-		@SuppressWarnings("rawtypes")
-		Class sysclass = URLClassLoader.class;	
+		Class<URLClassLoader> sysclass = URLClassLoader.class;	
 		try {
 			Method method = sysclass.getDeclaredMethod("addURL", parameters);
 			method.setAccessible(true);
@@ -34,7 +32,7 @@ public class ClassPathHack {
 		} catch (Throwable t) {
 			t.printStackTrace();
 			throw new IOException("Error, could not add URL to system classloader");
-		}		
+		}
 	}
 
 }
