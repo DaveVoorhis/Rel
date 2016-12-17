@@ -103,7 +103,7 @@ public class ValueTuple extends ValueAbstract implements Projectable {
 		p.print("TUPLE {");
 		Vector<Attribute> attributes = ((TypeTuple)type).getHeading().getAttributes();
 		if (values.length != attributes.size())
-			throw new ExceptionFatal("RS0452: Bad tuple. Heading says degree = " + attributes.size() + " but tuple says degree = " + values.length + ".");
+			throw new ExceptionFatal("RS0452: Bad tuple. Heading " + type + " says degree = " + attributes.size() + " but tuple " + toString() + " says degree = " + values.length + ".");
 		int i = 0;
 		for (Attribute attribute: attributes) {
 			if (i > 0)
