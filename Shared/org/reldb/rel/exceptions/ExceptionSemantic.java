@@ -14,4 +14,9 @@ public class ExceptionSemantic extends Error {
 	public ExceptionSemantic(String message, Throwable cause) {
 		super(message, cause);
 	}
+	
+	public ExceptionSemantic(Throwable cause) {
+		super(cause);
+	}
+
 }

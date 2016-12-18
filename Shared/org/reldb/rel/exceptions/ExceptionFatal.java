@@ -14,4 +14,8 @@ public class ExceptionFatal extends Error {
 	public ExceptionFatal(String message, Throwable cause) {
 		super(message, cause);
 	}
+	
+	public ExceptionFatal(Throwable cause) {
+		super(cause);
+	}
 }
