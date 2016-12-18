@@ -387,6 +387,8 @@ public class Generator {
 		else
 			throw new ExceptionSemantic("RS0023: Expected DUP_REMOVE or DUP_COUNT, found: " + duplicates);
 		
+		System.out.println("Generator: externalRelvarSpecification = " + externalRelvarSpecification);
+		
 		if (currentOperatorDefinition.getDepth() > interactiveOperatorNestingDepth)
 			throw new ExceptionSemantic("RS0024: EXTERNAL relation-valued variables may not be defined inside a user-defined operator.");
 		if (relvarsInProgress.containsKey(varname) || database.isRelvarExists(varname))
@@ -404,7 +406,10 @@ public class Generator {
 		try {
 			metadata = (RelvarCustomMetadata)clazz.getConstructors()[0].newInstance(database, userRelvarOwner, externalRelvarSpecification, handler);
 		} catch (InvocationTargetException ite) {
-			throw new ExceptionFatal("RS0450: EXTERNAL relvar definition failed due to: " + ite.getCause());
+			String msg = "RS0450: EXTERNAL relvar definition failed due to: " + ite.getCause();
+			System.out.println(msg);
+			ite.getCause().printStackTrace();
+			throw new ExceptionFatal(msg);			
 		} catch (Exception e) {
 			throw new ExceptionFatal("RS0449: EXTERNAL relvar definition failed due to: " + e);
 		}

@@ -51,37 +51,43 @@ public class TableXLS extends TableCustom {
 
 	private ValueTuple toTuple(String line) {
 		String[] rawValues = line.split(",");
-		Value[] values = new Value[rawValues.length];
+		System.out.println("TableXLS: typeList size = " + typeList.size());
+		Value[] values = new Value[typeList.size()];
 		int startAt = 0;
 		if (duplicates == DuplicateHandling.AUTOKEY) {
 			values[0] = ValueInteger.select(generator, Integer.parseInt(rawValues[0]));
 			startAt = 1;
 		}
-
+		
 		int index = startAt;
-		for (Integer type : typeList) {
+		for (Integer type: typeList) {
+			if (index >= values.length)
+				break;
 			switch (type) {
-			case Cell.CELL_TYPE_BLANK:
-				values[index] = ValueCharacter.select(generator, "BLANK");
-				break;
-			case Cell.CELL_TYPE_BOOLEAN:
-				values[index] = ValueBoolean.select(generator, Boolean.parseBoolean(rawValues[index]));
-				break;
-			case Cell.CELL_TYPE_ERROR:
-				values[index] = ValueCharacter.select(generator, "ERROR");
-				break;
-			case Cell.CELL_TYPE_FORMULA:
-				values[index] = ValueRational.select(generator, Float.parseFloat(rawValues[index]));
-				break;
-			case Cell.CELL_TYPE_NUMERIC:
-				values[index] = ValueRational.select(generator, Float.parseFloat(rawValues[index]));
-				break;
-			case Cell.CELL_TYPE_STRING:
-				values[index] = ValueCharacter.select(generator, rawValues[index]);
-				break;
+				case Cell.CELL_TYPE_BLANK:
+					values[index] = ValueCharacter.select(generator, "BLANK");
+					break;
+				case Cell.CELL_TYPE_BOOLEAN:
+					values[index] = ValueBoolean.select(generator, Boolean.parseBoolean(rawValues[index]));
+					break;
+				case Cell.CELL_TYPE_ERROR:
+					values[index] = ValueCharacter.select(generator, "ERROR");
+					break;
+				case Cell.CELL_TYPE_FORMULA:
+					values[index] = ValueCharacter.select(generator, rawValues[index]);
+					break;
+				case Cell.CELL_TYPE_NUMERIC:
+					values[index] = ValueRational.select(generator, Float.parseFloat(rawValues[index]));
+					break;
+				case Cell.CELL_TYPE_STRING:
+					values[index] = ValueCharacter.select(generator, rawValues[index]);
+					break;
 			}
 			index++;
 		}
+		for (; index < values.length; index++)
+			values[index] = ValueCharacter.select(generator, "");
+		System.out.println("TableXLS: values size = " + values.length);
 		return new ValueTuple(generator, values);
 	}
 

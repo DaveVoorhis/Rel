@@ -94,28 +94,34 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 		int index = 0;
 		if (columns != null)
 			for (int i = 0; i < list.size(); i++) {
-				switch (list.get(index)) {
-				case Cell.CELL_TYPE_BLANK:
-					heading.add(columns[i], TypeCharacter.getInstance());
-					break;
-				case Cell.CELL_TYPE_BOOLEAN:
-					heading.add(columns[i], TypeBoolean.getInstance());
-					break;
-				case Cell.CELL_TYPE_ERROR:
-					heading.add(columns[i], TypeCharacter.getInstance());
-					break;
-				case Cell.CELL_TYPE_FORMULA:
-					heading.add(columns[i], TypeRational.getInstance());
-					break;
-				case Cell.CELL_TYPE_NUMERIC:
-					heading.add(columns[i], TypeRational.getInstance());
-					break;
-				case Cell.CELL_TYPE_STRING:
-					heading.add(columns[i], TypeCharacter.getInstance());
-					break;
-				}
+				if (i >= columns.length)
+					heading.add("BLANK" + i, TypeCharacter.getInstance());
+				else
+					switch (list.get(index)) {
+						case Cell.CELL_TYPE_BLANK:
+							heading.add(columns[i], TypeCharacter.getInstance());
+							break;
+						case Cell.CELL_TYPE_BOOLEAN:
+							heading.add(columns[i], TypeBoolean.getInstance());
+							break;
+						case Cell.CELL_TYPE_ERROR:
+							heading.add(columns[i], TypeCharacter.getInstance());
+							break;
+						case Cell.CELL_TYPE_FORMULA:
+							heading.add(columns[i], TypeCharacter.getInstance());
+							break;
+						case Cell.CELL_TYPE_NUMERIC:
+							heading.add(columns[i], TypeRational.getInstance());
+							break;
+						case Cell.CELL_TYPE_STRING:
+							heading.add(columns[i], TypeCharacter.getInstance());
+							break;
+					}
 				index++;
 			}
+		
+		System.out.println("RelvarXLSMetadata: column count = " + heading.getDegree());
+		
 		return new RelvarHeading(heading);
 	}
 

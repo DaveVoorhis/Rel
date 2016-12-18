@@ -12,7 +12,9 @@ import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.storage.relvars.RelvarExternal;
 import org.reldb.rel.v0.storage.relvars.RelvarExternalMetadata;
+import org.reldb.rel.v0.storage.relvars.RelvarHeading;
 import org.reldb.rel.v0.storage.tables.TableCustom;
+import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.values.RelTupleFilter;
 import org.reldb.rel.v0.values.RelTupleMap;
 import org.reldb.rel.v0.values.TupleFilter;
@@ -27,7 +29,6 @@ import org.reldb.rel.v0.values.ValueTuple;
 import org.reldb.rel.v0.vm.Context;
 
 public class TableCSV extends TableCustom {
-
 	private File file;
 	private DuplicateHandling duplicates;
 	private Generator generator;
@@ -37,19 +38,27 @@ public class TableCSV extends TableCustom {
 		this.duplicates = duplicates;
 		RelvarCSVMetadata meta = (RelvarCSVMetadata) metadata;
 		file = new File(meta.getPath());
+		RelvarHeading heading = meta.getHeadingDefinition(generator.getDatabase());
+		Heading storedHeading = heading.getHeading();
+		Heading fileHeading = RelvarCSVMetadata.getHeadingFromCSV(meta.getPath(), duplicates).getHeading();
+		if (storedHeading.toString().compareTo(fileHeading.toString()) != 0)
+			throw new ExceptionSemantic("RS0453: Stored CSV metadata is " + storedHeading + " but file metadata is " + fileHeading + ". Has the file structure changed?");
 	}
 
 	private ValueTuple toTuple(String line) {
-		String[] rawValues = line.split(",");
+		String[] rawValues = CSVLineParse.parse(line);
 		Value[] values = new Value[rawValues.length];
 		int startAt = 0;
 		if (duplicates == DuplicateHandling.AUTOKEY) {
 			values[0] = ValueInteger.select(generator, Integer.parseInt(rawValues[0]));
 			startAt = 1;
 		}
-
-		for (int i = startAt; i < rawValues.length; i++)
-			values[i] = ValueCharacter.select(generator, rawValues[i]);
+		for (int i = startAt; i < rawValues.length; i++) {
+			if (rawValues[i].startsWith("\"") && rawValues[i].endsWith("\""))
+				values[i] = ValueCharacter.select(generator, ValueCharacter.stripDelimitedString(rawValues[i]));
+			else
+				values[i] = ValueCharacter.select(generator, rawValues[i]);
+		}
 		return new ValueTuple(generator, values);
 	}
 
@@ -82,7 +91,7 @@ public class TableCSV extends TableCustom {
 	}
 
 	private static void notImplemented(String what) {
-		throw new ExceptionSemantic("EX0004: CSV relvars do not yet support " + what);
+		throw new ExceptionSemantic("EX0004: CSV relvars do not yet support " + what + ".");
 	}
 
 	@Override
@@ -245,7 +254,8 @@ public class TableCSV extends TableCustom {
 			public ValueTuple next() {
 				if (hasNext())
 					try {
-						return toTuple(currentLine);
+						// replaceAll to filter out Byte Order Mark (BOM), if present
+						return toTuple(currentLine.replaceAll("\ufeff", " "));
 					} finally {
 						currentLine = null;
 					}
@@ -294,7 +304,8 @@ public class TableCSV extends TableCustom {
 			public ValueTuple next() {
 				if (hasNext())
 					try {
-						return toTuple(currentLine);
+						// replaceAll to filter out Byte Order Mark (BOM), if present
+						return toTuple(currentLine.replaceAll("\ufeff", " "));
 					} finally {
 						currentLine = null;
 					}
@@ -344,7 +355,8 @@ public class TableCSV extends TableCustom {
 			public ValueTuple next() {
 				if (hasNext())
 					try {
-						return toTuple(autokey + "," + currentLine);
+						// replaceAll to filter out Byte Order Mark (BOM), if present
+						return toTuple(autokey + "," + currentLine.replaceAll("\ufeff", " "));
 					} finally {
 						autokey++;
 						currentLine = null;

@@ -33,7 +33,8 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 				br = new BufferedReader(new FileReader(f));
 				sCurrentLine = br.readLine();
 				br.close();
-				return sCurrentLine;
+				// replaceAll to filter out Byte Order Mark (BOM), if present
+				return (sCurrentLine != null) ? sCurrentLine.replaceAll("\ufeff", " ") : null;
 			} catch (IOException e) {
 				e.printStackTrace();
 				return null;
@@ -41,8 +42,8 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 		} else
 			throw new ExceptionSemantic("EX0001: File not found at: " + path);
 	}
-
-	private static RelvarHeading getHeadingFromCSV(String path, DuplicateHandling duplicates) {
+	
+	public static RelvarHeading getHeadingFromCSV(String path, DuplicateHandling duplicates) {
 		Heading heading = new Heading();
 		String firstLine = null;
 		if (duplicates == DuplicateHandling.DUP_COUNT)
@@ -51,13 +52,16 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 			heading.add("AUTO_KEY", TypeInteger.getInstance());
 		firstLine = readFirstLineOfCSV(path);
 		String[] columns = null;
-		try {
-			columns = firstLine.toString().split(",");
-			for (String column : columns)
-				heading.add(column, TypeCharacter.getInstance());
-		} catch (NullPointerException e) {
+		if (firstLine != null) {
+	        columns = CSVLineParse.parse(firstLine);
+	        int blankCount = 0;
+			for (String column: columns) {
+				String columnName = column.trim();
+				if (columnName.length() == 0)
+					columnName = "BLANK" + ++blankCount;
+				heading.add(columnName, TypeCharacter.getInstance());
+			}
 		}
-
 		return new RelvarHeading(heading);
 	}
 
