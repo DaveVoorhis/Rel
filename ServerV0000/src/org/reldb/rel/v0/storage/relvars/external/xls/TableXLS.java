@@ -61,7 +61,7 @@ public class TableXLS extends TableCustom {
 		}
 		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();
-			values[index] = ValueCharacter.select(generator,  cell.getStringCellValue());
+			values[index] = ValueCharacter.select(generator, cell.toString());
 			index++;
 			if (index >= values.length)
 				break;

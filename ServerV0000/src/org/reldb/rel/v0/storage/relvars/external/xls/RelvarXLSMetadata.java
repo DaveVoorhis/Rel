@@ -67,7 +67,7 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
         int blankCount = 0;
 		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();			
-			String columnName = ColumnName.cleanName(cell.getStringCellValue());
+			String columnName = ColumnName.cleanName(cell.toString());
 			if (columnName.length() == 0)
 				columnName = "BLANK" + ++blankCount;
 			heading.add(ColumnName.cleanName(columnName), TypeCharacter.getInstance());
