@@ -1,6 +1,6 @@
 ** TO DO **
 
-- Test RS0453, and make sure semantic exceptions are used whereever possible.
+- Make sure CSV tuple iteration works reasonably, even with corrupt files.
 
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
   CGI scripts, etc.

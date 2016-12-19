@@ -236,7 +236,7 @@ public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 			Statement statement = connect.createStatement();
 			statement.executeQuery("select * from " + table);
 		} catch (SQLException e) {
-			throw new ExceptionSemantic("EX0019: Table " + table + " doesn't exist anymore.");
+			throw new ExceptionSemantic("EX0019: Table " + table + " no longer exists.");
 		} catch (IOException e) {
 			throw new ExceptionSemantic("EX0020: Driver not found at: " + driverLocation);
 		} catch (ClassNotFoundException e) {

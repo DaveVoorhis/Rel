@@ -24,25 +24,19 @@ public class RelvarExternal extends RelvarGlobal {
 	
 	public RelvarExternal(String name, RelDatabase database, Generator generator, RelvarCustomMetadata metadata, DuplicateHandling duplicates) {
 		super(name, database);
-			String tableName = metadata.tableClassName();
-			String type = metadata.getType();
-			try {
-				table = (TableCustom)Class.forName("org.reldb.rel.v" + Version.getDatabaseVersion() + ".storage.relvars.external." + type.toLowerCase() + "." + tableName).getConstructors()[0].newInstance(name, metadata, generator, duplicates);
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				throw new ExceptionSemantic("RS0223: " + tableName + " could not be found");
-			} catch(ClassCastException e) {
-				throw new ExceptionSemantic("RS0224: " + tableName + " does not extend TableCustom");
-			}
+		String tableName = metadata.tableClassName();
+		String type = metadata.getType();
+		try {
+			table = (TableCustom)Class.forName("org.reldb.rel.v" + Version.getDatabaseVersion() + ".storage.relvars.external." + type.toLowerCase() + "." + tableName).getConstructors()[0].newInstance(name, metadata, generator, duplicates);
+		} catch (ClassNotFoundException e) {
+			throw new ExceptionSemantic("RS0223: VAR " + name + " of type " + type + " could not be found");
+		} catch (ClassCastException e) {
+			throw new ExceptionSemantic("RS0224: VAR " + name + " of type " + type + " does not extend TableCustom");
+		} catch (InvocationTargetException e) {
+			throw new ExceptionSemantic("RS0455: VAR " + name + " of type " + type + " could not be loaded due to " + e.getCause());
+		} catch (Exception e) {
+			throw new ExceptionSemantic("RS0456: VAR " + name + " of type " + type + " could not be loaded due to " + e);
+		}
 	}
 	
 	public long getCardinality(Generator generator) {

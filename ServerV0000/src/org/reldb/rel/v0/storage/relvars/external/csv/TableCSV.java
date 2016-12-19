@@ -32,6 +32,7 @@ public class TableCSV extends TableCustom {
 	private File file;
 	private DuplicateHandling duplicates;
 	private Generator generator;
+	private Heading fileHeading;
 
 	public TableCSV(String Name, RelvarExternalMetadata metadata, Generator generator, DuplicateHandling duplicates) {
 		this.generator = generator;
@@ -40,7 +41,7 @@ public class TableCSV extends TableCustom {
 		file = new File(meta.getPath());
 		RelvarHeading heading = meta.getHeadingDefinition(generator.getDatabase());
 		Heading storedHeading = heading.getHeading();
-		Heading fileHeading = RelvarCSVMetadata.getHeadingFromCSV(meta.getPath(), duplicates).getHeading();
+		fileHeading = RelvarCSVMetadata.getHeadingFromCSV(meta.getPath(), duplicates).getHeading();
 		if (storedHeading.toString().compareTo(fileHeading.toString()) != 0)
 			throw new ExceptionSemantic("RS0453: Stored CSV metadata is " + storedHeading + " but file metadata is " + fileHeading + ". Has the file structure changed?");
 	}
@@ -53,6 +54,8 @@ public class TableCSV extends TableCustom {
 			values[0] = ValueInteger.select(generator, Integer.parseInt(rawValues[0]));
 			startAt = 1;
 		}
+		if (values.length != fileHeading.getDegree())
+			throw new ExceptionSemantic("RS0457: CSV file " + file.getAbsolutePath() + " has malformed line: " + line);
 		for (int i = startAt; i < rawValues.length; i++) {
 			if (rawValues[i].startsWith("\"") && rawValues[i].endsWith("\""))
 				values[i] = ValueCharacter.select(generator, ValueCharacter.stripDelimitedString(rawValues[i]));
