@@ -55,7 +55,7 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 	        columns = CSVLineParse.parse(firstLine);
 	        int blankCount = 0;
 			for (String column: columns) {
-				String columnName = column.trim().replace(' ', '_');
+				String columnName = ColumnName.cleanName(column);
 				if (columnName.length() == 0)
 					columnName = "BLANK" + ++blankCount;
 				heading.add(columnName, TypeCharacter.getInstance());
