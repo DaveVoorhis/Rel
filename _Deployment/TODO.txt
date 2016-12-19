@@ -1,6 +1,6 @@
 ** TO DO **
 
-- Make sure CSV tuple iteration works reasonably, even with corrupt files.
+- Fix XLS and JDBC external vars.
 
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
   CGI scripts, etc.
