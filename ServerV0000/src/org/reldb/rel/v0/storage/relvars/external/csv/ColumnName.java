@@ -5,7 +5,7 @@ public class ColumnName {
 	public static String cleanName(String name) {
 		if (name == null)
 			return "";
-		String columnName = name.trim().replace(' ', '_');
+		String columnName = name.trim().replace(' ', '_').replace(',', '_').replace('-', '_').replace('@', '_');
 		if (columnName.length() > 0) {
 			char firstChar = columnName.charAt(0);
 			if (Character.isDigit(firstChar))

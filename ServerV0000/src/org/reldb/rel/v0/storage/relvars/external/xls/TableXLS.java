@@ -18,7 +18,9 @@ import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.storage.relvars.RelvarExternal;
 import org.reldb.rel.v0.storage.relvars.RelvarExternalMetadata;
+import org.reldb.rel.v0.storage.relvars.RelvarHeading;
 import org.reldb.rel.v0.storage.tables.TableCustom;
+import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.values.RelTupleFilter;
 import org.reldb.rel.v0.values.RelTupleMap;
 import org.reldb.rel.v0.values.TupleFilter;
@@ -26,95 +28,62 @@ import org.reldb.rel.v0.values.TupleIterator;
 import org.reldb.rel.v0.values.TupleIteratorCount;
 import org.reldb.rel.v0.values.TupleIteratorUnique;
 import org.reldb.rel.v0.values.Value;
-import org.reldb.rel.v0.values.ValueBoolean;
 import org.reldb.rel.v0.values.ValueCharacter;
 import org.reldb.rel.v0.values.ValueInteger;
-import org.reldb.rel.v0.values.ValueRational;
 import org.reldb.rel.v0.values.ValueRelation;
 import org.reldb.rel.v0.values.ValueTuple;
 import org.reldb.rel.v0.vm.Context;
 
 public class TableXLS extends TableCustom {
-
 	private File file;
 	private DuplicateHandling duplicates;
 	private Generator generator;
-	private List<Integer> typeList;
+	private Heading fileHeading;
 
 	public TableXLS(String Name, RelvarExternalMetadata metadata, Generator generator, DuplicateHandling duplicates) {
 		this.generator = generator;
 		this.duplicates = duplicates;
 		RelvarXLSMetadata meta = (RelvarXLSMetadata) metadata;
-		typeList = meta.getTypesList();
 		file = new File(meta.getPath());
+		RelvarHeading heading = meta.getHeadingDefinition(generator.getDatabase());
+		Heading storedHeading = heading.getHeading();
+		fileHeading = RelvarXLSMetadata.getHeadingFromXLS(meta.getPath(), duplicates).getHeading();
+		if (storedHeading.toString().compareTo(fileHeading.toString()) != 0)
+			throw new ExceptionSemantic("RS0464: Stored XLS metadata is " + storedHeading + " but file metadata is " + fileHeading + ". Has the file structure changed?");
 	}
 
-	private ValueTuple toTuple(String line) {
-		String[] rawValues = line.split(",");
-		System.out.println("TableXLS: typeList size = " + typeList.size());
-		Value[] values = new Value[typeList.size()];
-		int startAt = 0;
+	private ValueTuple toTuple(long autokey, Iterator<Cell> cellIterator) {
+		Value[] values = new Value[fileHeading.getDegree()];
+		int index = 0;		
 		if (duplicates == DuplicateHandling.AUTOKEY) {
-			values[0] = ValueInteger.select(generator, Integer.parseInt(rawValues[0]));
-			startAt = 1;
+			values[0] = ValueInteger.select(generator, autokey);
+			index = 1;
 		}
-		
-		int index = startAt;
-		for (Integer type: typeList) {
+		while (cellIterator.hasNext()) {
+			Cell cell = cellIterator.next();
+			values[index] = ValueCharacter.select(generator,  cell.getStringCellValue());
+			index++;
 			if (index >= values.length)
 				break;
-			switch (type) {
-				case Cell.CELL_TYPE_BLANK:
-					values[index] = ValueCharacter.select(generator, "BLANK");
-					break;
-				case Cell.CELL_TYPE_BOOLEAN:
-					values[index] = ValueBoolean.select(generator, Boolean.parseBoolean(rawValues[index]));
-					break;
-				case Cell.CELL_TYPE_ERROR:
-					values[index] = ValueCharacter.select(generator, "ERROR");
-					break;
-				case Cell.CELL_TYPE_FORMULA:
-					values[index] = ValueCharacter.select(generator, rawValues[index]);
-					break;
-				case Cell.CELL_TYPE_NUMERIC:
-					values[index] = ValueRational.select(generator, Float.parseFloat(rawValues[index]));
-					break;
-				case Cell.CELL_TYPE_STRING:
-					values[index] = ValueCharacter.select(generator, rawValues[index]);
-					break;
-			}
-			index++;
 		}
 		for (; index < values.length; index++)
 			values[index] = ValueCharacter.select(generator, "");
-		System.out.println("TableXLS: values size = " + values.length);
 		return new ValueTuple(generator, values);
 	}
-
-	private String readLine(Iterator<Cell> cellIterator) {
-		StringBuffer currentLine = new StringBuffer();
+	
+	private ValueTuple toTuple(Iterator<Cell> cellIterator) {
+		Value[] values = new Value[fileHeading.getDegree()];
+		int index = 0;
 		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();
-			switch (cell.getCellType()) {
-			case Cell.CELL_TYPE_BLANK:
+			values[index] = ValueCharacter.select(generator,  cell.getStringCellValue());
+			index++;
+			if (index > values.length)
 				break;
-			case Cell.CELL_TYPE_BOOLEAN:
-				currentLine.append(cell.getBooleanCellValue() + ",");
-				break;
-			case Cell.CELL_TYPE_ERROR:
-				break;
-			case Cell.CELL_TYPE_FORMULA:
-				currentLine.append(cell.getNumericCellValue() + ",");
-				break;
-			case Cell.CELL_TYPE_NUMERIC:
-				currentLine.append(cell.getNumericCellValue() + ",");
-				break;
-			case Cell.CELL_TYPE_STRING:
-				currentLine.append(cell.getStringCellValue() + ",");
-				break;
-			}
 		}
-		return currentLine.substring(0, currentLine.length() - 1).toString();
+		for (; index < values.length; index++)
+			values[index] = ValueCharacter.select(generator, "");
+		return new ValueTuple(generator, values);
 	}
 
 	@Override
@@ -294,7 +263,7 @@ public class TableXLS extends TableCustom {
 				public ValueTuple next() {
 					row = rowIterator.next();
 					Iterator<Cell> cellIterator = row.cellIterator();
-					return toTuple(readLine(cellIterator));
+					return toTuple(cellIterator);
 				}
 
 				@Override
@@ -343,7 +312,7 @@ public class TableXLS extends TableCustom {
 				public ValueTuple next() {
 					row = rowIterator.next();
 					Iterator<Cell> cellIterator = row.cellIterator();
-					return toTuple(readLine(cellIterator));
+					return toTuple(cellIterator);
 				}
 
 				@Override
@@ -391,7 +360,7 @@ public class TableXLS extends TableCustom {
 			public ValueTuple next() {
 				row = rowIterator.next();
 				Iterator<Cell> cellIterator = row.cellIterator();
-				return toTuple(readLine(cellIterator));
+				return toTuple(cellIterator);
 			}
 
 			@Override
@@ -421,7 +390,7 @@ public class TableXLS extends TableCustom {
 			public ValueTuple next() {
 				row = rowIterator.next();
 				Iterator<Cell> cellIterator = row.cellIterator();
-				return toTuple(readLine(cellIterator));
+				return toTuple(cellIterator);
 			}
 
 			@Override
@@ -453,7 +422,7 @@ public class TableXLS extends TableCustom {
 				row = rowIterator.next();
 				Iterator<Cell> cellIterator = row.cellIterator();
 				try {
-					return toTuple(autokey + "," + readLine(cellIterator));
+					return toTuple(autokey, cellIterator);
 				} finally {
 					autokey++;
 				}
@@ -488,7 +457,7 @@ public class TableXLS extends TableCustom {
 				row = rowIterator.next();
 				Iterator<Cell> cellIterator = row.cellIterator();
 				try {
-					return toTuple(autokey + "," + readLine(cellIterator));
+					return toTuple(autokey, cellIterator);
 				} finally {
 					autokey++;
 				}

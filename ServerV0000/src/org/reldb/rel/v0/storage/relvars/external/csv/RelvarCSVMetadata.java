@@ -64,15 +64,15 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 		return new RelvarHeading(heading);
 	}
 
-	@Override
-	public String getSourceDefinition() {
-		return "EXTERNAL CSV " + "\"" + path + "\" " + duplicates;
-	}
-
 	public RelvarCSVMetadata(RelDatabase database, String owner, String path, DuplicateHandling duplicates) {
 		super(database, getHeadingFromCSV(path, duplicates), owner);
 		this.path = path;
 		this.duplicates = duplicates;
+	}
+
+	@Override
+	public String getSourceDefinition() {
+		return "EXTERNAL CSV " + "\"" + path + "\" " + duplicates;
 	}
 
 	@Override
