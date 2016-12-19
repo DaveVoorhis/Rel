@@ -74,7 +74,7 @@ public class TableCSV extends TableCustom {
 		else if (duplicates == DuplicateHandling.AUTOKEY)
 			return autokeyIterator();
 		else
-			throw new ExceptionSemantic("EX0003: Non-Identified duplicate handling method: " + duplicates.toString());
+			throw new ExceptionSemantic("EX0003: Duplicate handling method " + duplicates.toString() + " is not supported by CSV.");
 	}
 
 	@Override
