@@ -20,7 +20,6 @@ import org.reldb.rel.v0.types.builtin.TypeInteger;
 public class RelvarCSVMetadata extends RelvarCustomMetadata {
 	public static final long serialVersionUID = 0;
 
-	private String sourceCode;
 	private String path;
 	private DuplicateHandling duplicates;
 
@@ -67,21 +66,20 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 
 	@Override
 	public String getSourceDefinition() {
-		return "EXTERNAL CSV " + sourceCode;
+		return "EXTERNAL CSV " + "\"" + path + "\" " + duplicates;
 	}
 
 	public RelvarCSVMetadata(RelDatabase database, String owner, String path, DuplicateHandling duplicates) {
 		super(database, getHeadingFromCSV(path, duplicates), owner);
 		this.path = path;
 		this.duplicates = duplicates;
-		sourceCode = "\" " + path + "\" " + duplicates;
 	}
 
 	@Override
 	public RelvarGlobal getRelvar(String name, RelDatabase database) {
 		File file = new File(path);
 		if (!file.exists())
-			throw new ExceptionSemantic("EX0002: File at " + path + " not found");
+			throw new ExceptionSemantic("EX0002: File at " + path + " not found.");
 		return new RelvarExternal(name, database, new Generator(database, System.out), this, duplicates);
 	}
 
