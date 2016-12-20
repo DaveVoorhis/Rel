@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -62,7 +63,15 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 		} catch (IOException ioe) {
 			throw new ExceptionSemantic("RS0463: Unable to read " + path + " due to " + ioe);
 		}
-		Row row = rowIterator.next();
+		Row row;
+		try {
+			row = rowIterator.next();
+		} catch (NoSuchElementException nsee) {
+			try {
+				reader.close();
+			} catch (IOException e) {}
+			return new RelvarHeading(heading);			
+		}
 		Iterator<Cell> cellIterator = row.cellIterator();
         int blankCount = 0;
 		while (cellIterator.hasNext()) {
@@ -75,7 +84,6 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 		try {
 			reader.close();
 		} catch (IOException e) {}
-		
 		return new RelvarHeading(heading);
 	}
 
