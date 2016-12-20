@@ -407,9 +407,7 @@ public class Generator {
 			metadata = (RelvarCustomMetadata)clazz.getConstructors()[0].newInstance(database, userRelvarOwner, externalRelvarSpecification, handler);
 		} catch (InvocationTargetException ite) {
 			String msg = "RS0450: EXTERNAL relvar definition failed due to: " + ite.getCause();
-			System.out.println(msg);
-			ite.getCause().printStackTrace();
-			throw new ExceptionFatal(msg);			
+			throw new ExceptionSemantic(msg);
 		} catch (Exception e) {
 			throw new ExceptionFatal("RS0449: EXTERNAL relvar definition failed due to: " + e);
 		}
