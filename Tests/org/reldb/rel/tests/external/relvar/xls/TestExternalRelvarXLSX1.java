@@ -66,10 +66,10 @@ public class TestExternalRelvarXLSX1 extends BaseOfTest {
 	@Test
 	public void testXLS2() {
 		String src = "myvar";		
-		testEquals(	"RELATION {AUTO_KEY INTEGER, A RATIONAL, B RATIONAL, C RATIONAL} {" +
-					"\n\tTUPLE {AUTO_KEY 1, A 1.0, B 2.0, C 3.0}," +
-					"\n\tTUPLE {AUTO_KEY 2, A 4.0, B 5.0, C 6.0}," +
-					"\n\tTUPLE {AUTO_KEY 3, A 7.0, B 8.0, C 9.0}\n}", src);
+		testEquals(	"RELATION {AUTO_KEY INTEGER, A CHARACTER, B CHARACTER, C CHARACTER} {" +
+					"\n\tTUPLE {AUTO_KEY 1, A \"1.0\", B \"2.0\", C \"3.0\"}," +
+					"\n\tTUPLE {AUTO_KEY 2, A \"4.0\", B \"5.0\", C \"6.0\"}," +
+					"\n\tTUPLE {AUTO_KEY 3, A \"7.0\", B \"8.0\", C \"9.0\"}\n}", src);
 	}
 	
 	@After

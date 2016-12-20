@@ -70,10 +70,10 @@ public class TestExternalRelvarXLS2 extends BaseOfTest {
 	@Test
 	public void testXLS2() {
 		String src = "myvar";		
-		testEquals(	"RELATION {A RATIONAL, B RATIONAL, C RATIONAL} {" +
-					"\n\tTUPLE {A 1.0, B 2.0, C 3.0}," +
-					"\n\tTUPLE {A 4.0, B 5.0, C 6.0}," +
-					"\n\tTUPLE {A 7.0, B 8.0, C 9.0}\n}", src);
+		testEquals(	"RELATION {A CHARACTER, B CHARACTER, C CHARACTER} {" +
+					"\n\tTUPLE {A \"1.0\", B \"2.0\", C \"3.0\"}," +
+					"\n\tTUPLE {A \"4.0\", B \"5.0\", C \"6.0\"}," +
+					"\n\tTUPLE {A \"7.0\", B \"8.0\", C \"9.0\"}\n}", src);
 	}
 	
 	@After

@@ -16,6 +16,8 @@ public class AllTests {
 		"org.reldb.rel.tests.main",
 		"org.reldb.rel.tests.external",
 		"org.reldb.rel.tests.inheritance",
+		"org.reldb.rel.tests.external.csv",
+		"org.reldb.rel.tests.external.xls"
 	};
 	
 	/**
