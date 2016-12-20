@@ -2,6 +2,8 @@
 
 - Fix JDBC external vars.
 
+- Handle spreadsheets with multiple tabs.
+
 - Check behaviour of external vars under backup/restore. Maybe treat them as virtual?
 
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
