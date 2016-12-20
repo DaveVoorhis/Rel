@@ -54,8 +54,8 @@ public class TableCSV extends TableCustom {
 			values[0] = ValueInteger.select(generator, Integer.parseInt(rawValues[0]));
 			startAt = 1;
 		}
-		if (values.length != fileHeading.getDegree())
-			throw new ExceptionSemantic("RS0457: CSV file " + file.getAbsolutePath() + " has malformed line: " + line);
+		if (values.length != fileHeading.getDegree() - ((duplicates == DuplicateHandling.DUP_COUNT) ? 1 : 0))
+			throw new ExceptionSemantic("RS0457: CSV file " + file.getAbsolutePath() + " with heading " + fileHeading + " has malformed line: " + line);
 		for (int i = startAt; i < rawValues.length; i++) {
 			String rawValue = rawValues[i].trim();
 			if (rawValue.startsWith("\"") && rawValue.endsWith("\""))

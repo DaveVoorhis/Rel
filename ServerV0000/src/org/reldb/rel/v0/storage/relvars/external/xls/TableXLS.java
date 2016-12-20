@@ -54,11 +54,8 @@ public class TableXLS extends TableCustom {
 
 	private ValueTuple toTuple(long autokey, Iterator<Cell> cellIterator) {
 		Value[] values = new Value[fileHeading.getDegree()];
-		int index = 0;		
-		if (duplicates == DuplicateHandling.AUTOKEY) {
-			values[0] = ValueInteger.select(generator, autokey);
-			index = 1;
-		}
+		int index = 1;		
+		values[0] = ValueInteger.select(generator, autokey);
 		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();
 			values[index] = ValueCharacter.select(generator, cell.toString());
@@ -72,11 +69,11 @@ public class TableXLS extends TableCustom {
 	}
 	
 	private ValueTuple toTuple(Iterator<Cell> cellIterator) {
-		Value[] values = new Value[fileHeading.getDegree()];
+		Value[] values = new Value[fileHeading.getDegree() - ((duplicates == DuplicateHandling.DUP_COUNT) ? 1 : 0)];
 		int index = 0;
 		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();
-			values[index] = ValueCharacter.select(generator,  cell.getStringCellValue());
+			values[index] = ValueCharacter.select(generator, cell.toString());
 			index++;
 			if (index > values.length)
 				break;
