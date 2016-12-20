@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -56,9 +57,10 @@ public class TableXLS extends TableCustom {
 		Value[] values = new Value[fileHeading.getDegree()];
 		int index = 1;		
 		values[0] = ValueInteger.select(generator, autokey);
+		DataFormatter formatter = new DataFormatter();
 		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();
-			values[index] = ValueCharacter.select(generator, cell.toString());
+			values[index] = ValueCharacter.select(generator, formatter.formatCellValue(cell));
 			index++;
 			if (index >= values.length)
 				break;
@@ -71,9 +73,10 @@ public class TableXLS extends TableCustom {
 	private ValueTuple toTuple(Iterator<Cell> cellIterator) {
 		Value[] values = new Value[fileHeading.getDegree() - ((duplicates == DuplicateHandling.DUP_COUNT) ? 1 : 0)];
 		int index = 0;
+		DataFormatter formatter = new DataFormatter();
 		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();
-			values[index] = ValueCharacter.select(generator, cell.toString());
+			values[index] = ValueCharacter.select(generator, formatter.formatCellValue(cell));
 			index++;
 			if (index > values.length)
 				break;
