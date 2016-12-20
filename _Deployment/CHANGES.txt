@@ -2,6 +2,17 @@ Last used Exception* number: RS0464
 
 Version 3.003 (1.0.16):
 
+  - enhancement: Rel: Support for external relvars now built-in. These work:
+      VAR myvar EXTERNAL CSV "/home/dave/test.csv";
+      VAR myvar EXTERNAL CSV "/home/dave/test.csv DUP_REMOVE";
+      VAR myvar EXTERNAL CSV "/home/dave/test.csv DUP_COUNT";
+      VAR myvar EXTERNAL CSV "/home/dave/test.csv AUTOKEY";
+      VAR myvar EXTERNAL XLS "/home/dave/test.xls";
+      VAR myvar EXTERNAL XLS "/home/dave/test.xls" DUP_REMOVE;
+      VAR myvar EXTERNAL XLS "/home/dave/test.xlsx" DUP_COUNT;
+      VAR myvar EXTERNAL XLS "/home/dave/test.xlsx" AUTOKEY;
+  - note: Rel: Support for external user-defined relvar types (via Java) now removed due
+    to potential security risk and significant difficulty getting it to work within OSGi framework.
   - fix: Rel UI: Spaces in application path caused external Java-based operator compilation to fail. Fixed.
 
 Version 3.002 (1.0.15):
