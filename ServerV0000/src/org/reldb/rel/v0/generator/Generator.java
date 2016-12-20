@@ -387,8 +387,6 @@ public class Generator {
 		else
 			throw new ExceptionSemantic("RS0023: Expected DUP_REMOVE, DUP_COUNT or AUTOKEY but got: " + duplicates);
 		
-		System.out.println("Generator: externalRelvarSpecification = " + externalRelvarSpecification);
-		
 		if (currentOperatorDefinition.getDepth() > interactiveOperatorNestingDepth)
 			throw new ExceptionSemantic("RS0024: EXTERNAL relation-valued variables may not be defined inside a user-defined operator.");
 		if (relvarsInProgress.containsKey(varname) || database.isRelvarExists(varname))
