@@ -11,10 +11,14 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests"/>
-        <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.external"/>
+        <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.ext_relvar"/>
         <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.inheritance"/>
         <javaElement handleIdentifier="=Tests/&lt;"/>
+        <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.ext_relvar.xls"/>
+        <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.ext_relvar.csv"/>
+        <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.ext_relvar.jdbc"/>
+        <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests"/>
+        <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.external"/>
         <javaElement handleIdentifier="=Tests/&lt;org.reldb.rel.tests.main"/>
     </selectedElements>
 </jardesc>

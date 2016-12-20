@@ -1,4 +1,4 @@
-package org.reldb.rel.tests.external.relvar.xls;
+package org.reldb.rel.tests.ext_relvar.xls;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.reldb.rel.tests.BaseOfTest;
 
-public class TestExternalRelvarXLSX1 extends BaseOfTest {
+public class TestExternalRelvarXLSX4 extends BaseOfTest {
 	
 	private final String path = "test.xlsx";
 	private File file = new File(path);
@@ -57,7 +57,7 @@ public class TestExternalRelvarXLSX1 extends BaseOfTest {
 
 		String src = 
 				"BEGIN;\n" +
-						"var myvar external xls \"" + file.getAbsolutePath() + "\" autokey;" +
+						"var myvar external xls \"" + file.getAbsolutePath() + "\";" +
 				"END;\n" +
 				"true";
 		testEquals("true", src);

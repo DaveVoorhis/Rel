@@ -1,4 +1,4 @@
-package org.reldb.rel.tests.external.relvar;
+package org.reldb.rel.tests.ext_relvar;
 
 import java.io.File;
 import java.io.IOException;

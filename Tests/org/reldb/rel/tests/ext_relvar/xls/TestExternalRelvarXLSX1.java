@@ -1,24 +1,24 @@
-package org.reldb.rel.tests.external.relvar.xls;
+package org.reldb.rel.tests.ext_relvar.xls;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.reldb.rel.tests.BaseOfTest;
 
-public class TestExternalRelvarXLS1 extends BaseOfTest {
+public class TestExternalRelvarXLSX1 extends BaseOfTest {
 	
-	private final String path = "test.xls";
+	private final String path = "test.xlsx";
 	private File file = new File(path);
 
-	private static void insert(int rowNum, HSSFSheet sheet, HSSFRow row, HSSFCell cell, int arg0, int arg1, int arg2) {
+	private static void insert(int rowNum, XSSFSheet sheet, XSSFRow row, XSSFCell cell, int arg0, int arg1, int arg2) {
 		row = sheet.createRow(rowNum);
         cell = row.createCell(0);
 		cell.setCellValue(arg0);
@@ -30,10 +30,10 @@ public class TestExternalRelvarXLS1 extends BaseOfTest {
 	
 	@Before
 	public void testXLS1() {
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet();
-        HSSFRow row = null;
-        HSSFCell cell = null;
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet();
+        XSSFRow row = null;
+        XSSFCell cell = null;
         row = sheet.createRow(0);
         cell = row.createCell(0);
 		cell.setCellValue("A");
@@ -47,7 +47,8 @@ public class TestExternalRelvarXLS1 extends BaseOfTest {
 		insert(3,sheet,row,cell,7,8,9);
         
 		try {
-			FileOutputStream out = new FileOutputStream(file);
+			FileOutputStream out = 
+		            new FileOutputStream(file);
 		    workbook.write(out);
 		    out.close();
 		} catch (IOException e) {

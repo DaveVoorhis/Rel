@@ -1,4 +1,4 @@
-package org.reldb.rel.tests.external.relvar.csv;
+package org.reldb.rel.tests.ext_relvar.csv;
 
 import java.io.File;
 import java.io.FileWriter;

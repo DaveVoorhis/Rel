@@ -1,4 +1,4 @@
-package org.reldb.rel.tests.external.relvar.jdbc;
+package org.reldb.rel.tests.ext_relvar.jdbc;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -10,7 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.reldb.rel.exceptions.ExceptionSemantic;
-import org.reldb.rel.tests.external.relvar.TestMySQLJDBCSettings;
+import org.reldb.rel.tests.ext_relvar.TestMySQLJDBCSettings;
 import org.reldb.rel.v0.interpreter.ClassPathHack;
 
 public class TestExceptionsRelvarJDBC extends TestMySQLJDBCSettings {

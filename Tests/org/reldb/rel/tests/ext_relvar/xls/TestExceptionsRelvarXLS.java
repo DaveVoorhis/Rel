@@ -1,4 +1,4 @@
-package org.reldb.rel.tests.external.relvar.xls;
+package org.reldb.rel.tests.ext_relvar.xls;
 
 import java.io.File;
 import java.io.FileOutputStream;

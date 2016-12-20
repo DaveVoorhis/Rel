@@ -1,4 +1,4 @@
-package org.reldb.rel.tests.external.relvar.jdbc;
+package org.reldb.rel.tests.ext_relvar.jdbc;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -9,10 +9,10 @@ import java.sql.Statement;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.reldb.rel.tests.external.relvar.TestMySQLJDBCSettings;
+import org.reldb.rel.tests.ext_relvar.TestMySQLJDBCSettings;
 import org.reldb.rel.v0.interpreter.ClassPathHack;
 
-public class TestExternalRelvarJDBC4 extends TestMySQLJDBCSettings {
+public class TestExternalRelvarJDBC2 extends TestMySQLJDBCSettings {
 
 	@Before
 	public void testJDBC1() {
@@ -31,7 +31,15 @@ public class TestExternalRelvarJDBC4 extends TestMySQLJDBCSettings {
 			statement.executeUpdate(command);
 			command = "INSERT INTO " + table + " values (4, 5, 6);";
 			statement.executeUpdate(command);
+			command = "INSERT INTO " + table + " values (4, 5, 6);";
+			statement.executeUpdate(command);
+			command = "INSERT INTO " + table + " values (1, 2, 3);";
+			statement.executeUpdate(command);
 			command = "INSERT INTO " + table + " values (7, 8, 9);";
+			statement.executeUpdate(command);
+			command = "INSERT INTO " + table + " values (7, 8, 9);";
+			statement.executeUpdate(command);
+			command = "INSERT INTO " + table + " values (4, 5, 6);";
 			statement.executeUpdate(command);
 
 		} catch (SQLException e) {
@@ -41,16 +49,15 @@ public class TestExternalRelvarJDBC4 extends TestMySQLJDBCSettings {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		String src = "BEGIN;\n" + "var myvar external jdbc \"" + absolutePath + "\";" + "END;\n" + "true";
+		String src = "BEGIN;\n" + "var myvar external jdbc \"" + absolutePath + "\" dup_remove;" + "END;\n" + "true";
 		testEquals("true", src);
 	}
 
 	@Test
 	public void testJDBC2() {
 		String src = "myvar";
-		testEquals("RELATION {AUTO_KEY INTEGER, A INTEGER, B INTEGER, C INTEGER} {" + "\n\tTUPLE {AUTO_KEY 1, A 1, B 2, C 3},"
-				+ "\n\tTUPLE {AUTO_KEY 2, A 4, B 5, C 6}," + "\n\tTUPLE {AUTO_KEY 3, A 7, B 8, C 9}\n}", src);
+		testEquals("RELATION {A INTEGER, B INTEGER, C INTEGER} {" + "\n\tTUPLE {A 1, B 2, C 3}," + "\n\tTUPLE {A 4, B 5, C 6},"
+				+ "\n\tTUPLE {A 7, B 8, C 9}\n}", src);
 	}
 
 	@After

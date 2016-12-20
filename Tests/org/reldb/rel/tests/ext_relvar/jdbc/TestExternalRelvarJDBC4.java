@@ -1,4 +1,4 @@
-package org.reldb.rel.tests.external.relvar.jdbc;
+package org.reldb.rel.tests.ext_relvar.jdbc;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -9,10 +9,10 @@ import java.sql.Statement;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.reldb.rel.tests.external.relvar.TestMySQLJDBCSettings;
+import org.reldb.rel.tests.ext_relvar.TestMySQLJDBCSettings;
 import org.reldb.rel.v0.interpreter.ClassPathHack;
 
-public class TestExternalRelvarJDBC1 extends TestMySQLJDBCSettings {
+public class TestExternalRelvarJDBC4 extends TestMySQLJDBCSettings {
 
 	@Before
 	public void testJDBC1() {
@@ -41,7 +41,8 @@ public class TestExternalRelvarJDBC1 extends TestMySQLJDBCSettings {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		String src = "BEGIN;\n" + "var myvar external jdbc \"" + absolutePath + "\" autokey;" + "END;\n" + "true";
+
+		String src = "BEGIN;\n" + "var myvar external jdbc \"" + absolutePath + "\";" + "END;\n" + "true";
 		testEquals("true", src);
 	}
 
