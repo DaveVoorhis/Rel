@@ -385,7 +385,7 @@ public class Generator {
 		else if (duplicates.compareToIgnoreCase("AUTOKEY") == 0)
 			handler = DuplicateHandling.AUTOKEY;
 		else
-			throw new ExceptionSemantic("RS0023: Expected DUP_REMOVE or DUP_COUNT, found: " + duplicates);
+			throw new ExceptionSemantic("RS0023: Expected DUP_REMOVE, DUP_COUNT or AUTOKEY but got: " + duplicates);
 		
 		System.out.println("Generator: externalRelvarSpecification = " + externalRelvarSpecification);
 		
