@@ -71,9 +71,9 @@ public class TestExternalRelvarXLSX2 extends BaseOfTest {
 	public void testXLS2() {
 		String src = "myvar";		
 		testEquals(	"RELATION {A CHARACTER, B CHARACTER, C CHARACTER} {" +
-					"\n\tTUPLE {A \"1.0\", B \"2.0\", C \"3.0\"}," +
-					"\n\tTUPLE {A \"4.0\", B \"5.0\", C \"6.0\"}," +
-					"\n\tTUPLE {A \"7.0\", B \"8.0\", C \"9.0\"}\n}", src);
+					"\n\tTUPLE {A \"1\", B \"2\", C \"3\"}," +
+					"\n\tTUPLE {A \"4\", B \"5\", C \"6\"}," +
+					"\n\tTUPLE {A \"7\", B \"8\", C \"9\"}\n}", src);
 	}
 	
 	@After
