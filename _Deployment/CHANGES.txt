@@ -11,6 +11,7 @@ Version 3.003 (1.0.16):
       VAR myvar EXTERNAL XLS "/home/dave/test.xls" DUP_REMOVE;
       VAR myvar EXTERNAL XLS "/home/dave/test.xlsx" DUP_COUNT;
       VAR myvar EXTERNAL XLS "/home/dave/test.xlsx" AUTOKEY;
+      Etc.
   - note: Rel: Support for external user-defined relvar types (via Java) now removed due
     to potential security risk and significant difficulty getting it to work within OSGi framework.
   - fix: Rel UI: Spaces in application path caused external Java-based operator compilation to fail. Fixed.
