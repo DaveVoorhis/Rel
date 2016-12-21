@@ -56,4 +56,8 @@ rm Package.command
 popd
 
 # Standalone Rel DBMS (Java)
-tar cfz $proddir/Rel$relversion.DBMS.tar.gz RelDBMS RelDBMS.bat RelDBMSServer RelDBMSServer.bat RelTest RelTest.bat LICENSE.txt AUTHORS.txt CHANGES.txt TODO.txt README.txt *.jar
+tar cf $proddir/Rel$relversion.DBMS.tar RelDBMS RelDBMS.bat RelDBMSServer RelDBMSServer.bat RelTest RelTest.bat LICENSE.txt AUTHORS.txt CHANGES.txt TODO.txt README.txt
+pushd lib
+tar rf ../$proddir/Rel$relversion.DBMS.tar [a-z]*.jar RelDBMS.jar
+popd
+gzip -9 $proddir/Rel$relversion.DBMS.tar
