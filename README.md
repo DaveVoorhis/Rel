@@ -12,7 +12,7 @@ If you wish to work with the source code, do this:
 
 5. Select "File | Import... | Git | Projects from Git" and pick "Clone URI".  The URI is https://github.com/DaveVoorhis/Rel.git  Or, better yet, fork it on GitHub and send me a pull request when you've done something good!
 
-6. To ensure that the relevant libraries are up-to-date in the RelUI subproject, run the /RelUI/libcopy.bat script on Windows or /RelUI/liblink.sh on Linux or OS X.  Build should be automatic, but it wouldn't hurt to do a "Project | Clean..." to ensure everything is freshly built.  If you're developing on Windows, you'll need to run the /RelUI/lib/copy.bat file whenever the referenced libraries are changed.
+6. To ensure that the relevant libraries are up-to-date in the RelUI subproject, run the /RelUI/libcopy.bat script on Windows or /RelUI/liblink.sh on Linux or OS X.  Build should be automatic, but it wouldn't hurt to do a "Project | Clean..." to ensure everything is freshly built.  If you're developing on Windows, you'll need to run the /RelUI/libcopy.bat script whenever the referenced libraries are changed.
 
 7. To launch the Rel user interface aka the Rel DBrowser, open the Rel.product file in the RelUI project and click "Launch an Eclipse Application". Once it has been launched this way, you can subsequently use the usual Eclipse "Run" toolbar button.
 
