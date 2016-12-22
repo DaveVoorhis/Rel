@@ -1,6 +1,6 @@
 #!/bin/bash
 
-relversion=3.002
+relversion=3.003
 javaversion=8u101
 jredir=~/Documents/JavaJREs
 proddir=~/git/Rel/_Deployment/product
@@ -13,7 +13,7 @@ mv TutorialD.html $proddir
 rm -rf Scripts/.DS_Store
 cp -R Scripts $proddir/RelScripts
 pushd $proddir/
-zip -9r RelExamples_$relversion.zip RelScripts
+zip -9r Rel_ExamplesAndUtilities_$relversion.zip RelScripts
 popd
 
 # Linux GTK 64bit
@@ -58,6 +58,8 @@ popd
 # Standalone Rel DBMS (Java)
 tar cf $proddir/Rel$relversion.DBMS.tar RelDBMS RelDBMS.bat RelDBMSServer RelDBMSServer.bat RelTest RelTest.bat LICENSE.txt AUTHORS.txt CHANGES.txt TODO.txt README.txt
 pushd lib
-tar rf ../$proddir/Rel$relversion.DBMS.tar [a-z]*.jar RelDBMS.jar
+tar -r -f $proddir/Rel$relversion.DBMS.tar [a-z]*.jar RelDBMS.jar
 popd
-gzip -9 $proddir/Rel$relversion.DBMS.tar
+pushd $proddir
+gzip -9 Rel$relversion.DBMS.tar
+popd
