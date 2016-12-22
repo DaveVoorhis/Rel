@@ -13,8 +13,6 @@
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/ecj-4.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/hadoop-core-1.1.2.jar"/>
-	<classpathentry kind="lib" path="lib/hbase-0.94.9.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-4.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-cache-4.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.1.4.jar"/>
