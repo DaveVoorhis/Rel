@@ -1,5 +1,8 @@
 package org.reldb.dbrowser;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.workbench.UIEvents;
@@ -17,6 +20,9 @@ public class E4LifeCycle {
 	
 	@PostContextCreate
 	void postContextCreate(final IEventBroker eventBroker, IApplicationContext context) {
+		// configure log4j
+		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.INFO);
 		// register for startup completed event
 		eventBroker.subscribe(UIEvents.UILifeCycle.APP_STARTUP_COMPLETE, new EventHandler() {
 			@Override
