@@ -20,13 +20,14 @@ public class TestExceptionsRelvarXLSX extends BaseOfTest {
 	@Before
 	public void testXLSX1() {
 		try {
-			XSSFWorkbook workbook = new XSSFWorkbook();
-			workbook.createSheet();
-			file.createNewFile();
-			FileOutputStream out = new FileOutputStream(file);
-		    workbook.write(out);
-		    out.close();
-			NonExistingFile.delete();
+			try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+				workbook.createSheet();
+				file.createNewFile();
+				try (FileOutputStream out = new FileOutputStream(file)) {
+					workbook.write(out);
+				}
+				NonExistingFile.delete();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

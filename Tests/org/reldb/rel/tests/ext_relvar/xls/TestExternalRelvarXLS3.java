@@ -29,35 +29,33 @@ public class TestExternalRelvarXLS3 extends BaseOfTest {
 	}
 	
 	@Before
-	public void testXLS1() {
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet();
-        HSSFRow row = null;
-        HSSFCell cell = null;
-        row = sheet.createRow(0);
-        cell = row.createCell(0);
-		cell.setCellValue("A");
-		cell = row.createCell(1);
-		cell.setCellValue("B");
-		cell = row.createCell(2);
-		cell.setCellValue("C");
-		
-		insert(1,sheet,row,cell,1,2,3);
-		insert(2,sheet,row,cell,4,5,6);
-		insert(3,sheet,row,cell,4,5,6);
-		insert(4,sheet,row,cell,1,2,3);
-		insert(5,sheet,row,cell,7,8,9);
-		insert(6,sheet,row,cell,7,8,9);
-		insert(7,sheet,row,cell,4,5,6);
-        
-		try {
-			FileOutputStream out = 
-		            new FileOutputStream(file);
-		    workbook.write(out);
-		    out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void testXLS1() throws IOException {
+        try (HSSFWorkbook workbook = new HSSFWorkbook()) {
+	        HSSFSheet sheet = workbook.createSheet();
+	        HSSFRow row = null;
+	        HSSFCell cell = null;
+	        row = sheet.createRow(0);
+	        cell = row.createCell(0);
+			cell.setCellValue("A");
+			cell = row.createCell(1);
+			cell.setCellValue("B");
+			cell = row.createCell(2);
+			cell.setCellValue("C");
+			
+			insert(1,sheet,row,cell,1,2,3);
+			insert(2,sheet,row,cell,4,5,6);
+			insert(3,sheet,row,cell,4,5,6);
+			insert(4,sheet,row,cell,1,2,3);
+			insert(5,sheet,row,cell,7,8,9);
+			insert(6,sheet,row,cell,7,8,9);
+			insert(7,sheet,row,cell,4,5,6);
+	        
+			try (FileOutputStream out = new FileOutputStream(file)) {
+			    workbook.write(out);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
 
 		String src = 
 				"BEGIN;\n" +

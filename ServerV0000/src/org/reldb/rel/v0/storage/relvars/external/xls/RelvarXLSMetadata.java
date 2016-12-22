@@ -6,12 +6,10 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.storage.RelDatabase;
@@ -31,46 +29,17 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 	private String path;
 	private DuplicateHandling duplicates;
 
-	public static RelvarHeading getHeadingFromXLS(String path, DuplicateHandling duplicates) {
-		Heading heading = new Heading();
-		
+	private static RelvarHeading buildHeadingFromColumnsInFirstRow(DuplicateHandling duplicates, Iterator<Row> rowIterator) {
+		Heading heading = new Heading();		
 		if (duplicates == DuplicateHandling.DUP_COUNT)
 			heading.add("DUP_COUNT", TypeInteger.getInstance());
 		else if (duplicates == DuplicateHandling.AUTOKEY)
-			heading.add("AUTO_KEY", TypeInteger.getInstance());
-		
-		File f = new File(path);
-		if (!f.exists())
-			throw new ExceptionSemantic("RS0461: File " + path + " doesn't exist.");
-		FileInputStream reader = null;
-		Iterator<Row> rowIterator;
-		try {
-			reader = new FileInputStream(f);
-			if (path.toLowerCase().endsWith("xls")) {
-				HSSFWorkbook workbook = new HSSFWorkbook(reader);
-				HSSFSheet sheet = workbook.getSheetAt(0);
-				rowIterator = sheet.iterator();
-			} else if (path.toLowerCase().endsWith("xlsx")) {
-				XSSFWorkbook workbook = new XSSFWorkbook(reader);
-				XSSFSheet sheet = workbook.getSheetAt(0);
-				rowIterator = sheet.iterator();
-			} else {
-				try {
-					reader.close();
-				} catch (IOException e) {}
-				throw new ExceptionSemantic("RS0462: Unrecognised file type. It should be .XLS or .XLSX.");
-			}
-		} catch (IOException ioe) {
-			throw new ExceptionSemantic("RS0463: Unable to read " + path + " due to " + ioe);
-		}
+			heading.add("AUTO_KEY", TypeInteger.getInstance());		
 		Row row;
 		try {
 			row = rowIterator.next();
 		} catch (NoSuchElementException nsee) {
-			try {
-				reader.close();
-			} catch (IOException e) {}
-			return new RelvarHeading(heading);			
+			return new RelvarHeading(heading);
 		}
 		Iterator<Cell> cellIterator = row.cellIterator();
         int blankCount = 0;
@@ -80,11 +49,29 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 			if (columnName.length() == 0)
 				columnName = "BLANK" + ++blankCount;
 			heading.add(ColumnName.cleanName(columnName), TypeCharacter.getInstance());
-		}
-		try {
-			reader.close();
-		} catch (IOException e) {}
+		}		
 		return new RelvarHeading(heading);
+	}
+	
+	public static RelvarHeading getHeadingFromXLS(String path, DuplicateHandling duplicates) {
+		File f = new File(path);
+		if (!f.exists())
+			throw new ExceptionSemantic("RS0461: File " + path + " doesn't exist.");
+		try (FileInputStream reader = new FileInputStream(f)) {
+			if (path.toLowerCase().endsWith("xls")) {
+				try (HSSFWorkbook workbook = new HSSFWorkbook(reader)) {
+					return buildHeadingFromColumnsInFirstRow(duplicates, workbook.getSheetAt(0).iterator());
+				}
+			} else if (path.toLowerCase().endsWith("xlsx")) {
+				try (XSSFWorkbook workbook = new XSSFWorkbook(reader)) {
+					return buildHeadingFromColumnsInFirstRow(duplicates, workbook.getSheetAt(0).iterator());
+				}
+			} else {
+				throw new ExceptionSemantic("RS0462: Unrecognised file type. It should be .XLS or .XLSX.");
+			}
+		} catch (IOException ioe) {
+			throw new ExceptionSemantic("RS0463: Unable to read " + path + " due to " + ioe);
+		}
 	}
 
 	public RelvarXLSMetadata(RelDatabase database, String owner, String path, DuplicateHandling duplicates) {
