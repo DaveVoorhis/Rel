@@ -38,9 +38,9 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 	public static SheetSpec obtainSheetSpec(String path) {
 		String[] splitPath = path.split(";");
 		SheetSpec spec = new SheetSpec();
-		spec.filePath = splitPath[0];
-		for (String partRaw: splitPath) {
-			String part = partRaw.trim();
+		spec.filePath = splitPath[0].trim();
+		for (int index = 1; index < splitPath.length; index++) {
+			String part = splitPath[index].trim();
 			if (part.compareToIgnoreCase("NOHEADING") == 0)
 				spec.hasHeading = false;
 			else
