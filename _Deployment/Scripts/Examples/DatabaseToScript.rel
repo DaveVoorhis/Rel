@@ -1,10 +1,10 @@
-// Version 0.3.6 Database Backup Script
+VAR scriptVersion INIT("0.3.7");
 
 WRITELN "/*** Rel Database Backup ***/";
 WRITELN;
 
 WRITELN "// Created in Rel Version " || (ver FROM TUPLE FROM (EXTEND sys.Version : {ver := major || "." || minor || "." || revision || " " || release}));
-WRITELN "// Using DatabaseToScript version 0.3.6";
+WRITELN "// Using DatabaseToScript version " || scriptVersion;
 WRITELN;
 
 WRITELN "BEGIN TRANSACTION;";
@@ -17,10 +17,10 @@ WRITELN;
 
 FOR
 	UNION {
-		EXTEND sys.Catalog {Name, Owner, CreationSequence, Definition, isVirtual} WHERE Owner <> "Rel" : {ProcessSequence := 0, objectType := "var"},
-		EXTEND ((sys.Operators UNGROUP Implementations) WHERE CreatedByType="") {Name, Owner, CreationSequence, Definition} WHERE Owner <> "Rel" : {ProcessSequence := 0, objectType := "operator", isVirtual := false},
-		EXTEND sys.Types {Name, Owner, CreationSequence, Definition} WHERE Owner <> "Rel" : {ProcessSequence := 0, objectType := "type", isVirtual := false},
-		EXTEND sys.Constraints {Name, Owner, CreationSequence, Definition} WHERE Owner <> "Rel" : {ProcessSequence := 1, objectType := "constraint", isVirtual := false}
+		EXTEND sys.Catalog {Name, Owner, CreationSequence, Definition, isVirtual, isExternal} WHERE Owner <> "Rel" : {ProcessSequence := 0, objectType := "var"},
+		EXTEND ((sys.Operators UNGROUP Implementations) WHERE CreatedByType="") {Name, Owner, CreationSequence, Definition} WHERE Owner <> "Rel" : {ProcessSequence := 0, objectType := "operator", isVirtual := false, isExternal := false},
+		EXTEND sys.Types {Name, Owner, CreationSequence, Definition} WHERE Owner <> "Rel" : {ProcessSequence := 0, objectType := "type", isVirtual := false, isExternal := false},
+		EXTEND sys.Constraints {Name, Owner, CreationSequence, Definition} WHERE Owner <> "Rel" : {ProcessSequence := 1, objectType := "constraint", isVirtual := false, isExternal := false}
 	} ORDER (ASC ProcessSequence, ASC CreationSequence);
 BEGIN;
 	WRITELN "ANNOUNCE '" || objectType || " " || Name || "';";
@@ -28,7 +28,7 @@ BEGIN;
 		WHEN objectType = "var" THEN
 			BEGIN;
 				WRITELN "VAR " || Name || " " || Definition || ";";
-				IF NOT isVirtual THEN
+				IF NOT isVirtual AND NOT isExternal THEN
 					EXECUTE "IF COUNT(" || Name || ") > 0 THEN BEGIN; WRITE '" || Name || " := '; OUTPUT " || Name || "; WRITELN ';'; END; END IF;";
 				END IF;
 			END;
