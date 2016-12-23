@@ -2,8 +2,6 @@
 
 - Fix JDBC external vars.
 
-- Check behaviour of external vars under backup/restore. Maybe treat them as virtual?
-
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
   CGI scripts, etc.
 
