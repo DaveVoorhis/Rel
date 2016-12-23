@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Test spreadsheets with and without headings.
-
 - Fix JDBC external vars.
 
 - Check behaviour of external vars under backup/restore. Maybe treat them as virtual?
