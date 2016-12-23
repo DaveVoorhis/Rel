@@ -23,6 +23,7 @@ public class RelvarCatalogMetadata extends RelvarMetadata {
 		heading.add("Owner", TypeCharacter.getInstance());
 		heading.add("CreationSequence", TypeInteger.getInstance());
 		heading.add("isVirtual", TypeBoolean.getInstance());
+		heading.add("isExternal", TypeBoolean.getInstance());
 		heading.add("Attributes", generator.findType("NonScalar"));
 		Heading keyHeading = new Heading();
 		keyHeading.add("Name", TypeCharacter.getInstance());
@@ -42,6 +43,10 @@ public class RelvarCatalogMetadata extends RelvarMetadata {
 	
 	public RelvarCatalogMetadata(RelDatabase database, Generator generator) {
 		super(database, getNewKeyDefinition(generator), RelDatabase.systemOwner);
+	}
+	
+	public RelvarHeading getHeadingDefinition(RelDatabase database) {
+		return getNewKeyDefinition(new Generator(database, System.out));
 	}
 	
 	public RelvarGlobal getRelvar(String name, RelDatabase database) {

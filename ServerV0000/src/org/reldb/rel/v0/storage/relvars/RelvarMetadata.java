@@ -54,6 +54,10 @@ public abstract class RelvarMetadata implements Serializable {
 		return false;
 	}
 		
+	public boolean isExternal() {
+		return false;
+	}
+	
 	public String getSourceDefinition() {
 		return "REAL " + source;
 	}

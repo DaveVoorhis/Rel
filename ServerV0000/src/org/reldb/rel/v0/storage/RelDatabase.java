@@ -849,6 +849,7 @@ public class RelDatabase {
 							ValueCharacter.select(generator, current.getOwner()),
 							ValueInteger.select(generator, current.getCreationSequence()),
 							ValueBoolean.select(generator, current.isVirtual()),
+							ValueBoolean.select(generator, current.isExternal()),
 							typeInfo,
 							keysRelation
 						};
@@ -858,7 +859,7 @@ public class RelDatabase {
 					}
 				throw new NoSuchElementException();
 			}
-		};    	
+		};
     }
     
     /** Record dependencies */

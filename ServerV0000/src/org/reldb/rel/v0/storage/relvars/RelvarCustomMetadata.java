@@ -14,6 +14,11 @@ public abstract class RelvarCustomMetadata extends RelvarMetadata implements Rel
 	public abstract String getType();
 
 	@Override
+	public boolean isExternal() {
+		return true;
+	}
+
+	@Override
 	public abstract RelvarGlobal getRelvar(String name, RelDatabase database);
 
 	@Override
