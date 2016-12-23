@@ -42,6 +42,7 @@ public class TableXLS extends TableCustom {
 	private Generator generator;
 	private Heading fileHeading;
 	private int sheetIndex = 0;
+	private boolean hasHeading = true;
 
 	public TableXLS(String Name, RelvarExternalMetadata metadata, Generator generator, DuplicateHandling duplicates) {
 		this.generator = generator;
@@ -50,6 +51,7 @@ public class TableXLS extends TableCustom {
 		SheetSpec spec = RelvarXLSMetadata.obtainSheetSpec(meta.getPath());
 		file = new File(spec.filePath);
 		sheetIndex = spec.sheetIndex;
+		hasHeading = spec.hasHeading;
 		RelvarHeading heading = meta.getHeadingDefinition(generator.getDatabase());
 		Heading storedHeading = heading.getHeading();
 		fileHeading = RelvarXLSMetadata.getHeadingFromXLS(meta.getPath(), duplicates).getHeading();
@@ -256,7 +258,7 @@ public class TableXLS extends TableCustom {
 				HSSFWorkbook workbook = new HSSFWorkbook(reader);
 				HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 				Iterator<Row> rowIterator = sheet.iterator();
-				Row row = rowIterator.next();
+				Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
 
 				@Override
 				public boolean hasNext() {
@@ -305,7 +307,7 @@ public class TableXLS extends TableCustom {
 				XSSFWorkbook workbook = new XSSFWorkbook(reader);
 				XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 				Iterator<Row> rowIterator = sheet.iterator();
-				Row row = rowIterator.next(); // skip first line
+				Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
 
 				@Override
 				public boolean hasNext() {
@@ -353,7 +355,7 @@ public class TableXLS extends TableCustom {
 			HSSFWorkbook workbook = new HSSFWorkbook(reader);
 			HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 			Iterator<Row> rowIterator = sheet.iterator();
-			Row row = rowIterator.next();
+			Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
 
 			@Override
 			public boolean hasNext() {
@@ -383,7 +385,7 @@ public class TableXLS extends TableCustom {
 			XSSFWorkbook workbook = new XSSFWorkbook(reader);
 			XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 			Iterator<Row> rowIterator = sheet.iterator();
-			Row row = rowIterator.next();
+			Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
 
 			@Override
 			public boolean hasNext() {
@@ -414,7 +416,7 @@ public class TableXLS extends TableCustom {
 			HSSFWorkbook workbook = new HSSFWorkbook(reader);
 			HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 			Iterator<Row> rowIterator = sheet.iterator();
-			Row row = rowIterator.next(); // skip first line
+			Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
 
 			@Override
 			public boolean hasNext() {
@@ -449,8 +451,8 @@ public class TableXLS extends TableCustom {
 			XSSFWorkbook workbook = new XSSFWorkbook(reader);
 			XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 			Iterator<Row> rowIterator = sheet.iterator();
-			Row row = rowIterator.next(); // skip first line
-
+			Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
+			
 			@Override
 			public boolean hasNext() {
 				return rowIterator.hasNext();

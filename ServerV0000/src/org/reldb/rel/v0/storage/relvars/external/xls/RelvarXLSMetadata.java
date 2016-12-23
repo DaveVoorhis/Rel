@@ -32,23 +32,28 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 	public static class SheetSpec {
 		String filePath;
 		int sheetIndex = 0;
+		boolean hasHeading = true;
 	}
 	
 	public static SheetSpec obtainSheetSpec(String path) {
 		String[] splitPath = path.split(";");
 		SheetSpec spec = new SheetSpec();
 		spec.filePath = splitPath[0];
-		if (splitPath.length > 1) {
-			try {
-				spec.sheetIndex = Integer.parseInt(splitPath[1]);
-			} catch (NumberFormatException nfe) {
-				throw new ExceptionSemantic("RS0465: Invalid tab number '" + splitPath[1] + "'.");
-			}
+		for (String partRaw: splitPath) {
+			String part = partRaw.trim();
+			if (part.compareToIgnoreCase("NOHEADING") == 0)
+				spec.hasHeading = false;
+			else
+				try {
+					spec.sheetIndex = Integer.parseInt(part);
+				} catch (NumberFormatException nfe) {
+					throw new ExceptionSemantic("RS0465: Invalid spreadsheet specification '" + part + "'.");
+				}
 		}
 		return spec;
 	}
 	
-	private static RelvarHeading buildHeadingFromColumnsInFirstRow(DuplicateHandling duplicates, Iterator<Row> rowIterator) {
+	private static RelvarHeading buildHeadingFromColumnsInFirstRow(DuplicateHandling duplicates, boolean hasHeadingRow, Iterator<Row> rowIterator) {
 		Heading heading = new Heading();		
 		if (duplicates == DuplicateHandling.DUP_COUNT)
 			heading.add("DUP_COUNT", TypeInteger.getInstance());
@@ -63,10 +68,14 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 		Iterator<Cell> cellIterator = row.cellIterator();
         int blankCount = 0;
 		while (cellIterator.hasNext()) {
-			Cell cell = cellIterator.next();			
-			String columnName = ColumnName.cleanName(cell.toString());
-			if (columnName.length() == 0)
-				columnName = "BLANK" + ++blankCount;
+			Cell cell = cellIterator.next();
+			String columnName;
+			if (hasHeadingRow) {
+				columnName = ColumnName.cleanName(cell.toString());
+				if (columnName.length() == 0)
+					columnName = "BLANK" + ++blankCount;
+			} else
+				columnName = "COLUMN" + ++blankCount;
 			heading.add(ColumnName.cleanName(columnName), TypeCharacter.getInstance());
 		}		
 		return new RelvarHeading(heading);
@@ -80,11 +89,11 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 		try (FileInputStream reader = new FileInputStream(f)) {
 			if (spec.filePath.toLowerCase().endsWith("xls")) {
 				try (HSSFWorkbook workbook = new HSSFWorkbook(reader)) {
-					return buildHeadingFromColumnsInFirstRow(duplicates, workbook.getSheetAt(spec.sheetIndex).iterator());
+					return buildHeadingFromColumnsInFirstRow(duplicates, spec.hasHeading, workbook.getSheetAt(spec.sheetIndex).iterator());
 				}
 			} else if (spec.filePath.toLowerCase().endsWith("xlsx")) {
 				try (XSSFWorkbook workbook = new XSSFWorkbook(reader)) {
-					return buildHeadingFromColumnsInFirstRow(duplicates, workbook.getSheetAt(spec.sheetIndex).iterator());
+					return buildHeadingFromColumnsInFirstRow(duplicates, spec.hasHeading, workbook.getSheetAt(spec.sheetIndex).iterator());
 				}
 			} else {
 				throw new ExceptionSemantic("RS0462: Unrecognised file type. It should be .XLS or .XLSX.");
