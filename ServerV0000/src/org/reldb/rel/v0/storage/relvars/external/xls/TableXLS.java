@@ -20,6 +20,7 @@ import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.storage.relvars.RelvarExternal;
 import org.reldb.rel.v0.storage.relvars.RelvarExternalMetadata;
 import org.reldb.rel.v0.storage.relvars.RelvarHeading;
+import org.reldb.rel.v0.storage.relvars.external.xls.RelvarXLSMetadata.SheetSpec;
 import org.reldb.rel.v0.storage.tables.TableCustom;
 import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.values.RelTupleFilter;
@@ -40,12 +41,15 @@ public class TableXLS extends TableCustom {
 	private DuplicateHandling duplicates;
 	private Generator generator;
 	private Heading fileHeading;
+	private int sheetIndex = 0;
 
 	public TableXLS(String Name, RelvarExternalMetadata metadata, Generator generator, DuplicateHandling duplicates) {
 		this.generator = generator;
 		this.duplicates = duplicates;
 		RelvarXLSMetadata meta = (RelvarXLSMetadata) metadata;
-		file = new File(meta.getPath());
+		SheetSpec spec = RelvarXLSMetadata.obtainSheetSpec(meta.getPath());
+		file = new File(spec.filePath);
+		sheetIndex = spec.sheetIndex;
 		RelvarHeading heading = meta.getHeadingDefinition(generator.getDatabase());
 		Heading storedHeading = heading.getHeading();
 		fileHeading = RelvarXLSMetadata.getHeadingFromXLS(meta.getPath(), duplicates).getHeading();
@@ -250,7 +254,7 @@ public class TableXLS extends TableCustom {
 			return new TupleIteratorUnique(new TupleIterator() {
 				FileInputStream reader = new FileInputStream(file);
 				HSSFWorkbook workbook = new HSSFWorkbook(reader);
-				HSSFSheet sheet = workbook.getSheetAt(0);
+				HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 				Iterator<Row> rowIterator = sheet.iterator();
 				Row row = rowIterator.next();
 
@@ -299,7 +303,7 @@ public class TableXLS extends TableCustom {
 			return new TupleIteratorUnique(new TupleIterator() {
 				FileInputStream reader = new FileInputStream(file);
 				XSSFWorkbook workbook = new XSSFWorkbook(reader);
-				XSSFSheet sheet = workbook.getSheetAt(0);
+				XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 				Iterator<Row> rowIterator = sheet.iterator();
 				Row row = rowIterator.next(); // skip first line
 
@@ -347,7 +351,7 @@ public class TableXLS extends TableCustom {
 		return new TupleIteratorUnique(new TupleIteratorCount(new TupleIterator() {
 			FileInputStream reader = new FileInputStream(file);
 			HSSFWorkbook workbook = new HSSFWorkbook(reader);
-			HSSFSheet sheet = workbook.getSheetAt(0);
+			HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 			Iterator<Row> rowIterator = sheet.iterator();
 			Row row = rowIterator.next();
 
@@ -377,7 +381,7 @@ public class TableXLS extends TableCustom {
 		return new TupleIteratorUnique(new TupleIteratorCount(new TupleIterator() {
 			FileInputStream reader = new FileInputStream(file);
 			XSSFWorkbook workbook = new XSSFWorkbook(reader);
-			XSSFSheet sheet = workbook.getSheetAt(0);
+			XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 			Iterator<Row> rowIterator = sheet.iterator();
 			Row row = rowIterator.next();
 
@@ -408,7 +412,7 @@ public class TableXLS extends TableCustom {
 			long autokey = 1;
 			FileInputStream reader = new FileInputStream(file);
 			HSSFWorkbook workbook = new HSSFWorkbook(reader);
-			HSSFSheet sheet = workbook.getSheetAt(0);
+			HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 			Iterator<Row> rowIterator = sheet.iterator();
 			Row row = rowIterator.next(); // skip first line
 
@@ -443,7 +447,7 @@ public class TableXLS extends TableCustom {
 			long autokey = 1;
 			FileInputStream reader = new FileInputStream(file);
 			XSSFWorkbook workbook = new XSSFWorkbook(reader);
-			XSSFSheet sheet = workbook.getSheetAt(0);
+			XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 			Iterator<Row> rowIterator = sheet.iterator();
 			Row row = rowIterator.next(); // skip first line
 

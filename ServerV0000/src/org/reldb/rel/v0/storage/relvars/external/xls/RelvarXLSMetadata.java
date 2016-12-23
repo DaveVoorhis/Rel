@@ -29,6 +29,25 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 	private String path;
 	private DuplicateHandling duplicates;
 
+	public static class SheetSpec {
+		String filePath;
+		int sheetIndex = 0;
+	}
+	
+	public static SheetSpec obtainSheetSpec(String path) {
+		String[] splitPath = path.split(";");
+		SheetSpec spec = new SheetSpec();
+		spec.filePath = splitPath[0];
+		if (splitPath.length > 1) {
+			try {
+				spec.sheetIndex = Integer.parseInt(splitPath[1]);
+			} catch (NumberFormatException nfe) {
+				throw new ExceptionSemantic("RS0465: Invalid tab number '" + splitPath[1] + "'.");
+			}
+		}
+		return spec;
+	}
+	
 	private static RelvarHeading buildHeadingFromColumnsInFirstRow(DuplicateHandling duplicates, Iterator<Row> rowIterator) {
 		Heading heading = new Heading();		
 		if (duplicates == DuplicateHandling.DUP_COUNT)
@@ -54,17 +73,18 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 	}
 	
 	public static RelvarHeading getHeadingFromXLS(String path, DuplicateHandling duplicates) {
-		File f = new File(path);
+		SheetSpec spec = obtainSheetSpec(path);
+		File f = new File(spec.filePath);
 		if (!f.exists())
 			throw new ExceptionSemantic("RS0461: File " + path + " doesn't exist.");
 		try (FileInputStream reader = new FileInputStream(f)) {
-			if (path.toLowerCase().endsWith("xls")) {
+			if (spec.filePath.toLowerCase().endsWith("xls")) {
 				try (HSSFWorkbook workbook = new HSSFWorkbook(reader)) {
-					return buildHeadingFromColumnsInFirstRow(duplicates, workbook.getSheetAt(0).iterator());
+					return buildHeadingFromColumnsInFirstRow(duplicates, workbook.getSheetAt(spec.sheetIndex).iterator());
 				}
-			} else if (path.toLowerCase().endsWith("xlsx")) {
+			} else if (spec.filePath.toLowerCase().endsWith("xlsx")) {
 				try (XSSFWorkbook workbook = new XSSFWorkbook(reader)) {
-					return buildHeadingFromColumnsInFirstRow(duplicates, workbook.getSheetAt(0).iterator());
+					return buildHeadingFromColumnsInFirstRow(duplicates, workbook.getSheetAt(spec.sheetIndex).iterator());
 				}
 			} else {
 				throw new ExceptionSemantic("RS0462: Unrecognised file type. It should be .XLS or .XLSX.");
@@ -87,7 +107,8 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 
 	@Override
 	public RelvarGlobal getRelvar(String name, RelDatabase database) {
-		File file = new File(path);
+		SheetSpec spec = obtainSheetSpec(path);
+		File file = new File(spec.filePath);
 		if (!file.exists())
 			throw new ExceptionSemantic("EX0027: File at " + path + " not found");
 		return new RelvarExternal(name, database, new Generator(database, System.out), this, duplicates);
