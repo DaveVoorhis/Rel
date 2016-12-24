@@ -1,4 +1,4 @@
-package org.reldb.rel.v0.storage.relvars.external.csv;
+package org.reldb.rel.v0.storage.relvars.external;
 
 public class ColumnName {
 	/** Clean up a column title so it can be used as an identifier. */

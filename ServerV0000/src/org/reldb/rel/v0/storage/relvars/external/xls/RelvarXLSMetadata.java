@@ -17,7 +17,7 @@ import org.reldb.rel.v0.storage.relvars.RelvarCustomMetadata;
 import org.reldb.rel.v0.storage.relvars.RelvarExternal;
 import org.reldb.rel.v0.storage.relvars.RelvarGlobal;
 import org.reldb.rel.v0.storage.relvars.RelvarHeading;
-import org.reldb.rel.v0.storage.relvars.external.csv.ColumnName;
+import org.reldb.rel.v0.storage.relvars.external.ColumnName;
 import org.reldb.rel.v0.storage.tables.TableExternal.DuplicateHandling;
 import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.types.builtin.TypeCharacter;

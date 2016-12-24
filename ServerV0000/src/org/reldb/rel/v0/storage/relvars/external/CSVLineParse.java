@@ -1,4 +1,4 @@
-package org.reldb.rel.v0.storage.relvars.external.csv;
+package org.reldb.rel.v0.storage.relvars.external;
 
 // Based on http://stackoverflow.com/questions/1757065/java-splitting-a-comma-separated-string-but-ignoring-commas-in-quotes
 

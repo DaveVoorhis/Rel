@@ -13,6 +13,7 @@ import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.storage.relvars.RelvarExternal;
 import org.reldb.rel.v0.storage.relvars.RelvarExternalMetadata;
 import org.reldb.rel.v0.storage.relvars.RelvarHeading;
+import org.reldb.rel.v0.storage.relvars.external.CSVLineParse;
 import org.reldb.rel.v0.storage.tables.TableCustom;
 import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.values.RelTupleFilter;
