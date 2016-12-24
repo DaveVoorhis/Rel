@@ -16,52 +16,48 @@ import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.interpreter.ClassPathHack;
 import org.reldb.rel.v0.storage.relvars.RelvarExternal;
 import org.reldb.rel.v0.storage.relvars.RelvarExternalMetadata;
+import org.reldb.rel.v0.storage.relvars.RelvarHeading;
+import org.reldb.rel.v0.storage.relvars.external.CSVLineParse;
 import org.reldb.rel.v0.storage.tables.TableCustom;
+import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.values.RelTupleFilter;
 import org.reldb.rel.v0.values.RelTupleMap;
 import org.reldb.rel.v0.values.TupleFilter;
 import org.reldb.rel.v0.values.TupleIterator;
-import org.reldb.rel.v0.values.TupleIteratorCount;
-import org.reldb.rel.v0.values.TupleIteratorUnique;
+import org.reldb.rel.v0.values.TupleIteratorAutokey;
 import org.reldb.rel.v0.values.Value;
-import org.reldb.rel.v0.values.ValueBoolean;
 import org.reldb.rel.v0.values.ValueCharacter;
-import org.reldb.rel.v0.values.ValueInteger;
-import org.reldb.rel.v0.values.ValueRational;
 import org.reldb.rel.v0.values.ValueRelation;
 import org.reldb.rel.v0.values.ValueTuple;
 import org.reldb.rel.v0.vm.Context;
 
 public class TableJDBC extends TableCustom {
 
+	private RelvarJDBCMetadata meta;
 	private Generator generator;
-	private String address;
-	private String user;
-	private String password;
-	private String table;
-	private String driver;
 	private DuplicateHandling duplicates;
 	private Connection connect;
 	private Statement statement;
-	private List<Integer> typeList;
+	private Heading fileHeading;
 
 	public TableJDBC(String Name, RelvarExternalMetadata metadata, Generator generator, DuplicateHandling duplicates) {
-		RelvarJDBCMetadata meta = (RelvarJDBCMetadata) metadata;
+		meta = (RelvarJDBCMetadata) metadata;
 		this.generator = generator;
-		address = meta.getPath();
-		user = meta.getUser();
-		password = meta.getPassword();
-		table = meta.getTable();
-		driver = meta.getDriver();
-		typeList = meta.getTypesList();
 		this.duplicates = duplicates;
+		RelvarHeading heading = meta.getHeadingDefinition(generator.getDatabase());
+		Heading storedHeading = heading.getHeading();
+		fileHeading = RelvarJDBCMetadata.getHeading(meta.getConnectionString(), duplicates).getHeading();
+		if (storedHeading.toString().compareTo(fileHeading.toString()) != 0)
+			throw new ExceptionSemantic("RS0466: Stored JDBC metadata is " + storedHeading + " but table metadata is " + fileHeading + ". Has the table structure changed?");
 		try {
-			ClassPathHack.addFile(meta.getDriverLocation());
-			Class.forName(driver);
-			connect = DriverManager.getConnection(address, user, password);
+			if (!ClassPathHack.isInOSGI()) {
+				ClassPathHack.addFile(meta.getDriverLocation());
+				Class.forName(meta.getDriver());
+			}
+			connect = DriverManager.getConnection(meta.getPath(), meta.getUser(), meta.getPassword());
 			statement = connect.createStatement();
 		} catch (SQLException e) {
-			throw new ExceptionSemantic("EX0021: " + address + "' not found.");
+			throw new ExceptionSemantic("EX0021: " + meta.getPath() + "' not found.");
 		} catch (ClassNotFoundException e) {
 			throw new ExceptionSemantic("EX0022: " + e.toString());
 		} catch (IOException e) {
@@ -69,120 +65,17 @@ public class TableJDBC extends TableCustom {
 		}
 	}
 
-	private ValueTuple toTuple(String line) {
-		String[] rawValues = line.split(",");
-		Value[] values = new Value[rawValues.length];
-
-		int startAt = 0;
-		if (duplicates == DuplicateHandling.AUTOKEY) {
-			values[0] = ValueInteger.select(generator, Integer.parseInt(rawValues[0]));
-			startAt = 1;
-		}
-
-		int i = startAt;
-		for (Integer type : typeList) {
-			try {
-				switch (type) {
-				case Types.BIT:
-					break;
-				case Types.TINYINT:
-					values[i] = ValueInteger.select(generator, Integer.parseInt(rawValues[i]));
-					break;
-				case Types.SMALLINT:
-					values[i] = ValueInteger.select(generator, Integer.parseInt(rawValues[i]));
-					break;
-				case Types.INTEGER:
-					values[i] = ValueInteger.select(generator, Integer.parseInt(rawValues[i]));
-					break;
-				case Types.BIGINT:
-					values[i] = ValueInteger.select(generator, Integer.parseInt(rawValues[i]));
-					break;
-				case Types.FLOAT:
-					values[i] = ValueRational.select(generator, Float.parseFloat(rawValues[i]));
-					break;
-				case Types.REAL:
-					values[i] = ValueRational.select(generator, Float.parseFloat(rawValues[i]));
-					break;
-				case Types.DOUBLE:
-					values[i] = ValueRational.select(generator, Float.parseFloat(rawValues[i]));
-					break;
-				case Types.NUMERIC:
-					values[i] = ValueInteger.select(generator, Integer.parseInt(rawValues[i]));
-					break;
-				case Types.DECIMAL:
-					values[i] = ValueInteger.select(generator, Integer.parseInt(rawValues[i]));
-					break;
-				case Types.CHAR:
-					values[i] = ValueCharacter.select(generator, rawValues[i]);
-					break;
-				case Types.VARCHAR:
-					values[i] = ValueCharacter.select(generator, rawValues[i]);
-					break;
-				case Types.LONGVARCHAR:
-					values[i] = ValueCharacter.select(generator, rawValues[i]);
-					break;
-				case Types.DATE:
-					break;
-				case Types.TIME:
-					break;
-				case Types.TIMESTAMP:
-					break;
-				case Types.BINARY:
-					break;
-				case Types.VARBINARY:
-					break;
-				case Types.LONGVARBINARY:
-					break;
-				case Types.NULL:
-					break;
-				case Types.OTHER:
-					break;
-				case Types.JAVA_OBJECT:
-					break;
-				case Types.DISTINCT:
-					break;
-				case Types.STRUCT:
-					break;
-				case Types.ARRAY:
-					break;
-				case Types.BLOB:
-					break;
-				case Types.CLOB:
-					break;
-				case Types.REF:
-					break;
-				case Types.DATALINK:
-					break;
-				case Types.BOOLEAN:
-					values[i] = ValueBoolean.select(generator, Boolean.parseBoolean(rawValues[i]));
-					break;
-				case Types.ROWID:
-					break;
-				case Types.NCHAR:
-					values[i] = ValueCharacter.select(generator, rawValues[i]);
-					break;
-				case Types.NVARCHAR:
-					values[i] = ValueCharacter.select(generator, rawValues[i]);
-					break;
-				case Types.NCLOB:
-					break;
-				case Types.SQLXML:
-					break;
-				}
-			} catch (NumberFormatException e) {
-			}
-			i++;
-		}
-		return new ValueTuple(generator, values);
+	private Value[] getRow(ResultSet resultSet) throws SQLException {
+		Value[] values = new Value[resultSet.getMetaData().getColumnCount()];
+		for (int i = 1; i <= values.length; i++)
+			values[i - 1] = ValueCharacter.select(generator, resultSet.getString(i));
+		return values;
 	}
 
-	private String getRow(ResultSet resultSet) throws SQLException {
-		StringBuffer currentLine = new StringBuffer();
-		for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++)
-			currentLine.append(resultSet.getString(i) + ",");
-		return currentLine.substring(0, currentLine.length() - 1).toString();
+	private String getAttributeList() {
+		return fileHeading.getSpecification();
 	}
-
+	
 	@Override
 	public TupleIterator iterator() {
 		try {
@@ -206,10 +99,11 @@ public class TableJDBC extends TableCustom {
 	@Override
 	public long getCardinality() {
 		try {
-			ResultSet resultSet = statement.executeQuery("select count(*) from " + table);
+			ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM " + meta.getTable());
 			resultSet.next();
-			return resultSet.getInt(1);
+			return resultSet.getLong(1);
 		} catch (SQLException e) {
+			System.out.println("TableJDBC[10]: error " + e);
 		}
 		return 0;
 	}
@@ -249,13 +143,14 @@ public class TableJDBC extends TableCustom {
 	public long insert(Generator generator, ValueTuple tuple) {
 		try {
 			Value[] values = tuple.getValues();
-			StringBuffer command = new StringBuffer("insert into " + table + " values (");
+			StringBuffer command = new StringBuffer("insert into " + meta.getTable() + " values (");
 			for (int i = 0; i < values.length; i++)
 				command.append("\'" + values[i].toString() + "\',");
 			PreparedStatement preparedStatement = connect.prepareStatement(command.substring(0, command.length() - 1) + ");");
 			preparedStatement.executeUpdate();
 			return 1;
 		} catch (SQLException e) {
+			System.out.println("TableJDBC[1]: error " + e);
 			return 0;
 		}
 	}
@@ -276,19 +171,20 @@ public class TableJDBC extends TableCustom {
 	public void purge() {
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = connect.prepareStatement("delete from " + table);
+			preparedStatement = connect.prepareStatement("delete from " + meta.getTable());
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
+			System.out.println("TableJDBC[2]: error " + e);
 		}
 	}
 
 	@Override
 	public void delete(Generator generator, ValueTuple tuple) {
 		PreparedStatement preparedStatement;
-		String[] values = tuple.toCSV().split(",");
-		StringBuffer line = new StringBuffer("delete from " + table + " where ");
+		String[] values = CSVLineParse.parse(tuple.toCSV());
+		StringBuffer line = new StringBuffer("delete from " + meta.getTable() + " where ");
 		try {
-			ResultSet resultSet = statement.executeQuery("select * from " + table);
+			ResultSet resultSet = statement.executeQuery("select * from " + meta.getTable());
 			for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
 				int type = resultSet.getMetaData().getColumnType(i);
 				line.append(resultSet.getMetaData().getColumnName(i) + "=");
@@ -301,7 +197,7 @@ public class TableJDBC extends TableCustom {
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("TableJDBC[3]: error " + e);
 		}
 	}
 
@@ -365,9 +261,9 @@ public class TableJDBC extends TableCustom {
 	}
 
 	private TupleIterator dupremoveIterator() throws SQLException {
-		return new TupleIteratorUnique(new TupleIterator() {
-			String currentLine = null;
-			ResultSet resultSet = statement.executeQuery("select * from " + table);
+		return new TupleIterator() {
+			Value[] currentLine = null;
+			ResultSet resultSet = statement.executeQuery("SELECT DISTINCT * FROM " + meta.getTable());
 
 			@Override
 			public boolean hasNext() {
@@ -381,6 +277,7 @@ public class TableJDBC extends TableCustom {
 						return true;
 					}
 				} catch (SQLException e) {
+					System.out.println("TableJDBC[4]: error " + e);
 				}
 				return false;
 			}
@@ -389,7 +286,7 @@ public class TableJDBC extends TableCustom {
 			public ValueTuple next() {
 				if (hasNext())
 					try {
-						return toTuple(currentLine);
+						return new ValueTuple(generator, currentLine);
 					} finally {
 						currentLine = null;
 					}
@@ -407,15 +304,16 @@ public class TableJDBC extends TableCustom {
 					if (connect != null)
 						connect.close();
 				} catch (SQLException e) {
+					System.out.println("TableJDBC[5]: error " + e);
 				}
 			}
-		});
+		};
 	}
 
 	private TupleIterator dupcountIterator() throws SQLException {
-		return new TupleIteratorUnique(new TupleIteratorCount(new TupleIterator() {
-			String currentLine = null;
-			ResultSet resultSet = statement.executeQuery("select * from " + table);
+		return new TupleIterator() {
+			Value[] currentLine = null;
+			ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) AS DUP_COUNT, " + getAttributeList() + " FROM " + meta.getTable() + " GROUP BY " + getAttributeList());
 
 			@Override
 			public boolean hasNext() {
@@ -429,6 +327,7 @@ public class TableJDBC extends TableCustom {
 						return true;
 					}
 				} catch (SQLException e) {
+					System.out.println("TableJDBC[6]: error " + e);
 				}
 				return false;
 			}
@@ -437,7 +336,7 @@ public class TableJDBC extends TableCustom {
 			public ValueTuple next() {
 				if (hasNext())
 					try {
-						return toTuple(currentLine);
+						return new ValueTuple(generator, currentLine);
 					} finally {
 						currentLine = null;
 					}
@@ -455,16 +354,16 @@ public class TableJDBC extends TableCustom {
 					if (connect != null)
 						connect.close();
 				} catch (SQLException e) {
+					System.out.println("TableJDBC[7]: error " + e);
 				}
 			}
-		}, generator));
+		};
 	}
 
 	private TupleIterator autokeyIterator() throws SQLException {
-		return new TupleIterator() {
-			long autokey = 1;
-			String currentLine = null;
-			ResultSet resultSet = statement.executeQuery("select * from " + table);
+		return new TupleIteratorAutokey(new TupleIterator() {
+			Value[] currentLine = null;
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM " + meta.getTable());
 
 			@Override
 			public boolean hasNext() {
@@ -478,6 +377,7 @@ public class TableJDBC extends TableCustom {
 						return true;
 					}
 				} catch (SQLException e) {
+					System.out.println("TableJDBC[8]: error " + e);
 				}
 				return false;
 			}
@@ -486,10 +386,9 @@ public class TableJDBC extends TableCustom {
 			public ValueTuple next() {
 				if (hasNext())
 					try {
-						return toTuple(autokey + "," + currentLine);
+						return new ValueTuple(generator, currentLine);
 					} finally {
 						currentLine = null;
-						autokey++;
 					}
 				else
 					return null;
@@ -505,8 +404,9 @@ public class TableJDBC extends TableCustom {
 					if (connect != null)
 						connect.close();
 				} catch (Exception e) {
+					System.out.println("TableJDBC[9]: error " + e);
 				}
 			}
-		};
+		}, generator);
 	}
 }

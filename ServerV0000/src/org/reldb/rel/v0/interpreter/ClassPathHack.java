@@ -15,7 +15,7 @@ public class ClassPathHack {
 	private static boolean osgiTested = false;
 	private static boolean isInOSGI = false;
 	
-	private static boolean isInOSGI() {
+	public static boolean isInOSGI() {
 		if (osgiTested)
 			return isInOSGI;
 		try {

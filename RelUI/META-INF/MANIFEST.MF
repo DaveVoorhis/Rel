@@ -33,7 +33,11 @@ Bundle-ClassPath: .,
  lib/relclient.jar,
  lib/relshared.jar,
  lib/xmlbeans-2.6.0.jar,
- lib/RelDBMS.jar
+ lib/RelDBMS.jar,
+ lib/mysql-connector-java-5.1.40-bin.jar,
+ lib/ojdbc7.jar,
+ lib/postgresql-9.4.1212.jar,
+ lib/sqljdbc42.jar
 Bundle-Activator: org.reldb.dbrowser.Activator
 Bundle-Vendor: reldb.org
 Require-Bundle: javax.inject,

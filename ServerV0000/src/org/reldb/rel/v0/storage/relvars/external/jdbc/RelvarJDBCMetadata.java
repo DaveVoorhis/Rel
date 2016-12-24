@@ -2,13 +2,12 @@ package org.reldb.rel.v0.storage.relvars.external.jdbc;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Enumeration;
 
 import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.v0.generator.Generator;
@@ -18,190 +17,69 @@ import org.reldb.rel.v0.storage.relvars.RelvarCustomMetadata;
 import org.reldb.rel.v0.storage.relvars.RelvarExternal;
 import org.reldb.rel.v0.storage.relvars.RelvarGlobal;
 import org.reldb.rel.v0.storage.relvars.RelvarHeading;
+import org.reldb.rel.v0.storage.relvars.external.CSVLineParse;
+import org.reldb.rel.v0.storage.relvars.external.ColumnName;
 import org.reldb.rel.v0.storage.tables.TableExternal.DuplicateHandling;
 import org.reldb.rel.v0.types.Heading;
-import org.reldb.rel.v0.types.builtin.TypeBoolean;
 import org.reldb.rel.v0.types.builtin.TypeCharacter;
 import org.reldb.rel.v0.types.builtin.TypeInteger;
-import org.reldb.rel.v0.types.builtin.TypeRational;
 
 public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 	public static final long serialVersionUID = 0;
 
-	private String sourceCode;
-	private String address; // "jdbc:mysql://localhost"
-	private String user; // "sqluser"
-	private String password; // "sqluserpw"
-	private String table; // "FEEDBACK.RELVAR"
-	private String driverLocation; // "/mysql-connector-java-5.1.25-bin.jar";
-	private String driver; // "com.mysql.jdbc.Driver"
-	private DuplicateHandling duplicates;
+	private String connectionString;
+	private String address; 		// "jdbc:mysql://localhost"
+	private String user; 			// "sqluser"
+	private String password; 		// "sqluserpw"
+	private String table; 			// "FEEDBACK.RELVAR"
+	private String driverLocation;	// "/mysql-connector-java-5.1.25-bin.jar";
+	private String driver; 			// "com.mysql.jdbc.Driver"
 
 	// var myvar external jdbc
 	// "jdbc:mysql://localhost,sqluser,sqluserpw,FEEDBACK.RELVAR,/mysql-connector-java-5.1.25-bin.jar,com.mysql.jdbc.Driver";
+	
+	private DuplicateHandling duplicates;
 
-	private static RelvarHeading getHeading(String spec, DuplicateHandling duplicates) {
-		String[] values = spec.split(",");
-		if (values.length > 6)
-			throw new ExceptionSemantic("EX0014: Too many arguments. Expected only: URL,USER,PASSWORD,DATABASE.TABLE,DRIVER_LOCATION,DRIVER");
-		String address = null;
-		String user = null;
-		String password = null;
-		String table = null;
-		String driverLocation = null;
-		String driver = null;
-		try {
-			address = values[0];
-			user = values[1];
-			password = values[2];
-			table = values[3];
-			driverLocation = values[4];
-			driver = values[5];
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new ExceptionSemantic("EX0015: Expected: URL, USER, PASSWORD, DATABASE.TABLE, DRIVER_LOCATION, DRIVER. Found: " + spec);
+	private static String obtainDriverList() {
+		String list = "";
+		Enumeration<Driver> drivers = DriverManager.getDrivers();
+		while (drivers.hasMoreElements()) {
+			Driver driver = drivers.nextElement();
+			if (!list.isEmpty())
+				list += ", ";
+			list += driver.getClass().getName();
 		}
+		return (list.isEmpty()) ? "<none>" : list;
+	}
+	
+	public static RelvarHeading getHeading(String spec, DuplicateHandling duplicates) {
+		String[] values = CSVLineParse.parse(spec);	
+		if (values.length != 6)
+			throw new ExceptionSemantic("EX0014: Invalid arguments. Expected: URL, USER, PASSWORD, DATABASE.TABLE, DRIVER_LOCATION, DRIVER but got " + spec);
+		String address = values[0];
+		String user = values[1];
+		String password = values[2];
+		String table = values[3];
+		String driverLocation = values[4];
+		String driver = values[5];
 		try {
-			ClassPathHack.addFile(driverLocation);
-			Class.forName(driver);
+			if (!ClassPathHack.isInOSGI()) {
+				ClassPathHack.addFile(driverLocation);
+				Class.forName(driver);
+			}
 			Connection connect = DriverManager.getConnection(address, user, password);
 			Statement statement = connect.createStatement();
-			ResultSet resultSet = statement.executeQuery("select * from " + table);
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM " + table);
 			Heading heading = new Heading();
 			if (duplicates == DuplicateHandling.DUP_COUNT)
 				heading.add("DUP_COUNT", TypeInteger.getInstance());
 			else if (duplicates == DuplicateHandling.AUTOKEY)
 				heading.add("AUTO_KEY", TypeInteger.getInstance());
-			for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++)
-				switch (resultSet.getMetaData().getColumnType(i)) {
-				case Types.BIT:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.TINYINT:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeInteger.getInstance());
-					break;
-				case Types.SMALLINT:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeInteger.getInstance());
-					break;
-				case Types.INTEGER:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeInteger.getInstance());
-					break;
-				case Types.BIGINT:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeInteger.getInstance());
-					break;
-				case Types.FLOAT:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeRational.getInstance());
-					break;
-				case Types.REAL:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeRational.getInstance());
-					break;
-				case Types.DOUBLE:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeRational.getInstance());
-					break;
-				case Types.NUMERIC:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeInteger.getInstance());
-					break;
-				case Types.DECIMAL:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeInteger.getInstance());
-					break;
-				case Types.CHAR:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeCharacter.getInstance());
-					break;
-				case Types.VARCHAR:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeCharacter.getInstance());
-					break;
-				case Types.LONGVARCHAR:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeCharacter.getInstance());
-					break;
-				case Types.DATE:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.TIME:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.TIMESTAMP:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.BINARY:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.VARBINARY:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.LONGVARBINARY:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.NULL:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.OTHER:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.JAVA_OBJECT:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.DISTINCT:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.STRUCT:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.ARRAY:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.BLOB:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.CLOB:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.REF:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.DATALINK:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.BOOLEAN:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeBoolean.getInstance());
-					break;
-				case Types.ROWID:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.NCHAR:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeCharacter.getInstance());
-					break;
-				case Types.NVARCHAR:
-					heading.add(resultSet.getMetaData().getColumnName(i), TypeCharacter.getInstance());
-					break;
-				case Types.NCLOB:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				case Types.SQLXML:
-					// heading.add(resultSet.getMetaData().getColumnName(i),
-					// Type????.getInstance());
-					break;
-				}
+			for (int column = 1; column <= resultSet.getMetaData().getColumnCount(); column++)
+				heading.add(ColumnName.cleanName(resultSet.getMetaData().getColumnName(column)), TypeCharacter.getInstance());
 			return new RelvarHeading(heading);
 		} catch (SQLException e) {
-			throw new ExceptionSemantic("EX0016: " + e.toString());
+			throw new ExceptionSemantic("EX0016: " + e.toString() + ". Drivers available: " + obtainDriverList());
 		} catch (ClassNotFoundException e) {
 			throw new ExceptionSemantic("EX0017: " + e.toString());
 		} catch (IOException e) {
@@ -211,12 +89,12 @@ public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 
 	@Override
 	public String getSourceDefinition() {
-		return "EXTERNAL JDBC " + sourceCode;
+		return "EXTERNAL JDBC " + address + ", " + user + ", " + password + ", " + table + ", " + driverLocation + ", " + driver + "\" " + duplicates;
 	}
 
 	public RelvarJDBCMetadata(RelDatabase database, String owner, String spec, DuplicateHandling duplicates) {
-		super(database, getHeading(spec, duplicates), owner);
-		String[] values = spec.split(",");
+		super(database, getHeading(spec, duplicates), owner);		
+		String[] values = CSVLineParse.parse(spec);
 		address = values[0];
 		user = values[1];
 		password = values[2];
@@ -224,14 +102,16 @@ public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 		driverLocation = values[4];
 		driver = values[5];
 		this.duplicates = duplicates;
-		sourceCode = "\" " + address + "," + user + "," + password + "," + table + "," + driverLocation + "," + driver + "\" " + duplicates;
+		connectionString = spec;
 	}
 
 	@Override
 	public RelvarGlobal getRelvar(String name, RelDatabase database) {
 		try {
-			ClassPathHack.addFile(driverLocation);
-			Class.forName(driver);
+			if (!ClassPathHack.isInOSGI()) {
+				ClassPathHack.addFile(driverLocation);
+				Class.forName(driver);
+			}
 			Connection connect = DriverManager.getConnection(address, user, password);
 			Statement statement = connect.createStatement();
 			statement.executeQuery("select * from " + table);
@@ -248,6 +128,10 @@ public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 	public void dropRelvar(RelDatabase database) {
 	}
 
+	public String getConnectionString() {
+		return connectionString;
+	}
+	
 	public String getPath() {
 		return address;
 	}
@@ -270,24 +154,6 @@ public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 
 	public String getDriver() {
 		return driver;
-	}
-
-	public List<Integer> getTypesList() {
-		List<Integer> list = new ArrayList<Integer>();
-		try {
-			ClassPathHack.addFile(driverLocation);
-			Class.forName(driver);
-			Connection connect = DriverManager.getConnection(address, user, password);
-			Statement statement = connect.createStatement();
-			ResultSet resultSet = statement.executeQuery("select * from " + table);
-			for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++)
-				list.add(resultSet.getMetaData().getColumnType(i));
-			return list;
-		} catch (SQLException e) {
-		} catch (ClassNotFoundException e) {
-		} catch (IOException e) {
-		}
-		return null;
 	}
 
 	@Override
