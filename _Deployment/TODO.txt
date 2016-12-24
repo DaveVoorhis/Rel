@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Fix JDBC external vars.
-
 - Add NOHEADING to CSV files.
 
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
