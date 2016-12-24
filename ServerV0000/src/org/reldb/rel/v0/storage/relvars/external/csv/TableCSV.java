@@ -20,11 +20,11 @@ import org.reldb.rel.v0.values.RelTupleFilter;
 import org.reldb.rel.v0.values.RelTupleMap;
 import org.reldb.rel.v0.values.TupleFilter;
 import org.reldb.rel.v0.values.TupleIterator;
+import org.reldb.rel.v0.values.TupleIteratorAutokey;
 import org.reldb.rel.v0.values.TupleIteratorCount;
 import org.reldb.rel.v0.values.TupleIteratorUnique;
 import org.reldb.rel.v0.values.Value;
 import org.reldb.rel.v0.values.ValueCharacter;
-import org.reldb.rel.v0.values.ValueInteger;
 import org.reldb.rel.v0.values.ValueRelation;
 import org.reldb.rel.v0.values.ValueTuple;
 import org.reldb.rel.v0.vm.Context;
@@ -50,14 +50,9 @@ public class TableCSV extends TableCustom {
 	private ValueTuple toTuple(String line) {
 		String[] rawValues = CSVLineParse.parse(line);
 		Value[] values = new Value[rawValues.length];
-		int startAt = 0;
-		if (duplicates == DuplicateHandling.AUTOKEY) {
-			values[0] = ValueInteger.select(generator, Integer.parseInt(rawValues[0]));
-			startAt = 1;
-		}
-		if (values.length != fileHeading.getDegree() - ((duplicates == DuplicateHandling.DUP_COUNT) ? 1 : 0))
+		if (values.length != fileHeading.getDegree() - ((duplicates == DuplicateHandling.DUP_COUNT || duplicates == DuplicateHandling.AUTOKEY) ? 1 : 0))
 			throw new ExceptionSemantic("RS0457: CSV file " + file.getAbsolutePath() + " with heading " + fileHeading + " has malformed line: " + line);
-		for (int i = startAt; i < rawValues.length; i++) {
+		for (int i = 0; i < rawValues.length; i++) {
 			String rawValue = rawValues[i].trim();
 			if (rawValue.startsWith("\"") && rawValue.endsWith("\""))
 				values[i] = ValueCharacter.select(generator, ValueCharacter.stripDelimitedString(rawValue));
@@ -69,14 +64,12 @@ public class TableCSV extends TableCustom {
 
 	@Override
 	public TupleIterator iterator() {
-		if (duplicates == DuplicateHandling.DUP_REMOVE)
-			return dupremoveIterator();
-		else if (duplicates == DuplicateHandling.DUP_COUNT)
-			return dupcountIterator();
-		else if (duplicates == DuplicateHandling.AUTOKEY)
-			return autokeyIterator();
-		else
-			throw new ExceptionSemantic("EX0003: Duplicate handling method " + duplicates.toString() + " is not supported by CSV.");
+		switch (duplicates) {
+			case DUP_REMOVE: return new TupleIteratorUnique(iteratorRaw());
+			case DUP_COUNT: return new TupleIteratorUnique(new TupleIteratorCount(iteratorRaw(), generator));
+			case AUTOKEY: return new TupleIteratorAutokey(iteratorRaw(), generator);
+			default: throw new ExceptionSemantic("EX0003: Duplicate handling method " + duplicates.toString() + " is not supported by CSV.");
+		}
 	}
 
 	@Override
@@ -229,58 +222,8 @@ public class TableCSV extends TableCustom {
 		return 0;
 	}
 
-	private TupleIterator dupremoveIterator() {
-		return new TupleIteratorUnique(new TupleIterator() {
-			String currentLine = null;
-			BufferedReader reader = null;
-
-			@Override
-			public boolean hasNext() {
-				if (currentLine != null)
-					return true;
-				if (reader == null)
-					try {
-						reader = new BufferedReader(new FileReader(file));
-						reader.readLine(); // skip first line
-					} catch (IOException ioe) {
-						throw new ExceptionSemantic("EX0005: Unable to read CSV file '" + file.getPath() + "': " + ioe);
-					}
-				try {
-					currentLine = reader.readLine();
-					if (currentLine == null)
-						return false;
-					return true;
-				} catch (IOException e) {
-					throw new ExceptionSemantic("EX0006: Unable to read CSV file '" + file.getPath() + "': " + e);
-				}
-			}
-
-			@Override
-			public ValueTuple next() {
-				if (hasNext())
-					try {
-						// replaceAll to filter out Byte Order Mark (BOM), if present
-						return toTuple(currentLine.replaceAll("\ufeff", " "));
-					} finally {
-						currentLine = null;
-					}
-				else
-					return null;
-			}
-
-			@Override
-			public void close() {
-				if (reader != null)
-					try {
-						reader.close();
-					} catch (IOException ioe2) {
-					}
-			}
-		});
-	}
-
-	private TupleIterator dupcountIterator() {
-		return new TupleIteratorUnique(new TupleIteratorCount(new TupleIterator() {
+	private TupleIterator iteratorRaw() {
+		return new TupleIterator() {
 			String currentLine = null;
 			BufferedReader reader = null;
 
@@ -312,58 +255,6 @@ public class TableCSV extends TableCustom {
 						// replaceAll to filter out Byte Order Mark (BOM), if present
 						return toTuple(currentLine.replaceAll("\ufeff", " "));
 					} finally {
-						currentLine = null;
-					}
-				else
-					return null;
-			}
-
-			@Override
-			public void close() {
-				if (reader != null)
-					try {
-						reader.close();
-					} catch (IOException ioe2) {
-					}
-			}
-		}, generator));
-	}
-
-	private TupleIterator autokeyIterator() {
-		return new TupleIterator() {
-			long autokey = 1;
-			String currentLine = null;
-			BufferedReader reader = null;
-
-			@Override
-			public boolean hasNext() {
-				if (currentLine != null)
-					return true;
-				if (reader == null)
-					try {
-						reader = new BufferedReader(new FileReader(file));
-						reader.readLine(); // skip first line
-					} catch (IOException ioe) {
-						throw new ExceptionSemantic("EX0009: Unable to read CSV file '" + file.getPath() + "': " + ioe);
-					}
-				try {
-					currentLine = reader.readLine();
-					if (currentLine == null)
-						return false;
-					return true;
-				} catch (IOException e) {
-					throw new ExceptionSemantic("EX0010: Unable to read CSV file '" + file.getPath() + "': " + e);
-				}
-			}
-
-			@Override
-			public ValueTuple next() {
-				if (hasNext())
-					try {
-						// replaceAll to filter out Byte Order Mark (BOM), if present
-						return toTuple(autokey + "," + currentLine.replaceAll("\ufeff", " "));
-					} finally {
-						autokey++;
 						currentLine = null;
 					}
 				else

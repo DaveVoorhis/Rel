@@ -27,11 +27,11 @@ import org.reldb.rel.v0.values.RelTupleFilter;
 import org.reldb.rel.v0.values.RelTupleMap;
 import org.reldb.rel.v0.values.TupleFilter;
 import org.reldb.rel.v0.values.TupleIterator;
+import org.reldb.rel.v0.values.TupleIteratorAutokey;
 import org.reldb.rel.v0.values.TupleIteratorCount;
 import org.reldb.rel.v0.values.TupleIteratorUnique;
 import org.reldb.rel.v0.values.Value;
 import org.reldb.rel.v0.values.ValueCharacter;
-import org.reldb.rel.v0.values.ValueInteger;
 import org.reldb.rel.v0.values.ValueRelation;
 import org.reldb.rel.v0.values.ValueTuple;
 import org.reldb.rel.v0.vm.Context;
@@ -58,26 +58,9 @@ public class TableXLS extends TableCustom {
 		if (storedHeading.toString().compareTo(fileHeading.toString()) != 0)
 			throw new ExceptionSemantic("RS0464: Stored XLS metadata is " + storedHeading + " but file metadata is " + fileHeading + ". Has the file structure changed?");
 	}
-
-	private ValueTuple toTuple(long autokey, Iterator<Cell> cellIterator) {
-		Value[] values = new Value[fileHeading.getDegree()];
-		int index = 1;		
-		values[0] = ValueInteger.select(generator, autokey);
-		DataFormatter formatter = new DataFormatter();
-		while (cellIterator.hasNext()) {
-			Cell cell = cellIterator.next();
-			values[index] = ValueCharacter.select(generator, formatter.formatCellValue(cell));
-			index++;
-			if (index >= values.length)
-				break;
-		}
-		for (; index < values.length; index++)
-			values[index] = ValueCharacter.select(generator, "");
-		return new ValueTuple(generator, values);
-	}
 	
 	private ValueTuple toTuple(Iterator<Cell> cellIterator) {
-		Value[] values = new Value[fileHeading.getDegree() - ((duplicates == DuplicateHandling.DUP_COUNT) ? 1 : 0)];
+		Value[] values = new Value[fileHeading.getDegree() - ((duplicates == DuplicateHandling.DUP_COUNT || duplicates == DuplicateHandling.AUTOKEY) ? 1 : 0)];
 		int index = 0;
 		DataFormatter formatter = new DataFormatter();
 		while (cellIterator.hasNext()) {
@@ -96,22 +79,21 @@ public class TableXLS extends TableCustom {
 	public TupleIterator iterator() {
 		try {
 			if (file.getName().toLowerCase().endsWith("xls")) {
-				if (duplicates == DuplicateHandling.DUP_REMOVE)
-					return dupremoveIteratorXLS();
-				else if (duplicates == DuplicateHandling.DUP_COUNT)
-					return dupcountIteratorXLS();
-				else if (duplicates == DuplicateHandling.AUTOKEY)
-					return autokeyIteratorXLS();
+				switch (duplicates) {
+					case DUP_REMOVE: return new TupleIteratorUnique(iteratorRawXLS());
+					case DUP_COUNT: return new TupleIteratorUnique(new TupleIteratorCount(iteratorRawXLS(), generator));
+					case AUTOKEY: return new TupleIteratorAutokey(iteratorRawXLS(), generator);
+					default: throw new ExceptionSemantic("RS0467: Duplicate handling method " + duplicates.toString() + " is not supported by XLS.");
+				}
 			} else if (file.getName().toLowerCase().endsWith("xlsx")) {
-				if (duplicates == DuplicateHandling.DUP_REMOVE)
-					return dupremoveIteratorXLSX();
-				else if (duplicates == DuplicateHandling.DUP_COUNT)
-					return dupcountIteratorXLSX();
-				else if (duplicates == DuplicateHandling.AUTOKEY)
-					return autokeyIteratorXLSX();
+				switch (duplicates) {
+					case DUP_REMOVE: return new TupleIteratorUnique(iteratorRawXLSX());
+					case DUP_COUNT: return new TupleIteratorUnique(new TupleIteratorCount(iteratorRawXLSX(), generator));
+					case AUTOKEY: return new TupleIteratorAutokey(iteratorRawXLSX(), generator);
+					default: throw new ExceptionSemantic("RS0468: Duplicate handling method " + duplicates.toString() + " is not supported by XLS.");
+				}
 			} else
 				throw new ExceptionSemantic("EX0028: Type should be XLS or XLSX.");
-			return null;
 		} catch (IOException e) {
 			throw new ExceptionSemantic("EX0029: Failed to read the file." + e);
 		}
@@ -250,112 +232,22 @@ public class TableXLS extends TableCustom {
 		notImplemented("UPDATE");
 		return 0;
 	}
-
-	private TupleIterator dupremoveIteratorXLS() throws IOException {
+	
+	private Row obtainFirstRow(Iterator<Row> rowIterator) {
 		try {
-			return new TupleIteratorUnique(new TupleIterator() {
-				FileInputStream reader = new FileInputStream(file);
-				HSSFWorkbook workbook = new HSSFWorkbook(reader);
-				HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
-				Iterator<Row> rowIterator = sheet.iterator();
-				Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
-
-				@Override
-				public boolean hasNext() {
-					return rowIterator.hasNext();
-				}
-
-				@Override
-				public ValueTuple next() {
-					row = rowIterator.next();
-					Iterator<Cell> cellIterator = row.cellIterator();
-					return toTuple(cellIterator);
-				}
-
-				@Override
-				public void close() {
-					try {
-						reader.close();
-					} catch (IOException e) {
-					}
-				}
-			});
-		} catch (NoSuchElementException e) {
-			return new TupleIterator() {
-				@Override
-				public boolean hasNext() {
-					return false;
-				}
-
-				@Override
-				public ValueTuple next() {
-					return null;
-				}
-
-				@Override
-				public void close() {
-
-				}
-			};
+			return (hasHeading) ? rowIterator.next() : null; // skip heading row?
+		} catch (NoSuchElementException nsee) {
+			return null;
 		}
 	}
-
-	private TupleIterator dupremoveIteratorXLSX() throws IOException {
-		try {
-			return new TupleIteratorUnique(new TupleIterator() {
-				FileInputStream reader = new FileInputStream(file);
-				XSSFWorkbook workbook = new XSSFWorkbook(reader);
-				XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
-				Iterator<Row> rowIterator = sheet.iterator();
-				Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
-
-				@Override
-				public boolean hasNext() {
-					return rowIterator.hasNext();
-				}
-
-				@Override
-				public ValueTuple next() {
-					row = rowIterator.next();
-					Iterator<Cell> cellIterator = row.cellIterator();
-					return toTuple(cellIterator);
-				}
-
-				@Override
-				public void close() {
-					try {
-						reader.close();
-					} catch (IOException e) {
-					}
-				}
-			});
-		} catch (NoSuchElementException e) {
-			return new TupleIterator() {
-				@Override
-				public boolean hasNext() {
-					return false;
-				}
-
-				@Override
-				public ValueTuple next() {
-					return null;
-				}
-
-				@Override
-				public void close() {
-
-				}
-			};
-		}
-	}
-
-	private TupleIterator dupcountIteratorXLS() throws IOException {
-		return new TupleIteratorUnique(new TupleIteratorCount(new TupleIterator() {
+	
+	private TupleIterator iteratorRawXLS() throws IOException {
+		return new TupleIterator() {
 			FileInputStream reader = new FileInputStream(file);
 			HSSFWorkbook workbook = new HSSFWorkbook(reader);
 			HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 			Iterator<Row> rowIterator = sheet.iterator();
-			Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
+			Row row = obtainFirstRow(rowIterator);
 
 			@Override
 			public boolean hasNext() {
@@ -376,16 +268,16 @@ public class TableXLS extends TableCustom {
 				} catch (IOException e) {
 				}
 			}
-		}, generator));
+		};
 	}
-
-	private TupleIterator dupcountIteratorXLSX() throws IOException {
-		return new TupleIteratorUnique(new TupleIteratorCount(new TupleIterator() {
+	
+	private TupleIterator iteratorRawXLSX() throws IOException {
+		return new TupleIterator() {
 			FileInputStream reader = new FileInputStream(file);
 			XSSFWorkbook workbook = new XSSFWorkbook(reader);
 			XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 			Iterator<Row> rowIterator = sheet.iterator();
-			Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
+			Row row = obtainFirstRow(rowIterator);
 
 			@Override
 			public boolean hasNext() {
@@ -406,76 +298,6 @@ public class TableXLS extends TableCustom {
 				} catch (IOException e) {
 				}
 			}
-		}, generator));
-	}
-
-	private TupleIterator autokeyIteratorXLS() throws IOException {
-		return new TupleIterator() {
-			long autokey = 1;
-			FileInputStream reader = new FileInputStream(file);
-			HSSFWorkbook workbook = new HSSFWorkbook(reader);
-			HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
-			Iterator<Row> rowIterator = sheet.iterator();
-			Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
-
-			@Override
-			public boolean hasNext() {
-				return rowIterator.hasNext();
-			}
-
-			@Override
-			public ValueTuple next() {
-				row = rowIterator.next();
-				Iterator<Cell> cellIterator = row.cellIterator();
-				try {
-					return toTuple(autokey, cellIterator);
-				} finally {
-					autokey++;
-				}
-			}
-
-			@Override
-			public void close() {
-				try {
-					reader.close();
-				} catch (IOException e) {
-				}
-			}
-		};
-	}
-
-	private TupleIterator autokeyIteratorXLSX() throws IOException {
-		return new TupleIterator() {
-			long autokey = 1;
-			FileInputStream reader = new FileInputStream(file);
-			XSSFWorkbook workbook = new XSSFWorkbook(reader);
-			XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
-			Iterator<Row> rowIterator = sheet.iterator();
-			Row row = (hasHeading) ? rowIterator.next() : null; // skip heading row?
-			
-			@Override
-			public boolean hasNext() {
-				return rowIterator.hasNext();
-			}
-
-			@Override
-			public ValueTuple next() {
-				row = rowIterator.next();
-				Iterator<Cell> cellIterator = row.cellIterator();
-				try {
-					return toTuple(autokey, cellIterator);
-				} finally {
-					autokey++;
-				}
-			}
-
-			@Override
-			public void close() {
-				try {
-					reader.close();
-				} catch (IOException e) {
-				}
-			}
-		};
+		};		
 	}
 }

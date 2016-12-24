@@ -16,9 +16,12 @@ public class TupleIteratorCount extends TupleIterator {
 	public TupleIteratorCount(TupleIterator source, Generator generator) {
 		this.generator = generator;
 		tupleSet = new ArrayList<ValueTuple>();
-		while (source.hasNext())
-			tupleSet.add(source.next());
-		source.close();
+		try {
+			while (source.hasNext())
+				tupleSet.add(source.next());
+		} finally {
+			source.close();
+		}
 		count = 0;
 		index = 0;
 	}
