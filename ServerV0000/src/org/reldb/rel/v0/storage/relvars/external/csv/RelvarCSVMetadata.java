@@ -25,6 +25,25 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 	private String path;
 	private DuplicateHandling duplicates;
 
+	public static class CSVSpec {
+		String filePath;
+		boolean hasHeading = true;
+	}
+	
+	public static CSVSpec obtainCSVSpec(String path) {
+		String[] splitPath = path.split(";");
+		CSVSpec spec = new CSVSpec();
+		spec.filePath = splitPath[0].trim();
+		for (int index = 1; index < splitPath.length; index++) {
+			String part = splitPath[index].trim();
+			if (part.compareToIgnoreCase("NOHEADING") == 0)
+				spec.hasHeading = false;
+			else
+				throw new ExceptionSemantic("RS0469: Invalid CSV file specification '" + part + "'.");
+		}
+		return spec;
+	}
+
 	private static String readFirstLineOfCSV(String path) {
 		File f = new File(path);
 		if (f.exists()) {
@@ -45,23 +64,28 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 	}
 	
 	public static RelvarHeading getHeadingFromCSV(String path, DuplicateHandling duplicates) {
+		CSVSpec spec = obtainCSVSpec(path);
 		Heading heading = new Heading();
 		String firstLine = null;
 		if (duplicates == DuplicateHandling.DUP_COUNT)
 			heading.add("DUP_COUNT", TypeInteger.getInstance());
 		else if (duplicates == DuplicateHandling.AUTOKEY)
 			heading.add("AUTO_KEY", TypeInteger.getInstance());
-		firstLine = readFirstLineOfCSV(path);
+		firstLine = readFirstLineOfCSV(spec.filePath);
 		String[] columns = null;
 		if (firstLine != null) {
 	        columns = CSVLineParse.parse(firstLine);
 	        int blankCount = 0;
-			for (String column: columns) {
-				String columnName = ColumnName.cleanName(column);
-				if (columnName.length() == 0)
-					columnName = "BLANK" + ++blankCount;
-				heading.add(columnName, TypeCharacter.getInstance());
-			}
+	        if (spec.hasHeading)
+				for (String column: columns) {
+					String columnName = ColumnName.cleanName(column);
+					if (columnName.length() == 0)
+						columnName = "BLANK" + ++blankCount;
+					heading.add(columnName, TypeCharacter.getInstance());
+				}
+	        else
+	        	for (int i=0; i<columns.length; i++)
+	        		heading.add("COLUMN" + ++blankCount, TypeCharacter.getInstance());
 		}
 		return new RelvarHeading(heading);
 	}
@@ -74,12 +98,13 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 
 	@Override
 	public String getSourceDefinition() {
-		return "EXTERNAL CSV " + "\"" + path + "\" " + duplicates;
+		return "EXTERNAL CSV \"" + path + "\" " + duplicates;
 	}
 
 	@Override
 	public RelvarGlobal getRelvar(String name, RelDatabase database) {
-		File file = new File(path);
+		CSVSpec spec = obtainCSVSpec(path);
+		File file = new File(spec.filePath);
 		if (!file.exists())
 			throw new ExceptionSemantic("EX0002: File at " + path + " not found.");
 		return new RelvarExternal(name, database, new Generator(database, System.out), this, duplicates);

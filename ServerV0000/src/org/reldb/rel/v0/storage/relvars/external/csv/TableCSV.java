@@ -14,6 +14,7 @@ import org.reldb.rel.v0.storage.relvars.RelvarExternal;
 import org.reldb.rel.v0.storage.relvars.RelvarExternalMetadata;
 import org.reldb.rel.v0.storage.relvars.RelvarHeading;
 import org.reldb.rel.v0.storage.relvars.external.CSVLineParse;
+import org.reldb.rel.v0.storage.relvars.external.csv.RelvarCSVMetadata.CSVSpec;
 import org.reldb.rel.v0.storage.tables.TableCustom;
 import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.values.RelTupleFilter;
@@ -34,12 +35,15 @@ public class TableCSV extends TableCustom {
 	private DuplicateHandling duplicates;
 	private Generator generator;
 	private Heading fileHeading;
+	private boolean hasHeading = true;
 
 	public TableCSV(String Name, RelvarExternalMetadata metadata, Generator generator, DuplicateHandling duplicates) {
 		this.generator = generator;
 		this.duplicates = duplicates;
 		RelvarCSVMetadata meta = (RelvarCSVMetadata) metadata;
-		file = new File(meta.getPath());
+		CSVSpec spec = RelvarCSVMetadata.obtainCSVSpec(meta.getPath());
+		file = new File(spec.filePath);
+		hasHeading = spec.hasHeading;
 		RelvarHeading heading = meta.getHeadingDefinition(generator.getDatabase());
 		Heading storedHeading = heading.getHeading();
 		fileHeading = RelvarCSVMetadata.getHeadingFromCSV(meta.getPath(), duplicates).getHeading();
@@ -234,7 +238,8 @@ public class TableCSV extends TableCustom {
 				if (reader == null)
 					try {
 						reader = new BufferedReader(new FileReader(file));
-						reader.readLine(); // skip first line
+						if (hasHeading)
+							reader.readLine(); // skip heading line
 					} catch (IOException ioe) {
 						throw new ExceptionSemantic("EX0007: Unable to read CSV file '" + file.getPath() + "': " + ioe);
 					}
