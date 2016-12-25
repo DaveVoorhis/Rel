@@ -111,7 +111,7 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 
 	@Override
 	public String getSourceDefinition() {
-		return "EXTERNAL XLS " + "\"" + path + "\" " + duplicates;
+		return "EXTERNAL XLS \"" + path + "\" " + duplicates;
 	}
 
 	@Override
