@@ -1,5 +1,9 @@
 ** TO DO **
 
+- Test Extensions directory to handle user-added JDBC drivers.
+
+- Configure JDBC/XLS/CSV support as separate plug-in for both RelUI and stand-alone DBMS.
+
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
   CGI scripts, etc.
 
