@@ -56,9 +56,9 @@ public class RelvarXLSMetadata extends RelvarCustomMetadata {
 	private static RelvarHeading buildHeadingFromColumnsInFirstRow(DuplicateHandling duplicates, boolean hasHeadingRow, Iterator<Row> rowIterator) {
 		Heading heading = new Heading();		
 		if (duplicates == DuplicateHandling.DUP_COUNT)
-			heading.add("DUP_COUNT", TypeInteger.getInstance());
+			heading.add("_DUP_COUNT", TypeInteger.getInstance());
 		else if (duplicates == DuplicateHandling.AUTOKEY)
-			heading.add("AUTO_KEY", TypeInteger.getInstance());		
+			heading.add("_AUTOKEY", TypeInteger.getInstance());		
 		Row row;
 		try {
 			row = rowIterator.next();

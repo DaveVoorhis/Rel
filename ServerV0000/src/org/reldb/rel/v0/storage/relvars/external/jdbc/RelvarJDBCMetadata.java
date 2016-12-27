@@ -72,9 +72,9 @@ public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 			ResultSet resultSet = statement.executeQuery("SELECT * FROM " + table);
 			Heading heading = new Heading();
 			if (duplicates == DuplicateHandling.DUP_COUNT)
-				heading.add("DUP_COUNT", TypeInteger.getInstance());
+				heading.add("_DUP_COUNT", TypeInteger.getInstance());
 			else if (duplicates == DuplicateHandling.AUTOKEY)
-				heading.add("AUTO_KEY", TypeInteger.getInstance());
+				heading.add("_AUTOKEY", TypeInteger.getInstance());
 			for (int column = 1; column <= resultSet.getMetaData().getColumnCount(); column++)
 				heading.add(ColumnName.cleanName(resultSet.getMetaData().getColumnName(column)), TypeCharacter.getInstance());
 			return new RelvarHeading(heading);

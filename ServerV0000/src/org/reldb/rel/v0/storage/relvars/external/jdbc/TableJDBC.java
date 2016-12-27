@@ -65,41 +65,35 @@ public class TableJDBC extends TableCustom {
 		}
 	}
 
-	private Value[] getRow(ResultSet resultSet) throws SQLException {
-		Value[] values = new Value[resultSet.getMetaData().getColumnCount()];
-		for (int i = 1; i <= values.length; i++)
-			values[i - 1] = ValueCharacter.select(generator, resultSet.getString(i));
-		return values;
-	}
-
 	private String getAttributeList() {
 		return fileHeading.getSpecification();
 	}
-	
+		
 	@Override
 	public TupleIterator iterator() {
 		try {
-			if (duplicates == DuplicateHandling.DUP_REMOVE)
-				return dupremoveIterator();
-			else if (duplicates == DuplicateHandling.DUP_COUNT)
-				return dupcountIterator();
-			else if (duplicates == DuplicateHandling.AUTOKEY)
-				return autokeyIterator();
-			throw new ExceptionSemantic("EX0024: Non-Identified duplicate handling method: " + duplicates.toString());
+			switch (duplicates) {
+				case DUP_REMOVE: return SQLIterator("SELECT DISTINCT * FROM " + meta.getTable());
+				case DUP_COUNT: return SQLIterator("SELECT COUNT(*) AS DUP_COUNT, " + getAttributeList() + " FROM " + meta.getTable() + " GROUP BY " + getAttributeList());
+				case AUTOKEY: return new TupleIteratorAutokey(SQLIterator("SELECT * FROM " + meta.getTable()), generator);
+				default: throw new ExceptionSemantic("EX0024: Duplicate handling method " + duplicates.toString() + " not supported by JDBC.");
+			}
 		} catch (SQLException e) {
-			throw new ExceptionSemantic("EX0025: Failed to create iterator.");
+			throw new ExceptionSemantic("EX0025: Failed to create iterator due to: " + e);
 		}
 	}
 
 	@Override
-	public TupleIterator iterator(Generator generator) {
-		return iterator();
-	}
-
-	@Override
 	public long getCardinality() {
+		String query;
+		switch (duplicates) {
+			case DUP_REMOVE: query = "SELECT DISTINCT COUNT(*) FROM " + meta.getTable(); break;
+			case DUP_COUNT: query = "SELECT COUNT(*) FROM (" + getAttributeList() + " FROM " + meta.getTable() + " GROUP BY " + getAttributeList() + ") AS _tmp"; break;
+			case AUTOKEY: query = "SELECT COUNT(*) FROM " + meta.getTable(); break;
+			default: throw new ExceptionSemantic("RS0470: Duplicate handling method " + duplicates.toString() + " not supported by JDBC.");
+		}
 		try {
-			ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM " + meta.getTable());
+			ResultSet resultSet = statement.executeQuery(query);
 			resultSet.next();
 			return resultSet.getLong(1);
 		} catch (SQLException e) {
@@ -108,8 +102,13 @@ public class TableJDBC extends TableCustom {
 		return 0;
 	}
 
+	@Override
+	public TupleIterator iterator(Generator generator) {
+		return iterator();
+	}
+
 	private static void notImplemented(String what) {
-		throw new ExceptionSemantic("EX0026: JDBC relvars do not yet support " + what);
+		throw new ExceptionSemantic("EX0026: JDBC relvars do not yet support " + what + ".");
 	}
 
 	@Override
@@ -260,10 +259,17 @@ public class TableJDBC extends TableCustom {
 		return 0;
 	}
 
-	private TupleIterator dupremoveIterator() throws SQLException {
+	private Value[] getRow(ResultSet resultSet) throws SQLException {
+		Value[] values = new Value[resultSet.getMetaData().getColumnCount()];
+		for (int i = 1; i <= values.length; i++)
+			values[i - 1] = ValueCharacter.select(generator, resultSet.getString(i));
+		return values;
+	}
+
+	private TupleIterator SQLIterator(String SQLQuery) throws SQLException {
 		return new TupleIterator() {
 			Value[] currentLine = null;
-			ResultSet resultSet = statement.executeQuery("SELECT DISTINCT * FROM " + meta.getTable());
+			ResultSet resultSet = statement.executeQuery(SQLQuery);
 
 			@Override
 			public boolean hasNext() {
@@ -307,106 +313,6 @@ public class TableJDBC extends TableCustom {
 					System.out.println("TableJDBC[5]: error " + e);
 				}
 			}
-		};
-	}
-
-	private TupleIterator dupcountIterator() throws SQLException {
-		return new TupleIterator() {
-			Value[] currentLine = null;
-			ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) AS DUP_COUNT, " + getAttributeList() + " FROM " + meta.getTable() + " GROUP BY " + getAttributeList());
-
-			@Override
-			public boolean hasNext() {
-				try {
-					if (currentLine != null)
-						return true;
-					if (resultSet.next()) {
-						currentLine = getRow(resultSet);
-						if (currentLine == null)
-							return false;
-						return true;
-					}
-				} catch (SQLException e) {
-					System.out.println("TableJDBC[6]: error " + e);
-				}
-				return false;
-			}
-
-			@Override
-			public ValueTuple next() {
-				if (hasNext())
-					try {
-						return new ValueTuple(generator, currentLine);
-					} finally {
-						currentLine = null;
-					}
-				else
-					return null;
-			}
-
-			@Override
-			public void close() {
-				try {
-					if (resultSet != null)
-						resultSet.close();
-					if (statement != null)
-						statement.close();
-					if (connect != null)
-						connect.close();
-				} catch (SQLException e) {
-					System.out.println("TableJDBC[7]: error " + e);
-				}
-			}
-		};
-	}
-
-	private TupleIterator autokeyIterator() throws SQLException {
-		return new TupleIteratorAutokey(new TupleIterator() {
-			Value[] currentLine = null;
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM " + meta.getTable());
-
-			@Override
-			public boolean hasNext() {
-				if (currentLine != null)
-					return true;
-				try {
-					if (resultSet.next()) {
-						currentLine = getRow(resultSet);
-						if (currentLine == null)
-							return false;
-						return true;
-					}
-				} catch (SQLException e) {
-					System.out.println("TableJDBC[8]: error " + e);
-				}
-				return false;
-			}
-
-			@Override
-			public ValueTuple next() {
-				if (hasNext())
-					try {
-						return new ValueTuple(generator, currentLine);
-					} finally {
-						currentLine = null;
-					}
-				else
-					return null;
-			}
-
-			@Override
-			public void close() {
-				try {
-					if (resultSet != null)
-						resultSet.close();
-					if (statement != null)
-						statement.close();
-					if (connect != null)
-						connect.close();
-				} catch (Exception e) {
-					System.out.println("TableJDBC[9]: error " + e);
-				}
-			}
-		}, generator);
+		};		
 	}
 }

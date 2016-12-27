@@ -68,9 +68,9 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 		Heading heading = new Heading();
 		String firstLine = null;
 		if (duplicates == DuplicateHandling.DUP_COUNT)
-			heading.add("DUP_COUNT", TypeInteger.getInstance());
+			heading.add("_DUP_COUNT", TypeInteger.getInstance());
 		else if (duplicates == DuplicateHandling.AUTOKEY)
-			heading.add("AUTO_KEY", TypeInteger.getInstance());
+			heading.add("_AUTOKEY", TypeInteger.getInstance());
 		firstLine = readFirstLineOfCSV(spec.filePath);
 		String[] columns = null;
 		if (firstLine != null) {
