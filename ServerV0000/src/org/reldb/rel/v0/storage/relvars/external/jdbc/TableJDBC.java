@@ -189,7 +189,7 @@ public class TableJDBC extends TableCustom {
 	@Override
 	public void delete(Generator generator, ValueTuple tuple) {
 		PreparedStatement preparedStatement;
-		String[] values = CSVLineParse.parse(tuple.toCSV());
+		String[] values = CSVLineParse.parseTrimmed(tuple.toCSV());
 		StringBuffer line = new StringBuffer("delete from " + meta.getTable() + " where ");
 		try {
 			ResultSet resultSet = statement.executeQuery("select * from " + meta.getTable());

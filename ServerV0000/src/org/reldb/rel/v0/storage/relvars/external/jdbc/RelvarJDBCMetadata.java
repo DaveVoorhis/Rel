@@ -54,7 +54,7 @@ public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 	}
 	
 	public static RelvarHeading getHeading(String spec, DuplicateHandling duplicates) {
-		String[] values = CSVLineParse.parse(spec);	
+		String[] values = CSVLineParse.parseTrimmed(spec);	
 		if (values.length != 6)
 			throw new ExceptionSemantic("EX0014: Invalid arguments. Expected: URL, USER, PASSWORD, DATABASE.TABLE, DRIVER_LOCATION, DRIVER but got " + spec);
 		String address = values[0];
@@ -101,7 +101,7 @@ public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 
 	public RelvarJDBCMetadata(RelDatabase database, String owner, String spec, DuplicateHandling duplicates) {
 		super(database, getHeading(spec, duplicates), owner);		
-		String[] values = CSVLineParse.parse(spec);
+		String[] values = CSVLineParse.parseTrimmed(spec);
 		address = values[0];
 		user = values[1];
 		password = values[2];

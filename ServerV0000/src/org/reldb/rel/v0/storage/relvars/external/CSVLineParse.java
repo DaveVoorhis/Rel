@@ -21,4 +21,11 @@ public class CSVLineParse {
 	public static String[] parse(String line) {
 	    return line.split(regex, -1);
 	}
+
+	public static String[] parseTrimmed(String line) {
+		String[] parsed = parse(line);
+		for (int i = 0; i < parsed.length; i++)
+			parsed[i] = parsed[i].trim();
+		return parsed;
+	}
 }
