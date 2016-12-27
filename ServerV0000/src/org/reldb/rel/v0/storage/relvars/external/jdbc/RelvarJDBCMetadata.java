@@ -11,6 +11,7 @@ import java.util.Enumeration;
 
 import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.v0.generator.Generator;
+import org.reldb.rel.v0.generator.SelectAttributes;
 import org.reldb.rel.v0.interpreter.ClassPathHack;
 import org.reldb.rel.v0.storage.RelDatabase;
 import org.reldb.rel.v0.storage.relvars.RelvarCustomMetadata;
@@ -77,7 +78,13 @@ public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 				heading.add("_AUTOKEY", TypeInteger.getInstance());
 			for (int column = 1; column <= resultSet.getMetaData().getColumnCount(); column++)
 				heading.add(ColumnName.cleanName(resultSet.getMetaData().getColumnName(column)), TypeCharacter.getInstance());
-			return new RelvarHeading(heading);
+			RelvarHeading relvarHeading = new RelvarHeading(heading);
+			if (duplicates == DuplicateHandling.AUTOKEY) {
+				SelectAttributes keyAttribute = new SelectAttributes();
+				keyAttribute.add("_AUTOKEY");
+				relvarHeading.addKey(keyAttribute);
+			}
+			return relvarHeading;
 		} catch (SQLException e) {
 			throw new ExceptionSemantic("EX0016: " + e.toString() + ". Drivers available: " + obtainDriverList());
 		} catch (ClassNotFoundException e) {

@@ -66,20 +66,29 @@ public class TableJDBC extends TableCustom {
 	}
 
 	private String getAttributeList() {
-		return fileHeading.getSpecification();
+		if (duplicates == DuplicateHandling.DUP_COUNT || duplicates == DuplicateHandling.AUTOKEY)
+			return fileHeading.getNameList(1);
+		return fileHeading.getNameList();
 	}
-		
+
 	@Override
 	public TupleIterator iterator() {
+		String query = "";
 		try {
 			switch (duplicates) {
-				case DUP_REMOVE: return SQLIterator("SELECT DISTINCT * FROM " + meta.getTable());
-				case DUP_COUNT: return SQLIterator("SELECT COUNT(*) AS DUP_COUNT, " + getAttributeList() + " FROM " + meta.getTable() + " GROUP BY " + getAttributeList());
-				case AUTOKEY: return new TupleIteratorAutokey(SQLIterator("SELECT * FROM " + meta.getTable()), generator);
+				case DUP_REMOVE:
+					query = "SELECT DISTINCT * FROM " + meta.getTable();
+					return SQLIterator(query);
+				case DUP_COUNT: 
+					query = "SELECT COUNT(*) AS DUP_COUNT, " + getAttributeList() + " FROM " + meta.getTable() + " GROUP BY " + getAttributeList();
+					return SQLIterator(query);
+				case AUTOKEY: 
+					query = "SELECT * FROM " + meta.getTable();
+					return new TupleIteratorAutokey(SQLIterator(query), generator);
 				default: throw new ExceptionSemantic("EX0024: Duplicate handling method " + duplicates.toString() + " not supported by JDBC.");
 			}
 		} catch (SQLException e) {
-			throw new ExceptionSemantic("EX0025: Failed to create iterator due to: " + e);
+			throw new ExceptionSemantic("EX0025: Failed to create iterator due to: " + e + ": in " + query);
 		}
 	}
 

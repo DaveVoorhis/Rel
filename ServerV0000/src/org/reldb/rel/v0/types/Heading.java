@@ -257,6 +257,22 @@ public class Heading implements Comparable<Heading> {
 	public int getDegree() {
 		return attributes.size();
 	}
+
+	// Get list of names from the ith attribute onward
+	public String getNameList(int i) {
+		String out = null;
+		int attributeNumber = 0;
+		for (Attribute attribute: attributes) {
+			if (attributeNumber >= i)
+				out = (out == null) ? attribute.getName() : (out + ", " + attribute.getName());
+			attributeNumber++;
+		}
+		return ((out == null) ? "" : out);
+	}
+
+	public String getNameList() {
+		return getNameList(0);
+	}
 	
 	public String getSpecification() {
 		String out = null;
