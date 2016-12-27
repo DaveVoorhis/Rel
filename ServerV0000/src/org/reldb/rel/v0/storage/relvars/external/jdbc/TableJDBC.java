@@ -1,6 +1,5 @@
 package org.reldb.rel.v0.storage.relvars.external.jdbc;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,7 +12,7 @@ import java.util.List;
 
 import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.v0.generator.Generator;
-import org.reldb.rel.v0.interpreter.ClassPathHack;
+import org.reldb.rel.v0.storage.RelDatabase;
 import org.reldb.rel.v0.storage.relvars.RelvarExternal;
 import org.reldb.rel.v0.storage.relvars.RelvarExternalMetadata;
 import org.reldb.rel.v0.storage.relvars.RelvarHeading;
@@ -44,24 +43,18 @@ public class TableJDBC extends TableCustom {
 		meta = (RelvarJDBCMetadata) metadata;
 		this.generator = generator;
 		this.duplicates = duplicates;
-		RelvarHeading heading = meta.getHeadingDefinition(generator.getDatabase());
+		RelDatabase database = generator.getDatabase();
+		RelvarHeading heading = meta.getHeadingDefinition(database);
 		Heading storedHeading = heading.getHeading();
-		fileHeading = RelvarJDBCMetadata.getHeading(meta.getConnectionString(), duplicates).getHeading();
+		fileHeading = RelvarJDBCMetadata.getHeading(database, meta.getConnectionString(), duplicates).getHeading();
 		if (storedHeading.toString().compareTo(fileHeading.toString()) != 0)
 			throw new ExceptionSemantic("RS0466: Stored JDBC metadata is " + storedHeading + " but table metadata is " + fileHeading + ". Has the table structure changed?");
 		try {
-			if (!ClassPathHack.isInOSGI()) {
-				ClassPathHack.addFile(meta.getDriverLocation());
-				Class.forName(meta.getDriver());
-			}
+			RelvarJDBCMetadata.loadDrivers(database);
 			connect = DriverManager.getConnection(meta.getPath(), meta.getUser(), meta.getPassword());
 			statement = connect.createStatement();
 		} catch (SQLException e) {
 			throw new ExceptionSemantic("EX0021: " + meta.getPath() + "' not found.");
-		} catch (ClassNotFoundException e) {
-			throw new ExceptionSemantic("EX0022: " + e.toString());
-		} catch (IOException e) {
-			throw new ExceptionSemantic("EX0023: " + e.toString());
 		}
 	}
 

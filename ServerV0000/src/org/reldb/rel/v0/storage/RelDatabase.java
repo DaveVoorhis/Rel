@@ -179,6 +179,18 @@ public class RelDatabase {
     	}
     }
     
+    private String getExtensionDirectoryName() {
+    	return homeDir + File.separator + "Extensions";
+    }
+    
+    private void ensureExtensionDirectoryExists() {
+    	mkdir(getExtensionDirectoryName());
+    }
+    
+    public File getExtensionDirectory() {
+    	return new File(getExtensionDirectoryName());
+    }
+    
     private String getVersionFileName() {
     	return databaseHome + File.separator + "version";
     }
@@ -248,6 +260,7 @@ public class RelDatabase {
 		}
 		
 		writeClicker();
+		ensureExtensionDirectoryExists();
     	
     	userCodeHome = databaseHome + java.io.File.separator + userCodeHomeRelative;
     
