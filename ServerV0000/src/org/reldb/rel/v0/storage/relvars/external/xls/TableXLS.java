@@ -67,8 +67,6 @@ public class TableXLS extends TableCustom {
 			Cell cell = cellIterator.next();
 			values[index] = ValueCharacter.select(generator, formatter.formatCellValue(cell));
 			index++;
-			if (index > values.length)
-				break;
 		}
 		for (; index < values.length; index++)
 			values[index] = ValueCharacter.select(generator, "");
