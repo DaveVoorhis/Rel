@@ -1,1 +1,1 @@
-copy ..\..\..\Rel\_Deployment\lib lib
+copy ..\..\Rel\_Deployment\lib lib
