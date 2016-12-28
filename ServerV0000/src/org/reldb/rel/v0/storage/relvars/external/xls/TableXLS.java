@@ -238,64 +238,64 @@ public class TableXLS extends TableCustom {
 			return null;
 		}
 	}
+		
+	private abstract class SpreadsheetTupleIterator extends TupleIterator {
+		private Iterator<Row> rowIterator;
+		private Row row;
+		
+		public SpreadsheetTupleIterator(Iterator<Row> rowIterator) {
+			this.rowIterator = rowIterator;
+			row = obtainFirstRow(rowIterator);
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return rowIterator.hasNext();
+		}
+
+		@Override
+		public ValueTuple next() {
+			row = rowIterator.next();
+			Iterator<Cell> cellIterator = row.cellIterator();
+			return toTuple(cellIterator);
+		}		
+	}
 	
 	private TupleIterator iteratorRawXLS() throws IOException {
-		return new TupleIterator() {
-			FileInputStream reader = new FileInputStream(file);
-			HSSFWorkbook workbook = new HSSFWorkbook(reader);
-			HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
-			Iterator<Row> rowIterator = sheet.iterator();
-			Row row = obtainFirstRow(rowIterator);
-
-			@Override
-			public boolean hasNext() {
-				return rowIterator.hasNext();
-			}
-
-			@Override
-			public ValueTuple next() {
-				row = rowIterator.next();
-				Iterator<Cell> cellIterator = row.cellIterator();
-				return toTuple(cellIterator);
-			}
-
+		FileInputStream reader = new FileInputStream(file);
+		HSSFWorkbook workbook = new HSSFWorkbook(reader);
+		HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
+		return new SpreadsheetTupleIterator(sheet.iterator()) {
 			@Override
 			public void close() {
+				try {
+					workbook.close();
+				} catch (IOException e1) {
+				}
 				try {
 					reader.close();
 				} catch (IOException e) {
 				}
-			}
+			}			
 		};
 	}
 	
 	private TupleIterator iteratorRawXLSX() throws IOException {
-		return new TupleIterator() {
-			FileInputStream reader = new FileInputStream(file);
-			XSSFWorkbook workbook = new XSSFWorkbook(reader);
-			XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
-			Iterator<Row> rowIterator = sheet.iterator();
-			Row row = obtainFirstRow(rowIterator);
-
-			@Override
-			public boolean hasNext() {
-				return rowIterator.hasNext();
-			}
-
-			@Override
-			public ValueTuple next() {
-				row = rowIterator.next();
-				Iterator<Cell> cellIterator = row.cellIterator();
-				return toTuple(cellIterator);
-			}
-
+		FileInputStream reader = new FileInputStream(file);
+		XSSFWorkbook workbook = new XSSFWorkbook(reader);
+		XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
+		return new SpreadsheetTupleIterator(sheet.iterator()) {
 			@Override
 			public void close() {
+				try {
+					workbook.close();
+				} catch (IOException e1) {
+				}
 				try {
 					reader.close();
 				} catch (IOException e) {
 				}
-			}
-		};		
+			}			
+		};
 	}
 }
