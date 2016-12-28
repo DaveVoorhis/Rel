@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Under Windows, RelUI filepath button in command-line should convert \ to \\
+
 - Test Extensions directory to handle user-added JDBC drivers.
 
 - Configure JDBC/XLS/CSV support as separate plug-in for both RelUI and stand-alone DBMS.
@@ -8,7 +10,7 @@
   CGI scripts, etc.
 
 - Implement user-defined physreps and user-defined THE_<x> operators. Treat
-  RM Pre 4's “shall not be visible” as having a reasonable definition, perhaps 
+  RM Pre 4's "shall not be visible" as having a reasonable definition, perhaps 
   one involving as-yet-unimplemented security features.
 
 - Have values under S-by-C display declared type; use MST_OF(v) to obtain MST of v.
