@@ -63,7 +63,7 @@ public class TableXLS extends TableCustom {
 		Value[] values = new Value[fileHeading.getDegree() - ((duplicates == DuplicateHandling.DUP_COUNT || duplicates == DuplicateHandling.AUTOKEY) ? 1 : 0)];
 		int index = 0;
 		DataFormatter formatter = new DataFormatter();
-		while (cellIterator.hasNext()) {
+		while (cellIterator.hasNext() && index < values.length) {
 			Cell cell = cellIterator.next();
 			values[index] = ValueCharacter.select(generator, formatter.formatCellValue(cell));
 			index++;
