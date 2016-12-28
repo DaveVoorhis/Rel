@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Under Windows, RelUI filepath button in command-line should convert \ to \\
-
 - Test Extensions directory to handle user-added JDBC drivers.
 
 - Configure JDBC/XLS/CSV support as separate plug-in for both RelUI and stand-alone DBMS.

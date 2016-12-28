@@ -316,7 +316,7 @@ public class CmdPanelInput extends Composite {
 					String fname = loadPathDialog.open();
 					if (fname == null)
 						return;
-					insertInputText('"' + fname + '"');
+					insertInputText('"' + fname.replace("\\", "\\\\") + '"');
 				}
 			});
 			
