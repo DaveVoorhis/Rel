@@ -5,7 +5,11 @@ public class Error extends Value {
 	private String errorMsg;
 	
 	Error(String errorMsg) {
-		this.errorMsg = errorMsg;
+		int EOTposition = errorMsg.indexOf("<EOT>");
+		if (EOTposition >= 0)
+			this.errorMsg = errorMsg.substring(0, EOTposition);
+		else
+			this.errorMsg = errorMsg;
 	}
 	
 	void addValue(Value r, boolean b) throws InvalidValueException {
@@ -38,6 +42,10 @@ public class Error extends Value {
 	
 	public String toString(int depth) {
 		return getErrorMsg();
+	}
+	
+	public String toString() {
+		return toString(0);
 	}
 	
 }

@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.reldb.dbrowser.ui.content.cmd.RelLineStyler;
 import org.reldb.dbrowser.ui.content.rel.ExporterDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
-import org.reldb.rel.client.Value;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -106,8 +105,10 @@ public class ViewQueryDialog extends Dialog {
 			}
 			break;
 		case BTN_ExportToFile:
-			Value result = visualiser.getDatabase().evaluate(visualiser.getQuery());
-			new ExporterDialog(getShell(), visualiser.getModel().getModelName() + "_" + visualiser.getTitle(), result).open();
+			ExporterDialog.runQueryToExport(getShell(), 
+					visualiser.getDatabase(), 
+					visualiser.getModel().getModelName() + "_" + visualiser.getTitle(), 
+					visualiser.getQuery());
 			break;
 		default:
 			super.buttonPressed(buttonid);

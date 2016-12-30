@@ -12,8 +12,11 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.reldb.dbrowser.ui.DbConnection;
+import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
+import org.reldb.rel.client.NullTuples;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
@@ -66,9 +69,8 @@ public class ExporterDialog extends Dialog {
 
 	/**
 	 * Open the dialog.
-	 * @return the result
 	 */
-	public Object open() {
+	public void open() {
 		createContents();
 		setupExportToCSV();
 		if (lastPath == null)
@@ -83,7 +85,6 @@ public class ExporterDialog extends Dialog {
 				display.sleep();
 			}
 		}
-		return result;
 	}
 	
 	/**
@@ -194,6 +195,11 @@ public class ExporterDialog extends Dialog {
 	}
 
 	private void doExport() {
+		if (result == null || result instanceof NullTuples) {
+			MessageDialog.openError(shlExportToFile, "Export Error", "Unable to export due to error.");
+			return;
+		}
+
 		if (!(result instanceof Tuples)) {
 			MessageDialog.openError(shlExportToFile, "Export Error", "Unable to export due to " + result);
 			return;
@@ -302,5 +308,17 @@ public class ExporterDialog extends Dialog {
 
 	public void close() {
 		shlExportToFile.dispose();
+	}
+
+	public static void runQueryToExport(Shell shell, DbConnection connection, String name, String query) {
+		Value result = connection.evaluate(query);
+		if (!(result instanceof NullTuples))
+			(new ExporterDialog(shell, name, result)).open();
+	}
+
+	public static void runQueryToExport(Shell shell, RevDatabase database, String name, String query) {
+		Value result = database.evaluate(query);
+		if (!(result instanceof NullTuples))
+			(new ExporterDialog(shell, name, result)).open();
 	}
 }
