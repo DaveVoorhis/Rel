@@ -9,6 +9,8 @@
 - provide READ/READLN as counterparts to WRITE/WRITELN, to support writing interactive scripts, console filters,
   CGI scripts, etc.
 
+- Add plenty of useful time/date parsers and conversions.
+
 - Implement user-defined physreps and user-defined THE_<x> operators. Treat
   RM Pre 4's "shall not be visible" as having a reasonable definition, perhaps 
   one involving as-yet-unimplemented security features.
