@@ -41,6 +41,7 @@ Version 3.003 (1.0.16):
          VAR myvar EXTERNAL JDBC "jdbc:sqlserver://localhost:1433;databaseName=database,sqluser,sqluserpw,MyTable";
   - fix: Rel UI: Spaces in application path caused external Java-based operator compilation to fail. Fixed.
   - fix: Rel UI: "Get File Path" button now correctly returns backslashes in file path as '\\'.
+  - note: Rel UI and Rel DBMS copyright years updated to 2017.
 
 Version 3.002 (1.0.15):
 
