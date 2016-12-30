@@ -56,10 +56,12 @@ import org.reldb.dbrowser.ui.content.rel.type.TypePlayer;
 import org.reldb.dbrowser.ui.content.rel.var.VarRealCreator;
 import org.reldb.dbrowser.ui.content.rel.var.VarRealDesigner;
 import org.reldb.dbrowser.ui.content.rel.var.VarRealDropper;
+import org.reldb.dbrowser.ui.content.rel.var.VarRealExporter;
 import org.reldb.dbrowser.ui.content.rel.var.VarRealPlayer;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewCreator;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewDesigner;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewDropper;
+import org.reldb.dbrowser.ui.content.rel.view.VarViewExporter;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewPlayer;
 import org.reldb.dbrowser.ui.content.rel.welcome.WelcomeView;
 import org.reldb.rel.client.Tuple;
@@ -183,6 +185,14 @@ public class RelPanel extends Composite {
 				renameItem();
 			}
 		});
+		MenuItem exportItem = new MenuItem(menu, SWT.POP_UP);
+		exportItem.setText("Export");
+		exportItem.setImage(IconLoader.loadIcon("export"));
+		exportItem.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent evt) {
+				exportItem();
+			}
+		});
 		
 		tree.setMenu(menu);
 		
@@ -195,12 +205,14 @@ public class RelPanel extends Composite {
 					dropItem.setEnabled(false);
 					designItem.setEnabled(false);
 					renameItem.setEnabled(false);
+					exportItem.setEnabled(false);
 				} else {
 					showItem.setEnabled(selection.canPlay());
 					createItem.setEnabled(selection.canCreate());
 					dropItem.setEnabled(selection.canDrop());
 					designItem.setEnabled(selection.canDesign());
 					renameItem.setEnabled(selection.canRename());
+					exportItem.setEnabled(selection.canExport());
 				}
 			}
 		});
@@ -497,6 +509,11 @@ public class RelPanel extends Composite {
 		nudge();
 	}
 
+	protected void exportItem() {
+		getSelection().export(IconLoader.loadIcon("export"));
+		nudge();
+	}
+	
 	public boolean getShowSystemObjects() {
 		return showSystemObjects;
 	}
@@ -513,12 +530,12 @@ public class RelPanel extends Composite {
 			root.setImage(image);
 			root.setText(section);
 			treeRoots.put(section, root);
-			root.setData(new DbTreeItem(section, null, creator, null, null, null));
+			root.setData(new DbTreeItem(section, null, creator, null, null, null, null));
 		}
 		return root;
 	}
 	
-	private void buildSubtree(String section, Image image, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer) {
+	private void buildSubtree(String section, Image image, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
 		TreeItem root = getRoot(section, image, creator);
 		if (query != null) {
 			Tuples names = connection.getTuples(query);
@@ -529,7 +546,7 @@ public class RelPanel extends Composite {
 						TreeItem item = new TreeItem(root, SWT.NONE);
 						item.setImage(image);
 						item.setText(name);
-						item.setData(new DbTreeItem(section, player, creator, dropper, designer, renamer, name));
+						item.setData(new DbTreeItem(section, player, creator, dropper, designer, renamer, exporter, name));
 					}
 				}
 		}
@@ -550,7 +567,7 @@ public class RelPanel extends Composite {
 						TreeItem itemHeading = new TreeItem(root, SWT.NONE);
 						itemHeading.setImage(image);
 						itemHeading.setText(name);
-						itemHeading.setData(new DbTreeItem(section, null, creator, null, null, null, name));
+						itemHeading.setData(new DbTreeItem(section, null, creator, null, null, null, null, name));
 						int implementationCount = 0;
 						String lastSignatureWithReturns = "";
 						DbTreeItem lastitem = null;
@@ -564,6 +581,7 @@ public class RelPanel extends Composite {
 									new OperatorDropper(this), 
 									new OperatorDesigner(this), 
 									null, 
+									null,
 									detailTuple.getAttributeValue("Signature").toString());
 							item.setText(lastSignatureWithReturns);
 							item.setData(lastitem);
@@ -588,8 +606,8 @@ public class RelPanel extends Composite {
 		root.dispose();
 	}
 	
-	private void buildSubtree(String section, Image image, String query, String displayAttributeName, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer) {
-		buildSubtree(section, image, query, displayAttributeName, (String attributeName) -> true, player, creator, dropper, designer, renamer);
+	private void buildSubtree(String section, Image image, String query, String displayAttributeName, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
+		buildSubtree(section, image, query, displayAttributeName, (String attributeName) -> true, player, creator, dropper, designer, renamer, exporter);
 	}
 	
 	private void buildDbTree() {
@@ -603,24 +621,24 @@ public class RelPanel extends Composite {
 		Predicate<String> revSysNamesFilter = (String attributeName) -> attributeName.startsWith("sys.rev") ? showSystemObjects : true; 
 		
 		buildSubtree(CATEGORY_VARIABLE, IconLoader.loadIcon("table"), "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter, 
-			new VarRealPlayer(this), new VarRealCreator(this), new VarRealDropper(this), new VarRealDesigner(this), null);
+			new VarRealPlayer(this), new VarRealCreator(this), new VarRealDropper(this), new VarRealDesigner(this), null, new VarRealExporter(this));
 		
 		buildSubtree(CATEGORY_VIEW, IconLoader.loadIcon("view"), "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
-			new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this), null);
+			new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this), null, new VarViewExporter(this));
 		
 		buildSubtreeOperator(whereSysStr, revSysNamesFilter);
 		
 		buildSubtree(CATEGORY_TYPE, IconLoader.loadIcon("tau"), "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
-			new TypePlayer(this), new TypeCreator(this), new TypeDropper(this), null, null);
+			new TypePlayer(this), new TypeCreator(this), new TypeDropper(this), null, null, null);
 		
 		buildSubtree(CATEGORY_CONSTRAINT, IconLoader.loadIcon("constraint"), "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
-			new ConstraintPlayer(this), new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this), null);
+			new ConstraintPlayer(this), new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this), null, null);
 		
 		if (connection.hasRevExtensions() >= 0)
 			handleRevAddition();
 		
 		buildSubtree(CATEGORY_WELCOME, IconLoader.loadIcon("smile"), "REL {TUP {Name 'Introduction'}}", "Name",
-				new WelcomeView(this), null, null, null, null);
+				new WelcomeView(this), null, null, null, null, null);
 		
 		fireDbTreeNoSelectionEvent();
 	}
@@ -656,11 +674,11 @@ public class RelPanel extends Composite {
 	public void handleRevAddition() {
 		parentTab.refresh();
 		buildSubtree(CATEGORY_QUERY, IconLoader.loadIcon("query"), "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
-				new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this), null);
+				new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this), null, null);
 		// buildSubtree("Forms", null, null, null, null, null, null);
 		// buildSubtree("Reports", null, null, null, null, null, null);
 		buildSubtree(CATEGORY_SCRIPT, IconLoader.loadIcon("script"), "sys.rev.Script {Name} ORDER (ASC Name)", "Name", 
-			new ScriptPlayer(this), new ScriptCreator(this), new ScriptDropper(this), new ScriptDesigner(this), new ScriptRenamer(this));		
+			new ScriptPlayer(this), new ScriptCreator(this), new ScriptDropper(this), new ScriptDesigner(this), new ScriptRenamer(this), null);		
 	}
 	
 	public void handleRevRemoval() {

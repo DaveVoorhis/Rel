@@ -45,4 +45,13 @@ public class Heading extends Type {
 		return typeName + " {" + attributeString + "}";
 	}
 	
+	public String toCSV() {
+		String csvHeading = "";
+		for (Attribute attribute: attributes) {
+			if (csvHeading.length() > 0)
+				csvHeading += ",";
+			csvHeading += attribute.getName();
+		}
+		return csvHeading;
+	}
 }

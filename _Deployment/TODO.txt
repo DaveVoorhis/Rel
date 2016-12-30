@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Implement CSV/XLS export of Query results
+
 - Test Extensions directory to handle user-added JDBC drivers.
 
 - Improve update handling in TableCSV, TableXLS, and (particularly) TableJDBC.

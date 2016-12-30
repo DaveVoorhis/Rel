@@ -94,4 +94,14 @@ public class Tuple extends Value {
 		return toString(0);
 	}
 	
+	public String toCSV() {
+		String line = "";
+		for (int i=0; i<getAttributeCount(); i++) {
+			if (line.length() > 0)
+				line += ",";
+			line += "\"" + getAttributeValue(i).toString().replaceAll("\"", "\"\"") + "\"";
+		}
+		return line;
+	}
+	
 }
