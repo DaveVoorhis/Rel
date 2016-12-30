@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar RelDBMS.jar -D $*
+java -jar lib/RelDBMS.jar -D $*

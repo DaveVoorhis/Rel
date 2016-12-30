@@ -27,9 +27,9 @@ public class Rel {
 	private PrintStream output;
 	
 	private static void buildClasspath() throws IOException {
-		ClassPathHack.addFile(Version.getBerkeleyDbJarFilename());
-		ClassPathHack.addFile("relshared.jar");	
-		ClassPathHack.addFile("ecj-4.4.2.jar");
+		ClassPathHack.addFile("lib/" + Version.getBerkeleyDbJarFilename());
+		ClassPathHack.addFile("lib/relshared.jar");	
+		ClassPathHack.addFile("lib/ecj-4.6.1.jar");
 	}
 	
 	/** Convenient runner for a stand-alone Rel interpreter. 

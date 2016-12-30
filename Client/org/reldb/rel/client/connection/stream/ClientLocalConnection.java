@@ -14,7 +14,7 @@ public class ClientLocalConnection extends ClientConnection {
 
 	/** Establish a connection with a server. */
 	public ClientLocalConnection(String databaseDir, boolean createDbAllowed, CrashHandler errorHandler, String[] additionalJars) throws IOException, DatabaseFormatVersionException {
-		ClassPathHack.addFile("RelDBMS.jar");
+		ClassPathHack.addFile("lib/RelDBMS.jar");
 		rel = new Rel(databaseDir, createDbAllowed, additionalJars);
 		this.errorHandler = errorHandler;
 		obtainInitialServerResponse();

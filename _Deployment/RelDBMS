@@ -1,3 +1,3 @@
 #!/bin/sh
-java -jar RelDBMS.jar $*
+java -jar lib/RelDBMS.jar $*
 

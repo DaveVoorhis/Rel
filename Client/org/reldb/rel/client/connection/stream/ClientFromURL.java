@@ -18,7 +18,7 @@ public class ClientFromURL {
     		else
     			throw new MalformedURLException("Please specify a local database as db:<directory>");
     	else {
-    		ClassPathHack.addFile("relshared.jar");
+    		ClassPathHack.addFile("lib/relshared.jar");
         	String hostName = databaseURL;
         	int port = Defaults.getDefaultPort();
         	int colonPosition = databaseURL.indexOf(':');

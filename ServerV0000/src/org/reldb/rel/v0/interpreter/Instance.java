@@ -131,7 +131,7 @@ public class Instance {
 			String launchMsg = "Database conversion from format v" + oldVersion + " to v" + Version.getDatabaseVersion() + " launched...";
 			conversionOutput.println(launchMsg);
 			// Load detected version's .jar file (should already be done externally if run as Eclipse RCP app.)
-			ClassPathHack.addFile(Version.getCoreJarFilename(oldVersion));
+			ClassPathHack.addFile("lib/" + Version.getCoreJarFilename(oldVersion));
 			// Instantiate old version as oldRel
 			Class<?> oldRelEngine = Class.forName("org.reldb.rel.v" + oldVersion + ".engine.Rel");
 			Method oldRelEngineBackup = oldRelEngine.getMethod("backup", new Class[] {String.class, String.class});

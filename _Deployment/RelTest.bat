@@ -1,2 +1,2 @@
-@java -jar RelTest.jar
+@java -jar lib\RelTest.jar
 pause
