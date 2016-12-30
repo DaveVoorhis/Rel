@@ -36,7 +36,7 @@ Version 3.003 (1.0.16):
          VAR myvar EXTERNAL JDBC "jdbc:mysql://localhost/database,sqluser,sqluserpw,MyTable";       
          VAR myvar EXTERNAL JDBC "jdbc:postgresql://localhost/database,sqluser,sqluserpw,MyTable";       
          VAR myvar EXTERNAL JDBC "jdbc:oracle:thin:@localhost:1521:database,sqluser,sqluserpw,MyTable";       
-         VAR myvar EXTERNAL JDBC "jdbc:microsoft:sqlserver://HOST:1433;DatabaseName=DATABASE,sqluser,sqluserpw,MyTable";       
+         VAR myvar EXTERNAL JDBC "jdbc:sqlserver://localhost:1433;databaseName=database,sqluser,sqluserpw,MyTable";
   - fix: Rel UI: Spaces in application path caused external Java-based operator compilation to fail. Fixed.
   - fix: Rel UI: "Get File Path" button now correctly returns backslashes in file path as '\\'.
 
