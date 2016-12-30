@@ -115,9 +115,14 @@ public class TableJDBC extends TableCustom {
 
 	@Override
 	public boolean contains(Generator generator, ValueTuple tuple) {
-		while (iterator().hasNext())
-			if (tuple.equals(iterator().next()))
-				return true;
+		TupleIterator iterator = iterator();
+		try {
+			while (iterator.hasNext())
+				if (tuple.equals(iterator.next()))
+					return true;
+		} finally {
+			iterator.close();
+		}
 		return false;
 	}
 
