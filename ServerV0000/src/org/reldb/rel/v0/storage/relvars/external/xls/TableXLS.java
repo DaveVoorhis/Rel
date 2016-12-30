@@ -106,9 +106,13 @@ public class TableXLS extends TableCustom {
 	public long getCardinality() {
 		long count = 0;
 		TupleIterator iterator = iterator();
-		while (iterator.hasNext()) {
-			count++;
-			iterator.next();
+		try {
+			while (iterator.hasNext()) {
+				count++;
+				iterator.next();
+			}
+		} finally {
+			iterator.close();
 		}
 		return count;
 	}
