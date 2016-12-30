@@ -789,7 +789,8 @@ public abstract class Editor extends Grid {
     
     public void refresh() {
     	if (table != null) {
-    		dataProvider.reload();
+    		if (dataProvider != null)
+    			dataProvider.reload();
     		table.refresh();
     	}
     }
