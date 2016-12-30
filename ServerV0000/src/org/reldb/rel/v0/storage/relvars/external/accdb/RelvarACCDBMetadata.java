@@ -2,7 +2,6 @@ package org.reldb.rel.v0.storage.relvars.external.accdb;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.v0.generator.Generator;
@@ -50,8 +49,7 @@ public class RelvarACCDBMetadata extends RelvarCustomMetadata {
 				heading.add("_DUP_COUNT", TypeInteger.getInstance());
 			else if (duplicates == DuplicateHandling.AUTOKEY)
 				heading.add("_AUTOKEY", TypeInteger.getInstance());
-			List<? extends Column> columns = tableData.getColumns();
-			for (Column column: columns)
+			for (Column column: tableData.getColumns())
 				heading.add(ColumnName.cleanName(column.getName()), TypeCharacter.getInstance());
 			RelvarHeading relvarHeading = new RelvarHeading(heading);
 			if (duplicates == DuplicateHandling.AUTOKEY) {
