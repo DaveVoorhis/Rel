@@ -690,12 +690,15 @@ public class CmdPanelInput extends Composite {
 	private void ensureSaveDialogExists() {
 		if (saveDialog == null) {
 			saveDialog = new FileDialog(getShell(), SWT.SAVE);
-			saveDialog.setFilterPath(System.getProperty("user.home"));
+			if (loadDialog != null)
+				saveDialog.setFilterPath(loadDialog.getFilterPath());
+			else
+				saveDialog.setFilterPath(System.getProperty("user.home"));
 			saveDialog.setFilterExtensions(new String[] {"*.rel", "*.*"});
 			saveDialog.setFilterNames(new String[] {"Rel script", "All Files"});
 			saveDialog.setText("Save");
 			saveDialog.setOverwrite(true);
-		}		
+		}
 	}
 
 	private void ensureSaveHistoryDialogExists() {
@@ -712,7 +715,10 @@ public class CmdPanelInput extends Composite {
 	private void ensureLoadDialogExists() {
 		if (loadDialog == null) {
 			loadDialog = new FileDialog(getShell(), SWT.OPEN);
-			loadDialog.setFilterPath(System.getProperty("user.home"));
+			if (saveDialog != null)
+				loadDialog.setFilterPath(saveDialog.getFilterPath());
+			else
+				loadDialog.setFilterPath(System.getProperty("user.home"));
 			loadDialog.setFilterExtensions(new String[] {"*.rel", "*.*"});
 			loadDialog.setFilterNames(new String[] {"Rel script", "All Files"});
 			loadDialog.setText("Load File");
