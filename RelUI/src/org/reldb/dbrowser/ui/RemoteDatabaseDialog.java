@@ -37,7 +37,7 @@ public class RemoteDatabaseDialog extends Dialog {
 		}
 	}
 	
-	protected Object result;
+	protected RemoteDatabaseDialogResponse result;
 	protected Shell shlOpenRemoteDatabase;
 	private Text domain;
 	private Text port;
@@ -55,7 +55,7 @@ public class RemoteDatabaseDialog extends Dialog {
 	 * Open the dialog.
 	 * @return the result
 	 */
-	public Object open() {
+	public RemoteDatabaseDialogResponse open() {
 		createContents();
 		shlOpenRemoteDatabase.open();
 		shlOpenRemoteDatabase.layout();

@@ -17,6 +17,7 @@ import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.MainPanel;
 import org.reldb.dbrowser.ui.ManageRecentlyUsedDialog;
 import org.reldb.dbrowser.ui.RemoteDatabaseDialog;
+import org.reldb.dbrowser.ui.RemoteDatabaseDialog.RemoteDatabaseDialogResponse;
 import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
@@ -129,19 +130,19 @@ public class DBrowser {
 	}
 
 	public static void newDatabase() {
-		Object result = newDatabaseDialog.open();
+		String result = newDatabaseDialog.open();
 		if (result != null)
 			getCurrentDbTab().newDatabase(result.toString());
 	}
 
 	public static void openLocalDatabase() {
-		Object result = openDatabaseDialog.open();
+		String result = openDatabaseDialog.open();
 		if (result != null)
 			getCurrentDbTab().openLocalDatabase(result.toString());
 	}
 
 	public static void openRemoteDatabase() {
-		Object result = remoteDatabaseDialog.open();
+		RemoteDatabaseDialogResponse result = remoteDatabaseDialog.open();
 		if (result != null)
 			getCurrentDbTab().openRemoteDatabase(result.toString());
 	}

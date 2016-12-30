@@ -478,8 +478,11 @@ public class DbTab extends CTabItem {
 		close();
 		textDbLocation.setText(uri);
 		lastURI = uri;
-		setShowClose(true);
-		return openConnection(uri, true, canCreate);
+		if (openConnection(uri, true, canCreate)) {
+			setShowClose(true);
+			return true;
+		}
+		return false;
 	}
 
 	public boolean isOpenOnADatabase() {

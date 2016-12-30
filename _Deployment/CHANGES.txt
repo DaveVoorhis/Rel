@@ -43,6 +43,8 @@ Version 3.003 (1.0.16):
   - enhancement: Rel DBMS: All application .jars moved into lib directory.
   - fix: Rel UI: Spaces in application path caused external Java-based operator compilation to fail. Fixed.
   - fix: Rel UI: "Get File Path" button now correctly returns backslashes in file path as '\\'.
+  - fix: Rel UI: Failing to open a database could allow all database tabs to be closed, which left the
+         Rel UI in an unstable state. Fixed.
   - note: Rel UI and Rel DBMS copyright years updated to 2017.
 
 Version 3.002 (1.0.15):
