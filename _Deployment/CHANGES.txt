@@ -1,4 +1,4 @@
-Last used Exception* number: RS0471
+Last used Exception* number: RS0478
 
 Version 3.003 (1.0.16):
 
@@ -21,6 +21,14 @@ Version 3.003 (1.0.16):
       VAR myvar EXTERNAL XLS "/home/dave/test.xlsx;3" AUTOKEY;
       VAR myvar EXTERNAL XLS "/home/dave/test.xls;2;NOHEADING" DUP_REMOVE;
       VAR myvar EXTERNAL XLS "/home/dave/test.xlsx;1;NOHEADING" DUP_COUNT;
+      VAR myvar EXTERNAL JDBC "jdbc:postgresql://localhost/database,sqluser,sqluserpw,FEEDBACK.RELVAR";
+      VAR myvar EXTERNAL JDBC "jdbc:postgresql://localhost/database,sqluser,sqluserpw,FEEDBACK.RELVAR" DUP_REMOVE;
+      VAR myvar EXTERNAL JDBC "jdbc:postgresql://localhost/database,sqluser,sqluserpw,FEEDBACK.RELVAR" DUP_COUNT;
+      VAR myvar EXTERNAL JDBC "jdbc:postgresql://localhost/database,sqluser,sqluserpw,FEEDBACK.RELVAR" AUTOKEY;
+	  VAR myvar EXTERNAL ACCDB "c:\\users\\me\\mydb.accdb,mytable";
+	  VAR myvar EXTERNAL ACCDB "c:\\users\\me\\mydb.accdb,mytable" DUP_REMOVE;
+	  VAR myvar EXTERNAL ACCDB "c:\\users\\me\\mydb.accdb,mytable" DUP_COUNT;
+	  VAR myvar EXTERNAL ACCDB "c:\\users\\me\\mydb.accdb,mytable" AUTOKEY;
       Etc.
       In the XLS path, the number after the optional ';' indicates the zero-based tab number.
       In the XLS & CSV path, NOHEADING indicates that the spreadsheet does not have a heading row.

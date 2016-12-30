@@ -37,7 +37,9 @@ Bundle-ClassPath: .,
  lib/mysql-connector-java-5.1.40-bin.jar,
  lib/ojdbc7.jar,
  lib/postgresql-9.4.1212.jar,
- lib/sqljdbc42.jar
+ lib/sqljdbc42.jar,
+ lib/jackcess-2.1.6.jar,
+ lib/commons-lang-2.6.jar
 Bundle-Activator: org.reldb.dbrowser.Activator
 Bundle-Vendor: reldb.org
 Require-Bundle: javax.inject,

@@ -15,3 +15,7 @@ Apache POI https://poi.apache.org/
 Eclipse Compiler for Java (ECJ) https://eclipse.org/jdt/core/
 
 - Used by Rel DBMS to compile Java-based operators and types.
+
+Jackcess https://sourceforge.net/projects/jackcess
+
+- Used by Rel DBMS to access Microsoft Access database files.
