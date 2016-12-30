@@ -31,7 +31,7 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 	}
 	
 	public static CSVSpec obtainCSVSpec(String path) {
-		String[] splitPath = path.split(";");
+		String[] splitPath = CSVLineParse.parseTrimmed(path);
 		CSVSpec spec = new CSVSpec();
 		spec.filePath = splitPath[0].trim();
 		for (int index = 1; index < splitPath.length; index++) {
