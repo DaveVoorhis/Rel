@@ -7,7 +7,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.reldb.dbrowser.ui.content.cmd.RelLineStyler;
+import org.reldb.dbrowser.ui.content.rel.ExporterDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
+import org.reldb.rel.client.Value;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -16,9 +18,11 @@ public class ViewQueryDialog extends Dialog {
 	
 	private final static String saveToViewPrompt = "Export View script";
 	private final static String saveToOperatorPrompt = "Export Operator script";
+	private final static String exportToFilePrompt = "Export query results to file";
 
 	private final static int BTN_SaveAsView = IDialogConstants.CLIENT_ID + 0;
 	private final static int BTN_SaveAsOperator = IDialogConstants.CLIENT_ID + 1;
+	private final static int BTN_ExportToFile = IDialogConstants.CLIENT_ID + 2;
 
 	private Visualiser visualiser;
 	
@@ -101,6 +105,10 @@ public class ViewQueryDialog extends Dialog {
 				}
 			}
 			break;
+		case BTN_ExportToFile:
+			Value result = visualiser.getDatabase().evaluate(visualiser.getQuery());
+			new ExporterDialog(getShell(), visualiser.getModel().getModelName() + "_" + visualiser.getTitle(), result).open();
+			break;
 		default:
 			super.buttonPressed(buttonid);
 		}
@@ -114,6 +122,7 @@ public class ViewQueryDialog extends Dialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, BTN_SaveAsView, saveToViewPrompt, false);
 		createButton(parent, BTN_SaveAsOperator, saveToOperatorPrompt, false);
+		createButton(parent, BTN_ExportToFile, exportToFilePrompt, false);
 		createButton(parent, IDialogConstants.OK_ID, "Close", true);
 	}
 
