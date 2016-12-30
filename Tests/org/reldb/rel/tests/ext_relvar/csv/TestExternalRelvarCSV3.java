@@ -36,10 +36,10 @@ public class TestExternalRelvarCSV3 extends BaseOfTest {
 	@Test
 	public void testCSV2() {
 		String src = "myvar";		
-		testEquals(	"RELATION {DUP_COUNT INTEGER, A CHARACTER, B CHARACTER, C CHARACTER} {" +
-				"\n\tTUPLE {DUP_COUNT 2, A \"1\", B \"2\", C \"3\"}," +
-				"\n\tTUPLE {DUP_COUNT 3, A \"4\", B \"5\", C \"6\"}," +
-				"\n\tTUPLE {DUP_COUNT 2, A \"7\", B \"8\", C \"9\"}\n}", src);
+		testEquals(	"RELATION {_DUP_COUNT INTEGER, A CHARACTER, B CHARACTER, C CHARACTER} {" +
+				"\n\tTUPLE {_DUP_COUNT 2, A \"1\", B \"2\", C \"3\"}," +
+				"\n\tTUPLE {_DUP_COUNT 3, A \"4\", B \"5\", C \"6\"}," +
+				"\n\tTUPLE {_DUP_COUNT 2, A \"7\", B \"8\", C \"9\"}\n}", src);
 	}
 	
 	@After
