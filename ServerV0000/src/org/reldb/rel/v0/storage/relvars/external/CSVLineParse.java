@@ -18,8 +18,18 @@ public class CSVLineParse {
                 ")                         ", // stop positive look ahead
                 otherThanQuote, quotedString, otherThanQuote);
 
-	public static String[] parse(String line) {
+	public static String[] parseRaw(String line) {
 	    return line.split(regex, -1);
+	}
+	
+	public static String[] parse(String line) {
+		String[] parsed = parseRaw(line);
+		for (int i = 0; i < parsed.length; i++) {
+			String rawValue = parsed[i].trim();
+			if (rawValue.startsWith("\"") && rawValue.endsWith("\""))
+				parsed[i] = rawValue.substring(1, rawValue.length() - 1).replaceAll("\"\"", "\"");
+		}
+		return parsed;
 	}
 
 	public static String[] parseTrimmed(String line) {

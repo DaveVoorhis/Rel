@@ -56,13 +56,8 @@ public class TableCSV extends TableCustom {
 		Value[] values = new Value[rawValues.length];
 		if (values.length != fileHeading.getDegree() - ((duplicates == DuplicateHandling.DUP_COUNT || duplicates == DuplicateHandling.AUTOKEY) ? 1 : 0))
 			throw new ExceptionSemantic("RS0457: CSV file " + file.getAbsolutePath() + " with heading " + fileHeading + " has malformed line: " + line);
-		for (int i = 0; i < rawValues.length; i++) {
-			String rawValue = rawValues[i].trim();
-			if (rawValue.startsWith("\"") && rawValue.endsWith("\""))
-				values[i] = ValueCharacter.select(generator, ValueCharacter.stripDelimitedString(rawValue));
-			else
-				values[i] = ValueCharacter.select(generator, rawValue);
-		}
+		for (int i = 0; i < rawValues.length; i++)
+			values[i] = ValueCharacter.select(generator, rawValues[i]);
 		return new ValueTuple(generator, values);
 	}
 
