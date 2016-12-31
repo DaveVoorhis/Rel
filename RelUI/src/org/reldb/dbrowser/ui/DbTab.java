@@ -267,11 +267,6 @@ public class DbTab extends CTabItem {
 			contentCmd.redisplayed();	
 	}
 	
-	public void setAndDisplayCmdContent(String content) {
-		showCmd();
-		contentCmd.setContent(content);
-	}
-	
 	private void showConversion(String message, String dbURL) {
 		Cursor oldCursor = getParent().getCursor();
 		getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 
@@ -391,6 +386,11 @@ public class DbTab extends CTabItem {
 		tltmModeCmd.setSelection(true);
 		showCmd();
 	}
+	
+	public void setAndDisplayCmdContent(String content) {
+		switchToCmdMode();
+		contentCmd.setContent(content);
+	}
     
     public String getStatus() {
     	return status;
@@ -448,7 +448,7 @@ public class DbTab extends CTabItem {
         setStatus("Opening connection to " + dbURL);
         return openConnection(dbURL, createAllowed);
     }
-	
+    
     /** Open a connection and associated panel. */
     private boolean openConnection(String dbURL, boolean permanent, boolean canCreate) {
 		Cursor oldCursor = getParent().getCursor();
