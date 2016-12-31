@@ -678,9 +678,15 @@ public class CmdPanelInput extends Composite {
 
 	private void run() {
 		showRunningStart();
-		String text = inputText.getText();
-		addHistoryItem(text);
+		String text = saveToHistory();
 		notifyGo(text);	
+	}
+
+	public String saveToHistory() {
+		String text = inputText.getText();
+		if (text.trim().length() > 0)
+			addHistoryItem(text);
+		return text;
 	}
 
 	private void stop() {

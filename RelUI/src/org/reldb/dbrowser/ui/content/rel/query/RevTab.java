@@ -16,7 +16,7 @@ public class RevTab extends DbTreeTab {
 	
 	public RevTab(RelPanel parent, DbTreeItem item, int revstyle) {
 		super(parent, item);
-	    rev = new Rev(parent.getTabFolder(), parent.getConnection(), parent.getCrashHandler(), item.getName(), revstyle) {
+	    rev = new Rev(parent.getTabFolder(), parent.getDbTab(), parent.getConnection(), parent.getCrashHandler(), item.getName(), revstyle) {
 	    	@Override
 	    	protected void changeToolbar() {
 	    		parent.changeToolbar();

@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbConnection;
+import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
@@ -80,8 +81,12 @@ public class Rev extends Composite {
 	
 	private Composite inputView;
 	
-	public Rev(Composite parent, DbConnection connection, CrashHandler crashHandler, String modelName, int revstyle) {
+	private DbTab dbTab;
+	
+	public Rev(Composite parent, DbTab dbTab, DbConnection connection, CrashHandler crashHandler, String modelName, int revstyle) {
 		super(parent, SWT.None);
+		
+		this.dbTab = dbTab;
 		
 		this.connection = connection;
 		this.revstyle = revstyle;
@@ -214,6 +219,10 @@ public class Rev extends Composite {
 		pack();
 
 		loadModel();
+	}
+
+	public DbTab getDbTab() {
+		return dbTab;
 	}
 
 	/** Invoke to force toolbar holder to reload our toolbar, which has probably changed. */

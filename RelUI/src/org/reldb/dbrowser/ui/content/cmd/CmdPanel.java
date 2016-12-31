@@ -169,4 +169,9 @@ public class CmdPanel extends Composite {
 		cmdPanelInput.setHistory(script.getHistory());
 	}
 
+	public void setContent(String text) {
+		cmdPanelInput.saveToHistory();
+		cmdPanelInput.setText(text);
+	}
+	
 }

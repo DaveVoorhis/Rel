@@ -267,6 +267,11 @@ public class DbTab extends CTabItem {
 			contentCmd.redisplayed();	
 	}
 	
+	public void setAndDisplayCmdContent(String content) {
+		showCmd();
+		contentCmd.setContent(content);
+	}
+	
 	private void showConversion(String message, String dbURL) {
 		Cursor oldCursor = getParent().getCursor();
 		getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT)); 

@@ -55,7 +55,7 @@ public class SaveToDialog extends Dialog {
 		lblNewLabel.setText("Script name:");
 		
 		Button chkUseScratchpad = new Button(container, SWT.CHECK);
-		chkUseScratchpad.setText("Use scratchpad");
+		chkUseScratchpad.setText("To command-line");
 		FormData fd_chkKeepOriginal = new FormData();
 		fd_chkKeepOriginal.top = new FormAttachment(lblNewLabel, 10);
 		fd_chkKeepOriginal.right = new FormAttachment(100, -10);

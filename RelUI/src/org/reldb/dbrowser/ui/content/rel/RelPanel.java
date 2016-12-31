@@ -351,6 +351,10 @@ public class RelPanel extends Composite {
 		}
 	}
 
+	public DbTab getDbTab() {
+		return parentTab;
+	}
+	
 	/** Invoke to force reload of toolbar. */
 	public void changeToolbar() {}
 	

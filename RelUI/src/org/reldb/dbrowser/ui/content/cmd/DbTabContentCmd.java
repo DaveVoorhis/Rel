@@ -123,4 +123,7 @@ public class DbTabContentCmd extends Composite {
 		cmdPanel.load(fname);
 	}
 	
+	public void setContent(String content) {
+		cmdPanel.setContent(content);
+	}
 }

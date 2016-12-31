@@ -86,7 +86,7 @@ public class DbTabContentRev extends Composite {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 
-	    rev = new Rev(this, parentTab.getConnection(), parentTab.getCrashHandler(), "scratchpad", Rev.SAVE_AND_LOAD_BUTTONS) {
+	    rev = new Rev(this, parentTab, parentTab.getConnection(), parentTab.getCrashHandler(), "scratchpad", Rev.SAVE_AND_LOAD_BUTTONS) {
 	    	@Override
 	    	protected void changeToolbar() {
 	    		makeToolbar(parentTab);
