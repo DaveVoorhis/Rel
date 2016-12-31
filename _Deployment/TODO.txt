@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Fix: Make visual query editor '?' popup non-modal?
+
 - Fix: In visual query editor, copy view script to scratchpad sometimes doesn't work.
 
 - Fix: Altering a relvar will almost certainly cause dependent VIEWs to break.
