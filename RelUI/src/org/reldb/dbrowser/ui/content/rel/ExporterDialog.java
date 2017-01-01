@@ -76,7 +76,7 @@ public class ExporterDialog extends Dialog {
 		if (lastPath == null)
 			lastPath = System.getProperty("user.home");
 		exportDialog.setFilterPath(lastPath);
-		exportDialog.setFileName(name + ".csv");
+		exportDialog.setFileName(name);
 		shlExportToFile.open();
 		shlExportToFile.layout();
 		Display display = getParent().getDisplay();
