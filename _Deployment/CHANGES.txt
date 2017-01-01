@@ -3,7 +3,7 @@ Last used Exception* number: RS0478
 Version 3.003 (1.0.16):
 
   - enhancement: Rel UI: Visual query editor's "View Query" '?' dialog now provides option to
-                 emit VIEW and OPERATOR definitions directly to command-line.
+                 emit query text, or VIEW and OPERATOR definitions, directly to command-line.
   - enhancement: Rel UI: Visual query editor's "View Query" '?' dialog no longer modal; makes it easier to
                  use query definition elsewhere.
   - enhancement: Rel UI: Initial Save dialog defaults to directory of most recent Load, if Load used first.
