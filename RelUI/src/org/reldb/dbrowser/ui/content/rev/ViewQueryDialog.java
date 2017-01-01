@@ -16,6 +16,7 @@ import org.eclipse.swt.custom.StyledText;
 
 public class ViewQueryDialog extends Dialog {
 	
+	private final static String copyToCommandPrompt = "Copy to Command-line";
 	private final static String saveToViewPrompt = "Export View script";
 	private final static String saveToOperatorPrompt = "Export Operator script";
 	private final static String exportToFilePrompt = "Export query results to file";
@@ -23,6 +24,7 @@ public class ViewQueryDialog extends Dialog {
 	private final static int BTN_SaveAsView = IDialogConstants.CLIENT_ID + 0;
 	private final static int BTN_SaveAsOperator = IDialogConstants.CLIENT_ID + 1;
 	private final static int BTN_ExportToFile = IDialogConstants.CLIENT_ID + 2;
+	private final static int BTN_CopyToCmd = IDialogConstants.CLIENT_ID + 3;
 
 	private Visualiser visualiser;
 	
@@ -32,13 +34,14 @@ public class ViewQueryDialog extends Dialog {
 	 */
 	public ViewQueryDialog(Visualiser visualiser) {
 		super(visualiser.getShell());
-		setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE);
+		setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.ON_TOP);
 		this.visualiser = visualiser;
 	}
 	
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText("View and Export Query");
+		shell.setSize(900, 300);
 	}
 
 	/**
@@ -67,22 +70,26 @@ public class ViewQueryDialog extends Dialog {
 		return MessageDialog.openConfirm(getShell(), "Overwrite?", "A script named '" + scriptName + "' already exists.  Overwrite it?");		
 	}
 
+	private void copyToCmd(String source) {
+		DbTab dbTab = visualiser.getModel().getRev().getDbTab();
+		dbTab.setAndDisplayCmdContent(source);		
+	}
+	
 	private void doSave(String source, String scriptName) {
 		if (scriptName.equals("scratchpad")) {
-			DbTab dbTab = visualiser.getModel().getRev().getDbTab();
-			dbTab.setAndDisplayCmdContent(source);
+			copyToCmd(source);
 		} else {
 			visualiser.getModel().getRev().changeCatalog(RelPanel.CATEGORY_SCRIPT, scriptName);
 			visualiser.getDatabase().setScript(scriptName, source);
 		}
 	}
 	
-	protected void doSaveToView(String viewName, String scriptName) {
+	private void doSaveToView(String viewName, String scriptName) {
 		String source = "VAR " + viewName.replace(' ', '_') + " VIEW " + visualiser.getQuery() + ';';
 		doSave(source, scriptName);
 	}
 	
-	protected void doSaveToOperator(String operatorName, String scriptName) {
+	private void doSaveToOperator(String operatorName, String scriptName) {
 		String source = 
 				"OPERATOR " + operatorName.replace(' ', '_') + "() RETURNS SAME_TYPE_AS(" + visualiser.getQuery() + ");\n" +
 						"\tRETURN " + visualiser.getQuery() + ";\n" +
@@ -93,6 +100,10 @@ public class ViewQueryDialog extends Dialog {
 	@Override
 	protected void buttonPressed(int buttonid) {
 		switch (buttonid) {
+		case BTN_CopyToCmd:
+			copyToCmd(visualiser.getQuery());
+			close();
+			break;
 		case BTN_SaveAsView:
 			SaveToDialog saveToView = new SaveToDialog(getShell(), saveToViewPrompt, visualiser.getID());
 			if (saveToView.open() == IDialogConstants.OK_ID) {
@@ -130,6 +141,7 @@ public class ViewQueryDialog extends Dialog {
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
+		createButton(parent, BTN_CopyToCmd, copyToCommandPrompt, false);
 		createButton(parent, BTN_SaveAsView, saveToViewPrompt, false);
 		createButton(parent, BTN_SaveAsOperator, saveToOperatorPrompt, false);
 		createButton(parent, BTN_ExportToFile, exportToFilePrompt, false);
