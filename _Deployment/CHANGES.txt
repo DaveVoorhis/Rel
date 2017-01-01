@@ -50,6 +50,7 @@ Version 3.003 (1.0.16):
   - fix: Rel UI: Failing to open a database could allow all database tabs to be closed, which left the
          Rel UI in an unstable state. Fixed.
   - note: Rel UI and Rel DBMS copyright years updated to 2017.
+  - note: Once opened with 1.0.16, databases cannot be read by earlier versions.
 
 Version 3.002 (1.0.15):
 
