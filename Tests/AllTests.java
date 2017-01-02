@@ -135,7 +135,7 @@ public class AllTests {
 			ClassPathHack.addFile("lib/rel0000.jar");
 			ClassPathHack.addFile("lib/relclient.jar");
 			ClassPathHack.addFile("lib/relshared.jar");
-			ClassPathHack.addFile("lib/sqljdbc42.jar");
+			ClassPathHack.addFile("lib/jtds-1.3.1.jar");
 			ClassPathHack.addFile("lib/xmlbeans-2.6.0.jar");
 			ClassPathHack.addFile("lib/" + Version.getBerkeleyDbJarFilename());
 		} catch (IOException ioe) {

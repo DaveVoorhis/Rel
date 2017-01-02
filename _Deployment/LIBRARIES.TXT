@@ -32,7 +32,7 @@ Oracle Database JDBC 'Thin' driver http://www.oracle.com/technetwork/database/fe
 
 - Used by Rel DBMS to access Oracle Database DBMSs.
 
-Microsoft SQL Server JDBC driver https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=11774
+Microsoft SQL Server JDBC driver http://jtds.sourceforge.net/
 
 - Used by Rel DBMS to access Microsoft SQL Server DBMSs.
 
