@@ -19,3 +19,21 @@ Eclipse Compiler for Java (ECJ) https://eclipse.org/jdt/core/
 Jackcess https://sourceforge.net/projects/jackcess
 
 - Used by Rel DBMS to access Microsoft Access database files.
+
+MySQL JDBC driver https://dev.mysql.com/downloads/connector/j/
+
+- Used by Rel DBMS to access MySQL DBMSs.
+
+PostgreSQL JDBC driver https://jdbc.postgresql.org/download.html
+
+- Used by Rel DBMS to access PostgreSQL DBMSs.
+
+Oracle Database JDBC 'Thin' driver http://www.oracle.com/technetwork/database/features/jdbc/default-2280470.html
+
+- Used by Rel DBMS to access Oracle Database DBMSs.
+
+Microsoft SQL Server JDBC driver https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=11774
+
+- Used by Rel DBMS to access Microsoft SQL Server DBMSs.
+
+NOTE: All product names, logos, and brands are property of their respective owners.
