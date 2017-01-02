@@ -556,6 +556,37 @@ public class RelPanel extends Composite {
 		}
 	}
 	
+	private void buildSubtreeVar(String andSysStr, Predicate<String> filter) {
+		String section = CATEGORY_VARIABLE;
+		Image imageInternal = IconLoader.loadIcon("table");
+		Image imageExternal = IconLoader.loadIcon("table_external");
+		String query = "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name, isExternal} ORDER (ASC Name)";
+		String displayAttributeName = "Name";
+		VarRealPlayer player = new VarRealPlayer(this);
+		VarRealCreator creator = new VarRealCreator(this);
+		VarRealDropper dropper = new VarRealDropper(this);
+		VarRealDesigner designer = new VarRealDesigner(this);
+		VarRealExporter exporter = new VarRealExporter(this);
+		
+		TreeItem root = getRoot(section, imageInternal, creator);
+		if (query != null) {
+			Tuples names = connection.getTuples(query);
+			if (names != null)
+				for (Tuple tuple: names) {
+					String name = tuple.getAttributeValue(displayAttributeName).toString();
+					if (filter.test(name)) {
+						TreeItem item = new TreeItem(root, SWT.NONE);
+						if (tuple.getAttributeValue("isExternal").toBoolean())
+							item.setImage(imageExternal);
+						else
+							item.setImage(imageInternal);
+						item.setText(name);
+						item.setData(new DbTreeItem(section, player, creator, dropper, designer, null, exporter, name));
+					}
+				}
+		}		
+	}
+	
 	private void buildSubtreeOperator(String whereSysStr, Predicate<String> filter) {
 		String query = "EXTEND sys.Operators: {Impl := EXTEND Implementations " + whereSysStr + ": {SigReturn := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF}} {Name, Impl} ORDER (ASC Name)";
 		OperatorCreator creator = new OperatorCreator(this);
@@ -624,8 +655,7 @@ public class RelPanel extends Composite {
 		
 		Predicate<String> revSysNamesFilter = (String attributeName) -> attributeName.startsWith("sys.rev") ? showSystemObjects : true; 
 		
-		buildSubtree(CATEGORY_VARIABLE, IconLoader.loadIcon("table"), "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter, 
-			new VarRealPlayer(this), new VarRealCreator(this), new VarRealDropper(this), new VarRealDesigner(this), null, new VarRealExporter(this));
+		buildSubtreeVar(andSysStr, revSysNamesFilter);
 		
 		buildSubtree(CATEGORY_VIEW, IconLoader.loadIcon("view"), "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
 			new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this), null, new VarViewExporter(this));
