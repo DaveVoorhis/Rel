@@ -1,7 +1,5 @@
 ** TO DO **
 
-- RelUI: Add refresh toolbar item to VIEWs, same as for VARiables.
-
 - RelUI: Use icons to distinguish external from internal relvars on DbTreeItemS.
 
 - Fix: Altering a relvar will almost certainly cause dependent VIEWs to break.

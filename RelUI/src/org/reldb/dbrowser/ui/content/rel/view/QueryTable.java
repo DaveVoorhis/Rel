@@ -1,10 +1,12 @@
 package org.reldb.dbrowser.ui.content.rel.view;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.ToolBar;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
@@ -14,17 +16,25 @@ import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Heading;
 
 public class QueryTable extends DbTreeTab {
+
+	private CTabFolder parent;
 	
 	public QueryTable(RelPanel parent, DbTreeItem item) {
 		super(parent, item);
-		setControl(getContents(parent.getTabFolder()));
+		this.parent = parent.getTabFolder();
+		refresh();
+		ready();
+	}
+	
+	public ToolBar getToolBar(Composite parent) {
+		return new VarViewEditorToolbar(parent, this).getToolBar();
 	}
 
 	protected Tuples getTuples() {
 		return relPanel.getConnection().getTuples(dbTreeItem.getName());
 	}
-	
-	protected Composite getContents(Composite parent) {
+
+	public void refresh() {
 		Table table = new Table(parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
@@ -45,9 +55,9 @@ public class QueryTable extends DbTreeTab {
 		}
 		
 		for (int i=0; i<table.getColumnCount(); i++)
-			table.getColumn(i).pack();
+			table.getColumn(i).pack();	
 		
-		return table;
+		setControl(table);
 	}
 
 }

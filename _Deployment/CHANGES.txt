@@ -2,6 +2,7 @@ Last used Exception* number: RS0478
 
 Version 3.003 (1.0.16):
 
+  - enhancement: Rel UI: Added refresh toolbar item to VIEWs, same as for VARiables.
   - enhancement: Rel UI: Visual query editor's "View Query" '?' dialog now provides option to
                  emit query text, or VIEW and OPERATOR definitions, directly to command-line.
   - enhancement: Rel UI: Visual query editor's "View Query" '?' dialog no longer modal; makes it easier to
