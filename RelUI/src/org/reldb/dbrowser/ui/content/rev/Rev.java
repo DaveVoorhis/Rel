@@ -45,6 +45,7 @@ import org.reldb.dbrowser.ui.content.rev.operators.TableDee;
 import org.reldb.dbrowser.ui.content.rev.operators.TableDum;
 import org.reldb.dbrowser.ui.content.rev.operators.TupleFrom;
 import org.reldb.dbrowser.ui.content.rev.operators.UngroupOrUnwrap;
+import org.reldb.dbrowser.ui.content.rev.operators.Unorder;
 import org.reldb.dbrowser.ui.content.rev.operators.Update;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
@@ -588,6 +589,11 @@ public class Rev extends Composite {
 			new OpSelector("UNION", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new Diadic(rev, name, "UNION", xpos, ypos);
+				}
+			}),
+			new OpSelector("UNORDER", new OpSelectorRun() {
+				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
+					return new Unorder(rev, name, xpos, ypos);
 				}
 			}),
 			new OpSelector("UNWRAP", new OpSelectorRun() {
