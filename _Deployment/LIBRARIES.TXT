@@ -1,4 +1,4 @@
-== External libraries used by Rel ==
+== Third Party libraries used by Rel ==
 
 Apache HttpComponents https://hc.apache.org/index.html
 
@@ -20,9 +20,9 @@ Jackcess https://sourceforge.net/projects/jackcess
 
 - Used by Rel DBMS to access Microsoft Access database files.
 
-MySQL JDBC driver https://dev.mysql.com/downloads/connector/j/
+MySQL/MariaDB JDBC driver https://downloads.mariadb.org/connector-java/
 
-- Used by Rel DBMS to access MySQL DBMSs.
+- Used by Rel DBMS to access MySQL/MariaDB DBMSs.
 
 PostgreSQL JDBC driver https://jdbc.postgresql.org/download.html
 
