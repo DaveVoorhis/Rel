@@ -124,7 +124,7 @@ public class AllTests {
 			ClassPathHack.addFile("lib/jna-platform-4.1.0.jar");
 			ClassPathHack.addFile("lib/junit.jar");
 			ClassPathHack.addFile("lib/log4j-1.2.17.jar");
-			ClassPathHack.addFile("lib/mysql-connector-java-5.1.40-bin.jar");
+			ClassPathHack.addFile("lib/mariadb-java-client-1.5.6.jar");
 			ClassPathHack.addFile("lib/ojdbc7.jar");
 			ClassPathHack.addFile("lib/poi-3.15.jar");
 			ClassPathHack.addFile("lib/poi-excelant-3.15.jar");
