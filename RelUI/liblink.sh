@@ -1,1 +1,1 @@
-ln -s ~/git/Rel/_Deployment/lib .
+ln -s ../_Deployment/lib .
