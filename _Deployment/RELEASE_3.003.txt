@@ -8,8 +8,8 @@ connections, and represent their contents as relation-valued variables
 (aka relvars). Facilities have also been provided to easily export
 relvars and query results as CSV and spreadsheet (XLS or XLSX) files.
 
-IMPORTANT NOTE: Once opened with this version of Rel, databases cannot
-                be read by earlier versions.
+IMPORTANT NOTE: Once opened with this or later versions of Rel, 
+                databases cannot be read by earlier versions.
 
 The following enhancements have been made:
 
