@@ -54,10 +54,19 @@ public class SaveToDialog extends Dialog {
 		lblNewLabel.setLayoutData(fd_lblNewLabel);
 		lblNewLabel.setText("Script name:");
 		
+		text = new Text(container, SWT.BORDER);
+		FormData fd_text = new FormData();
+		fd_text.top = new FormAttachment(0, 10);
+		fd_text.left = new FormAttachment(lblNewLabel, 6);
+		fd_text.right = new FormAttachment(100, -10);
+		fd_text.width = 300;
+		text.setLayoutData(fd_text);
+		text.setText(name);
+		
 		Button chkUseScratchpad = new Button(container, SWT.CHECK);
 		chkUseScratchpad.setText("To command-line");
 		FormData fd_chkKeepOriginal = new FormData();
-		fd_chkKeepOriginal.top = new FormAttachment(lblNewLabel, 10);
+		fd_chkKeepOriginal.top = new FormAttachment(text, 10);
 		fd_chkKeepOriginal.right = new FormAttachment(100, -10);
 		chkUseScratchpad.setLayoutData(fd_chkKeepOriginal);
 		chkUseScratchpad.addSelectionListener(new SelectionAdapter() {
@@ -71,15 +80,6 @@ public class SaveToDialog extends Dialog {
 				}
 			}
 		});
-		
-		text = new Text(container, SWT.BORDER);
-		FormData fd_text = new FormData();
-		fd_text.top = new FormAttachment(0, 10);
-		fd_text.left = new FormAttachment(lblNewLabel, 6);
-		fd_text.right = new FormAttachment(100, -10);
-		fd_text.width = 300;
-		text.setLayoutData(fd_text);
-		text.setText(name);
 		
 		container.pack();
 		
