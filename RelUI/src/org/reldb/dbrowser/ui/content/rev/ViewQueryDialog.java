@@ -97,7 +97,7 @@ public class ViewQueryDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
-		shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.ON_TOP);
+		shell = new Shell(getParent(), SWT.CLOSE | SWT.RESIZE | SWT.TITLE | SWT.ON_TOP);
 		shell.setSize(600, 300);
 		shell.setText(getText());
 		shell.setLayout(new FormLayout());
