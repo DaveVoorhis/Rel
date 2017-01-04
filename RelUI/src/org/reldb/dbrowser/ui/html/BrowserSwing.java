@@ -37,7 +37,7 @@ public class BrowserSwing implements HtmlBrowser {
 
 	@Override
 	public boolean createWidget(Composite parent) {
-	    browserPanel = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
+	    browserPanel = new Composite(parent, SWT.EMBEDDED);
 	    Frame frame = SWT_AWT.new_Frame(browserPanel);
 	    
 	    style = new Style(0);
