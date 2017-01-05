@@ -1,7 +1,6 @@
 ** TO DO **
 
-- ViewQueryDialog crashes if buttons are pressed after it has been left open when switching modes, probably due
-  to parent Composite being disposed.
+- GROUP is too slow. Make it faster.
 
 - Provide user-friendly mechanisms to create external relvars, and query what
   external relvar kinds are available, with sample syntax.
