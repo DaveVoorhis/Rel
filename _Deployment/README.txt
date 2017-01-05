@@ -78,16 +78,16 @@ If you are using Rel version 0.3.8 or higher, you can make a backup
 via the graphical user interface's (aka DBrowser) "Backup" button.
 
 If you are using Rel version 0.3.0 to 0.3.7, run the
-DatabaseToScript.d script in the Scripts directory.  This script will
-emit your database as a new Tutorial D script.  To back up your
-database, save the generated script.  To restore your database, run
+DatabaseToScript.d script in the Scripts directory. This script will
+emit your database as a new Tutorial D script. To back up your
+database, save the generated script. To restore your database, run
 the saved script.
 
 If you are upgrading from a version of Rel prior to 0.3.0 (aka Rel2),
 under the old version of Rel run the DatabaseToScript.d found in the
 old version's Samples directory.  The script will emit your database
-in a format that can be read by the 0.3.x versions of Rel, though it
-may require some modifications.
+in a format that can be read by later versions of Rel, though it may
+require some modifications.
 
 Rel user interface (aka DBrowser) version 3.001 or above (which
 includes the Rel DBMS version 1.0.13 or above) will automatically
