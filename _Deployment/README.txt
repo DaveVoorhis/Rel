@@ -106,5 +106,5 @@ above, and execute it.
 
 For more information, please see http://reldb.org
 
-Copyright (c) 2004-2016 Dave Voorhis
+Copyright (c) 2004-2017 Dave Voorhis
 All Rights Reserved
