@@ -14,7 +14,7 @@ public class Heading implements Comparable<Heading> {
 	}
 
 	/** Create a new Heading based on an existing Heading. */
-	Heading(Heading oldHeading) {
+	public Heading(Heading oldHeading) {
 		attributes.addAll(oldHeading.getAttributes());
 	}
 	
@@ -154,6 +154,10 @@ public class Heading implements Comparable<Heading> {
 		if (getAttribute(attributeName) != null)
 			throw new ExceptionSemantic("RS0250: Attribute '" + attributeName + "' has already been defined.");
 		attributes.add(new Attribute(attributeName, attributeType));
+	}
+
+	public void add(Attribute attribute) {
+		add(attribute.getName(), attribute.getType());
 	}
 
 	/** Return the attribute of a given name.  Return null if not found. */

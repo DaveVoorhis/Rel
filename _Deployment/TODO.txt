@@ -1,6 +1,6 @@
 ** TO DO **
 
-- GROUP is too slow. Make it faster.
+- SUMMARIZE BY is too slow. Make it faster.
 
 - Provide user-friendly mechanisms to create external relvars, and query what
   external relvar kinds are available, with sample syntax.
@@ -75,12 +75,6 @@
 	   VAR Base_data_type BASE RELATION { name identifier } KEY { name } ;
   Rel goes into an infinite loop on the final definition.
   Appears to be due to VALUE = THE_VALUE (...) which results in unresolved recursive reference.
-
-- RELATION {TUPLE {SID 1, PID 1}, TUPLE {SID 4, PID 5}} GROUP {PID} AS PARTS
-          UNION
-        RELATION {TUPLE {SID 1, PARTS RELATION {TUPLE {PID 1}}},
-                    TUPLE {SID 4, PARTS RELATION {TUPLE {PID 5}}}}
-        Produces bogus result, apparently due to GROUP.  Fix!
 
 - Currently, it seems that Rel does not fully support the parallel execution of individual renamings 
   which is specified in Tutorial D. For instance,

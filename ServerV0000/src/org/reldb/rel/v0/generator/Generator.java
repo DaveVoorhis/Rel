@@ -104,6 +104,7 @@ import org.reldb.rel.v0.vm.instructions.possrep.OpPossrepGetComponent;
 import org.reldb.rel.v0.vm.instructions.possrep.OpPossrepSetComponent;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationDUnion;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationGetTuple;
+import org.reldb.rel.v0.vm.instructions.relation.OpRelationGroup;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationIMinus;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationIntersect;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationJoin;
@@ -2062,44 +2063,19 @@ public class Generator {
 	}
 
 	public TypeRelation compileRelationGroup(TypeRelation sourceType, SelectAttributes itemList, String name) {
-		final String parmName = "%r";
-		if (itemList.isAllBut()) {
+		if (itemList.isAllBut())
 			itemList.makeNamesExplicit(sourceType.getHeading());
-			itemList.setAllBut(true);
-		} else
-			itemList.setAllBut(!itemList.isAllBut());
-        Heading excludeHeading = sourceType.getHeading().project(itemList);
-        // Begin GROUP anonymous Operator
-        OperatorDefinition groupOp = beginAnonymousOperator();
-        // Where r is RELATION {a b c d}, to generate 'r GROUP ({ALL BUT a, b} as x)', 
-        // compile the following:
-        //   OPERATOR (r RELATION {a b c d}) RETURNS RELATION 
-        //      RETURN (extend r add (r compose relation {tuple {a a, b b}} as x)) {a, b, x}
-        //   END
-        beginParameterDefinitions();
-        defineOperatorParameter(parmName, sourceType);
-        endParameterDefinitions();
-        TypeRelation parmType = (TypeRelation)compileGet(parmName);
-        Generator.Extend extend = new Extend(parmType.getHeading());
-        Generator.RelationDefinition extendRelation = new RelationDefinition(null);
-        Generator.TupleDefinition extendRelationTuple = new TupleDefinition();
-        for (Attribute attribute: excludeHeading.getAttributes()) {
-        	compileGet(attribute.getName());
-        	extendRelationTuple.setTupleAttribute(attribute.getName(), attribute.getType());
-        }
-        TypeTuple tupleType = extendRelationTuple.endTuple();
-        extendRelation.addTupleToRelation(tupleType);
-        TypeRelation leftType = extendRelation.endRelation();
-        TypeRelation rightType = (TypeRelation)compileGet(parmName);
-        TypeRelation composeResult = compileRelationCompose(leftType, rightType);                
-        extend.addExtendItem(name, composeResult);
-        TypeRelation extendResult = endRelationExtend(extend);
-        TypeRelation result = compileRelationProject(extendResult, itemList);
-        // End Group operator      
-        setDeclaredReturnType(result);        
-        compileReturnValue(result);
-        endOperator();
-		return (TypeRelation)compileEvaluate(groupOp);
+		Heading groupedAttributeHeading = new Heading();
+		Heading sourceHeading = sourceType.getHeading();
+		Heading sortAttributeHeading = new Heading(sourceHeading);
+		for (String attributeName: itemList.getNames()) {
+			groupedAttributeHeading.add(attributeName, sourceHeading.getAttribute(attributeName).getType());
+			sortAttributeHeading.remove(attributeName);
+		}
+		Heading resultHeading = new Heading(sortAttributeHeading);
+		resultHeading.add(name, new TypeRelation(groupedAttributeHeading));
+		compileInstruction(new OpRelationGroup(new AttributeMap(sortAttributeHeading, sourceHeading), new AttributeMap(groupedAttributeHeading, sourceHeading)));		
+		return new TypeRelation(resultHeading);
 	}
 
 	public TypeRelation compileRelationUngroup(TypeRelation sourceType, String attributeName) {

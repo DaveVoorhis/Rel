@@ -3,8 +3,13 @@ package org.reldb.rel.v0.values;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.reldb.rel.exceptions.*;
 import org.reldb.rel.v0.generator.Generator;
@@ -472,6 +477,61 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 				};
 			}
 		};
+	}
+
+	/**
+	 * Order by attributes in orderMap. For each group of equal orderMap attributes, 
+	 * return one tuple of orderMap attributes with all groupAttributes in an appended relation-valued attribute.
+	 *
+	 * @param orderAttributes
+	 * @param groupAttributes
+	 * @return - a ValueRelation
+	 */
+	public Value group(AttributeMap orderAttributes, AttributeMap groupAttributes) {
+		// TODO - MEM - fix so that high-cardinality relations don't run out of RAM
+		final Map<ValueTuple, ValueRelationLiteral> group = new HashMap<ValueTuple, ValueRelationLiteral>();
+    	(new TupleIteration(iterator()) {
+    		public void process(ValueTuple tuple) {
+    			ValueTuple orderTuple = (ValueTuple)tuple.project(orderAttributes);
+    			ValueTuple groupAttributeTuple = (ValueTuple)tuple.project(groupAttributes);
+    			ValueRelationLiteral groupAttributeValue = group.get(orderTuple);
+    			if (groupAttributeValue == null) {
+    				groupAttributeValue = new ValueRelationLiteral(getGenerator());
+        			group.put(orderTuple, groupAttributeValue);
+    			}
+    			groupAttributeValue.insert(groupAttributeTuple);
+    		}
+    	}).run();
+		return new ValueRelation(getGenerator()) {
+			private final static long serialVersionUID = 0;
+			
+			public int hashCode() {
+				return 0;
+			}
+
+			public TupleIterator newIterator() {
+				return new TupleIterator() {
+					Set<Entry<ValueTuple, ValueRelationLiteral>> groupedData = group.entrySet();
+					Iterator<Entry<ValueTuple, ValueRelationLiteral>> iterator = groupedData.iterator();
+
+					public boolean hasNext() {
+						return iterator.hasNext();
+					}
+
+					public ValueTuple next() {
+						Entry<ValueTuple, ValueRelationLiteral> entry = iterator.next();
+						ValueTuple sortedTuple = entry.getKey();
+						ValueRelationLiteral rva = entry.getValue();
+						Value[] rvaTupleArray = {rva};
+						ValueTuple rvaTuple = new ValueTuple(getGenerator(), rvaTupleArray);
+						return sortedTuple.joinDisjoint(rvaTuple);
+					}
+					
+					public void close() {
+					}
+				};
+			}
+		};    	
 	}
 
 	/**

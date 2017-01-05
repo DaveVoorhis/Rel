@@ -2323,10 +2323,15 @@ public class TestRel extends BaseOfTest {
         "  TUPLE {s 's2', p 'p1', q 300}," +
         "  TUPLE {s 's2', p 'p2', q 400}," +
         "  TUPLE {s 's3', p 'p2', q 200}} GROUP {p, q} AS pq";
-		testEquals("RELATION {s CHARACTER, pq RELATION {p CHARACTER, q INTEGER}} {\n\t" + 
-				"TUPLE {s \"s2\", pq RELATION {p CHARACTER, q INTEGER} {\n\tTUPLE {p \"p1\", q 300},\n\tTUPLE {p \"p2\", q 400}\n}},\n\t" +
-				"TUPLE {s \"s3\", pq RELATION {p CHARACTER, q INTEGER} {\n\tTUPLE {p \"p2\", q 200}\n}}" + 
-					"\n}", src);
+		testEquals("RELATION {s CHARACTER, pq RELATION {p CHARACTER, q INTEGER}} {\n\t" +
+			"TUPLE {s \"s3\", pq RELATION {p CHARACTER, q INTEGER} {\n\t" +
+			"TUPLE {p \"p2\", q 200}\n" +
+			"}},\n\t" +
+			"TUPLE {s \"s2\", pq RELATION {p CHARACTER, q INTEGER} {\n\t" +
+			"TUPLE {p \"p1\", q 300},\n\t" +
+			"TUPLE {p \"p2\", q 400}\n" +
+			"}}\n" +
+			"}", src);
 	}
 
 	@Test
@@ -2336,9 +2341,9 @@ public class TestRel extends BaseOfTest {
         "  TUPLE {s 's2', p 'p2', q 400}," +
         "  TUPLE {s 's3', p 'p2', q 200}} GROUP {ALL BUT s} AS pq";
 		testEquals("RELATION {s CHARACTER, pq RELATION {p CHARACTER, q INTEGER}} {\n\t" + 
-				"TUPLE {s \"s2\", pq RELATION {p CHARACTER, q INTEGER} {\n\tTUPLE {p \"p1\", q 300},\n\tTUPLE {p \"p2\", q 400}\n}},\n\t" +
-				"TUPLE {s \"s3\", pq RELATION {p CHARACTER, q INTEGER} {\n\tTUPLE {p \"p2\", q 200}\n}}" + 
-					"\n}", src);
+				"TUPLE {s \"s3\", pq RELATION {p CHARACTER, q INTEGER} {\n\tTUPLE {p \"p2\", q 200}\n}},\n\t" + 
+				"TUPLE {s \"s2\", pq RELATION {p CHARACTER, q INTEGER} {\n\tTUPLE {p \"p1\", q 300},\n\tTUPLE {p \"p2\", q 400}\n}}\n" +
+					"}", src);
 	}
 
 	@Test
@@ -2361,9 +2366,9 @@ public class TestRel extends BaseOfTest {
         "  TUPLE {s 's2', p 'p2', q 400}," +
         "  TUPLE {s 's3', p 'p2', q 200}} GROUP {p, q} AS pq) UNGROUP pq";
 		testEquals("RELATION {s CHARACTER, p CHARACTER, q INTEGER} {" +
-		        "\n\tTUPLE {s \"s2\", p \"p1\", q 300}," +
-		        "\n\tTUPLE {s \"s2\", p \"p2\", q 400}," +
-		        "\n\tTUPLE {s \"s3\", p \"p2\", q 200}\n}", src);
+				"\n\tTUPLE {s \"s3\", p \"p2\", q 200}," +
+				"\n\tTUPLE {s \"s2\", p \"p1\", q 300}," +
+				"\n\tTUPLE {s \"s2\", p \"p2\", q 400}\n}", src);
 	}
 	
 	@Test
