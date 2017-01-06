@@ -310,14 +310,26 @@ TOKEN : /* OPERATOR SYMBOLS */
 | < EQ: "=" >
 | < GT: ">" >
 | < LT: "<" >
-| < LTE: "<=" >
-| < GTE: ">=" >
-| < NEQ: "<>" >
+| < LTE_A: "<=" >
+| < LTE_U: "≤" >
+| < GTE_A: ">=" >
+| < GTE_U: "≥" >
+| < NEQ_A: "<>" >
+| < NEQ_U: "≠" >
 | < PLUS: "+" >
 | < SUBT: "-" >
 | < STAR: "*" >
-| < SLASH: "/" >
-| < PCNT: "%" >
+| < MULT_U: "×" >
+| < DIVD_A: "/" >
+| < DIVD_U: "÷" >
+| < MODL: "%" >
+| < BANGBANG_A: "!!" >
+| < BANGBANG_U: "‼" >
+| < SUBSET: "⊂" >
+| < SUBSET_OR_EQUAL: "⊆" >
+| < SUPERSET: "⊃" >
+| < SUPERSET_OR_EQUAL: "⊇" >
+| < BARBAR: "||" >
 }
 
 <SCRIPT> TOKEN: /* Source code grabber */
@@ -1194,13 +1206,17 @@ void compare_expression() :
 {} 
 { 
 	rel_diadic() [
-			"="  rel_diadic() #CompEqual(2)
-		|	"<>" rel_diadic() #CompNequal(2)
-		|	">=" rel_diadic() #CompGTE(2)
-		|	"<=" rel_diadic() #CompLTE(2)
-		|	">"  rel_diadic() #CompGT(2)
-		|	"<"  rel_diadic() #CompLT(2)
-		|	<IN> rel_diadic() #TupleIn(2)
+			<EQ>  				rel_diadic() #CompEqual(2)
+		|	(<NEQ_A> | <NEQ_U>) rel_diadic() #CompNequal(2)
+		|	(<GTE_A> | <GTE_U>) rel_diadic() #CompGTE(2)
+		|	(<LTE_A> | <LTE_U>) rel_diadic() #CompLTE(2)
+		|	<GT>  				rel_diadic() #CompGT(2)
+		|	<LT>  				rel_diadic() #CompLT(2)
+		| 	<SUBSET>			rel_diadic() #CompSubset(2)
+		| 	<SUBSET_OR_EQUAL>	rel_diadic() #CompSubsetEqual(2)
+		| 	<SUPERSET>			rel_diadic() #CompSuperset(2)
+		| 	<SUPERSET_OR_EQUAL>	rel_diadic() #CompSupersetEqual(2)
+		|	<IN> 				rel_diadic() #TupleIn(2)
 	]
 }
 
@@ -1341,9 +1357,9 @@ void add_expression() :
 {} 
 {
 	mul_expression() (
-			"+"  mul_expression() #Add(2)
-		| 	"-"  mul_expression() #Subtract(2)
-		|	"||" mul_expression() #Concatenate(2)
+			<PLUS>  	mul_expression() #Add(2)
+		| 	<SUBT>  	mul_expression() #Subtract(2)
+		|	<BARBAR> 	mul_expression() #Concatenate(2)
 	)*
 }
 
@@ -1351,19 +1367,19 @@ void mul_expression() :
 {} 
 { 
 	unary_expression() ( 
-			"*" unary_expression() #Times(2)
-		|	"/" unary_expression() #Divide(2)
-		| 	"%" unary_expression() #Mod(2)
+			(<STAR> | <MULT_U>) 		unary_expression() #Times(2)
+		|	(<DIVD_A> | <DIVD_U>) 		unary_expression() #Divide(2)
+		| 	<MODL> 						unary_expression() #Mod(2)
 	)*
 }
 
 void unary_expression() :
 {}
 {
-		<NOT> unary_expression() #UnaryNot(1)
-	| 	"+"   unary_expression() #UnaryPlus(1)
-	|	"-"   unary_expression() #UnaryMinus(1)
-	|		  primary_expression()
+		<NOT> 			unary_expression() #UnaryNot(1)
+	| 	<PLUS>   		unary_expression() #UnaryPlus(1)
+	|	<SUBT>   		unary_expression() #UnaryMinus(1)
+	|		 			primary_expression()
 }
 
 void primary_expression() : 
@@ -1404,10 +1420,23 @@ void type_of() #TypeOf :
 {  	<TYPE_OF> "(" expression() ")"
 }
 
-void image_in() #ImageIn :
+void image_in() :
 {}
 {
-  	<IMAGE_IN> "(" expression() [ "," expression() ] ")"
+		(<BANGBANG_A> | <BANGBANG_U>) (image_in_bracketed() | image_in_identifier())
+	| 	<IMAGE_IN> image_in_bracketed()
+}
+
+void image_in_bracketed() #ImageIn :
+{}
+{
+	"(" expression() [ "," expression() ] ")"
+}
+
+void image_in_identifier() #ImageBangBang :
+{}
+{
+  	identifier()
 }
 
 void case_expression() #CaseExpression :
@@ -1751,7 +1780,7 @@ void tuple() #Tuple :
 void tuple_component_wildcard() #TupleComponentWildcard :
 {}
 {
-  	"*"
+  	<STAR>
 }
 
 void tuple_component_commalist() :

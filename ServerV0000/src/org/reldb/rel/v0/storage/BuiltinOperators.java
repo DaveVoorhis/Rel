@@ -390,9 +390,9 @@ public class BuiltinOperators {
 			);		
 	}
 		
-	private void superset(RelDatabase database, Type[] parameters) {
+	private void superset(String opName, RelDatabase database, Type[] parameters) {
 		database.defineBuiltinOperator(
-				new OperatorDefinitionNativeFunction(BuiltinTypeBuilder.GREATERTHANOREQUALS, 
+				new OperatorDefinitionNativeFunction(opName, 
 						parameters, 
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -405,7 +405,8 @@ public class BuiltinOperators {
 	}
 	
 	private void greaterthanequals(RelDatabase database) {
-		superset(database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		superset(BuiltinTypeBuilder.GREATERTHANOREQUALS, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		superset(BuiltinTypeBuilder.SUPERSETOREQUAL, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		greaterthanequals(database, new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
 		greaterthanequals(database, new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
@@ -424,9 +425,9 @@ public class BuiltinOperators {
 			);		
 	}
 	
-	private void subset(RelDatabase database, Type[] parameters) {
+	private void subset(String opName, RelDatabase database, Type[] parameters) {
 		database.defineBuiltinOperator(
-				new OperatorDefinitionNativeFunction(BuiltinTypeBuilder.LESSTHANOREQUALS, 
+				new OperatorDefinitionNativeFunction(opName, 
 						parameters,
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -439,7 +440,8 @@ public class BuiltinOperators {
 	}
 	
 	private void lessthanequals(RelDatabase database) {
-		subset(database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		subset(BuiltinTypeBuilder.LESSTHANOREQUALS, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		subset(BuiltinTypeBuilder.SUBSETOREQUAL, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		lessthanequals(database, new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
 		lessthanequals(database, new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
@@ -458,9 +460,9 @@ public class BuiltinOperators {
 			);		
 	}
 	
-	private void propersuperset(RelDatabase database, Type[] parameters) {
+	private void propersuperset(String opName, RelDatabase database, Type[] parameters) {
 		database.defineBuiltinOperator(
-				new OperatorDefinitionNativeFunction(BuiltinTypeBuilder.GREATERTHAN, 
+				new OperatorDefinitionNativeFunction(opName, 
 						parameters, 
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -471,9 +473,10 @@ public class BuiltinOperators {
 				)
 			);		
 	}
-		
+
 	private void greaterthan(RelDatabase database) {
-		propersuperset(database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		propersuperset(BuiltinTypeBuilder.GREATERTHAN, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		propersuperset(BuiltinTypeBuilder.SUPERSET, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		greaterthan(database, new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
 		greaterthan(database, new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
@@ -492,9 +495,9 @@ public class BuiltinOperators {
 			);		
 	}
 	
-	private void propersubset(RelDatabase database, Type[] parameters) {
+	private void propersubset(String opName, RelDatabase database, Type[] parameters) {
 		database.defineBuiltinOperator(
-				new OperatorDefinitionNativeFunction(BuiltinTypeBuilder.LESSTHAN, 
+				new OperatorDefinitionNativeFunction(opName, 
 						parameters,
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -507,7 +510,8 @@ public class BuiltinOperators {
 	}
 	
 	private void lessthan(RelDatabase database) {
-		propersubset(database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		propersubset(BuiltinTypeBuilder.LESSTHAN, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		propersubset(BuiltinTypeBuilder.SUBSET, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		lessthan(database, new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
 		lessthan(database, new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}

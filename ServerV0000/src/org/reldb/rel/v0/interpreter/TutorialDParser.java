@@ -22,6 +22,7 @@ import org.reldb.rel.v0.vm.Context;
 import org.reldb.rel.v0.vm.NativeFunction;
 import org.reldb.rel.v0.vm.Operator;
 import org.reldb.rel.v0.vm.VirtualMachine;
+import org.reldb.rel.v0.vm.instructions.core.OpLte;
 
 public class TutorialDParser implements TutorialDVisitor {
 
@@ -1654,20 +1655,42 @@ public class TutorialDParser implements TutorialDVisitor {
 		// Child 0 - relational expression
 		Type maybeRelationType = (Type)compileChild(node, 0, data);
 		if (!(maybeRelationType instanceof TypeRelation))
-			throw new ExceptionSemantic("RS0445: IMAGE_IN expected first operand of type RELATION, but got " + maybeRelationType);
+			throw new ExceptionSemantic("RS0445: IMAGE_IN or !! expected first operand of type RELATION, but got " + maybeRelationType);
 		TypeRelation leftType = (TypeRelation)maybeRelationType;
 		Generator.RelationDefinition relation = generator.new RelationDefinition(null);
 		// Child 1 - optional tuple expression. If absent, it's TUPLE {*}
 		if (getChildCount(node) == 2) {
 			Type maybeTupleType = (Type)compileChild(node, 1, data);
 			if (!(maybeTupleType instanceof TypeTuple))
-				throw new ExceptionSemantic("RS0446: IMAGE_IN expected second operand of type TUPLE, but got " + maybeTupleType);
+				throw new ExceptionSemantic("RS0446: IMAGE_IN or !! expected second operand of type TUPLE, but got " + maybeTupleType);
 			relation.addTupleToRelation((TypeTuple)maybeTupleType);
 		} else {
 			Generator.TupleDefinition tuple = generator.new TupleDefinition();
 			tuple.setWildcard();
 			relation.addTupleToRelation(tuple.endTuple());
 		}
+		TypeRelation rightType = relation.endRelation();
+		TypeRelation joinType = generator.compileRelationJoin(leftType, rightType);
+		SelectAttributes attributes = new SelectAttributes();
+		attributes.setAllBut(true);
+		attributes.add(rightType.getHeading().getAttributes());
+		return generator.compileRelationProject(joinType, attributes);
+	}
+	
+	// !! alias for IMAGE_IN
+	public Object visit(ASTImageBangBang node, Object data) {
+		currentNode = node;
+		compileChild(node, 0, data);
+		String relvarname = getTokenOfChild(node, 0);
+		Slot referencedSlot = generator.findReference(relvarname);
+		if (!(referencedSlot.getType() instanceof TypeRelation))
+			throw new ExceptionSemantic("RS0479: !! expected operand of type RELATION, but got " + referencedSlot.getType());
+		referencedSlot.compileGet(generator);
+		TypeRelation leftType = (TypeRelation)referencedSlot.getType();
+		Generator.RelationDefinition relation = generator.new RelationDefinition(null);
+		Generator.TupleDefinition tuple = generator.new TupleDefinition();
+		tuple.setWildcard();
+		relation.addTupleToRelation(tuple.endTuple());
 		TypeRelation rightType = relation.endRelation();
 		TypeRelation joinType = generator.compileRelationJoin(leftType, rightType);
 		SelectAttributes attributes = new SelectAttributes();
@@ -2155,7 +2178,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		Type termExprType = (Type)compileChild(node, 2, data);
 		if (!(termExprType.canAccept(TypeInteger.getInstance())))
 			throw new ExceptionSemantic("RS0149: Expression after TO is " + termExprType + ", expected " + loopIndex.getType());
-		generator.compileLTE();
+		generator.compileInstruction(new OpLte());
 		forLoop.testDo();
 		// compile loop body
 		compileChild(node, 3, data);
@@ -3539,6 +3562,38 @@ public class TutorialDParser implements TutorialDVisitor {
 		Type leftType = (Type)compileChild(node, 0, data);
 		Type rightType = (Type)compileChild(node, 1, data);
 		return generator.compileLT(leftType, rightType);
+	}
+
+	// Subset
+	public Object visit(ASTCompSubset node, Object data) {
+		currentNode = node;
+		Type leftType = (Type)compileChild(node, 0, data);
+		Type rightType = (Type)compileChild(node, 1, data);
+		return generator.compileSubset(leftType, rightType);
+	}
+
+	// Subset or equal
+	public Object visit(ASTCompSubsetEqual node, Object data) {
+		currentNode = node;
+		Type leftType = (Type)compileChild(node, 0, data);
+		Type rightType = (Type)compileChild(node, 1, data);
+		return generator.compileSubsetOrEqual(leftType, rightType);
+	}
+
+	// Superset
+	public Object visit(ASTCompSuperset node, Object data) {
+		currentNode = node;
+		Type leftType = (Type)compileChild(node, 0, data);
+		Type rightType = (Type)compileChild(node, 1, data);
+		return generator.compileSuperset(leftType, rightType);
+	}
+
+	// Superset or equal
+	public Object visit(ASTCompSupersetEqual node, Object data) {
+		currentNode = node;
+		Type leftType = (Type)compileChild(node, 0, data);
+		Type rightType = (Type)compileChild(node, 1, data);
+		return generator.compileSupersetOrEqual(leftType, rightType);
 	}
 	
 	// XOR

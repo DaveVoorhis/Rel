@@ -73,7 +73,6 @@ import org.reldb.rel.v0.vm.instructions.core.OpInvokeAnonymousEvaluate;
 import org.reldb.rel.v0.vm.instructions.core.OpInvokeDynamicCall;
 import org.reldb.rel.v0.vm.instructions.core.OpInvokeDynamicEvaluate;
 import org.reldb.rel.v0.vm.instructions.core.OpJump;
-import org.reldb.rel.v0.vm.instructions.core.OpLte;
 import org.reldb.rel.v0.vm.instructions.core.OpOutput;
 import org.reldb.rel.v0.vm.instructions.core.OpPop;
 import org.reldb.rel.v0.vm.instructions.core.OpPreserveContextInValueOperator;
@@ -2629,32 +2628,53 @@ public class Generator {
 		return compileComparisonOperatorInvocation(BuiltinTypeBuilder.NOTEQUALS, leftType, rightType, TypeBoolean.getInstance());
 	}
 
+	private void checkNotSupportedByTuple(Type leftType, Type rightType) {
+		if (leftType instanceof TypeTuple || rightType instanceof TypeTuple)
+			throw new ExceptionSemantic("RS0089: Operator not supported by TUPLE.");		
+	}
+	
 	// >=
 	public Type compileGTE(Type leftType, Type rightType) {
-		if (leftType instanceof TypeTuple || rightType instanceof TypeTuple)
-			throw new ExceptionSemantic("RS0089: Ordinal comparison operators not supported by TUPLE.");
+		checkNotSupportedByTuple(leftType, rightType);
 		return compileComparisonOperatorInvocation(BuiltinTypeBuilder.GREATERTHANOREQUALS, leftType, rightType, TypeBoolean.getInstance());
 	}
 
 	// <=
 	public Type compileLTE(Type leftType, Type rightType) {
-		if (leftType instanceof TypeTuple || rightType instanceof TypeTuple)
-			throw new ExceptionSemantic("RS0090: Ordinal comparison operators not supported by TUPLE.");
+		checkNotSupportedByTuple(leftType, rightType);
 		return compileComparisonOperatorInvocation(BuiltinTypeBuilder.LESSTHANOREQUALS, leftType, rightType, TypeBoolean.getInstance());
 	}
 
 	// >
 	public Type compileGT(Type leftType, Type rightType) {
-		if (leftType instanceof TypeTuple || rightType instanceof TypeTuple)
-			throw new ExceptionSemantic("RS0091: Ordinal comparison operators not supported by TUPLE.");
+		checkNotSupportedByTuple(leftType, rightType);
 		return compileComparisonOperatorInvocation(BuiltinTypeBuilder.GREATERTHAN, leftType, rightType, TypeBoolean.getInstance());
 	}
 
 	// <
 	public Type compileLT(Type leftType, Type rightType) {
-		if (leftType instanceof TypeTuple || rightType instanceof TypeTuple)
-			throw new ExceptionSemantic("RS0092: Ordinal comparison operators not supported by TUPLE.");
+		checkNotSupportedByTuple(leftType, rightType);
 		return compileComparisonOperatorInvocation(BuiltinTypeBuilder.LESSTHAN, leftType, rightType, TypeBoolean.getInstance());
+	}
+
+	public Object compileSubset(Type leftType, Type rightType) {
+		checkNotSupportedByTuple(leftType, rightType);
+		return compileComparisonOperatorInvocation(BuiltinTypeBuilder.SUBSET, leftType, rightType, TypeBoolean.getInstance());
+	}
+
+	public Object compileSubsetOrEqual(Type leftType, Type rightType) {
+		checkNotSupportedByTuple(leftType, rightType);
+		return compileComparisonOperatorInvocation(BuiltinTypeBuilder.SUBSETOREQUAL, leftType, rightType, TypeBoolean.getInstance());
+	}
+
+	public Object compileSuperset(Type leftType, Type rightType) {
+		checkNotSupportedByTuple(leftType, rightType);
+		return compileComparisonOperatorInvocation(BuiltinTypeBuilder.SUPERSET, leftType, rightType, TypeBoolean.getInstance());
+	}
+
+	public Object compileSupersetOrEqual(Type leftType, Type rightType) {
+		checkNotSupportedByTuple(leftType, rightType);
+		return compileComparisonOperatorInvocation(BuiltinTypeBuilder.SUPERSETOREQUAL, leftType, rightType, TypeBoolean.getInstance());
 	}
 
 	// IN
@@ -2674,11 +2694,6 @@ public class Generator {
 	// +
 	public void compilePlus() {
 		compileInstruction(new OpAdd());
-	}
-
-	// <=
-	public void compileLTE() {
-		compileInstruction(new OpLte());
 	}
 	
 	// Pop value from stack

@@ -47,6 +47,10 @@ public class BuiltinTypeBuilder {
 	public final static String MODULO = "OP_MODULO";
 	public final static String UNARY_PLUS = "OP_UNARY_PLUS";
 	public final static String UNARY_MINUS = "OP_UNARY_MINUS";
+	public static final String SUBSET = "OP_SUBSET";
+	public static final String SUBSETOREQUAL = "OP_SUBSETOREQUAL";
+	public static final String SUPERSET = "OP_SUPERSET";
+	public static final String SUPERSETOREQUAL = "OP_SUPERSETOREQUAL";
 
 	private static LinkedList<String> subTypes = new LinkedList<String>();
 	

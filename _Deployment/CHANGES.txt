@@ -1,14 +1,18 @@
-Last used Exception* number: RS0478
+Last used Exception* number: RS0479
 
 Version 3.004 (1.0.17):
 
+  - enhancement: Rel DBMS: !!SP is now equivalent to IMAGE_IN(SP) and !!(SP, TUP{x 1}) 
+                 is equivalent to IMAGE_IN(SP, TUP {x 1}). This is to bring Rel into 
+                 line with Date & Darwen's "Database Explorations" text.
+  - enhancement: Rel DBMS: Unicode supported for ≤, ≥, ≠, ×, ÷, ‼, ⊂, ⊆, ⊃ and ⊇.
   - enhancement: Rel DBMS: GROUP now significantly faster, though uses more memory.
-  - fix: Rel DBMS: 
+  - fix: Rel DBMS:
         RELATION {TUPLE {SID 1, PID 1}, TUPLE {SID 4, PID 5}} GROUP {PID} AS PARTS
           UNION
         RELATION {TUPLE {SID 1, PARTS RELATION {TUPLE {PID 1}}},
                   TUPLE {SID 4, PARTS RELATION {TUPLE {PID 5}}}}
-        Produced bogus result due to GROUP.  Fixed.
+        Produced bogus result due to GROUP bug.  Fixed.
 
 Version 3.003 (1.0.16):
 

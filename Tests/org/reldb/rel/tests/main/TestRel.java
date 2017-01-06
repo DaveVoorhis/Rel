@@ -45,6 +45,28 @@ public class TestRel extends BaseOfTest {
 	public void testSimpleExpression3() {
 		assertValueEquals(ValueBoolean.select(generator, true), testEvaluate("3 < 4").getValue());
 	}
+
+	@Test
+	public void testSimpleExpression4() {
+		assertValueEquals(ValueBoolean.select(generator, true), testEvaluate("3 ≤ 4").getValue());
+	}
+	
+	@Test
+	public void testSimpleExpression5() {
+		Value v1 = ValueInteger.select(generator, 4);
+		Value v2 = testEvaluate("3 + 4 × 2 ÷ 8").getValue();
+		assertValueEquals(v1, v2);
+	}
+
+	@Test
+	public void testSimpleExpression6() {
+		assertValueEquals(ValueBoolean.select(generator, true), testEvaluate("3 ≠ 4").getValue());
+	}
+	
+	@Test
+	public void testSimpleExpression7() {
+		assertValueEquals(ValueBoolean.select(generator, false), testEvaluate("4 ≠ 4").getValue());
+	}
 	
 	@Test
 	public void testSimpleVariable1() {
@@ -2305,11 +2327,36 @@ public class TestRel extends BaseOfTest {
 	}
 	
 	@Test
+	public void testRelComp4a() {
+		String src = "RELATION {" +
+        "  TUPLE {q 300, s 's2', p 'p1'}," +
+        "  TUPLE {s 's3', p 'p2', q 200}} ⊂ " +
+		"RELATION {" +
+        "  TUPLE {p 'p2', s 's2', q 400}," +
+        "  TUPLE {p 'p1', s 's2', q 300}," +
+        "  TUPLE {s 's3', p 'p2', q 200}}";
+		testEquals("true", src);
+	}
+	
+	@Test
 	public void testRelComp5() {
 		String src = "RELATION {" +
         "  TUPLE {q 300, s 's2', p 'p1'}," +
         "  TUPLE {s 's2', p 'p2', q 400}," +
         "  TUPLE {s 's3', p 'p2', q 200}} <= " +
+		"RELATION {" +
+        "  TUPLE {p 'p2', s 's2', q 400}," +
+        "  TUPLE {p 'p1', s 's2', q 300}," +
+        "  TUPLE {s 's3', p 'p2', q 200}}";
+		testEquals("true", src);
+	}
+	
+	@Test
+	public void testRelComp5a() {
+		String src = "RELATION {" +
+        "  TUPLE {q 300, s 's2', p 'p1'}," +
+        "  TUPLE {s 's2', p 'p2', q 400}," +
+        "  TUPLE {s 's3', p 'p2', q 200}} ⊆ " +
 		"RELATION {" +
         "  TUPLE {p 'p2', s 's2', q 400}," +
         "  TUPLE {p 'p1', s 's2', q 300}," +

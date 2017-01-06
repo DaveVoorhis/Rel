@@ -854,6 +854,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTImageIn node, Object data) {
 		return dump(node, data);
 	}
+
+	// !! alias for IMAGE_IN
+	public Object visit(ASTImageBangBang node, Object data) {
+		return dump(node, data);
+	}
 	
 	// SAME TYPE AS
 	public Object visit(ASTTypeSameTypeAs node, Object data) {
@@ -1117,6 +1122,26 @@ public class TutorialDDebugger implements TutorialDVisitor {
 		return dump(node, data);
 	}
 
+	// Subset
+	public Object visit(ASTCompSubset node, Object data) {
+		return dump(node, data);
+	}
+
+	// Subset or equal
+	public Object visit(ASTCompSubsetEqual node, Object data) {
+		return dump(node, data);
+	}
+
+	// Superset
+	public Object visit(ASTCompSuperset node, Object data) {
+		return dump(node, data);
+	}
+
+	// Superset or equal
+	public Object visit(ASTCompSupersetEqual node, Object data) {
+		return dump(node, data);
+	}
+	
 	// Concatenate (||)
 	public Object visit(ASTConcatenate node, Object data) {
 		return dump(node, data);

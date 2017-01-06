@@ -272,3 +272,8 @@
 /ASTImageIn.java
 /ASTAttributeNameCommalistList.java
 /ASTAttributeNameCommalistListAttributesOf.java
+/ASTImageBangBang.java
+/ASTCompSubset.java
+/ASTCompSubsetEqual.java
+/ASTCompSuperset.java
+/ASTCompSupersetEqual.java
