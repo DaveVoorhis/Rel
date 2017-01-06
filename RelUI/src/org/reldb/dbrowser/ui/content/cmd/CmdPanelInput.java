@@ -59,6 +59,7 @@ public class CmdPanelInput extends Composite {
 	private ToolItem tlitmSaveHistory;
 	private ToolItem tlitmCopyToOutput;
 	private ToolItem tlitmWrap;
+	private ToolItem tlitmCharacters;
 	
 	private Vector<String> entryHistory = new Vector<String>();
 	private int currentHistoryItem = 0;
@@ -78,6 +79,8 @@ public class CmdPanelInput extends Composite {
 	private UndoRedo undoredo;
     
 	private static final Color backgroundHighlight = SWTResourceManager.getColor(250, 255, 252);
+	
+	private SpecialCharacters specialCharacterDisplay;
 	
 	/**
 	 * Create the composite.
@@ -189,6 +192,15 @@ public class CmdPanelInput extends Composite {
 		cmdPanelBottom.setLayoutData(fd_cmdPanelBottom);
 
 		if ((cmdStyle & CmdPanel.NO_INPUT_TOOLBAR) == 0) {
+			tlitmCharacters = new ToolItem(toolBar, SWT.NONE);
+			tlitmCharacters.setToolTipText("Special characters");
+			tlitmCharacters.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					specialCharacterDisplay.open();
+				}
+			});
+			
 			tlitmPrevHistory = new ToolItem(toolBar, SWT.NONE);
 			tlitmPrevHistory.setToolTipText("Load previous historical entry");
 			tlitmPrevHistory.addSelectionListener(new SelectionAdapter() {
@@ -412,6 +424,8 @@ public class CmdPanelInput extends Composite {
 			}
 		};
 		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
+				
+		specialCharacterDisplay = new SpecialCharacters(parent.getShell(), inputText);
 	}
 
 	protected String getDefaultSaveFileName() {
@@ -490,6 +504,7 @@ public class CmdPanelInput extends Composite {
 		tlitmSaveHistory.setImage(IconLoader.loadIcon("saveHistoryIcon"));
 		tlitmCopyToOutput.setImage(IconLoader.loadIcon("copyToOutputIcon"));
 		tlitmWrap.setImage(IconLoader.loadIcon("wrapIcon"));
+		tlitmCharacters.setImage(IconLoader.loadIcon("characters"));
 	}
 
 	private void setupFont() {
