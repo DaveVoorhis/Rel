@@ -113,10 +113,6 @@
            CONST FALSE INIT(BOOLEAN(TABLE_DUM));
       - on the other hand, what do we do with the other built-in types?
 
-- Create ATTRIBUTES_OF(rel_expr) keyword as alternative to attribute_name_commalist.
-
-- Fix multiple assignment.
-
 - Fix bug reported by Hugh re OP_EQUALS() etc.
 
 - UNION {x, y} should work where x and y define attributes
