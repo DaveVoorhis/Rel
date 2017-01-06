@@ -311,24 +311,24 @@ TOKEN : /* OPERATOR SYMBOLS */
 | < GT: ">" >
 | < LT: "<" >
 | < LTE_A: "<=" >
-| < LTE_U: "≤" >
+| < LTE_U: "\u2264" >
 | < GTE_A: ">=" >
-| < GTE_U: "≥" >
+| < GTE_U: "\u2265" >
 | < NEQ_A: "<>" >
-| < NEQ_U: "≠" >
+| < NEQ_U: "\u2260" >
 | < PLUS: "+" >
 | < SUBT: "-" >
 | < STAR: "*" >
-| < MULT_U: "×" >
+| < MULT_U: "\u00D7" >
 | < DIVD_A: "/" >
-| < DIVD_U: "÷" >
+| < DIVD_U: "\u00F7" >
 | < MODL: "%" >
 | < BANGBANG_A: "!!" >
-| < BANGBANG_U: "‼" >
-| < SUBSET: "⊂" >
-| < SUBSET_OR_EQUAL: "⊆" >
-| < SUPERSET: "⊃" >
-| < SUPERSET_OR_EQUAL: "⊇" >
+| < BANGBANG_U: "\u203C" >
+| < SUBSET: "\u2282" >
+| < SUBSET_OR_EQUAL: "\u2286" >
+| < SUPERSET: "\u2283" >
+| < SUPERSET_OR_EQUAL: "\u2287" >
 | < BARBAR: "||" >
 }
 

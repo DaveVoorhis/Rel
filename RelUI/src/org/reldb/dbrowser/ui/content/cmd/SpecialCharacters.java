@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 
 public class SpecialCharacters extends Dialog {
@@ -41,16 +42,16 @@ public class SpecialCharacters extends Dialog {
 	}
 
 	private static SpecialCharacter[] specialCharacters = {
-		new SpecialCharacter('≤', 'l', "Less than or equal to"),
-		new SpecialCharacter('≥', 'g', "Greater than or equal to"),
-		new SpecialCharacter('≠', '=', "Not equal"),
-		new SpecialCharacter('×', 't', "Times"),
-		new SpecialCharacter('÷', 'q', "Divide"),
-		new SpecialCharacter('‼', '!', "Image in", '1'),
-		new SpecialCharacter('⊂', 'c', "Proper subset"),
-		new SpecialCharacter('⊆', 'C', "Subset"),
-		new SpecialCharacter('⊃', 'd', "Proper superset"),
-		new SpecialCharacter('⊇', 'D', "Superset")
+		new SpecialCharacter('\u00D7', 't', "Times"),
+		new SpecialCharacter('\u00F7', 'd', "Divide"),
+		new SpecialCharacter('\u203C', '!', "Image in", '1'),
+		new SpecialCharacter('\u2260', '=', "Not equal"),
+		new SpecialCharacter('\u2264', 'l', "Less than or equal to"),
+		new SpecialCharacter('\u2265', 'g', "Greater than or equal to"),
+		new SpecialCharacter('\u2282', ',', "Proper subset", ','),
+		new SpecialCharacter('\u2283', '.', "Proper superset", '.'),
+		new SpecialCharacter('\u2286', '<', "Subset", '<'),
+		new SpecialCharacter('\u2287', '>', "Superset", '>')
 	};
 	
 	/**
@@ -104,9 +105,15 @@ public class SpecialCharacters extends Dialog {
 		GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.verticalSpacing = 2;
 		shlSpecialCharacters.setLayout(gridLayout);
-		(new Label(shlSpecialCharacters, SWT.BORDER_SOLID)).setText("Symbol");
-		(new Label(shlSpecialCharacters, SWT.BORDER)).setText("Ctrl-<key> shortcut");
-		(new Label(shlSpecialCharacters, SWT.BORDER)).setText("Description");
+		Label heading = new Label(shlSpecialCharacters, SWT.BORDER);
+		heading.setText("Symbol");
+		heading.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		heading = new Label(shlSpecialCharacters, SWT.BORDER);
+		heading.setText("Ctrl-<key> shortcut");
+		heading.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		heading = new Label(shlSpecialCharacters, SWT.BORDER);
+		heading.setText("Description");
+		heading.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		for (SpecialCharacter special: specialCharacters) {
 			Button charButton = new Button(shlSpecialCharacters, SWT.PUSH | SWT.BORDER);
 			charButton.setText(Character.toString(special.symbol));
@@ -116,10 +123,13 @@ public class SpecialCharacters extends Dialog {
 					emit(special.symbol);
 				}
 			});
+			charButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			Label charLabel = new Label(shlSpecialCharacters, SWT.NONE | SWT.BORDER);
 			charLabel.setText(Character.toString(special.altOf));
+			charLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			Label charDescription = new Label(shlSpecialCharacters, SWT.BORDER);
 			charDescription.setText(special.description);
+			charDescription.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		}
 		shlSpecialCharacters.pack();
 	}
