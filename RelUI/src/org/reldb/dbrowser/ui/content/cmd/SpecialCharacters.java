@@ -32,6 +32,7 @@ public class SpecialCharacters extends Dialog {
 		public SpecialCharacter(char symbol, char altOf, String description) {
 			this(symbol, altOf, description, (char)0);
 		}
+		// Not universal! Works for the characters below.
 		public boolean matches(KeyEvent e) {
 			if ((e.stateMask & SWT.CTRL) == 0)
 				return false;
@@ -48,10 +49,10 @@ public class SpecialCharacters extends Dialog {
 		new SpecialCharacter('\u2260', '=', "Not equal"),
 		new SpecialCharacter('\u2264', 'l', "Less than or equal to"),
 		new SpecialCharacter('\u2265', 'g', "Greater than or equal to"),
-		new SpecialCharacter('\u2282', ',', "Proper subset", ','),
-		new SpecialCharacter('\u2283', '.', "Proper superset", '.'),
-		new SpecialCharacter('\u2286', '<', "Subset", '<'),
-		new SpecialCharacter('\u2287', '>', "Superset", '>')
+		new SpecialCharacter('\u2282', 'c', "Proper subset"),
+		new SpecialCharacter('\u2283', 'p', "Proper superset"),
+		new SpecialCharacter('\u2286', 'C', "Subset", ','),
+		new SpecialCharacter('\u2287', 'P', "Superset", '.')
 	};
 	
 	/**
@@ -65,6 +66,7 @@ public class SpecialCharacters extends Dialog {
 		inputText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
+				// System.out.println("character = '" + e.character + "' keycode = '" + (char)e.keyCode + "' " + (((e.stateMask & SWT.CTRL) != 0) ? "CTRL" : "") + " " + (((e.stateMask & SWT.SHIFT) != 0) ? "SHIFT" : ""));
 				for (SpecialCharacter specialCharacter: specialCharacters) {
 					if (specialCharacter.matches(e)) {
 						emit(specialCharacter.symbol);
@@ -105,17 +107,17 @@ public class SpecialCharacters extends Dialog {
 		GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.verticalSpacing = 2;
 		shlSpecialCharacters.setLayout(gridLayout);
-		Label heading = new Label(shlSpecialCharacters, SWT.BORDER);
+		Label heading = new Label(shlSpecialCharacters, SWT.NONE);
 		heading.setText("Symbol");
 		heading.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		heading = new Label(shlSpecialCharacters, SWT.BORDER);
+		heading = new Label(shlSpecialCharacters, SWT.NONE);
 		heading.setText("Ctrl-<key> shortcut");
 		heading.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		heading = new Label(shlSpecialCharacters, SWT.BORDER);
+		heading = new Label(shlSpecialCharacters, SWT.NONE);
 		heading.setText("Description");
 		heading.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		for (SpecialCharacter special: specialCharacters) {
-			Button charButton = new Button(shlSpecialCharacters, SWT.PUSH | SWT.BORDER);
+			Button charButton = new Button(shlSpecialCharacters, SWT.PUSH);
 			charButton.setText(Character.toString(special.symbol));
 			charButton.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -123,13 +125,13 @@ public class SpecialCharacters extends Dialog {
 					emit(special.symbol);
 				}
 			});
-			charButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-			Label charLabel = new Label(shlSpecialCharacters, SWT.NONE | SWT.BORDER);
+			charButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+			Label charLabel = new Label(shlSpecialCharacters, SWT.NONE);
 			charLabel.setText(Character.toString(special.altOf));
-			charLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-			Label charDescription = new Label(shlSpecialCharacters, SWT.BORDER);
+			charLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+			Label charDescription = new Label(shlSpecialCharacters, SWT.NONE);
 			charDescription.setText(special.description);
-			charDescription.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			charDescription.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		}
 		shlSpecialCharacters.pack();
 	}
