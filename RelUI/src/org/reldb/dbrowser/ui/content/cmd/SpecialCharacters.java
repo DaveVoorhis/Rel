@@ -46,6 +46,7 @@ public class SpecialCharacters extends Dialog {
 		new SpecialCharacter('\u00D7', 't', "Times"),
 		new SpecialCharacter('\u00F7', 'd', "Divide"),
 		new SpecialCharacter('\u203C', '!', "Image in", '1'),
+		new SpecialCharacter('\u2208', 'e', "IN (element of)"),
 		new SpecialCharacter('\u2260', '=', "Not equal"),
 		new SpecialCharacter('\u2264', 'l', "Less than or equal to"),
 		new SpecialCharacter('\u2265', 'g', "Greater than or equal to"),
