@@ -49,10 +49,10 @@ public class SpecialCharacters extends Dialog {
 		new SpecialCharacter('\u2260', '=', "Not equal"),
 		new SpecialCharacter('\u2264', 'l', "Less than or equal to"),
 		new SpecialCharacter('\u2265', 'g', "Greater than or equal to"),
-		new SpecialCharacter('\u2282', 'c', "Proper subset"),
+		new SpecialCharacter('\u2282', 'u', "Proper subset"),
 		new SpecialCharacter('\u2283', 'p', "Proper superset"),
-		new SpecialCharacter('\u2286', 'C', "Subset", ','),
-		new SpecialCharacter('\u2287', 'P', "Superset", '.')
+		new SpecialCharacter('\u2286', 'U', "Subset or equal to", ','),
+		new SpecialCharacter('\u2287', 'P', "Superset or equal to", '.')
 	};
 	
 	/**
@@ -118,6 +118,7 @@ public class SpecialCharacters extends Dialog {
 		heading.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		for (SpecialCharacter special: specialCharacters) {
 			Button charButton = new Button(shlSpecialCharacters, SWT.PUSH);
+			System.out.println("SpecialCharacters: button font = " + charButton.getFont().getFontData()[0]);
 			charButton.setText(Character.toString(special.symbol));
 			charButton.addSelectionListener(new SelectionAdapter() {
 				@Override
