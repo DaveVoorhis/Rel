@@ -15,7 +15,7 @@ Rel -- An implementation of Date and Darwen's Tutorial D.
 
 3. Download the Rel / Tutorial D source code examples:
 
-   RelExamples_3.xxx.zip
+   RelExamplesAndUtilities_3.xxx.zip
 
 4. (Optional) Rel is a self-contained, complete, desktop database
    management system with a user-friendly graphical user
