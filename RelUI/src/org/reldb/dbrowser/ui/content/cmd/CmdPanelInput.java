@@ -122,7 +122,7 @@ public class CmdPanelInput extends Composite {
 		inputText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if ((e.stateMask & SWT.MODIFIER_MASK) != 0 && inputText.isEnabled()) {
+				if (((e.stateMask & SWT.CTRL) != 0 || (e.stateMask & SWT.COMMAND) != 0) && inputText.isEnabled()) {
 					switch (e.keyCode) {
 					case 'a': doSelectAll(); return;
 					case 'f': doFindReplace(); return;
