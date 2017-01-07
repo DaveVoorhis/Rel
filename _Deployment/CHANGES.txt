@@ -2,7 +2,7 @@ Last used Exception* number: RS0479
 
 Version 3.004 (1.0.17):
 
-  - enhancement: Rel DBMS: !!SP is now equivalent to IMAGE_IN(SP) and !!(SP, TUP{x 1}) 
+  - enhancement: Rel DBMS: !!SP or !!(SP) is now equivalent to IMAGE_IN(SP) and !!(SP, TUP{x 1}) 
                  is equivalent to IMAGE_IN(SP, TUP {x 1}). This is to bring Rel into 
                  line with Date & Darwen's "Database Explorations" text.
   - enhancement: Rel DBMS: Unicode supported for ≤, ≥, ≠, ×, ÷, ‼, ⊂, ⊆, ⊃, ⊇ and ∈.
