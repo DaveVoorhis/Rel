@@ -1,5 +1,8 @@
 ** TO DO **
 
+- Fix parent Composite of Rev's ViewQueryDialog; switching modes breaks it because its parent
+  gets disposed.
+
 - SUMMARIZE BY is too slow. Make it faster.
 
 - Provide user-friendly mechanisms to create external relvars, and query what
