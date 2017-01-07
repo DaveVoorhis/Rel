@@ -36,7 +36,7 @@
 	<classpathentry kind="lib" path="lib/poi-ooxml-3.15.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.15.jar"/>
 	<classpathentry kind="lib" path="lib/poi-scratchpad-3.15.jar"/>
-	<classpathentry kind="lib" path="lib/rel0000.jar"/>
+	<classpathentry kind="lib" path="lib/rel0000.jar" sourcepath="/ServerV0000"/>
 	<classpathentry kind="lib" path="lib/relclient.jar"/>
 	<classpathentry kind="lib" path="lib/relshared.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-2.6.0.jar"/>
