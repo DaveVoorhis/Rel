@@ -101,7 +101,12 @@ public class CmdPanelInput extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 		
-		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);		
+		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL) {
+			public String getText() {
+				System.out.println("CmdPanelInput: getText() returns " + super.getText());
+				return super.getText();
+			}
+		};
 		FormData fd_inputText = new FormData();
 		fd_inputText.right = new FormAttachment(toolBar, 0, SWT.RIGHT);
 		fd_inputText.top = new FormAttachment(toolBar);
@@ -110,7 +115,7 @@ public class CmdPanelInput extends Composite {
 		
 		undoredo = new UndoRedo(inputText);
 		RelLineStyler lineStyler = new RelLineStyler();
-				
+
 		inputText.addLineStyleListener(lineStyler);
 		inputText.addModifyListener(new ModifyListener() {
 			@Override
@@ -123,7 +128,7 @@ public class CmdPanelInput extends Composite {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if ((e.stateMask & SWT.MODIFIER_MASK) != 0 && inputText.isEnabled()) {
-					switch (e.character) {
+					switch (e.keyCode) {
 					case 'a': doSelectAll(); return;
 					case 'f': doFindReplace(); return;
 					case 'y': doRedo(); return;
@@ -785,16 +790,21 @@ public class CmdPanelInput extends Composite {
 	}
 	
 	private ErrorInformation parseErrorInformationFrom(String eInfo) {
+		System.out.println("CmdPanelInput: parse error information from " + eInfo);
 		try {
 			String badToken = null;
-			String errorEncountered = "ERROR: Encountered ";
-			if (eInfo.startsWith(errorEncountered)) {
-				String atLineText = "at line ";
-				int atLineTextPosition = eInfo.indexOf(atLineText);
-				int lastBadTokenCharPosition = eInfo.lastIndexOf('"', atLineTextPosition);
-				if (lastBadTokenCharPosition >= 0)
-					badToken = eInfo.substring(errorEncountered.length() + 1, lastBadTokenCharPosition);
-			}
+			String[] errorPrefix = {
+				"ERROR: Encountered ",	
+				"ERROR: Lexical error "
+			};
+			for (String errorEncountered: errorPrefix)
+				if (eInfo.startsWith(errorEncountered)) {
+					String atLineText = "at line ";
+					int atLineTextPosition = eInfo.indexOf(atLineText);
+					int lastBadTokenCharPosition = eInfo.lastIndexOf('"', atLineTextPosition);
+					if (lastBadTokenCharPosition >= 0)
+						badToken = eInfo.substring(errorEncountered.length() + 1, lastBadTokenCharPosition);
+				}
 			String lineText = "line ";
 			int locatorStart = eInfo.toLowerCase().indexOf(lineText);
 			if (locatorStart >= 0) {
@@ -834,6 +844,14 @@ public class CmdPanelInput extends Composite {
 						if (nearTextPosition > 0) {
 							int lastQuotePosition = eInfo.lastIndexOf('\'');
 							badToken = eInfo.substring(nearTextPosition + nearText.length() + 1, lastQuotePosition);
+						} else {
+							String encounteredText = "Encountered: \"";
+							int encounteredTextPosition = eInfo.indexOf(encounteredText);
+							if (encounteredTextPosition > 0) {
+								int afterEncounteredTextPosition = encounteredTextPosition + encounteredText.length() + 1;
+								int lastQuotePosition = eInfo.indexOf('"', afterEncounteredTextPosition);
+								badToken = eInfo.substring(afterEncounteredTextPosition - 1, lastQuotePosition);
+							}
 						}
 						return new ErrorInformation(line, column, badToken);
 					} else
@@ -842,7 +860,7 @@ public class CmdPanelInput extends Composite {
 					return new ErrorInformation(line, -1, badToken);
 			}
 		} catch (Throwable t) {
-			System.out.println("CmdPanelOutput: unable to parse " + eInfo + " due to " + t);
+			System.out.println("CmdPanelInput: unable to parse " + eInfo + " due to " + t);
 			t.printStackTrace();
 		}
 		return null;
