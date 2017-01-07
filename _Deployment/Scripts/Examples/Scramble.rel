@@ -1,0 +1,11 @@
+/** Scramble a CHAR */
+OPERATOR Scramble(s CHAR) RETURNS CHAR ;
+	VAR ins INIT(s);
+	VAR out INIT("");
+	WHILE LENGTH(ins) > 0;
+		VAR randomIndex INIT(CAST_AS_INTEGER(RANDOM() * CAST_AS_RATIONAL(LENGTH(ins))) + 1);
+		out := out || SUBSTRING(ins, randomIndex - 1, randomIndex);
+		ins := SUBSTRING(ins, 0, randomIndex - 1) || SUBSTRING(ins, randomIndex);
+	END WHILE;
+    RETURN out;
+END OPERATOR;
