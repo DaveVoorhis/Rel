@@ -95,6 +95,9 @@ public class Rel {
 			et.printStackTrace(output);
 			et.printStackTrace();
 			throw et;
+		} catch (java.lang.Error jle) {
+			interpreter.reset();
+			output.println("ERROR: " + jle.getMessage());
 		} catch (Throwable t) {
 			interpreter.reset();
 			output.println("ERROR: " + t);
