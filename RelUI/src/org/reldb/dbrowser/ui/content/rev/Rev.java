@@ -364,18 +364,14 @@ public class Rev extends Composite {
 	}
 	
 	public void refresh() {
-		loadModel();
+		refreshMenus();
 	}
 
 	public Model getModel() {
 		return model;
 	}
 
-	private void loadModel() {
-		model.clear();
-		
-		setTitle();
-		
+	private void refreshMenus() {
 		if (getMenu() != null)
 			getMenu().dispose();
 	
@@ -422,7 +418,7 @@ public class Rev extends Composite {
 		refreshRev.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				refresh();
+				refreshMenus();
 			}
 		});
 		
@@ -437,7 +433,15 @@ public class Rev extends Composite {
 				model.removeEverything();
 			}
 		});
+	}
+	
+	private void loadModel() {
+		model.clear();
+		
+		setTitle();
 
+		refreshMenus();
+		
 		// load
 		int version = hasRevExtensions();
 		if (version >= 0) {
