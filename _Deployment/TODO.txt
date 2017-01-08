@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Maybe associate "loading" screen with database loading, rather than Rel loading.
+
 - SUMMARIZE BY is too slow. Make it faster.
 
 - Provide user-friendly mechanisms to create external relvars, and query what
