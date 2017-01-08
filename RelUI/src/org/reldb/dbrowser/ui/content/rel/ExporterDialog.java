@@ -223,6 +223,7 @@ public class ExporterDialog extends Dialog {
 			close();
 		} catch (Exception error) {
 			MessageDialog.openError(shlExportToFile, "Export Error", "Unable to export due to " + error);
+			error.printStackTrace();
 		}
 	}
 
@@ -230,12 +231,15 @@ public class ExporterDialog extends Dialog {
 		PrintWriter writer = null;
 		try {
 		    writer = new PrintWriter(file);
-		    writer.println(tuples.getHeading().toCSV());
+		    Heading heading = tuples.getHeading();
+		    if (heading != null)
+		    	writer.println(tuples.getHeading().toCSV());
 			Iterator<Tuple> tupleIterator = tuples.iterator();
-			while (tupleIterator.hasNext()) {
-				Tuple tuple = tupleIterator.next();
-				writer.println(tuple.toCSV());
-			}
+			if (tupleIterator != null)
+				while (tupleIterator.hasNext()) {
+					Tuple tuple = tupleIterator.next();
+					writer.println(tuple.toCSV());
+				}
 		} finally {
 			if (writer != null)
 				writer.close();
@@ -247,22 +251,27 @@ public class ExporterDialog extends Dialog {
 		HSSFSheet sheet = workbook.createSheet(name);
 		int rownum = 0;
 	    Heading resultsetHeading = tuples.getHeading();
-		Row row = sheet.createRow(rownum++);
-		int column = 0;
-	    for (Attribute attribute: resultsetHeading.toArray()) {
-			Cell cell = row.createCell(column++);
-			cell.setCellValue(attribute.getName());
+	    Row row;
+	    int column = 0;
+	    if (resultsetHeading != null) {
+			row = sheet.createRow(rownum++);
+			column = 0;
+		    for (Attribute attribute: resultsetHeading.toArray()) {
+				Cell cell = row.createCell(column++);
+				cell.setCellValue(attribute.getName());
+		    }
 	    }
 		Iterator<Tuple> tupleIterator = tuples.iterator();
-		while (tupleIterator.hasNext()) {
-			Tuple tuple = tupleIterator.next();
-			row = sheet.createRow(rownum++);
-			for (column=0; column < tuple.getAttributeCount(); column++) {
-				Value value = tuple.get(column);
-				Cell cell = row.createCell(column);
-				cell.setCellValue(value.toString());
-			}
-		}	
+		if (tupleIterator != null)
+			while (tupleIterator.hasNext()) {
+				Tuple tuple = tupleIterator.next();
+				row = sheet.createRow(rownum++);
+				for (column=0; column < tuple.getAttributeCount(); column++) {
+					Value value = tuple.get(column);
+					Cell cell = row.createCell(column);
+					cell.setCellValue(value.toString());
+				}
+			}	
 		FileOutputStream out = null;
 		try {
 			out = new FileOutputStream(file);
@@ -279,22 +288,27 @@ public class ExporterDialog extends Dialog {
 		XSSFSheet sheet = workbook.createSheet(name);
 		int rownum = 0;
 	    Heading resultsetHeading = tuples.getHeading();
-		Row row = sheet.createRow(rownum++);
-		int column = 0;
-	    for (Attribute attribute: resultsetHeading.toArray()) {
-			Cell cell = row.createCell(column++);
-			cell.setCellValue(attribute.getName());
+	    Row row;
+	    int column;
+	    if (resultsetHeading != null) {
+			row = sheet.createRow(rownum++);
+			column = 0;
+		    for (Attribute attribute: resultsetHeading.toArray()) {
+				Cell cell = row.createCell(column++);
+				cell.setCellValue(attribute.getName());
+		    }
 	    }
 		Iterator<Tuple> tupleIterator = tuples.iterator();
-		while (tupleIterator.hasNext()) {
-			Tuple tuple = tupleIterator.next();
-			row = sheet.createRow(rownum++);
-			for (column=0; column < tuple.getAttributeCount(); column++) {
-				Value value = tuple.get(column);
-				Cell cell = row.createCell(column);
-				cell.setCellValue(value.toString());
-			}
-		}	
+		if (tupleIterator != null)
+			while (tupleIterator.hasNext()) {
+				Tuple tuple = tupleIterator.next();
+				row = sheet.createRow(rownum++);
+				for (column=0; column < tuple.getAttributeCount(); column++) {
+					Value value = tuple.get(column);
+					Cell cell = row.createCell(column);
+					cell.setCellValue(value.toString());
+				}
+			}	
 		FileOutputStream out = null;
 		try {
 			out = new FileOutputStream(file);

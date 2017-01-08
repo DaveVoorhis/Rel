@@ -1053,6 +1053,8 @@ public abstract class Editor extends Grid {
 	}
 	
 	public int countDirtyRows() {
+		if (dataProvider == null)
+			return 0;
 		return dataProvider.countDirtyRows();
 	}
 	
@@ -1100,17 +1102,21 @@ public abstract class Editor extends Grid {
 	public void goToInsertRow() {
 		if (table.commitAndCloseActiveCellEditor()) {
 			table.doCommand(new ClearAllSelectionsCommand());
-			table.doCommand(new SelectCellCommand(gridLayer.getBodyLayer(), 0, dataProvider.getRowCount() - 1, true, true));
+			if (gridLayer != null && dataProvider != null)
+				table.doCommand(new SelectCellCommand(gridLayer.getBodyLayer(), 0, dataProvider.getRowCount() - 1, true, true));
 			table.setFocus();
 		}
 	}
 
 	private void doDeleteSelected() {
 		Set<Range> selections = gridLayer.getBodyLayer().getSelectionLayer().getSelectedRowPositions();
-		dataProvider.deleteRows(selections);
+		if (dataProvider != null)
+			dataProvider.deleteRows(selections);
 	}
 	
 	public void askDeleteSelected() {
+		if (dataProvider == null)
+			return;
 		if (countDirtyRows() > 0 && 
 		    !MessageDialog.openConfirm(
 		    		table.getShell(), 
