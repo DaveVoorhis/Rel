@@ -299,6 +299,9 @@ public class CmdPanelInput extends Composite {
 					if (fname == null)
 						return;
 					loadFile(fname);
+					ensureSaveDialogExists();
+					saveDialog.setFileName(loadDialog.getFileName());
+					saveDialog.setFilterPath(loadDialog.getFilterPath());
 				}
 			});
 			
