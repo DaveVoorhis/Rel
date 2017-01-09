@@ -7,8 +7,9 @@ Version 3.004 (1.0.17):
                  line with Date & Darwen's "Database Explorations" text.
   - enhancement: Rel DBMS: Unicode supported for ≤, ≥, ≠, ×, ÷, ‼, ⊂, ⊆, ⊃, ⊇ and ∈.
                  Note: buggy on Windows 10; works well on OS X.
-  - enhancement: Rel UI: Unicode entry shortcut dialog provided on command-line.
   - enhancement: Rel DBMS: GROUP now significantly faster, though uses more memory.
+  - enhancement: Rel UI: Case #133: Command-line Save set to filename & path of most recent Load.
+  - enhancement: Rel UI: Unicode entry shortcut dialog provided on command-line.
   - fix: Rel DBMS:
         RELATION {TUPLE {SID 1, PID 1}, TUPLE {SID 4, PID 5}} GROUP {PID} AS PARTS
           UNION

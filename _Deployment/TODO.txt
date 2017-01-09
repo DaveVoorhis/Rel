@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Case #133: RelUI command-line 'Save' should default to path and name of most recent 'Load'.
-
 - Maybe associate "loading" screen with database loading, rather than Rel loading.
 
 - SUMMARIZE BY is too slow. Make it faster.
