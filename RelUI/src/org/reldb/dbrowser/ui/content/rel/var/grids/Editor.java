@@ -81,6 +81,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.rel.client.Attribute;
+import org.reldb.rel.client.Connection.ExecuteResult;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.utilities.StringUtils;
@@ -350,7 +351,7 @@ public abstract class Editor extends Grid {
 	
 				System.out.println("RelvarEditor: query is " + updateQuery);
 				
-				DbConnection.ExecuteResult result = connection.execute(updateQuery);
+				ExecuteResult result = connection.execute(updateQuery);
 				
 				if (result.failed())
 					row.setError("Unable to update tuples.\n\nQuery: " + updateQuery + " failed:\n\n" + result.getErrorMessage());
@@ -397,7 +398,7 @@ public abstract class Editor extends Grid {
 	
 				System.out.println("RelvarEditor: query is " + insertQuery);
 				
-				DbConnection.ExecuteResult result = connection.execute(insertQuery);
+				ExecuteResult result = connection.execute(insertQuery);
 	
 				if (result.failed()) 
 					row.setError("Unable to insert tuple.\n\nQuery: " + insertQuery + " failed:\n\n" + result.getErrorMessage());
@@ -432,7 +433,7 @@ public abstract class Editor extends Grid {
 				
 				System.out.println("RelvarEditor: query is " + deleteQuery);
 			
-				DbConnection.ExecuteResult result = connection.execute(deleteQuery);
+				ExecuteResult result = connection.execute(deleteQuery);
 				
 				if (result.failed())
 					MessageDialog.openError(table.getShell(), "DELETE Error", "Unable to delete tuple" + ((tupleCount>1) ? "s" : "") + ".\n\nQuery: " + deleteQuery + " failed:\n\n" + result.getErrorMessage());

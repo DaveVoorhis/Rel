@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.reldb.rel.client.Error;
 import org.reldb.rel.client.connection.CrashHandler;
 import org.reldb.rel.client.connection.stream.ClientFromURL;
 import org.reldb.rel.client.connection.stream.ClientLocalConnection;
@@ -359,5 +360,63 @@ public class Connection {
 			}
 		}, htmlReceiver);
 	}
+	
+	public static class ExecuteResult {
+		private Response response;
+		public ExecuteResult(Response response) {
+			this.response = response;
+		}
+		public boolean failed() {
+			return (response == null || response.getResult() instanceof Error); 
+		}
+		public String getErrorMessage() {
+			if (response == null)
+				return "Connection failed.";
+			if (response.getResult() instanceof Error) {
+				String error = ((Error)response.getResult()).getErrorMsg();
+				int EOTposition = error.indexOf("<EOT>");
+				if (EOTposition >= 0)
+					error = error.substring(0, EOTposition);
+				return error;
+			}
+			return "Unknown error.";
+		}
+	}
+	
+	/** Execute query. */
+	public ExecuteResult exec(String query) {
+		try {
+			return new ExecuteResult(execute(query));
+		} catch (IOException e1) {
+			return new ExecuteResult(null);
+		}
+	}
 
+	/** Evaluate query. */
+	public Value eval(String query, int queryWaitMilliseconds) {
+		Value response;
+		try {
+			response = evaluate(query).awaitResult(queryWaitMilliseconds);
+		} catch (IOException e) {
+			System.out.println("Connection: Error: " + e);
+			e.printStackTrace();
+			return null;
+		}
+		if (response instanceof Error) {
+			Error error = (Error)response;
+			System.out.println("Connection: Query evaluate returns error. " + query + "\n" + error.getErrorMsg());
+			return null;
+		}
+		if (response == null) {
+			System.out.println("Connection: Unable to obtain query results.");
+			return null;
+		}
+		return response;
+	}
+	
+	/** Evaluate query that returns tuples. */
+	public Tuples getTuples(String query, int queryWaitMilliseconds) {
+		return (Tuples)eval(query, queryWaitMilliseconds);		
+	}
+	
 }

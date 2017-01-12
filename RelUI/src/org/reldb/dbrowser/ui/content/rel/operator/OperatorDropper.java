@@ -3,10 +3,10 @@ package org.reldb.dbrowser.ui.content.rel.operator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Image;
-import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
+import org.reldb.rel.client.Connection.ExecuteResult;
 
 public class OperatorDropper extends DbTreeAction {
 
@@ -24,7 +24,7 @@ public class OperatorDropper extends DbTreeAction {
 			if (!MessageDialog.openConfirm(relPanel.getShell(), "Confirm DROP", "Are you sure you wish to drop operator " + item.getName() + "?"))
 				return;
 			// get specific operator signature here
-			DbConnection.ExecuteResult result = relPanel.getConnection().execute("DROP OPERATOR " + item.getName() + ";");
+			ExecuteResult result = relPanel.getConnection().execute("DROP OPERATOR " + item.getName() + ";");
 			if (result.failed())
 				MessageDialog.openError(relPanel.getShell(), "Error", "Unable to drop operator " + item.getName() + ": " + result.getErrorMessage());
 			else

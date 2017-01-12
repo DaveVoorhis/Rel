@@ -3,10 +3,10 @@ package org.reldb.dbrowser.ui.content.rel.constraint;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Image;
-import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
+import org.reldb.rel.client.Connection.ExecuteResult;
 
 public class ConstraintDropper extends DbTreeAction {
 
@@ -23,7 +23,7 @@ public class ConstraintDropper extends DbTreeAction {
 		} else {
 			if (!MessageDialog.openConfirm(relPanel.getShell(), "Confirm DROP", "Are you sure you wish to drop constraint " + item.getName() + "?"))
 				return;
-			DbConnection.ExecuteResult result = relPanel.getConnection().execute("DROP CONSTRAINT " + item.getName() + ";");
+			ExecuteResult result = relPanel.getConnection().execute("DROP CONSTRAINT " + item.getName() + ";");
 			if (result.failed())
 				MessageDialog.openError(relPanel.getShell(), "Error", "Unable to drop constraint " + item.getName() + ": " + result.getErrorMessage());
 			else

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
+import org.reldb.rel.client.Connection.ExecuteResult;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
@@ -33,7 +34,7 @@ public class RevDatabase {
 	}
 	
 	private boolean execute(String query) {
-		DbConnection.ExecuteResult result = connection.execute(query);
+		ExecuteResult result = connection.execute(query);
 		if (result.failed()) {
 			System.out.println("Rev: Error: " + result.getErrorMessage());
 			System.out.println("Rev: Query: " + query);

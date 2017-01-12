@@ -3,12 +3,12 @@ package org.reldb.dbrowser.ui.content.rel.var;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Image;
-import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.NewItemDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
+import org.reldb.rel.client.Connection.ExecuteResult;
 
 public class VarRealCreator extends DbTreeAction {
 
@@ -27,7 +27,7 @@ public class VarRealCreator extends DbTreeAction {
 			MessageDialog.openInformation(relPanel.getShell(), "Note", "A variable named " + varname + " already exists.");
 			return;
 		}
-		DbConnection.ExecuteResult result = relPanel.getConnection().execute("VAR " + varname + " REAL RELATION {} KEY {};");
+		ExecuteResult result = relPanel.getConnection().execute("VAR " + varname + " REAL RELATION {} KEY {};");
 		if (result.failed()) {
 			MessageDialog.openError(relPanel.getShell(), "Error", "Unable to create var " + varname + ": " + result.getErrorMessage());
 			return;

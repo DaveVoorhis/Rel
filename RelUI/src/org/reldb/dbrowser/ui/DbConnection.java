@@ -16,10 +16,10 @@ import org.osgi.framework.FrameworkUtil;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Error;
 import org.reldb.rel.client.NullTuples;
-import org.reldb.rel.client.Response;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.Value;
+import org.reldb.rel.client.Connection.ExecuteResult;
 import org.reldb.rel.client.Connection.HTMLReceiver;
 import org.reldb.rel.client.connection.CrashHandler;
 import org.reldb.rel.client.connection.string.ClientFromURL;
@@ -89,56 +89,13 @@ public class DbConnection {
 			return null;
 		}
 	}
-	
-	public static class ExecuteResult {
-		private Response response;
-		public ExecuteResult(Response response) {
-			this.response = response;
-		}
-		public boolean failed() {
-			return (response == null || response.getResult() instanceof Error); 
-		}
-		public String getErrorMessage() {
-			if (response == null)
-				return "Connection failed.";
-			if (response.getResult() instanceof Error) {
-				String error = ((Error)response.getResult()).getErrorMsg();
-				int EOTposition = error.indexOf("<EOT>");
-				if (EOTposition >= 0)
-					error = error.substring(0, EOTposition);
-				return error;
-			}
-			return "Unknown error.";
-		}
-	}
-	
+		
 	public ExecuteResult execute(String query) {
-		try {
-			return new ExecuteResult(connection.execute(query));
-		} catch (IOException e1) {
-			return new ExecuteResult(null);
-		}
+		return connection.exec(query);
 	}
 	
 	public Tuples getTuples(String query) {
-		Value response;
-		try {
-			response = connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
-		} catch (IOException e) {
-			System.out.println("DbConnection: Error: " + e);
-			e.printStackTrace();
-			return null;
-		}
-		if (response instanceof Error) {
-			Error error = (Error)response;
-			System.out.println("DbConnection: Query evaluate returns error. " + query + "\n" + error.getErrorMsg());
-			return null;
-		}
-		if (response == null) {
-			System.out.println("DbConnection: Unable to obtain query results.");
-			return null;
-		}
-		return (Tuples)response;				
+		return connection.getTuples(query, QUERY_WAIT_MILLISECONDS);
 	}
 
 	public void evaluate(String query, HTMLReceiver htmlReceiver) {
