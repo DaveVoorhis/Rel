@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import org.reldb.rel.client.Error;
 import org.reldb.rel.client.connection.CrashHandler;
+import org.reldb.rel.client.connection.CrashHandlerDefault;
 import org.reldb.rel.client.connection.stream.ClientFromURL;
 import org.reldb.rel.client.connection.stream.ClientLocalConnection;
 import org.reldb.rel.client.connection.stream.InputStreamInterceptor;
@@ -53,7 +54,7 @@ public class Connection {
 		}
 	}
 	
-	/** Creates new connection. */
+	/** Creates new connection, with additional JAR support for database development. */
 	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
 		this.dbURL = dbURL;
 		this.crashHandler = crashHandler;
@@ -62,6 +63,21 @@ public class Connection {
 		ClientFromURL.openConnection(dbURL, createDbAllowed, crashHandler, additionalJars).close();
 	}
 	
+	/** Creates new connection. */
+	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+		this(dbURL, createDbAllowed, crashHandler, new String[0]);
+	}
+	
+	/** Creates new connection using CrashHandlerDefault. */
+	public Connection(String dbURL, boolean createDbAllowed) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+		this(dbURL, createDbAllowed, new CrashHandlerDefault());
+	}
+	
+	/** Creates new connection. Error thrown if database doesn't exist. */
+	public Connection(String dbURL) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+		this(dbURL, false);
+	}
+
 	/** Attempts update of a database. 
 	 * @throws IOException 
 	 * @throws DatabaseFormatVersionException */
