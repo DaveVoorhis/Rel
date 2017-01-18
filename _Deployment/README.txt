@@ -1,5 +1,11 @@
 Rel -- An implementation of Date and Darwen's Tutorial D.
 
+Rel is a self-contained, complete, desktop database management system
+with a user-friendly graphical user interface, ideal for creating and
+maintaining personal, workgroup, and classroom databases.
+
+*** GETTING STARTED ***
+
 1. Download the file appropriate for your platform:
 
    Rel3.xxx.win32.win32.x86_64.zip      Windows 64 bit
@@ -13,30 +19,48 @@ Rel -- An implementation of Date and Darwen's Tutorial D.
    On Mac OS X, it will help you copy the application to 
    your Applications folder.
 
-3. Download the Rel / Tutorial D source code examples:
+3. Download and unzip the Rel / Tutorial D source code examples to a
+   convenient location:
 
    RelExamplesAndUtilities_3.xxx.zip
-
-4. (Optional) Rel is a self-contained, complete, desktop database
-   management system with a user-friendly graphical user
-   interface. You can optionally also run a standalone, "headless" Rel
-   DBMS server that can be accessed from the Rel desktop database
-   management system and/or from software you write. If you wish to
-   use the standalone Rel DBMS -- which is not needed to use Rel --
-   download the following and extract it to a suitable directory on
-   your host machine:
-
-   Rel3.xxx.DBMS.tar.gz
-
-   It requires a Java 8 runtime.
 
 == If you are upgrading from a previous version of Rel, please ==
 == see IMPORTANT INSTRUCTIONS FOR UPGRADING, below. ==
 
-*** GETTING STARTED ***
-
-** To run Rel, open the Rel folder or directory and run the Rel
+4. To run Rel, open the Rel folder or directory and run the Rel
    executable. It's normally shown with a Rel icon.
+
+NOTE: The first time you run Rel on Mac OS X, you may
+      be asked to install Java 1.6, which is not actually used
+      by Rel, but is apparently required in order to launch it.
+
+*** USING THE STAND-ALONE REL DBMS ***
+
+Whilst Rel is a self-contained, complete, desktop database management
+system with a user-friendly graphical user interface that is ideal for
+creating and maintaining personal databases, you can optionally also
+run a standalone, "headless" Rel DBMS server that can be accessed from
+multiple Rel desktop database management systems and/or from software
+you write. This is ideal for providing access to shared databases for
+workgroups and classrooms.
+   
+If you wish to use the standalone Rel DBMS -- which is not needed to
+use Rel -- download the following and extract it to a suitable
+directory on your host machine:
+
+   Rel3.xxx.DBMS.tar.gz
+
+It requires that Java 8 runtime already be installed on the
+machine. You can download a Java runtime from http://java.com
+
+** To run the stand-alone Rel DBMS server from the command line:
+
+   RelDBMSServer
+
+** The stand-alone Rel DBMS server provides various options.  To see
+   these, type:
+
+   RelDBMSServer -?
 
 ** To run the stand-alone command-line Rel language interpreter from
    your operating system command-line, go to the Rel folder or
@@ -48,24 +72,6 @@ Rel -- An implementation of Date and Darwen's Tutorial D.
    various options.  To see these, type:
    
    RelDBMS -?
-
-** To run the stand-alone Rel DBMS server from the command line:
-
-   RelDBMSServer
-
-** The stand-alone Rel DBMS server provides various options.  To see
-   these, type:
-
-   RelDBMSServer -?
-
-NOTE: As of version 1.0.12, the standalone Rel DBMS requires Oracle
-      Java version 1.8.x (also known as Java 8) or a higher version,
-      or a compatible equivalent. The full Rel distribution --
-      including the graphical user interface (aka "DBrowser") --
-      includes Java, so there's usually no need to download
-      Java. However, the first time you run Rel on Mac OS X, you may
-      be asked to install Java 1.6, which (oddly) is not actually used
-      by Rel, but is apparently required in order to launch it.
 
 *** IMPORTANT INSTRUCTIONS FOR UPGRADING: ***
 
