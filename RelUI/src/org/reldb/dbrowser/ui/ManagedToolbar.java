@@ -43,7 +43,7 @@ public class ManagedToolbar {
 	}
 	
 	public void addSeparatorFill() {
-		new ToolItem(toolBar, SWT.SEPARATOR_FILL);
+		new ToolItem(toolBar, SWT.SEPARATOR);
 	}
 	
 	public ManagedToolbar(Composite parent) {
