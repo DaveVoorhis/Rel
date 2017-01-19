@@ -18,7 +18,7 @@ Version 3.004 (1.0.17):
         Produced bogus result due to GROUP bug.  Fixed.
   - fix: Rel UI: Rev's "View Query" '?' dialog no longer crashes after changing mode. 
   - fix: Rel UI: Viewing view or relvar with no attributes no longer crashes.
-  - fix: Rel UI: Case #134: command-line entry pane now focused on highlighted bug on all OS's.
+  - fix: Rel UI: Case #134: command-line entry pane now focuses on highlighted bug.
   - fix: Rel UI: Zoom button on command-line now placed correctly in toolbar; previously
                  floated near the centre of the toolbar.
   
