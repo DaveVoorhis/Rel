@@ -15,7 +15,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 
 public class SpecialCharacters extends Dialog {
-	private Shell shlSpecialCharacters;
+	private static Shell shlSpecialCharacters;
 	private StyledText inputText;
 	
 	private static class SpecialCharacter {
@@ -88,6 +88,10 @@ public class SpecialCharacters extends Dialog {
 	 * @return the result
 	 */
 	public void open() {
+		if (shlSpecialCharacters != null) {
+			shlSpecialCharacters.setFocus();
+			return;
+		}
 		createContents();
 		shlSpecialCharacters.open();
 		shlSpecialCharacters.layout();
@@ -97,6 +101,7 @@ public class SpecialCharacters extends Dialog {
 				display.sleep();
 			}
 		}
+		shlSpecialCharacters = null;
 	}
 
 	/**
