@@ -18,7 +18,8 @@ Version 3.004 (1.0.17):
         Produced bogus result due to GROUP bug.  Fixed.
   - fix: Rel UI: Rev's "View Query" '?' dialog no longer crashes after changing mode. 
   - fix: Rel UI: Viewing view or relvar with no attributes no longer crashes.
-
+  - fix: Rel UI: Case #134: command-line entry pane now focused on highlighted bug on all OS's.
+  
 Version 3.003 (1.0.16):
 
   - enhancement: Rel UI: Added support for UNORDER() (counterpart to ORDER()) to visual query editor.

@@ -600,6 +600,7 @@ public class CmdPanelInput extends Composite {
 				inputText.setCaretOffset(offset);
 				if (eInfo.getBadToken() != null)
 					inputText.setSelection(offset, offset + eInfo.getBadToken().length());
+				inputText.setFocus();
 			} catch (Exception e) {
 				System.out.println("CmdPanelInput: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
 			}
