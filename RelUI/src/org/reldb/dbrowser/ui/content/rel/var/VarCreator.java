@@ -37,11 +37,7 @@ public class VarCreator extends DbTreeAction {
 		CTabItem tab = relPanel.getTab(newItem);
 		if (tab != null)
 			tab.dispose();
-<<<<<<< HEAD
 		VarRealDesignerTab varDesignTab = new VarRealDesignerTab(relPanel, newItem);
-=======
-		RelvarDesignerTab varDesignTab = new RelvarDesignerTab(relPanel, newItem);
->>>>>>> refs/remotes/origin/master
 		varDesignTab.setImage(image);
 		relPanel.getTabFolder().setSelection(varDesignTab);
 	}
