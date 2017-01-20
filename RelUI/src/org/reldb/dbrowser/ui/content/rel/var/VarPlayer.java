@@ -16,6 +16,7 @@ public class VarPlayer extends DbTreeAction {
 	public void go(DbTreeItem item, Image image) {
 		CTabItem tab = relPanel.getTab(item);
 		if (tab != null) {
+<<<<<<< HEAD
 			if (tab instanceof VarEditorTab) {
 				tab.getParent().setSelection(tab);
 				return;
@@ -23,6 +24,15 @@ public class VarPlayer extends DbTreeAction {
 				tab.dispose();
 		}
 		VarEditorTab editor = new VarEditorTab(relPanel, item);
+=======
+			if (tab instanceof RelvarEditorTab) {
+				tab.getParent().setSelection(tab);
+				return;
+			} else
+				tab.dispose();
+		}
+		RelvarEditorTab editor = new RelvarEditorTab(relPanel, item);
+>>>>>>> refs/remotes/origin/master
 		editor.setImage(image);
 		relPanel.getTabFolder().setSelection(editor);
 	}
