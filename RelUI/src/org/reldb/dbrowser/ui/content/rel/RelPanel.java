@@ -53,11 +53,11 @@ import org.reldb.dbrowser.ui.content.rel.script.ScriptRenamer;
 import org.reldb.dbrowser.ui.content.rel.type.TypeCreator;
 import org.reldb.dbrowser.ui.content.rel.type.TypeDropper;
 import org.reldb.dbrowser.ui.content.rel.type.TypePlayer;
-import org.reldb.dbrowser.ui.content.rel.var.VarRealCreator;
-import org.reldb.dbrowser.ui.content.rel.var.VarRealDesigner;
-import org.reldb.dbrowser.ui.content.rel.var.VarRealDropper;
-import org.reldb.dbrowser.ui.content.rel.var.VarRealExporter;
-import org.reldb.dbrowser.ui.content.rel.var.VarRealPlayer;
+import org.reldb.dbrowser.ui.content.rel.var.VarCreator;
+import org.reldb.dbrowser.ui.content.rel.var.VarDesigner;
+import org.reldb.dbrowser.ui.content.rel.var.VarDropper;
+import org.reldb.dbrowser.ui.content.rel.var.VarExporter;
+import org.reldb.dbrowser.ui.content.rel.var.VarPlayer;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewCreator;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewDesigner;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewDropper;
@@ -562,11 +562,11 @@ public class RelPanel extends Composite {
 		Image imageExternal = IconLoader.loadIcon("table_external");
 		String query = "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name, isExternal} ORDER (ASC Name)";
 		String displayAttributeName = "Name";
-		VarRealPlayer player = new VarRealPlayer(this);
-		VarRealCreator creator = new VarRealCreator(this);
-		VarRealDropper dropper = new VarRealDropper(this);
-		VarRealDesigner designer = new VarRealDesigner(this);
-		VarRealExporter exporter = new VarRealExporter(this);
+		VarPlayer player = new VarPlayer(this);
+		VarCreator creator = new VarCreator(this);
+		VarDropper dropper = new VarDropper(this);
+		VarDesigner designer = new VarDesigner(this);
+		VarExporter exporter = new VarExporter(this);
 		
 		TreeItem root = getRoot(section, imageInternal, creator);
 		if (query != null) {

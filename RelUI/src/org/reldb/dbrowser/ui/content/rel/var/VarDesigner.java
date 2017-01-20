@@ -6,9 +6,9 @@ import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 
-public class VarRealPlayer extends DbTreeAction {
+public class VarDesigner extends DbTreeAction {
 
-	public VarRealPlayer(RelPanel relPanel) {
+	public VarDesigner(RelPanel relPanel) {
 		super(relPanel);
 	}
 
@@ -16,15 +16,15 @@ public class VarRealPlayer extends DbTreeAction {
 	public void go(DbTreeItem item, Image image) {
 		CTabItem tab = relPanel.getTab(item);
 		if (tab != null) {
-			if (tab instanceof RelvarEditorTab) {
+			if (tab instanceof VarRealDesignerTab) {
 				tab.getParent().setSelection(tab);
 				return;
 			} else
 				tab.dispose();
 		}
-		RelvarEditorTab editor = new RelvarEditorTab(relPanel, item);
-		editor.setImage(image);
-		relPanel.getTabFolder().setSelection(editor);
+		VarRealDesignerTab varDesignTab = new VarRealDesignerTab(relPanel, item);
+		varDesignTab.setImage(image);
+		relPanel.getTabFolder().setSelection(varDesignTab);
 	}
 
 }

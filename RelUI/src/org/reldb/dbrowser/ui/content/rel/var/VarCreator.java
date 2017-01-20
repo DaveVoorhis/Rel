@@ -10,9 +10,9 @@ import org.reldb.dbrowser.ui.content.rel.NewItemDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.rel.client.Connection.ExecuteResult;
 
-public class VarRealCreator extends DbTreeAction {
+public class VarCreator extends DbTreeAction {
 
-	public VarRealCreator(RelPanel relPanel) {
+	public VarCreator(RelPanel relPanel) {
 		super(relPanel);
 	}
 
@@ -37,7 +37,7 @@ public class VarRealCreator extends DbTreeAction {
 		CTabItem tab = relPanel.getTab(newItem);
 		if (tab != null)
 			tab.dispose();
-		RelvarDesignerTab varDesignTab = new RelvarDesignerTab(relPanel, newItem);
+		VarRealDesignerTab varDesignTab = new VarRealDesignerTab(relPanel, newItem);
 		varDesignTab.setImage(image);
 		relPanel.getTabFolder().setSelection(varDesignTab);
 	}

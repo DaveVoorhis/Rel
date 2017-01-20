@@ -6,7 +6,7 @@ import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
-import org.reldb.dbrowser.ui.content.rel.var.RelvarEditorToolbar;
+import org.reldb.dbrowser.ui.content.rel.var.VarEditorToolbar;
 import org.reldb.dbrowser.ui.content.rev.ModelChangeListener;
 import org.reldb.dbrowser.ui.content.rev.RelvarEditorPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
@@ -43,7 +43,7 @@ public class RevTab extends DbTreeTab {
 	public ToolBar getToolBar(Composite parent) {
 		RelvarEditorPanel relvarEditorView = rev.getCmdPanelOutput().getRelvarEditorView();
 		if (relvarEditorView != null)
-			return new RelvarEditorToolbar(parent, relvarEditorView.getRelvarEditor()).getToolBar();
+			return new VarEditorToolbar(parent, relvarEditorView.getRelvarEditor()).getToolBar();
 		else
 			return new CmdPanelToolbar(parent, rev.getCmdPanelOutput()).getToolBar();
 	}

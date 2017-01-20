@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.ManagedToolbar;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
-import org.reldb.dbrowser.ui.content.rel.var.RelvarEditorToolbar;
+import org.reldb.dbrowser.ui.content.rel.var.VarEditorToolbar;
 
 public class DbTabContentRev extends Composite {
 	
@@ -37,9 +37,9 @@ public class DbTabContentRev extends Composite {
     	
 		RelvarEditorPanel relvarEditorView = rev.getCmdPanelOutput().getRelvarEditorView();
     	if (relvarEditorView != null)
-			toolBar = new RelvarEditorToolbar(this, relvarEditorView.getRelvarEditor()) {
+			toolBar = new VarEditorToolbar(this, relvarEditorView.getRelvarEditor()) {
 	   			@Override
-					public void addAdditionalItemsBefore(RelvarEditorToolbar toolbar) {
+					public void addAdditionalItemsBefore(VarEditorToolbar toolbar) {
 						// backup icon
 						ToolItem tlitmBackup = addItem("Make backup", "safeIcon", SWT.PUSH);
 						tlitmBackup.addSelectionListener(new SelectionAdapter() {

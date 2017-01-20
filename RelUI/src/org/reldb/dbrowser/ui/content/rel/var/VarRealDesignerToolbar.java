@@ -7,9 +7,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.ui.ManagedToolbar;
 import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarDesigner;
 
-public class RelvarDesignerToolbar extends ManagedToolbar {
+public class VarRealDesignerToolbar extends ManagedToolbar {
 	
-	public RelvarDesignerToolbar(Composite parent, RelvarDesigner relvarDesigner) {
+	public VarRealDesignerToolbar(Composite parent, RelvarDesigner relvarDesigner) {
 		super(parent);
 		
 		addItem("Refresh", "arrow_refresh", SWT.PUSH).addSelectionListener(new SelectionAdapter() {

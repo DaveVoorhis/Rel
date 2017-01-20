@@ -7,9 +7,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.ui.ManagedToolbar;
 import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarEditor;
 
-public class RelvarEditorToolbar extends ManagedToolbar {
+public class VarEditorToolbar extends ManagedToolbar {
 	
-	public RelvarEditorToolbar(Composite parent, RelvarEditor relvarEditor) {
+	public VarEditorToolbar(Composite parent, RelvarEditor relvarEditor) {
 		super(parent);
 		
 		addAdditionalItemsBefore(this);
@@ -37,6 +37,6 @@ public class RelvarEditorToolbar extends ManagedToolbar {
 	}
 	
 	/** Override to add additional toolbar items before the default items. */
-	protected void addAdditionalItemsBefore(RelvarEditorToolbar toolbar) {}
+	protected void addAdditionalItemsBefore(VarEditorToolbar toolbar) {}
 
 }

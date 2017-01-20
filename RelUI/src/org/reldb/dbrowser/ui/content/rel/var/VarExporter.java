@@ -6,9 +6,9 @@ import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.ExporterDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 
-public class VarRealExporter extends DbTreeAction {
+public class VarExporter extends DbTreeAction {
 
-	public VarRealExporter(RelPanel relPanel) {
+	public VarExporter(RelPanel relPanel) {
 		super(relPanel);
 	}
 
