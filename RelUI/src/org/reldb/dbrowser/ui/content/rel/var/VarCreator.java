@@ -10,9 +10,9 @@ import org.reldb.dbrowser.ui.content.rel.NewItemDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.rel.client.Connection.ExecuteResult;
 
-public class VarRealCreator extends DbTreeAction {
+public class VarCreator extends DbTreeAction {
 
-	public VarRealCreator(RelPanel relPanel) {
+	public VarCreator(RelPanel relPanel) {
 		super(relPanel);
 	}
 

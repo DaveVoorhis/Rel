@@ -8,9 +8,9 @@ import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.rel.client.Connection.ExecuteResult;
 
-public class VarRealDropper extends DbTreeAction {
+public class VarDropper extends DbTreeAction {
 
-	public VarRealDropper(RelPanel relPanel) {
+	public VarDropper(RelPanel relPanel) {
 		super(relPanel);
 	}
 
