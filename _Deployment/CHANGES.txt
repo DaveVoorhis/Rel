@@ -1,6 +1,9 @@
-Last used Exception* number: RS0479
+Last used Exception* number: RS0480
 
 Version 3.005 (1.0.18):
+
+  - enhancement: Rel DBMS: sys.ExternalRelvarTypes relvar documents 
+                 available external relvar types.
 
 Version 3.004 (1.0.17):
 

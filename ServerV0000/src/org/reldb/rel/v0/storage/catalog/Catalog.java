@@ -30,6 +30,7 @@ public class Catalog {
 	public final static String relvarDependenciesOperatorOperator = "sys.DependenciesOperatorOperator";
 	public final static String relvarDependenciesOperatorRelvar = "sys.DependenciesOperatorRelvar";
 	public final static String relvarDependenciesOperatorType = "sys.DependenciesOperatorType";
+	public final static String relvarExternalRelvarTypes = "sys.ExternalRelvarTypes";
 	
 	// Generate and initialise the catalog relvars - phase 0
 	public void generatePhase0(Generator generator) throws DatabaseException {
@@ -66,6 +67,11 @@ public class Catalog {
 		(new CreateSystemDependenciesRelvar(generator, relvarDependenciesOperatorOperator)).go();
 		(new CreateSystemDependenciesRelvar(generator, relvarDependenciesOperatorRelvar)).go();
 		(new CreateSystemDependenciesRelvar(generator, relvarDependenciesOperatorType)).go();        
+		(new RegisterSpecialRelvar(relvarExternalRelvarTypes) {
+			RelvarMetadata getMetadata() {
+				return new RelvarExternalRelvarTypesMetadata(database);
+			}
+		}).go();
 	}
 	
 	// Generate and initialise the catalog relvars - phase 1
