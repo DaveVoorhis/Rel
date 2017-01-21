@@ -133,4 +133,29 @@ public class DbConnection {
 		}
 	}
 
+	private String[] keywordCache = null;
+	
+	public String[] getKeywords() {
+		if (keywordCache == null) {
+			String query = "sys.Keywords";
+			try {
+				System.out.println("Obtaining keyword list from database.");
+				Value response = (Value)connection.evaluate(query).awaitResult(QUERY_WAIT_MILLISECONDS);
+				if (response instanceof Tuples) {
+					Vector<String> keywords = new Vector<String>();
+					for (Tuple tuple: (Tuples)response) {
+						String keyword = tuple.get("Keyword").toString();
+						keywords.add(keyword);
+					}
+					keywordCache = keywords.toArray(new String[0]);
+				} else
+					keywordCache = new String[0];
+			} catch (IOException e) {
+				System.out.println("Unable to obtain keywords from database.");
+				keywordCache = new String[0];				
+			}
+		}
+		return keywordCache;
+	}
+
 }

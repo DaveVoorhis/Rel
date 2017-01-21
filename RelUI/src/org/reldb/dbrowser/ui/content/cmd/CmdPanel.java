@@ -67,7 +67,7 @@ public class CmdPanel extends Composite {
 				CmdPanel.this.notifyEnhancedOutputChange();
 			}
 		};
-		cmdPanelInput = new CmdPanelInput(sashForm, cmdPanelOutput, cmdstyle) {
+		cmdPanelInput = new CmdPanelInput(sashForm, cmdPanelOutput, cmdstyle, connection.getKeywords()) {
 			@Override
 			protected void notifyHistoryAdded(String historyItem) {
 				CmdPanel.this.notifyHistoryAdded(historyItem);

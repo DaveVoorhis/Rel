@@ -88,7 +88,7 @@ public class CmdPanelInput extends Composite {
 	 * @param cmdPanelOutput 
 	 * @param style
 	 */
-	public CmdPanelInput(Composite parent, CmdPanelOutput cmdPanelOutput, int cmdStyle) {
+	public CmdPanelInput(Composite parent, CmdPanelOutput cmdPanelOutput, int cmdStyle, String[] keywords) {
 		super(parent, SWT.NONE);
 		setLayout(new FormLayout());
 		
@@ -109,7 +109,7 @@ public class CmdPanelInput extends Composite {
 		inputText.setLayoutData(fd_inputText);
 		
 		undoredo = new UndoRedo(inputText);
-		RelLineStyler lineStyler = new RelLineStyler();
+		RelLineStyler lineStyler = new RelLineStyler(keywords);
 
 		inputText.addLineStyleListener(lineStyler);
 		inputText.addModifyListener(new ModifyListener() {

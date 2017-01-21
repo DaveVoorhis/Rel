@@ -256,6 +256,7 @@ public class DbTab extends CTabItem {
 			} catch (Exception e) {
 				getParent().getCursor().dispose();
 				getParent().setCursor(oldCursor);
+				e.printStackTrace();
 	        	MessageDialog.openError(DBrowser.getShell(), "Unable to open local database",
 	        			wrapped("Unable to open command line due to error: " + e.toString()));
 	        	return;

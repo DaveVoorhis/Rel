@@ -103,7 +103,7 @@ public class ViewQueryDialog extends Dialog {
 		shell.setLayout(new FormLayout());
 		
 		StyledText styledText = new StyledText(shell, SWT.BORDER);
-		styledText.addLineStyleListener(new RelLineStyler());
+		styledText.addLineStyleListener(new RelLineStyler(visualiser.getDatabase().getKeywords()));
 		styledText.setBottomMargin(5);
 		styledText.setTopMargin(5);
 		styledText.setRightMargin(5);

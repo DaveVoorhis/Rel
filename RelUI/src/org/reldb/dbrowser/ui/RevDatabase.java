@@ -463,5 +463,9 @@ public class RevDatabase {
 				) + "', revPrompt TRUE}};";
 		return execute(query);
 	}
+
+	public String[] getKeywords() {
+		return connection.getKeywords();
+	}
 	
 }

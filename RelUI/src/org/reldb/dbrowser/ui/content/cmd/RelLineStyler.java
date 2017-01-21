@@ -12,14 +12,14 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.reldb.dbrowser.keywords.Keywords;
 
 // Adapted from http://www.java2s.com/Code/Java/SWT-JFace-Eclipse/JavaSourcecodeViewer.htm
 public class RelLineStyler implements LineStyleListener {
 		
-	RelScanner scanner = new RelScanner();
-	Color[] tokenColors;
-	Vector<int[]> blockComments = new Vector<int[]>();
+	private RelScanner scanner;
+	private Color[] tokenColors;
+	private Vector<int[]> blockComments = new Vector<int[]>();
+	private String[] keywords;
 
 	public static final int EOF = -1;
 	public static final int EOL = 10;
@@ -32,7 +32,9 @@ public class RelLineStyler implements LineStyleListener {
 	public static final int NUMBER = 7;
 	public static final int MAXIMUM_TOKEN = 8;
 
-	public RelLineStyler() {
+	public RelLineStyler(String[] keywords) {
+		this.keywords = keywords;
+		scanner = new RelScanner();
 		initializeColors();
 		scanner = new RelScanner();
 	}
@@ -196,7 +198,7 @@ public class RelLineStyler implements LineStyleListener {
 	/**
 	 * A simple fuzzy scanner for Rel
 	 */
-	public class RelScanner {
+	private class RelScanner {
 
 		protected Hashtable<String, Integer> fgKeys = null;
 		protected StringBuffer fBuffer = new StringBuffer();
@@ -204,7 +206,7 @@ public class RelLineStyler implements LineStyleListener {
 		protected int fPos;
 		protected int fEnd;
 		protected int fStartToken;
-		protected boolean fEofSeen = false;
+//		protected boolean fEofSeen = false;
 
 		public RelScanner() {
 			initialize();
@@ -223,9 +225,8 @@ public class RelLineStyler implements LineStyleListener {
 		void initialize() {
 			fgKeys = new Hashtable<String, Integer>();
 			Integer k = new Integer(KEYWORD);
-			String[] fgKeywords = Keywords.getKeywords();
-			for (int i = 0; i < fgKeywords.length; i++)
-				fgKeys.put(fgKeywords[i], k);
+			for (int i = 0; i < keywords.length; i++)
+				fgKeys.put(keywords[i], k);
 		}
 
 		/**
