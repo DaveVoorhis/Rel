@@ -1,9 +1,10 @@
-Last used Exception* number: RS0480
+Last used Exception* number: RS0481
 
 Version 3.005 (1.0.18):
 
   - enhancement: Rel DBMS: sys.ExternalRelvarTypes relvar documents 
                  available external relvar types.
+  - enhancement: Rel DBMS: sys.Keywords relvar lists all keywords in Rel / Tutorial D grammar.
 
 Version 3.004 (1.0.17):
 
