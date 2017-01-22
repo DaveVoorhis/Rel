@@ -39,11 +39,13 @@ public class CmdPanel extends Composite {
 			@Override
 			protected void notifyInputDone() {
 				cmdPanelInput.done();
+				cmdPanelInput.setFocused();
 			}
 			@Override
 			protected void notifyInputOfSuccess() {
 				cmdPanelInput.selectAll();
 				notifyExecuteSuccess();
+				cmdPanelInput.setFocused();
 			}
 			@Override
 			protected void notifyInputOfError(StringBuffer errorBuffer) {

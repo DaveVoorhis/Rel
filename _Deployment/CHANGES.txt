@@ -6,7 +6,8 @@ Version 3.005 (1.0.18):
   - enhancement: Rel DBMS: sys.Keywords relvar lists all keywords in Rel / Tutorial D grammar.
   - enhancement: Rel UI: Syntax highlighting now obtains keyword list from database sys.Keywords relvar.
   - fix: Rel UI: Case #133: Special characters now work correctly under Windows.
-
+  - fix: Rel UI: Case #136: Command-line entry panel is now always in focus after executing code.
+  
 Version 3.004 (1.0.17):
 
   - enhancement: Rel DBMS: !!SP or !!(SP) is now equivalent to IMAGE_IN(SP) and !!(SP, TUP{x 1}) 

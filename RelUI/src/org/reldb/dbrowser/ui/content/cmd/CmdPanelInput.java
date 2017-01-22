@@ -603,13 +603,13 @@ public class CmdPanelInput extends Composite {
 				inputText.setCaretOffset(offset);
 				if (eInfo.getBadToken() != null)
 					inputText.setSelection(offset, offset + eInfo.getBadToken().length());
-				inputText.setFocus();
 			} catch (Exception e) {
 				System.out.println("CmdPanelInput: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
 			}
 		} else
 			System.out.println("CmdPanelInput: Unable to locate error in " + errorBuffer.toString());
 		errorBuffer = null;
+		inputText.setFocus();
 	}
 
 	public void setText(String text) {
