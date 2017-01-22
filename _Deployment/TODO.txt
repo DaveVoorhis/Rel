@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Case #136: Ensure command-line entry panel is in focus after executing code.
+
 - "ALTER RELVAR" dialogs should warn the user if he/she leaves without activating the change.
 
 - Maybe associate "loading" screen with database loading, rather than Rel loading.
