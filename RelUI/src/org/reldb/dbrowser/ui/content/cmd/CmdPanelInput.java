@@ -5,11 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
+
 import java.util.Vector;
 
 import org.eclipse.swt.widgets.Composite;
@@ -44,7 +40,6 @@ import org.reldb.dbrowser.ui.preferences.PreferencePageCmd;
 import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
-import static java.nio.charset.StandardCharsets.*;
 
 public class CmdPanelInput extends Composite {
 	
@@ -90,28 +85,6 @@ public class CmdPanelInput extends Composite {
 	
 	private SpecialCharacters specialCharacterDisplay;
 	
-    // convert from UTF-8 -> internal Java String format
-    public static String convertFromUTF8(String s) {
-        String out = null;
-        try {
-            out = new String(s.getBytes("ISO-8859-1"), "UTF-8");
-        } catch (java.io.UnsupportedEncodingException e) {
-            return null;
-        }
-        return out;
-    }
- 
-    // convert from internal Java String format -> UTF-8
-    public static String convertToUTF8(String s) {
-        String out = null;
-        try {
-            out = new String(s.getBytes("UTF-8"), "ISO-8859-1");
-        } catch (java.io.UnsupportedEncodingException e) {
-            return null;
-        }
-        return out;
-    }
-	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -131,27 +104,7 @@ public class CmdPanelInput extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 		
-		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL) {
-			public String getText() {
-				String s = super.getText();
-
-				System.out.println("CmdPanelInput: default encoding: " + Charset.defaultCharset().name());
-//				System.out.println("CmdPanelInput: StyledText: getText: " + s);
-			 
-			    String news = convertToUTF8(s);
-			        
-//				final Charset sourceCharset = Charset.defaultCharset();
-//				final Charset utfCharset = Charset.forName("UTF-8");
-//				final CharBuffer sourceEncoded = sourceCharset.decode(ByteBuffer.wrap(s.getBytes(sourceCharset)));
-//				final byte[] utfEncoded = utfCharset.encode(sourceEncoded).array();
-//				String news = new String(utfEncoded, utfCharset);
-//				
-//				System.out.println("CmdPanelInput: StyledText: newS: " + news);
-
-				return news;
-//				return s;
-			}
-		};
+		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		FormData fd_inputText = new FormData();
 		fd_inputText.right = new FormAttachment(toolBar, 0, SWT.RIGHT);
 		fd_inputText.top = new FormAttachment(toolBar);
