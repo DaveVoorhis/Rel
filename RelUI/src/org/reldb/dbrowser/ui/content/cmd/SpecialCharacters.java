@@ -139,15 +139,6 @@ public class SpecialCharacters extends Dialog {
 			charDescription.setText(special.description);
 			charDescription.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		}
-		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
-			Label noteLabel = new Label(shlSpecialCharacters, SWT.NONE);
-			noteLabel.setText("NOTE:");
-			noteLabel.setAlignment(SWT.RIGHT);
-			noteLabel.setLayoutData(new GridData(SWT.FILL, SWT.RIGHT, true, true));
-			Label warningLabel = new Label(shlSpecialCharacters, SWT.NONE);
-			warningLabel.setText("Special characters might work incorrectly\nunder some versions of Windows.");
-			warningLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		}
 		shlSpecialCharacters.pack();
 	}
 
