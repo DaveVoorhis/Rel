@@ -5,6 +5,11 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.Vector;
 
 import org.eclipse.swt.widgets.Composite;
@@ -14,6 +19,7 @@ import org.eclipse.swt.custom.CaretListener;
 import org.eclipse.swt.custom.LineBackgroundEvent;
 import org.eclipse.swt.custom.LineBackgroundListener;
 import org.eclipse.swt.custom.StyledText;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -37,6 +43,8 @@ import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
 import org.reldb.dbrowser.ui.preferences.PreferencePageCmd;
 import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
+
+import static java.nio.charset.StandardCharsets.*;
 
 public class CmdPanelInput extends Composite {
 	
@@ -101,7 +109,24 @@ public class CmdPanelInput extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 		
-		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL) {
+			public String getText() {
+				String s = super.getText();
+
+				System.out.println("CmdPanelInput: default encoding: " + Charset.defaultCharset().name());
+				System.out.println("CmdPanelInput: StyledText: getText: " + s);
+				
+				final Charset sourceCharset = Charset.defaultCharset();
+				final Charset utfCharset = Charset.forName("UTF-8");
+				final CharBuffer sourceEncoded = sourceCharset.decode(ByteBuffer.wrap(s.getBytes(sourceCharset)));
+				final byte[] utfEncoded = utfCharset.encode(sourceEncoded).array();
+				String news = new String(utfEncoded, utfCharset);
+				
+				System.out.println("CmdPanelInput: StyledText: newS: " + news);
+
+				return news;
+			}
+		};
 		FormData fd_inputText = new FormData();
 		fd_inputText.right = new FormAttachment(toolBar, 0, SWT.RIGHT);
 		fd_inputText.top = new FormAttachment(toolBar);
