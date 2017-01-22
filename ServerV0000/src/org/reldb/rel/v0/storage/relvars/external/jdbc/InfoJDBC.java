@@ -1,6 +1,8 @@
 package org.reldb.rel.v0.storage.relvars.external.jdbc;
 
 import org.reldb.rel.v0.storage.relvars.external.Info;
+import org.reldb.rel.v0.storage.relvars.external.InfoComponent;
+import org.reldb.rel.v0.storage.relvars.external.InfoComponentOption;
 
 public class InfoJDBC extends Info {
 	
@@ -20,14 +22,48 @@ public class InfoJDBC extends Info {
 	      "\tVAR myvar EXTERNAL JDBC \"jdbc:sqlserver://localhost:1433;databaseName=database,sqluser,sqluserpw,MyTable\";\n";
 	}
 
-	@Override
-	public boolean isConnectionStringAFile() {
-		return false;
-	}
+	private static class InfoComponentJDBC extends InfoComponent {
+		private String documentation;
+		
+		InfoComponentJDBC(int componentNumber, String documentation) {
+			super(componentNumber);
+			this.documentation = documentation;
+		}
+		
+		@Override
+		public boolean isOptional() {
+			return false;
+		}
 
+		@Override
+		public boolean isAFile() {
+			return false;
+		}
+
+		@Override
+		public String[] getAppropriateFileExtension() {
+			return null;
+		}
+		
+		@Override
+		public InfoComponentOption[] getOptions() {
+			return null;
+		}
+
+		@Override
+		public String getDocumentation() {
+			return documentation;
+		}
+	}
+	
 	@Override
-	public String[] getAppropriateFileExtension() {
-		return null;
+	public InfoComponent[] getConnectionStringComponents() {
+		return new InfoComponent[] {
+			new InfoComponentJDBC(0, "JDBC connection string"),
+			new InfoComponentJDBC(1, "SQL user name"),
+			new InfoComponentJDBC(2, "SQL password"),
+			new InfoComponentJDBC(3, "SQL table name")
+		};
 	}
 	
 }

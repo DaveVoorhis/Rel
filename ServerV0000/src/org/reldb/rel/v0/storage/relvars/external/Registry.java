@@ -13,10 +13,12 @@ import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.types.TypeRelation;
 import org.reldb.rel.v0.types.builtin.TypeBoolean;
 import org.reldb.rel.v0.types.builtin.TypeCharacter;
+import org.reldb.rel.v0.types.builtin.TypeInteger;
 import org.reldb.rel.v0.values.TupleIterator;
 import org.reldb.rel.v0.values.Value;
 import org.reldb.rel.v0.values.ValueBoolean;
 import org.reldb.rel.v0.values.ValueCharacter;
+import org.reldb.rel.v0.values.ValueInteger;
 import org.reldb.rel.v0.values.ValueRelationLiteral;
 import org.reldb.rel.v0.values.ValueTuple;
 
@@ -41,16 +43,41 @@ public class Registry {
 	}
 	
 	/** Obtain heading for registry relvar.
-	 * REL {Identifier CHAR, Documentation CHAR, isFileConnectionString BOOLEAN, FileExtensions REL {Extension CHAR}}
+	 * 
+	 * REL {
+	 * 		Identifier CHAR, 
+	 *      Documentation CHAR, 
+	 *      Components REL {
+	 *      	componentNumber INTEGER,
+	 *      	isOptional BOOLEAN,
+	 *      	isAFile BOOLEAN,
+	 *      	FileExtensions REL {
+	 *      		Extension CHAR
+	 *      	},
+	 *      	Documentation CHAR,
+	 *      	ComponentOptions REL {
+	 *      		Documentation CHAR,
+	 *      		OptionText CHAR
+	 *      }
+	 * }
 	 */
 	public static Heading getHeading() {
 		Heading heading = new Heading();
 		heading.add("Identifier", TypeCharacter.getInstance());
 		heading.add("Documentation", TypeCharacter.getInstance());
-		heading.add("isFileConnectionString", TypeBoolean.getInstance());
-		Heading fileExtensionsHeading = new Heading();
-		fileExtensionsHeading.add("Extension", TypeCharacter.getInstance());
-		heading.add("FileExtensions", new TypeRelation(fileExtensionsHeading));
+		Heading components = new Heading();
+		components.add("ComponentNumber", TypeInteger.getInstance());
+		components.add("isOptional", TypeBoolean.getInstance());
+		components.add("isAFile", TypeBoolean.getInstance());
+		Heading fileExtensions = new Heading();
+		fileExtensions.add("Extension", TypeCharacter.getInstance());
+		components.add("FileExtensions", new TypeRelation(fileExtensions));
+		components.add("Documentation", TypeCharacter.getInstance());
+		Heading componentOptions = new Heading();
+		componentOptions.add("Documentation", TypeCharacter.getInstance());
+		componentOptions.add("OptionText", TypeCharacter.getInstance());
+		components.add("ComponentOptions", new TypeRelation(componentOptions));
+		heading.add("Components", new TypeRelation(components));
 		return heading;
 	}
 	
@@ -68,17 +95,42 @@ public class Registry {
 			public ValueTuple next() {
 				Value rawTuple[];
 				Info info = iterator.next();
-				ValueRelationLiteral extensions = new ValueRelationLiteral(generator);
-				if (info.getAppropriateFileExtension() != null)
-					for (String extension: info.getAppropriateFileExtension()) {
-						ValueCharacter extensionChar = ValueCharacter.select(generator, extension);
-						extensions.insert(new ValueTuple(generator, new Value[] {extensionChar}));
+				ValueCharacter identifier = ValueCharacter.select(generator, info.getIdentifier());
+				ValueCharacter documentation = ValueCharacter.select(generator, info.getConnectionStringDocumentation());
+				ValueRelationLiteral components = new ValueRelationLiteral(generator);
+				if (info.getConnectionStringComponents() != null)
+					for (InfoComponent component: info.getConnectionStringComponents()) {
+						ValueInteger componentNumber = ValueInteger.select(generator, component.getComponentNumber());
+						ValueBoolean isOptional = ValueBoolean.select(generator, component.isOptional());
+						ValueBoolean isAFile = ValueBoolean.select(generator, component.isAFile());
+						ValueRelationLiteral extensions = new ValueRelationLiteral(generator);
+						if (component.getAppropriateFileExtension() != null)
+							for (String extension: component.getAppropriateFileExtension()) {
+								ValueCharacter extensionChar = ValueCharacter.select(generator, extension);
+								extensions.insert(new ValueTuple(generator, new Value[] {extensionChar}));
+							}
+						ValueCharacter componentDocumentation = ValueCharacter.select(generator, component.getDocumentation());
+						ValueRelationLiteral componentOptions = new ValueRelationLiteral(generator);
+						if (component.getOptions() != null)
+							for (InfoComponentOption option: component.getOptions()) {
+								ValueCharacter optionDocumentation = ValueCharacter.select(generator, option.getDocumentation());
+								ValueCharacter optionText = ValueCharacter.select(generator, option.getOptionText());
+								componentOptions.insert(new ValueTuple(generator, new Value[] {optionDocumentation, optionText}));
+							}
+						components.insert(new ValueTuple(generator, new Value[] {
+								componentNumber,
+								isOptional,
+								isAFile,
+								extensions,
+								componentDocumentation,
+								componentOptions
+							}
+						));
 					}
 				rawTuple = new Value[] {
-					ValueCharacter.select(generator, info.getIdentifier()),
-					ValueCharacter.select(generator, info.getConnectionStringDocumentation()),
-					ValueBoolean.select(generator, info.isConnectionStringAFile()),
-					extensions
+					identifier,
+					documentation,
+					components
 				};
 				return new ValueTuple(generator, rawTuple);
 			}

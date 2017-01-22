@@ -28,6 +28,10 @@ public class RelvarKeywordsMetadata extends RelvarMetadata {
 		super(database, getNewKeyDefinition(), RelDatabase.systemOwner);
 	}
 	
+	public RelvarHeading getHeadingDefinition(RelDatabase database) {
+		return getNewKeyDefinition();
+	}
+	
 	public RelvarGlobal getRelvar(String name, RelDatabase database) {
 		return new RelvarKeywords(database);
 	}
