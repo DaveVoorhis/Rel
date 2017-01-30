@@ -12,6 +12,11 @@ public class InfoJDBC extends Info {
 	}
 
 	@Override
+	public String getDescription() {
+		return "Connection to a specified table in a SQL database.";
+	}
+
+	@Override
 	public String getConnectionStringDocumentation() {
 		return
 	      "Built-in JDBC support is provided for MySQL, MariaDB, PostgreSQL, Oracle and Microsoft SQL Server:\n" +

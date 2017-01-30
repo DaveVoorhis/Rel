@@ -46,6 +46,7 @@ public class Registry {
 	 * 
 	 * REL {
 	 * 		Identifier CHAR, 
+	 * 		Description CHAR,
 	 *      Documentation CHAR, 
 	 *      Components REL {
 	 *      	componentNumber INTEGER,
@@ -64,6 +65,7 @@ public class Registry {
 	public static Heading getHeading() {
 		Heading heading = new Heading();
 		heading.add("Identifier", TypeCharacter.getInstance());
+		heading.add("Description", TypeCharacter.getInstance());
 		heading.add("Documentation", TypeCharacter.getInstance());
 		Heading components = new Heading();
 		components.add("ComponentNumber", TypeInteger.getInstance());
@@ -96,6 +98,7 @@ public class Registry {
 				Value rawTuple[];
 				Info info = iterator.next();
 				ValueCharacter identifier = ValueCharacter.select(generator, info.getIdentifier());
+				ValueCharacter description = ValueCharacter.select(generator, info.getDescription());
 				ValueCharacter documentation = ValueCharacter.select(generator, info.getConnectionStringDocumentation());
 				ValueRelationLiteral components = new ValueRelationLiteral(generator);
 				if (info.getConnectionStringComponents() != null)
@@ -129,6 +132,7 @@ public class Registry {
 					}
 				rawTuple = new Value[] {
 					identifier,
+					description,
 					documentation,
 					components
 				};

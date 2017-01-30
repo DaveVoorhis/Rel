@@ -12,6 +12,11 @@ public class InfoACCDB extends Info {
 	}
 
 	@Override
+	public String getDescription() {
+		return "Connection to a specified table in a Microsoft Access database.";
+	}
+	
+	@Override
 	public String getConnectionStringDocumentation() {
 		return
 			"Connect to a specified table, 'mytable', in a Microsoft Acccess database.\n" +

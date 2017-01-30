@@ -12,6 +12,11 @@ public class InfoCSV extends Info {
 	}
 
 	@Override
+	public String getDescription() {
+		return "Connection to a CSV (comma-separated values) file.";
+	}
+
+	@Override
 	public String getConnectionStringDocumentation() {
 		return
 			"Specify the file name.\n" +

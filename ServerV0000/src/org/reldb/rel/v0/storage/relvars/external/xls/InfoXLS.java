@@ -12,6 +12,11 @@ public class InfoXLS extends Info {
 	}
 
 	@Override
+	public String getDescription() {
+		return "Connection to an XLS or XLSX spreadsheet file.";
+	}
+
+	@Override
 	public String getConnectionStringDocumentation() {
 		return
 			"Specify the file name.\n" +
