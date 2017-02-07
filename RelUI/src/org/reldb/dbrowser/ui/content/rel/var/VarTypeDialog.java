@@ -10,26 +10,25 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Text;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 
-public class VarTypeAndName extends Dialog {
+public class VarTypeDialog extends Dialog {
 
 	private Shell shlVariableTypeAndName;
 	private RevDatabase database;
 	private String variableType;
-	private String variableName;
 	
-	public VarTypeAndName(Shell shell, int style) {
-		super(shell, style);
+	public VarTypeDialog(Shell shell, int style) {
+		super(shell, SWT.DIALOG_TRIM | SWT.RESIZE);
 	}
 	
-	public VarTypeAndName(RevDatabase database, Shell shell, String variableName) {
+	public VarTypeDialog(RevDatabase database, Shell shell) {
 		super(shell, SWT.DIALOG_TRIM);
 		this.database = database;
-		this.variableName = variableName;
 		variableType = null;
 	}
 
@@ -64,10 +63,6 @@ public class VarTypeAndName extends Dialog {
 			}
 		}
 		return getVarTypeCode(variableType);
-	}
-
-	public String getVariableName() {
-		return variableName;
 	}
 	
 	/**
@@ -117,23 +112,7 @@ public class VarTypeAndName extends Dialog {
 		btnOk.setLayoutData(fd_btnOk);
 		btnOk.setText("Ok");
 		
-		Text textVarName = new Text(shlVariableTypeAndName, SWT.BORDER);
-		FormData fd_textVarName = new FormData();
-		fd_textVarName.bottom = new FormAttachment(btnOk, -10);
-		fd_textVarName.left = new FormAttachment(0, 10);
-		fd_textVarName.right = new FormAttachment(100, -10);
-		textVarName.setLayoutData(fd_textVarName);
-		textVarName.setText(variableName);
-		
-		Label lblVariableName = new Label(shlVariableTypeAndName, SWT.NONE);
-		FormData fd_lblVariableName = new FormData();
-		fd_lblVariableName.bottom = new FormAttachment(textVarName, -6);
-		fd_lblVariableName.left = new FormAttachment(0, 10);
-		fd_lblVariableName.right = new FormAttachment(100, -10);
-		lblVariableName.setLayoutData(fd_lblVariableName);
-		lblVariableName.setText("Variable name:");
-		
-		fd_listVarType.bottom = new FormAttachment(lblVariableName, -10);
+		fd_listVarType.bottom = new FormAttachment(btnCancel, -10);
 		
 		listVarType.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -145,7 +124,6 @@ public class VarTypeAndName extends Dialog {
 		btnCancel.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				variableName = null;
 				variableType = null;
 				shlVariableTypeAndName.dispose();
 			}
@@ -154,10 +132,18 @@ public class VarTypeAndName extends Dialog {
 		btnOk.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				variableName = textVarName.getText();
 				variableType = getSelectedType(listVarType);
 				shlVariableTypeAndName.dispose();
 			}
 		});
+		
+		listVarType.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				variableType = getSelectedType(listVarType);
+				shlVariableTypeAndName.dispose();
+			}
+		});
+
 	}
 }

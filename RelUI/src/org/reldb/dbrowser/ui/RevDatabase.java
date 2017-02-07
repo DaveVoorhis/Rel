@@ -481,5 +481,13 @@ public class RevDatabase {
 		} catch (Exception e) {}
 		return types.toArray(new String[0]);
 	}
+
+	public Tuple getExternalRelvarTypeInfo(String variableType) {
+		String query = "sys.ExternalRelvarTypes WHERE Identifier='" + variableType + "'";
+		Tuples tuples = (Tuples)evaluate(query);
+		for (Tuple tuple: tuples)
+			return tuple;
+		return null;
+	}
 	
 }
