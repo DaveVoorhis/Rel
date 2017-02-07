@@ -467,5 +467,19 @@ public class RevDatabase {
 	public String[] getKeywords() {
 		return connection.getKeywords();
 	}
+
+	public String[] getRelvarTypes() {
+		String query = "UNION {sys.ExternalRelvarTypes {Identifier, Description}, REL {TUP {Identifier 'REAL', Description 'REAL relation-valued variable.'}}}  ORDER (ASC Identifier)";
+		Tuples tuples = (Tuples)evaluate(query);
+		Vector<String> types = new Vector<String>(); 
+		try {
+			for (Tuple tuple: tuples) {
+				String identifier = StringUtils.unquote(tuple.get("Identifier").toString());
+				String description = StringUtils.unquote(tuple.get("Description").toString());
+				types.add(identifier + ": " + description);
+			}
+		} catch (Exception e) {}
+		return types.toArray(new String[0]);
+	}
 	
 }
