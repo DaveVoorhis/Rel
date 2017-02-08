@@ -1,7 +1,9 @@
 package org.reldb.dbrowser.ui.content.rel.var;
 
+import java.util.HashMap;
 import java.util.Vector;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
@@ -11,26 +13,34 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
+import org.reldb.rel.client.Connection.ExecuteResult;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 public class VarExternalDefinitionDialog extends Dialog {
+
+	private static String lastFilePath;
 	
+	private FileDialog loadFileDialog;
 	private Shell shlExternalDefinitionDialog;
 	private RevDatabase database;
 	private String variableName;
 	private String variableType;
 	private Text textVarName;
 	private Text textDocumentation;
+	private boolean success;
 
 	public VarExternalDefinitionDialog(Shell shell, int style) {
 		super(shell, style);
@@ -41,13 +51,37 @@ public class VarExternalDefinitionDialog extends Dialog {
 		this.database = database;
 		this.variableType = variableType;
 		this.variableName = variableName;
+		success = false;
 	}
 
-	public String getName() {
-		return variableName;
+	private static class ComponentInfo {
+		public boolean isOptional;
+		public String content;
+		public Label docs;
+		public ComponentInfo(boolean isOptional, Label docs) {
+			this.isOptional = isOptional;
+			this.docs = docs;
+			this.content = "";
+		}
+		public ComponentInfo(ComponentInfo info, String content) {
+			this.isOptional = info.isOptional;
+			this.docs = info.docs;
+			this.content = content;
+		}
+	}
+	
+	private HashMap<Integer, ComponentInfo> components = new HashMap<Integer, ComponentInfo>();
+	
+	private void createComponent(int componentNumber, boolean isOptional, Label docsLabel) {
+		components.put(componentNumber, new ComponentInfo(isOptional, docsLabel));
+	}
+	
+	private void updateComponent(int componentNumber, String content) {
+		ComponentInfo componentInfo = components.get(componentNumber);
+		components.put(componentNumber, new ComponentInfo(componentInfo, content));
 	}
 
-	public String open() {
+	public boolean create() {
 		createContents();
 		shlExternalDefinitionDialog.open();
 		shlExternalDefinitionDialog.layout();
@@ -57,7 +91,7 @@ public class VarExternalDefinitionDialog extends Dialog {
 				display.sleep();
 			}
 		}
-		return null;
+		return success;
 	}
 
 	private void createContents() {
@@ -67,11 +101,11 @@ public class VarExternalDefinitionDialog extends Dialog {
 		shlExternalDefinitionDialog.setLayout(new FormLayout());
 		
 		String documentation = null;
-		Tuples components = null;
+		Tuples componentDefinitions = null;
 		Tuple tuple = database.getExternalRelvarTypeInfo(variableType);
 		if (tuple != null) {
 			documentation = tuple.get("Documentation").toString();
-			components = (Tuples)tuple.get("Components");
+			componentDefinitions = (Tuples)tuple.get("Components");
 		}
 		
 		Label lblVarName = new Label(shlExternalDefinitionDialog, SWT.NONE);
@@ -128,8 +162,9 @@ public class VarExternalDefinitionDialog extends Dialog {
 		containerLayout.marginHeight = 0;
 		container.setLayout(containerLayout);
 		
-		if (components != null)
-			for (Tuple component: components) {
+		if (componentDefinitions != null)
+			for (Tuple component: componentDefinitions) {
+				int componentNumber = component.get("ComponentNumber").toInt();
 				boolean isOptional = component.get("isOptional").toBoolean();
 				boolean isAFile = component.get("isAFile").toBoolean();
 				/* FileExtensions REL {Extension CHAR} */
@@ -149,13 +184,18 @@ public class VarExternalDefinitionDialog extends Dialog {
 				fd_docsLabel.left = new FormAttachment(0);
 				fd_docsLabel.right = new FormAttachment(100);
 				docsLabel.setLayoutData(fd_docsLabel);
-				docsLabel.setText(docs);
+				docsLabel.setText(docs + ((isOptional) ? " (optional)" : ""));
+				
+				createComponent(componentNumber, isOptional, docsLabel);
 
 				Vector<Tuple> optionTuples = new Vector<Tuple>();
 				for (Tuple optionTuple: options)
 					optionTuples.add(optionTuple);
 				
 				if (optionTuples.size() == 0) {
+					// vectors of file extensions
+					Vector<String> fileExtensions = new Vector<String>();
+					Vector<String> fileExtensionDescriptions = new Vector<String>();
 					// fill-in blank
 					Button fileButton = null;
 					if (isAFile) {
@@ -165,11 +205,14 @@ public class VarExternalDefinitionDialog extends Dialog {
 						fd_fileButton.top = new FormAttachment(docsLabel, 4);
 						fd_fileButton.right = new FormAttachment(100);
 						fileButton.setLayoutData(fd_fileButton);
-						// vector of file extensions
-						Vector<String> fileExtensions = new Vector<String>();
-						for (Tuple fileExtension: extensions)
-							fileExtensions.add(fileExtension.get("Extension").toString());
-					}
+						for (Tuple fileExtension: extensions) {
+							String extension = fileExtension.get("Extension").toString();
+							fileExtensions.add("*." + extension);
+							fileExtensionDescriptions.add(extension);
+						}
+						fileExtensions.add("*.*");
+						fileExtensionDescriptions.add("All Files");
+					}					
 					Text componentText = new Text(componentPanel, SWT.BORDER);
 					FormData fd_componentText = new FormData();
 					fd_componentText.top = new FormAttachment(docsLabel, 4);
@@ -179,15 +222,51 @@ public class VarExternalDefinitionDialog extends Dialog {
 					else
 						fd_componentText.right = new FormAttachment(100);
 					componentText.setLayoutData(fd_componentText);
+					componentText.addModifyListener(new ModifyListener() {
+						@Override
+						public void modifyText(ModifyEvent e) {
+							updateComponent(componentNumber, componentText.getText());
+						}
+					});
+					// file button listener
+					if (fileButton != null)
+						fileButton.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+								if (loadFileDialog == null) {
+									loadFileDialog = new FileDialog(shlExternalDefinitionDialog, SWT.OPEN);
+									if (lastFilePath == null)
+										lastFilePath = System.getProperty("user.home");
+									loadFileDialog.setFilterPath(lastFilePath);
+									loadFileDialog.setText("Get File Path");
+								}
+								loadFileDialog.setFilterExtensions(fileExtensions.toArray(new String[0]));
+								loadFileDialog.setFilterNames(fileExtensionDescriptions.toArray(new String[0]));
+								String fname = loadFileDialog.open();
+								if (fname == null)
+									return;
+								lastFilePath = loadFileDialog.getFilterPath();
+								componentText.setText(fname);
+								updateComponent(componentNumber, componentText.getText());
+							}
+						});
 				} else if (optionTuples.size() == 1) {
 					// checkbox option
 					Button checkBox = new Button(componentPanel, SWT.CHECK);
 					Tuple optionTuple = optionTuples.elementAt(0);
-					checkBox.setText(optionTuple.get("Documentation").toString() + " " + optionTuple.get("OptionText").toString());
+					String optionDoc = optionTuple.get("Documentation").toString();
+					String optionText = optionTuple.get("OptionText").toString();
+					checkBox.setText(optionText + ": " + optionDoc);
 					FormData fd_checkBox = new FormData();
 					fd_checkBox.top = new FormAttachment(docsLabel, 4);
 					fd_checkBox.left = new FormAttachment(0);
 					checkBox.setLayoutData(fd_checkBox);
+					checkBox.addSelectionListener(new SelectionAdapter() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							updateComponent(componentNumber, ((checkBox.getSelection()) ? optionText : ""));
+						}
+					});
 				} else {
 					// combobox options
 					Combo combo = new Combo(componentPanel, SWT.NONE);
@@ -200,6 +279,12 @@ public class VarExternalDefinitionDialog extends Dialog {
 					fd_combo.top = new FormAttachment(docsLabel, 4);
 					fd_combo.left = new FormAttachment(0);
 					combo.setLayoutData(fd_combo);
+					combo.addSelectionListener(new SelectionAdapter() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							updateComponent(componentNumber, combo.getText());
+						}						
+					});
 				}
 			}
 		
@@ -210,6 +295,7 @@ public class VarExternalDefinitionDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				variableName = null;
 				variableType = null;
+				success = false;
 				shlExternalDefinitionDialog.dispose();
 			}
 		});
@@ -217,7 +303,38 @@ public class VarExternalDefinitionDialog extends Dialog {
 		btnOk.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				variableName = textVarName.getText();
+				variableName = textVarName.getText();				
+				String definition = "";
+				boolean missing = false;
+				for (int componentNumber = 0; componentNumber < components.size(); componentNumber++) {
+					ComponentInfo component = components.get(componentNumber);
+					String content = component.content.trim();
+					if (component.isOptional && content.length() == 0)
+						continue;
+					if (definition.length() > 0)
+						definition += ",";
+					if (content.length() > 0)
+						definition += content;
+					else if (!component.isOptional) {
+						component.docs.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
+						missing = true;
+					}
+				}
+				definition = "VAR " + variableName + " EXTERNAL " + variableType + " \"" + definition + "\";";
+				if (missing) {
+					MessageDialog.openError(shlExternalDefinitionDialog, "Missing Information", "Components shown in red must be filled in.");
+					return;
+				}
+				if (database.relvarExists(variableName)) {
+					MessageDialog.openInformation(shlExternalDefinitionDialog, "Note", "A variable named " + variableName + " already exists.");
+					return;
+				}
+				ExecuteResult result = database.exec(definition);
+				if (result.failed()) {
+					MessageDialog.openError(shlExternalDefinitionDialog, "Error", "Unable to create variable " + variableName + ": " + result.getErrorMessage());
+					return;
+				}
+				success = true;
 				shlExternalDefinitionDialog.dispose();
 			}
 		});

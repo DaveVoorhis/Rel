@@ -33,6 +33,10 @@ public class RevDatabase {
 		return connection.evaluate("GET_UNIQUE_NUMBER()").toLong();
 	}
 	
+	public ExecuteResult exec(String query) {
+		return connection.execute(query);
+	}
+	
 	private boolean execute(String query) {
 		ExecuteResult result = connection.execute(query);
 		if (result.failed()) {

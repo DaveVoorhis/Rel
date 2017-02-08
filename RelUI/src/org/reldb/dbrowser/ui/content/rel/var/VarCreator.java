@@ -47,21 +47,8 @@ public class VarCreator extends DbTreeAction {
 			relPanel.getTabFolder().setSelection(varDesignTab);
 		} else {
 			VarExternalDefinitionDialog veDialog = new VarExternalDefinitionDialog(database, relPanel.getShell(), typeString, "Variable" + database.getUniqueNumber());
-			String definition = veDialog.open();
-			if (definition == null)
-				return;
-			String varname = veDialog.getName();
-			if (database.relvarExists(varname)) {
-				MessageDialog.openInformation(relPanel.getShell(), "Note", "A variable named " + varname + " already exists.");
-				return;
-			}
-			ExecuteResult result = relPanel.getConnection().execute(definition);
-			if (result.failed()) {
-				MessageDialog.openError(relPanel.getShell(), "Error", "Unable to create variable " + varname + ": " + result.getErrorMessage());
-				return;
-			}
-			relPanel.redisplayed();
-		//	new DbTreeItem(item, varname);			
+			if (veDialog.create())
+				relPanel.redisplayed();
 		}
 	}
 
