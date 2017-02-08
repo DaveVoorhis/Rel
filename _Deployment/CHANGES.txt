@@ -2,6 +2,7 @@ Last used Exception* number: RS0481
 
 Version 3.005 (1.0.18):
 
+  - enhancement: Rel UI: external relvars easily created via Rel UI.
   - enhancement: Rel DBMS: sys.ExternalRelvarTypes relvar documents available external relvar types.
   - enhancement: Rel DBMS: sys.Keywords relvar lists all keywords in Rel / Tutorial D grammar.
   - enhancement: Rel UI: Syntax highlighting now obtains keyword list from database sys.Keywords relvar.

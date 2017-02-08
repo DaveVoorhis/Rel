@@ -6,9 +6,6 @@
 
 - SUMMARIZE BY is too slow. Make it faster.
 
-- Provide user-friendly mechanisms to create external relvars, and query what
-  external relvar kinds are available, with sample syntax.
-
 - Fix: Altering a relvar will almost certainly cause dependent VIEWs to break.
 
 - Test Extensions directory to handle user-added JDBC drivers with stand-alone DBMS.
