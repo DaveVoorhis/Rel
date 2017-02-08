@@ -18,6 +18,8 @@ import org.eclipse.swt.events.MouseEvent;
 
 public class VarTypeDialog extends Dialog {
 
+	static private String lastVariableType;
+	
 	private Shell shlVariableTypeAndName;
 	private RevDatabase database;
 	private String variableType;
@@ -41,11 +43,12 @@ public class VarTypeDialog extends Dialog {
 		return varType;
 	}
 	
-	private static String getSelectedType(List listVarType) {
+	private static String obtainSelectedType(List listVarType) {
 		String[] selected = listVarType.getSelection();
 		if (selected == null || selected.length == 0)
 			return null;
-		return selected[0];
+		lastVariableType = getVarTypeCode(selected[0]);
+		return lastVariableType;
 	}
 	
 	/**
@@ -90,10 +93,12 @@ public class VarTypeDialog extends Dialog {
 		fd_listVarType.right = new FormAttachment(100, -10);
 		listVarType.setLayoutData(fd_listVarType);
 		
+		if (lastVariableType == null)
+			lastVariableType = "REAL";
 		int index = 0;
 		for (String relvarType: database.getRelvarTypes()) {
 			listVarType.add(relvarType);
-			if (getVarTypeCode(relvarType).equalsIgnoreCase("REAL"))
+			if (getVarTypeCode(relvarType).equalsIgnoreCase(lastVariableType))
 				listVarType.setSelection(index);
 			index++;
 		}
@@ -117,7 +122,7 @@ public class VarTypeDialog extends Dialog {
 		listVarType.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				variableType = getSelectedType(listVarType);
+				variableType = obtainSelectedType(listVarType);
 			}
 		});
 		
@@ -132,7 +137,7 @@ public class VarTypeDialog extends Dialog {
 		btnOk.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				variableType = getSelectedType(listVarType);
+				variableType = obtainSelectedType(listVarType);
 				shlVariableTypeAndName.dispose();
 			}
 		});
@@ -140,7 +145,7 @@ public class VarTypeDialog extends Dialog {
 		listVarType.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				variableType = getSelectedType(listVarType);
+				variableType = obtainSelectedType(listVarType);
 				shlVariableTypeAndName.dispose();
 			}
 		});
