@@ -49,7 +49,7 @@ public class Registry {
 	 * 		Description CHAR,
 	 *      Documentation CHAR, 
 	 *      Components REL {
-	 *      	componentNumber INTEGER,
+	 *      	ComponentNumber INTEGER,
 	 *      	isOptional BOOLEAN,
 	 *      	isAFile BOOLEAN,
 	 *      	FileExtensions REL {
