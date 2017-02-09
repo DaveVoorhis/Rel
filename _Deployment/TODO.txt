@@ -1,5 +1,13 @@
 ** TO DO **
 
+- Check error message format on error messages that only print error line,
+  e.g., 
+		ERROR: RS0226: KEY {attr3} is a subset of KEY {attr2, attr4, attr3}
+
+		Line 2
+  Error handling seems to ignore the "ERROR: RS..." line, and only picks up
+  "Line 2".
+
 - Maybe associate "loading" screen with database loading, rather than Rel loading.
 
 - SUMMARIZE BY is too slow. Make it faster.
