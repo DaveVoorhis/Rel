@@ -8,6 +8,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.RevDatabase.Script;
+import org.reldb.dbrowser.ui.content.cmd.CmdPanelInput.ErrorInformation;
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class CmdPanel extends Composite {
@@ -49,7 +50,8 @@ public class CmdPanel extends Composite {
 			}
 			@Override
 			protected void notifyInputOfError(StringBuffer errorBuffer) {
-				cmdPanelInput.handleError(errorBuffer);
+				ErrorInformation eInfo = cmdPanelInput.handleError(errorBuffer);
+				notifyError(eInfo);
 			}
 			@Override
 			protected void zoom() {
@@ -81,6 +83,13 @@ public class CmdPanel extends Composite {
 		};
 		
 		sashForm.setWeights(new int[] {2, 1});
+	}
+
+	/** Override to receive notifications of errors. */
+	protected void notifyError(ErrorInformation eInfo) {}
+
+	public void run() {
+		cmdPanelInput.run();
 	}
 	
 	protected String getDefaultSaveFileName() {

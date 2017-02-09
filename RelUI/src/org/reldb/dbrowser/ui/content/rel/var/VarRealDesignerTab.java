@@ -13,9 +13,14 @@ public class VarRealDesignerTab extends DbTreeTab {
 	
 	public VarRealDesignerTab(RelPanel parent, DbTreeItem item) {
 		super(parent, item);
-		relvarDesigner = new RelvarDesignerComposite(parent.getTabFolder(), parent.getConnection(), item.getName());
+		relvarDesigner = new RelvarDesignerComposite(parent.getTabFolder(), parent.getConnection(), item.getName(), item.getTabName());
 		setControl(relvarDesigner);
 		ready();
+	}
+	
+	@Override
+	public boolean canClose() {
+		return !relvarDesigner.hasPendingChanges();
 	}
 	
 	public ToolBar getToolBar(Composite parent) {

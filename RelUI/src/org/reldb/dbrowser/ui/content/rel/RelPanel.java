@@ -230,6 +230,10 @@ public class RelPanel extends Composite {
 		tabFolder.addCTabFolder2Listener(new CTabFolder2Adapter() {
 			@Override
 			public void close(CTabFolderEvent event) {
+				if (!((DbTreeTab)event.item).canClose()) {
+					event.doit = false;
+					return;
+				}
 				if (tabFolder.getItemCount() <= 1)
 					unzoom();
 			}

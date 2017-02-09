@@ -40,4 +40,9 @@ public class DbTreeTab extends CTabItem {
 	}
 
 	public void zoom() {}
+
+	/** Override to allow a tab to reject a request to close. */
+	public boolean canClose() {
+		return true;
+	}
 }

@@ -585,7 +585,7 @@ public class CmdPanelInput extends Composite {
 		}		
 	}
 
-	public void handleError(StringBuffer errorBuffer) {
+	public ErrorInformation handleError(StringBuffer errorBuffer) {
 		ErrorInformation eInfo = parseErrorInformationFrom(errorBuffer.toString());
 		if (eInfo != null) {
 			int offset = 0;
@@ -610,6 +610,7 @@ public class CmdPanelInput extends Composite {
 			System.out.println("CmdPanelInput: Unable to locate error in " + errorBuffer.toString());
 		errorBuffer = null;
 		inputText.setFocus();
+		return eInfo;
 	}
 
 	public void setText(String text) {
@@ -698,7 +699,7 @@ public class CmdPanelInput extends Composite {
 		tlitmNextHistory.setEnabled(currentHistoryItem < getHistorySize() - 1 && getHistorySize() > 1);
 	}
 
-	private void run() {
+	public void run() {
 		showRunningStart();
 		String text = saveToHistory();
 		notifyGo(text);	
@@ -763,11 +764,13 @@ public class CmdPanelInput extends Composite {
 		}
 	}
 	
-	private static class ErrorInformation {
+	public static class ErrorInformation {
 		private int line;
 		private int column;
 		private String badToken;
-		ErrorInformation(int line, int column, String badToken) {
+		private String errorMessage;
+		ErrorInformation(String errorMessage, int line, int column, String badToken) {
+			this.errorMessage = errorMessage;
 			this.line = line;
 			this.column = column;
 			this.badToken = badToken;
@@ -789,9 +792,13 @@ public class CmdPanelInput extends Composite {
 				output += " near " + badToken;
 			return output;
 		}
+		public String getMessage() {
+			return errorMessage;
+		}
 	}
 	
 	private ErrorInformation parseErrorInformationFrom(String eInfo) {
+		String eMsg = eInfo;
 		try {
 			String badToken = null;
 			String[] errorPrefix = {
@@ -854,11 +861,11 @@ public class CmdPanelInput extends Composite {
 								badToken = eInfo.substring(afterEncounteredTextPosition - 1, lastQuotePosition);
 							}
 						}
-						return new ErrorInformation(line, column, badToken);
+						return new ErrorInformation(eMsg, line, column, badToken);
 					} else
-						return new ErrorInformation(line, -1, badToken);
+						return new ErrorInformation(eMsg, line, -1, badToken);
 				} else
-					return new ErrorInformation(line, -1, badToken);
+					return new ErrorInformation(eMsg, line, -1, badToken);
 			}
 		} catch (Throwable t) {
 			System.out.println("CmdPanelInput: unable to parse " + eInfo + " due to " + t);

@@ -2,6 +2,8 @@ Last used Exception* number: RS0481
 
 Version 3.005 (1.0.18):
 
+  - enhancement: Rel UI: REAL relvar design view aesthetically improved, and prompts user
+                 if attempt is made to close tab without applying pending changes.
   - enhancement: Rel UI: external relvars easily created via Rel UI.
   - enhancement: Rel DBMS: sys.ExternalRelvarTypes relvar documents available external relvar types.
   - enhancement: Rel DBMS: sys.Keywords relvar lists all keywords in Rel / Tutorial D grammar.
