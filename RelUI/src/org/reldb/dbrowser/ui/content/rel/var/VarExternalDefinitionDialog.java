@@ -28,6 +28,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.layout.FillLayout;
 
 public class VarExternalDefinitionDialog extends Dialog {
 
@@ -81,6 +83,16 @@ public class VarExternalDefinitionDialog extends Dialog {
 		components.put(componentNumber, new ComponentInfo(componentInfo, content));
 	}
 
+	/**
+	 * Open and process dialog. Return true if relvar created.
+	 * @deprecated Retained only to make WindowBuilder work.
+	 *             Use {@link #create()} instead.
+	 */
+	@Deprecated 
+	public boolean open() {
+		return create();
+	}
+	
 	public boolean create() {
 		createContents();
 		shlExternalDefinitionDialog.open();
@@ -108,6 +120,8 @@ public class VarExternalDefinitionDialog extends Dialog {
 			componentDefinitions = (Tuples)tuple.get("Components");
 		}
 		
+		// from top down
+		
 		Label lblVarName = new Label(shlExternalDefinitionDialog, SWT.NONE);
 		FormData fd_lblVarName = new FormData();
 		fd_lblVarName.top = new FormAttachment(0, 10);
@@ -133,6 +147,8 @@ public class VarExternalDefinitionDialog extends Dialog {
 		textDocumentation.setLayoutData(fd_textDocumentation);
 		textDocumentation.setText((documentation != null) ? documentation : "");
 		
+		// from bottom up
+		
 		Button btnCancel = new Button(shlExternalDefinitionDialog, SWT.NONE);
 		FormData fd_btnCancel = new FormData();
 		fd_btnCancel.bottom = new FormAttachment(100, -10);
@@ -147,11 +163,29 @@ public class VarExternalDefinitionDialog extends Dialog {
 		btnOk.setLayoutData(fd_btnOk);
 		btnOk.setText("Ok");
 		
+		Group groupDup = new Group(shlExternalDefinitionDialog, SWT.NONE);
+		groupDup.setLayout(new FillLayout(SWT.VERTICAL));
+		FormData fd_groupDup = new FormData();
+		fd_groupDup.left = new FormAttachment(0, 10);
+		fd_groupDup.right = new FormAttachment(100, -10);
+		fd_groupDup.bottom = new FormAttachment(btnOk, -10);
+		groupDup.setLayoutData(fd_groupDup);
+		
+		Button btnAUTOKEY = new Button(groupDup, SWT.RADIO);
+		btnAUTOKEY.setText("AUTOKEY: Automatically generate a key.");
+		btnAUTOKEY.setSelection(true);
+		
+		Button btnDUP_REMOVE = new Button(groupDup, SWT.RADIO);
+		btnDUP_REMOVE.setText("DUP_REMOVE: Silently remove duplicate tuples.");
+		
+		Button btnDUP_COUNT = new Button(groupDup, SWT.RADIO);
+		btnDUP_COUNT.setText("DUP_COUNT: Count duplicate tuples.");
+		
 		Composite container = new Composite(shlExternalDefinitionDialog, SWT.NONE);
 		FormData fd_scrolledComposite = new FormData();
 		fd_scrolledComposite.right = new FormAttachment(100, -10);
 		fd_scrolledComposite.left = new FormAttachment(0, 10);
-		fd_scrolledComposite.bottom = new FormAttachment(btnOk, -10);
+		fd_scrolledComposite.bottom = new FormAttachment(groupDup, -10);
 		container.setLayoutData(fd_scrolledComposite);
 		
 		fd_textDocumentation.bottom = new FormAttachment(container, -10);
@@ -320,7 +354,14 @@ public class VarExternalDefinitionDialog extends Dialog {
 						missing = true;
 					}
 				}
-				definition = "VAR " + variableName + " EXTERNAL " + variableType + " \"" + definition + "\";";
+				String dupHandling = "";
+				if (btnDUP_REMOVE.getSelection())
+					dupHandling = "DUP_REMOVE";
+				else if (btnDUP_COUNT.getSelection())
+					dupHandling = "DUP_COUNT";
+				else
+					dupHandling = "AUTOKEY";
+				definition = "VAR " + variableName + " EXTERNAL " + variableType + " \"" + definition + "\" " + dupHandling + ";";
 				if (missing) {
 					MessageDialog.openError(shlExternalDefinitionDialog, "Missing Information", "Components shown in red must be filled in.");
 					return;

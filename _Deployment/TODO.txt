@@ -1,7 +1,5 @@
 ** TO DO **
 
-- On VAR ... EXTERNAL ... UI, include facility for selecting DUP_REMOVE, DUP_COUNT, and AUTOKEY
-
 - "ALTER RELVAR" dialogs should warn the user if he/she leaves without activating the change.
 
 - Maybe associate "loading" screen with database loading, rather than Rel loading.
