@@ -1,5 +1,7 @@
 package org.reldb.dbrowser.ui.content.rel.var;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -283,6 +285,10 @@ public class VarExternalDefinitionDialog extends Dialog {
 								lastFilePath = loadFileDialog.getFilterPath();
 								componentText.setText(fname);
 								updateComponent(componentNumber, componentText.getText());
+								Path p = Paths.get(fname);
+								String justName = p.getFileName().toString();
+								if (variableName.equals(textVarName.getText()))
+									textVarName.setText(justName);
 							}
 						});
 				} else if (optionTuples.size() == 1) {
