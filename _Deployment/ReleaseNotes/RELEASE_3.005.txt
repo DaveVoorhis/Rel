@@ -4,6 +4,9 @@ This is a minor maintenance release of Rel, an implementation of Date &
 Darwen's "Tutorial D" database language. It makes some improvements to
 the Rel user interface, adds some system relvars, and fixes two bugs.
 
+IMPORTANT NOTE: Once opened with this or later versions of Rel, 
+                databases cannot be read by earlier versions.
+
 The following enhancements have been made:
 
 - The Rel user interface's REAL relvar design view has been
