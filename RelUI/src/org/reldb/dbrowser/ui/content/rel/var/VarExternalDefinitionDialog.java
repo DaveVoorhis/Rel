@@ -122,27 +122,12 @@ public class VarExternalDefinitionDialog extends Dialog {
 		
 		// from top down
 		
-		Label lblVarName = new Label(shlExternalDefinitionDialog, SWT.NONE);
-		FormData fd_lblVarName = new FormData();
-		fd_lblVarName.top = new FormAttachment(0, 10);
-		fd_lblVarName.left = new FormAttachment(0, 10);
-		lblVarName.setLayoutData(fd_lblVarName);
-		lblVarName.setText("Name:");
-		
-		textVarName = new Text(shlExternalDefinitionDialog, SWT.BORDER);
-		FormData fd_textVarName = new FormData();
-		fd_textVarName.right = new FormAttachment(100, -10);
-		fd_textVarName.top = new FormAttachment(0, 10);
-		fd_textVarName.left = new FormAttachment(lblVarName, 6);
-		textVarName.setLayoutData(fd_textVarName);
-		textVarName.setText(variableName);
-		
 		textDocumentation = new Text(shlExternalDefinitionDialog, SWT.NONE);
 		textDocumentation.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		textDocumentation.setEditable(false);
 		FormData fd_textDocumentation = new FormData();
 		fd_textDocumentation.right = new FormAttachment(100, -10);
-		fd_textDocumentation.top = new FormAttachment(textVarName, 10);
+		fd_textDocumentation.top = new FormAttachment(0, 10);
 		fd_textDocumentation.left = new FormAttachment(0, 10);
 		textDocumentation.setLayoutData(fd_textDocumentation);
 		textDocumentation.setText((documentation != null) ? documentation : "");
@@ -163,12 +148,28 @@ public class VarExternalDefinitionDialog extends Dialog {
 		btnOk.setLayoutData(fd_btnOk);
 		btnOk.setText("Ok");
 		
+		textVarName = new Text(shlExternalDefinitionDialog, SWT.BORDER);
+		FormData fd_textVarName = new FormData();
+		fd_textVarName.bottom = new FormAttachment(btnOk, -10);
+		fd_textVarName.right = new FormAttachment(100, -10);
+		textVarName.setLayoutData(fd_textVarName);
+		textVarName.setText(variableName);
+		
+		Label lblVarName = new Label(shlExternalDefinitionDialog, SWT.NONE);
+		FormData fd_lblVarName = new FormData();
+		fd_lblVarName.bottom = new FormAttachment(btnOk, -10);
+		fd_lblVarName.left = new FormAttachment(0, 10);
+		lblVarName.setLayoutData(fd_lblVarName);
+		lblVarName.setText("Name:");
+
+		fd_textVarName.left = new FormAttachment(lblVarName, 6);
+		
 		Group groupDup = new Group(shlExternalDefinitionDialog, SWT.NONE);
 		groupDup.setLayout(new FillLayout(SWT.VERTICAL));
 		FormData fd_groupDup = new FormData();
 		fd_groupDup.left = new FormAttachment(0, 10);
 		fd_groupDup.right = new FormAttachment(100, -10);
-		fd_groupDup.bottom = new FormAttachment(btnOk, -10);
+		fd_groupDup.bottom = new FormAttachment(lblVarName, -10);
 		groupDup.setLayoutData(fd_groupDup);
 		
 		Button btnAUTOKEY = new Button(groupDup, SWT.RADIO);
@@ -379,5 +380,7 @@ public class VarExternalDefinitionDialog extends Dialog {
 				shlExternalDefinitionDialog.dispose();
 			}
 		});
+		
+		container.setFocus();
 	}
 }
