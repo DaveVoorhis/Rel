@@ -5,9 +5,19 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.tests.BaseOfTest;
+import org.reldb.rel.v0.storage.relvars.external.ColumnName;
 import org.reldb.rel.v0.values.*;
 
 public class TestRel extends BaseOfTest {
+	
+	@Test
+	public void testExternalRelvarColumnRenamer() {
+		String source = "0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890#!@£$%^&*()_-+=:;'\"|\\/?><.,~`±§";
+		String target = "_0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890#______________________________";
+		assertEquals(ColumnName.cleanName(source), target);
+		// target length should equal source length plus 1 to allow for leading '_' because of leading '0' in source
+		assertEquals(target.length(), source.length() + 1);
+	}
 	
 	@Test 
 	public void testTrueIsTrue() {
