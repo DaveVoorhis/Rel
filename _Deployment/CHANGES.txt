@@ -1,5 +1,7 @@
 Last used Exception* number: RS0481
 
+Version 3.006 (1.0.19):
+
 Version 3.005 (1.0.18):
 
   - enhancement: Rel UI: REAL relvar design view aesthetically improved, and prompts user

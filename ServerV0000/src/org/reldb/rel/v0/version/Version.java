@@ -9,7 +9,7 @@ public class Version {
    
     private static final int PRODUCT_VERSION = 1;
     private static final int DATABASE_VERSION = 0;
-    private static final int REVISION = 18;
+    private static final int REVISION = 19;
     private static final String RELEASE = "Beta";
     
 	public final static String expectedBerkeleyDBVersion = "7.0.6";
