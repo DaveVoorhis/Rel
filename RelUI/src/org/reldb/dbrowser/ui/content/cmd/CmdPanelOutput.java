@@ -125,10 +125,8 @@ public class CmdPanelOutput extends Composite {
 			 			compilerErrorBuffer = new StringBuffer();
 					reply = new StringBuffer();
 					errorBuffer = new StringBuffer();
-					if (r.contains(", column")) {
-						errorBuffer.append(r);
-						errorBuffer.append('\n');
-					}
+					errorBuffer.append(r);
+					errorBuffer.append('\n');
 			 	} else if (r.startsWith("NOTICE")) {
 					noticeResponse(r);
 					reply = new StringBuffer();
