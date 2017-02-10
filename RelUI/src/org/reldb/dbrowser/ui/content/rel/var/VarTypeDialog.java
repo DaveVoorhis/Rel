@@ -73,7 +73,7 @@ public class VarTypeDialog extends Dialog {
 	 */
 	private void createContents() {
 		shlVariableTypeAndName = new Shell(getParent(), getStyle());
-		shlVariableTypeAndName.setSize(450, 318);
+		shlVariableTypeAndName.setSize(550, 320);
 		shlVariableTypeAndName.setText("Variable Type and Name");
 		shlVariableTypeAndName.setLayout(new FormLayout());
 		

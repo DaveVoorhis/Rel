@@ -43,7 +43,6 @@ public class VarExternalDefinitionDialog extends Dialog {
 	private String variableName;
 	private String variableType;
 	private Text textVarName;
-	private Text textDocumentation;
 	private boolean success;
 
 	public VarExternalDefinitionDialog(Shell shell, int style) {
@@ -114,84 +113,18 @@ public class VarExternalDefinitionDialog extends Dialog {
 		shlExternalDefinitionDialog.setText("External Variable Definition");
 		shlExternalDefinitionDialog.setLayout(new FormLayout());
 		
-		String documentation = null;
 		Tuples componentDefinitions = null;
 		Tuple tuple = database.getExternalRelvarTypeInfo(variableType);
 		if (tuple != null) {
-			documentation = tuple.get("Documentation").toString();
 			componentDefinitions = (Tuples)tuple.get("Components");
 		}
 		
-		// from top down
-		
-		textDocumentation = new Text(shlExternalDefinitionDialog, SWT.NONE);
-		textDocumentation.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
-		textDocumentation.setEditable(false);
-		FormData fd_textDocumentation = new FormData();
-		fd_textDocumentation.right = new FormAttachment(100, -10);
-		fd_textDocumentation.top = new FormAttachment(0, 10);
-		fd_textDocumentation.left = new FormAttachment(0, 10);
-		textDocumentation.setLayoutData(fd_textDocumentation);
-		textDocumentation.setText((documentation != null) ? documentation : "");
-		
-		// from bottom up
-		
-		Button btnCancel = new Button(shlExternalDefinitionDialog, SWT.NONE);
-		FormData fd_btnCancel = new FormData();
-		fd_btnCancel.bottom = new FormAttachment(100, -10);
-		fd_btnCancel.right = new FormAttachment(100, -10);
-		btnCancel.setLayoutData(fd_btnCancel);
-		btnCancel.setText("Cancel");
-				
-		Button btnOk = new Button(shlExternalDefinitionDialog, SWT.NONE);
-		FormData fd_btnOk = new FormData();
-		fd_btnOk.bottom = new FormAttachment(100, -10);
-		fd_btnOk.right = new FormAttachment(btnCancel, -10);
-		btnOk.setLayoutData(fd_btnOk);
-		btnOk.setText("Ok");
-		
-		textVarName = new Text(shlExternalDefinitionDialog, SWT.BORDER);
-		FormData fd_textVarName = new FormData();
-		fd_textVarName.bottom = new FormAttachment(btnOk, -10);
-		fd_textVarName.right = new FormAttachment(100, -10);
-		textVarName.setLayoutData(fd_textVarName);
-		textVarName.setText(variableName);
-		
-		Label lblVarName = new Label(shlExternalDefinitionDialog, SWT.NONE);
-		FormData fd_lblVarName = new FormData();
-		fd_lblVarName.bottom = new FormAttachment(btnOk, -10);
-		fd_lblVarName.left = new FormAttachment(0, 10);
-		lblVarName.setLayoutData(fd_lblVarName);
-		lblVarName.setText("Name:");
-
-		fd_textVarName.left = new FormAttachment(lblVarName, 6);
-		
-		Group groupDup = new Group(shlExternalDefinitionDialog, SWT.NONE);
-		groupDup.setLayout(new FillLayout(SWT.VERTICAL));
-		FormData fd_groupDup = new FormData();
-		fd_groupDup.left = new FormAttachment(0, 10);
-		fd_groupDup.right = new FormAttachment(100, -10);
-		fd_groupDup.bottom = new FormAttachment(lblVarName, -10);
-		groupDup.setLayoutData(fd_groupDup);
-		
-		Button btnAUTOKEY = new Button(groupDup, SWT.RADIO);
-		btnAUTOKEY.setText("AUTOKEY: Automatically generate a key.");
-		btnAUTOKEY.setSelection(true);
-		
-		Button btnDUP_REMOVE = new Button(groupDup, SWT.RADIO);
-		btnDUP_REMOVE.setText("DUP_REMOVE: Silently remove duplicate tuples.");
-		
-		Button btnDUP_COUNT = new Button(groupDup, SWT.RADIO);
-		btnDUP_COUNT.setText("DUP_COUNT: Count duplicate tuples.");
-		
 		Composite container = new Composite(shlExternalDefinitionDialog, SWT.NONE);
 		FormData fd_scrolledComposite = new FormData();
+		fd_scrolledComposite.top = new FormAttachment(0, 10);
 		fd_scrolledComposite.right = new FormAttachment(100, -10);
 		fd_scrolledComposite.left = new FormAttachment(0, 10);
-		fd_scrolledComposite.bottom = new FormAttachment(groupDup, -10);
 		container.setLayoutData(fd_scrolledComposite);
-		
-		fd_textDocumentation.bottom = new FormAttachment(container, -10);
 		
 		GridLayout containerLayout = new GridLayout();
 		containerLayout.numColumns = 1;
@@ -328,6 +261,55 @@ public class VarExternalDefinitionDialog extends Dialog {
 					});
 				}
 			}
+		
+		Label lblVarName = new Label(shlExternalDefinitionDialog, SWT.NONE);
+		FormData fd_lblVarName = new FormData();
+		fd_lblVarName.top = new FormAttachment(container, 10);
+		fd_lblVarName.left = new FormAttachment(0, 10);
+		lblVarName.setLayoutData(fd_lblVarName);
+		lblVarName.setText("Name:");
+		
+		textVarName = new Text(shlExternalDefinitionDialog, SWT.BORDER);
+		FormData fd_textVarName = new FormData();
+		fd_textVarName.top = new FormAttachment(container, 10);
+		fd_textVarName.left = new FormAttachment(lblVarName, 6);
+		fd_textVarName.right = new FormAttachment(100, -10);
+		textVarName.setLayoutData(fd_textVarName);
+		textVarName.setText(variableName);
+		
+		Group groupDup = new Group(shlExternalDefinitionDialog, SWT.NONE);
+		groupDup.setLayout(new FillLayout(SWT.VERTICAL));
+		FormData fd_groupDup = new FormData();
+		fd_groupDup.top = new FormAttachment(textVarName, 10);
+		fd_groupDup.left = new FormAttachment(0, 10);
+		fd_groupDup.right = new FormAttachment(100, -10);
+		groupDup.setLayoutData(fd_groupDup);
+		
+		Button btnAUTOKEY = new Button(groupDup, SWT.RADIO);
+		btnAUTOKEY.setText("AUTOKEY: Automatically generate a key.");
+		btnAUTOKEY.setSelection(true);
+		
+		Button btnDUP_REMOVE = new Button(groupDup, SWT.RADIO);
+		btnDUP_REMOVE.setText("DUP_REMOVE: Silently remove duplicate tuples.");
+		
+		Button btnDUP_COUNT = new Button(groupDup, SWT.RADIO);
+		btnDUP_COUNT.setText("DUP_COUNT: Count duplicate tuples.");
+		
+		Button btnCancel = new Button(shlExternalDefinitionDialog, SWT.NONE);
+		FormData fd_btnCancel = new FormData();
+		fd_btnCancel.bottom = new FormAttachment(100, -10);
+		fd_btnCancel.right = new FormAttachment(100, -10);
+		btnCancel.setLayoutData(fd_btnCancel);
+		btnCancel.setText("Cancel");
+				
+		Button btnOk = new Button(shlExternalDefinitionDialog, SWT.NONE);
+		FormData fd_btnOk = new FormData();
+		fd_btnOk.bottom = new FormAttachment(100, -10);
+		fd_btnOk.right = new FormAttachment(btnCancel, -10);
+		btnOk.setLayoutData(fd_btnOk);
+		btnOk.setText("Ok");
+		
+		fd_groupDup.bottom = new FormAttachment(btnOk, -10);
 		
 		shlExternalDefinitionDialog.pack();
 		
