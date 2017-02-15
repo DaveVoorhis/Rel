@@ -1,5 +1,7 @@
 ** TO DO **
 
+- In Rev, single quotes in RESTRICT expression cause expression not to be saved.
+
 - Provide external relvar for Rel DBMSs.
 
 - On external relvar dialogs, make sure backslashes are appropriately handled in file paths.
