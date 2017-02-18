@@ -1,6 +1,6 @@
 ** TO DO **
 
-- In Rev, single quotes in RESTRICT expression cause expression not to be saved.
+- UPDATE operator needs duplicate removal.
 
 - Provide external relvar for Rel DBMSs.
 
