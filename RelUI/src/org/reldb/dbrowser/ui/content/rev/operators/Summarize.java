@@ -23,6 +23,7 @@ import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
+import org.reldb.rel.utilities.StringUtils;
 
 public class Summarize extends OperatorWithControlPanel {
 	
@@ -93,8 +94,8 @@ public class Summarize extends OperatorWithControlPanel {
 					"     ID " + id + ", " +
 					"     asAttribute '" + as + "', " +
 					"     aggregateOp '" + aggOpName + "', " +
-					"     expression1 '" + ((expression1 != null) ? expression1 : "") + "', " +
-					"     expression2 '" + ((expression2 != null) ? expression2 : "") + "'" +
+					"     expression1 '" + ((expression1 != null) ? StringUtils.quote(expression1) : "") + "', " +
+					"     expression2 '" + ((expression2 != null) ? StringUtils.quote(expression2) : "") + "'" +
 					"}";
 		}
 	}
@@ -197,10 +198,10 @@ public class Summarize extends OperatorWithControlPanel {
 			}
 			String as = t.getAttributeValue("asAttribute").toString();
 			String aggregateOp = t.getAttributeValue("aggregateOp").toString();
-			String expression1 = t.getAttributeValue("expression1").toString();
+			String expression1 = StringUtils.unquote(t.getAttributeValue("expression1").toString());
 			if (expression1.length() == 0)
 				expression1 = null;
-			String expression2 = t.getAttributeValue("expression2").toString();
+			String expression2 = StringUtils.unquote(t.getAttributeValue("expression2").toString());
 			if (expression2.length() == 0)
 				expression2 = null;
 			aggregations.add(new Aggregate(as, aggregateOp, expression1, expression2));

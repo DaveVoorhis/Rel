@@ -18,6 +18,7 @@ import org.reldb.dbrowser.ui.content.rev.OperatorWithControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
+import org.reldb.rel.utilities.StringUtils;
 
 public class Extend extends OperatorWithControlPanel {
 	
@@ -81,7 +82,7 @@ public class Extend extends OperatorWithControlPanel {
 			specification += "  TUPLE {";
 			specification += "ID " + (id++) + ", ";
 			specification += "attribute '" + extending.getAs() + "', ";
-			specification += "expression '" + extending.getExpression() + "'}";
+			specification += "expression '" + StringUtils.quote(extending.getExpression()) + "'}";
 		}
 		specification += "}";
 		return specification;
@@ -95,7 +96,7 @@ public class Extend extends OperatorWithControlPanel {
 		Iterator<Tuple> i = tuples.iterator();
 		while (i.hasNext()) {
 			Tuple t = i.next();
-			extendings.add(new Extending(t.getAttributeValue("expression").toString(), t.getAttributeValue("attribute").toString()));
+			extendings.add(new Extending(StringUtils.unquote(t.getAttributeValue("expression").toString()), t.getAttributeValue("attribute").toString()));
 		}
 		extendings.add(new Extending());
 		operatorLabel.setText(getSpecificationAsString());

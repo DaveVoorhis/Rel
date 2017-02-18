@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
+import org.reldb.rel.utilities.StringUtils;
 
 public class Expression extends OperatorWithControlPanel {
 	
@@ -28,13 +29,14 @@ public class Expression extends OperatorWithControlPanel {
 		if (tuple == null)
 			operatorLabel.setText("true");
 		else {
-			String definition = tuple.getAttributeValue("Definition").toString();
+			String definition = StringUtils.unquote(tuple.getAttributeValue("Definition").toString());
 			operatorLabel.setText(definition);
 		}
 	}
 	
 	private void save() {
-		getDatabase().updatePreservedStateOperator(getID(), operatorLabel.getText());
+		String quotedDefinition = StringUtils.quote(operatorLabel.getText());
+		getDatabase().updatePreservedStateOperator(getID(), quotedDefinition);
 	}
 	
 	@Override

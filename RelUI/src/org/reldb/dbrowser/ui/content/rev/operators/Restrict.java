@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
+import org.reldb.rel.v0.values.StringUtils;
 
 public class Restrict extends Monadic {
 	
@@ -25,13 +26,14 @@ public class Restrict extends Monadic {
 		if (tuple == null)
 			operatorLabel.setText("true");
 		else {
-			String definition = tuple.getAttributeValue("Definition").toString();
+			String definition = StringUtils.unquote(tuple.getAttributeValue("Definition").toString());
 			operatorLabel.setText(definition);
 		}
 	}
 	
 	private void save() {
-		getDatabase().updatePreservedStateOperator(getID(), operatorLabel.getText());
+		String quotedDefinition = StringUtils.quote(operatorLabel.getText());
+		getDatabase().updatePreservedStateOperator(getID(), quotedDefinition);
 	}
 	
 	@Override

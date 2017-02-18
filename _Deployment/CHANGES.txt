@@ -3,6 +3,8 @@ Last used Exception* number: RS0481
 Version 3.006 (1.0.19):
 
   - fix: Rel DBMS: External relvar column name cleanup erroneously turned 'g' and 'i' to '_'. Fixed.
+  - fix: Rel UI: In Rev, single quotes in RESTRICT, EXTEND, SUMMARIZE or UPDATE expression 
+         caused expression not to be saved. Fixed.
 
 Version 3.005 (1.0.18):
 
