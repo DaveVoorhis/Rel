@@ -1241,6 +1241,20 @@ public class TestRel extends BaseOfTest {
 	}
 	
 	@Test
+	public void testRelationUpdateExpression1() {
+		String src =
+			"UPDATE relation {tuple {x 3, y 4.5, z \"test\"}, tuple {x 2, y 4.5, z \"test\"}} : {y := 2.2, z := \"glub\"}";
+		testEquals("RELATION {x INTEGER, y RATIONAL, z CHARACTER} {\n\tTUPLE {x 3, y 2.2, z \"glub\"},\n\tTUPLE {x 2, y 2.2, z \"glub\"}\n}", src);
+	}
+	
+	@Test
+	public void testRelationUpdateExpression2() {
+		String src =
+			"UPDATE relation {tuple {x 3, y 4.5, z \"test\"}, tuple {x 2, y 4.5, z \"test\"}} : {x := 2, z := \"glub\"}";
+		testEquals("RELATION {x INTEGER, y RATIONAL, z CHARACTER} {\n\tTUPLE {x 2, y 4.5, z \"glub\"}\n}", src);
+	}
+	
+	@Test
 	public void testTupleUpdateExpression1() {
 		String src =
 			"UPDATE tuple {x 3, y 4.5, z \"test\"} : {x := 2, z := \"glub\"}";
