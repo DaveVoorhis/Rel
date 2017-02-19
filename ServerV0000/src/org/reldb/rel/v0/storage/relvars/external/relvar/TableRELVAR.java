@@ -15,7 +15,6 @@ import org.reldb.rel.v0.values.RelTupleFilter;
 import org.reldb.rel.v0.values.RelTupleMap;
 import org.reldb.rel.v0.values.TupleFilter;
 import org.reldb.rel.v0.values.TupleIterator;
-import org.reldb.rel.v0.values.TupleIteratorAutokey;
 import org.reldb.rel.v0.values.ValueRelation;
 import org.reldb.rel.v0.values.ValueTuple;
 import org.reldb.rel.v0.vm.Context;
@@ -24,14 +23,12 @@ public class TableRELVAR extends TableCustom {
 
 	private RelvarRELVARMetadata meta;
 	private Generator generator;
-	private DuplicateHandling duplicates;
 	private ClientNetwork connection;
 	private Heading fileHeading;
 
 	public TableRELVAR(String Name, RelvarExternalMetadata metadata, Generator generator, DuplicateHandling duplicates) {
 		meta = (RelvarRELVARMetadata) metadata;
 		this.generator = generator;
-		this.duplicates = duplicates;
 		RelDatabase database = generator.getDatabase();
 		RelvarHeading heading = meta.getHeadingDefinition(database);
 		Heading storedHeading = heading.getHeading();
@@ -42,15 +39,7 @@ public class TableRELVAR extends TableCustom {
 
 	@Override
 	public TupleIterator iterator() {
-		switch (duplicates) {
-			case DUP_REMOVE:
-				return emitRelIterator(meta.getRelvar());
-			case DUP_COUNT: 
-				return emitRelIterator("EXTEND " + meta.getRelvar() + ": {DUP_COUNT := 1}");
-			case AUTOKEY: 
-				return new TupleIteratorAutokey(emitRelIterator(meta.getRelvar()), generator);
-			default: throw new ExceptionSemantic("RS0491: Duplicate handling method " + duplicates.toString() + " not supported by external Rel relvars.");
-		}
+		return eval(meta.getRelvar()).iterator();
 	}
 
 	@Override
@@ -177,9 +166,5 @@ public class TableRELVAR extends TableCustom {
 		} catch (Throwable e) {
 			throw new ExceptionSemantic("RS0497: Unable to process result from remote Rel DBMS due to: " + e);
 		}
-	}
-	
-	private TupleIterator emitRelIterator(String query) {
-		return eval(query).iterator();
 	}
 }

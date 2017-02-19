@@ -7,7 +7,6 @@ import org.reldb.rel.client.connection.string.ClientNetwork;
 import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.shared.Defaults;
 import org.reldb.rel.v0.generator.Generator;
-import org.reldb.rel.v0.generator.SelectAttributes;
 import org.reldb.rel.v0.interpreter.Evaluation;
 import org.reldb.rel.v0.interpreter.Interpreter;
 import org.reldb.rel.v0.storage.RelDatabase;
@@ -20,7 +19,6 @@ import org.reldb.rel.v0.storage.tables.TableExternal.DuplicateHandling;
 import org.reldb.rel.v0.types.Attribute;
 import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.types.TypeRelation;
-import org.reldb.rel.v0.types.builtin.TypeInteger;
 
 public class RelvarRELVARMetadata extends RelvarCustomMetadata {
 	public static final long serialVersionUID = 0;
@@ -32,8 +30,6 @@ public class RelvarRELVARMetadata extends RelvarCustomMetadata {
 	private String password;
 	private String relvar;
 	private int port = Defaults.getDefaultPort();
-	
-	private DuplicateHandling duplicates;
 
 	public static RelvarHeading getHeading(RelDatabase database, String spec, DuplicateHandling duplicates) {
 		String[] values = CSVLineParse.parseTrimmed(spec);	
@@ -73,19 +69,10 @@ public class RelvarRELVARMetadata extends RelvarCustomMetadata {
 				throw new ExceptionSemantic("RS0493: Error obtaining remote Rel relvar.");
 			TypeRelation typeRelation = (TypeRelation)result.getType();
 			Heading heading = new Heading();
-			if (duplicates == DuplicateHandling.DUP_COUNT)
-				heading.add("_DUP_COUNT", TypeInteger.getInstance());
-			else if (duplicates == DuplicateHandling.AUTOKEY)
-				heading.add("_AUTOKEY", TypeInteger.getInstance());		
 			Vector<Attribute> attributes = typeRelation.getHeading().getAttributes();
 			for (Attribute attribute: attributes)
 				heading.add(attribute);
 			RelvarHeading relvarHeading = new RelvarHeading(heading);
-			if (duplicates == DuplicateHandling.AUTOKEY) {
-				SelectAttributes keyAttribute = new SelectAttributes();
-				keyAttribute.add("_AUTOKEY");
-				relvarHeading.addKey(keyAttribute);
-			}
 			return relvarHeading;
 		} catch (Throwable t) {
 			throw new ExceptionSemantic("RS0492: Error obtaining remote Rel relvar: " + t);			
@@ -94,7 +81,7 @@ public class RelvarRELVARMetadata extends RelvarCustomMetadata {
 
 	@Override
 	public String getSourceDefinition() {
-		return "EXTERNAL RELVAR \"" + host + ", " + user + ", " + password + ", " + relvar + ", " + port + "\" " + duplicates;
+		return "EXTERNAL RELVAR \"" + host + ", " + user + ", " + password + ", " + relvar + ", " + port + "\"";
 	}
 
 	public RelvarRELVARMetadata(RelDatabase database, String owner, String spec, DuplicateHandling duplicates) {
@@ -112,13 +99,12 @@ public class RelvarRELVARMetadata extends RelvarCustomMetadata {
 				throw new ExceptionSemantic("RS0495: Invalid port specification: " + portValue);
 			}
 		}
-		this.duplicates = duplicates;
 		connectionString = spec;
 	}
 
 	@Override
 	public RelvarGlobal getRelvar(String name, RelDatabase database) {
-		return new RelvarExternal(name, database, new Generator(database, System.out), this, duplicates);
+		return new RelvarExternal(name, database, new Generator(database, System.out), this, DuplicateHandling.DUP_REMOVE);
 	}
 
 	@Override
