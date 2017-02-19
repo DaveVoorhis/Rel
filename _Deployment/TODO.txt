@@ -1,7 +1,5 @@
 ** TO DO **
 
-- UPDATE operator needs duplicate removal.
-
 - Provide external relvar for Rel DBMSs.
 
 - On external relvar dialogs, make sure backslashes are appropriately handled in file paths.

@@ -102,6 +102,7 @@ import org.reldb.rel.v0.vm.instructions.ddl.OpDropType;
 import org.reldb.rel.v0.vm.instructions.possrep.OpPossrepGetComponent;
 import org.reldb.rel.v0.vm.instructions.possrep.OpPossrepSetComponent;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationDUnion;
+import org.reldb.rel.v0.vm.instructions.relation.OpRelationDupRemove;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationGetTuple;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationGroup;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationIMinus;
@@ -2135,10 +2136,11 @@ public class Generator {
 		public TypeRelation endRelationSubstitute() {
 			updateOp.end();
 			compileInstruction(new OpTupleIteratableMap(updateOp.getOperator()));
+			compileInstruction(new OpRelationDupRemove());
 			return sourceType;
 		}
 	}
-		
+
 	/** Compile TUPLE FROM relation */
 	public TypeTuple compileRelationGetTuple(TypeRelation relationExpression) {
 		compileInstruction(new OpRelationGetTuple());
