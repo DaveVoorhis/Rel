@@ -21,7 +21,7 @@ public class InfoRELVAR extends Info {
 		return
 		  "Examples:\n" +
 	      "\tVAR myvar EXTERNAL RELVAR \"host,reluser,reluser,relvar\";\n" +
-	      "\tVAR myvar EXTERNAL RELVAR \"host,reluser,reluser,relvar,port\";\n" +
+	      "\tVAR myvar EXTERNAL RELVAR \"host,reluser,reluser,relvar,1234\"; // port is 1234\n" +
 	      "DUP_COUNT and AUTOKEY are ignored. DUP_REMOVE is the default.";
 	}
 
