@@ -1,10 +1,10 @@
 ** TO DO **
 
-- Provide external relvar for Rel DBMSs. (Later, simply parse the returned relation literal.)
-
 - On external relvar dialogs, make sure backslashes are appropriately handled in file paths.
 
 - Maybe associate "loading" screen with database loading, rather than Rel loading.
+
+- Optimise contains() in org.reldb.rel.v0.storage.relvars.external.relvar.TableRELVAR
 
 - SUMMARIZE BY is too slow. Make it faster.
 

@@ -2,6 +2,10 @@ Last used Exception* number: RS0498
 
 Version 3.006 (1.0.19):
 
+  - enhancement: Rel DBMS: External Rel DBMSs' relvars may now be EXTERNAL relvars.
+       E.g.:
+         VAR myvar EXTERNAL RELVAR "host,username,password,relvarname";
+         VAR myvar EXTERNAL RELVAR "host,username,password,relvarname,1234"; // port is 1234
   - fix: Rel DBMS: External relvar column name cleanup erroneously turned 'g' and 'i' to '_'. Fixed.
   - fix: Rel DBMS: UPDATE operator (not statement) allowed duplicate tuples to be emitted. Fixed.
   - fix: Rel UI: In Rev, single quotes in RESTRICT, EXTEND, SUMMARIZE or UPDATE expression 
