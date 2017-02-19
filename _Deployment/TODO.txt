@@ -1,6 +1,6 @@
 ** TO DO **
 
-- Provide external relvar for Rel DBMSs.
+- Provide external relvar for Rel DBMSs. (Later, simply parse the returned relation literal.)
 
 - On external relvar dialogs, make sure backslashes are appropriately handled in file paths.
 

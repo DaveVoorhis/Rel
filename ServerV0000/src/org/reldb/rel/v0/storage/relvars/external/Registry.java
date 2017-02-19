@@ -8,6 +8,7 @@ import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.storage.relvars.external.accdb.InfoACCDB;
 import org.reldb.rel.v0.storage.relvars.external.csv.InfoCSV;
 import org.reldb.rel.v0.storage.relvars.external.jdbc.InfoJDBC;
+import org.reldb.rel.v0.storage.relvars.external.relvar.InfoRELVAR;
 import org.reldb.rel.v0.storage.relvars.external.xls.InfoXLS;
 import org.reldb.rel.v0.types.Heading;
 import org.reldb.rel.v0.types.TypeRelation;
@@ -30,6 +31,7 @@ public class Registry {
 		add(new InfoCSV());
 		add(new InfoJDBC());
 		add(new InfoXLS());
+		add(new InfoRELVAR());
 	}
 	
 	private static void ensureRegistryExists() {
