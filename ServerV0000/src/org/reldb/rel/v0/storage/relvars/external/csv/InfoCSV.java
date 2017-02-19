@@ -87,4 +87,9 @@ public class InfoCSV extends Info {
 		};
 	}
 
+	@Override
+	public boolean isGuaranteedUnique() {
+		return false;
+	}
+
 }

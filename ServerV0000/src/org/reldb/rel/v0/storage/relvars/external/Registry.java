@@ -61,7 +61,8 @@ public class Registry {
 	 *      	ComponentOptions REL {
 	 *      		Documentation CHAR,
 	 *      		OptionText CHAR
-	 *      }
+	 *      },
+	 *      GuaranteedUnique BOOLEAN
 	 * }
 	 */
 	public static Heading getHeading() {
@@ -82,6 +83,7 @@ public class Registry {
 		componentOptions.add("OptionText", TypeCharacter.getInstance());
 		components.add("ComponentOptions", new TypeRelation(componentOptions));
 		heading.add("Components", new TypeRelation(components));
+		heading.add("GuaranteedUnique", TypeBoolean.getInstance());
 		return heading;
 	}
 	
@@ -102,6 +104,7 @@ public class Registry {
 				ValueCharacter identifier = ValueCharacter.select(generator, info.getIdentifier());
 				ValueCharacter description = ValueCharacter.select(generator, info.getDescription());
 				ValueCharacter documentation = ValueCharacter.select(generator, info.getConnectionStringDocumentation());
+				ValueBoolean guaranteedUnique = ValueBoolean.select(generator, info.isGuaranteedUnique());
 				ValueRelationLiteral components = new ValueRelationLiteral(generator);
 				if (info.getConnectionStringComponents() != null)
 					for (InfoComponent component: info.getConnectionStringComponents()) {
@@ -136,7 +139,8 @@ public class Registry {
 					identifier,
 					description,
 					documentation,
-					components
+					components,
+					guaranteedUnique
 				};
 				return new ValueTuple(generator, rawTuple);
 			}

@@ -21,7 +21,8 @@ public class InfoRELVAR extends Info {
 		return
 		  "Examples:\n" +
 	      "\tVAR myvar EXTERNAL RELVAR \"host,reluser,reluser,relvar\";\n" +
-	      "\tVAR myvar EXTERNAL RELVAR \"host,reluser,reluser,relvar,port\";";				
+	      "\tVAR myvar EXTERNAL RELVAR \"host,reluser,reluser,relvar,port\";\n" +
+	      "DUP_COUNT and AUTOKEY are ignored. DUP_REMOVE is the default.";
 	}
 
 	private static class InfoComponentREL extends InfoComponent {
@@ -69,6 +70,11 @@ public class InfoRELVAR extends Info {
 				public boolean isOptional() {return true;}
 			}
 		};
+	}
+
+	@Override
+	public boolean isGuaranteedUnique() {
+		return true;
 	}
 	
 }

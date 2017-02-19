@@ -112,4 +112,9 @@ public class InfoXLS extends Info {
 		};
 	}
 
+	@Override
+	public boolean isGuaranteedUnique() {
+		return false;
+	}
+
 }

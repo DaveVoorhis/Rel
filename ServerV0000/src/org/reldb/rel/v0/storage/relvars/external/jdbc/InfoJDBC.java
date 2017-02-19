@@ -70,5 +70,10 @@ public class InfoJDBC extends Info {
 			new InfoComponentJDBC(3, "SQL table name")
 		};
 	}
+
+	@Override
+	public boolean isGuaranteedUnique() {
+		return false;
+	}
 	
 }

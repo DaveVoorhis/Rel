@@ -12,4 +12,7 @@ public abstract class Info {
 	
 	// Get comma-separated components of connection string.
 	public abstract InfoComponent[] getConnectionStringComponents();
+
+	// Indicates that data source is guaranteed to produce unique tuples. Duplicate handling is not required.
+	public abstract boolean isGuaranteedUnique();
 }
