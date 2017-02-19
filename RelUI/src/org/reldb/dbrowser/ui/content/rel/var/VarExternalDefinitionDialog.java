@@ -44,6 +44,10 @@ public class VarExternalDefinitionDialog extends Dialog {
 	private String variableType;
 	private Text textVarName;
 	private boolean success;
+	
+	private Button btnAUTOKEY = null;
+	private Button btnDUP_REMOVE = null;
+	private Button btnDUP_COUNT = null;
 
 	public VarExternalDefinitionDialog(Shell shell, int style) {
 		super(shell, style);
@@ -285,15 +289,20 @@ public class VarExternalDefinitionDialog extends Dialog {
 		fd_groupDup.right = new FormAttachment(100, -10);
 		groupDup.setLayoutData(fd_groupDup);
 		
-		Button btnAUTOKEY = new Button(groupDup, SWT.RADIO);
-		btnAUTOKEY.setText("AUTOKEY: Automatically generate a key.");
-		btnAUTOKEY.setSelection(true);
-		
-		Button btnDUP_REMOVE = new Button(groupDup, SWT.RADIO);
-		btnDUP_REMOVE.setText("DUP_REMOVE: Silently remove duplicate tuples.");
-		
-		Button btnDUP_COUNT = new Button(groupDup, SWT.RADIO);
-		btnDUP_COUNT.setText("DUP_COUNT: Count duplicate tuples.");
+		boolean isGuaranteedUnique = tuple.get("GuaranteedUnique").toBoolean();
+		if (isGuaranteedUnique)
+			groupDup.setVisible(false);
+		else {			
+			btnAUTOKEY = new Button(groupDup, SWT.RADIO);
+			btnAUTOKEY.setText("AUTOKEY: Automatically generate a key.");
+			btnAUTOKEY.setSelection(true);
+			
+			btnDUP_REMOVE = new Button(groupDup, SWT.RADIO);
+			btnDUP_REMOVE.setText("DUP_REMOVE: Silently remove duplicate tuples.");
+			
+			btnDUP_COUNT = new Button(groupDup, SWT.RADIO);
+			btnDUP_COUNT.setText("DUP_COUNT: Count duplicate tuples.");
+		}
 		
 		Button btnCancel = new Button(shlExternalDefinitionDialog, SWT.NONE);
 		FormData fd_btnCancel = new FormData();
@@ -343,13 +352,17 @@ public class VarExternalDefinitionDialog extends Dialog {
 						missing = true;
 					}
 				}
+				
 				String dupHandling = "";
-				if (btnDUP_REMOVE.getSelection())
-					dupHandling = "DUP_REMOVE";
-				else if (btnDUP_COUNT.getSelection())
-					dupHandling = "DUP_COUNT";
-				else
-					dupHandling = "AUTOKEY";
+				if (!isGuaranteedUnique) {
+					if (btnDUP_REMOVE.getSelection())
+						dupHandling = "DUP_REMOVE";
+					else if (btnDUP_COUNT.getSelection())
+						dupHandling = "DUP_COUNT";
+					else if (btnAUTOKEY.getSelection())
+						dupHandling = "AUTOKEY";
+				}
+				
 				definition = "VAR " + variableName + " EXTERNAL " + variableType + " \"" + definition + "\" " + dupHandling + ";";
 				if (missing) {
 					MessageDialog.openError(shlExternalDefinitionDialog, "Missing Information", "Components shown in red must be filled in.");
