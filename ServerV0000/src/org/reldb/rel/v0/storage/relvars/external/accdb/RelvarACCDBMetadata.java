@@ -71,7 +71,7 @@ public class RelvarACCDBMetadata extends RelvarCustomMetadata {
 
 	@Override
 	public String getSourceDefinition() {
-		return "EXTERNAL ACCDB \"" + fileSpec + ", " + table + "\" " + duplicates;
+		return "EXTERNAL ACCDB \"" + fileSpec + "," + table + "\" " + duplicates;
 	}
 
 	public RelvarACCDBMetadata(RelDatabase database, String owner, String spec, DuplicateHandling duplicates) {

@@ -106,7 +106,7 @@ public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 
 	@Override
 	public String getSourceDefinition() {
-		return "EXTERNAL JDBC \"" + address + ", " + user + ", " + password + ", " + table + "\" " + duplicates;
+		return "EXTERNAL JDBC \"" + address + "," + user + "," + password + "," + table + "\" " + duplicates;
 	}
 
 	public RelvarJDBCMetadata(RelDatabase database, String owner, String spec, DuplicateHandling duplicates) {

@@ -81,7 +81,7 @@ public class RelvarRELVARMetadata extends RelvarCustomMetadata {
 
 	@Override
 	public String getSourceDefinition() {
-		return "EXTERNAL RELVAR \"" + host + ", " + user + ", " + password + ", " + relvar + ", " + port + "\"";
+		return "EXTERNAL RELVAR \"" + host + "," + user + "," + password + "," + relvar + "," + port + "\"";
 	}
 
 	public RelvarRELVARMetadata(RelDatabase database, String owner, String spec, DuplicateHandling duplicates) {
