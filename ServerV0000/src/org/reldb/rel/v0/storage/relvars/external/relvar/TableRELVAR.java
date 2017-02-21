@@ -11,6 +11,7 @@ import org.reldb.rel.v0.storage.relvars.RelvarExternalMetadata;
 import org.reldb.rel.v0.storage.relvars.RelvarHeading;
 import org.reldb.rel.v0.storage.tables.TableCustom;
 import org.reldb.rel.v0.types.Heading;
+import org.reldb.rel.v0.types.TypeTuple;
 import org.reldb.rel.v0.values.RelTupleFilter;
 import org.reldb.rel.v0.values.RelTupleMap;
 import org.reldb.rel.v0.values.TupleFilter;
@@ -63,16 +64,10 @@ public class TableRELVAR extends TableCustom {
 
 	@Override
 	public boolean contains(Generator generator, ValueTuple tuple) {
-		// TODO - much improvement can be done here!
-		TupleIterator iterator = iterator();
-		try {
-			while (iterator.hasNext())
-				if (tuple.equals(iterator.next()))
-					return true;
-		} finally {
-			iterator.close();
-		}
-		return false;
+		String tupleText = tuple.toString(new TypeTuple(fileHeading));
+		String query = tupleText + " IN " + meta.getRelvar();
+		String response = evaluate(query);
+		return response.equalsIgnoreCase("true");
 	}
 
 	@Override
