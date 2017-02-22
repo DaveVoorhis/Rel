@@ -2678,8 +2678,8 @@ public class Generator {
 	// IN
 	public TypeBoolean compileTupleIn(TypeTuple leftType, TypeRelation rightType) {
 		compileSwap();
-		if (rightType.requiresReformatOf(new TypeRelation(leftType.getHeading())))
-			compileInstruction(new OpTupleProject(new AttributeMap(leftType.getHeading(), rightType.getHeading())));
+		if (leftType.requiresReformatOf(new TypeRelation(rightType.getHeading())))
+			compileInstruction(new OpTupleProject(new AttributeMap(rightType.getHeading(), leftType.getHeading())));
 		compileInstruction(new OpTupleInRelation());
 		return TypeBoolean.getInstance();
 	}

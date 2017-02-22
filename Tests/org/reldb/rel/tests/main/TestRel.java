@@ -2263,7 +2263,27 @@ public class TestRel extends BaseOfTest {
 		"}";
 		testEquals("false", src);
 	}
+	
+	@Test
+	public void testTupleIn3() {
+		String src = "TUPLE {y 3, x 'glub'} IN RELATION {" +
+		" TUPLE {x 'glub', y 3}," + 
+		" TUPLE {x 'glob', y 7}" + 
+		"}";
+		testEquals("true", src);
+	}
+	
+	@Test
+	public void testTupleIn4() {
+		String src = "TUPLE {Flump \"Dave\", Poople 3, Blimp true} IN RELATION {" +
+		 " TUPLE {Blimp true, Flump \"Dave\", Poople 3}," +
+		 " TUPLE {Blimp true, Flump \"Calvin\", Poople 7}," +
+		 " TUPLE {Blimp false, Flump \"Indi\", Poople 8}" +
+		 "}";
+		testEquals("true", src);
+	}
 
+	
 	@Test
 	public void testRelationWhere1() {
 		String src =

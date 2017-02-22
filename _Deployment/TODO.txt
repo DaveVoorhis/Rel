@@ -1,7 +1,5 @@
 ** TO DO **
 
-- IN operator fails if tuple operand has different attribute order from relation operand. Fix.
-
 - On external RELVAR relvars, check that foreign types are noticed and handled appropriately.
 
 - On external relvar dialogs, make sure backslashes are appropriately handled in file paths.
