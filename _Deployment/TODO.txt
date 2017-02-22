@@ -1,5 +1,9 @@
 ** TO DO **
 
+- Make sure EXTERNAL vars have backslashes appropriately quoted in their Definitions.
+
+- Verify that all backups are appropriately quoted.
+
 - On external relvar dialogs, make sure backslashes are appropriately handled in file paths.
 
 - Maybe associate "loading" screen with database loading, rather than Rel loading.
