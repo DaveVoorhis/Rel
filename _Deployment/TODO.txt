@@ -1,8 +1,7 @@
 ** TO DO **
 
-- Make sure EXTERNAL vars have backslashes appropriately quoted in their Definitions.
-
-- Verify that all backups are appropriately quoted.
+- Make sure EXTERNAL vars have backslashes appropriately quoted in their Definitions. Currently done
+  in dialog box of RelUI; probably should be done in external relvar creation in Rel DBMS.
 
 - Automatically load default set of operators, types, etc.?
 
