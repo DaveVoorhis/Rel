@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
+import org.reldb.rel.utilities.StringUtils;
 import org.reldb.rel.client.Connection.ExecuteResult;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.FormData;
@@ -363,7 +364,7 @@ public class VarExternalDefinitionDialog extends Dialog {
 						dupHandling = "AUTOKEY";
 				}
 				
-				definition = "VAR " + variableName + " EXTERNAL " + variableType + " \"" + definition + "\" " + dupHandling + ";";
+				definition = "VAR " + variableName + " EXTERNAL " + variableType + " \"" + StringUtils.quote(definition) + "\" " + dupHandling + ";";
 				if (missing) {
 					MessageDialog.openError(shlExternalDefinitionDialog, "Missing Information", "Components shown in red must be filled in.");
 					return;
