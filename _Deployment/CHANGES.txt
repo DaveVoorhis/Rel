@@ -6,6 +6,8 @@ Version 3.006 (1.0.19):
        E.g.:
          VAR myvar EXTERNAL RELVAR "host,username,password,relvarname";
          VAR myvar EXTERNAL RELVAR "host,username,password,relvarname,1234"; // port is 1234
+  - enhancement: Rel DBMS: Provided built-in QUOTE(CHAR) RETURNS CHAR and UNQUOTE(CHAR) RETURNS CHAR
+         operators to quote/unquote delimiters and special characters.
   - fix: Rel DBMS: External relvar column name cleanup erroneously turned 'g' and 'i' to '_'. Fixed.
   - fix: Rel DBMS: Extraneous spaces no longer inserted into EXTERNAL ACCDB and EXTERNAL JDBC
          relvar definitions.

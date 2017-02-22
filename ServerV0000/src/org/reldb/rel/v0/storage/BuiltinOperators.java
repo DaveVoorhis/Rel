@@ -580,6 +580,34 @@ public class BuiltinOperators {
 		sequence3(database, new Type[] {TypeInteger.getInstance(), TypeInteger.getInstance(), TypeInteger.getInstance()});
 	}
 	
+	private void quote(RelDatabase database) {
+		database.defineBuiltinOperator(
+				new OperatorDefinitionNativeFunction("QUOTE",
+						new Type[] {TypeCharacter.getInstance()},
+						TypeCharacter.getInstance(), 
+						new NativeFunction() {
+							public Value evaluate(Value arguments[]) {
+								return ValueCharacter.select(generator, StringUtils.quote(arguments[0].stringValue()));
+							}
+						}
+				)
+			);
+	}
+	
+	private void unquote(RelDatabase database) {
+		database.defineBuiltinOperator(
+				new OperatorDefinitionNativeFunction("UNQUOTE",
+						new Type[] {TypeCharacter.getInstance()},
+						TypeCharacter.getInstance(), 
+						new NativeFunction() {
+							public Value evaluate(Value arguments[]) {
+								return ValueCharacter.select(generator, StringUtils.unquote(arguments[0].stringValue()));
+							}
+						}
+				)
+			);		
+	}
+	
 	private BuiltinOperators(RelDatabase database) {
 		generator = new Generator(database, System.out);
 		is_empty(database);
@@ -610,6 +638,8 @@ public class BuiltinOperators {
 		getuniquenumber(database);
 		setuniquenumber(database);
 		sequence(database);
+		quote(database);
+		unquote(database);
 	}
 	
 	public static void buildOperators(RelDatabase database) {
