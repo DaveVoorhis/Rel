@@ -1,6 +1,6 @@
 ** TO DO **
 
-- On external relvar dialogs, make sure backslashes are appropriately handled in file paths.
+- Include sys.OperatorsBuiltin in RelUI.
 
 - Maybe associate "loading" screen with database loading, rather than Rel loading.
 
