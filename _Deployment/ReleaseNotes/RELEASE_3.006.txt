@@ -33,8 +33,8 @@ The following bugs have been fixed:
 - Rel DBMS: The UPDATE operator (not statement) allowed duplicate
   tuples to be emitted. Fixed.
 
-- Rel DBMS: The IN operator sometimes returned incorrect result if
-  tuple operand had a different attribute order from the relation
+- Rel DBMS: The IN operator sometimes returned an incorrect result if
+  the tuple operand had a different attribute order from the relation
   operand. Fixed.
 
 - Rel UI: In Rev, single quotes in a RESTRICT, EXTEND, SUMMARIZE or
