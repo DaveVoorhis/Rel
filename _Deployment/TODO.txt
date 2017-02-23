@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Automatically load default set of operators, types, etc.?
-
 - On external relvar dialogs, make sure backslashes are appropriately handled in file paths.
 
 - Maybe associate "loading" screen with database loading, rather than Rel loading.

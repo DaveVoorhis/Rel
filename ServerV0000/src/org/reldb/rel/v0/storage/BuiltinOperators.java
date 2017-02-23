@@ -608,6 +608,827 @@ public class BuiltinOperators {
 			);		
 	}
 	
+	/** Assorted CHAR operators, largely based on Java String methods. */
+
+	private void is_digits(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("IS_DIGITS",
+					new Type[] {TypeCharacter.getInstance()},
+					TypeBoolean.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							String sbuf = arguments[0].stringValue();
+							for (int i=0; i<sbuf.length(); i++)
+								if (!Character.isDigit(sbuf.charAt(i)))
+									return ValueBoolean.select(generator, false);
+							return ValueBoolean.select(generator, true);
+						}
+					}
+			)
+		);		
+	}
+
+	private void length(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("LENGTH",
+					new Type[] {TypeCharacter.getInstance()},
+					TypeInteger.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							return ValueInteger.select(generator, arguments[0].stringValue().length());
+						}
+					}
+			)
+		);
+	}
+
+	private void substring2(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("SUBSTRING",
+					new Type[] {TypeCharacter.getInstance(), TypeInteger.getInstance()},
+					TypeCharacter.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Substring, 0 based
+							return ValueCharacter.select(generator, arguments[0].stringValue().substring((int)arguments[1].longValue()));
+						}
+					}
+			)
+		);		
+	}
+	
+	private void substring3(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("SUBSTRING",
+					new Type[] {TypeCharacter.getInstance(), TypeInteger.getInstance(), TypeInteger.getInstance()},
+					TypeCharacter.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Substring, 0 based
+							return ValueCharacter.select(generator, arguments[0].stringValue().substring((int)arguments[1].longValue(), (int)arguments[2].longValue()));
+						}
+					}
+			)
+		);		
+	}
+	
+	private void compare_to(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("COMPARE_TO",
+					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
+					TypeInteger.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Compares two strings lexicographically.
+							return ValueInteger.select(generator, arguments[0].stringValue().compareTo(arguments[1].stringValue()));
+						}
+					}
+			)
+		);		
+	}
+	
+	private void compare_to_ignore_case(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("COMPARE_TO_IGNORE_CASE",
+					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
+					TypeInteger.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Compares two strings lexicographically.
+							return ValueInteger.select(generator, arguments[0].stringValue().compareToIgnoreCase(arguments[1].stringValue()));
+						}
+					}
+			)
+		);		
+	}
+
+	private void ends_with(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("ENDS_WITH",
+					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
+					TypeBoolean.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							return ValueBoolean.select(generator, arguments[0].stringValue().endsWith(arguments[1].stringValue()));
+						}
+					}
+			)
+		);		
+	}
+
+	private void equals_ignore_case(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("EQUALS_IGNORE_CASE",
+					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
+					TypeBoolean.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Compares this String to another String, ignoring case considerations.
+							return ValueBoolean.select(generator, arguments[0].stringValue().equalsIgnoreCase(arguments[1].stringValue()));
+						}
+					}
+			)
+		);		
+	}
+
+	private void index_of2(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("INDEX_OF",
+					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
+					TypeInteger.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Returns the index within this string of the first occurrence of the specified substring.
+							return ValueInteger.select(generator, arguments[0].stringValue().indexOf(arguments[1].stringValue()));
+						}
+					}
+			)
+		);		
+	}
+	
+	private void index_of3(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("INDEX_OF",
+					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance(), TypeInteger.getInstance()},
+					TypeInteger.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Returns the index within this string of the first occurrence of the 
+							// specified substring, starting at the specified index.
+							return ValueInteger.select(generator, arguments[0].stringValue().indexOf(arguments[1].stringValue(), (int)arguments[2].longValue()));
+						}
+					}
+			)
+		);		
+	}
+
+	private void last_index_of2(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("LAST_INDEX_OF",
+					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
+					TypeInteger.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Returns the index within this string of the first occurrence of the specified substring.
+							return ValueInteger.select(generator, arguments[0].stringValue().lastIndexOf(arguments[1].stringValue()));
+						}
+					}
+			)
+		);		
+	}
+	
+	private void last_index_of3(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("LAST_INDEX_OF",
+					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance(), TypeInteger.getInstance()},
+					TypeInteger.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Returns the index within this string of the first occurrence of the 
+							// specified substring, starting at the specified index.
+							return ValueInteger.select(generator, arguments[0].stringValue().lastIndexOf(arguments[1].stringValue(), (int)arguments[2].longValue()));
+						}
+					}
+			)
+		);		
+	}
+	
+	private void matches(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("MATCHES",
+					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
+					TypeBoolean.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Tells whether or not this string matches the given regular expression.
+							return ValueBoolean.select(generator, arguments[0].stringValue().matches(arguments[1].stringValue()));
+						}
+					}
+			)
+		);		
+	}
+
+	private void region_matches(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("REGION_MATCHES",
+					new Type[] {TypeCharacter.getInstance(), TypeBoolean.getInstance(), TypeInteger.getInstance(), TypeCharacter.getInstance(), TypeInteger.getInstance(), TypeInteger.getInstance()},
+					TypeBoolean.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Tests if two string regions are equal.
+							return ValueBoolean.select(generator, 
+									arguments[0].stringValue().regionMatches(arguments[1].booleanValue(),
+									(int)arguments[2].longValue(),
+									arguments[3].stringValue(),
+									(int)arguments[4].longValue(),
+									(int)arguments[5].longValue()));
+						}
+					}
+			)
+		);		
+	}
+	
+	private void replace_all(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("REPLACE_ALL",
+					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance(), TypeCharacter.getInstance()},
+					TypeCharacter.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							// Replaces each substring of this string that matches the given regular expression with the given replacement.
+							return ValueCharacter.select(generator, arguments[0].stringValue().replaceAll(arguments[1].stringValue(), arguments[2].stringValue()));
+						}
+					}
+			)
+		);		
+	}
+
+	private void replace_first(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("REPLACE_FIRST",
+				new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance(), TypeCharacter.getInstance()},
+				TypeCharacter.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Replaces the first substring of this string that matches the given regular expression with the given replacement.
+						return ValueCharacter.select(generator, arguments[0].stringValue().replaceFirst(arguments[1].stringValue(), arguments[2].stringValue()));
+					}
+				}
+			)
+		);		
+	}
+
+	/*
+	OPERATOR SPLIT(s CHAR, regex CHAR) RETURNS (ARRAY OF CHAR) Java FOREIGN
+//	          Splits this string around matches of the given regular expression.
+		Array a = new Array(new ArrayType(TypeChar.getType()));
+		String[] ss = s.stringValue().split(regex.stringValue());
+		for (int i=0; i<ss.length; i++)
+			a.append(ValueCharacter.select(generator, ss[i]));
+		return a;
+	END OPERATOR;
+
+	OPERATOR SPLIT(s CHAR, regex CHAR, limit INTEGER) RETURNS (ARRAY OF CHAR) Java FOREIGN
+//	          Splits this string around matches of the given regular expression, up to n times.
+		Array a = new Array(new ArrayType(TypeChar.getType()));
+		String[] ss = s.stringValue().split(regex.stringValue(), (int)limit.longValue());
+		for (int i=0; i<ss.length; i++)
+			a.append(ValueCharacter.select(generator, ss[i]));
+		return a;
+	END OPERATOR;
+	*/
+
+	private void starts_with2(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("STARTS_WITH",
+				new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
+				TypeBoolean.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Tests if this string starts with the specified prefix.
+						return ValueBoolean.select(generator, arguments[0].stringValue().startsWith(arguments[1].stringValue()));
+					}
+				}
+			)
+		);		
+	}
+
+	private void starts_with3(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("STARTS_WITH",
+				new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance(), TypeInteger.getInstance()},
+				TypeBoolean.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Tests if this string starts with the specified prefix beginning at a specified index.
+						return ValueBoolean.select(generator, arguments[0].stringValue().startsWith(arguments[1].stringValue(), (int)arguments[2].longValue()));
+					}
+				}
+			)
+		);		
+	}
+	
+	private void to_lower_case(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("TO_LOWER_CASE",
+				new Type[] {TypeCharacter.getInstance()},
+				TypeCharacter.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						return ValueCharacter.select(generator, arguments[0].stringValue().toLowerCase());
+					}
+				}
+			)
+		);		
+	}
+
+	private void to_upper_case(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("TO_UPPER_CASE",
+				new Type[] {TypeCharacter.getInstance()},
+				TypeCharacter.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						return ValueCharacter.select(generator, arguments[0].stringValue().toUpperCase());
+					}
+				}
+			)
+		);
+	}
+
+	private void trim(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("TRIM",
+				new Type[] {TypeCharacter.getInstance()},
+				TypeCharacter.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						return ValueCharacter.select(generator, arguments[0].stringValue().trim());
+					}
+				}
+			)
+		);
+	}
+
+	/** Math operators.  These are essentially a wrapper around the Java Math package. */
+
+	private void e(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("E",
+				new Type[] {},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// The RATIONAL value that is closer than any other to e, the base of
+						// the natural logarithms.
+						return ValueRational.select(generator, Math.E);
+					}
+				}
+			)
+		);
+	}
+
+	private void pi(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("PI",
+				new Type[] {},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// The RATIONAL value that is closer than any other to pi, the ratio of
+						// the circumference of a circle to its diameter.
+						return ValueRational.select(generator, Math.PI);
+					}
+				}
+			)
+		);
+	}
+
+	private void absRational(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("ABS",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the absolute value of a RATIONAL value.
+						return ValueRational.select(generator, Math.abs(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void absInteger(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("ABS",
+				new Type[] {TypeInteger.getInstance()},
+				TypeInteger.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the absolute value of an INTEGER value.
+						return ValueRational.select(generator, Math.abs(arguments[0].longValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void acos(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("ACOS",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the arc cosine of an angle, in the range of 0.0 through pi.
+						return ValueRational.select(generator, Math.acos(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void asin(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("ASIN",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						//  Returns the arc sine of an angle, in the range of -pi/2 through pi/2.
+						return ValueRational.select(generator, Math.asin(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void atan(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("ATAN",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the arc tangent of an angle, in the range of -pi/2 through pi/2.
+							return ValueRational.select(generator, Math.atan(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void atan2(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("ATAN2",
+				new Type[] {TypeRational.getInstance(), TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Converts rectangular coordinates (x, y) to polar (r, theta).
+						return ValueRational.select(generator, Math.atan2(arguments[1].doubleValue(), arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void ceil(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("CEIL",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the smallest (closest to negative infinity) RATIONAL value
+						// that is not less than the argument and is equal to a mathematical
+						// integer.
+						return ValueRational.select(generator, Math.ceil(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void cos(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("COS",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the trigonometric cosine of an angle.
+						return ValueRational.select(generator, Math.cos(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void exp(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("EXP",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns Euler's number e raised to the power of a RATIONAL value.
+						return ValueRational.select(generator, Math.exp(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void floor(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("FLOOR",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the largest (closest to positive infinity) RATIONAL value that
+						// is not greater than the argument and is equal to a mathematical
+						// integer.
+							return ValueRational.select(generator, Math.floor(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void remainder(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("REMAINDER",
+				new Type[] {TypeRational.getInstance(), TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Computes the remainder operation on two arguments as prescribed by the IEEE 754 standard.
+						return ValueRational.select(generator, Math.IEEEremainder(arguments[0].doubleValue(), arguments[1].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void log(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("LOG",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the natural logarithm (base e) of a RATIONAL value.
+						return ValueRational.select(generator, Math.log(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void maximumRational(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("MAXIMUM",
+				new Type[] {TypeRational.getInstance(), TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the greater of two RATIONAL values.
+						return ValueRational.select(generator, Math.max(arguments[0].doubleValue(), arguments[1].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void maximumInteger(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("MAXIMUM",
+				new Type[] {TypeInteger.getInstance(), TypeInteger.getInstance()},
+				TypeInteger.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the greater of two INTEGER values.
+						return ValueInteger.select(generator, Math.max(arguments[0].longValue(), arguments[1].longValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void minimumRational(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("MINIMUM",
+				new Type[] {TypeRational.getInstance(), TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the greater of two RATIONAL values.
+						return ValueRational.select(generator, Math.min(arguments[0].doubleValue(), arguments[1].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void minimumInteger(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("MINIMUM",
+				new Type[] {TypeInteger.getInstance(), TypeInteger.getInstance()},
+				TypeInteger.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the greater of two INTEGER values.
+						return ValueInteger.select(generator, Math.min(arguments[0].longValue(), arguments[1].longValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void pow(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("POW",
+				new Type[] {TypeRational.getInstance(), TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the value of the first argument raised to the power of the second argument.
+						return ValueRational.select(generator, Math.pow(arguments[0].doubleValue(), arguments[1].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void random(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("RANDOM",
+				new Type[] {},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns a RATIONAL value with a positive sign, greater than or equal
+						// to 0.0 and less than 1.0.
+						return ValueRational.select(generator, Math.random());
+					}
+				}
+			)
+		);
+	}
+
+	private void rint(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("RINT",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the RATIONAL value that is closest in value to the argument
+						// and is equal to a mathematical integer.
+						return ValueRational.select(generator, Math.rint(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void round(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("ROUND",
+				new Type[] {TypeRational.getInstance()},
+				TypeInteger.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the closest INTEGER to the argument.
+						return ValueInteger.select(generator, Math.round(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void sin(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("SIN",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the trigonometric sine of an angle.
+						return ValueRational.select(generator, Math.sin(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void sqrt(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("SQRT",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the correctly rounded positive square root of a RATIONAL value.
+						return ValueRational.select(generator, Math.sqrt(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void tan(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("TAN",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Returns the trigonometric tangent of an angle.
+						return ValueRational.select(generator, Math.tan(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void to_degrees(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("TO_DEGREES",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Converts an angle measured in radians to an approximately equivalent
+						// angle measured in degrees.
+						return ValueRational.select(generator, Math.toDegrees(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	private void to_radians(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("TO_RADIANS",
+				new Type[] {TypeRational.getInstance()},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Converts an angle measured in degrees to an approximately equivalent
+						// angle measured in radians.
+						return ValueRational.select(generator, Math.toRadians(arguments[0].doubleValue()));
+					}
+				}
+			)
+		);
+	}
+
+	/** Maxima and minima. */
+
+	private void max_integer(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("MAX_INTEGER",
+				new Type[] {},
+				TypeInteger.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Largest positive integer
+						return ValueInteger.select(generator, Long.MAX_VALUE);
+					}
+				}
+			)
+		);
+	}
+
+	private void min_integer(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("MIN_INTEGER",
+				new Type[] {},
+				TypeInteger.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Largest negative integer
+						return ValueInteger.select(generator, Long.MIN_VALUE);
+					}
+				}
+			)
+		);
+	}
+
+	private void max_rational(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("MAX_RATIONAL",
+				new Type[] {},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Largest positive rational
+						return ValueRational.select(generator, Double.MAX_VALUE);
+					}
+				}
+			)
+		);
+	}
+
+	private void min_rational(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("MIN_RATIONAL",
+				new Type[] {},
+				TypeRational.getInstance(), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						// Smallest positive rational
+						return ValueRational.select(generator, Double.MIN_VALUE);
+					}
+				}
+			)
+		);
+	}
+	
 	private BuiltinOperators(RelDatabase database) {
 		generator = new Generator(database, System.out);
 		is_empty(database);
@@ -640,6 +1461,58 @@ public class BuiltinOperators {
 		sequence(database);
 		quote(database);
 		unquote(database);
+		is_digits(database);
+		length(database);
+		substring2(database);
+		substring3(database);
+		compare_to(database);
+		compare_to_ignore_case(database);
+		ends_with(database);
+		equals_ignore_case(database);
+		index_of2(database);
+		index_of3(database);
+		last_index_of2(database);
+		last_index_of3(database);
+		matches(database);
+		region_matches(database);
+		replace_all(database);
+		replace_first(database);
+		starts_with2(database);
+		starts_with3(database);
+		to_lower_case(database);
+		to_upper_case(database);
+		trim(database);
+		e(database);
+		pi(database);
+		absRational(database);
+		absInteger(database);
+		acos(database);
+		asin(database);
+		atan(database);
+		atan2(database);
+		ceil(database);
+		cos(database);
+		exp(database);
+		floor(database);
+		remainder(database);
+		log(database);
+		maximumRational(database);
+		maximumInteger(database);
+		minimumRational(database);
+		minimumInteger(database);
+		pow(database);
+		random(database);
+		rint(database);
+		round(database);
+		sin(database);
+		sqrt(database);
+		tan(database);
+		to_degrees(database);
+		to_radians(database);
+		max_integer(database);
+		min_integer(database);
+		max_rational(database);
+		min_rational(database);
 	}
 	
 	public static void buildOperators(RelDatabase database) {

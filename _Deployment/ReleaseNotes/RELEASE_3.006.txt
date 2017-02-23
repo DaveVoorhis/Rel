@@ -2,13 +2,18 @@
 
 This is a minor maintenance release of Rel, an implementation of Date
 & Darwen's "Tutorial D" database language. It makes some improvements
-to the Rel user interface and fixes various minor bugs.
+to the Rel user interface, now provides a selection of built-in
+operators that previously had to be loaded from a script, and fixes
+various minor bugs.
 
 IMPORTANT NOTE: Once opened with this or later versions of Rel,
                 databases cannot be read by earlier versions.
 
 The following enhancements have been made:
 
+- In the Rel DBMS, all operators previously found in
+  UsefulOperatorsAndViews.rel are now built-in.
+  
 - The Rel DBMS's storage engine has been updated to Oracle Berkeley DB
   JE version 7.3.7
 
