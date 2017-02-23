@@ -2,6 +2,7 @@ Last used Exception* number: RS0498
 
 Version 3.006 (1.0.19):
 
+  - enhancement: Rel DBMS: Updated storage engine to Oracle Berkeley DB JE version 7.3.7
   - enhancement: Rel DBMS: External Rel DBMSs' relvars may now be EXTERNAL relvars.
        E.g.:
          VAR myvar EXTERNAL RELVAR "host,username,password,relvarname";
