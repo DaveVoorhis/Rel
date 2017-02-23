@@ -26,7 +26,6 @@
 	<classpathentry kind="lib" path="lib/httpcore-ab-4.4.5.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-nio-4.4.5.jar"/>
 	<classpathentry kind="lib" path="lib/httpmime-4.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/je-7.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/jna-4.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jna-platform-4.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
@@ -43,5 +42,6 @@
 	<classpathentry kind="lib" path="lib/RelDBMS.jar"/>
 	<classpathentry kind="lib" path="lib/ojdbc7.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql-9.4.1212.jar"/>
+	<classpathentry kind="lib" path="lib/je-7.3.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
