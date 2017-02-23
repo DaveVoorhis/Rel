@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.utilities.FontSize;
@@ -25,7 +26,7 @@ public class Loading {
 	private static Loading loading = null;
 	
 	private Shell loadingShell;
-	private Label lblAction;
+	private Text lblAction;
 	private ProgressBar progressBar;
 	private int count = 0;
 
@@ -96,7 +97,8 @@ public class Loading {
 		fd_progressBar.right = new FormAttachment(100, -10);
 		progressBar.setLayoutData(fd_progressBar);
 		
-		lblAction = new Label(shell, SWT.WRAP | SWT.TRANSPARENT);
+		lblAction = new Text(shell, SWT.WRAP | SWT.TRANSPARENT);
+		lblAction.setEditable(false);
 		lblAction.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		FormData fd_lblAction = new FormData();
 		fd_lblAction.top = new FormAttachment(progressBar, -60);
@@ -119,7 +121,7 @@ public class Loading {
 	
 	private void setMessage(final String message) {
 		if (lblAction != null && !lblAction.isDisposed()) {
-			String msg = message.trim().replaceAll("\n", "");
+			String msg = message.trim().replace("\n\n", "\n");
 			if (msg.length() == 0)
 				return;
 			lblAction.setText(msg);
