@@ -363,7 +363,7 @@ public class VarExternalDefinitionDialog extends Dialog {
 						dupHandling = "AUTOKEY";
 				}
 				
-				definition = "VAR " + variableName + " EXTERNAL " + variableType + " \"" + definition.replace('\\',  '/') + "\" " + dupHandling + ";";
+				definition = "VAR " + variableName + " EXTERNAL " + variableType + " \"" + definition + "\" " + dupHandling + ";";
 				if (missing) {
 					MessageDialog.openError(shlExternalDefinitionDialog, "Missing Information", "Components shown in red must be filled in.");
 					return;

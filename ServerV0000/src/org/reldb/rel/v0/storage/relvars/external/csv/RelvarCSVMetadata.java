@@ -98,7 +98,7 @@ public class RelvarCSVMetadata extends RelvarCustomMetadata {
 
 	@Override
 	public String getSourceDefinition() {
-		return "EXTERNAL CSV \"" + path + "\" " + duplicates;
+		return "EXTERNAL CSV \"" + path.replace('\\',  '/') + "\" " + duplicates;
 	}
 
 	@Override
