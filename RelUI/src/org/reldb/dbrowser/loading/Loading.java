@@ -125,7 +125,11 @@ public class Loading {
 			if (msg.length() == 0)
 				return;
 			lblAction.setText(msg);
+			lblAction.redraw();
+			lblAction.update();
 			progressBar.setSelection(++count);
+			progressBar.redraw();
+			progressBar.update();
 			loadingShell.layout();
 			loadingShell.getDisplay().readAndDispatch();	// needed on OS X
 		}
