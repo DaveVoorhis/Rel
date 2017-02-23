@@ -63,24 +63,27 @@ public class VarExternalDefinitionDialog extends Dialog {
 
 	private static class ComponentInfo {
 		public boolean isOptional;
+		public boolean isFile;
 		public String content;
 		public Label docs;
-		public ComponentInfo(boolean isOptional, Label docs) {
+		public ComponentInfo(boolean isOptional, Label docs, boolean isFile) {
 			this.isOptional = isOptional;
 			this.docs = docs;
 			this.content = "";
+			this.isFile = isFile;
 		}
 		public ComponentInfo(ComponentInfo info, String content) {
 			this.isOptional = info.isOptional;
 			this.docs = info.docs;
+			this.isFile = info.isFile;
 			this.content = content;
 		}
 	}
 	
 	private HashMap<Integer, ComponentInfo> components = new HashMap<Integer, ComponentInfo>();
 	
-	private void createComponent(int componentNumber, boolean isOptional, Label docsLabel) {
-		components.put(componentNumber, new ComponentInfo(isOptional, docsLabel));
+	private void createComponent(int componentNumber, boolean isOptional, Label docsLabel, boolean isFile) {
+		components.put(componentNumber, new ComponentInfo(isOptional, docsLabel, isFile));
 	}
 	
 	private void updateComponent(int componentNumber, String content) {
@@ -160,7 +163,7 @@ public class VarExternalDefinitionDialog extends Dialog {
 				docsLabel.setLayoutData(fd_docsLabel);
 				docsLabel.setText(docs + ((isOptional) ? " (optional)" : ""));
 				
-				createComponent(componentNumber, isOptional, docsLabel);
+				createComponent(componentNumber, isOptional, docsLabel, isAFile);
 
 				Vector<Tuple> optionTuples = new Vector<Tuple>();
 				for (Tuple optionTuple: options)
@@ -346,7 +349,7 @@ public class VarExternalDefinitionDialog extends Dialog {
 					if (definition.length() > 0)
 						definition += ",";
 					if (content.length() > 0)
-						definition += content;
+						definition += (component.isFile) ? content.replace('\\', '/') : content;
 					else if (!component.isOptional) {
 						component.docs.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
 						missing = true;
