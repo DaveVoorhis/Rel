@@ -16,7 +16,14 @@ public class OperatorPlayer extends DbTreeAction {
 
 	@Override
 	public void go(DbTreeItem item, Image image) {
-		Tuples tuples = relPanel.getConnection().getTuples("(sys.Operators UNGROUP Implementations WHERE Signature = '" + item.getName() + "') {Definition}");
+		String query =
+				"(UNION {" +
+				"	(sys.Operators UNGROUP Implementations) {Signature, Definition}," +
+				"	sys.OperatorsBuiltin {Signature, Definition}" +
+				"}" +
+				"WHERE Signature='" + item.getName() + "')" +
+				"{Definition}";
+		Tuples tuples = relPanel.getConnection().getTuples(query);
 		String definition = "???";
 		if (tuples != null)
 			for (Tuple tuple: tuples)

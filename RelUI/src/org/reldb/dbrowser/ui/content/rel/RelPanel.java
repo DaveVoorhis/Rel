@@ -592,12 +592,15 @@ public class RelPanel extends Composite {
 	}
 	
 	private void buildSubtreeOperator(String whereSysStr, Predicate<String> filter) {
-		String query = 
-			"UNION {" +
-			"	EXTEND sys.Operators: {Impl := EXTEND Implementations {Signature, ReturnsType, Definition, Owner} " + whereSysStr + 
-			"		: {SigReturn := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF}} {Name, Impl}," +
-			"	(EXTEND sys.OperatorsBuiltin: {Owner := 'Rel', SigReturn := Signature} " + whereSysStr + ") GROUP {ALL BUT Name} AS Impl" +
-			"} ORDER (ASC Name)";
+		String query =
+			"EXTEND " +
+			"  UNION {" +
+			"	 ((sys.Operators UNGROUP Implementations) " + whereSysStr + ") {Name, Signature, ReturnsType, Definition}," +
+			"	 ((EXTEND sys.OperatorsBuiltin: {Owner := 'Rel'}) " + whereSysStr + ") {ALL BUT Owner}" +
+			"  }" +
+			": {SigReturn := Signature || IF ReturnsType <> '' THEN ' RETURNS ' || ReturnsType ELSE '' END IF}" +
+			"GROUP {ALL BUT Name} AS Impl " +
+			"ORDER (ASC Name)";
 		OperatorCreator creator = new OperatorCreator(this);
 		String section = CATEGORY_OPERATOR;
 		Image image = IconLoader.loadIcon("flow_chart");
