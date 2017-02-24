@@ -1,0 +1,4 @@
+OPERATOR SUBSTR_DEMO(s CHAR, index INTEGER) RETURNS CHAR Java FOREIGN
+// Substring, 0 based
+	return ValueCharacter.select(context.getGenerator(),s.stringValue().substring((int)index.longValue()));
+END OPERATOR;
