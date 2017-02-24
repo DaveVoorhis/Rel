@@ -15,6 +15,7 @@ public class RelvarOperatorsBuiltinMetadata extends RelvarMetadata {
 	static Heading getNewHeading() {
 		Heading heading = new Heading();
 		heading.add("Name", TypeCharacter.getInstance());
+		heading.add("Specification", TypeCharacter.getInstance());
 		return heading;
 	}
 	
@@ -28,6 +29,10 @@ public class RelvarOperatorsBuiltinMetadata extends RelvarMetadata {
 	
 	public RelvarOperatorsBuiltinMetadata(RelDatabase database) {
 		super(database, getNewKeyDefinition(), RelDatabase.systemOwner);
+	}
+	
+	public RelvarHeading getHeadingDefinition(RelDatabase database) {
+		return getNewKeyDefinition();
 	}
 	
 	public RelvarGlobal getRelvar(String name, RelDatabase database) {

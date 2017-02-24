@@ -1402,7 +1402,7 @@ public class RelDatabase {
     	builtinops.put(operator.getSignature().toNativeLookupString(), operator);
     }
     
-    // Return list of built-in operators as RELATION {signature CHAR}
+    // Return list of built-in operators as RELATION {Name CHAR, Specification CHAR}
     public synchronized ValueRelation getBuiltinOperators(Generator generator) {
     	return new ValueRelation(generator) {
     		
@@ -1420,7 +1420,11 @@ public class RelDatabase {
 					}
 					public ValueTuple next() {
 						Generator generator = getGenerator();
-						return new ValueTuple(generator, new Value[] {ValueCharacter.select(generator, i.next().toString())});
+						OperatorDefinition operatorDefinition = i.next();
+						return new ValueTuple(generator, new Value[] {
+							ValueCharacter.select(generator, operatorDefinition.toString()),
+							ValueCharacter.select(generator, operatorDefinition.getSourceCode())
+						});
 					}
 					public void close() {}
 				};

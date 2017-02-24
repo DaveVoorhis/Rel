@@ -15,15 +15,16 @@ public class OperatorDefinitionNativeFunction extends OperatorDefinitionNative {
 	private String language = "Java";
 
 	/** Ctor for operator definition. */
-	public OperatorDefinitionNativeFunction(String name, Type[] parameters, Type returnType, NativeFunction fn) {
+	public OperatorDefinitionNativeFunction(String name, String docs, Type[] parameters, Type returnType, NativeFunction fn) {
 		super(name, parameters);
 		setDeclaredReturnType(returnType);
 		operator = fn;
+		setSourceCode(docs);
 	}
 	
 	/** Ctor for operator definition. */
 	public OperatorDefinitionNativeFunction(OperatorSignature signature, NativeFunction fn) {
-		this(signature.getName(), signature.getParameterTypes(), signature.getReturnType(), fn);
+		this(signature.getName(), "", signature.getParameterTypes(), signature.getReturnType(), fn);
 	}
 	
 	/** Get primary language, which is 'Java' by default. */

@@ -2855,12 +2855,22 @@ public class TutorialDParser implements TutorialDVisitor {
 						folder.run();
 						return folder.getResult();
 					}
-				};			
+				};
+			Type[] parms;
+			String docs = "";
+			if (initialValueNodeNumber < 0) {
+				parms = new Type[] {aggExpType};
+				docs = getName() + "(p " + aggExpType.getSignature() + ") RETURNS " + getAttributeExpressionType().getSignature();
+			} else {
+				parms = new Type[] {getAttributeExpressionType(), aggExpType};
+				docs = getName() + "(a " + getAttributeExpressionType().getSignature() + ", p " + aggExpType.getSignature() + ") RETURNS " + getAttributeExpressionType().getSignature();				
+			}
 			return new OperatorDefinitionNativeFunction(
 					getName(),
-					(initialValueNodeNumber < 0) ? new Type[] {aggExpType} :
-												   new Type[] {getAttributeExpressionType(), aggExpType}, 
-					getAttributeExpressionType(), aggregatorFunction);
+					docs,
+					parms,
+					getAttributeExpressionType(),
+					aggregatorFunction);
 		}
 		
 		// node assumed to have two or three children.

@@ -15,16 +15,17 @@ public class OperatorDefinitionNativeProcedure extends OperatorDefinitionNative 
 	private NativeProcedure operator;
 
 	/** Ctor for operator definition. */
-	public OperatorDefinitionNativeProcedure(String name, Type[] parameters, NativeProcedure fn) {
+	public OperatorDefinitionNativeProcedure(String name, String docs, Type[] parameters, NativeProcedure fn) {
 		super(name, parameters);
 		operator = fn;
+		setSourceCode(docs);
 	}
 	
 	/** Get primary language. */
 	public String getLanguage() {
 		return "JavaP";
 	}
-
+	
 	public void compileCall(Generator generator) {
 		generator.compileInstruction(new OpNativeProcedure(operator, getParmCount()));
 	}

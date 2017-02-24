@@ -17,6 +17,8 @@ public class BuiltinOperators {
 	private void is_empty(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("IS_EMPTY", 
+					"// True if relation r is empty\n" +
+					"IS_EMPTY(r RELATION{*}) RETURNS BOOLEAN",
 					new Type[] {TypeRelation.getEmptyRelationType()}, 
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -32,6 +34,8 @@ public class BuiltinOperators {
 	private void countRelation(final RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("COUNT", 
+					"// Return cardinality of relation r\n" +
+					"COUNT(r RELATION{*}) RETURNS INTEGER",
 					new Type[] {TypeRelation.getEmptyRelationType()}, 
 					TypeInteger.getInstance(), 
 					new NativeFunction() {
@@ -47,6 +51,8 @@ public class BuiltinOperators {
 	private void countArray(final RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("COUNT", 
+					"// Return cardinality of ARRAY r\n" +
+					"COUNT(r ARRAY OF *) RETURNS INTEGER",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeInteger.getInstance(), 
 					new NativeFunction() {
@@ -62,6 +68,8 @@ public class BuiltinOperators {
 	private void sum(RelDatabase database) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("AGGREGATE_SUM_INTEGER", 
+						"// INTEGER sum of r\n" +
+						"AGGREGATE_SUM_INTEGER(r ARRAY OF INTEGER) RETURNS INTEGER",
 						new Type[] {TypeArray.getEmptyArrayType()}, 
 						TypeInteger.getInstance(),
 						new NativeFunction() {
@@ -74,6 +82,8 @@ public class BuiltinOperators {
 			);
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("AGGREGATE_SUM_RATIONAL", 
+						"// RATIONAL sum of r\n" +
+						"AGGREGATE_SUM_RATIONAL(r ARRAY OF RATIONAL) RETURNS RATIONAL",
 						new Type[] {TypeArray.getEmptyArrayType()}, 
 						TypeRational.getInstance(), 
 						new NativeFunction() {
@@ -89,6 +99,8 @@ public class BuiltinOperators {
 	private void avg(RelDatabase database) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("AGGREGATE_AVG_INTEGER", 
+						"// Arithmetic mean of r\n" +
+						"AGGREGATE_AVG_INTEGER(r ARRAY OF INTEGER) RETURNS RATIONAL",
 						new Type[] {TypeArray.getEmptyArrayType()}, 
 						TypeRational.getInstance(), 
 						new NativeFunction() {
@@ -101,6 +113,8 @@ public class BuiltinOperators {
 			);
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("AGGREGATE_AVG_RATIONAL", 
+						"// Arithmetic mean of r\n" +
+						"AGGREGATE_AVG_INTEGER(r ARRAY OF RATIONAL) RETURNS RATIONAL",
 						new Type[] {TypeArray.getEmptyArrayType()}, 
 						TypeRational.getInstance(), 
 						new NativeFunction() {
@@ -116,6 +130,8 @@ public class BuiltinOperators {
 	private void max(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_MAX", 
+					"// Maximum of r\n" +
+					"AGGREGATE_MAX(r ARRAY OF *) RETURNS *",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRational.getInstance(), 
 					new NativeFunction() {
@@ -131,6 +147,8 @@ public class BuiltinOperators {
 	private void min(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_MIN", 
+					"// Minimum of r\n" +
+					"AGGREGATE_MIN(r ARRAY OF *) RETURNS *",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRational.getInstance(), 
 					new NativeFunction() {
@@ -146,6 +164,8 @@ public class BuiltinOperators {
 	private void and(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_AND", 
+					"// Logical AND of r\n" +
+					"AGGREGATE_AND(r ARRAY OF BOOLEAN) RETURNS BOOLEAN",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -161,6 +181,8 @@ public class BuiltinOperators {
 	private void or(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_OR", 
+					"// Logical OR of r\n" +
+					"AGGREGATE_OR(r ARRAY OF BOOLEAN) RETURNS BOOLEAN",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -176,6 +198,8 @@ public class BuiltinOperators {
 	private void xor(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_XOR", 
+					"// Logical exclusive-OR of r\n" +
+					"AGGREGATE_XOR(r ARRAY OF BOOLEAN) RETURNS BOOLEAN",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -191,6 +215,8 @@ public class BuiltinOperators {
 	private void union(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_UNION", 
+					"// UNION of r\n" +
+					"AGGREGATE_UNION(r ARRAY OF RELATION {*}) RETURNS RELATION {*}",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
@@ -206,6 +232,8 @@ public class BuiltinOperators {
 	private void xunion(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_XUNION", 
+					"// exclusive-UNION of r\n" +
+					"AGGREGATE_XUNION(r ARRAY OF RELATION {*}) RETURNS RELATION {*}",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
@@ -221,6 +249,8 @@ public class BuiltinOperators {
 	private void d_union(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_D_UNION", 
+					"// disjoint-UNION of r\n" +
+					"AGGREGATE_DUNION(r ARRAY OF RELATION {*}) RETURNS RELATION {*}",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
@@ -236,6 +266,8 @@ public class BuiltinOperators {
 	private void intersect(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_INTERSECT", 
+					"// INTERSECT of r\n" +
+					"AGGREGATE_INTERSECT(r ARRAY OF RELATION {*}) RETURNS RELATION {*}",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
@@ -248,9 +280,12 @@ public class BuiltinOperators {
 		);
 	}
 	
+	// TODO - rewrite to work on ARRAYs
 	private void exactly(RelDatabase database) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("EXACTLY", 
+						"// Return true if COUNT(r) equals n\n" +
+						"EXACTLY(r ARRAY OF RELATION {*}, idx INTEGER, n INTEGER) RETURNS BOOLEAN",
 						new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance(), TypeInteger.getInstance()}, 
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -276,6 +311,8 @@ public class BuiltinOperators {
 		for (Type type: primitiveTypes) {
 			database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("CAST_AS_BOOLEAN", 
+						"// Return n as BOOLEAN\n" +
+						"CAST_AS_BOOLEAN(n " + type.getSignature() + ") RETURNS BOOLEAN",
 						new Type[] {type}, 
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -292,6 +329,8 @@ public class BuiltinOperators {
 		for (Type type: primitiveTypes) {
 			database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("CAST_AS_INTEGER", 
+						"// Return n as INTEGER\n" +
+						"CAST_AS_INTEGER(n " + type.getSignature() + ") RETURNS INTEGER",
 						new Type[] {type}, 
 						TypeInteger.getInstance(), 
 						new NativeFunction() {
@@ -308,6 +347,8 @@ public class BuiltinOperators {
 		for (Type type: primitiveTypes) {
 			database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("CAST_AS_RATIONAL", 
+						"// Return n as RATIONAL\n" +
+						"CAST_AS_RATIONAL(n " + type.getSignature() + ") RETURNS RATIONAL",
 						new Type[] {type}, 
 						TypeRational.getInstance(), 
 						new NativeFunction() {
@@ -324,6 +365,8 @@ public class BuiltinOperators {
 		for (Type type: primitiveTypes) {
 			database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("CAST_AS_CHAR", 
+						"// Return n as CHAR\n" +
+						"CAST_AS_CHAR(n " + type.getSignature() + ") RETURNS CHAR",
 						new Type[] {type}, 
 						TypeCharacter.getInstance(), 
 						new NativeFunction() {
@@ -336,9 +379,10 @@ public class BuiltinOperators {
 		}						
 	}
 	
-	private void equals(RelDatabase database, Type[] parameters) {
+	private void equals(RelDatabase database, String docs, Type[] parameters) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction(BuiltinTypeBuilder.EQUALS, 
+						docs,
 						parameters, 
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -351,14 +395,24 @@ public class BuiltinOperators {
 	}
 	
 	private void equals(RelDatabase database) {
-		equals(database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
-		equals(database, new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
-		equals(database, new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
+		equals(database, 
+				"// Return true if p equals q\n" +
+				"EQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN", 
+				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		equals(database, 
+				"// Return true if p equals q\n" +
+				"EQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
+		equals(database, 
+				"// Return true if p equals q\n" +
+				"EQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
+				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 	
-	private void notequals(RelDatabase database, Type[] parameters) {
+	private void notequals(RelDatabase database, String docs, Type[] parameters) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction(BuiltinTypeBuilder.NOTEQUALS, 
+						docs,
 						parameters, 
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -371,14 +425,24 @@ public class BuiltinOperators {
 	}
 	
 	private void notequals(RelDatabase database) {
-		notequals(database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
-		notequals(database, new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
-		notequals(database, new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
+		notequals(database, 
+				"// Return true if p is not equal to q\n" +
+				"NOTEQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		notequals(database, 
+				"// Return true if p is not equal to q\n" +
+				"NOTEQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
+		notequals(database, 
+				"// Return true if p is not equal to q\n" +
+				"NOTEQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
+				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 	
-	private void greaterthanequals(RelDatabase database, Type[] parameters) {
+	private void greaterthanequals(RelDatabase database, String docs, Type[] parameters) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction(BuiltinTypeBuilder.GREATERTHANOREQUALS, 
+						docs,
 						parameters, 
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -390,9 +454,10 @@ public class BuiltinOperators {
 			);		
 	}
 		
-	private void superset(String opName, RelDatabase database, Type[] parameters) {
+	private void superset(String opName, RelDatabase database, String docs, Type[] parameters) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction(opName, 
+						docs,
 						parameters, 
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -405,15 +470,28 @@ public class BuiltinOperators {
 	}
 	
 	private void greaterthanequals(RelDatabase database) {
-		superset(BuiltinTypeBuilder.GREATERTHANOREQUALS, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
-		superset(BuiltinTypeBuilder.SUPERSETOREQUAL, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
-		greaterthanequals(database, new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
-		greaterthanequals(database, new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
+		superset(BuiltinTypeBuilder.GREATERTHANOREQUALS, database, 
+				"// Return true if p is greater than or equal to q\n" +
+				"GREATERTHANOREQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		superset(BuiltinTypeBuilder.SUPERSETOREQUAL, database, 
+				"// Return true if p is a superset of or equal to q\n" +
+				"SUPERSETOREQUAL(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		greaterthanequals(database,
+				"// Return true if p is greater than or equal to q\n" +
+				"GREATERTHANOREQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
+		greaterthanequals(database, 
+				"// Return true if p is greater than or equal to q\n" +
+				"GREATERTHANOREQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
+				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 	
-	private void lessthanequals(RelDatabase database, Type[] parameters) {
+	private void lessthanequals(RelDatabase database, String docs, Type[] parameters) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction(BuiltinTypeBuilder.LESSTHANOREQUALS, 
+						docs,
 						parameters,
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -425,9 +503,10 @@ public class BuiltinOperators {
 			);		
 	}
 	
-	private void subset(String opName, RelDatabase database, Type[] parameters) {
+	private void subset(String opName, RelDatabase database, String docs, Type[] parameters) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction(opName, 
+						docs,
 						parameters,
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -440,15 +519,28 @@ public class BuiltinOperators {
 	}
 	
 	private void lessthanequals(RelDatabase database) {
-		subset(BuiltinTypeBuilder.LESSTHANOREQUALS, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
-		subset(BuiltinTypeBuilder.SUBSETOREQUAL, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
-		lessthanequals(database, new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
-		lessthanequals(database, new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
+		subset(BuiltinTypeBuilder.LESSTHANOREQUALS, database, 
+				"// Return true if p is less than or equal to q\n" +
+				"LESSTHANOREQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		subset(BuiltinTypeBuilder.SUBSETOREQUAL, database, 
+				"// Return true if p is a subset of or equal to q\n" +
+				"SUBSETOREQUAL(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		lessthanequals(database, 
+				"// Return true if p is less than or equal to q\n" +
+				"LESSTHANOREQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
+		lessthanequals(database, 
+				"// Return true if p is less than or equal to q\n" +
+				"LESSTHANOREQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
+				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 	
-	private void greaterthan(RelDatabase database, Type[] parameters) {
+	private void greaterthan(RelDatabase database, String docs, Type[] parameters) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction(BuiltinTypeBuilder.GREATERTHAN, 
+						docs,
 						parameters, 
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -460,9 +552,10 @@ public class BuiltinOperators {
 			);		
 	}
 	
-	private void propersuperset(String opName, RelDatabase database, Type[] parameters) {
+	private void propersuperset(String opName, RelDatabase database, String docs, Type[] parameters) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction(opName, 
+						docs,
 						parameters, 
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -475,15 +568,28 @@ public class BuiltinOperators {
 	}
 
 	private void greaterthan(RelDatabase database) {
-		propersuperset(BuiltinTypeBuilder.GREATERTHAN, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
-		propersuperset(BuiltinTypeBuilder.SUPERSET, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
-		greaterthan(database, new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
-		greaterthan(database, new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
+		propersuperset(BuiltinTypeBuilder.GREATERTHAN, database, 
+				"// Return true if p is greater than q\n" +
+				"GREATERTHAN(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		propersuperset(BuiltinTypeBuilder.SUPERSET, database, 
+				"// Return true if p is a proper superset of q\n" +
+				"SUPERSET(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		greaterthan(database, 
+				"// Return true if p is greater than q\n" +
+				"GREATERTHAN(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
+		greaterthan(database, 
+				"// Return true if p is greater than q\n" +
+				"GREATERTHAN(p ALPHA, q ALPHA) RETURNS BOOLEAN",
+				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 	
-	private void lessthan(RelDatabase database, Type[] parameters) {
+	private void lessthan(RelDatabase database, String docs, Type[] parameters) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction(BuiltinTypeBuilder.LESSTHAN, 
+						docs,
 						parameters,
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -495,9 +601,10 @@ public class BuiltinOperators {
 			);		
 	}
 	
-	private void propersubset(String opName, RelDatabase database, Type[] parameters) {
+	private void propersubset(String opName, RelDatabase database, String docs, Type[] parameters) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction(opName, 
+						docs,
 						parameters,
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -510,15 +617,29 @@ public class BuiltinOperators {
 	}
 	
 	private void lessthan(RelDatabase database) {
-		propersubset(BuiltinTypeBuilder.LESSTHAN, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
-		propersubset(BuiltinTypeBuilder.SUBSET, database, new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
-		lessthan(database, new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
-		lessthan(database, new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
+		propersubset(BuiltinTypeBuilder.LESSTHAN, database, 
+				"// Return true if p is less than q\n" +
+				"LESSTHAN(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		propersubset(BuiltinTypeBuilder.SUBSET, database, 
+				"// Return true if p is a proper subset of q\n" +
+				"SUBSET(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
+		lessthan(database, 
+				"// Return true if p is less than q\n" +
+				"LESSTHAN(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
+		lessthan(database, 
+				"// Return true if p is less than q\n" +
+				"LESSTHAN(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 
 	private void getuniquenumber(final RelDatabase database) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("GET_UNIQUE_NUMBER", 
+						"// Obtain a unique number\n" +
+						"GET_UNIQUE_NUMBER() RETURNS INTEGER",
 						new Type[] {}, 
 						TypeInteger.getInstance(), 
 						new NativeFunction() {
@@ -533,6 +654,8 @@ public class BuiltinOperators {
 	private void setuniquenumber(final RelDatabase database) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeProcedure("SET_UNIQUE_NUMBER", 
+						"// Set the next unique number. Must be greater than the current next unique number.\n" +
+						"SET_UNIQUE_NUMBER(n INTEGER)",
 						new Type[] {TypeInteger.getInstance()}, 
 						new NativeProcedure() {
 							public void execute(Value arguments[]) {
@@ -548,6 +671,8 @@ public class BuiltinOperators {
 		resultHeading.add("N", TypeInteger.getInstance());
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("SEQUENCE",
+						"// Return a RELATION {n INTEGER} where n ranges from start to end.\n" +
+						"SEQUENCE(start INTEGER, end INTEGER) RETURNS RELATION {n INTEGER}",
 						parameters,
 						(new TypeRelation(resultHeading)), 
 						new NativeFunction() {
@@ -564,6 +689,8 @@ public class BuiltinOperators {
 		resultHeading.add("N", TypeInteger.getInstance());
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("SEQUENCE",
+						"// Return a RELATION {n INTEGER} where n ranges from start to end, stepping by step.\n" +
+						"SEQUENCE(start INTEGER, end INTEGER, step INTEGER) RETURNS RELATION {n INTEGER}",
 						parameters,
 						(new TypeRelation(resultHeading)), 
 						new NativeFunction() {
@@ -583,6 +710,8 @@ public class BuiltinOperators {
 	private void quote(RelDatabase database) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("QUOTE",
+						"// Return s with special characters quoted\n" +
+						"QUOTE(s CHAR) RETURNS CHAR",
 						new Type[] {TypeCharacter.getInstance()},
 						TypeCharacter.getInstance(), 
 						new NativeFunction() {
@@ -597,6 +726,8 @@ public class BuiltinOperators {
 	private void unquote(RelDatabase database) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("UNQUOTE",
+						"// Return s with quoted special characters unquoted\n" +
+						"UNQUOTE(s CHAR) RETURNS CHAR",
 						new Type[] {TypeCharacter.getInstance()},
 						TypeCharacter.getInstance(), 
 						new NativeFunction() {
@@ -613,6 +744,8 @@ public class BuiltinOperators {
 	private void is_digits(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("IS_DIGITS",
+					"// Return TRUE if s is all numeric digits\n" +
+					"IS_DIGITS(s CHAR) RETURNS BOOLEAN",
 					new Type[] {TypeCharacter.getInstance()},
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -631,6 +764,8 @@ public class BuiltinOperators {
 	private void length(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("LENGTH",
+					"// Return the length of s\n" +
+					"LENGTH(s CHAR) RETURNS INTEGER",
 					new Type[] {TypeCharacter.getInstance()},
 					TypeInteger.getInstance(), 
 					new NativeFunction() {
@@ -645,6 +780,8 @@ public class BuiltinOperators {
 	private void substring2(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("SUBSTRING",
+					"// Return the 0-based substring of s, starting from beginIndex\n" +
+					"SUBSTRING(s CHAR, beginIndex INTEGER) RETURNS CHAR",
 					new Type[] {TypeCharacter.getInstance(), TypeInteger.getInstance()},
 					TypeCharacter.getInstance(), 
 					new NativeFunction() {
@@ -660,6 +797,8 @@ public class BuiltinOperators {
 	private void substring3(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("SUBSTRING",
+					"// Return the 0-based substring of s, starting from beginIndex and extending to endIndex - 1\n" +
+					"SUBSTRING(s CHAR, beginIndex INTEGER, endIndex INTEGER) RETURNS CHAR",
 					new Type[] {TypeCharacter.getInstance(), TypeInteger.getInstance(), TypeInteger.getInstance()},
 					TypeCharacter.getInstance(), 
 					new NativeFunction() {
@@ -675,6 +814,10 @@ public class BuiltinOperators {
 	private void compare_to(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("COMPARE_TO",
+					"// Perform the lexicographic comparison of p and q, to return the value 0 if p is equal to q;\n" +
+					"// a value less than 0 if p is lexicographically less than q;\n" +
+					"// and a value greater than 0 if p is lexicographically greater than q.\n" +
+					"COMPARE_TO(p CHAR, q CHAR) RETURNS INTEGER",
 					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
 					TypeInteger.getInstance(), 
 					new NativeFunction() {
@@ -690,6 +833,10 @@ public class BuiltinOperators {
 	private void compare_to_ignore_case(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("COMPARE_TO_IGNORE_CASE",
+					"// Perform the case-insensitive lexicographic comparison of p and q, to return the value 0 if p is equal to q;\n" +
+					"// a value less than 0 if p is lexicographically less than q;\n" +
+					"// and a value greater than 0 if p is lexicographically greater than q.\n" +
+					"COMPARE_TO_IGNORE_CASE(p CHAR, q CHAR) RETURNS INTEGER",
 					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
 					TypeInteger.getInstance(), 
 					new NativeFunction() {
@@ -705,6 +852,8 @@ public class BuiltinOperators {
 	private void ends_with(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("ENDS_WITH",
+					"// Return true if p ends with suffix q\n" +
+					"ENDS_WITH(p CHAR, q CHAR) RETURNS BOOLEAN",
 					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -719,6 +868,8 @@ public class BuiltinOperators {
 	private void equals_ignore_case(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("EQUALS_IGNORE_CASE",
+					"// Return true if p equals q, ignoring case\n" +
+					"EQUALS_IGNORE_CASE(p CHAR, q CHAR) RETURNS BOOLEAN",
 					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -734,6 +885,8 @@ public class BuiltinOperators {
 	private void index_of2(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("INDEX_OF",
+					"// Return the 0-based index of the first occurrence of needle in haystack. Return -1 if not found.\n" +
+					"INDEX_OF(CHAR haystack, CHAR needle) RETURNS INTEGER",
 					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
 					TypeInteger.getInstance(), 
 					new NativeFunction() {
@@ -749,6 +902,8 @@ public class BuiltinOperators {
 	private void index_of3(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("INDEX_OF",
+					"// Return the 0-based index of the first occurrence of needle in haystack, starting at index. Return -1 if not found.\n" +
+					"INDEX_OF(CHAR haystack, CHAR needle, INTEGER index) RETURNS INTEGER",
 					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance(), TypeInteger.getInstance()},
 					TypeInteger.getInstance(), 
 					new NativeFunction() {
@@ -765,11 +920,13 @@ public class BuiltinOperators {
 	private void last_index_of2(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("LAST_INDEX_OF",
+					"// Return the 0-based index of the last occurrence of needle in haystack. Return -1 if not found.\n" +
+					"LAST_INDEX_OF(CHAR haystack, CHAR needle) RETURNS INTEGER",
 					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
 					TypeInteger.getInstance(), 
 					new NativeFunction() {
 						public Value evaluate(Value arguments[]) {
-							// Returns the index within this string of the first occurrence of the specified substring.
+							// Returns the index within this string of the last occurrence of the specified substring.
 							return ValueInteger.select(generator, arguments[0].stringValue().lastIndexOf(arguments[1].stringValue()));
 						}
 					}
@@ -780,11 +937,13 @@ public class BuiltinOperators {
 	private void last_index_of3(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("LAST_INDEX_OF",
+					"// Return the 0-based index of the last occurrence of needle in haystack, starting at index. Return -1 if not found.\n" +
+					"LAST_INDEX_OF(CHAR haystack, CHAR needle, INTEGER index) RETURNS INTEGER",
 					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance(), TypeInteger.getInstance()},
 					TypeInteger.getInstance(), 
 					new NativeFunction() {
 						public Value evaluate(Value arguments[]) {
-							// Returns the index within this string of the first occurrence of the 
+							// Returns the index within this string of the last occurrence of the 
 							// specified substring, starting at the specified index.
 							return ValueInteger.select(generator, arguments[0].stringValue().lastIndexOf(arguments[1].stringValue(), (int)arguments[2].longValue()));
 						}
@@ -796,6 +955,8 @@ public class BuiltinOperators {
 	private void matches(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("MATCHES",
+					"// Return TRUE if p matches the regular expression regexp.\n" +
+					"MATCHES(CHAR p, CHAR regexp) RETURNS BOOLEAN",
 					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -811,6 +972,8 @@ public class BuiltinOperators {
 	private void region_matches(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("REGION_MATCHES",
+					"// Return TRUE if two string regions are equal.\n" +
+					"MATCHES(CHAR p, BOOLEAN ignoreCase, INTEGER offsetP, CHAR q, INTEGER offsetQ, INTEGER length) RETURNS BOOLEAN",
 					new Type[] {TypeCharacter.getInstance(), TypeBoolean.getInstance(), TypeInteger.getInstance(), TypeCharacter.getInstance(), TypeInteger.getInstance(), TypeInteger.getInstance()},
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -831,6 +994,8 @@ public class BuiltinOperators {
 	private void replace_all(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("REPLACE_ALL",
+					"// Return p with each substring of p that matches regexp replaced with q.\n" +
+					"REPLACE_ALL(CHAR p, CHAR regexp, CHAR q) RETURNS CHAR",
 					new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance(), TypeCharacter.getInstance()},
 					TypeCharacter.getInstance(), 
 					new NativeFunction() {
@@ -846,6 +1011,8 @@ public class BuiltinOperators {
 	private void replace_first(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("REPLACE_FIRST",
+				"// Return p with the first substring of p that matches regexp replaced with q.\n" +
+				"REPLACE_FIRST(CHAR p, CHAR regexp, CHAR q) RETURNS CHAR",
 				new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance(), TypeCharacter.getInstance()},
 				TypeCharacter.getInstance(), 
 				new NativeFunction() {
@@ -881,6 +1048,8 @@ public class BuiltinOperators {
 	private void starts_with2(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("STARTS_WITH",
+				"// Return TRUE if p starts with prefix q.\n" +
+				"STARTS_WITH(CHAR p, CHAR q) RETURNS BOOLEAN",
 				new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
 				TypeBoolean.getInstance(), 
 				new NativeFunction() {
@@ -896,6 +1065,8 @@ public class BuiltinOperators {
 	private void starts_with3(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("STARTS_WITH",
+				"// Return TRUE if p starts with prefix q, starting at index.\n" +
+				"STARTS_WITH(CHAR p, CHAR q, INTEGER index) RETURNS BOOLEAN",
 				new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance(), TypeInteger.getInstance()},
 				TypeBoolean.getInstance(), 
 				new NativeFunction() {
@@ -911,6 +1082,8 @@ public class BuiltinOperators {
 	private void to_lower_case(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("TO_LOWER_CASE",
+				"// Return p converted to lower case.\n" +
+				"TO_LOWER_CASE(CHAR p) RETURNS CHAR",
 				new Type[] {TypeCharacter.getInstance()},
 				TypeCharacter.getInstance(), 
 				new NativeFunction() {
@@ -925,6 +1098,8 @@ public class BuiltinOperators {
 	private void to_upper_case(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("TO_UPPER_CASE",
+				"// Return p converted to upper case.\n" +
+				"TO_UPPER_CASE(CHAR p) RETURNS CHAR",
 				new Type[] {TypeCharacter.getInstance()},
 				TypeCharacter.getInstance(), 
 				new NativeFunction() {
@@ -939,6 +1114,8 @@ public class BuiltinOperators {
 	private void trim(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("TRIM",
+				"// Return p with leading and trailing whitespace removed\n" +
+				"TRIM(p CHAR) RETURNS CHAR",
 				new Type[] {TypeCharacter.getInstance()},
 				TypeCharacter.getInstance(), 
 				new NativeFunction() {
@@ -955,6 +1132,8 @@ public class BuiltinOperators {
 	private void e(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("E",
+				"// Return the RATIONAL value that is closer than any other to e, the base of the natural logarithms.\n" +
+				"E() RETURNS RATIONAL",
 				new Type[] {},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -971,6 +1150,8 @@ public class BuiltinOperators {
 	private void pi(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("PI",
+				"// Return the RATIONAL value that is closer than any other to pi, the ratio of the circumference of a circle to its diameter\n" +
+				"PI() RETURNS RATIONAL",
 				new Type[] {},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -987,6 +1168,8 @@ public class BuiltinOperators {
 	private void absRational(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("ABS",
+				"// Return the absolute value of p\n" +
+				"ABS(p RATIONAL) RETURNS RATIONAL",	
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1002,6 +1185,8 @@ public class BuiltinOperators {
 	private void absInteger(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("ABS",
+				"// Return the absolute value of p\n" +
+				"ABS(p INTEGER) RETURNS INTEGER",	
 				new Type[] {TypeInteger.getInstance()},
 				TypeInteger.getInstance(), 
 				new NativeFunction() {
@@ -1017,6 +1202,8 @@ public class BuiltinOperators {
 	private void acos(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("ACOS",
+				"// Return the arc cosine of an angle p, in the range of 0.0 through pi\n" +
+				"ACOS(p INTEGER) RETURNS RATIONAL",	
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1032,6 +1219,8 @@ public class BuiltinOperators {
 	private void asin(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("ASIN",
+				"// Return the arc sine of an angle p, in the range of -pi/2 through pi/2\n" +
+				"ASIN(p INTEGER) RETURNS RATIONAL",	
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1047,6 +1236,8 @@ public class BuiltinOperators {
 	private void atan(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("ATAN",
+				"// Return the arc tangent of an angle p, in the range of -pi/2 through pi/2\n" +
+				"ATAN(p INTEGER) RETURNS RATIONAL",	
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1062,6 +1253,9 @@ public class BuiltinOperators {
 	private void atan2(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("ATAN2",
+				"// Returns the angle theta from the conversion of rectangular coordinates (x, y) to polar coordinates (r, theta).\n" +
+				"// The phase theta is computed as an arc tangent of y/x in the range of -pi to pi.\n" +
+				"ATAN2(x RATIONAL, y RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance(), TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1077,6 +1271,9 @@ public class BuiltinOperators {
 	private void ceil(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("CEIL",
+				"// Returns the smallest (closest to negative infinity) RATIONAL value that is not less than the argument\n" +
+				"// and is equal to a mathematical integer.\n" +
+				"CEIL(p RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1094,6 +1291,8 @@ public class BuiltinOperators {
 	private void cos(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("COS",
+				"// Returns the trigonometric cosine of an angle\n" +
+				"COS(p RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1109,6 +1308,8 @@ public class BuiltinOperators {
 	private void exp(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("EXP",
+				"// Returns Euler's number e raised to the power of a RATIONAL value.\n" +
+				"EXP(p RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1124,6 +1325,9 @@ public class BuiltinOperators {
 	private void floor(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("FLOOR",
+				"// Returns the largest (closest to positive infinity) RATIONAL value that is not greater than the argument\n" +
+				"// and is equal to a mathematical integer.\n" +
+				"FLOOR(p RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1141,6 +1345,8 @@ public class BuiltinOperators {
 	private void remainder(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("REMAINDER",
+				"// Computes the remainder operation on two arguments as prescribed by the IEEE 754 standard.\n" +
+				"REMAINDER(p RATIONAL, q RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance(), TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1156,6 +1362,8 @@ public class BuiltinOperators {
 	private void log(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("LOG",
+				"// Returns the natural logarithm (base e) of a RATIONAL value.\n" +
+				"LOG(p RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1171,6 +1379,8 @@ public class BuiltinOperators {
 	private void maximumRational(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("MAXIMUM",
+				"// Returns the greater of two RATIONAL values.\n" +
+				"MAXIMUM(p RATIONAL, q RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance(), TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1186,6 +1396,8 @@ public class BuiltinOperators {
 	private void maximumInteger(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("MAXIMUM",
+				"// Returns the greater of two INTEGER values.\n" +
+				"MAXIMUM(p INTEGER, q INTEGER) RETURNS INTEGER",
 				new Type[] {TypeInteger.getInstance(), TypeInteger.getInstance()},
 				TypeInteger.getInstance(), 
 				new NativeFunction() {
@@ -1201,11 +1413,13 @@ public class BuiltinOperators {
 	private void minimumRational(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("MINIMUM",
+				"// Returns the smaller of two RATIONAL values.\n" +
+				"MINIMUM(p RATIONAL, q RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance(), TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
 					public Value evaluate(Value arguments[]) {
-						// Returns the greater of two RATIONAL values.
+						// Returns the smaller of two RATIONAL values.
 						return ValueRational.select(generator, Math.min(arguments[0].doubleValue(), arguments[1].doubleValue()));
 					}
 				}
@@ -1216,11 +1430,13 @@ public class BuiltinOperators {
 	private void minimumInteger(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("MINIMUM",
+				"// Returns the smaller of two INTEGER values.\n" +
+				"MINIMUM(p INTEGER, q INTEGER) RETURNS INTEGER",
 				new Type[] {TypeInteger.getInstance(), TypeInteger.getInstance()},
 				TypeInteger.getInstance(), 
 				new NativeFunction() {
 					public Value evaluate(Value arguments[]) {
-						// Returns the greater of two INTEGER values.
+						// Returns the smaller of two INTEGER values.
 						return ValueInteger.select(generator, Math.min(arguments[0].longValue(), arguments[1].longValue()));
 					}
 				}
@@ -1231,6 +1447,8 @@ public class BuiltinOperators {
 	private void pow(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("POW",
+				"// Returns the value of the first argument raised to the power of the second argument.\n" +
+				"POW(p RATIONAL, q RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance(), TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1246,12 +1464,13 @@ public class BuiltinOperators {
 	private void random(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("RANDOM",
+				"// Returns a pseudo-random RATIONAL value with a positive sign, greater than or equal to 0.0 and less than 1.0.\n" +
+				"RANDOM() RETURNS RATIONAL",
 				new Type[] {},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
 					public Value evaluate(Value arguments[]) {
-						// Returns a RATIONAL value with a positive sign, greater than or equal
-						// to 0.0 and less than 1.0.
+						// Returns a RATIONAL value with a positive sign, greater than or equal to 0.0 and less than 1.0.
 						return ValueRational.select(generator, Math.random());
 					}
 				}
@@ -1262,12 +1481,13 @@ public class BuiltinOperators {
 	private void rint(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("RINT",
+				"// Returns the RATIONAL value that is closest in value to the argument and is equal to a mathematical integer.\n" +
+				"RINT(p RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
 					public Value evaluate(Value arguments[]) {
-						// Returns the RATIONAL value that is closest in value to the argument
-						// and is equal to a mathematical integer.
+						// Returns the RATIONAL value that is closest in value to the argument and is equal to a mathematical integer.
 						return ValueRational.select(generator, Math.rint(arguments[0].doubleValue()));
 					}
 				}
@@ -1278,6 +1498,8 @@ public class BuiltinOperators {
 	private void round(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("ROUND",
+				"// Returns the closest INTEGER to the argument.\n" +
+				"ROUND(p RATIONAL) RETURNS INTEGER",
 				new Type[] {TypeRational.getInstance()},
 				TypeInteger.getInstance(), 
 				new NativeFunction() {
@@ -1293,6 +1515,8 @@ public class BuiltinOperators {
 	private void sin(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("SIN",
+				"// Returns the trigonometric sine of an angle\n" +
+				"SIN(p RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1308,6 +1532,8 @@ public class BuiltinOperators {
 	private void sqrt(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("SQRT",
+				"// Returns the correctly rounded positive square root of a RATIONAL value.\n" +
+				"SQRT(p RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1323,6 +1549,8 @@ public class BuiltinOperators {
 	private void tan(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("TAN",
+				"// Returns the trigonometric tangent of an angle\n" +
+				"TAN(p RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1338,12 +1566,13 @@ public class BuiltinOperators {
 	private void to_degrees(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("TO_DEGREES",
+				"// Converts an angle measured in radians to an approximately equivalent angle measured in degrees.\n" +
+				"TO_DEGREES(p RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
 					public Value evaluate(Value arguments[]) {
-						// Converts an angle measured in radians to an approximately equivalent
-						// angle measured in degrees.
+						// Converts an angle measured in radians to an approximately equivalent angle measured in degrees.
 						return ValueRational.select(generator, Math.toDegrees(arguments[0].doubleValue()));
 					}
 				}
@@ -1354,12 +1583,13 @@ public class BuiltinOperators {
 	private void to_radians(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("TO_RADIANS",
+				"// Converts an angle measured in degrees to an approximately equivalent angle measured in radians.\n" +
+				"TO_RADIANS(p RATIONAL) RETURNS RATIONAL",
 				new Type[] {TypeRational.getInstance()},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
 					public Value evaluate(Value arguments[]) {
-						// Converts an angle measured in degrees to an approximately equivalent
-						// angle measured in radians.
+						// Converts an angle measured in degrees to an approximately equivalent angle measured in radians.
 						return ValueRational.select(generator, Math.toRadians(arguments[0].doubleValue()));
 					}
 				}
@@ -1372,6 +1602,8 @@ public class BuiltinOperators {
 	private void max_integer(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("MAX_INTEGER",
+				"// Largest positive integer\n" +
+				"MAX_INTEGER() RETURNS INTEGER",
 				new Type[] {},
 				TypeInteger.getInstance(), 
 				new NativeFunction() {
@@ -1387,6 +1619,8 @@ public class BuiltinOperators {
 	private void min_integer(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("MIN_INTEGER",
+				"// Largest negative integer\n" +
+				"MIN_INTEGER() RETURNS INTEGER",
 				new Type[] {},
 				TypeInteger.getInstance(), 
 				new NativeFunction() {
@@ -1402,6 +1636,8 @@ public class BuiltinOperators {
 	private void max_rational(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("MAX_RATIONAL",
+				"// Largest positive RATIONAL\n" +
+				"MAX_RATIONAL() RETURNS RATIONAL",
 				new Type[] {},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
@@ -1417,6 +1653,8 @@ public class BuiltinOperators {
 	private void min_rational(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("MIN_RATIONAL",
+				"// Largest negative RATIONAL\n" +
+				"MIN_RATIONAL() RETURNS RATIONAL",
 				new Type[] {},
 				TypeRational.getInstance(), 
 				new NativeFunction() {
