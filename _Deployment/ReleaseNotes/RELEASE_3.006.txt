@@ -13,7 +13,10 @@ The following enhancements have been made:
 
 - In the Rel DBMS, all operators previously found in
   UsefulOperatorsAndViews.rel are now built-in.
-  
+
+- In the Rel DBMS, the sys.OperatorsBuiltin relvar now provides
+  documentation of built-in relvars via the Definition attribute.
+
 - The Rel DBMS's storage engine has been updated to Oracle Berkeley DB
   JE version 7.3.7
 

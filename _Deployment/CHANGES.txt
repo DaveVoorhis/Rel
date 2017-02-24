@@ -4,6 +4,8 @@ Version 3.006 (1.0.19):
 
   - enhancement: Rel DBMS: All operators previously found in UsefulOperatorsAndViews.rel
                  are now built-in.
+  - enhancement: Rel DBMS: sys.OperatorsBuiltin relvar now provides documentation of
+                 built-in relvars via Definition attribute.
   - enhancement: Rel DBMS: Updated storage engine to Oracle Berkeley DB JE version 7.3.7
   - enhancement: Rel DBMS: External Rel DBMSs' relvars may now be EXTERNAL relvars.
        E.g.:

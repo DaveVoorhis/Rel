@@ -15,13 +15,15 @@ public class RelvarOperatorsBuiltinMetadata extends RelvarMetadata {
 	static Heading getNewHeading() {
 		Heading heading = new Heading();
 		heading.add("Name", TypeCharacter.getInstance());
-		heading.add("Specification", TypeCharacter.getInstance());
+		heading.add("Signature", TypeCharacter.getInstance());
+		heading.add("ReturnsType", TypeCharacter.getInstance());
+		heading.add("Definition", TypeCharacter.getInstance());
 		return heading;
 	}
 	
 	static RelvarHeading getNewKeyDefinition() {
 		SelectAttributes attributes = new SelectAttributes();
-		attributes.add("Name");
+		attributes.add("Signature");
 		RelvarHeading keyDefinition = new RelvarHeading(getNewHeading());
 		keyDefinition.addKey(attributes);
 		return keyDefinition;

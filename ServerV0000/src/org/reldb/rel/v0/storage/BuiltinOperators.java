@@ -397,15 +397,15 @@ public class BuiltinOperators {
 	private void equals(RelDatabase database) {
 		equals(database, 
 				"// Return true if p equals q\n" +
-				"EQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN", 
+				"OP_EQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN", 
 				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		equals(database, 
 				"// Return true if p equals q\n" +
-				"EQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				"OP_EQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
 				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
 		equals(database, 
 				"// Return true if p equals q\n" +
-				"EQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
+				"OP_EQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
 				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 	
@@ -427,15 +427,15 @@ public class BuiltinOperators {
 	private void notequals(RelDatabase database) {
 		notequals(database, 
 				"// Return true if p is not equal to q\n" +
-				"NOTEQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				"OP_NOTEQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
 				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		notequals(database, 
 				"// Return true if p is not equal to q\n" +
-				"NOTEQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				"OP_NOTEQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
 				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
 		notequals(database, 
 				"// Return true if p is not equal to q\n" +
-				"NOTEQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
+				"OP_NOTEQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
 				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 	
@@ -472,19 +472,19 @@ public class BuiltinOperators {
 	private void greaterthanequals(RelDatabase database) {
 		superset(BuiltinTypeBuilder.GREATERTHANOREQUALS, database, 
 				"// Return true if p is greater than or equal to q\n" +
-				"GREATERTHANOREQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				"OP_GREATERTHANOREQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
 				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		superset(BuiltinTypeBuilder.SUPERSETOREQUAL, database, 
 				"// Return true if p is a superset of or equal to q\n" +
-				"SUPERSETOREQUAL(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				"OP_SUPERSETOREQUAL(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
 				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		greaterthanequals(database,
 				"// Return true if p is greater than or equal to q\n" +
-				"GREATERTHANOREQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				"OP_GREATERTHANOREQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
 				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
 		greaterthanequals(database, 
 				"// Return true if p is greater than or equal to q\n" +
-				"GREATERTHANOREQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
+				"OP_GREATERTHANOREQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
 				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 	
@@ -521,19 +521,19 @@ public class BuiltinOperators {
 	private void lessthanequals(RelDatabase database) {
 		subset(BuiltinTypeBuilder.LESSTHANOREQUALS, database, 
 				"// Return true if p is less than or equal to q\n" +
-				"LESSTHANOREQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				"OP_LESSTHANOREQUALS(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
 				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		subset(BuiltinTypeBuilder.SUBSETOREQUAL, database, 
 				"// Return true if p is a subset of or equal to q\n" +
-				"SUBSETOREQUAL(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				"OP_SUBSETOREQUAL(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
 				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		lessthanequals(database, 
 				"// Return true if p is less than or equal to q\n" +
-				"LESSTHANOREQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				"OP_LESSTHANOREQUALS(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
 				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
 		lessthanequals(database, 
 				"// Return true if p is less than or equal to q\n" +
-				"LESSTHANOREQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
+				"OP_LESSTHANOREQUALS(p ALPHA, q ALPHA) RETURNS BOOLEAN",
 				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 	
@@ -570,19 +570,19 @@ public class BuiltinOperators {
 	private void greaterthan(RelDatabase database) {
 		propersuperset(BuiltinTypeBuilder.GREATERTHAN, database, 
 				"// Return true if p is greater than q\n" +
-				"GREATERTHAN(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				"OP_GREATERTHAN(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
 				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		propersuperset(BuiltinTypeBuilder.SUPERSET, database, 
 				"// Return true if p is a proper superset of q\n" +
-				"SUPERSET(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				"OP_SUPERSET(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
 				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		greaterthan(database, 
 				"// Return true if p is greater than q\n" +
-				"GREATERTHAN(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				"OP_GREATERTHAN(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
 				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
 		greaterthan(database, 
 				"// Return true if p is greater than q\n" +
-				"GREATERTHAN(p ALPHA, q ALPHA) RETURNS BOOLEAN",
+				"OP_GREATERTHAN(p ALPHA, q ALPHA) RETURNS BOOLEAN",
 				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 	
@@ -619,19 +619,19 @@ public class BuiltinOperators {
 	private void lessthan(RelDatabase database) {
 		propersubset(BuiltinTypeBuilder.LESSTHAN, database, 
 				"// Return true if p is less than q\n" +
-				"LESSTHAN(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				"OP_LESSTHAN(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
 				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		propersubset(BuiltinTypeBuilder.SUBSET, database, 
 				"// Return true if p is a proper subset of q\n" +
-				"SUBSET(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
+				"OP_SUBSET(p RELATION {*}, q RELATION {*}) RETURNS BOOLEAN",
 				new Type[] {TypeRelation.getEmptyRelationType(), TypeRelation.getEmptyRelationType()});
 		lessthan(database, 
 				"// Return true if p is less than q\n" +
-				"LESSTHAN(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				"OP_LESSTHAN(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
 				new Type[] {TypeTuple.getEmptyTupleType(), TypeTuple.getEmptyTupleType()});
 		lessthan(database, 
 				"// Return true if p is less than q\n" +
-				"LESSTHAN(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
+				"OP_LESSTHAN(p TUPLE {*}, q TUPLE {*}) RETURNS BOOLEAN",
 				new Type[] {TypeAlpha.getEmptyAlphaType(), TypeAlpha.getEmptyAlphaType()});
 	}
 
