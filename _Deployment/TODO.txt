@@ -2,8 +2,6 @@
 
 - Fix EXACTLY.
 
-- Include sys.OperatorsBuiltin in RelUI.
-
 - Maybe associate "loading" screen with database loading, rather than Rel loading.
 
 - SUMMARIZE BY is too slow. Make it faster.

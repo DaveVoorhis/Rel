@@ -52,7 +52,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("COUNT", 
 					"// Return cardinality of ARRAY r\n" +
-					"COUNT(r ARRAY OF *) RETURNS INTEGER",
+					"COUNT(r ARRAY OF TUPLE {*}) RETURNS INTEGER",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeInteger.getInstance(), 
 					new NativeFunction() {
@@ -69,8 +69,8 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("AGGREGATE_SUM_INTEGER", 
 						"// INTEGER sum of r\n" +
-						"AGGREGATE_SUM_INTEGER(r ARRAY OF INTEGER) RETURNS INTEGER",
-						new Type[] {TypeArray.getEmptyArrayType()}, 
+						"AGGREGATE_SUM_INTEGER(r ARRAY OF TUPLE {AGGREGAND INT, AGGREGATION_SERIAL INT}) RETURNS INTEGER",
+						new Type[] {TypeArray.getEmptyArrayType()},
 						TypeInteger.getInstance(),
 						new NativeFunction() {
 							public Value evaluate(Value arguments[]) {
@@ -83,7 +83,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("AGGREGATE_SUM_RATIONAL", 
 						"// RATIONAL sum of r\n" +
-						"AGGREGATE_SUM_RATIONAL(r ARRAY OF RATIONAL) RETURNS RATIONAL",
+						"AGGREGATE_SUM_RATIONAL(r ARRAY OF TUPLE {AGGREGAND RATIONAL, AGGREGATION_SERIAL INT}) RETURNS RATIONAL",
 						new Type[] {TypeArray.getEmptyArrayType()}, 
 						TypeRational.getInstance(), 
 						new NativeFunction() {
@@ -100,7 +100,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("AGGREGATE_AVG_INTEGER", 
 						"// Arithmetic mean of r\n" +
-						"AGGREGATE_AVG_INTEGER(r ARRAY OF INTEGER) RETURNS RATIONAL",
+						"AGGREGATE_AVG_INTEGER(r ARRAY OF TUPLE {AGGREGAND INT, AGGREGATION_SERIAL INT}) RETURNS RATIONAL",
 						new Type[] {TypeArray.getEmptyArrayType()}, 
 						TypeRational.getInstance(), 
 						new NativeFunction() {
@@ -114,7 +114,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("AGGREGATE_AVG_RATIONAL", 
 						"// Arithmetic mean of r\n" +
-						"AGGREGATE_AVG_INTEGER(r ARRAY OF RATIONAL) RETURNS RATIONAL",
+						"AGGREGATE_AVG_INTEGER(r ARRAY OF TUPLE {AGGREGAND RATIONAL, AGGREGATION_SERIAL INT}) RETURNS RATIONAL",
 						new Type[] {TypeArray.getEmptyArrayType()}, 
 						TypeRational.getInstance(), 
 						new NativeFunction() {
@@ -131,7 +131,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_MAX", 
 					"// Maximum of r\n" +
-					"AGGREGATE_MAX(r ARRAY OF *) RETURNS *",
+					"AGGREGATE_MAX(r ARRAY OF TUPLE {AGGREGAND ALPHA, AGGREGATION_SERIAL INT}) RETURNS ALPHA",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRational.getInstance(), 
 					new NativeFunction() {
@@ -148,7 +148,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_MIN", 
 					"// Minimum of r\n" +
-					"AGGREGATE_MIN(r ARRAY OF *) RETURNS *",
+					"AGGREGATE_MIN(r ARRAY OF TUPLE {AGGREGAND ALPHA, AGGREGATION_SERIAL INT}) RETURNS ALPHA",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRational.getInstance(), 
 					new NativeFunction() {
@@ -165,7 +165,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_AND", 
 					"// Logical AND of r\n" +
-					"AGGREGATE_AND(r ARRAY OF BOOLEAN) RETURNS BOOLEAN",
+					"AGGREGATE_AND(r ARRAY OF TUPLE {AGGREGAND BOOLEAN, AGGREGATION_SERIAL INT}) RETURNS BOOLEAN",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -182,7 +182,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_OR", 
 					"// Logical OR of r\n" +
-					"AGGREGATE_OR(r ARRAY OF BOOLEAN) RETURNS BOOLEAN",
+					"AGGREGATE_OR(r ARRAY OF TUPLE {AGGREGAND BOOLEAN, AGGREGATION_SERIAL INT}) RETURNS BOOLEAN",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -199,7 +199,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_XOR", 
 					"// Logical exclusive-OR of r\n" +
-					"AGGREGATE_XOR(r ARRAY OF BOOLEAN) RETURNS BOOLEAN",
+					"AGGREGATE_XOR(r ARRAY OF TUPLE {AGGREGAND BOOLEAN, AGGREGATION_SERIAL INT}) RETURNS BOOLEAN",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeBoolean.getInstance(), 
 					new NativeFunction() {
@@ -216,7 +216,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_UNION", 
 					"// UNION of r\n" +
-					"AGGREGATE_UNION(r ARRAY OF RELATION {*}) RETURNS RELATION {*}",
+					"AGGREGATE_UNION(r ARRAY OF TUPLE {AGGREGAND RELATION {*}, AGGREGATION_SERIAL INT}) RETURNS RELATION {*}",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
@@ -233,7 +233,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_XUNION", 
 					"// exclusive-UNION of r\n" +
-					"AGGREGATE_XUNION(r ARRAY OF RELATION {*}) RETURNS RELATION {*}",
+					"AGGREGATE_XUNION(r ARRAY OF TUPLE {AGGREGAND RELATION {*}, AGGREGATION_SERIAL INT}) RETURNS RELATION {*}",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
@@ -250,7 +250,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_D_UNION", 
 					"// disjoint-UNION of r\n" +
-					"AGGREGATE_DUNION(r ARRAY OF RELATION {*}) RETURNS RELATION {*}",
+					"AGGREGATE_DUNION(r ARRAY OF TUPLE {AGGREGAND RELATION {*}, AGGREGATION_SERIAL INT}) RETURNS RELATION {*}",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
@@ -267,7 +267,7 @@ public class BuiltinOperators {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_INTERSECT", 
 					"// INTERSECT of r\n" +
-					"AGGREGATE_INTERSECT(r ARRAY OF RELATION {*}) RETURNS RELATION {*}",
+					"AGGREGATE_INTERSECT(r ARRAY OF TUPLE {AGGREGAND RELATION {*}, AGGREGATION_SERIAL INT}) RETURNS RELATION {*}",
 					new Type[] {TypeArray.getEmptyArrayType()}, 
 					TypeRelation.getEmptyRelationType(), 
 					new NativeFunction() {
@@ -284,8 +284,8 @@ public class BuiltinOperators {
 	private void exactly(RelDatabase database) {
 		database.defineBuiltinOperator(
 				new OperatorDefinitionNativeFunction("EXACTLY", 
-						"// Return true if COUNT(r) equals n\n" +
-						"EXACTLY(r ARRAY OF RELATION {*}, idx INTEGER, n INTEGER) RETURNS BOOLEAN",
+						"// Return true if COUNT of true equals n\n" +
+						"EXACTLY(r ARRAY OF TUPLE {AGGREGAND BOOLEAN, AGGREGATION_SERIAL INT}, idx INTEGER, n INTEGER) RETURNS BOOLEAN",
 						new Type[] {TypeRelation.getEmptyRelationType(), TypeInteger.getInstance(), TypeInteger.getInstance()}, 
 						TypeBoolean.getInstance(), 
 						new NativeFunction() {
@@ -1025,25 +1025,55 @@ public class BuiltinOperators {
 		);		
 	}
 
-	/*
-	OPERATOR SPLIT(s CHAR, regex CHAR) RETURNS (ARRAY OF CHAR) Java FOREIGN
-//	          Splits this string around matches of the given regular expression.
-		Array a = new Array(new ArrayType(TypeChar.getType()));
-		String[] ss = s.stringValue().split(regex.stringValue());
-		for (int i=0; i<ss.length; i++)
-			a.append(ValueCharacter.select(generator, ss[i]));
-		return a;
-	END OPERATOR;
+	private void split2(RelDatabase database) {
+		Heading arrayHeading = new Heading();
+		arrayHeading.add("str", TypeCharacter.getInstance());
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("SPLIT",
+				"// Split p around matches of the regexp.\n" +
+				"SPLIT(CHAR p, CHAR regexp) RETURNS ARRAY OF TUPLE {str CHAR}",
+				new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance()},
+				new TypeArray(arrayHeading), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						ValueArray array = new ValueArray(generator);
+						String[] ss = arguments[0].stringValue().split(arguments[1].stringValue());
+						for (int i=0; i<ss.length; i++) {
+							Value[] tupleValues = new Value[] {ValueCharacter.select(generator, ss[i])};
+							ValueTuple tuple = new ValueTuple(generator, tupleValues);
+							array.append(tuple);
+						}
+						return array;
+					}
+				}
+			)
+		);		
+	}
 
-	OPERATOR SPLIT(s CHAR, regex CHAR, limit INTEGER) RETURNS (ARRAY OF CHAR) Java FOREIGN
-//	          Splits this string around matches of the given regular expression, up to n times.
-		Array a = new Array(new ArrayType(TypeChar.getType()));
-		String[] ss = s.stringValue().split(regex.stringValue(), (int)limit.longValue());
-		for (int i=0; i<ss.length; i++)
-			a.append(ValueCharacter.select(generator, ss[i]));
-		return a;
-	END OPERATOR;
-	*/
+	private void split3(RelDatabase database) {
+		Heading arrayHeading = new Heading();
+		arrayHeading.add("str", TypeCharacter.getInstance());
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("SPLIT",
+				"// Split p around matches of the regexp up to n times.\n" +
+				"SPLIT(CHAR p, CHAR regexp, n INTEGER) RETURNS ARRAY OF TUPLE {str CHAR}",
+				new Type[] {TypeCharacter.getInstance(), TypeCharacter.getInstance(), TypeInteger.getInstance()},
+				new TypeArray(arrayHeading), 
+				new NativeFunction() {
+					public Value evaluate(Value arguments[]) {
+						ValueArray array = new ValueArray(generator);
+						String[] ss = arguments[0].stringValue().split(arguments[1].stringValue(), (int)arguments[2].longValue());
+						for (int i=0; i<ss.length; i++) {
+							Value[] tupleValues = new Value[] {ValueCharacter.select(generator, ss[i])};
+							ValueTuple tuple = new ValueTuple(generator, tupleValues);
+							array.append(tuple);
+						}
+						return array;
+					}
+				}
+			)
+		);		
+	}
 
 	private void starts_with2(RelDatabase database) {
 		database.defineBuiltinOperator(
@@ -1715,6 +1745,8 @@ public class BuiltinOperators {
 		region_matches(database);
 		replace_all(database);
 		replace_first(database);
+		split2(database);
+		split3(database);
 		starts_with2(database);
 		starts_with3(database);
 		to_lower_case(database);
