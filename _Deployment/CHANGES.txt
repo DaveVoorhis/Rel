@@ -1,5 +1,7 @@
 Last used Exception* number: RS0498
 
+Version 3.007 (1.0.20):
+
 Version 3.006 (1.0.19):
 
   - enhancement: Rel DBMS: All operators previously found in UsefulOperatorsAndViews.rel
