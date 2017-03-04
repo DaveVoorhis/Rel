@@ -79,11 +79,11 @@ public class Rel {
 		return rel.getServerResponseInputStream();
 	}
 	
-	public void sendEvaluate(String source) throws IOException {
+	public void sendEvaluate(String source) throws Throwable {
 		rel.sendEvaluate(source);
 	}
 	
-	public void sendExecute(String source) throws IOException {
+	public void sendExecute(String source) throws Throwable {
 		rel.sendExecute(source);
 	}
 

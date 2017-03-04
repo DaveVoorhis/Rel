@@ -76,10 +76,18 @@ public class Rel {
 	private static abstract class Action {
 		public abstract void execute() throws ParseException;
 	}
-
-	private void send(Action action) throws IOException, ExceptionFatal {
+	
+	private boolean resetting = false;
+	
+	private void send(Action action) throws Throwable {
 		try {
-			action.execute();
+			try {
+				action.execute();
+			} catch (Throwable tt) {
+				if (!resetting)
+					throw tt;
+			}
+			resetting = false;
 		} catch (ParseException pe) {
 			interpreter.reset();
 			output.println("ERROR: " + ParseExceptionPrinter.getParseExceptionMessage(pe));
@@ -108,7 +116,7 @@ public class Rel {
 		output.println("<EOT>");			
 	}
 	
-	public void sendEvaluate(final String source) throws IOException {
+	public void sendEvaluate(final String source) throws Throwable {
 		send(new Action() {
 			public void execute() throws ParseException {
 				interpreter.evaluate(source).toStream(output);
@@ -117,7 +125,7 @@ public class Rel {
 		});
 	}
 	
-	public void sendExecute(final String source) throws IOException {
+	public void sendExecute(final String source) throws Throwable {
 		send(new Action() {
 			public void execute() throws ParseException {
 				interpreter.interpret(source);
@@ -127,6 +135,7 @@ public class Rel {
 	}
 
 	public void reset() {
+		resetting = true;
 		interpreter.reset();
 		output.println();
 		output.println("Cancel.");
