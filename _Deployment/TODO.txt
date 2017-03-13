@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Case #153: Trap fatal errors in SPLIT (and other built-in operators) and convert to ExceptionSemantic.
+
 - Fix EXACTLY.
 
 - Maybe associate "loading" screen with database loading, rather than Rel loading.
