@@ -676,6 +676,16 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTAlgWhere node, Object data) {
 		return dump(node, data);
 	}
+
+	// infix EXTEND
+	public Object visit(ASTAlgExtend node, Object data) {
+		return dump(node, data);
+	}
+
+	// infix SUMMARIZE
+	public Object visit(ASTAlgSummarize node, Object data) {
+		return dump(node, data);
+	}
 	
 	// Rename
 	public Object visit(ASTAlgRename node, Object data) {

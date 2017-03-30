@@ -1122,8 +1122,8 @@ public class TutorialDParser implements TutorialDVisitor {
 		return null;
 	}
 	
-	// Extend
-	public Object visit(final ASTExtend node, Object data) {
+	// Extend implementation for both prefix and infix syntax
+	private Object extend(final SimpleNode node, Object data) {
 		currentNode = node;
 		return defineUnary(node, new UnaryDefinition() {
 			String getName() {return "EXTEND";}
@@ -1139,7 +1139,12 @@ public class TutorialDParser implements TutorialDVisitor {
 				compileChild(node, 1, extend);
 				return generator.endRelationExtend(extend);
 			}
-		});
+		});		
+	}
+	
+	// Extend
+	public Object visit(final ASTExtend node, Object data) {
+		return extend(node, data);
 	}
 	
 	// Extend list.
@@ -1196,6 +1201,16 @@ public class TutorialDParser implements TutorialDVisitor {
 				return where.endWhere();
 			}
 		});
+	}
+
+	// infix EXTEND
+	public Object visit(ASTAlgExtend node, Object data) {
+		return extend(node, data);
+	}
+
+	// infix SUMMARIZE
+	public Object visit(ASTAlgSummarize node, Object data) {
+		return summarize(node, data);
 	}
 	
 	// Rename.  Return Type of rename.
@@ -3074,8 +3089,8 @@ public class TutorialDParser implements TutorialDVisitor {
 		return TypeBoolean.getInstance();
 	}
 
-	// SUMMARIZE
-	public Object visit(ASTSummarize node, Object data) {
+	// SUMMARIZE implementation for both prefix and infix SUMMARIZE.
+	private Object summarize(SimpleNode node, Object data) {
 		currentNode = node;
 		// Child 0 - source expression
 		Type sourceType = (Type)compileChild(node, 0, data);
@@ -3086,7 +3101,12 @@ public class TutorialDParser implements TutorialDVisitor {
 		Generator.Summarize summarize = generator.new Summarize((TypeRelation)sourceType, perType);
 		// Child 2 - SummarizeItems
 		compileChild(node, 2, summarize);
-		return summarize.endSummarize();
+		return summarize.endSummarize();		
+	}
+	
+	// SUMMARIZE
+	public Object visit(ASTSummarize node, Object data) {
+		return summarize(node, data);
 	}
 
 	// SUMMARIZE optional 'PER' or 'BY'

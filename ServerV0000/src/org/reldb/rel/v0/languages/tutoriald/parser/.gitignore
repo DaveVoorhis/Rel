@@ -277,3 +277,5 @@
 /ASTCompSubsetEqual.java
 /ASTCompSuperset.java
 /ASTCompSupersetEqual.java
+/ASTAlgExtend.java
+/ASTAlgSummarize.java

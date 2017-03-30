@@ -1239,17 +1239,22 @@ void rel_diadic() :
 	)*
 }
 
+/* Parentheses around  WRAP, UNWRAP, GROUP, UNGROUP removed as of 1.0.11
+   Infix EXTEND added as of 1.0.20.  Not per Tutorial D spec.
+   Infix SUMMARIZE added as of 1.0.20.  Not per Tutorial D spec.
+*/
 void rel_monadic() :
 {}
 {
-  	// Parentheses around WRAP, UNWRAP, GROUP, UNGROUP removed as of 1.0.11
 	rel_project() [
-			<RENAME> "{" renaming_commalist() "}" 				#AlgRename(2)
-		|	<WRAP> wrapping()  									#AlgWrap(2)
-		|	<UNWRAP> identifier()  								#AlgUnwrap(2) 
+			<RENAME> "{" renaming_commalist() "}" 										#AlgRename(2)
+		|	<EXTEND> [ ":" ] "{" extend_add_commalist() "}"								#AlgExtend(2)
+		|	<SUMMARIZE> per_or_by() [ ":" ] "{" summarize_add_commalist() "}"			#AlgSummarize(3)
+		|	<WRAP> wrapping()  															#AlgWrap(2)
+		|	<UNWRAP> identifier()  														#AlgUnwrap(2) 
 		|	<GROUP> grouping()
-		|	<UNGROUP> identifier()		 						#AlgUngroup(2)
-		|	<DIVIDEBY> expression() <PER> "(" expression() divide_per_optional() ")" #AlgDivide(4)
+		|	<UNGROUP> identifier()		 												#AlgUngroup(2)
+		|	<DIVIDEBY> expression() <PER> "(" expression() divide_per_optional() ")" 	#AlgDivide(4)
 	]
 }
 
