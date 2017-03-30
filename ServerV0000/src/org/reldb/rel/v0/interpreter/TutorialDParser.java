@@ -517,8 +517,8 @@ public class TutorialDParser implements TutorialDVisitor {
 		return null;
 	}
 	
-	// Substitute
-	public Object visit(ASTSubstitute node, Object data) {
+	// Substitute implementation for both infix and prefix syntax.
+	private Object substitute(SimpleNode node, Object data) {
 		currentNode = node;
 		// Child 0 - expression
 		Type exprType = (Type)compileChild(node, 0, data);
@@ -533,7 +533,12 @@ public class TutorialDParser implements TutorialDVisitor {
 			compileChild(node, 1, data);
 			return relationSubstitute.endRelationSubstitute();
 		} else
-			throw new ExceptionSemantic("RS0102: Expected TUPLE or RELATION, but got " + exprType);
+			throw new ExceptionSemantic("RS0102: Expected TUPLE or RELATION, but got " + exprType);		
+	}
+	
+	// Substitute
+	public Object visit(ASTSubstitute node, Object data) {
+		return substitute(node, data);
 	}
 
 	// DIVIDEBY
@@ -1211,6 +1216,11 @@ public class TutorialDParser implements TutorialDVisitor {
 	// infix SUMMARIZE
 	public Object visit(ASTAlgSummarize node, Object data) {
 		return summarize(node, data);
+	}
+	
+	// infix UPDATE expression
+	public Object visit(ASTAlgUpdate node, Object data) {
+		return substitute(node, data);
 	}
 	
 	// Rename.  Return Type of rename.

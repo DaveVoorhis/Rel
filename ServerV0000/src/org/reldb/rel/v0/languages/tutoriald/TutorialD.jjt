@@ -1250,6 +1250,7 @@ void rel_monadic() :
 			<RENAME> "{" renaming_commalist() "}" 										#AlgRename(2)
 		|	<EXTEND> [ ":" ] "{" extend_add_commalist() "}"								#AlgExtend(2)
 		|	<SUMMARIZE> per_or_by() [ ":" ] "{" summarize_add_commalist() "}"			#AlgSummarize(3)
+		| 	<UPDATE> [ ":" ] update_assignment()										#AlgUpdate(2)
 		|	<WRAP> wrapping()  															#AlgWrap(2)
 		|	<UNWRAP> identifier()  														#AlgUnwrap(2) 
 		|	<GROUP> grouping()

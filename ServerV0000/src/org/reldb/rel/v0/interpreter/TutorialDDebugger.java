@@ -687,6 +687,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 		return dump(node, data);
 	}
 	
+	// infix UPDATE expression
+	public Object visit(ASTAlgUpdate node, Object data) {
+		return dump(node, data);
+	}
+	
 	// Rename
 	public Object visit(ASTAlgRename node, Object data) {
 		return dump(node, data);
