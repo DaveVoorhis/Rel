@@ -1206,32 +1206,31 @@ void and_expression() :
 void compare_expression() : 
 {} 
 { 
-	rel_monadic() [
-			<EQ>  					rel_monadic() #CompEqual(2)
-		|	(<NEQ_A> | <NEQ_U>) 	rel_monadic() #CompNequal(2)
-		|	(<GTE_A> | <GTE_U>) 	rel_monadic() #CompGTE(2)
-		|	(<LTE_A> | <LTE_U>) 	rel_monadic() #CompLTE(2)
-		|	<GT>  					rel_monadic() #CompGT(2)
-		|	<LT>  					rel_monadic() #CompLT(2)
-		| 	<SUBSET>				rel_monadic() #CompSubset(2)
-		| 	<SUBSET_OR_EQUAL>		rel_monadic() #CompSubsetEqual(2)
-		| 	<SUPERSET>				rel_monadic() #CompSuperset(2)
-		| 	<SUPERSET_OR_EQUAL>		rel_monadic() #CompSupersetEqual(2)
-		|	(<IN> | <ELEMENT_U >)  	rel_monadic() #TupleIn(2)
+	rel_op() [
+			<EQ>  					rel_op() #CompEqual(2)
+		|	(<NEQ_A> | <NEQ_U>) 	rel_op() #CompNequal(2)
+		|	(<GTE_A> | <GTE_U>) 	rel_op() #CompGTE(2)
+		|	(<LTE_A> | <LTE_U>) 	rel_op() #CompLTE(2)
+		|	<GT>  					rel_op() #CompGT(2)
+		|	<LT>  					rel_op() #CompLT(2)
+		| 	<SUBSET>				rel_op() #CompSubset(2)
+		| 	<SUBSET_OR_EQUAL>		rel_op() #CompSubsetEqual(2)
+		| 	<SUPERSET>				rel_op() #CompSuperset(2)
+		| 	<SUPERSET_OR_EQUAL>		rel_op() #CompSupersetEqual(2)
+		|	(<IN> | <ELEMENT_U >)  	rel_op() #TupleIn(2)
 	]
 }
 
 /* Parentheses around  WRAP, UNWRAP, GROUP, UNGROUP removed as of 1.0.11
    Infix EXTEND added as of 1.0.20.  Not per Tutorial D spec.
    Infix SUMMARIZE added as of 1.0.20.  Not per Tutorial D spec.
-   rel_monadic() and rel_dyadic() swapped precedence in 1.0.20, to give dyadic ops higher precedence.
-   rel_monadic() 'rel_dyadic [ ... ]' changed to 'rel_dyadic ( ... )*' to permit chaining monadic ops
-      without needing parentheses.
+   rel_monadic() and rel_dyadic() combined and changed to rel_op() to
+   give monadic and dyadic ops equal precedence.
 */
-void rel_monadic() :
+void rel_op() :
 {}
 {
-	rel_dyadic() (
+	rel_project() (
 			<RENAME> "{" renaming_commalist() "}" 										#AlgRename(2)
 		|	<EXTEND> [ ":" ] "{" extend_add_commalist() "}"								#AlgExtend(2)
 		|	<SUMMARIZE> per_or_by() [ ":" ] "{" summarize_add_commalist() "}"			#AlgSummarize(3)
@@ -1241,24 +1240,17 @@ void rel_monadic() :
 		|	<GROUP> grouping()
 		|	<UNGROUP> identifier()		 												#AlgUngroup(2)
 		|	<DIVIDEBY> expression() <PER> "(" expression() divide_per_optional() ")" 	#AlgDivide(4)
-	)*
-}
-
-void rel_dyadic() :
-{}
-{
-	rel_project() (
-			<UNION> rel_project() 								#AlgUnion(2) 
-		|   <XUNION> rel_project()								#AlgXunion(2)
-		|	<D_UNION> rel_project() 							#AlgDUnion(2) 
-		|	<INTERSECT> rel_project() 							#AlgIntersect(2)
-		|	<MINUS> rel_project() 								#AlgMinus(2)
-		|	<I_MINUS> rel_project() 							#AlgIMinus(2)
-		|	<JOIN> rel_project() 								#AlgJoin(2)
-		|	<TIMES> rel_project() 								#AlgTimes(2)
-		|	<COMPOSE> rel_project() 							#AlgCompose(2)
-		|	( <SEMIJOIN> | <MATCHING> ) rel_project() 			#AlgSemijoin(2)
-		|	( <SEMIMINUS> | <NOT> <MATCHING> ) rel_project()	#AlgSemiminus(2) 
+		| 	<UNION> rel_project() 														#AlgUnion(2) 
+		|   <XUNION> rel_project()														#AlgXunion(2)
+		|	<D_UNION> rel_project() 													#AlgDUnion(2) 
+		|	<INTERSECT> rel_project() 													#AlgIntersect(2)
+		|	<MINUS> rel_project() 														#AlgMinus(2)
+		|	<I_MINUS> rel_project() 													#AlgIMinus(2)
+		|	<JOIN> rel_project() 														#AlgJoin(2)
+		|	<TIMES> rel_project() 														#AlgTimes(2)
+		|	<COMPOSE> rel_project() 													#AlgCompose(2)
+		|	( <SEMIJOIN> | <MATCHING> ) rel_project() 									#AlgSemijoin(2)
+		|	( <SEMIMINUS> | <NOT> <MATCHING> ) rel_project()							#AlgSemiminus(2) 
 	)*
 }
 
