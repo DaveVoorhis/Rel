@@ -10,15 +10,12 @@ Version 3.007 (1.0.20):
                    S SUMMARIZE BY {CITY}: {SS := SUM(STATUS)}
                    S UPDATE {STATUS := 2}
                    S UPDATE: {STATUS := 2}
-  - enhancement: Rel DBMS: Dyadic relational and tuple operators now have higher
-                 precedence than monadic relational and tuple operators. This
-                 allows, e.g, S JOIN SP RENAME {CITY AS PLACE} where
-                 previously (S JOIN SP) RENAME {CITY AS PLACE} would have been
-                 required.
-  - enhancement: Rel DBMS: Monadic operators may now be "chained" without
-                 requiring parentheses. E.g., S RENAME {CITY AS PLACE} WRAP {PLACE, STATUS} AS T is
-                 allowed, where previously (S RENAME {CITY AS PLACE}) WRAP {PLACE, STATUS} AS T would
-                 have been required. 
+  - enhancement: Rel DBMS: Dyadic and monadic relational operators now have equal precedence,
+                 except WHERE (lower precedence) and projection (higher precedence). This means
+                 operators may often be "chained" naturally without requiring parentheses. 
+                 E.g., S RENAME {CITY AS PLACE} WRAP {PLACE, STATUS} AS T is allowed, 
+                 where previously (S RENAME {CITY AS PLACE}) WRAP {PLACE, STATUS} AS T would
+                 have been required. Should not affect existing code.
   - fix: Rel DBMS: Case #139 - #142: Fatal error inappropriately generated when
          a query was cancelled by a client. Fixed.
 
