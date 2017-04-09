@@ -4,6 +4,8 @@
 
 - Implement RANK - (page 234 DTATRM)
 
+- Implement EQUIV
+
 - Fix EXACTLY.
 
 - Maybe associate "loading" screen with database loading, rather than Rel loading.
