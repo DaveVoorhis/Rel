@@ -95,6 +95,7 @@ public class Keywords {
 	    "PREFIX",
 	    "PRIVATE",
 	    "PUBLIC",
+	    "RANK",
 	    "REAL",
 	    "RELATION",
 	    "REL",

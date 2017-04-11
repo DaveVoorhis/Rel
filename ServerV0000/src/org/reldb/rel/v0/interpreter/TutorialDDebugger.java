@@ -681,6 +681,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTExtendItem node, Object data) {
 		return dump(node, data);
 	}
+
+	// RANK
+	public Object visit(ASTRank node, Object data) {
+		return dump(node, data);
+	}
 	
 	// Project
 	public Object visit(ASTAlgProject node, Object data) {
@@ -694,6 +699,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 
 	// infix EXTEND
 	public Object visit(ASTAlgExtend node, Object data) {
+		return dump(node, data);
+	}
+
+	// infix RANK
+	public Object visit(ASTAlgRank node, Object data) {
 		return dump(node, data);
 	}
 

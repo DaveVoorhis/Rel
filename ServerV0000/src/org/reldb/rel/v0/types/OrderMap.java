@@ -2,6 +2,7 @@ package org.reldb.rel.v0.types;
 
 import org.reldb.rel.exceptions.*;
 import org.reldb.rel.v0.generator.SelectOrder;
+import org.reldb.rel.v0.values.Value;
 
 public class OrderMap {
 	
@@ -37,6 +38,13 @@ public class OrderMap {
 			out += map[i] + "=" + order[i];
 		}
 		return "OrderMap [" + out + "]";
+	}
+
+	public boolean isDifferentSortKey(Value[] oldTuple, Value[] newTuple) {
+		for (int i=0; i<map.length; i++)
+			if (oldTuple[map[i]].compareTo(newTuple[map[i]]) != 0)
+				return true;
+		return false;
 	}
 	
 }

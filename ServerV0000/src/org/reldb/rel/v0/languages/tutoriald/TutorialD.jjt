@@ -159,6 +159,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < PREFIX: "PREFIX" >
 | < PRIVATE: "PRIVATE" >
 | < PUBLIC: "PUBLIC" >
+| < RANK: "RANK" >
 | < REAL: "REAL" >
 | < RELATION: ( "RELATION" | "REL" ) >
 | < RENAME: "RENAME" >
@@ -1240,6 +1241,7 @@ void rel_op() :
 	rel_project() (
 			<RENAME> "{" renaming_commalist() "}" 										#AlgRename(2)
 		|	<EXTEND> [ ":" ] "{" extend_add_commalist() "}"								#AlgExtend(2)
+		|  	<RANK> [ <BY> ] "(" order_item_commalist() <AS> identifier() ")"			#AlgRank(3)
 		|	<SUMMARIZE> per_or_by() [ ":" ] "{" summarize_add_commalist() "}"			#AlgSummarize(3)
 		| 	<UPDATE> [ ":" ] update_assignment()										#AlgUpdate(2)
 		|	<WRAP> wrapping()  															#AlgWrap(2)
@@ -1414,6 +1416,7 @@ void primary_expression() :
 	|	nadic_max()
 	|	nadic_min()
 	|	extend()
+	| 	rank()
 	|	summarize()
 	|	substitute()
 	|	case_expression()
@@ -1614,6 +1617,12 @@ void extend() #Extend :
 {}
 {
 	<EXTEND> expression() ":" "{" extend_add_commalist() "}"
+}
+
+void rank() #Rank :
+{}
+{
+  <RANK> expression() <BY> "(" order_item_commalist() <AS> identifier() ")"
 }
 
 void extend_add_commalist() #ExtendList :

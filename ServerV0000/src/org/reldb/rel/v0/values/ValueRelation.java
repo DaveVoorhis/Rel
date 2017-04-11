@@ -716,23 +716,63 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 		return sequence(generator, start, end, ValueInteger.select(generator, 1));
 	}
 	
+	private ValueArray doSort(OrderMap map) {
+		// TODO - MEM - fix so that high-cardinality relations don't run out of RAM
+		final ArrayList<ValueTuple> array = new ArrayList<ValueTuple>();
+    	(new TupleIteration(iterator()) {
+    		public void process(ValueTuple tuple) {
+    			array.add(tuple);		
+    		}
+    	}).run();
+		Collections.sort(array, new Sorter(map));
+		return new ValueArray(getGenerator(), array);		
+	}
+	
 	/** Return a new, possibly-sorted ValueArray */
 	public ValueArray sort(OrderMap map) {
 		if (map.getMap().length == 0)
 			return new ValueArray(getGenerator(), this);
-		else {
-			// TODO - MEM - fix so that high-cardinality relations don't run out of RAM
-			final ArrayList<ValueTuple> array = new ArrayList<ValueTuple>();
-	    	(new TupleIteration(iterator()) {
-	    		public void process(ValueTuple tuple) {
-	    			array.add(tuple);		
-	    		}
-	    	}).run();
-			Collections.sort(array, new Sorter(map));
-			return new ValueArray(getGenerator(), array);
-		}
+		else
+			return doSort(map);
 	}
 	
+	/** Return a ranked relation. Each ValueTuple has an appended ValueInteger that indicates the tuple's rank. */
+	public ValueRelation rank(OrderMap map) {
+		ValueArray array = doSort(map);
+		return new ValueRelation(getGenerator()) {
+			private final static long serialVersionUID = 0;
+			public int hashCode() {
+				return 0;
+			}
+			public TupleIterator newIterator() {
+				TupleIterator source = array.iterator();
+				return new TupleIterator() {
+					long rank = 0;
+					Value[] oldTupleValues = null;
+					@Override
+					public boolean hasNext() {
+						return source.hasNext();
+					}
+					@Override
+					public ValueTuple next() {
+						ValueTuple newTuple = source.next();
+						Value[] newTupleValues = newTuple.getValues();
+						if (oldTupleValues == null || map.isDifferentSortKey(oldTupleValues, newTupleValues))
+							rank++;
+						oldTupleValues = newTupleValues;
+						Value[] rankTupleRaw = new Value[] {ValueInteger.select(getGenerator(), rank)};
+						ValueTuple rankTuple = new ValueTuple(getGenerator(), rankTupleRaw);
+						return newTuple.joinDisjoint(rankTuple);
+					}
+					@Override
+					public void close() {
+						source.close();
+					}
+				};
+			}
+		};
+	}
+
 	public abstract TupleIterator newIterator();
 	
 	public abstract int hashCode();

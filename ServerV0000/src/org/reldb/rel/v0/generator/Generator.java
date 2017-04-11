@@ -112,6 +112,7 @@ import org.reldb.rel.v0.vm.instructions.relation.OpRelationLiteralInsertTuple;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationMinus;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationProduct;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationPushLiteral;
+import org.reldb.rel.v0.vm.instructions.relation.OpRelationRank;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationTClose;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationUngroup;
 import org.reldb.rel.v0.vm.instructions.relation.OpRelationUnion;
@@ -2110,7 +2111,16 @@ public class Generator {
 		compileInstruction(new OpArrayToRelation());
 		return new TypeRelation(sourceHeading);
 	}
-	
+
+	public TypeRelation compileRank(TypeRelation sourceRelationType, SelectOrder orderItems, String identifier) {
+		Heading heading = sourceRelationType.getHeading();
+		if (heading.getIndexOf(identifier) >= 0)
+			throw new ExceptionSemantic("RS0500: " + sourceRelationType + " already has an attribute named " + identifier + ".");
+		heading.add(identifier, TypeInteger.getInstance());
+		compileInstruction(new OpRelationRank(new OrderMap(heading, orderItems)));
+		return new TypeRelation(heading);
+	}
+
 	public class RelationSubstitute {
 		private AnonymousTupleOperator updateOp;
 		private TypeRelation sourceType;

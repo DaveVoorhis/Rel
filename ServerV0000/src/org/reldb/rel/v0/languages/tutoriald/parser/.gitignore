@@ -284,3 +284,5 @@
 /ASTNadicEquiv.java
 /ASTSummarizeEquiv.java
 /ASTAggEquiv.java
+/ASTRank.java
+/ASTAlgRank.java

@@ -1170,6 +1170,26 @@ public class TutorialDParser implements TutorialDVisitor {
 		((Generator.Extend)data).addExtendItem(identifier, expressionType);
 		return null;
 	}
+
+	// RANK implementation for both prefix and infix syntax.
+	private Object rank(SimpleNode node, Object data) {
+		currentNode = node;
+		// Child 0 - source
+		Type sourceType = (Type)compileChild(node, 0, data);
+		if (!(sourceType instanceof TypeRelation))
+			throw new ExceptionSemantic("RS0499: Unable to perform RANK on " + sourceType + "; expected a RELATION.");
+		TypeRelation sourceRelationType = (TypeRelation)sourceType;
+		// Child 1 - SelectOrder via ASTOrderItemCommalist
+		SelectOrder orderItems = (SelectOrder)compileChild(node, 1, data);
+		// Child 2 - identifier
+		String identifier = getTokenOfChild(node, 2);
+		return generator.compileRank(sourceRelationType, orderItems, identifier);
+	}
+	
+	// RANK
+	public Object visit(ASTRank node, Object data) {
+		return rank(node, data);
+	}
 	
 	// Project.  Return Type of projection.
 	public Object visit(final ASTAlgProject node, Object data) {
@@ -1213,6 +1233,11 @@ public class TutorialDParser implements TutorialDVisitor {
 		return extend(node, data);
 	}
 
+	// infix RANK
+	public Object visit(ASTAlgRank node, Object data) {
+		return rank(node, data);
+	}
+	
 	// infix SUMMARIZE
 	public Object visit(ASTAlgSummarize node, Object data) {
 		return summarize(node, data);
