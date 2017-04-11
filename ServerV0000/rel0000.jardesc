@@ -25,6 +25,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTExtend.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTOrderItemCommalist.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTSummarizeXor.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTEquiv.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAnnounce.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTRelationArrayLoad.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.values"/>
@@ -128,6 +129,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTCaseStatement.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.vm.instructions.ddl"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTSummarizeCountDistinct.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAggEquiv.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTRelationHeading.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{TutorialDTokenManager.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTSummarizeUserdefinedDistinct.java"/>
@@ -252,6 +254,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{TokenMgrError.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTCompEqual.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.storage"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTSummarizeEquiv.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.storage.temporary"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTTupleFrom.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.external"/>
@@ -282,6 +285,7 @@
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTMultipleInheritanceIsDef.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAttributeSpec.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTCompSubsetEqual.java"/>
+        <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTNadicEquiv.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTPossrepDefComponentCommalist.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTVarInit.java"/>
         <javaElement handleIdentifier="=ServerV0000/src&lt;org.reldb.rel.v0.languages.tutoriald.parser{ASTAssignment.java"/>

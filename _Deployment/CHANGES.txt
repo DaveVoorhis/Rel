@@ -16,6 +16,7 @@ Version 3.007 (1.0.20):
                  E.g., S RENAME {CITY AS PLACE} WRAP {PLACE, STATUS} AS T is allowed, 
                  where previously (S RENAME {CITY AS PLACE}) WRAP {PLACE, STATUS} AS T would
                  have been required. Should not affect existing code.
+  - enhancement: Rel DBMS: EQUIV has been implemented, per Database Explorations.
   - fix: Rel DBMS: Case #139 - #142: Fatal error inappropriately generated when
          a query was cancelled by a client. Fixed.
 

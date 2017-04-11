@@ -401,6 +401,20 @@ public class ValueArray extends ValueAbstract implements TupleIteratable {
 	}
 
 	/** Aggregate operator */
+	public Value equiv(int attributeIndex) {
+		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
+			public Value getIdentity() {
+				return ValueBoolean.select(getGenerator(), true);
+			}
+			public Value fold(Value left, Value right) {
+				return ValueBoolean.select(getGenerator(), left.booleanValue() == right.booleanValue());
+			}
+		};
+		folder.run();
+		return (ValueBoolean)folder.getResult();
+	}
+
+	/** Aggregate operator */
 	public ValueRelation union(int attributeIndex) {
 		TupleFold folder = new TupleFold(iterator(), attributeIndex) {
 			public Value fold(Value left, Value right) {

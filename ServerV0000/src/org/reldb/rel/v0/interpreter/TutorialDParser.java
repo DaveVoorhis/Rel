@@ -2762,6 +2762,12 @@ public class TutorialDParser implements TutorialDVisitor {
 		}
 	}
 	
+	class AggregatorEquiv extends Aggregator {
+		AggregatorEquiv() {
+			super("EQUIV");
+		}
+	}
+	
 	class AggregatorUnion extends Aggregator {
 		AggregatorUnion() {
 			super("UNION");
@@ -3013,6 +3019,12 @@ public class TutorialDParser implements TutorialDVisitor {
 		currentNode = node;
 		return new AggregatorXor().createAggregator(node).getReturnType();
 	}
+
+	// aggregate EQUIV
+	public Object visit(ASTAggEquiv node, Object data) {
+		currentNode = node;
+		return new AggregatorEquiv().createAggregator(node).getReturnType();
+	}
 	
 	// aggregate UNION
 	public Object visit(ASTAggUnion node, Object data) {
@@ -3253,6 +3265,12 @@ public class TutorialDParser implements TutorialDVisitor {
 		return new AggregatorXor().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getReturnType();
 	}
 
+	// SUMMARIZE - EQUIV
+	public Object visit(ASTSummarizeEquiv node, Object data) {
+		currentNode = node;
+		return new AggregatorEquiv().createAggregator(node, (Generator.Summarize.SummarizeItem)data, false).getReturnType();
+	}
+
 	// SUMMARIZE - UNION
 	public Object visit(ASTSummarizeUnion node, Object data) {
 		currentNode = node;
@@ -3419,6 +3437,17 @@ public class TutorialDParser implements TutorialDVisitor {
 		new NadicBooleanOperation(node, "XOR", BuiltinTypeBuilder.XOR) {
 			void compileEmptyListResult() {
 				generator.compilePush(false);
+			}
+		};
+		return TypeBoolean.getInstance();
+	}
+
+	// n-adic EQUIV.  Return TypeBoolean.
+	public Object visit(ASTNadicEquiv node, Object data) {
+		currentNode = node;
+		new NadicBooleanOperation(node, "EQUIV", BuiltinTypeBuilder.EQUALS) {
+			void compileEmptyListResult() {
+				generator.compilePush(true);
 			}
 		};
 		return TypeBoolean.getInstance();
@@ -3642,6 +3671,14 @@ public class TutorialDParser implements TutorialDVisitor {
 		Type leftType = (Type)compileChild(node, 0, data);
 		Type rightType = (Type)compileChild(node, 1, data);
 		return generator.compileOperatorInvocation(BuiltinTypeBuilder.XOR, leftType, rightType, TypeBoolean.getInstance());
+	}
+
+	// EQUIV
+	public Object visit(ASTEquiv node, Object data) {
+		currentNode = node;
+		Type leftType = (Type)compileChild(node, 0, data);
+		Type rightType = (Type)compileChild(node, 1, data);
+		return generator.compileOperatorInvocation(BuiltinTypeBuilder.EQUALS, leftType, rightType, TypeBoolean.getInstance());
 	}
 	
 	// OR

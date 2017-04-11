@@ -52,6 +52,7 @@ public class Keywords {
 	    "ELSE",
 	    "END",
 	    "<EOT>",
+	    "EQUIV",
 	    "EXACTLYD",
 	    "EXACTLY",
 	    "EXECUTE",

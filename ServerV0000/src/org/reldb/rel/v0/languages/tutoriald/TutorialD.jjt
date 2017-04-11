@@ -116,6 +116,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < ELSE: "ELSE" >
 | < END: "END" >
 | < EOT: "<EOT>" >
+| < EQUIV: "EQUIV" >
 | < EXACTLYD: "EXACTLYD" >
 | < EXACTLY: "EXACTLY" >
 | < EXECUTE: "EXECUTE" >
@@ -1182,7 +1183,13 @@ void order_expression() :
 void where_expression() :
 {}
 {
-	or_expression() [ <WHERE> or_expression() #AlgWhere(2) ]
+	equiv_expression() [ <WHERE> equiv_expression() #AlgWhere(2) ]
+}
+
+void equiv_expression() :
+{}
+{
+  	or_expression() ( <EQUIV> or_expression() #Equiv(2) )*
 }
 
 void or_expression() : 
@@ -1391,6 +1398,7 @@ void primary_expression() :
 	|	LOOKAHEAD(2) aggregate_operator()
 	|	exactly()
 	|	nadic_or()
+	| 	nadic_equiv()
 	|	nadic_xor()
 	|	nadic_and()
 	|	nadic_union()
@@ -1530,6 +1538,12 @@ void nadic_or() #NadicOr :
 	<OR> "{" bool_exp_commalist() "}"
 }
 
+void nadic_equiv() #NadicEquiv :
+{}
+{
+  	<EQUIV> "{" bool_exp_commalist() "}" 
+}
+
 void nadic_xor() #NadicXor :
 {}
 {
@@ -1654,6 +1668,7 @@ void summary() :
 	|	<MIN> "(" expression() ")"							#SummarizeMin(1)
 	|	<AND> "(" expression() ")"					 		#SummarizeAnd(1)
 	|	<OR> "(" expression() ")"							#SummarizeOr(1)
+	| 	<EQUIV> "(" expression() ")"						#SummarizeEquiv(1)
 	|	<XOR> "(" expression() ")"							#SummarizeXor(1)
 	|	<EXACTLY> "(" expression() "," expression() ")"	 	#SummarizeExactly(2)
 	|	<EXACTLYD> "(" expression() "," expression() ")"	#SummarizeExactlyDistinct(2)
@@ -1727,6 +1742,7 @@ void aggregate_operator() :
 	|	<MIN> "(" expression() "," expression() ")"									#AggMin(2)				
 	|	<AND> "(" expression() "," expression() ")"									#AggAnd(2)
 	|	<OR> "(" expression() "," expression() ")"									#AggOr(2)
+	| 	<EQUIV> "(" expression() "," expression() ")"								#AggEquiv(2)
 	|	<XOR> "(" expression() "," expression() ")"									#AggXor(2)
 	|	<UNION> "(" expression() "," expression() ")"								#AggUnion(2)
 	|	<XUNION> "(" expression() "," expression() ")"								#AggXunion(2)

@@ -280,3 +280,7 @@
 /ASTAlgExtend.java
 /ASTAlgSummarize.java
 /ASTAlgUpdate.java
+/ASTEquiv.java
+/ASTNadicEquiv.java
+/ASTSummarizeEquiv.java
+/ASTAggEquiv.java

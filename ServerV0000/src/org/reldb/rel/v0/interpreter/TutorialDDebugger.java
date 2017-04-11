@@ -293,6 +293,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTSummarizeOr node, Object data) {
 		return dump(node, data);
 	}
+
+	// SUMMARIZE aggregation
+	public Object visit(ASTSummarizeEquiv node, Object data) {
+		return dump(node, data);
+	}
 	
 	// SUMMARIZE aggregation
 	public Object visit(ASTSummarizeXor node, Object data) {
@@ -423,6 +428,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	public Object visit(ASTAggOr node, Object data) {
 		return dump(node, data);
 	}
+
+	// aggregate EQUIV
+	public Object visit(ASTAggEquiv node, Object data) {
+		return dump(node, data);
+	}
 	
 	// aggregate XOR
 	public Object visit(ASTAggXor node, Object data) {
@@ -466,6 +476,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	
 	// n-adic OR
 	public Object visit(ASTNadicOr node, Object data) {
+		return dump(node, data);
+	}
+
+	// n-adic EQUIV
+	public Object visit(ASTNadicEquiv node, Object data) {
 		return dump(node, data);
 	}
 	
@@ -1099,6 +1114,11 @@ public class TutorialDDebugger implements TutorialDVisitor {
 	
 	// OR
 	public Object visit(ASTOr node, Object data) {
+		return dump(node, data);
+	}
+
+	// EQUIV
+	public Object visit(ASTEquiv node, Object data) {
 		return dump(node, data);
 	}
 

@@ -211,7 +211,24 @@ public class BuiltinOperators {
 			)
 		);
 	}
-	
+
+	private void equiv(RelDatabase database) {
+		database.defineBuiltinOperator(
+			new OperatorDefinitionNativeFunction("AGGREGATE_EQUIV", 
+					"// Logical EQUIV (aka '=') of r\n" +
+					"AGGREGATE_EQUIV(r ARRAY OF TUPLE {AGGREGAND BOOLEAN, AGGREGATION_SERIAL INT}) RETURNS BOOLEAN",
+					new Type[] {TypeArray.getEmptyArrayType()}, 
+					TypeBoolean.getInstance(), 
+					new NativeFunction() {
+						public Value evaluate(Value arguments[]) {
+							ValueArray array = (ValueArray)arguments[0];
+							return array.equiv(0);
+						}
+					}
+			)
+		);
+	}
+
 	private void union(RelDatabase database) {
 		database.defineBuiltinOperator(
 			new OperatorDefinitionNativeFunction("AGGREGATE_UNION", 
@@ -1709,6 +1726,7 @@ public class BuiltinOperators {
 		and(database);
 		or(database);
 		xor(database);
+		equiv(database);
 		union(database);
 		xunion(database);
 		d_union(database);
