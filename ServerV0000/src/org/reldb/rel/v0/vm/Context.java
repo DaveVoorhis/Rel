@@ -1,5 +1,6 @@
 package org.reldb.rel.v0.vm;
 
+import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.v0.debuginfo.DebugInfo;
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.types.*;
@@ -223,7 +224,11 @@ public class Context {
     	Value arguments[] = new Value[parmCount];
     	for (int i=0; i<parmCount; i++)
     		arguments[parmCount - i - 1] = pop();
-    	push(function.evaluate(arguments));
+    	try {
+    		push(function.evaluate(arguments));
+    	} catch (Throwable t) {
+    		throw new ExceptionSemantic(t.getMessage(), t);
+    	}
     }
     
     // User-defined native procedure
@@ -232,7 +237,11 @@ public class Context {
     	Value arguments[] = new Value[parmCount];
     	for (int i=0; i<parmCount; i++)
     		arguments[parmCount - i - 1] = pop();
-    	procedure.execute(arguments);    	
+    	try {
+    		procedure.execute(arguments);
+    	} catch (Throwable t) {
+    		throw new ExceptionSemantic(t.getMessage(), t);
+    	}
     }
     
     /** Operator to set a parameter's argument.
