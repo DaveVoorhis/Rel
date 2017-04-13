@@ -28,15 +28,15 @@ Tutorial D:
   PLACE}) WRAP {PLACE, STATUS} AS T would have been required. This
   should not affect existing code.
 
-- EQUIV has been implemented, per Date & Darwen's "Database
-  Explorations". Both prefix and infix syntax are available:
+- RANK has been implemented, per Date & Darwen's "Data Types and the
+  Relational Model". Both prefix and infix syntax are available:
 
    RANK S BY (ASC STATUS AS Ranking) 
    S RANK BY (ASC STATUS AS Ranking) 
    S RANK (ASC STATUS AS Ranking)
 
-- RANK has been implemented, per Date & Darwen's "Data Types and the
-  Relational Model".
+- EQUIV has been implemented, per Date & Darwen's "Database
+  Explorations".
 
 The following bugs have been fixed:
 
