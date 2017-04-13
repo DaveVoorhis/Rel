@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Remove read-only UPDATE operator (as long as EXTEND can serve the same purpose.)
+
 - Fix EXACTLY.
 
 - Maybe associate "loading" screen with database loading, rather than Rel loading.
