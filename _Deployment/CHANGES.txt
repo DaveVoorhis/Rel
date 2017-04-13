@@ -1,5 +1,7 @@
 Last used Exception* number: RS0502
 
+Version 3.008 (1.0.21):
+
 Version 3.007 (1.0.20):
 
   - enhancement: Rel DBMS: Infix EXTEND, SUMMARIZE and UPDATE expression now available. 
