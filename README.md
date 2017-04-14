@@ -6,7 +6,7 @@ If you wish to work with the source code, do this:
 
 2. Install the JavaCC Eclipse plugin via "Help | Install New Software".  The update site (i.e., the URL to put in "Work with", then press "Add") is http://eclipse-javacc.sourceforge.net/
 
-3. Install NatTable (https://eclipse.org/nattable) -- used by the RelUI subproject -- via "Help | Install New Software".  The update site is http://download.eclipse.org/nattable/releases/1.4.0/repository/
+3. Install NatTable (https://eclipse.org/nattable) -- used by the RelUI subproject -- via "Help | Install New Software".  The update site is http://download.eclipse.org/nattable/releases/1.5.0/repository/
 
 4. (Optional) If you wish to support multi-platform builds, go to https://wiki.eclipse.org/Building and follow the instructions under "Preferred way of doing multi-platform builds". Version 4.6 or newer is required.
 
