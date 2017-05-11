@@ -1,5 +1,8 @@
 ** TO DO **
 
+- Fix bug: COUNT{ S WHERE CITY = CITY, S WHERE STATUS = STATUS }.
+   Returns error when it shouldn't.
+
 - Remove read-only UPDATE operator (as long as EXTEND can serve the same purpose.)
 
 - Fix EXACTLY.
