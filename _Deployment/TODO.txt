@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Allow overwrite of attributes in EXTEND (and RENAME?)
+
 - Fix bug: COUNT{ S WHERE CITY = CITY, S WHERE STATUS = STATUS }.
    Returns error when it shouldn't.
 
