@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Fix update of RelUI jar name (Version) in plugin.xml in updateVersion.sh
+
 - Allow overwrite of attributes in EXTEND (and RENAME?)
 
 - Fix bug: COUNT{ S WHERE CITY = CITY, S WHERE STATUS = STATUS }.
