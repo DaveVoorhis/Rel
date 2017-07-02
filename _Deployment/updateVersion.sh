@@ -19,6 +19,8 @@ newRelV=$newPRODUCT_VERSION.$newDATABASE_VERSION.$newREVISION
 oldRelVersion=$oldRelV.$oldRELEASE
 newRelVersion=$newRelV.$newRELEASE
 
+sed -i '' -e "s/Bundle-Version: $oldRelVersion/Bundle-Version: $newRelVersion/" ../RelUI/META-INF/MANIFEST.MF
+
 sed -i '' -e "s/$oldRelVersion/$newRelVersion/" ../RelUI/Rel.product
 
 sed -i '' -e "s/return $olddbrowserVersion;/return $newdbrowserVersion;/" ../RelUI/src/org/reldb/dbrowser/ui/version/Version.java
