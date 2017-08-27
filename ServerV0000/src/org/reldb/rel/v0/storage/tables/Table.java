@@ -81,7 +81,7 @@ public abstract class Table {
 		return true;
 	}
 
-	boolean insertTuple(Generator generator, Storage table, Transaction txn, ValueTuple tuple, String description)
+	private boolean insertTuple(Generator generator, Storage table, Transaction txn, ValueTuple tuple, String description)
 			throws DatabaseException {
 		DatabaseEntry theData = new DatabaseEntry();
 		database.getTupleBinding().objectToEntry(tuple, theData);
@@ -142,6 +142,8 @@ public abstract class Table {
 								ValueTuple tuple = iterator.next();
 								if (inserter.insert(generator, table, txn, tuple, "Inserting"))
 									insertCount++;
+								else
+									rollback();
 							}
 						} finally {
 							iterator.close();

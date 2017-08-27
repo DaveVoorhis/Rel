@@ -2,6 +2,11 @@ Last used Exception* number: RS0502
 
 Version 3.008 (1.0.21):
 
+  - fix: Rel DBMS: Given VAR v REAL RELATION {x INT, y INT} KEY {x} KEY {x},
+         do INSERT v REL {TUP {x 1, y 1}}. Subsequent INSERT v REL {TUP {x 2, y 1}}
+         would report 0 tuples inserted but would insert TUP {x 2, y 1}. I.e.,
+         additional KEY constraints were not holding true for INSERT. Fixed. 
+
 Version 3.007 (1.0.20):
 
   - enhancement: Rel DBMS: Infix EXTEND, SUMMARIZE and UPDATE expression now available. 
