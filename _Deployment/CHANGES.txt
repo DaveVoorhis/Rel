@@ -6,6 +6,8 @@ Version 3.008 (1.0.21):
          do INSERT v REL {TUP {x 1, y 1}}. Subsequent INSERT v REL {TUP {x 2, y 1}}
          would report 0 tuples inserted but would insert TUP {x 2, y 1}. I.e.,
          additional KEY constraints were not holding true for INSERT. Fixed. 
+  - enhancement: Update to Berkeley Java DB version 7.4.5
+  - enhancement: Update to Java runtime version 8u144
 
 Version 3.007 (1.0.20):
 

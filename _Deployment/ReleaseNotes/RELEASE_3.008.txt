@@ -14,6 +14,10 @@ INSERT myvar REL {TUP {x 2, y 1}};
 
 But would erroneously insert the tuple. This has been corrected.
 
+The Berkeley Java DB library (used to implement the storage engine)
+has been updated to version 7.4.5, and the Java JRE has been updated
+to version 8u144.
+
 == Version 3.007 Release Notes ==
 
 This is a minor release of Rel, an implementation of Date & Darwen's

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 relversion=3.008
-javaversion=8u121
+javaversion=8u144
 jredir=~/Documents/JavaJREs
 proddir=~/git/Rel/_Deployment/product
 

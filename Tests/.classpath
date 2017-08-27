@@ -33,6 +33,6 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/relclient.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/relshared.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/xmlbeans-2.6.0.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/je-7.3.7.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/je-7.4.5.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
