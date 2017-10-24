@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
+import org.reldb.rel.v0.interpreter.ClassPathHack;
+import org.reldb.rel.v0.version.Version;
 
 /** Convenient access point for running an embedded or stand-alone interpreter. */
 
@@ -34,7 +36,7 @@ public class Rel {
 		ClassPathHack.addFile("lib/httpcore-nio-4.4.5.jar");
 		ClassPathHack.addFile("lib/httpmime-4.5.2.jar");
 		ClassPathHack.addFile("lib/jackcess-2.1.6.jar");
-		ClassPathHack.addFile("lib/je-7.4.5.jar");
+		ClassPathHack.addFile("lib/" + Version.getBerkeleyDbJarFilename());
 		ClassPathHack.addFile("lib/jna-4.1.0.jar");
 		ClassPathHack.addFile("lib/jna-platform-4.1.0.jar");
 		ClassPathHack.addFile("lib/junit.jar");
