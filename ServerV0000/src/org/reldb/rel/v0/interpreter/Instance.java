@@ -57,7 +57,7 @@ public class Instance {
 		
     /** Get the database. */
     public RelDatabase getDatabase() {
-    	return database;
+    		return database;
     }
     
     private static boolean deleteRecursive(File path) throws FileNotFoundException {
@@ -71,37 +71,37 @@ public class Instance {
         }
         return ret && path.delete();
     }
-
-    private boolean shutdownHookSetup = false;
     
-    private void setupShutdownHook() {
-    	if (shutdownHookSetup)
-    		return;
+    private static boolean shutdownHookSetup = false;
+    
+	private static void setupShutdownHook() {
+		if (shutdownHookSetup)
+			return;
 		Thread serverShutdownHook = new Thread() {
 			public void run() {
 				if (server != null)
 					server.shutdown();
 			}
 		};
-        Runtime.getRuntime().addShutdownHook(serverShutdownHook);
+		Runtime.getRuntime().addShutdownHook(serverShutdownHook);
 		if (openDatabases == null) {
 			openDatabases = new HashMap<File, RelDatabase>();
 			Thread dbShutdownHook = new Thread() {
 				public void run() {
-					for (RelDatabase database: openDatabases.values())
+					for (RelDatabase database : openDatabases.values())
 						if (database.isOpen())
 							database.close();
 				}
 			};
-	        Runtime.getRuntime().addShutdownHook(dbShutdownHook);			
+			Runtime.getRuntime().addShutdownHook(dbShutdownHook);
 		}
 		try {
 			localHostName = InetAddress.getLocalHost().getCanonicalHostName();
 		} catch (UnknownHostException uhe) {
 			localHostName = "<unknown>";
-		}    	
-    	shutdownHookSetup = true;
-    }
+		}
+		shutdownHookSetup = true;
+	}
     
 	private void initDb(String databasePath, boolean createDbAllowed, PrintStream output, String[] additionalJarsForClasspath) throws DatabaseFormatVersionException {
 		setupShutdownHook();
