@@ -2,6 +2,8 @@
 
 - Line 103 of ServerV0000:org.reldb.rel.v0.interpreter.Instance -- stop invoking it repeatedly!!!
 
+- Set host to localhost IP immediately, then spawn thread to get hostname.
+
 - Allow overwrite of attributes in EXTEND (and RENAME?)
 
 - Fix bug: COUNT{ S WHERE CITY = CITY, S WHERE STATUS = STATUS }.
