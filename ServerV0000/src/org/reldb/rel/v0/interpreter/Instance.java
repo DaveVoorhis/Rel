@@ -96,8 +96,14 @@ public class Instance {
 			Runtime.getRuntime().addShutdownHook(dbShutdownHook);
 		}
 		try {
-			localHostName = InetAddress.getLocalHost().getCanonicalHostName();
-		} catch (UnknownHostException uhe) {
+			InetAddress localHost = InetAddress.getLocalHost();
+			localHostName = localHost.toString();
+			(new Thread() {
+				public void run() {
+					localHostName = localHost.getCanonicalHostName();
+				}
+			}).start();
+		} catch (UnknownHostException e) {
 			localHostName = "<unknown>";
 		}
 		shutdownHookSetup = true;
