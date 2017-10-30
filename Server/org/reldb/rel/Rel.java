@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
-import org.reldb.rel.v0.interpreter.ClassPathHack;
 import org.reldb.rel.v0.version.Version;
 
 /** Convenient access point for running an embedded or stand-alone interpreter. */
@@ -19,41 +18,41 @@ public class Rel {
 	private static void buildClasspath() throws IOException {
 		if (classpathBuilt)
 			return;
-		ClassPathHack.addFile("lib/commons-cli-1.2.jar");
-		ClassPathHack.addFile("lib/commons-codec-1.10.jar");
-		ClassPathHack.addFile("lib/commons-collections4-4.1.jar");
-		ClassPathHack.addFile("lib/commons-lang-2.6.jar");
-		ClassPathHack.addFile("lib/commons-logging-1.2.jar");
-		ClassPathHack.addFile("lib/curvesapi-1.04.jar");
-		ClassPathHack.addFile("lib/ecj-4.6.1.jar");
-		ClassPathHack.addFile("lib/fluent-hc-4.5.2.jar");
-		ClassPathHack.addFile("lib/httpclient-4.5.2.jar");
-		ClassPathHack.addFile("lib/httpclient-cache-4.5.2.jar");
-		ClassPathHack.addFile("lib/httpclient-win-4.5.2.jar");
-		ClassPathHack.addFile("lib/httpcore-4.4.4.jar");
-		ClassPathHack.addFile("lib/httpcore-4.4.5.jar");
-		ClassPathHack.addFile("lib/httpcore-ab-4.4.5.jar");
-		ClassPathHack.addFile("lib/httpcore-nio-4.4.5.jar");
-		ClassPathHack.addFile("lib/httpmime-4.5.2.jar");
-		ClassPathHack.addFile("lib/jackcess-2.1.6.jar");
-		ClassPathHack.addFile("lib/" + Version.getBerkeleyDbJarFilename());
-		ClassPathHack.addFile("lib/jna-4.1.0.jar");
-		ClassPathHack.addFile("lib/jna-platform-4.1.0.jar");
-		ClassPathHack.addFile("lib/junit.jar");
-		ClassPathHack.addFile("lib/log4j-1.2.17.jar");
-		ClassPathHack.addFile("lib/mariadb-java-client-1.5.6.jar");
-		ClassPathHack.addFile("lib/ojdbc7.jar");
-		ClassPathHack.addFile("lib/poi-3.15.jar");
-		ClassPathHack.addFile("lib/poi-excelant-3.15.jar");
-		ClassPathHack.addFile("lib/poi-ooxml-3.15.jar");
-		ClassPathHack.addFile("lib/poi-ooxml-schemas-3.15.jar");
-		ClassPathHack.addFile("lib/poi-scratchpad-3.15.jar");
-		ClassPathHack.addFile("lib/postgresql-9.4.1212.jar");
-		ClassPathHack.addFile("lib/rel0000.jar");
-		ClassPathHack.addFile("lib/relclient.jar");
-		ClassPathHack.addFile("lib/relshared.jar");
-		ClassPathHack.addFile("lib/jtds-1.3.1.jar");
-		ClassPathHack.addFile("lib/xmlbeans-2.6.0.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/commons-cli-1.2.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/commons-codec-1.10.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/commons-collections4-4.1.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/commons-lang-2.6.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/commons-logging-1.2.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/curvesapi-1.04.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/ecj-4.6.1.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/fluent-hc-4.5.2.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/httpclient-4.5.2.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/httpclient-cache-4.5.2.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/httpclient-win-4.5.2.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/httpcore-4.4.4.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/httpcore-4.4.5.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/httpcore-ab-4.4.5.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/httpcore-nio-4.4.5.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/httpmime-4.5.2.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/jackcess-2.1.6.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/jna-4.1.0.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/jna-platform-4.1.0.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/junit.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/log4j-1.2.17.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/mariadb-java-client-1.5.6.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/ojdbc7.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/poi-3.15.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/poi-excelant-3.15.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/poi-ooxml-3.15.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/poi-ooxml-schemas-3.15.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/poi-scratchpad-3.15.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/postgresql-9.4.1212.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/rel0000.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/relclient.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/relshared.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/jtds-1.3.1.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/xmlbeans-2.6.0.jar");
+		org.reldb.rel.ClassPathHack.addFile("lib/" + Version.getBerkeleyDbJarFilename());	// dependent on rel0000.jar!
 		classpathBuilt = true;
 	}
 	
