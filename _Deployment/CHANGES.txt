@@ -1,5 +1,8 @@
 Last used Exception* number: RS0502
 
+Version 3.010 (1.0.23):
+
+
 Version 3.009 (1.0.22):
 
   - fix: Rel DBMS: getCanonicalHostName() in setupShutdownHook() 
