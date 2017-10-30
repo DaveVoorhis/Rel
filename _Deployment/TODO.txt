@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
+
 - Allow overwrite of attributes in EXTEND (and RENAME?)
 
 - Fix bug: COUNT{ S WHERE CITY = CITY, S WHERE STATUS = STATUS }.
