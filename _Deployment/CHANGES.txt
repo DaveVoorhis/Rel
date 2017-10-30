@@ -6,6 +6,7 @@ Version 3.009 (1.0.22):
     ServerV0000:org.reldb.rel.v0.interpreter.Instance no longer invoked too
     frequently, or in a manner that bottlenecks startup. 
     Turns out to be slooow on some networks.
+  - enhancement: Update to Java runtime version 8u151
 
 Version 3.008 (1.0.21):
 
