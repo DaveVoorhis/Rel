@@ -24,7 +24,7 @@ import org.reldb.rel.exceptions.DatabaseFormatVersionException;
  *
  * @author  dave
  */
-public class Connection {
+public class Connection implements AutoCloseable {
 		
 	private String dbURL;
 	private String serverAnnouncement = "";
@@ -76,6 +76,11 @@ public class Connection {
 	/** Creates new connection. Error thrown if database doesn't exist. */
 	public Connection(String dbURL) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
 		this(dbURL, false);
+	}
+
+	@Override
+	public void close() throws Exception {
+		closeConnectionPool();
 	}
 
 	/** Attempts update of a database. 
@@ -161,11 +166,41 @@ public class Connection {
 		sendRunner.start();
 	}
 	
+//	private Vector<StreamReceiverClient> connectionPool = new Vector<>();
+	
+	private StreamReceiverClient useConnection() throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+//		synchronized (connectionPool) {
+//			if (connectionPool.size() == 0)
+				return ClientFromURL.openConnection(dbURL, false, crashHandler, additionalJars);
+//			else
+//				return connectionPool.remove(0);
+//		}
+	}
+	
+	private void relinquishConnection(StreamReceiverClient client) throws IOException {
+		client.close();
+//		synchronized (connectionPool) {
+//			connectionPool.add(client);
+//		}
+	}
+	
+	private void closeConnectionPool() {
+//		synchronized (connectionPool) {
+//			for (StreamReceiverClient client: connectionPool) {
+//				try {
+//					client.close();
+//				} catch (IOException e) {
+//					System.out.println("Connection: error closing ");
+//				}
+//			}
+//		}
+	}
+	
 	private Response launchParser(final Action sendAction, final Action receiveComplete) {
 		final Response response = new Response();
 		final StreamReceiverClient client;
 		try {
-			client = ClientFromURL.openConnection(dbURL, false, crashHandler, additionalJars);
+			client = useConnection();
 		} catch (Exception e) {
 			response.setResult(new Error(e.toString()));
 			return response;
@@ -251,7 +286,7 @@ public class Connection {
 				try {
 					if (receiveComplete != null)
 						receiveComplete.run(client);
-					client.close();
+					relinquishConnection(client);
 				} catch (IOException e) {
 					System.out.println("Connection: run failed: " + e);
 					e.printStackTrace();
@@ -273,7 +308,7 @@ public class Connection {
 	private void launchParserToHTML(final Action action, final HTMLReceiver htmlReceiver) {
 		final StreamReceiverClient client;
 		try {
-			client = ClientFromURL.openConnection(dbURL, false, crashHandler, additionalJars);
+			client = useConnection();
 		} catch (Exception e) {
 			htmlReceiver.emitInitialHTML("Unable to open connection: " + e.toString().replace(" ", "&nbsp;"));
 			return;
@@ -308,7 +343,7 @@ public class Connection {
 					htmlReceiver.emitInitialHTML(errorMessageTrap.toString().replace(" ", "&nbsp;"));
 				}
 				try {
-					client.close();
+					relinquishConnection(client);
 				} catch (IOException e) {
 					System.out.println("Connection: close failed: " + e);
 					e.printStackTrace();
