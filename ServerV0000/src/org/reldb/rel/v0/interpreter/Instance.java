@@ -95,17 +95,22 @@ public class Instance {
 			};
 			Runtime.getRuntime().addShutdownHook(dbShutdownHook);
 		}
-		try {
-			InetAddress localHost = InetAddress.getLocalHost();
-			localHostName = localHost.toString();
-			(new Thread() {
-				public void run() {
-					localHostName = localHost.getCanonicalHostName();
+		localHostName = "<host name not yet available...>";
+		(new Thread() {
+			public void run() {
+				try {
+					InetAddress localHost = InetAddress.getLocalHost();
+					localHostName = localHost.toString();
+					(new Thread() {
+						public void run() {
+							localHostName = localHost.getCanonicalHostName();
+						}
+					}).start();
+				} catch (UnknownHostException e) {
+					localHostName = "<unknown>";
 				}
-			}).start();
-		} catch (UnknownHostException e) {
-			localHostName = "<unknown>";
-		}
+			}
+		}).start();
 		shutdownHookSetup = true;
 	}
     
