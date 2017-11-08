@@ -1,5 +1,29 @@
 ** TO DO **
 
+- Fix:
+
+Given:
+
+VAR TEST4 REAL RELATION {ID INTEGER, RVA RELATION {RID INTEGER, STR CHAR}} KEY {ID};
+
+INSERT TEST4 RELATION {
+	TUPLE {ID 1, RVA RELATION {TUPLE {RID 11, STR 'A'}, TUPLE {RID 22, STR 'E'}}},
+	TUPLE {ID 2, RVA RELATION {TUPLE {RID 22, STR 'B'}, TUPLE {RID 33, STR 'F'}}},
+	TUPLE {ID 3, RVA RELATION {TUPLE {RID 33, STR 'C'}, TUPLE {RID 44, STR 'G'}}},
+	TUPLE {ID 4, RVA RELATION {TUPLE {RID 44, STR 'D'}, TUPLE {RID 55, STR 'H'}}}
+};
+
+Then execute:
+
+UPDATE TEST4 WHERE ID = 2: {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};
+UPDATE TEST4 WHERE ID = 2: {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};
+
+Instead of winding up with the expected tuple in the RVA relation-valued attribute, it vanishes!
+
+- Fix: execute vs evaluate detection in command-line (ignore whitespace and comments!)
+
+- Fix: clicking on tab should set focus on contents
+
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 
 - Allow overwrite of attributes in EXTEND (and RENAME?)
