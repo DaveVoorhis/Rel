@@ -2,6 +2,8 @@ Last used Exception* number: RS0502
 
 Version 3.010 (1.0.23):
 
+  - enhancement: Rel: CPU and memory displays now follow typical
+    paradigm of showing usage rather than (as before) showing available.
 
 Version 3.009 (1.0.22):
 
