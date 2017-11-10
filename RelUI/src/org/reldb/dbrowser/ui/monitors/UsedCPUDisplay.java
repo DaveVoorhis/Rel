@@ -4,7 +4,7 @@ import java.lang.management.ManagementFactory;
 
 import org.eclipse.swt.widgets.Composite;
 
-public class FreeCPUDisplay extends PercentDisplay {
+public class UsedCPUDisplay extends PercentDisplay {
 
 	public static int getProcessCPULoad() {
 		java.lang.management.OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
@@ -16,11 +16,11 @@ public class FreeCPUDisplay extends PercentDisplay {
 	    return 	(int)(processCpuLoad * 100.0);
 	}
 	
-	public FreeCPUDisplay(Composite parent, int style) {
+	public UsedCPUDisplay(Composite parent, int style) {
 		super(parent, style, "CPU", new PercentSource() {
 			@Override
 			public int getPercent() {
-				return 100 - getProcessCPULoad();
+				return getProcessCPULoad();
 			}
 		});
 	}

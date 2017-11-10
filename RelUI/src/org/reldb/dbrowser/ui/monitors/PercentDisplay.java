@@ -15,8 +15,8 @@ import org.eclipse.swt.widgets.Listener;
 public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 	private Deque<Integer> percentageHistory;
 	
-	private int middleLimit = 50;
-	private int lowerLimit = 20;
+	private int middleLimit = 70;
+	private int lowerLimit = 50;
 	
 	private Color goodColor;
 	private Color okColor;
@@ -158,11 +158,11 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 					gc.setForeground(getBackground());
 					gc.drawLine(barX, rect.y, barX, barY);
 					if (percentages[index] < lowerLimit)
-						gc.setForeground(badColor);
+						gc.setForeground(goodColor);
 					else if (percentages[index] < middleLimit)
 						gc.setForeground(okColor);
 					else
-						gc.setForeground(goodColor);
+						gc.setForeground(badColor);
 					gc.drawLine(barX, rect.height, barX, barY);
 					if (index > 0) {
 						if (txtRect.contains(barX, barY) || txtRect.contains(lastX, lastY))
@@ -181,10 +181,12 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 		
 		Thread painter = new Thread() {
 			public void run() {
+				int lastPercent = 0;
 				while (running) {
 					try {sleep(delay);} catch (InterruptedException ie) {}
 					int percentValue = percent.getPercent(); 
-					addPercentage(percentValue);
+					addPercentage((percentValue + lastPercent) / 2);	// smoothing, sort-of
+					lastPercent = percentValue;
 					emitText = String.format("%3d%% ", percentValue) + displaytext; 
 					refresh();
 				}

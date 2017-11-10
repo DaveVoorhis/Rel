@@ -6,8 +6,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.reldb.dbrowser.ui.monitors.CheckForUpdates;
-import org.reldb.dbrowser.ui.monitors.FreeCPUDisplay;
-import org.reldb.dbrowser.ui.monitors.FreeMemoryDisplay;
+import org.reldb.dbrowser.ui.monitors.UsedCPUDisplay;
+import org.reldb.dbrowser.ui.monitors.UsedMemoryDisplay;
 
 public class StatusPanel extends Composite {
 	private Label lblStatus;
@@ -33,11 +33,13 @@ public class StatusPanel extends Composite {
 		CheckForUpdates updateCheck = new CheckForUpdates(this, SWT.NONE);
 		updateCheck.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, true, 1, 1));
 		
-		FreeCPUDisplay freeCPU = new FreeCPUDisplay(this, SWT.BORDER);
-		freeCPU.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
+		UsedCPUDisplay usedCPU = new UsedCPUDisplay(this, SWT.BORDER);
+		usedCPU.setToolTipText("CPU usage.");
+		usedCPU.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
 		
-		FreeMemoryDisplay freeRAM = new FreeMemoryDisplay(this, SWT.BORDER);
-		freeRAM.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
+		UsedMemoryDisplay usedRAM = new UsedMemoryDisplay(this, SWT.BORDER);
+		usedRAM.setToolTipText("RAM usage.");
+		usedRAM.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, true, 1, 1));
 	}
 
 	public void setStatus(String s) {
