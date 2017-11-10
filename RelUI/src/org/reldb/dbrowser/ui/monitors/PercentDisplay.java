@@ -9,8 +9,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 
 public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 	private Deque<Integer> percentageHistory;
@@ -29,6 +27,8 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 	
 	private int displayWidth;
 	private String emitText = "";
+	
+	private boolean mouseIn = false;
 
 	private final Runnable refresh = new Runnable() {
 		public void run() {
@@ -139,44 +139,51 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 		black = new Color(parent.getDisplay(), 0, 0, 0);
 		lightGray = new Color(parent.getDisplay(), 200, 200, 200);
 		
-		addListener (SWT.Paint, new Listener () {
-			@Override
-			public void handleEvent (Event e) {
-				GC gc = e.gc;
-				Rectangle rect = getClientArea();
-				displayWidth = rect.width;
-				Integer[] percentages = getPercentages();
-				int lastX = rect.x;
-				int lastY = rect.y;
-				Point txtExtent = gc.textExtent(emitText);
-				int textX = rect.width - txtExtent.x - 5;
-				int textY = (rect.height - txtExtent.y) / 2;
-				Rectangle txtRect = new Rectangle(textX, textY, txtExtent.x, txtExtent.y);
-				for (int index=0; index<percentages.length; index++) {
-					int barY = (100 - percentages[index]) * rect.height / 100 + 2;
-					int barX = rect.x + index;
-					gc.setForeground(getBackground());
-					gc.drawLine(barX, rect.y, barX, barY);
-					if (percentages[index] < lowerLimit)
-						gc.setForeground(goodColor);
-					else if (percentages[index] < middleLimit)
-						gc.setForeground(okColor);
+		addListener(SWT.MouseEnter, e -> {
+			mouseIn = true;
+			refresh();
+		});
+		
+		addListener(SWT.MouseExit, e -> {
+			mouseIn = false;
+		});
+		
+		addListener (SWT.Paint, e -> {
+			GC gc = e.gc;
+			Rectangle rect = getClientArea();
+			displayWidth = rect.width;
+			Integer[] percentages = getPercentages();
+			int lastX = rect.x;
+			int lastY = rect.y;
+			Point txtExtent = (mouseIn) ? gc.textExtent(emitText) : new Point(0, 0);
+			int textX = rect.width - txtExtent.x - 5;
+			int textY = (rect.height - txtExtent.y) / 2;
+			Rectangle txtRect = new Rectangle(textX, textY, txtExtent.x, txtExtent.y);
+			for (int index=0; index<percentages.length; index++) {
+				int barY = (100 - percentages[index]) * (rect.height - 5) / 100 + 2;
+				int barX = rect.x + index;
+				gc.setForeground(getBackground());
+				gc.drawLine(barX, rect.y, barX, barY);
+				if (percentages[index] < lowerLimit)
+					gc.setForeground(goodColor);
+				else if (percentages[index] < middleLimit)
+					gc.setForeground(okColor);
+				else
+					gc.setForeground(badColor);
+				gc.drawLine(barX, rect.height, barX, barY);
+				if (index > 0) {
+					if ((txtRect.contains(barX, barY) || txtRect.contains(lastX, lastY)) && mouseIn)
+						gc.setForeground(lightGray);
 					else
-						gc.setForeground(badColor);
-					gc.drawLine(barX, rect.height, barX, barY);
-					if (index > 0) {
-						if (txtRect.contains(barX, barY) || txtRect.contains(lastX, lastY))
-							gc.setForeground(lightGray);
-						else
-							gc.setForeground(black);
-						gc.drawLine(lastX, lastY, barX, barY);
-					}
-					lastX = barX;
-					lastY = barY;
+						gc.setForeground(black);
+					gc.drawLine(lastX, lastY, barX, barY);
 				}
-				gc.setForeground(black);
-				gc.drawText(emitText, textX, textY, true);
+				lastX = barX;
+				lastY = barY;
 			}
+			gc.setForeground(black);
+			if (mouseIn)
+				gc.drawText(emitText, textX, textY, true);
 		});
 		
 		Thread painter = new Thread() {
