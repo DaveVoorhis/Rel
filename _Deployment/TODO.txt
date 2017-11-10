@@ -24,6 +24,9 @@ Instead of winding up with the expected tuple in the RVA relation-valued attribu
 
 - Fix: clicking on tab should set focus on contents
 
+- Enhancement: double-click should open/close database tree display item. Right arrow
+  should open; left arrow should close.
+
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 
 - Allow overwrite of attributes in EXTEND (and RENAME?)
