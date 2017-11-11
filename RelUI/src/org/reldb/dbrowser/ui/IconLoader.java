@@ -14,9 +14,14 @@ public class IconLoader {
 	}
 	
 	public static Image loadIconNormal(String name) {
-		Image imgBig = ResourceManager.getPluginImage("RelUI", "icons/" + name + "@2x.png");
-		Image imgSmall = ResourceManager.getPluginImage("RelUI", "icons/" + name + ".png");
-		Image imgLarge = (imgBig == null) ? imgSmall : imgBig;
+		Image imgBigRaw = ResourceManager.getPluginImage("RelUI", "icons/" + name + "@2x.png");
+		Image imgSmallRaw = ResourceManager.getPluginImage("RelUI", "icons/" + name + ".png");
+		if (imgBigRaw == null && imgSmallRaw == null) {
+			imgBigRaw = ResourceManager.getPluginImage("RelUI", "icons/noimage@2x.png");
+			imgSmallRaw = ResourceManager.getPluginImage("RelUI", "icons/noimage.png");
+		}
+		Image imgLarge = (imgBigRaw == null) ? imgSmallRaw : imgBigRaw;
+		Image imgSmall = imgSmallRaw;
 		final ImageDataProvider imageDataProvider = zoom -> {
 			switch (zoom) {
 			case 200:
