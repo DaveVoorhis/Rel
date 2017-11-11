@@ -22,7 +22,7 @@ Instead of winding up with the expected tuple in the RVA relation-valued attribu
 
 - Fix: execute vs evaluate detection in command-line (ignore whitespace and comments!)
 
-- Fix: clicking on tab should set focus on contents
+- Fix: clicking on or launching new tab should set focus on contents
 
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 
