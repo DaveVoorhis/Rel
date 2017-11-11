@@ -14,8 +14,6 @@ import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -120,30 +118,30 @@ public class RelPanel extends Composite {
 		treeTab.setControl(tree);
 		treeFolder.setSelection(0);
 		
-		tree.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				DbTreeItem selection = getSelection();
-				if (selection == null)
-					fireDbTreeNoSelectionEvent();
-				else {
-					fireDbTreeSelectionEvent(selection);
-					String name = selection.getTabName();
-					CTabItem tab = getTab(name);
-					if (tab != null) {
-						getTabFolder().setSelection(tab);
-						fireDbTreeTabchangeEvent();
-					}
+		tree.addListener(SWT.Selection, evt -> {
+			DbTreeItem selection = getSelection();
+			if (selection == null)
+				fireDbTreeNoSelectionEvent();
+			else {
+				fireDbTreeSelectionEvent(selection);
+				String name = selection.getTabName();
+				CTabItem tab = getTab(name);
+				if (tab != null) {
+					getTabFolder().setSelection(tab);
+					fireDbTreeTabchangeEvent();
 				}
 			}
 		});
-		tree.addMouseListener(new MouseAdapter() {
-			public void mouseDoubleClick(MouseEvent e) {
-				DbTreeItem selection = getSelection();
-				if (selection != null && selection.canPlay())
-					playItem();
-			}
+		
+		tree.addListener(SWT.MouseDoubleClick, evt -> {
+			TreeItem items[] = tree.getSelection();
+			for (TreeItem item: items)
+				item.setExpanded(!item.getExpanded());
+			DbTreeItem selection = getSelection();
+			if (selection != null && selection.canPlay())
+				playItem();
 		});
-				
+
 		Menu menu = new Menu(this);
 		MenuItem showItem = new MenuItem(menu, SWT.POP_UP);
 		showItem.setText("Show");
