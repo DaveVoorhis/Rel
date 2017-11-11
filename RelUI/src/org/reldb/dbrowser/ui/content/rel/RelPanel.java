@@ -12,15 +12,9 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabFolderEvent;
-import org.eclipse.swt.events.MenuDetectEvent;
-import org.eclipse.swt.events.MenuDetectListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
@@ -54,6 +48,7 @@ import org.reldb.dbrowser.ui.content.rel.type.TypePlayer;
 import org.reldb.dbrowser.ui.content.rel.var.VarCreator;
 import org.reldb.dbrowser.ui.content.rel.var.VarDesigner;
 import org.reldb.dbrowser.ui.content.rel.var.VarDropper;
+import org.reldb.dbrowser.ui.content.rel.var.VarEditor;
 import org.reldb.dbrowser.ui.content.rel.var.VarExporter;
 import org.reldb.dbrowser.ui.content.rel.var.VarPlayer;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewCreator;
@@ -143,75 +138,62 @@ public class RelPanel extends Composite {
 		});
 
 		Menu menu = new Menu(this);
+		
 		MenuItem showItem = new MenuItem(menu, SWT.POP_UP);
 		showItem.setText("Show");
 		showItem.setImage(IconLoader.loadIcon("play"));
-		showItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				playItem();
-			}
-		});
+		showItem.addListener(SWT.Selection, e -> playItem());
+
+		MenuItem editItem = new MenuItem(menu, SWT.POP_UP);
+		editItem.setText("Edit");
+		editItem.setImage(IconLoader.loadIcon("item_edit"));
+		editItem.addListener(SWT.Selection, e -> editItem());
+		
 		MenuItem createItem = new MenuItem(menu, SWT.POP_UP);
 		createItem.setText("Create");
 		createItem.setImage(IconLoader.loadIcon("item_add"));
-		createItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				createItem();
-			}
-		});
+		createItem.addListener(SWT.Selection, e -> createItem());
+		
 		MenuItem dropItem = new MenuItem(menu, SWT.POP_UP);
 		dropItem.setText("Drop");
 		dropItem.setImage(IconLoader.loadIcon("item_delete"));
-		dropItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				dropItem();
-			}
-		});
+		dropItem.addListener(SWT.Selection, e -> dropItem());
+		
 		MenuItem designItem = new MenuItem(menu, SWT.POP_UP);
 		designItem.setText("Design");
 		designItem.setImage(IconLoader.loadIcon("item_design"));
-		designItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				designItem();
-			}
-		});
+		designItem.addListener(SWT.Selection, e -> designItem());
+		
 		MenuItem renameItem = new MenuItem(menu, SWT.POP_UP);
 		renameItem.setText("Rename");
 		renameItem.setImage(IconLoader.loadIcon("rename"));
-		renameItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				renameItem();
-			}
-		});
+		renameItem.addListener(SWT.Selection, e -> renameItem());
+		
 		MenuItem exportItem = new MenuItem(menu, SWT.POP_UP);
 		exportItem.setText("Export");
 		exportItem.setImage(IconLoader.loadIcon("export"));
-		exportItem.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				exportItem();
-			}
-		});
+		exportItem.addListener(SWT.Selection, e -> exportItem());
 		
 		tree.setMenu(menu);
 		
-		tree.addMenuDetectListener(new MenuDetectListener() {
-			public void menuDetected(MenuDetectEvent e) {
-				DbTreeItem selection = getSelection();
-				if (selection == null) {
-					showItem.setEnabled(false);
-					createItem.setEnabled(false);
-					dropItem.setEnabled(false);
-					designItem.setEnabled(false);
-					renameItem.setEnabled(false);
-					exportItem.setEnabled(false);
-				} else {
-					showItem.setEnabled(selection.canPlay());
-					createItem.setEnabled(selection.canCreate());
-					dropItem.setEnabled(selection.canDrop());
-					designItem.setEnabled(selection.canDesign());
-					renameItem.setEnabled(selection.canRename());
-					exportItem.setEnabled(selection.canExport());
-				}
+		tree.addMenuDetectListener(e -> {
+			DbTreeItem selection = getSelection();
+			if (selection == null) {
+				showItem.setEnabled(false);
+				editItem.setEnabled(false);
+				createItem.setEnabled(false);
+				dropItem.setEnabled(false);
+				designItem.setEnabled(false);
+				renameItem.setEnabled(false);
+				exportItem.setEnabled(false);
+			} else {
+				showItem.setEnabled(selection.canPlay());
+				editItem.setEnabled(selection.canEdit());
+				createItem.setEnabled(selection.canCreate());
+				dropItem.setEnabled(selection.canDrop());
+				designItem.setEnabled(selection.canDesign());
+				renameItem.setEnabled(selection.canRename());
+				exportItem.setEnabled(selection.canExport());
 			}
 		});
 		
@@ -219,12 +201,7 @@ public class RelPanel extends Composite {
 		
 		tabFolder = new CTabFolder(sashForm, SWT.BORDER | SWT.CLOSE);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
-		tabFolder.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent evt) {
-				fireDbTreeTabchangeEvent();
-			}
-		});
+		tabFolder.addListener(SWT.Selection, e -> fireDbTreeTabchangeEvent());
 		tabFolder.addCTabFolder2Listener(new CTabFolder2Adapter() {
 			@Override
 			public void close(CTabFolderEvent event) {
@@ -252,82 +229,64 @@ public class RelPanel extends Composite {
 		closeRight.setText("Close right tabs");
 		closeAll.setText("Close all");
 		
-		tabFolder.addListener(SWT.MenuDetect, new Listener() {
-			public void handleEvent(Event e) {
-				Point clickPosition = Display.getDefault().map(null, tabFolder, new Point(e.x, e.y));
-				if (clickPosition.y > tabFolder.getTabHeight())
-					e.doit = false;
-				else {
-					itemSelectedByMenu = tabFolder.getItem(clickPosition);
-					itemSelectedByMenuIndex = getTabIndex(tabFolder, itemSelectedByMenu);
-					closer.setEnabled(itemSelectedByMenuIndex >= 0);
-					closeOthers.setEnabled(tabFolder.getItemCount() > 1 && itemSelectedByMenuIndex >= 0);
-					closeLeft.setEnabled(itemSelectedByMenuIndex > 0);
-					closeRight.setEnabled(itemSelectedByMenuIndex >= 0 && itemSelectedByMenuIndex < tabFolder.getItemCount() - 1);
-					closeAll.setEnabled(tabFolder.getItemCount() > 0);
-				}
+		tabFolder.addListener(SWT.MenuDetect, e -> {
+			Point clickPosition = Display.getDefault().map(null, tabFolder, new Point(e.x, e.y));
+			if (clickPosition.y > tabFolder.getTabHeight())
+				e.doit = false;
+			else {
+				itemSelectedByMenu = tabFolder.getItem(clickPosition);
+				itemSelectedByMenuIndex = getTabIndex(tabFolder, itemSelectedByMenu);
+				closer.setEnabled(itemSelectedByMenuIndex >= 0);
+				closeOthers.setEnabled(tabFolder.getItemCount() > 1 && itemSelectedByMenuIndex >= 0);
+				closeLeft.setEnabled(itemSelectedByMenuIndex > 0);
+				closeRight.setEnabled(itemSelectedByMenuIndex >= 0 && itemSelectedByMenuIndex < tabFolder.getItemCount() - 1);
+				closeAll.setEnabled(tabFolder.getItemCount() > 0);
 			}
 		});
 		
-		closer.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (itemSelectedByMenu != null)
-					itemSelectedByMenu.dispose();
-			}
+		closer.addListener(SWT.Selection, e -> {
+			if (itemSelectedByMenu != null)
+				itemSelectedByMenu.dispose();
 		});
-		closeOthers.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
+		
+		closeOthers.addListener(SWT.Selection, e -> {
+			tabFolder.setSelection(itemSelectedByMenuIndex);
+			for (CTabItem tab: tabFolder.getItems())
+				if (tab != itemSelectedByMenu)
+					tab.dispose();
+		});
+		
+		closeLeft.addListener(SWT.Selection, e -> {
+			if (itemSelectedByMenuIndex > 0) {
+				Vector<CTabItem> closers = new Vector<CTabItem>();
+				for (int i=0; i<itemSelectedByMenuIndex; i++)
+					closers.add(tabFolder.getItem(i));
 				tabFolder.setSelection(itemSelectedByMenuIndex);
-				for (CTabItem tab: tabFolder.getItems())
-					if (tab != itemSelectedByMenu)
-						tab.dispose();
+				for (CTabItem close: closers)
+					close.dispose();
 			}
 		});
-		closeLeft.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (itemSelectedByMenuIndex > 0) {
-					Vector<CTabItem> closers = new Vector<CTabItem>();
-					for (int i=0; i<itemSelectedByMenuIndex; i++)
-						closers.add(tabFolder.getItem(i));
-					tabFolder.setSelection(itemSelectedByMenuIndex);
-					for (CTabItem close: closers)
-						close.dispose();
-				}
+		
+		closeRight.addListener(SWT.Selection, e -> {
+			if (itemSelectedByMenuIndex < tabFolder.getItemCount() - 1) {
+				Vector<CTabItem> closers = new Vector<CTabItem>();
+				for (int i = itemSelectedByMenuIndex + 1; i<tabFolder.getItemCount(); i++)
+					closers.add(tabFolder.getItem(i));
+				tabFolder.setSelection(itemSelectedByMenuIndex);
+				for (CTabItem close: closers)
+					close.dispose();
 			}
 		});
-		closeRight.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (itemSelectedByMenuIndex < tabFolder.getItemCount() - 1) {
-					Vector<CTabItem> closers = new Vector<CTabItem>();
-					for (int i = itemSelectedByMenuIndex + 1; i<tabFolder.getItemCount(); i++)
-						closers.add(tabFolder.getItem(i));
-					tabFolder.setSelection(itemSelectedByMenuIndex);
-					for (CTabItem close: closers)
-						close.dispose();
-				}
-			}
-		});
-		closeAll.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				while (tabFolder.getItemCount() > 0)
-					tabFolder.getItem(0).dispose();
-			}
+		
+		closeAll.addListener(SWT.Selection, e -> {
+			while (tabFolder.getItemCount() > 0)
+				tabFolder.getItem(0).dispose();
 		});
 		
 		ToolBar zoomer = new ToolBar(tabFolder, SWT.NONE);
 		ToolItem zoomItem = new ToolItem(zoomer, SWT.NONE);
 		zoomItem.setImage(IconLoader.loadIcon("view_fullscreen"));
-		zoomItem.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent evt) {
-				zoom();
-			}
-		});
+		zoomItem.addListener(SWT.Selection, e -> zoom());
 		tabFolder.setTopRight(zoomer);
 		
 		sashForm.setWeights(new int[] {1, 4});
@@ -495,6 +454,11 @@ public class RelPanel extends Composite {
 		nudge();
 	}
 
+	public void editItem() {
+		getSelection().edit(IconLoader.loadIcon("item_edit"));
+		nudge();
+	}
+	
 	public void createItem() {
 		getSelection().create(IconLoader.loadIcon("item_add"));
 		nudge();
@@ -536,12 +500,12 @@ public class RelPanel extends Composite {
 			root.setImage(image);
 			root.setText(section);
 			treeRoots.put(section, root);
-			root.setData(new DbTreeItem(section, null, creator, null, null, null, null));
+			root.setData(new DbTreeItem(section, null, null, creator, null, null, null, null));
 		}
 		return root;
 	}
 	
-	private void buildSubtree(String section, Image image, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
+	private void buildSubtree(String section, Image image, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction editor, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
 		TreeItem root = getRoot(section, image, creator);
 		if (query != null) {
 			Tuples names = connection.getTuples(query);
@@ -552,7 +516,7 @@ public class RelPanel extends Composite {
 						TreeItem item = new TreeItem(root, SWT.NONE);
 						item.setImage(image);
 						item.setText(name);
-						item.setData(new DbTreeItem(section, player, creator, dropper, designer, renamer, exporter, name));
+						item.setData(new DbTreeItem(section, player, editor, creator, dropper, designer, renamer, exporter, name));
 					}
 				}
 		}
@@ -565,6 +529,7 @@ public class RelPanel extends Composite {
 		String query = "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name, isExternal} ORDER (ASC Name)";
 		String displayAttributeName = "Name";
 		VarPlayer player = new VarPlayer(this);
+		VarEditor editor = new VarEditor(this);
 		VarCreator creator = new VarCreator(this);
 		VarDropper dropper = new VarDropper(this);
 		VarDesigner designer = new VarDesigner(this);
@@ -583,7 +548,7 @@ public class RelPanel extends Composite {
 						else
 							item.setImage(imageInternal);
 						item.setText(name);
-						item.setData(new DbTreeItem(section, player, creator, dropper, designer, null, exporter, name));
+						item.setData(new DbTreeItem(section, player, editor, creator, dropper, designer, null, exporter, name));
 					}
 				}
 		}		
@@ -612,7 +577,7 @@ public class RelPanel extends Composite {
 						TreeItem itemHeading = new TreeItem(root, SWT.NONE);
 						itemHeading.setImage(image);
 						itemHeading.setText(name);
-						itemHeading.setData(new DbTreeItem(section, null, creator, null, null, null, null, name));
+						itemHeading.setData(new DbTreeItem(section, null, null, creator, null, null, null, null, name));
 						int implementationCount = 0;
 						String lastSignatureWithReturns = "";
 						DbTreeItem lastitem = null;
@@ -622,6 +587,7 @@ public class RelPanel extends Composite {
 							lastSignatureWithReturns = detailTuple.getAttributeValue("SigReturn").toString();
 							lastitem = new DbTreeItem(section, 
 									new OperatorPlayer(this), 
+									null,
 									creator, 
 									new OperatorDropper(this), 
 									new OperatorDesigner(this), 
@@ -651,8 +617,8 @@ public class RelPanel extends Composite {
 		root.dispose();
 	}
 	
-	private void buildSubtree(String section, Image image, String query, String displayAttributeName, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
-		buildSubtree(section, image, query, displayAttributeName, (String attributeName) -> true, player, creator, dropper, designer, renamer, exporter);
+	private void buildSubtree(String section, Image image, String query, String displayAttributeName, DbTreeAction player, DbTreeAction editor, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
+		buildSubtree(section, image, query, displayAttributeName, (String attributeName) -> true, player, editor, creator, dropper, designer, renamer, exporter);
 	}
 	
 	private void buildDbTree() {
@@ -668,21 +634,21 @@ public class RelPanel extends Composite {
 		buildSubtreeVar(andSysStr, revSysNamesFilter);
 		
 		buildSubtree(CATEGORY_VIEW, IconLoader.loadIcon("view"), "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
-			new VarViewPlayer(this), new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this), null, new VarViewExporter(this));
+			new VarViewPlayer(this), null, new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this), null, new VarViewExporter(this));
 		
 		buildSubtreeOperator(whereSysStr, revSysNamesFilter);
 		
 		buildSubtree(CATEGORY_TYPE, IconLoader.loadIcon("tau"), "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
-			new TypePlayer(this), new TypeCreator(this), new TypeDropper(this), null, null, null);
+			new TypePlayer(this), null, new TypeCreator(this), new TypeDropper(this), null, null, null);
 		
 		buildSubtree(CATEGORY_CONSTRAINT, IconLoader.loadIcon("constraint"), "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
-			new ConstraintPlayer(this), new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this), null, null);
+			new ConstraintPlayer(this), null, new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this), null, null);
 		
 		if (connection.hasRevExtensions() >= 0)
 			handleRevAddition();
 		
 		buildSubtree(CATEGORY_WELCOME, IconLoader.loadIcon("smile"), "REL {TUP {Name 'Introduction'}}", "Name",
-				new WelcomeView(this), null, null, null, null, null);
+				new WelcomeView(this), null, null, null, null, null, null);
 		
 		fireDbTreeNoSelectionEvent();
 	}
@@ -718,11 +684,11 @@ public class RelPanel extends Composite {
 	public void handleRevAddition() {
 		parentTab.refresh();
 		buildSubtree(CATEGORY_QUERY, IconLoader.loadIcon("query"), "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
-				new QueryPlayer(this), new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this), null, null);
-		// buildSubtree("Forms", null, null, null, null, null, null);
-		// buildSubtree("Reports", null, null, null, null, null, null);
+				new QueryPlayer(this), null, new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this), null, null);
+		// buildSubtree("Forms", null, null, null, null, null, null, null);
+		// buildSubtree("Reports", null, null, null, null, null, null, null);
 		buildSubtree(CATEGORY_SCRIPT, IconLoader.loadIcon("script"), "sys.rev.Script {Name} ORDER (ASC Name)", "Name", 
-			new ScriptPlayer(this), new ScriptCreator(this), new ScriptDropper(this), new ScriptDesigner(this), new ScriptRenamer(this), null);		
+			new ScriptPlayer(this), null, new ScriptCreator(this), new ScriptDropper(this), new ScriptDesigner(this), new ScriptRenamer(this), null);		
 	}
 	
 	public void handleRevRemoval() {

@@ -4,6 +4,7 @@ import org.eclipse.swt.graphics.Image;
 
 public class DbTreeItem {
 	private DbTreeAction player;
+	private DbTreeAction editor;
 	private DbTreeAction creator;
 	private DbTreeAction dropper;
 	private DbTreeAction designer;
@@ -12,9 +13,10 @@ public class DbTreeItem {
 	private String section;
 	private String name;
 
-	DbTreeItem(String section, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter, String name) {
+	DbTreeItem(String section, DbTreeAction player, DbTreeAction editor, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter, String name) {
 		this.section = section;
 		this.player = player;
+		this.editor = editor;
 		this.creator = creator;
 		this.dropper = dropper;
 		this.designer = designer;
@@ -23,20 +25,24 @@ public class DbTreeItem {
 		this.name = name;
 	}
 	
-	DbTreeItem(String section, DbTreeAction player, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
-		this(section, player, creator, dropper, designer, renamer, exporter, null);
+	DbTreeItem(String section, DbTreeAction player, DbTreeAction editor, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
+		this(section, player, editor, creator, dropper, designer, renamer, exporter, null);
 	}
 	
 	DbTreeItem() {
-		this(null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null, null);
 	}
 	
 	public DbTreeItem(DbTreeItem item, String name) {
-		this(item.section, item.player, item.creator, item.dropper, item.designer, item.renamer, item.exporter, name);
+		this(item.section, item.player, item.editor, item.creator, item.dropper, item.designer, item.renamer, item.exporter, name);
 	}
 
 	public boolean canPlay() {
 		return player != null;
+	}
+
+	public boolean canEdit() {
+		return editor != null;
 	}
 
 	public boolean canCreate() {
@@ -61,6 +67,10 @@ public class DbTreeItem {
 	
 	public void play(Image image) {
 		player.go(this, image);
+	}
+
+	public void edit(Image image) {
+		editor.go(this, image);
 	}
 	
 	public void create(Image image) {

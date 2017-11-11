@@ -3,8 +3,6 @@ package org.reldb.dbrowser.ui.content.rel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -23,6 +21,7 @@ public class DbTabContentRel extends Composite {
 
 	private ToolItem tlitmBackup;
 	private ToolItem tlitmShow;
+	private ToolItem tlitmEdit;
 	private ToolItem tlitmNew;
 	private ToolItem tlitmDrop;
 	private ToolItem tlitmDesign;
@@ -63,82 +62,47 @@ public class DbTabContentRel extends Composite {
 			
 		tlitmBackup = new ToolItem(mainToolBar, SWT.None);
 		tlitmBackup.setToolTipText("Make backup");
-		tlitmBackup.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				parentTab.makeBackup();
-			}
-		});
+		tlitmBackup.addListener(SWT.Selection, e -> parentTab.makeBackup());
 		
 		tlitmShow = new ToolItem(mainToolBar, SWT.None);
 		tlitmShow.setToolTipText("Show");
-		tlitmShow.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				rel.playItem();
-			}
-		});
-				
+		tlitmShow.addListener(SWT.Selection, e -> rel.playItem());
+		
+		tlitmEdit = new ToolItem(mainToolBar, SWT.None);
+		tlitmEdit.setToolTipText("Edit");
+		tlitmEdit.addListener(SWT.Selection, e -> rel.editItem());
+		
 		tlitmNew = new ToolItem(mainToolBar, SWT.None);
 		tlitmNew.setToolTipText("New");
-		tlitmNew.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				rel.createItem();
-			}
-		});
+		tlitmNew.addListener(SWT.Selection, e -> rel.createItem());
 		
 		tlitmDrop = new ToolItem(mainToolBar, SWT.None);
 		tlitmDrop.setToolTipText("Drop");
-		tlitmDrop.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				rel.dropItem();
-			}
-		});
+		tlitmDrop.addListener(SWT.Selection, e -> rel.dropItem());
 		
 		tlitmDesign = new ToolItem(mainToolBar, SWT.None);
 		tlitmDesign.setToolTipText("Design");
-		tlitmDesign.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				rel.designItem();
-			}
-		});
+		tlitmDesign.addListener(SWT.Selection, e -> rel.designItem());
 		
 		tlitmRename = new ToolItem(mainToolBar, SWT.None);
 		tlitmRename.setToolTipText("Rename");
-		tlitmRename.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				rel.renameItem();
-			}
-		});
+		tlitmRename.addListener(SWT.Selection, e -> rel.renameItem());
 		
 		tlitmExport = new ToolItem(mainToolBar, SWT.None);
 		tlitmExport.setToolTipText("Export");
-		tlitmExport.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				rel.exportItem();
-			}
-		});
+		tlitmExport.addListener(SWT.Selection, e -> rel.exportItem());
 		
 		tlitmShowSystem = new ToolItem(mainToolBar, SWT.CHECK);
 		tlitmShowSystem.setToolTipText("Show system objects");
 		tlitmShowSystem.setSelection(rel.getShowSystemObjects());
-		tlitmShowSystem.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				rel.setShowSystemObjects(tlitmShowSystem.getSelection());
-			}
-		});
+		tlitmShowSystem.addListener(SWT.Selection, e -> rel.setShowSystemObjects(tlitmShowSystem.getSelection()));
 		
 		setupIcons();
 		
 		rel.addDbTreeListener(new DbTreeListener() {
 			public void select(DbTreeItem item) {
 				tlitmShow.setEnabled(item.canPlay());
+				tlitmEdit.setEnabled(item.canEdit());
 				tlitmNew.setEnabled(item.canCreate());
 				tlitmDrop.setEnabled(item.canDrop());
 				tlitmDesign.setEnabled(item.canDesign());
@@ -159,6 +123,7 @@ public class DbTabContentRel extends Composite {
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 		
 		tlitmShow.setEnabled(false);
+		tlitmEdit.setEnabled(false);
 		tlitmNew.setEnabled(false);
 		tlitmDrop.setEnabled(false);
 		tlitmDesign.setEnabled(false);
@@ -185,7 +150,7 @@ public class DbTabContentRel extends Composite {
 				}
 			}
 		}
-		layout();		
+		layout();
 	}
 	
 	public void dispose() {
@@ -196,6 +161,7 @@ public class DbTabContentRel extends Composite {
 	private void setupIcons() {
 		tlitmBackup.setImage(IconLoader.loadIcon("safeIcon"));
 		tlitmShow.setImage(IconLoader.loadIcon("play"));
+		tlitmEdit.setImage(IconLoader.loadIcon("item_edit"));
 		tlitmNew.setImage(IconLoader.loadIcon("item_add"));
 		tlitmDrop.setImage(IconLoader.loadIcon("item_delete"));
 		tlitmDesign.setImage(IconLoader.loadIcon("item_design"));
