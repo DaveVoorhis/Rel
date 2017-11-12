@@ -3,8 +3,6 @@ package org.reldb.dbrowser.ui.content.cmd;
 import java.io.IOException;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -49,32 +47,17 @@ public class DbTabContentCmd extends Composite {
 			@Override
 			public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
 				// backup icon
-				addItem("Make backup", "safeIcon", SWT.PUSH).addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						parentTab.makeBackup();
-					}
-				});
+				addItem("Make backup", "safeIcon", SWT.PUSH).addListener(SWT.Selection, e -> parentTab.makeBackup());
 				// copy output to input
 				copyOutputToInputBtn = addItem("Copy output to input", "copyToInputIcon", SWT.PUSH);
 				copyOutputToInputBtn.setEnabled(!cmdPanel.getEnhancedOutput());
-				copyOutputToInputBtn.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						cmdPanel.copyOutputToInput();
-					}
-				});
+				copyOutputToInputBtn.addListener(SWT.Selection, e -> cmdPanel.copyOutputToInput());
 			}
 			@Override
 			public void addAdditionalItemsAfter(CmdPanelToolbar toolbar) {
 				addSeparatorFill();
 				// zoom
-				addItem("Zoom in or out", "view_fullscreen", SWT.PUSH).addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						zoom();
-					}
-				});
+				addItem("Zoom in or out", "view_fullscreen", SWT.PUSH).addListener(SWT.Selection, e -> zoom());
 			}
 		};
 		
