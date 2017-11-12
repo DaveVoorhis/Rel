@@ -27,6 +27,8 @@ import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public class CmdPanelOutput extends Composite {
 
+	public static final int SHOW_SERVER_RESPONSE = 1;
+	
 	private BrowserManager browser;
 	private StyledText styledText;	
 	private RelvarEditorPanel relvarEditor;
@@ -69,7 +71,7 @@ public class CmdPanelOutput extends Composite {
 	 * @throws DatabaseFormatVersionException 
 	 */
 	public CmdPanelOutput(Composite parent, DbConnection dbConnection, int style) throws NumberFormatException, ClassNotFoundException, IOException, DatabaseFormatVersionException {
-		super(parent, style);
+		super(parent, SWT.NONE);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		outputStack = new Composite(this, SWT.NONE);
@@ -175,9 +177,11 @@ public class CmdPanelOutput extends Composite {
 			}
 		};
 		
-		outputPlain(connection.getInitialServerResponse(), black);
-		outputHTML(ResponseToHTML.textToHTML(connection.getInitialServerResponse()));
-		goodResponse("Ok.");
+		if ((style & SHOW_SERVER_RESPONSE) != 0) {
+			outputPlain(connection.getInitialServerResponse(), black);
+			outputHTML(ResponseToHTML.textToHTML(connection.getInitialServerResponse()));
+			goodResponse("Ok.");
+		}
 	}
 
 	public static boolean isLastNonWhitespaceNonCommentCharacter(String s, char c) {
@@ -483,20 +487,26 @@ public class CmdPanelOutput extends Composite {
 	}
 
 	public void go(String text, boolean copyInputToOutput) {
-		if (getAutoclear())
-			clearOutput();
-		if (copyInputToOutput)
-			userResponse(text);
-		if (isLastNonWhitespaceNonCommentCharacter(text.trim(), ';')) {
-			sendExecute(text);
-		} else {
-			sendEvaluate(text);
-		}
+	    Runnable timer = new Runnable() {
+	        public void run() {
+		    		getDisplay().asyncExec(() -> {		    
+		    		    if (getAutoclear())
+		    				clearOutput();
+		    			if (copyInputToOutput)
+		    				userResponse(text);
+		    			if (isLastNonWhitespaceNonCommentCharacter(text.trim(), ';')) {
+		    				sendExecute(text);
+		    			} else {
+		    				sendEvaluate(text);
+		    			}
+		    		});
+	        }
+	      };
+	      getDisplay().timerExec(0, timer);	    	    
 	}
 	
 	public void go(String text) {
-		clearOutput();
-		
+		go(text, false);
 	}
 
 }

@@ -36,7 +36,7 @@ public class CmdPanel extends Composite {
 		
 		sashForm = new SashForm(this, SWT.VERTICAL);
 
-		cmdPanelOutput = new CmdPanelOutput(sashForm, connection, SWT.NONE) {
+		cmdPanelOutput = new CmdPanelOutput(sashForm, connection, CmdPanelOutput.SHOW_SERVER_RESPONSE) {
 			@Override
 			protected void notifyInputDone() {
 				cmdPanelInput.done();

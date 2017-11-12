@@ -100,7 +100,7 @@ public class Rev extends Composite {
 		sashForm.setOrientation(SWT.VERTICAL);
 		
 		try {
-			outputView = new CmdPanelOutput(sashForm, connection, SWT.NONE) {
+			outputView = new CmdPanelOutput(sashForm, connection, CmdPanelOutput.SHOW_SERVER_RESPONSE) {
 				@Override
 				protected void changeToolbar() {
 					Rev.this.changeToolbar();

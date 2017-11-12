@@ -16,7 +16,7 @@ public class VarEditor extends DbTreeAction {
 	public void go(DbTreeItem item, Image image) {
 		CTabItem tab = relPanel.getTab(item);
 		if (tab != null) {
-			if (tab instanceof VarEditorTab || tab instanceof VarViewerTab) {
+			if (tab instanceof VarEditorTab) {
 				tab.getParent().setSelection(tab);
 				return;
 			} else
