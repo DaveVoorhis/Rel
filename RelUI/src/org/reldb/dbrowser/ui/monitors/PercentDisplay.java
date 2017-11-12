@@ -181,9 +181,10 @@ public class PercentDisplay extends org.eclipse.swt.widgets.Canvas {
 				lastX = barX;
 				lastY = barY;
 			}
-			gc.setForeground(black);
-			if (mouseIn)
+			if (mouseIn) {
+				gc.setForeground(black);
 				gc.drawText(emitText, textX, textY, true);
+			}
 		});
 		
 		Thread painter = new Thread() {
