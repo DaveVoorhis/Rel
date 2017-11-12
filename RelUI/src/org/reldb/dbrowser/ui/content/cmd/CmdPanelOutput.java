@@ -28,6 +28,7 @@ import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 public class CmdPanelOutput extends Composite {
 
 	public static final int SHOW_SERVER_RESPONSE = 1;
+	public static final int SHOW_FOR_EVALUATION_ONLY = 2;
 	
 	private BrowserManager browser;
 	private StyledText styledText;	
@@ -60,6 +61,8 @@ public class CmdPanelOutput extends Composite {
 			
 	private PreferenceChangeListener browserPreferenceChangeListener;
 	private PreferenceChangeListener fontPreferenceChangeListener;
+	
+	private boolean isForEvaluationOnly = false;
 	
 	/**
 	 * Create the composite.
@@ -182,6 +185,12 @@ public class CmdPanelOutput extends Composite {
 			outputHTML(ResponseToHTML.textToHTML(connection.getInitialServerResponse()));
 			goodResponse("Ok.");
 		}
+		
+		isForEvaluationOnly = (style & SHOW_FOR_EVALUATION_ONLY) != 0;
+	}
+
+	public boolean isForEvaluationOnly() {
+		return isForEvaluationOnly;
 	}
 
 	public static boolean isLastNonWhitespaceNonCommentCharacter(String s, char c) {

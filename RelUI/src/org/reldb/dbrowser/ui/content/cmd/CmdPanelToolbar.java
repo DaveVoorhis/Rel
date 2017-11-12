@@ -65,23 +65,25 @@ public class CmdPanelToolbar extends ManagedToolbar {
 			}
 		});
 
-		showOkToggle = addItem("Write 'Ok.' after execution", "showOkIcon", SWT.CHECK);
-		showOkToggle.setSelection(cmdPanel.getShowOk());
-		showOkToggle.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				cmdPanel.setShowOk(showOkToggle.getSelection());
-			}
-		});
-
-		autoclearToggle = addItem("Automatically clear output", "autoclearIcon", SWT.CHECK);
-		autoclearToggle.setSelection(cmdPanel.getAutoclear());
-		autoclearToggle.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				cmdPanel.setAutoclear(autoclearToggle.getSelection());
-			}
-		});
+		if (!cmdPanel.isForEvaluationOnly()) {
+			showOkToggle = addItem("Write 'Ok.' after execution", "showOkIcon", SWT.CHECK);
+			showOkToggle.setSelection(cmdPanel.getShowOk());
+			showOkToggle.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					cmdPanel.setShowOk(showOkToggle.getSelection());
+				}
+			});
+			
+			autoclearToggle = addItem("Automatically clear output", "autoclearIcon", SWT.CHECK);
+			autoclearToggle.setSelection(cmdPanel.getAutoclear());
+			autoclearToggle.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					cmdPanel.setAutoclear(autoclearToggle.getSelection());
+				}
+			});
+		}
 
 		headingToggle = addItem("Show relation headings", "headingIcon", SWT.CHECK);
 		headingToggle.setEnabled(enhancedOutputToggle.getSelection());
