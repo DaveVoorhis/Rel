@@ -180,15 +180,9 @@ public class CmdPanelOutput extends Composite {
 		goodResponse("Ok.");
 	}
 
-	public static boolean isLastNonWhitespaceCharacter(String s, char c) {
-		int endPosn = s.length() - 1;
-		if (endPosn < 0)
-			return false;
-		while (endPosn >= 0 && Character.isWhitespace(s.charAt(endPosn)))
-			endPosn--;
-		if (endPosn < 0)
-			return false;
-		return (s.charAt(endPosn) == c);
+	public static boolean isLastNonWhitespaceNonCommentCharacter(String s, char c) {
+		String testString = s.replaceAll("/\\*.*\\*/", "").replaceAll("//.*(?=\\n)", "").replaceAll("\\s+", "");
+		return (testString.endsWith(Character.toString(c)));
 	}
 	
 	/** Invoke to force toolbar holder to reload our toolbar, because it's probably changed. */
@@ -493,11 +487,16 @@ public class CmdPanelOutput extends Composite {
 			clearOutput();
 		if (copyInputToOutput)
 			userResponse(text);
-		if (isLastNonWhitespaceCharacter(text.trim(), ';')) {
+		if (isLastNonWhitespaceNonCommentCharacter(text.trim(), ';')) {
 			sendExecute(text);
 		} else {
 			sendEvaluate(text);
 		}
+	}
+	
+	public void go(String text) {
+		clearOutput();
+		
 	}
 
 }

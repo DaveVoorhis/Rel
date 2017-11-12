@@ -2,6 +2,9 @@ Last used Exception* number: RS0502
 
 Version 3.010 (1.0.23):
 
+  - fix: Rel: Command-line better detects execute vs evaluate by ignoring
+    whitespace and comments.
+
   - enhancement: Rel: Double-click now expands/contracts database tree item headings.
 
   - enhancement: Rel: CPU and memory displays now follow typical

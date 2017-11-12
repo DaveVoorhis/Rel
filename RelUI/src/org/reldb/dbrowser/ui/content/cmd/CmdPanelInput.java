@@ -140,25 +140,24 @@ public class CmdPanelInput extends Composite {
 				}
 			}
 		});
-		inputText.addCaretListener(new CaretListener() {
-			@Override
-			public void caretMoved(CaretEvent event) {
-				int offset = event.caretOffset;
-				try {
-					int row = inputText.getLineAtOffset(offset);
-					int characterIndex = offset - inputText.getOffsetAtLine(row);
-					String line = inputText.getLine(row);
-					int tabSize = inputText.getTabs();
-					int displayColumn = Tabs.characterIndexToDisplayColumn(tabSize, line, characterIndex);
-					cmdPanelBottom.setRowColDisplay("" + (row + 1) + ":" + (displayColumn + 1));
-				} catch (Exception ble) {
-					cmdPanelBottom.setRowColDisplay("?:?");
-				}
-				if (CmdPanelOutput.isLastNonWhitespaceCharacter(inputText.getText(), ';')) {
-					cmdPanelBottom.setRunButtonPrompt("Execute (F5)");
-				} else {
-					cmdPanelBottom.setRunButtonPrompt("Evaluate (F5)");
-				}
+		inputText.addModifyListener(e -> {
+			if (CmdPanelOutput.isLastNonWhitespaceNonCommentCharacter(inputText.getText(), ';')) {
+				cmdPanelBottom.setRunButtonPrompt("Execute (F5)");
+			} else {
+				cmdPanelBottom.setRunButtonPrompt("Evaluate (F5)");
+			}			
+		});
+		inputText.addCaretListener(event -> {
+			int offset = event.caretOffset;
+			try {
+				int row = inputText.getLineAtOffset(offset);
+				int characterIndex = offset - inputText.getOffsetAtLine(row);
+				String line = inputText.getLine(row);
+				int tabSize = inputText.getTabs();
+				int displayColumn = Tabs.characterIndexToDisplayColumn(tabSize, line, characterIndex);
+				cmdPanelBottom.setRowColDisplay("" + (row + 1) + ":" + (displayColumn + 1));
+			} catch (Exception ble) {
+				cmdPanelBottom.setRowColDisplay("?:?");
 			}
 		});
 		inputText.addKeyListener(new KeyAdapter() {
@@ -168,13 +167,10 @@ public class CmdPanelInput extends Composite {
 					run();
 			}
 		});
-		inputText.addLineBackgroundListener(new LineBackgroundListener() {
-			@Override
-			public void lineGetBackground(LineBackgroundEvent event) {
-				int line = inputText.getLineAtOffset(event.lineOffset);
-				if (!((line & 1) == 0))
-					event.lineBackground = backgroundHighlight;
-			}
+		inputText.addLineBackgroundListener(event -> {
+			int line = inputText.getLineAtOffset(event.lineOffset);
+			if (!((line & 1) == 0))
+				event.lineBackground = backgroundHighlight;
 		});
 		
 		cmdPanelBottom = new CmdPanelBottom(this, SWT.NONE) {

@@ -20,8 +20,6 @@ UPDATE TEST4 WHERE ID = 2: {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};
 
 Instead of winding up with the expected tuple in the RVA relation-valued attribute, it vanishes!
 
-- Fix: execute vs evaluate detection in command-line (ignore whitespace and comments!)
-
 - Fix: clicking on or launching new tab should set focus on contents
 
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
