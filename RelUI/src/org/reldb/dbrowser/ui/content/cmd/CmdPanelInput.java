@@ -10,10 +10,6 @@ import java.util.Vector;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.custom.CaretEvent;
-import org.eclipse.swt.custom.CaretListener;
-import org.eclipse.swt.custom.LineBackgroundEvent;
-import org.eclipse.swt.custom.LineBackgroundListener;
 import org.eclipse.swt.custom.StyledText;
 
 import org.eclipse.swt.SWT;
@@ -39,7 +35,6 @@ import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
 import org.reldb.dbrowser.ui.preferences.PreferencePageCmd;
 import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
-
 
 public class CmdPanelInput extends Composite {
 	
