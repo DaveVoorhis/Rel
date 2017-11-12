@@ -1,8 +1,6 @@
 package org.reldb.dbrowser.ui.content.cmd;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
@@ -40,12 +38,7 @@ public class CmdPanelBottom extends Composite {
 		fd_btnGo.top = new FormAttachment(0);
 		btnGo.setLayoutData(fd_btnGo);
 		btnGo.setText("Run");
-		btnGo.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				go();
-			}
-		});
+		btnGo.addListener(SWT.Selection, e -> go());
 		
 		btnCancel = new Button(this, SWT.NONE);
 		btnCancel.setEnabled(false);
@@ -56,12 +49,7 @@ public class CmdPanelBottom extends Composite {
 		fd_btnCancel.right = new FormAttachment(100);
 		fd_btnCancel.top = new FormAttachment(0);
 		btnCancel.setLayoutData(fd_btnCancel);
-		btnCancel.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				cancel();
-			}
-		});
+		btnCancel.addListener(SWT.Selection, e -> cancel());
 		
 		fd_btnGo.right = new FormAttachment(btnCancel);
 	}
@@ -71,16 +59,13 @@ public class CmdPanelBottom extends Composite {
 	public void cancel() {}
 	
 	public void setEnabledRunButton(boolean b) {
-		final Runnable update = new Runnable() {
-			public void run() {
+		if (!isDisposed())
+			getDisplay().asyncExec(() -> {
 				if (!isDisposed()) {
 					btnGo.setEnabled(b);
 					btnCancel.setEnabled(!b);
 				}
-			}
-		};
-		if (!isDisposed())
-			getDisplay().asyncExec(update);
+			});
 	}
 	
 	public void setRunButtonPrompt(String s) {
