@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Make sure toolbar with Refresh option shows all the toolbar items it should.
-
 - Fix:
 
 Given:
