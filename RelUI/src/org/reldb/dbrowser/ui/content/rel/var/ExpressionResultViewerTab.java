@@ -38,6 +38,7 @@ public class ExpressionResultViewerTab extends DbTreeTab {
 	public ToolBar getToolBar(Composite parent) {
 		return (new CmdPanelToolbar(parent, cmdPanel) {
 			protected void addAdditionalItemsAfter(CmdPanelToolbar toolbar) {
+				super.addAdditionalItemsAfter(toolbar);
 				addItem("Refresh", "arrow_refresh", SWT.PUSH).addListener(SWT.Selection, e -> evaluate());
 			}
 		}).getToolBar();
