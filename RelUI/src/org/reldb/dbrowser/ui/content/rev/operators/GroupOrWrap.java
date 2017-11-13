@@ -3,8 +3,6 @@ package org.reldb.dbrowser.ui.content.rev.operators;
 import java.util.Vector;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -22,15 +20,15 @@ public class GroupOrWrap extends Monadic {
 	private Button checkAllBut;
 	private Vector<Label> labelAttributes;
 	private Vector<Button> checkAttributes;
-	
+
 	public GroupOrWrap(Rev rev, String name, String opName, int xpos, int ypos) {
 		super(rev, name, opName, xpos, ypos);
 	}
-	
+
 	private String getDefaultAttributeName() {
 		return getTitle() + "attr";
 	}
-	
+
 	protected void load() {
 		Tuples tuples = getDatabase().getPreservedStateOperator(getID());
 		Tuple tuple = tuples.iterator().next();
@@ -41,73 +39,65 @@ public class GroupOrWrap extends Monadic {
 			operatorLabel.setText(definition);
 		}
 	}
-	
+
 	private void save() {
 		getDatabase().updatePreservedStateOperator(getID(), operatorLabel.getText());
 	}
-	
+
 	private void moveAttributeRow(int fromRow, int toRow) {
 		String tmpLabelText = labelAttributes.get(toRow).getText();
 		labelAttributes.get(toRow).setText(labelAttributes.get(fromRow).getText());
 		labelAttributes.get(fromRow).setText(tmpLabelText);
-		
+
 		boolean tmpButtonState = checkAttributes.get(toRow).getSelection();
 		checkAttributes.get(toRow).setSelection(checkAttributes.get(fromRow).getSelection());
 		checkAttributes.get(fromRow).setSelection(tmpButtonState);
 	}
-	
+
 	private void addRowAllButAndAs(Composite parent, boolean selected, String astext) {
 		Label lblNewLabel = new Label(parent, SWT.NONE);
 		lblNewLabel.setText("ALL BUT");
 
 		checkAllBut = new Button(parent, SWT.CHECK);
 		checkAllBut.setSelection(selected);
-		
+
 		Label dummy = new Label(parent, SWT.NONE);
 		dummy.setVisible(false);
-		
+
 		Label asPrompt = new Label(parent, SWT.NONE);
 		asPrompt.setAlignment(SWT.RIGHT);
 		asPrompt.setText("As:");
-		
+
 		as = new Text(parent, SWT.NONE);
 		as.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		as.setText(astext);	
+		as.setText(astext);
 	}
-	
+
 	private void addRow(Composite parent, String name, int rowNum, boolean last, boolean selected) {
 		Label lblNewLabel = new Label(parent, SWT.NONE);
 		lblNewLabel.setText(name);
 		labelAttributes.add(lblNewLabel);
-		
+
 		Button checkBox = new Button(parent, SWT.CHECK);
 		checkBox.setSelection(selected);
 		checkAttributes.add(checkBox);
-	
+
 		Composite buttonPanel = new Composite(parent, SWT.NONE);
 		buttonPanel.setLayout(new FillLayout(SWT.HORIZONTAL));
 		Button btnUp = new Button(buttonPanel, SWT.ARROW | SWT.UP | SWT.ARROW_UP);
-		btnUp.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				moveAttributeRow(rowNum, rowNum - 1);
-			}
-		});
+		btnUp.addListener(SWT.Selection, e -> moveAttributeRow(rowNum, rowNum - 1));
 		btnUp.setVisible(!(rowNum == 0));
 		Button btnDown = new Button(buttonPanel, SWT.ARROW | SWT.DOWN | SWT.ARROW_DOWN);
-		btnDown.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				moveAttributeRow(rowNum, rowNum + 1);
-			}
-		});
+		btnDown.addListener(SWT.Selection, e -> moveAttributeRow(rowNum, rowNum + 1));
 		btnDown.setVisible(!last);
-		
+
 		Label dummy = new Label(parent, SWT.NONE);
 		dummy.setVisible(false);
-		
+
 		dummy = new Label(parent, SWT.NONE);
 		dummy.setVisible(false);
 	}
-	
+
 	private Vector<String> getDefinitionAttributes() {
 		String definition = operatorLabel.getText().trim();
 		if (definition.length() == 0)
@@ -121,11 +111,11 @@ public class GroupOrWrap extends Monadic {
 			attributes = attributes.substring("ALL BUT ".length());
 		}
 		String[] names = attributes.split(",");
-		for (String name: names)
+		for (String name : names)
 			output.add(name.trim());
 		return output;
 	}
-	
+
 	private String getDefinitionAs() {
 		String definition = operatorLabel.getText().trim();
 		if (definition.length() == 0)
@@ -134,7 +124,7 @@ public class GroupOrWrap extends Monadic {
 		String as = parts[1].trim();
 		return as;
 	}
-	
+
 	@Override
 	protected void buildControlPanel(Composite container) {
 		container.setLayout(new GridLayout(5, false));
@@ -147,19 +137,21 @@ public class GroupOrWrap extends Monadic {
 		String as = getDefinitionAs();
 		if (definitionAttributes == null) {
 			addRowAllButAndAs(container, true, as);
-			for (String attribute: availableAttributes)
+			for (String attribute : availableAttributes)
 				addRow(container, attribute, rowNum++, rowNum == availableAttributes.size(), false);
 		} else {
 			Vector<String> panelAttributeList = new Vector<String>();
-			for (String name: definitionAttributes)
+			for (String name : definitionAttributes)
 				if (availableAttributes.contains(name))
 					panelAttributeList.add(name);
-			for (String attribute: availableAttributes)
+			for (String attribute : availableAttributes)
 				if (!definitionAttributes.contains(attribute))
 					panelAttributeList.add(attribute);
-			addRowAllButAndAs(container, definitionAttributes.size() > 0 && definitionAttributes.get(0).equals("ALL BUT"), as);
-			for (String name: panelAttributeList)
-				addRow(container, name, rowNum++, rowNum == panelAttributeList.size(), definitionAttributes.contains(name));
+			addRowAllButAndAs(container,
+					definitionAttributes.size() > 0 && definitionAttributes.get(0).equals("ALL BUT"), as);
+			for (String name : panelAttributeList)
+				addRow(container, name, rowNum++, rowNum == panelAttributeList.size(),
+						definitionAttributes.contains(name));
 		}
 	}
 
@@ -168,7 +160,7 @@ public class GroupOrWrap extends Monadic {
 		if (checkAllBut.getSelection())
 			allbut += "ALL BUT";
 		String attributeList = "";
-		for (int i=0; i<labelAttributes.size(); i++) {
+		for (int i = 0; i < labelAttributes.size(); i++) {
 			if (checkAttributes.get(i).getSelection()) {
 				if (attributeList.length() > 0)
 					attributeList += ", ";
@@ -190,7 +182,7 @@ public class GroupOrWrap extends Monadic {
 		save();
 		pack();
 	}
-	
+
 	@Override
 	public String getQuery() {
 		String source = getQueryForParameter(0);
@@ -198,7 +190,7 @@ public class GroupOrWrap extends Monadic {
 			return null;
 		if (operatorLabel.getText().length() == 0)
 			return null;
-		return source + " " + getTitle() + " " + operatorLabel.getText();		
+		return source + " " + getTitle() + " " + operatorLabel.getText();
 	}
 
 }

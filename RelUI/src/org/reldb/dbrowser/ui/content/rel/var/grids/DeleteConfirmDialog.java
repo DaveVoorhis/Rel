@@ -9,8 +9,6 @@ import org.reldb.dbrowser.ui.IconLoader;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
@@ -21,9 +19,10 @@ public class DeleteConfirmDialog extends Dialog {
 	private int count = 0;
 	private boolean noAskAgain = false;
 	private String whatToDelete;
-	
+
 	/**
 	 * Create the dialog.
+	 * 
 	 * @param parentShell
 	 */
 	public DeleteConfirmDialog(Shell parentShell, int count, String whatToDelete) {
@@ -32,25 +31,26 @@ public class DeleteConfirmDialog extends Dialog {
 		this.whatToDelete = whatToDelete;
 		setBlockOnOpen(true);
 	}
-	
+
 	protected void configureShell(Shell shell) {
-	      super.configureShell(shell);
-	      shell.setText("Delete");
+		super.configureShell(shell);
+		shell.setText("Delete");
 	}
-	
+
 	public boolean getAskDeleteConfirm() {
 		return !noAskAgain;
 	}
-	
+
 	/**
 	 * Create contents of the dialog.
+	 * 
 	 * @param parent
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new FormLayout());
-		
+
 		Label image = new Label(container, SWT.TRANSPARENT);
 		FormData fd_composite = new FormData();
 		fd_composite.top = new FormAttachment(0, 10);
@@ -59,7 +59,7 @@ public class DeleteConfirmDialog extends Dialog {
 		Image question = IconLoader.loadIcon("question");
 		image.setImage(question);
 		image.setSize(question.getBounds().width, question.getBounds().height);
-		
+
 		Label lblPrompt = new Label(container, SWT.NONE);
 		FormData fd_lblPrompt = new FormData();
 		fd_lblPrompt.top = new FormAttachment(0, 10);
@@ -67,10 +67,12 @@ public class DeleteConfirmDialog extends Dialog {
 		fd_lblPrompt.right = new FormAttachment(100, -10);
 		lblPrompt.setLayoutData(fd_lblPrompt);
 		if (count > 0)
-			lblPrompt.setText("Press OK to delete " + count + " " + whatToDelete + ((count > 1) ? "s" : "") + ".  Press Cancel to do nothing.");
+			lblPrompt.setText("Press OK to delete " + count + " " + whatToDelete + ((count > 1) ? "s" : "")
+					+ ".  Press Cancel to do nothing.");
 		else
-			lblPrompt.setText("No " + whatToDelete + "s selected.  Press Ok to optionally confirm the checkbox below, or Cancel to do nothing.");
-		
+			lblPrompt.setText("No " + whatToDelete
+					+ "s selected.  Press Ok to optionally confirm the checkbox below, or Cancel to do nothing.");
+
 		Button btnNoAsk = new Button(container, SWT.CHECK);
 		FormData fd_btnNoAsk = new FormData();
 		fd_btnNoAsk.top = new FormAttachment(lblPrompt, 10);
@@ -79,31 +81,31 @@ public class DeleteConfirmDialog extends Dialog {
 		btnNoAsk.setLayoutData(fd_btnNoAsk);
 		btnNoAsk.setSelection(noAskAgain);
 		btnNoAsk.setText("Don't ask me again.");
-		btnNoAsk.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				noAskAgain = btnNoAsk.getSelection();
-			}
+		btnNoAsk.addListener(SWT.Selection, e -> {
+			noAskAgain = btnNoAsk.getSelection();
 		});
 
 		container.pack();
-		
+
 		return container;
 	}
 
-	protected void buttonPressed() {}
-	
+	protected void buttonPressed() {
+	}
+
 	protected void cancelPressed() {
 		buttonPressed();
 		super.cancelPressed();
 	}
-	
+
 	protected void okPressed() {
 		buttonPressed();
 		super.okPressed();
 	}
-	
+
 	/**
 	 * Create contents of the button bar.
+	 * 
 	 * @param parent
 	 */
 	@Override

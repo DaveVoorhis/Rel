@@ -23,9 +23,9 @@ import org.eclipse.swt.layout.GridData;
 public class CheckForUpdates extends Composite {
 
 	private UpdatesCheck updateChecker;
-	
+
 	private StyledText txtStatus;
-	
+
 	private MouseAdapter mouseHandler = new MouseAdapter() {
 		@Override
 		public void mouseUp(MouseEvent event) {
@@ -38,22 +38,22 @@ public class CheckForUpdates extends Composite {
 		italic.start = 0;
 		italic.length = 3;
 		italic.fontStyle = SWT.ITALIC;
-		txtStatus.setStyleRange(italic);		
+		txtStatus.setStyleRange(italic);
 	}
-	
+
 	private void centreText() {
 		GC gc = new GC(txtStatus);
 		Point textExtent = gc.textExtent(txtStatus.getText());
-		txtStatus.setMargins(2, (CheckForUpdates.this.getSize().y - textExtent.y) / 2, 2, 0);		
+		txtStatus.setMargins(2, (CheckForUpdates.this.getSize().y - textExtent.y) / 2, 2, 0);
 	}
-	
+
 	private void setText(String text) {
 		txtStatus.setText(text);
 		makeRelItalic();
 		centreText();
 		getParent().layout();
 	}
-	
+
 	protected void completed(SendStatus sendStatus) {
 		try {
 			if (sendStatus.getResponse() != null && sendStatus.getResponse().startsWith("Success")) {
@@ -68,14 +68,15 @@ public class CheckForUpdates extends Composite {
 					setText("Rel is up to date.");
 					txtStatus.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
 				}
-	        }
+			}
 		} catch (Exception e) {
 			System.out.println("CheckForUpdates: exception: " + e);
 		}
 	}
-	
+
 	/**
 	 * Create the composite.
+	 * 
 	 * @param parent
 	 * @param style
 	 */
@@ -88,7 +89,7 @@ public class CheckForUpdates extends Composite {
 		gridLayout.horizontalSpacing = 0;
 		setLayout(gridLayout);
 		setVisible(false);
-		
+
 		txtStatus = new StyledText(this, SWT.WRAP);
 		txtStatus.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		txtStatus.setEditable(false);
@@ -98,34 +99,31 @@ public class CheckForUpdates extends Composite {
 		txtStatus.addMouseListener(mouseHandler);
 		txtStatus.setCaret(new Caret(txtStatus, SWT.NONE));
 		setText("Rel updates?");
-		
+
 		updateChecker = new UpdatesCheck(parent.getDisplay()) {
 			@Override
-		    public void completed(SendStatus sendStatus) {
+			public void completed(SendStatus sendStatus) {
 				CheckForUpdates.this.completed(sendStatus);
 			}
 		};
-		
+
 		TimerTask checkForUpdates = new TimerTask() {
 			@Override
 			public void run() {
 				if (CheckForUpdates.this.isDisposed())
 					return;
-	    		getDisplay().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						if (CheckForUpdates.this.isDisposed())
-							return;
-						setVisible(true);
-						setText("Rel updates?");
-						System.out.println("CheckForUpdates: check for updates.");
-						updateChecker.doCancel();
-						updateChecker.doSend();
-					}
-	    		});
+				getDisplay().asyncExec(() -> {
+					if (CheckForUpdates.this.isDisposed())
+						return;
+					setVisible(true);
+					setText("Rel updates?");
+					System.out.println("CheckForUpdates: check for updates.");
+					updateChecker.doCancel();
+					updateChecker.doSend();
+				});
 			}
 		};
-		
+
 		// Check for updates after 10 seconds, then every 12 hours
 		Timer checkTimer = new Timer();
 		checkTimer.schedule(checkForUpdates, 1000 * 5, 1000 * 60 * 60 * 12);

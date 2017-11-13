@@ -9,8 +9,6 @@ import org.reldb.dbrowser.ui.content.rel.ExporterDialog;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -23,7 +21,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Label;
 
 public class ViewQueryDialog extends Dialog {
-	
+
 	private final static String copyToCommandPrompt = "Copy to Command-line";
 	private final static String saveToViewPrompt = "Export View script";
 	private final static String saveToOperatorPrompt = "Export Operator script";
@@ -35,6 +33,7 @@ public class ViewQueryDialog extends Dialog {
 
 	/**
 	 * Create the dialog.
+	 * 
 	 * @param parent
 	 * @param style
 	 */
@@ -46,6 +45,7 @@ public class ViewQueryDialog extends Dialog {
 
 	/**
 	 * Open the dialog.
+	 * 
 	 * @return the result
 	 */
 	public void open() {
@@ -59,18 +59,19 @@ public class ViewQueryDialog extends Dialog {
 			}
 		}
 	}
-	
+
 	private boolean allowOverwrite(String scriptName) {
 		if (scriptName.equals("scratchpad"))
 			return true;
-		return MessageDialog.openConfirm(shell, "Overwrite?", "A script named '" + scriptName + "' already exists.  Overwrite it?");		
+		return MessageDialog.openConfirm(shell, "Overwrite?",
+				"A script named '" + scriptName + "' already exists.  Overwrite it?");
 	}
 
 	private void copyToCmd(String source) {
 		DbTab dbTab = visualiser.getModel().getRev().getDbTab();
-		dbTab.setAndDisplayCmdContent(source);		
+		dbTab.setAndDisplayCmdContent(source);
 	}
-	
+
 	private void doSave(String source, String scriptName) {
 		if (scriptName.equals("scratchpad")) {
 			copyToCmd(source);
@@ -79,17 +80,15 @@ public class ViewQueryDialog extends Dialog {
 			visualiser.getDatabase().setScript(scriptName, source);
 		}
 	}
-	
+
 	private void doSaveToView(String viewName, String scriptName) {
 		String source = "VAR " + viewName.replace(' ', '_') + " VIEW " + visualiser.getQuery() + ';';
 		doSave(source, scriptName);
 	}
-	
+
 	private void doSaveToOperator(String operatorName, String scriptName) {
-		String source = 
-				"OPERATOR " + operatorName.replace(' ', '_') + "() RETURNS SAME_TYPE_AS(" + visualiser.getQuery() + ");\n" +
-						"\tRETURN " + visualiser.getQuery() + ";\n" +
-				"END OPERATOR;";
+		String source = "OPERATOR " + operatorName.replace(' ', '_') + "() RETURNS SAME_TYPE_AS("
+				+ visualiser.getQuery() + ");\n" + "\tRETURN " + visualiser.getQuery() + ";\n" + "END OPERATOR;";
 		doSave(source, scriptName);
 	}
 
@@ -101,7 +100,7 @@ public class ViewQueryDialog extends Dialog {
 		shell.setSize(600, 300);
 		shell.setText(getText());
 		shell.setLayout(new FormLayout());
-		
+
 		StyledText styledText = new StyledText(shell, SWT.BORDER);
 		styledText.addLineStyleListener(new RelLineStyler(visualiser.getDatabase().getKeywords()));
 		styledText.setBottomMargin(5);
@@ -110,13 +109,13 @@ public class ViewQueryDialog extends Dialog {
 		styledText.setLeftMargin(5);
 		styledText.setEditable(false);
 		styledText.setText(visualiser.getQuery());
-				
+
 		FormData fd_styledText = new FormData();
 		fd_styledText.left = new FormAttachment(0);
 		fd_styledText.top = new FormAttachment(0);
 		fd_styledText.right = new FormAttachment(100, 0);
 		styledText.setLayoutData(fd_styledText);
-		
+
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLayout(new GridLayout(3, false));
 		FormData fd_composite = new FormData();
@@ -126,73 +125,54 @@ public class ViewQueryDialog extends Dialog {
 		composite.setLayoutData(fd_composite);
 
 		fd_styledText.bottom = new FormAttachment(composite, 0);
-		
+
 		Button btnSaveToView = new Button(composite, SWT.NONE);
 		btnSaveToView.setText(saveToViewPrompt);
-		btnSaveToView.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				SaveToDialog saveToView = new SaveToDialog(shell, saveToViewPrompt, visualiser.getID());
-				if (saveToView.open() == IDialogConstants.OK_ID) {
-					String scriptName = saveToView.getName();
-					if (!visualiser.getDatabase().scriptExists(scriptName) || allowOverwrite(scriptName)) {
-						doSaveToView(visualiser.getID(), scriptName);
-						close();
-					}
+		btnSaveToView.addListener(SWT.Selection, e -> {
+			SaveToDialog saveToView = new SaveToDialog(shell, saveToViewPrompt, visualiser.getID());
+			if (saveToView.open() == IDialogConstants.OK_ID) {
+				String scriptName = saveToView.getName();
+				if (!visualiser.getDatabase().scriptExists(scriptName) || allowOverwrite(scriptName)) {
+					doSaveToView(visualiser.getID(), scriptName);
+					close();
 				}
 			}
 		});
-		
+
 		Button btnSaveToOperator = new Button(composite, SWT.NONE);
 		btnSaveToOperator.setText(saveToOperatorPrompt);
-		btnSaveToOperator.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				SaveToDialog saveToOperator = new SaveToDialog(shell, saveToOperatorPrompt, visualiser.getID());
-				if (saveToOperator.open() == IDialogConstants.OK_ID) {
-					String scriptName = saveToOperator.getName();
-					if (!visualiser.getDatabase().scriptExists(scriptName) || allowOverwrite(scriptName)) {
-						doSaveToOperator(visualiser.getID(), scriptName);
-						close();
-					}
+		btnSaveToOperator.addListener(SWT.Selection, e -> {
+			SaveToDialog saveToOperator = new SaveToDialog(shell, saveToOperatorPrompt, visualiser.getID());
+			if (saveToOperator.open() == IDialogConstants.OK_ID) {
+				String scriptName = saveToOperator.getName();
+				if (!visualiser.getDatabase().scriptExists(scriptName) || allowOverwrite(scriptName)) {
+					doSaveToOperator(visualiser.getID(), scriptName);
+					close();
 				}
 			}
 		});
-		
+
 		new Label(composite, SWT.NONE);
-		
+
 		Button btnExportToFile = new Button(composite, SWT.NONE);
 		btnExportToFile.setText(exportToFilePrompt);
-		btnExportToFile.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				ExporterDialog.runQueryToExport(shell, 
-						visualiser.getDatabase(), 
-						visualiser.getModel().getModelName() + "_" + visualiser.getTitle(), 
-						visualiser.getQuery());
-			}
+		btnExportToFile.addListener(SWT.Selection, e -> {
+			ExporterDialog.runQueryToExport(shell, visualiser.getDatabase(),
+					visualiser.getModel().getModelName() + "_" + visualiser.getTitle(), visualiser.getQuery());
 		});
-		
+
 		Button btnCopyToCommandPrompt = new Button(composite, SWT.NONE);
 		btnCopyToCommandPrompt.setText(copyToCommandPrompt);
-		btnCopyToCommandPrompt.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				copyToCmd(visualiser.getQuery());
-				close();
-			}
+		btnCopyToCommandPrompt.addListener(SWT.Selection, e -> {
+			copyToCmd(visualiser.getQuery());
+			close();
 		});
-		
+
 		Button btnClose = new Button(composite, SWT.NONE);
 		btnClose.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
 		btnClose.setText("Close");
-		btnClose.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				close();
-			}
-		});
-		
+		btnClose.addListener(SWT.Selection, e -> close());
+
 		btnClose.setFocus();
 	}
 
@@ -200,4 +180,3 @@ public class ViewQueryDialog extends Dialog {
 		shell.dispose();
 	}
 }
-

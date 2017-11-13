@@ -41,8 +41,6 @@ import org.eclipse.nebula.widgets.nattable.tooltip.NatTableContentTooltip;
 import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -56,159 +54,125 @@ import org.reldb.rel.client.Tuples;
 public abstract class Designer extends Grid {
 
 	protected NatTable table;
-	
+
 	protected DataProvider dataProvider;
 	private HeadingProvider headingProvider;
 	private DefaultGridLayer gridLayer;
 	private EditorConfiguration editorConfiguration;
-	
+
 	class EditorConfiguration extends AbstractRegistryConfiguration {
 		private IConfigRegistry registry;
-		
-	    @Override
-	    public void configureRegistry(IConfigRegistry configRegistry) {
-	    	registry = configRegistry;
-	    	// editable
-	        configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, IEditableRule.ALWAYS_EDITABLE);
-	        // style for selected cells
-	        Style selectStyle = new Style();
-			configRegistry.registerConfigAttribute(
-					CellConfigAttributes.CELL_STYLE, 
-					selectStyle, 
-					DisplayMode.SELECT);
-	        // open adjacent editor when we leave the current one during editing
-	        configRegistry.registerConfigAttribute(
-	                EditConfigAttributes.OPEN_ADJACENT_EDITOR,
-	                Boolean.TRUE,
-	                DisplayMode.EDIT);
-	        // style for upper left corner
-	        BorderStyle borderStyle = new BorderStyle();
-	        borderStyle.setColor(GUIHelper.COLOR_GRAY);
-			configRegistry.registerConfigAttribute(
-					CellConfigAttributes.CELL_PAINTER, 
-					new LineBorderDecorator(new TextPainter(), borderStyle), 
-					DisplayMode.NORMAL, 
-					GridRegion.CORNER);
-	        // for each column...
-	        for (int column = 0; column < headingProvider.getColumnCount(); column++)
-	        	addColumn(column);
-	    }
 
-	    public void addColumn(int column) {
-        	String columnLabel = "column" + column;
-        	switch (column) {
-        	case Attr.NAME_COLUMN: registerAttributeNameColumn(registry, columnLabel); break;
-        	case Attr.TYPE_COLUMN: registerTypeNameColumn(registry, columnLabel); break;
-        	case Attr.HEADING_COLUMN: registerTypeDefinitionColumn(registry, columnLabel); break;
-        	default: registerKeyColumn(registry, columnLabel);
-        	}
-	    }
-	    
+		@Override
+		public void configureRegistry(IConfigRegistry configRegistry) {
+			registry = configRegistry;
+			// editable
+			configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE,
+					IEditableRule.ALWAYS_EDITABLE);
+			// style for selected cells
+			Style selectStyle = new Style();
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, selectStyle, DisplayMode.SELECT);
+			// open adjacent editor when we leave the current one during editing
+			configRegistry.registerConfigAttribute(EditConfigAttributes.OPEN_ADJACENT_EDITOR, Boolean.TRUE,
+					DisplayMode.EDIT);
+			// style for upper left corner
+			BorderStyle borderStyle = new BorderStyle();
+			borderStyle.setColor(GUIHelper.COLOR_GRAY);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_PAINTER,
+					new LineBorderDecorator(new TextPainter(), borderStyle), DisplayMode.NORMAL, GridRegion.CORNER);
+			// for each column...
+			for (int column = 0; column < headingProvider.getColumnCount(); column++)
+				addColumn(column);
+		}
+
+		public void addColumn(int column) {
+			String columnLabel = "column" + column;
+			switch (column) {
+			case Attr.NAME_COLUMN:
+				registerAttributeNameColumn(registry, columnLabel);
+				break;
+			case Attr.TYPE_COLUMN:
+				registerTypeNameColumn(registry, columnLabel);
+				break;
+			case Attr.HEADING_COLUMN:
+				registerTypeDefinitionColumn(registry, columnLabel);
+				break;
+			default:
+				registerKeyColumn(registry, columnLabel);
+			}
+		}
+
 		private void registerAttributeNameColumn(IConfigRegistry configRegistry, String columnLabel) {
-	        Style cellStyle = new Style();
-	        cellStyle.setAttributeValue(
-	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
-	                HorizontalAlignmentEnum.LEFT);
-	        configRegistry.registerConfigAttribute(
-	                CellConfigAttributes.CELL_STYLE,
-	                cellStyle,
-	                DisplayMode.NORMAL,
-	                columnLabel);
-	        configRegistry.registerConfigAttribute(
-	                CellConfigAttributes.CELL_STYLE,
-	                cellStyle,
-	                DisplayMode.EDIT,
-	                columnLabel);
-	    }
-		
+			Style cellStyle = new Style();
+			cellStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, HorizontalAlignmentEnum.LEFT);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle, DisplayMode.NORMAL,
+					columnLabel);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle, DisplayMode.EDIT,
+					columnLabel);
+		}
+
 		private void registerTypeNameColumn(IConfigRegistry configRegistry, String columnLabel) {
-	        Style cellStyle = new Style();
-	        cellStyle.setAttributeValue(
-	                CellStyleAttributes.HORIZONTAL_ALIGNMENT,
-	                HorizontalAlignmentEnum.LEFT);
-	        configRegistry.registerConfigAttribute(
-	                CellConfigAttributes.CELL_STYLE,
-	                cellStyle,
-	                DisplayMode.NORMAL,
-	                columnLabel);
-	        configRegistry.registerConfigAttribute(
-	                CellConfigAttributes.CELL_STYLE,
-	                cellStyle,
-	                DisplayMode.EDIT,
-	                columnLabel);
-	        // use a combobox
-	        configRegistry.registerConfigAttribute(
-    	        	EditConfigAttributes.CELL_EDITOR, 
-    	        	new ComboBoxCellEditor(getTypes()), 
-    	        	DisplayMode.EDIT, 
-    	        	columnLabel);    	        			
-	        configRegistry.registerConfigAttribute(
-    	        	CellConfigAttributes.CELL_PAINTER, 
-    	        	new ComboBoxPainter(),
-    	        	DisplayMode.EDIT, 
-    	        	columnLabel);    	    
-        }
-		
+			Style cellStyle = new Style();
+			cellStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, HorizontalAlignmentEnum.LEFT);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle, DisplayMode.NORMAL,
+					columnLabel);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle, DisplayMode.EDIT,
+					columnLabel);
+			// use a combobox
+			configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITOR, new ComboBoxCellEditor(getTypes()),
+					DisplayMode.EDIT, columnLabel);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_PAINTER, new ComboBoxPainter(),
+					DisplayMode.EDIT, columnLabel);
+		}
+
 		private void registerTypeDefinitionColumn(IConfigRegistry configRegistry, String columnLabel) {
 			// edit or not
-			configRegistry.registerConfigAttribute(
-					EditConfigAttributes.CELL_EDITABLE_RULE, 
-					new IEditableRule() {
-						@Override
-						public boolean isEditable(ILayerCell cell, IConfigRegistry configRegistry) {
-							return isEditable(cell.getColumnIndex(), cell.getRowIndex());
-						}
-						@Override
-						public boolean isEditable(int columnIndex, int rowIndex) {
-							return dataProvider.isEditableNonscalarDefinition(rowIndex);
-						}
-					}, 
-					DisplayMode.EDIT, 
-					columnLabel);
-			
+			configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, new IEditableRule() {
+				@Override
+				public boolean isEditable(ILayerCell cell, IConfigRegistry configRegistry) {
+					return isEditable(cell.getColumnIndex(), cell.getRowIndex());
+				}
+
+				@Override
+				public boolean isEditable(int columnIndex, int rowIndex) {
+					return dataProvider.isEditableNonscalarDefinition(rowIndex);
+				}
+			}, DisplayMode.EDIT, columnLabel);
+
 			// Button displayed if editable
 			ImagePainter imagePainter = new ImagePainter(IconLoader.loadIcon("table_design"));
-	        configRegistry.registerConfigAttribute(
-	                CellConfigAttributes.CELL_PAINTER,
-	                imagePainter,
-	                DisplayMode.NORMAL,
-	                "nonscalareditor");
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_PAINTER, imagePainter, DisplayMode.NORMAL,
+					"nonscalareditor");
 
 			// Custom dialog box
-	        configRegistry.registerConfigAttribute(
-	                EditConfigAttributes.CELL_EDITOR,
-	                new AttributeDesignerCellEditor(Designer.this),
-	                DisplayMode.EDIT,
-	                columnLabel);
+			configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITOR,
+					new AttributeDesignerCellEditor(Designer.this), DisplayMode.EDIT, columnLabel);
 		}
-		
-	    private void registerKeyColumn(IConfigRegistry configRegistry, String columnLabel) {
-	        configRegistry.registerConfigAttribute(
-	        		EditConfigAttributes.CELL_EDITOR, 
-	        		new CheckBoxCellEditor(), 
-	        		DisplayMode.EDIT, 
-	        		columnLabel);
-        	configRegistry.registerConfigAttribute(
-	        		CellConfigAttributes.CELL_PAINTER, 
-	        		new CheckBoxPainter(), 
-	        		DisplayMode.NORMAL, 
-	        		columnLabel);    	    
-        }
+
+		private void registerKeyColumn(IConfigRegistry configRegistry, String columnLabel) {
+			configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITOR, new CheckBoxCellEditor(),
+					DisplayMode.EDIT, columnLabel);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_PAINTER, new CheckBoxPainter(),
+					DisplayMode.NORMAL, columnLabel);
+		}
 	}
 
-    class HeadingProvider implements IDataProvider {	    	
+	class HeadingProvider implements IDataProvider {
 		@Override
 		public Object getDataValue(int columnIndex, int rowIndex) {
 			switch (columnIndex) {
-			case Attr.NAME_COLUMN: return "Name";
-			case Attr.TYPE_COLUMN: return "Type";
-			case Attr.HEADING_COLUMN: return "Heading";
-			default: return (columnIndex == getColumnCount() - 1 && columnIndex > Attr.COLUMN_COUNT) 
-						? "New Key" 
+			case Attr.NAME_COLUMN:
+				return "Name";
+			case Attr.TYPE_COLUMN:
+				return "Type";
+			case Attr.HEADING_COLUMN:
+				return "Heading";
+			default:
+				return (columnIndex == getColumnCount() - 1 && columnIndex > Attr.COLUMN_COUNT) ? "New Key"
 						: "Key " + (columnIndex - (Attr.COLUMN_COUNT - 1));
 			}
 		}
-		
+
 		@Override
 		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
 			throw new UnsupportedOperationException();
@@ -223,53 +187,56 @@ public abstract class Designer extends Grid {
 		public int getRowCount() {
 			return 1;
 		}
-    };
-    
-    /** Override to be notified when the relvar definition has (probably) changed. */
-    protected void changedDefinition() {}
-    
+	};
+
+	/**
+	 * Override to be notified when the relvar definition has (probably) changed.
+	 */
+	protected void changedDefinition() {
+	}
+
 	class DataProvider implements IDataProvider {
-    	
-    	private Vector<Attr> attributes;
-    	private int lastColumnIndex = 0;
-    	private String kind;
-    	private TypeInfo typeInfo;
-    	
-    	private int getLastColumnIndex() {
-    		return Attr.COLUMN_COUNT + ((keys != null) ? keys.size() : 0) - 1;
-    	}
-    	
-    	public DataProvider() {
-    		typeInfo = new TypeInfo(connection);
-    		reload();
-    		lastColumnIndex = getLastColumnIndex();
-    	}
-    	
-    	private String getKind() {
-    		if (getAttributeSource().length() == 0)
-    			return null;
-    		return typeInfo.getKindFor(getAttributeSource());
-    	}
-    	
-    	// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
-    	private Tuples getAttributes() {
-    		if (getAttributeSource().length() == 0)
-    			return null;
-    		return typeInfo.getAttributesFor(getAttributeSource());
-    	}
+
+		private Vector<Attr> attributes;
+		private int lastColumnIndex = 0;
+		private String kind;
+		private TypeInfo typeInfo;
+
+		private int getLastColumnIndex() {
+			return Attr.COLUMN_COUNT + ((keys != null) ? keys.size() : 0) - 1;
+		}
+
+		public DataProvider() {
+			typeInfo = new TypeInfo(connection);
+			reload();
+			lastColumnIndex = getLastColumnIndex();
+		}
+
+		private String getKind() {
+			if (getAttributeSource().length() == 0)
+				return null;
+			return typeInfo.getKindFor(getAttributeSource());
+		}
+
+		// 1st column = attribute name; 2nd column = type name; 3rd column = TypeInfo
+		private Tuples getAttributes() {
+			if (getAttributeSource().length() == 0)
+				return null;
+			return typeInfo.getAttributesFor(getAttributeSource());
+		}
 
 		public void reload() {
 			kind = getKind();
 			attributes = new Vector<Attr>();
 			Tuples tuples = getAttributes();
 			if (tuples != null) {
-	    		Iterator<Tuple> iterator = tuples.iterator();
-	    		while (iterator.hasNext())
-	    			attributes.add(new Attr(iterator.next()));
+				Iterator<Tuple> iterator = tuples.iterator();
+				while (iterator.hasNext())
+					attributes.add(new Attr(iterator.next()));
 			}
 			attributes.add(new Attr());
 		}
-    	
+
 		@Override
 		public Object getDataValue(int columnIndex, int rowIndex) {
 			if (columnIndex < Attr.COLUMN_COUNT)
@@ -277,7 +244,7 @@ public abstract class Designer extends Grid {
 			else
 				return keys.get(columnIndex - Attr.COLUMN_COUNT).contains(attributes.get(rowIndex).getName());
 		}
-		
+
 		@Override
 		public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
 			Attr attribute = attributes.get(rowIndex);
@@ -286,7 +253,7 @@ public abstract class Designer extends Grid {
 					return;
 				if (columnIndex == 0) {
 					if (keys != null)
-						for (HashSet<String> key: keys) {
+						for (HashSet<String> key : keys) {
 							if (key.contains(attribute.getName())) {
 								key.remove(attribute.getName());
 								key.add(newValue.toString());
@@ -323,7 +290,7 @@ public abstract class Designer extends Grid {
 			}
 			changedDefinition();
 		}
-		
+
 		@Override
 		public int getColumnCount() {
 			return headingProvider.getColumnCount();
@@ -337,22 +304,22 @@ public abstract class Designer extends Grid {
 		public boolean isEditableNonscalarDefinition(int rowIndex) {
 			return attributes.get(rowIndex).isEditableNonscalarDefinition();
 		}
-		
+
 		public int getKeyAttributeCount(int keyColumn) {
 			return keys.get(keyColumn).size();
 		}
 
 		public void deleteRows(Set<Range> selections) {
 			HashSet<Integer> deleteMe = new HashSet<Integer>();
-			for (Range range: selections)
+			for (Range range : selections)
 				for (int n = range.start; n < range.end; n++)
 					deleteMe.add(n);
 			Vector<Attr> newCache = new Vector<Attr>();
 			int index = 0;
-			for (Attr attribute: attributes) {
+			for (Attr attribute : attributes) {
 				if (deleteMe.contains(index)) {
 					if (keys != null)
-						for (HashSet<String> key: keys)
+						for (HashSet<String> key : keys)
 							key.remove(attribute.getName());
 				} else
 					newCache.add(attribute);
@@ -360,24 +327,24 @@ public abstract class Designer extends Grid {
 			}
 			if (keys != null) {
 				HashSet<HashSet<String>> newKeys = new HashSet<HashSet<String>>();
-				for (HashSet<String> key: keys)
+				for (HashSet<String> key : keys)
 					if (key.size() > 0)
 						newKeys.add(key);
 				keys.clear();
 				keys.addAll(newKeys);
 				// Blank key definition allows user to add keys
 				keys.add(new HashSet<String>());
-	    		lastColumnIndex = getLastColumnIndex();
+				lastColumnIndex = getLastColumnIndex();
 			}
 			attributes = newCache;
 			table.refresh();
 			changedDefinition();
 		}
 
-		// Convert this into a TypeInfo literal 
+		// Convert this into a TypeInfo literal
 		public String getTypeInfoLiteral() {
 			String body = "";
-			for (Attr attribute: attributes)
+			for (Attr attribute : attributes)
 				if (attribute.isFilled())
 					body += ((body.length() > 0) ? "," : "") + "\n\t" + attribute.getTypeInfoLiteral();
 			return "NonScalar(\"" + kind + "\", RELATION {AttrName CHARACTER, AttrType TypeInfo} {" + body + "})";
@@ -391,44 +358,43 @@ public abstract class Designer extends Grid {
 				for (int keyIndex = 0; keyIndex < keys.size() - 1; keyIndex++) {
 					HashSet<String> key = keys.get(keyIndex);
 					String keyDef = "";
-					for (String keyAttribute: key) {
+					for (String keyAttribute : key) {
 						keyDef += ((keyDef.length() > 0) ? ", " : "") + keyAttribute;
 					}
 					keysDef += ((keysDef.length() > 0) ? " " : "") + "KEY {" + keyDef + "}";
-				}			
+				}
 			return keysDef;
 		}
-		
+
 		private String getRelKeysDefinition() {
 			return getRelKeysDefinition(keys);
 		}
-		
+
 		private String getRelHeadingDefinition(Attr a) {
 			return typeInfo.getHeadingDefinition(a.getNewColumnValue(Attr.HEADING_COLUMN));
 		}
-		
+
 		private String getRelAlterClause(Attr a) {
 			if (a.isNameChange() && a.isHeadingChange()) {
-				return "DROP " + a.getOriginalColumnValue(Attr.NAME_COLUMN) + "\n\t" + 
-						"INSERT " + a.getName() + " " + getRelHeadingDefinition(a);			
+				return "DROP " + a.getOriginalColumnValue(Attr.NAME_COLUMN) + "\n\t" + "INSERT " + a.getName() + " "
+						+ getRelHeadingDefinition(a);
 			} else if (a.isNameChange() && a.isTypeNameChange() && !a.isHeadingChange()) {
-				return "DROP " + a.getOriginalColumnValue(Attr.NAME_COLUMN) + "\n\t" + 
-						"INSERT " + a.getName() + " " + a.getNewColumnValue(Attr.TYPE_COLUMN);			
+				return "DROP " + a.getOriginalColumnValue(Attr.NAME_COLUMN) + "\n\t" + "INSERT " + a.getName() + " "
+						+ a.getNewColumnValue(Attr.TYPE_COLUMN);
 			} else if (a.isNameChange() && !a.isTypeNameChange() && !a.isHeadingChange()) {
 				return "RENAME " + a.getOriginalColumnValue(Attr.NAME_COLUMN) + " TO " + a.getName();
 			} else if (!a.isNameChange() && a.isHeadingChange()) {
 				return "TYPE_OF " + a.getOriginalColumnValue(Attr.NAME_COLUMN) + " TO " + getRelHeadingDefinition(a);
 			} else if (!a.isNameChange() && a.isTypeNameChange() && !a.isHeadingChange()) {
-				return "TYPE_OF " + a.getOriginalColumnValue(Attr.NAME_COLUMN) + " TO " + a.getNewColumnValue(Attr.TYPE_COLUMN);
-			} else 
+				return "TYPE_OF " + a.getOriginalColumnValue(Attr.NAME_COLUMN) + " TO "
+						+ a.getNewColumnValue(Attr.TYPE_COLUMN);
+			} else
 				return null;
 		}
 
 		private String getRelAddClause(Attr a) {
-			return "INSERT " + a.getName() + " " + 
-				(a.isEditableNonscalarDefinition() 
-					? getRelHeadingDefinition(a) 
-					: a.getColumnValue(Attr.TYPE_COLUMN));	
+			return "INSERT " + a.getName() + " " + (a.isEditableNonscalarDefinition() ? getRelHeadingDefinition(a)
+					: a.getColumnValue(Attr.TYPE_COLUMN));
 		}
 
 		public String getRelDefinition() {
@@ -436,14 +402,14 @@ public abstract class Designer extends Grid {
 			Tuples existingDefinitionTuples = getAttributes();
 			HashMap<String, Attr> existingDefinition = new HashMap<String, Attr>();
 			if (existingDefinitionTuples != null) {
-	    		Iterator<Tuple> iterator = existingDefinitionTuples.iterator();
-	    		while (iterator.hasNext()) {
-	    			Attr attribute = new Attr(iterator.next());
-	    			existingDefinition.put(attribute.getName(), attribute);
-	    		}
+				Iterator<Tuple> iterator = existingDefinitionTuples.iterator();
+				while (iterator.hasNext()) {
+					Attr attribute = new Attr(iterator.next());
+					existingDefinition.put(attribute.getName(), attribute);
+				}
 			}
 			String body = "";
-			for (Attr attribute: attributes) {
+			for (Attr attribute : attributes) {
 				if (!attribute.isFilled())
 					continue;
 				String originalAttributeName = attribute.getOriginalColumnValue(Attr.NAME_COLUMN);
@@ -455,7 +421,7 @@ public abstract class Designer extends Grid {
 				} else
 					body += ((body.length() > 0) ? "\n" : "") + "\t" + getRelAddClause(attribute);
 			}
-			for (String attributeName: existingDefinition.keySet())
+			for (String attributeName : existingDefinition.keySet())
 				body += ((body.length() > 0) ? "\n" : "") + "\t" + "DROP " + attributeName;
 			// keys
 			Vector<HashSet<String>> existingKeyDefinitions = getKeyDefinitions();
@@ -473,10 +439,10 @@ public abstract class Designer extends Grid {
 				return "";
 			return "ALTER VAR " + relvarName + "\n" + body + ";";
 		}
-    };
+	};
 
 	public void refresh() {
-    	table.refresh();	
+		table.refresh();
 		changedDefinition();
 	}
 
@@ -486,77 +452,69 @@ public abstract class Designer extends Grid {
 	}
 
 	protected void init() {
-	    dataProvider = new DataProvider();
-	    headingProvider = new HeadingProvider();
-	    
-        gridLayer = new DefaultGridLayer(
-        		dataProvider,
-                headingProvider
-        );
-    	
-        // CellLabelAccumulator determines how cells will be displayed
-        class CellLabelAccumulator implements IConfigLabelAccumulator {
+		dataProvider = new DataProvider();
+		headingProvider = new HeadingProvider();
+
+		gridLayer = new DefaultGridLayer(dataProvider, headingProvider);
+
+		// CellLabelAccumulator determines how cells will be displayed
+		class CellLabelAccumulator implements IConfigLabelAccumulator {
 			@Override
 			public void accumulateConfigLabels(LabelStack configLabels, int columnPosition, int rowPosition) {
 				configLabels.addLabel("column" + columnPosition);
 				if (dataProvider.isEditableNonscalarDefinition(rowPosition) && columnPosition == Attr.HEADING_COLUMN)
 					configLabels.addLabel("nonscalareditor");
 			}
-        }
-        
-        DataLayer bodyDataLayer = (DataLayer)gridLayer.getBodyDataLayer();
-        CellLabelAccumulator cellLabelAccumulator = new CellLabelAccumulator();
-        bodyDataLayer.setConfigLabelAccumulator(cellLabelAccumulator);
-		
-        table = new NatTable(parent, gridLayer, false);
-        
-        editorConfiguration = new EditorConfiguration();
-        
-        DefaultNatTableStyleConfiguration defaultStyle = new DefaultNatTableStyleConfiguration();
-        table.addConfiguration(defaultStyle);
-        table.addConfiguration(editorConfiguration); 
-        
-        ContributionItem rowMenuItems = new ContributionItem() {
-            @Override
-        	public void fill(Menu menu, int index) {
-            	MenuItem doesDelete = new MenuItem(menu, SWT.PUSH);
-            	doesDelete.setText("Delete");
-            	doesDelete.setImage(IconLoader.loadIcon("table_row_delete"));
-            	doesDelete.addSelectionListener(new SelectionAdapter() {
-            		public void widgetSelected(SelectionEvent evt) {
-            			askDeleteSelected();
-            		}
-            	});
-            }
-        };
-		table.addConfiguration(new MenuConfiguration(
-				GridRegion.ROW_HEADER, 
+		}
+
+		DataLayer bodyDataLayer = (DataLayer) gridLayer.getBodyDataLayer();
+		CellLabelAccumulator cellLabelAccumulator = new CellLabelAccumulator();
+		bodyDataLayer.setConfigLabelAccumulator(cellLabelAccumulator);
+
+		table = new NatTable(parent, gridLayer, false);
+
+		editorConfiguration = new EditorConfiguration();
+
+		DefaultNatTableStyleConfiguration defaultStyle = new DefaultNatTableStyleConfiguration();
+		table.addConfiguration(defaultStyle);
+		table.addConfiguration(editorConfiguration);
+
+		ContributionItem rowMenuItems = new ContributionItem() {
+			@Override
+			public void fill(Menu menu, int index) {
+				MenuItem doesDelete = new MenuItem(menu, SWT.PUSH);
+				doesDelete.setText("Delete");
+				doesDelete.setImage(IconLoader.loadIcon("table_row_delete"));
+				doesDelete.addListener(SWT.Selection, e -> askDeleteSelected());
+			}
+		};
+		table.addConfiguration(new MenuConfiguration(GridRegion.ROW_HEADER,
 				new PopupMenuBuilder(table).withContributionItem(rowMenuItems)));
-		
+
 		// Tabbing wraps and moves up/down
-		gridLayer.registerCommandHandler(
-			    new MoveCellSelectionCommandHandler(gridLayer.getBodyLayer().getSelectionLayer(), 
-			    		ITraversalStrategy.TABLE_CYCLE_TRAVERSAL_STRATEGY));
-                
-        table.configure();
-        
-        // Tooltip for row/column headings
-        new NatTableContentTooltip(table, GridRegion.ROW_HEADER) {
-        	protected String getText(Event event) {
-        		return "Right-click for options.";
-        	}
-        };
+		gridLayer.registerCommandHandler(new MoveCellSelectionCommandHandler(
+				gridLayer.getBodyLayer().getSelectionLayer(), ITraversalStrategy.TABLE_CYCLE_TRAVERSAL_STRATEGY));
+
+		table.configure();
+
+		// Tooltip for row/column headings
+		new NatTableContentTooltip(table, GridRegion.ROW_HEADER) {
+			protected String getText(Event event) {
+				return "Right-click for options.";
+			}
+		};
 	}
-	
+
 	private void doDeleteSelected() {
 		Set<Range> selections = gridLayer.getBodyLayer().getSelectionLayer().getSelectedRowPositions();
 		dataProvider.deleteRows(selections);
 	}
-	
+
 	public void askDeleteSelected() {
 		if (askDeleteConfirm) {
 			int selectedRowCount = gridLayer.getBodyLayer().getSelectionLayer().getSelectedRowCount();
-			DeleteConfirmDialog deleteConfirmDialog = new DeleteConfirmDialog(table.getShell(), selectedRowCount, "attribute");
+			DeleteConfirmDialog deleteConfirmDialog = new DeleteConfirmDialog(table.getShell(), selectedRowCount,
+					"attribute");
 			if (deleteConfirmDialog.open() == DeleteConfirmDialog.OK) {
 				askDeleteConfirm = deleteConfirmDialog.getAskDeleteConfirm();
 				doDeleteSelected();
@@ -564,26 +522,26 @@ public abstract class Designer extends Grid {
 		} else
 			doDeleteSelected();
 	}
-	
+
 	public Control getControl() {
 		return table;
 	}
-	
+
 	protected List<String> getTypes() {
 		Vector<String> types = new Vector<String>();
 		Tuples typeNames = connection.getTuples("sys.Types {Name}");
-		for (Tuple typeName: typeNames) 
+		for (Tuple typeName : typeNames)
 			types.add(typeName.get("Name").toString());
 		types.add("RELATION");
 		types.add("TUPLE");
 		types.sort(null);
 		return types;
 	}
-	
+
 	protected abstract String getAttributeSource();
-	
+
 	public String getRelDefinition() {
 		return dataProvider.getRelDefinition();
 	}
-	
+
 }

@@ -1,15 +1,11 @@
 package org.reldb.dbrowser.ui.feedback;
 
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.ProgressBar;
@@ -41,12 +37,7 @@ public class BugReportDialog extends FeedbackDialog {
 	 */
 	public static void launch(Shell shell) {
 		try {
-			shell.getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					(new BugReportDialog(shell, SWT.None)).open();
-				}
-			});
+			shell.getDisplay().syncExec(() -> (new BugReportDialog(shell, SWT.None)).open());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -116,16 +107,13 @@ public class BugReportDialog extends FeedbackDialog {
 		FormData fd_treeDetails = new FormData();
 		treeDetails.setLayoutData(fd_treeDetails);
 		fd_treeDetails.height = 75;
-	    treeDetails.addListener(SWT.Selection, new Listener() {
-	        @Override
-			public void handleEvent(Event event) {
+	    treeDetails.addListener(SWT.Selection, event -> {
 	            if (event.detail == SWT.CHECK) {
 	                TreeItem item = (TreeItem) event.item;
 	                boolean checked = item.getChecked();
 	                checkItems(item, checked);
 	                checkPath(item.getParentItem(), checked, false);
 	            }
-	        }
 	    });
 		
 		lblProgress = new Label(shlBugReport, SWT.NONE);
@@ -143,12 +131,7 @@ public class BugReportDialog extends FeedbackDialog {
 		FormData fd_btnCancel = new FormData();
 		btnCancel.setLayoutData(fd_btnCancel);
 		btnCancel.setText("Cancel");
-		btnCancel.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				doCancel();
-			}
-		});
+		btnCancel.addListener(SWT.Selection, e -> doCancel());
 		
 		btnSend = new Button(shlBugReport, SWT.NONE);
 		fd_btnCancel.right = new FormAttachment(btnSend, -6);
@@ -157,12 +140,7 @@ public class BugReportDialog extends FeedbackDialog {
 		fd_btnSend.right = new FormAttachment(100, -10);
 		btnSend.setLayoutData(fd_btnSend);
 		btnSend.setText("Send");
-		btnSend.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				doSend();
-			}
-		});
+		btnSend.addListener(SWT.Selection, e -> doSend());
 		
 		fd_btnCancel.bottom = new FormAttachment(100, -10);
 		fd_btnCancel.right = new FormAttachment(btnSend, -10);

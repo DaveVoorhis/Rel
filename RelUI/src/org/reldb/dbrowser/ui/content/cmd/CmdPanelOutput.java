@@ -29,20 +29,20 @@ public class CmdPanelOutput extends Composite {
 
 	public static final int SHOW_SERVER_RESPONSE = 1;
 	public static final int SHOW_FOR_EVALUATION_ONLY = 2;
-	
+
 	private BrowserManager browser;
-	private StyledText styledText;	
+	private StyledText styledText;
 	private RelvarEditorPanel relvarEditor;
-	
+
 	private Composite outputStack;
 	private StackLayout outputStackLayout;
-	
+
 	private boolean showOk = true;
 	private boolean isEnhancedOutput = true;
 	private boolean isShowHeadings = true;
 	private boolean isShowHeadingTypes = true;
 	private boolean isAutoclear = true;
-	
+
 	private Color red = new Color(getDisplay(), 200, 0, 0);
 	private Color green = new Color(getDisplay(), 0, 128, 0);
 	private Color blue = new Color(getDisplay(), 0, 0, 128);
@@ -52,41 +52,43 @@ public class CmdPanelOutput extends Composite {
 
 	private FileDialog saveHtmlDialog;
 	private FileDialog saveTextDialog;
-	
+
 	private boolean responseFormatted = false;
 
 	private ConcurrentStringReceiverClient connection;
 
 	private StringBuffer reply = new StringBuffer();
-			
+
 	private PreferenceChangeListener browserPreferenceChangeListener;
 	private PreferenceChangeListener fontPreferenceChangeListener;
-	
+
 	private boolean isForEvaluationOnly = false;
-	
+
 	/**
 	 * Create the composite.
+	 * 
 	 * @param parent
 	 * @param style
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
-	 * @throws NumberFormatException 
-	 * @throws DatabaseFormatVersionException 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @throws NumberFormatException
+	 * @throws DatabaseFormatVersionException
 	 */
-	public CmdPanelOutput(Composite parent, DbConnection dbConnection, int style) throws NumberFormatException, ClassNotFoundException, IOException, DatabaseFormatVersionException {
+	public CmdPanelOutput(Composite parent, DbConnection dbConnection, int style)
+			throws NumberFormatException, ClassNotFoundException, IOException, DatabaseFormatVersionException {
 		super(parent, SWT.NONE);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
-		
+
 		outputStack = new Composite(this, SWT.NONE);
 		outputStackLayout = new StackLayout();
 		outputStack.setLayout(outputStackLayout);
-		
+
 		styledText = new StyledText(outputStack, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI | SWT.H_SCROLL);
 		styledText.setEditable(false);
-		
+
 		browser = new BrowserManager();
 		browser.createWidget(outputStack);
-		
+
 		browserPreferenceChangeListener = new PreferenceChangeAdapter("CmdPanel_browser") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent preferenceChangeEvent) {
@@ -94,7 +96,7 @@ public class CmdPanelOutput extends Composite {
 				setEnhancedOutput(getEnhancedOutput());
 			}
 		};
-		
+
 		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_BROWSER_SWING, browserPreferenceChangeListener);
 
 		styledText.setFont(Preferences.getPreferenceFont(getDisplay(), PreferencePageCmd.CMD_FONT));
@@ -106,12 +108,13 @@ public class CmdPanelOutput extends Composite {
 			}
 		};
 		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
-				
+
 		outputStackLayout.topControl = browser.getWidget();
-		
+
 		connection = new ConcurrentStringReceiverClient(this, dbConnection.obtainStringReceiverClient()) {
 			StringBuffer errorBuffer = null;
 			StringBuffer compilerErrorBuffer = null;
+
 			@Override
 			public void received(String r) {
 				if (r.equals("\n")) {
@@ -123,16 +126,16 @@ public class CmdPanelOutput extends Composite {
 				} else if (r.equals("Cancel.")) {
 					warningResponse(r);
 					reply = new StringBuffer();
-			 	} else if (r.startsWith("ERROR:")) {
+				} else if (r.startsWith("ERROR:")) {
 					badResponse(r);
 					outputPlain("\n", black);
-			 		if (r.startsWith("ERROR: RS0005"))
-			 			compilerErrorBuffer = new StringBuffer();
+					if (r.startsWith("ERROR: RS0005"))
+						compilerErrorBuffer = new StringBuffer();
 					reply = new StringBuffer();
 					errorBuffer = new StringBuffer();
 					errorBuffer.append(r);
 					errorBuffer.append('\n');
-			 	} else if (r.startsWith("NOTICE")) {
+				} else if (r.startsWith("NOTICE")) {
 					noticeResponse(r);
 					reply = new StringBuffer();
 				} else {
@@ -152,14 +155,17 @@ public class CmdPanelOutput extends Composite {
 					}
 				}
 			}
+
 			@Override
 			public void received(Exception e) {
 				badResponse(e.toString());
 			}
+
 			@Override
 			public void update() {
 				outputUpdated();
 			}
+
 			@Override
 			public void finished() {
 				if (compilerErrorBuffer != null) {
@@ -179,13 +185,13 @@ public class CmdPanelOutput extends Composite {
 				errorBuffer = null;
 			}
 		};
-		
+
 		if ((style & SHOW_SERVER_RESPONSE) != 0) {
 			outputPlain(connection.getInitialServerResponse(), black);
 			outputHTML(ResponseToHTML.textToHTML(connection.getInitialServerResponse()));
 			goodResponse("Ok.");
 		}
-		
+
 		isForEvaluationOnly = (style & SHOW_FOR_EVALUATION_ONLY) != 0;
 	}
 
@@ -197,37 +203,45 @@ public class CmdPanelOutput extends Composite {
 		String testString = s.replaceAll("/\\*.*\\*/", "").replaceAll("//.*(?=\\n)", "").replaceAll("\\s+", "");
 		return (testString.endsWith(Character.toString(c)));
 	}
-	
-	/** Invoke to force toolbar holder to reload our toolbar, because it's probably changed. */
-	protected void changeToolbar() {}
-	
-	protected void notifyInputDone() {}
 
-	protected void notifyInputOfSuccess() {}
+	/**
+	 * Invoke to force toolbar holder to reload our toolbar, because it's probably
+	 * changed.
+	 */
+	protected void changeToolbar() {
+	}
 
-	protected void notifyInputOfError(StringBuffer errorBuffer) {}
+	protected void notifyInputDone() {
+	}
 
-	protected void notifyEnhancedOutputChange() {}
+	protected void notifyInputOfSuccess() {
+	}
+
+	protected void notifyInputOfError(StringBuffer errorBuffer) {
+	}
+
+	protected void notifyEnhancedOutputChange() {
+	}
 
 	protected boolean canZoom() {
 		return getParent() instanceof SashForm;
 	}
-	
+
 	protected void zoom() {
 		if (getParent() instanceof SashForm) {
-			SashForm form = ((SashForm)getParent());
+			SashForm form = ((SashForm) getParent());
 			if (form.getMaximizedControl() != this)
 				form.setMaximizedControl(this);
 			else
 				form.setMaximizedControl(null);
 		}
 	}
-	
+
 	public void clearOutput() {
 		browser.clear();
 		styledText.setText("");
 	}
-	
+
 	public void setEnhancedOutput(boolean selection) {
 		outputStackLayout.topControl = (selection) ? browser.getWidget() : styledText;
 		outputStack.layout();
@@ -245,18 +259,18 @@ public class CmdPanelOutput extends Composite {
 		outputStack.layout();
 		changeToolbar();
 	}
-	
+
 	public RelvarEditorPanel getRelvarEditorView() {
 		return relvarEditor;
 	}
-	
+
 	public void removeRelvarEditorView() {
 		setEnhancedOutput(isEnhancedOutput);
 		relvarEditor.dispose();
 		relvarEditor = null;
 		changeToolbar();
 	}
-	
+
 	public void setShowOk(boolean selection) {
 		showOk = selection;
 	}
@@ -288,7 +302,7 @@ public class CmdPanelOutput extends Composite {
 	public boolean getAutoclear() {
 		return isAutoclear;
 	}
-	
+
 	public void saveOutputAsHtml() {
 		ensureSaveHtmlDialogExists();
 		String fname = saveHtmlDialog.open();
@@ -318,9 +332,10 @@ public class CmdPanelOutput extends Composite {
 			badResponse(ioe.toString());
 		}
 	}
-	
+
 	public void dispose() {
-		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_BROWSER_SWING, browserPreferenceChangeListener);
+		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_BROWSER_SWING,
+				browserPreferenceChangeListener);
 		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
 		connection.close();
 		clearOutput();
@@ -337,38 +352,38 @@ public class CmdPanelOutput extends Composite {
 		if (saveHtmlDialog == null) {
 			saveHtmlDialog = new FileDialog(getShell(), SWT.SAVE);
 			saveHtmlDialog.setFilterPath(System.getProperty("user.home"));
-			saveHtmlDialog.setFilterExtensions(new String[] {"*.html", "*.*"});
-			saveHtmlDialog.setFilterNames(new String[] {"HTML", "All Files"});
+			saveHtmlDialog.setFilterExtensions(new String[] { "*.html", "*.*" });
+			saveHtmlDialog.setFilterNames(new String[] { "HTML", "All Files" });
 			saveHtmlDialog.setText("Save Output");
 			saveHtmlDialog.setOverwrite(true);
-		}		
+		}
 	}
-	
+
 	private void ensureSaveTextDialogExists() {
 		if (saveTextDialog == null) {
 			saveTextDialog = new FileDialog(getShell(), SWT.SAVE);
 			saveTextDialog.setFilterPath(System.getProperty("user.home"));
-			saveTextDialog.setFilterExtensions(new String[] {"*.txt", "*.*"});
-			saveTextDialog.setFilterNames(new String[] {"Text", "All Files"});
+			saveTextDialog.setFilterExtensions(new String[] { "*.txt", "*.*" });
+			saveTextDialog.setFilterNames(new String[] { "Text", "All Files" });
 			saveTextDialog.setText("Save Output");
 			saveTextDialog.setOverwrite(true);
-		}		
+		}
 	}
-	
+
 	private void outputPlain(String s, Color color) {
 		StyleRange styleRange = new StyleRange();
 		styleRange.start = styledText.getCharCount();
 		styleRange.length = s.length();
 		styleRange.fontStyle = SWT.NORMAL;
-		styleRange.foreground = color;		
+		styleRange.foreground = color;
 		styledText.append(s);
 		styledText.setStyleRange(styleRange);
 	}
-	
+
 	private void outputHTML(String s) {
 		browser.appendHtml(s);
 	}
-	
+
 	/** Get formatted response. */
 	private String getResponseFormatted(String s, boolean parseResponse) {
 		if (parseResponse) {
@@ -378,9 +393,11 @@ public class CmdPanelOutput extends Composite {
 					public void emitHTML(String generatedHTML) {
 						sb.append(generatedHTML);
 					}
+
 					public boolean isEmitHeading() {
 						return isShowHeadings;
 					}
+
 					public boolean isEmitHeadingTypes() {
 						return isShowHeadingTypes;
 					}
@@ -397,18 +414,18 @@ public class CmdPanelOutput extends Composite {
 
 	private void outputTextUpdated() {
 		styledText.setCaretOffset(styledText.getCharCount());
-		styledText.setSelection(styledText.getCaretOffset(), styledText.getCaretOffset());		
+		styledText.setSelection(styledText.getCaretOffset(), styledText.getCaretOffset());
 	}
-	
+
 	private void outputHtmlUpdated() {
-		browser.scrollToBottom();		
+		browser.scrollToBottom();
 	}
-	
+
 	private void outputUpdated() {
 		outputTextUpdated();
 		outputHtmlUpdated();
 	}
-	
+
 	/** Record text responses. */
 	private void responseText(String s, Color color) {
 		outputPlain(s + '\n', color);
@@ -422,18 +439,19 @@ public class CmdPanelOutput extends Composite {
 			msgSuffixTag = "</b>";
 		} else {
 			msgPrefixTag = "";
-			msgSuffixTag = "";			
+			msgSuffixTag = "";
 		}
-		outputHTML("<div class=\"" + htmlClass + "\">" + msgPrefixTag + getResponseFormatted(msg, false) + msgSuffixTag + "</div>");
+		outputHTML("<div class=\"" + htmlClass + "\">" + msgPrefixTag + getResponseFormatted(msg, false) + msgSuffixTag
+				+ "</div>");
 		responseText("\n" + msg, colour);
-		outputUpdated();	
+		outputUpdated();
 	}
-	
+
 	/** Handle a received line of 'good' content. */
 	public void goodResponse(String s) {
 		response(s, "ok", green, false);
 	}
-	
+
 	/** Handle a received line of 'warning' content. */
 	public void warningResponse(String s) {
 		response(s, "warn", yellow, true);
@@ -453,7 +471,7 @@ public class CmdPanelOutput extends Composite {
 	public void badResponse(String s) {
 		response(s, "bad", red, true);
 	}
-		
+
 	/** Handle a notice. */
 	public void noticeResponse(String s) {
 		response(s, "notice", black, true);
@@ -482,7 +500,7 @@ public class CmdPanelOutput extends Composite {
 			connection.sendExecute(text);
 		} catch (Throwable ioe) {
 			badResponse(ioe.getMessage());
-		}	
+		}
 	}
 
 	public void sendEvaluate(String text) {
@@ -492,28 +510,28 @@ public class CmdPanelOutput extends Composite {
 			connection.sendEvaluate(text);
 		} catch (Throwable ioe) {
 			badResponse(ioe.getMessage());
-		}	
+		}
 	}
 
 	public void go(String text, boolean copyInputToOutput) {
-	    Runnable timer = new Runnable() {
-	        public void run() {
-		    		getDisplay().asyncExec(() -> {		    
-		    		    if (getAutoclear())
-		    				clearOutput();
-		    			if (copyInputToOutput)
-		    				userResponse(text);
-		    			if (isLastNonWhitespaceNonCommentCharacter(text.trim(), ';')) {
-		    				sendExecute(text);
-		    			} else {
-		    				sendEvaluate(text);
-		    			}
-		    		});
-	        }
-	      };
-	      getDisplay().timerExec(0, timer);	    	    
+		Runnable timer = new Runnable() {
+			public void run() {
+				getDisplay().asyncExec(() -> {
+					if (getAutoclear())
+						clearOutput();
+					if (copyInputToOutput)
+						userResponse(text);
+					if (isLastNonWhitespaceNonCommentCharacter(text.trim(), ';')) {
+						sendExecute(text);
+					} else {
+						sendEvaluate(text);
+					}
+				});
+			}
+		};
+		getDisplay().timerExec(0, timer);
 	}
-	
+
 	public void go(String text) {
 		go(text, false);
 	}

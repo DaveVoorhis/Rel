@@ -33,11 +33,11 @@ import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
 public class CmdPanelInput extends Composite {
-	
+
 	private CmdPanelBottom cmdPanelBottom;
 	private StyledText inputText;
 
-	private ToolItem tlitmPrevHistory;	
+	private ToolItem tlitmPrevHistory;
 	private ToolItem tlitmNextHistory;
 	private ToolItem tlitmClear;
 	private ToolItem tlitmUndo;
@@ -54,54 +54,55 @@ public class CmdPanelInput extends Composite {
 	private ToolItem tlitmCopyToOutput;
 	private ToolItem tlitmWrap;
 	private ToolItem tlitmCharacters;
-	
+
 	private Vector<String> entryHistory = new Vector<String>();
 	private int currentHistoryItem = 0;
-	
+
 	private FileDialog loadDialog = null;
 	private FileDialog loadPathDialog = null;
 	private FileDialog saveDialog = null;
 	private FileDialog saveHistoryDialog = null;
-    
-    private PreferenceChangeListener iconPreferenceChangeListener;
-    private PreferenceChangeListener fontPreferenceChangeListener;
-	
-    private CmdPanelOutput cmdPanelOutput;
-    
+
+	private PreferenceChangeListener iconPreferenceChangeListener;
+	private PreferenceChangeListener fontPreferenceChangeListener;
+
+	private CmdPanelOutput cmdPanelOutput;
+
 	private boolean copyInputToOutput = true;
-	
+
 	private UndoRedo undoredo;
-    
+
 	private static final Color backgroundHighlight = SWTResourceManager.getColor(250, 255, 252);
-	
+
 	private SpecialCharacters specialCharacterDisplay;
-	
+
 	/**
 	 * Create the composite.
+	 * 
 	 * @param parent
-	 * @param cmdPanelOutput 
+	 * @param cmdPanelOutput
 	 * @param style
 	 */
 	public CmdPanelInput(Composite parent, CmdPanelOutput cmdPanelOutput, int cmdStyle, String[] keywords) {
 		super(parent, SWT.NONE);
 		setLayout(new FormLayout());
-		
+
 		this.cmdPanelOutput = cmdPanelOutput;
-	
+
 		ToolBar toolBar = new ToolBar(this, SWT.FLAT);
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);
 		fd_toolBar.top = new FormAttachment(0);
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
-		
+
 		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		FormData fd_inputText = new FormData();
 		fd_inputText.right = new FormAttachment(toolBar, 0, SWT.RIGHT);
 		fd_inputText.top = new FormAttachment(toolBar);
 		fd_inputText.left = new FormAttachment(toolBar, 0, SWT.LEFT);
 		inputText.setLayoutData(fd_inputText);
-		
+
 		undoredo = new UndoRedo(inputText);
 		RelLineStyler lineStyler = new RelLineStyler(keywords);
 
@@ -113,18 +114,24 @@ public class CmdPanelInput extends Composite {
 				cmdPanelBottom.setRunButtonPrompt("Execute (F5)");
 			} else {
 				cmdPanelBottom.setRunButtonPrompt("Evaluate (F5)");
-			}			
+			}
 		});
-		
+
 		inputText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (((e.stateMask & SWT.CTRL) != 0 || (e.stateMask & SWT.COMMAND) != 0) && inputText.isEnabled()) {
 					switch (e.keyCode) {
-					case 'a': doSelectAll(); return;
-					case 'f': doFindReplace(); return;
-					case 'y': doRedo(); return;
-					case 'z': 
+					case 'a':
+						doSelectAll();
+						return;
+					case 'f':
+						doFindReplace();
+						return;
+					case 'y':
+						doRedo();
+						return;
+					case 'z':
 						if ((e.stateMask & SWT.SHIFT) != 0)
 							doRedo();
 						else
@@ -133,13 +140,14 @@ public class CmdPanelInput extends Composite {
 					}
 				}
 			}
+
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.keyCode == 0x100000e && inputText.isEnabled())
 					run();
 			}
 		});
-		
+
 		inputText.addCaretListener(event -> {
 			int offset = event.caretOffset;
 			try {
@@ -153,18 +161,19 @@ public class CmdPanelInput extends Composite {
 				cmdPanelBottom.setRowColDisplay("?:?");
 			}
 		});
-		
+
 		inputText.addLineBackgroundListener(event -> {
 			int line = inputText.getLineAtOffset(event.lineOffset);
 			if (!((line & 1) == 0))
 				event.lineBackground = backgroundHighlight;
 		});
-		
+
 		cmdPanelBottom = new CmdPanelBottom(this, SWT.NONE) {
 			@Override
 			public void go() {
 				run();
 			}
+
 			public void cancel() {
 				stop();
 			}
@@ -181,7 +190,7 @@ public class CmdPanelInput extends Composite {
 			tlitmCharacters = new ToolItem(toolBar, SWT.NONE);
 			tlitmCharacters.setToolTipText("Special characters");
 			tlitmCharacters.addListener(SWT.Selection, e -> specialCharacterDisplay.open());
-			
+
 			tlitmPrevHistory = new ToolItem(toolBar, SWT.NONE);
 			tlitmPrevHistory.setToolTipText("Load previous historical entry");
 			tlitmPrevHistory.addListener(SWT.Selection, e -> {
@@ -189,7 +198,7 @@ public class CmdPanelInput extends Composite {
 				inputText.setSelection(0, inputText.getText().length());
 				inputText.setFocus();
 			});
-			
+
 			tlitmNextHistory = new ToolItem(toolBar, SWT.NONE);
 			tlitmNextHistory.setToolTipText("Load next historical entry");
 			tlitmNextHistory.addListener(SWT.Selection, e -> {
@@ -197,7 +206,7 @@ public class CmdPanelInput extends Composite {
 				inputText.setSelection(0, inputText.getText().length());
 				inputText.setFocus();
 			});
-			
+
 			tlitmClear = new ToolItem(toolBar, SWT.NONE);
 			tlitmClear.setToolTipText("Clear");
 			tlitmClear.addListener(SWT.Selection, e -> {
@@ -208,7 +217,7 @@ public class CmdPanelInput extends Composite {
 			tlitmUndo = new ToolItem(toolBar, SWT.NONE);
 			tlitmUndo.setToolTipText("Undo");
 			tlitmUndo.addListener(SWT.Selection, e -> doUndo());
-			
+
 			tlitmRedo = new ToolItem(toolBar, SWT.NONE);
 			tlitmRedo.setToolTipText("Redo");
 			tlitmRedo.addListener(SWT.Selection, e -> doRedo());
@@ -216,19 +225,19 @@ public class CmdPanelInput extends Composite {
 			tlitmCut = new ToolItem(toolBar, SWT.NONE);
 			tlitmCut.setToolTipText("Cut");
 			tlitmCut.addListener(SWT.Selection, e -> doCut());
-			
+
 			tlitmCopy = new ToolItem(toolBar, SWT.NONE);
 			tlitmCopy.setToolTipText("Copy");
 			tlitmCopy.addListener(SWT.Selection, e -> doCopy());
-			
+
 			tlitmPaste = new ToolItem(toolBar, SWT.NONE);
 			tlitmPaste.setToolTipText("Paste");
 			tlitmPaste.addListener(SWT.Selection, e -> doPaste());
-			
+
 			tlitmFindReplace = new ToolItem(toolBar, SWT.NONE);
 			tlitmFindReplace.setToolTipText("Find/Replace");
 			tlitmFindReplace.addListener(SWT.Selection, e -> doFindReplace());
-			
+
 			tlitmLoad = new ToolItem(toolBar, SWT.NONE);
 			tlitmLoad.setToolTipText("Load file");
 			tlitmLoad.addListener(SWT.Selection, e -> {
@@ -243,7 +252,7 @@ public class CmdPanelInput extends Composite {
 				saveDialog.setFileName(loadDialog.getFileName());
 				saveDialog.setFilterPath(loadDialog.getFilterPath());
 			});
-			
+
 			tlitmLoadInsert = new ToolItem(toolBar, SWT.NONE);
 			tlitmLoadInsert.setToolTipText("Load and insert file");
 			tlitmLoadInsert.addListener(SWT.Selection, e -> {
@@ -255,7 +264,7 @@ public class CmdPanelInput extends Composite {
 					return;
 				loadInsertFile(fname);
 			});
-			
+
 			tlitmGetPath = new ToolItem(toolBar, SWT.NONE);
 			tlitmGetPath.setToolTipText("Get file path");
 			tlitmGetPath.addListener(SWT.Selection, e -> {
@@ -267,7 +276,7 @@ public class CmdPanelInput extends Composite {
 					return;
 				insertInputText('"' + fname.replace("\\", "\\\\") + '"');
 			});
-			
+
 			tlitmSave = new ToolItem(toolBar, SWT.NONE);
 			tlitmSave.setToolTipText("Save");
 			tlitmSave.addListener(SWT.Selection, e -> {
@@ -287,7 +296,7 @@ public class CmdPanelInput extends Composite {
 					announceError(ioe.toString(), ioe);
 				}
 			});
-			
+
 			tlitmSaveHistory = new ToolItem(toolBar, SWT.NONE);
 			tlitmSaveHistory.setToolTipText("Save history");
 			tlitmSaveHistory.addListener(SWT.Selection, e -> {
@@ -313,20 +322,20 @@ public class CmdPanelInput extends Composite {
 					announceError(ioe.toString(), ioe);
 				}
 			});
-			
+
 			tlitmCopyToOutput = new ToolItem(toolBar, SWT.CHECK);
 			tlitmCopyToOutput.setToolTipText("Copy input to output");
 			tlitmCopyToOutput.setSelection(true);
 			tlitmCopyToOutput.addListener(SWT.Selection, e -> setCopyInputToOutput(tlitmCopyToOutput.getSelection()));
-			
+
 			tlitmWrap = new ToolItem(toolBar, SWT.CHECK);
 			tlitmWrap.setToolTipText("Wrap text");
 			tlitmWrap.setSelection(true);
 			tlitmWrap.addListener(SWT.Selection, e -> inputText.setWordWrap(tlitmWrap.getSelection()));
-			
+
 			setupButtons();
 		}
-		
+
 		setupIcons();
 		iconPreferenceChangeListener = new PreferenceChangeAdapter("CmdPanelInput_icon") {
 			@Override
@@ -344,7 +353,7 @@ public class CmdPanelInput extends Composite {
 			}
 		};
 		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
-				
+
 		specialCharacterDisplay = new SpecialCharacters(parent.getShell(), inputText);
 	}
 
@@ -389,14 +398,17 @@ public class CmdPanelInput extends Composite {
 		else
 			insertInputText(inputText.getText() + selection);
 	}
-	
+
 	public void dispose() {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, iconPreferenceChangeListener);
 		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
 		super.dispose();
 	}
-	
-	/** Must invoke this after processing invoked by run button has finished, and we're ready to receive another 'run' notification. */
+
+	/**
+	 * Must invoke this after processing invoked by run button has finished, and
+	 * we're ready to receive another 'run' notification.
+	 */
 	public void done() {
 		showRunningStop();
 	}
@@ -404,10 +416,10 @@ public class CmdPanelInput extends Composite {
 	public void selectAll() {
 		inputText.selectAll();
 	}
-	
+
 	private void setupIcons() {
 		if (tlitmPrevHistory == null)
-			return;		
+			return;
 		tlitmPrevHistory.setImage(IconLoader.loadIcon("previousIcon"));
 		tlitmNextHistory.setImage(IconLoader.loadIcon("nextIcon"));
 		tlitmClear.setImage(IconLoader.loadIcon("clearIcon"));
@@ -415,7 +427,7 @@ public class CmdPanelInput extends Composite {
 		tlitmRedo.setImage(IconLoader.loadIcon("redo"));
 		tlitmCut.setImage(IconLoader.loadIcon("cut"));
 		tlitmCopy.setImage(IconLoader.loadIcon("copy"));
-		tlitmPaste.setImage(IconLoader.loadIcon("paste"));		
+		tlitmPaste.setImage(IconLoader.loadIcon("paste"));
 		tlitmFindReplace.setImage(IconLoader.loadIcon("edit_find_replace"));
 		tlitmLoad.setImage(IconLoader.loadIcon("loadIcon"));
 		tlitmLoadInsert.setImage(IconLoader.loadIcon("loadInsertIcon"));
@@ -430,22 +442,24 @@ public class CmdPanelInput extends Composite {
 	private void setupFont() {
 		inputText.setFont(Preferences.getPreferenceFont(getDisplay(), PreferencePageCmd.CMD_FONT));
 	}
-	
+
 	/** Override to receive notification that the cancel button has been pressed. */
 	private void notifyStop() {
 		cmdPanelOutput.notifyStop();
 	}
-	
-	/** Override to receive notification that the run button has been pressed.  Must invoke done() when 
-	 * ready to receive another notification. */
+
+	/**
+	 * Override to receive notification that the run button has been pressed. Must
+	 * invoke done() when ready to receive another notification.
+	 */
 	private void notifyGo(String text) {
 		cmdPanelOutput.go(text, copyInputToOutput);
 	}
-	
+
 	private void replaceInputText(String newText) {
 		inputText.setText(newText);
 	}
-	
+
 	private void insertInputText(String newText) {
 		int insertionStart;
 		int insertionEnd;
@@ -478,7 +492,7 @@ public class CmdPanelInput extends Composite {
 		f.close();
 		return fileImage.toString();
 	}
-	
+
 	public void loadFile(String fname) {
 		try {
 			String fileImage = loadFileImage(fname);
@@ -486,9 +500,9 @@ public class CmdPanelInput extends Composite {
 			announcement("Loaded " + fname);
 		} catch (Exception ioe) {
 			announceError(ioe.toString(), ioe);
-		}		
+		}
 	}
-	
+
 	public void loadInsertFile(String fname) {
 		try {
 			String fileImage = loadFileImage(fname);
@@ -496,7 +510,7 @@ public class CmdPanelInput extends Composite {
 			announcement("Loaded " + fname);
 		} catch (Exception ioe) {
 			announceError(ioe.toString(), ioe);
-		}		
+		}
 	}
 
 	public ErrorInformation handleError(StringBuffer errorBuffer) {
@@ -508,9 +522,11 @@ public class CmdPanelInput extends Composite {
 					int row = eInfo.getLine() - 1;
 					offset = inputText.getOffsetAtLine(row);
 					if (eInfo.getColumn() > 0) {
-						int outputTabSize = 4;	// should match parserEngine.setTabSize() in org.reldb.rel.v<n>.interpreter.Interpreter
+						int outputTabSize = 4; // should match parserEngine.setTabSize() in
+												// org.reldb.rel.v<n>.interpreter.Interpreter
 						String inputLine = inputText.getLine(row);
-						int characterIndex = Tabs.displayColumnToCharacterIndex(outputTabSize, inputLine, eInfo.getColumn() - 1);
+						int characterIndex = Tabs.displayColumnToCharacterIndex(outputTabSize, inputLine,
+								eInfo.getColumn() - 1);
 						offset = characterIndex + inputText.getOffsetAtLine(row);
 					}
 				}
@@ -518,7 +534,8 @@ public class CmdPanelInput extends Composite {
 				if (eInfo.getBadToken() != null)
 					inputText.setSelection(offset, offset + eInfo.getBadToken().length());
 			} catch (Exception e) {
-				System.out.println("CmdPanelInput: Unable to position to line " + eInfo.getLine() + ", column " + eInfo.getColumn());
+				System.out.println("CmdPanelInput: Unable to position to line " + eInfo.getLine() + ", column "
+						+ eInfo.getColumn());
 			}
 		} else
 			System.out.println("CmdPanelInput: Unable to locate error in " + errorBuffer.toString());
@@ -542,13 +559,13 @@ public class CmdPanelInput extends Composite {
 	}
 
 	private void showRunningStart() {
-		cmdPanelBottom.setEnabledRunButton(false);		
+		cmdPanelBottom.setEnabledRunButton(false);
 	}
-	
+
 	private void showRunningStop() {
 		cmdPanelBottom.setEnabledRunButton(true);
 	}
-	
+
 	/** Override to be notified that copyInputToOutput setting has changed. */
 	protected void setCopyInputToOutput(boolean selection) {
 		copyInputToOutput = selection;
@@ -558,12 +575,12 @@ public class CmdPanelInput extends Composite {
 	protected void announcement(String msg) {
 		cmdPanelOutput.systemResponse(msg);
 	}
-	
+
 	/** Override to be notified about an error. */
 	protected void announceError(String msg, Throwable t) {
 		cmdPanelOutput.badResponse(msg);
 	}
-	
+
 	/** Get number of items in History. */
 	private int getHistorySize() {
 		return entryHistory.size();
@@ -593,8 +610,9 @@ public class CmdPanelInput extends Composite {
 		return getHistoryItemAt(currentHistoryItem);
 	}
 
-	protected void notifyHistoryAdded(String historyItem) {}
-	
+	protected void notifyHistoryAdded(String historyItem) {
+	}
+
 	/** Add a history item. */
 	private void addHistoryItem(String s) {
 		if (entryHistory.size() > 0 && s.equals(entryHistory.get(entryHistory.size() - 1)))
@@ -616,7 +634,7 @@ public class CmdPanelInput extends Composite {
 	public void run() {
 		showRunningStart();
 		String text = saveToHistory();
-		notifyGo(text);	
+		notifyGo(text);
 	}
 
 	public String saveToHistory() {
@@ -629,7 +647,7 @@ public class CmdPanelInput extends Composite {
 	private void stop() {
 		notifyStop();
 	}
-	
+
 	private void ensureSaveDialogExists() {
 		if (saveDialog == null) {
 			saveDialog = new FileDialog(getShell(), SWT.SAVE);
@@ -637,8 +655,8 @@ public class CmdPanelInput extends Composite {
 				saveDialog.setFilterPath(loadDialog.getFilterPath());
 			else
 				saveDialog.setFilterPath(System.getProperty("user.home"));
-			saveDialog.setFilterExtensions(new String[] {"*.rel", "*.*"});
-			saveDialog.setFilterNames(new String[] {"Rel script", "All Files"});
+			saveDialog.setFilterExtensions(new String[] { "*.rel", "*.*" });
+			saveDialog.setFilterNames(new String[] { "Rel script", "All Files" });
 			saveDialog.setText("Save");
 			saveDialog.setOverwrite(true);
 		}
@@ -648,11 +666,11 @@ public class CmdPanelInput extends Composite {
 		if (saveHistoryDialog == null) {
 			saveHistoryDialog = new FileDialog(getShell(), SWT.SAVE);
 			saveHistoryDialog.setFilterPath(System.getProperty("user.home"));
-			saveHistoryDialog.setFilterExtensions(new String[] {"*.rel", "*.*"});
-			saveHistoryDialog.setFilterNames(new String[] {"Rel script", "All Files"});
+			saveHistoryDialog.setFilterExtensions(new String[] { "*.rel", "*.*" });
+			saveHistoryDialog.setFilterNames(new String[] { "Rel script", "All Files" });
 			saveHistoryDialog.setText("Save Input History");
 			saveHistoryDialog.setOverwrite(true);
-		}		
+		}
 	}
 
 	private void ensureLoadDialogExists() {
@@ -662,8 +680,8 @@ public class CmdPanelInput extends Composite {
 				loadDialog.setFilterPath(saveDialog.getFilterPath());
 			else
 				loadDialog.setFilterPath(System.getProperty("user.home"));
-			loadDialog.setFilterExtensions(new String[] {"*.rel", "*.*"});
-			loadDialog.setFilterNames(new String[] {"Rel script", "All Files"});
+			loadDialog.setFilterExtensions(new String[] { "*.rel", "*.*" });
+			loadDialog.setFilterNames(new String[] { "Rel script", "All Files" });
 			loadDialog.setText("Load File");
 		}
 	}
@@ -672,32 +690,37 @@ public class CmdPanelInput extends Composite {
 		if (loadPathDialog == null) {
 			loadPathDialog = new FileDialog(getShell(), SWT.OPEN);
 			loadPathDialog.setFilterPath(System.getProperty("user.home"));
-			loadPathDialog.setFilterExtensions(new String[] {"*.*"});
-			loadPathDialog.setFilterNames(new String[] {"All Files"});
+			loadPathDialog.setFilterExtensions(new String[] { "*.*" });
+			loadPathDialog.setFilterNames(new String[] { "All Files" });
 			loadPathDialog.setText("Load Path");
 		}
 	}
-	
+
 	public static class ErrorInformation {
 		private int line;
 		private int column;
 		private String badToken;
 		private String errorMessage;
+
 		ErrorInformation(String errorMessage, int line, int column, String badToken) {
 			this.errorMessage = errorMessage;
 			this.line = line;
 			this.column = column;
 			this.badToken = badToken;
 		}
+
 		int getLine() {
 			return line;
 		}
+
 		int getColumn() {
 			return column;
 		}
+
 		String getBadToken() {
 			return badToken;
 		}
+
 		public String toString() {
 			String output = "Error in line " + line;
 			if (column >= 0)
@@ -706,20 +729,18 @@ public class CmdPanelInput extends Composite {
 				output += " near " + badToken;
 			return output;
 		}
+
 		public String getMessage() {
 			return errorMessage;
 		}
 	}
-	
+
 	private ErrorInformation parseErrorInformationFrom(String eInfo) {
 		String eMsg = eInfo;
 		try {
 			String badToken = null;
-			String[] errorPrefix = {
-				"ERROR: Encountered ",	
-				"ERROR: Lexical error "
-			};
-			for (String errorEncountered: errorPrefix)
+			String[] errorPrefix = { "ERROR: Encountered ", "ERROR: Lexical error " };
+			for (String errorEncountered : errorPrefix)
 				if (eInfo.startsWith(errorEncountered)) {
 					String atLineText = "at line ";
 					int atLineTextPosition = eInfo.indexOf(atLineText);
@@ -738,7 +759,7 @@ public class CmdPanelInput extends Composite {
 					nonNumberPosition++;
 				String lineString = eInfo.substring(0, nonNumberPosition);
 				try {
-					line = Integer.parseInt(lineString);			
+					line = Integer.parseInt(lineString);
 				} catch (NumberFormatException nfe) {
 					return null;
 				}
@@ -770,7 +791,8 @@ public class CmdPanelInput extends Composite {
 							String encounteredText = "Encountered: \"";
 							int encounteredTextPosition = eInfo.indexOf(encounteredText);
 							if (encounteredTextPosition > 0) {
-								int afterEncounteredTextPosition = encounteredTextPosition + encounteredText.length() + 1;
+								int afterEncounteredTextPosition = encounteredTextPosition + encounteredText.length()
+										+ 1;
 								int lastQuotePosition = eInfo.indexOf('"', afterEncounteredTextPosition);
 								badToken = eInfo.substring(afterEncounteredTextPosition - 1, lastQuotePosition);
 							}
@@ -787,5 +809,5 @@ public class CmdPanelInput extends Composite {
 		}
 		return null;
 	}
-	
+
 }

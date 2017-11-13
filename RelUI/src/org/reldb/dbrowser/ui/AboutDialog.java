@@ -1,12 +1,5 @@
 package org.reldb.dbrowser.ui;
 
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -27,12 +20,13 @@ public class AboutDialog extends Dialog {
 
 	private static final int backgroundWidth = 500;
 	private static final int backgroundHeight = 330;
-	
+
 	private static final int urlTop = 180;
 	private static final int rightPos = backgroundWidth - 10;
-	
+
 	/**
 	 * Create the dialog.
+	 * 
 	 * @param parent
 	 * @param style
 	 */
@@ -40,7 +34,7 @@ public class AboutDialog extends Dialog {
 		super(parent, SWT.None);
 		setText("About Rel");
 	}
-	
+
 	/**
 	 * Open the dialog.
 	 */
@@ -63,7 +57,7 @@ public class AboutDialog extends Dialog {
 		Rectangle controlRect = new Rectangle(rightPosn - dimensions.x, topPosn, dimensions.x, dimensions.y);
 		return controlRect.contains(p);
 	}
-	
+
 	/**
 	 * Create contents of the dialog.
 	 */
@@ -73,62 +67,50 @@ public class AboutDialog extends Dialog {
 		shell.setLayout(null);
 		shell.setMinimumSize(backgroundWidth, backgroundHeight);
 		shell.setSize(backgroundWidth, backgroundHeight);
-		shell.setLocation(getParent().getLocation().x + (getParent().getSize().x - backgroundWidth) / 2, 
-						  getParent().getLocation().y + (getParent().getSize().y - backgroundHeight) / 2);
-		
+		shell.setLocation(getParent().getLocation().x + (getParent().getSize().x - backgroundWidth) / 2,
+				getParent().getLocation().y + (getParent().getSize().y - backgroundHeight) / 2);
+
 		Button btnClose = new Button(shell, SWT.PUSH);
 		btnClose.setText("Close");
 		btnClose.setFocus();
 		btnClose.setSize(btnClose.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		btnClose.setLocation(rightPos - btnClose.getSize().x, backgroundHeight - btnClose.getSize().y - 10);
-		btnClose.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				shell.dispose();
-			}
-		});
+		btnClose.addListener(SWT.Selection, e -> shell.dispose());
 		shell.setDefaultButton(btnClose);
-		
+
 		Image background = IconLoader.loadIconNormal("RelAboutAndSplash");
-		
-		shell.addPaintListener(new PaintListener() {
-	        public void paintControl(PaintEvent e) {
-	        	if (background != null)
-	        		e.gc.drawImage(background, 0, 0, background.getImageData().width, background.getImageData().height, 0, 0, backgroundWidth, backgroundHeight);
-	        	e.gc.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-	        	e.gc.setFont(SWTResourceManager.getFont("Arial", 18, SWT.BOLD));
-	        	int width = e.gc.textExtent(Version.getVersion()).x;
-	        	e.gc.drawText(Version.getVersion(), rightPos - width, urlTop - 62, true);
-	        	e.gc.setFont(SWTResourceManager.getFont("Arial", 12, SWT.BOLD));
-	        	width = e.gc.textExtent(Version.getCopyright()).x;
-	        	e.gc.drawText(Version.getCopyright(), rightPos - width, urlTop - 28, true);
-	        	e.gc.setForeground(SWTResourceManager.getColor(150, 200, 255));
-	        	width = e.gc.textExtent(Version.getURL()).x;
-	        	e.gc.drawText(Version.getURL(), rightPos - width, urlTop, true);
-	        } 
-	    });
-		
-		shell.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				if (isPointInText(shell, Version.getURL(), rightPos, urlTop, new Point(e.x, e.y)))
-					org.eclipse.swt.program.Program.launch(Version.getURL());
-			}
+
+		shell.addPaintListener(e -> {
+			if (background != null)
+				e.gc.drawImage(background, 0, 0, background.getImageData().width, background.getImageData().height, 0,
+						0, backgroundWidth, backgroundHeight);
+			e.gc.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+			e.gc.setFont(SWTResourceManager.getFont("Arial", 18, SWT.BOLD));
+			int width = e.gc.textExtent(Version.getVersion()).x;
+			e.gc.drawText(Version.getVersion(), rightPos - width, urlTop - 62, true);
+			e.gc.setFont(SWTResourceManager.getFont("Arial", 12, SWT.BOLD));
+			width = e.gc.textExtent(Version.getCopyright()).x;
+			e.gc.drawText(Version.getCopyright(), rightPos - width, urlTop - 28, true);
+			e.gc.setForeground(SWTResourceManager.getColor(150, 200, 255));
+			width = e.gc.textExtent(Version.getURL()).x;
+			e.gc.drawText(Version.getURL(), rightPos - width, urlTop, true);
 		});
-		
-		shell.addMouseMoveListener(new MouseMoveListener() {
-			@Override
-			public void mouseMove(MouseEvent e) {
-				Cursor cursor = shell.getCursor();
-				if (cursor != null)
-					cursor.dispose();
-				boolean isPointerInURL = isPointInText(shell, Version.getURL(), rightPos, urlTop, new Point(e.x, e.y));
-				cursor = new Cursor(shell.getDisplay(), isPointerInURL ? SWT.CURSOR_HAND : SWT.CURSOR_ARROW); 
-				shell.setCursor(cursor);
-			}			
+
+		shell.addListener(SWT.MouseUp, e -> {
+			if (isPointInText(shell, Version.getURL(), rightPos, urlTop, new Point(e.x, e.y)))
+				org.eclipse.swt.program.Program.launch(Version.getURL());
 		});
-		
+
+		shell.addListener(SWT.MouseMove, e -> {
+			Cursor cursor = shell.getCursor();
+			if (cursor != null)
+				cursor.dispose();
+			boolean isPointerInURL = isPointInText(shell, Version.getURL(), rightPos, urlTop, new Point(e.x, e.y));
+			cursor = new Cursor(shell.getDisplay(), isPointerInURL ? SWT.CURSOR_HAND : SWT.CURSOR_ARROW);
+			shell.setCursor(cursor);
+		});
+
 		shell.pack();
 	}
-	
+
 }

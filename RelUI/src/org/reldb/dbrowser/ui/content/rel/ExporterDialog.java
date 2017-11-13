@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -108,33 +106,18 @@ public class ExporterDialog extends Dialog {
 		group.setLayoutData(fd_group);
 		
 		btnRadioButtonCSV = new Button(group, SWT.RADIO);
-		btnRadioButtonCSV.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				setupExportToCSV();
-			}
-		});
+		btnRadioButtonCSV.addListener(SWT.Selection, e -> setupExportToCSV());
 		btnRadioButtonCSV.setBounds(10, 10, 484, 18);
 		btnRadioButtonCSV.setText("CSV text file");
 		btnRadioButtonCSV.setSelection(true);
 		
 		btnRadioButtonXLS = new Button(group, SWT.RADIO);
-		btnRadioButtonXLS.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				setupExportToXLS();
-			}
-		});
+		btnRadioButtonXLS.addListener(SWT.Selection, e -> setupExportToXLS());
 		btnRadioButtonXLS.setBounds(10, 34, 484, 18);
 		btnRadioButtonXLS.setText("Excel spreadsheet file (.XLS)");
 		
 		btnRadioButtonXLSX = new Button(group, SWT.RADIO);
-		btnRadioButtonXLSX.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				setupExportToXLSX();
-			}
-		});
+		btnRadioButtonXLSX.addListener(SWT.Selection, e -> setupExportToXLSX());
 		btnRadioButtonXLSX.setBounds(10, 58, 484, 18);
 		btnRadioButtonXLSX.setText("Excel spreadsheet file (.XLSX)");
 		
@@ -147,12 +130,7 @@ public class ExporterDialog extends Dialog {
 		lblExportTo.setText("Export to:");
 		
 		Button btnExport = new Button(shlExportToFile, SWT.NONE);
-		btnExport.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				doExport();
-			}
-		});
+		btnExport.addListener(SWT.Selection, e -> doExport());
 		FormData fd_btnExport = new FormData();
 		fd_btnExport.top = new FormAttachment(group, 6);
 		fd_btnExport.right = new FormAttachment(100, -10);
@@ -160,12 +138,7 @@ public class ExporterDialog extends Dialog {
 		btnExport.setText("Export");
 		
 		Button btnCancel = new Button(shlExportToFile, SWT.NONE);
-		btnCancel.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				close();
-			}
-		});
+		btnCancel.addListener(SWT.Selection, e -> close());
 		btnCancel.setSelection(true);
 		FormData fd_btnNewButton = new FormData();
 		fd_btnNewButton.top = new FormAttachment(group, 6);

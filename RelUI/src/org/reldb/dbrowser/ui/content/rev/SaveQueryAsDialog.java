@@ -6,8 +6,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
@@ -18,11 +16,12 @@ import org.eclipse.swt.widgets.Text;
 public class SaveQueryAsDialog extends Dialog {
 	private String name;
 	private boolean keepOriginal;
-	
+
 	private Text text;
 
 	/**
 	 * Create the dialog.
+	 * 
 	 * @param parentShell
 	 */
 	public SaveQueryAsDialog(Shell parentShell, String name) {
@@ -32,7 +31,7 @@ public class SaveQueryAsDialog extends Dialog {
 		this.name = name;
 		keepOriginal = false;
 	}
-	
+
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText("Save Query As");
@@ -40,32 +39,29 @@ public class SaveQueryAsDialog extends Dialog {
 
 	/**
 	 * Create contents of the dialog.
+	 * 
 	 * @param parent
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
 		container.setLayout(new FormLayout());
-		
+
 		Label lblNewLabel = new Label(container, SWT.NONE);
 		FormData fd_lblNewLabel = new FormData();
 		fd_lblNewLabel.top = new FormAttachment(0, 15);
 		fd_lblNewLabel.left = new FormAttachment(0, 10);
 		lblNewLabel.setLayoutData(fd_lblNewLabel);
 		lblNewLabel.setText("Query name:");
-		
+
 		Button chkKeepOriginal = new Button(container, SWT.CHECK);
 		chkKeepOriginal.setText("Retain original query.");
 		FormData fd_chkKeepOriginal = new FormData();
 		fd_chkKeepOriginal.top = new FormAttachment(lblNewLabel, 10);
 		fd_chkKeepOriginal.right = new FormAttachment(100);
 		chkKeepOriginal.setLayoutData(fd_chkKeepOriginal);
-		chkKeepOriginal.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				keepOriginal = chkKeepOriginal.getSelection();
-			}
-		});
-		
+		chkKeepOriginal.addListener(SWT.Selection, e -> keepOriginal = chkKeepOriginal.getSelection());
+
 		text = new Text(container, SWT.BORDER);
 		FormData fd_text = new FormData();
 		fd_text.top = new FormAttachment(0, 10);
@@ -73,14 +69,15 @@ public class SaveQueryAsDialog extends Dialog {
 		fd_text.right = new FormAttachment(100, -10);
 		text.setLayoutData(fd_text);
 		text.setText(name);
-		
+
 		container.pack();
-		
+
 		return container;
 	}
 
 	/**
 	 * Create contents of the button bar.
+	 * 
 	 * @param parent
 	 */
 	@Override
@@ -88,7 +85,7 @@ public class SaveQueryAsDialog extends Dialog {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
-	
+
 	@Override
 	protected void okPressed() {
 		name = text.getText();
@@ -98,7 +95,7 @@ public class SaveQueryAsDialog extends Dialog {
 	public String getName() {
 		return name;
 	}
-	
+
 	public boolean keepOriginal() {
 		return keepOriginal;
 	}

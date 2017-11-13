@@ -33,13 +33,10 @@ public class ScriptTab extends DbTreeTab {
 				}
 				@Override
 				public void notifyExecuteSuccess() {
-					getDisplay().asyncExec(new Runnable() {
-						@Override
-						public void run() {
+					getDisplay().asyncExec(() -> {
 							noreload = true;
 							parent.redisplayed();
 							noreload = false;
-						}
 					});
 				}
 				@Override

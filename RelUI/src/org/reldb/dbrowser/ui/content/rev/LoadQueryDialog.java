@@ -4,8 +4,6 @@ import java.util.Vector;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -44,11 +42,7 @@ public class LoadQueryDialog extends Dialog {
 		List list = new List(container, SWT.BORDER);
 		for (String item: items)
 			list.add(item);
-		list.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				item = list.getSelection()[0];
-			}
-		});
+		list.addListener(SWT.Selection, e -> item = list.getSelection()[0]);
 
 		return container;
 	}

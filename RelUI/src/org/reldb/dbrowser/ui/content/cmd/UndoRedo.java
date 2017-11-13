@@ -16,29 +16,29 @@ public class UndoRedo {
 		private String content;
 		private int caretOffset;
 		private int topIndex;
-		
+
 		public Capture(StyledText text) {
 			this.content = text.getText();
 			this.caretOffset = text.getCaretOffset();
 			this.topIndex = text.getTopIndex();
 		}
-		
+
 		public void restore(StyledText text) {
 			text.setText(content);
 			text.setCaretOffset(caretOffset);
 			text.setTopIndex(topIndex);
 		}
 	}
-	
+
 	private StyledText text;
 	private Vector<Capture> buffer = new Vector<Capture>();
 	private int currentUndoPoint = -1;
 
 	private Timer quietTimer = new Timer();
-	
+
 	private boolean captured = false;
 	private boolean ignore = false;
-	
+
 	private void capture() {
 		if (!(buffer.size() > 0 && text.getText().equals(buffer.get(buffer.size() - 1)))) {
 			buffer.add(new Capture(text));
@@ -46,15 +46,15 @@ public class UndoRedo {
 				buffer.remove(0);
 		}
 		currentUndoPoint = -1;
-    	captured = true;	
+		captured = true;
 	}
-	
+
 	private void restore() {
 		ignore = true;
 		buffer.get(currentUndoPoint).restore(text);
-		ignore = false;		
+		ignore = false;
 	}
-	
+
 	private ExtendedModifyListener extendedModifyListener = new ExtendedModifyListener() {
 		@Override
 		public void modifyText(ExtendedModifyEvent event) {
@@ -68,21 +68,17 @@ public class UndoRedo {
 				@Override
 				public void run() {
 					quietTimer.cancel();
-					Display.getDefault().syncExec(new Runnable() {
-					    public void run() {
-					    	capture();
-						}
-					});
+					Display.getDefault().syncExec(() -> capture());
 				}
 			}, 250);
 		}
 	};
-	
+
 	public UndoRedo(StyledText text) {
 		this.text = text;
 		text.addExtendedModifyListener(extendedModifyListener);
 	}
-	
+
 	public void undo() {
 		quietTimer.cancel();
 		if (!captured)
@@ -96,7 +92,7 @@ public class UndoRedo {
 			return;
 		restore();
 	}
-	
+
 	public void redo() {
 		quietTimer.cancel();
 		if (currentUndoPoint == -1 || currentUndoPoint >= buffer.size() - 1)
@@ -104,7 +100,7 @@ public class UndoRedo {
 		currentUndoPoint++;
 		restore();
 	}
-	
+
 	public void dispose() {
 		text.removeExtendedModifyListener(extendedModifyListener);
 	}
