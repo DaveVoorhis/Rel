@@ -2,6 +2,8 @@
 
 - Work on setting focus on double-clicked or activated DbTreeTab. See DbTreeTab::ready
 
+- Fix: clicking on or launching new tab should set focus on contents
+
 - Fix:
 
 Given:
@@ -21,8 +23,6 @@ UPDATE TEST4 WHERE ID = 2: {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};
 UPDATE TEST4 WHERE ID = 2: {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};
 
 Instead of winding up with the expected tuple in the RVA relation-valued attribute, it vanishes!
-
-- Fix: clicking on or launching new tab should set focus on contents
 
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 
