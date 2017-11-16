@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Work on setting focus on double-clicked or activated DbTreeTab. See DbTreeTab::ready
+
 - Fix:
 
 Given:
