@@ -35,6 +35,7 @@ public abstract class NaiveCreatorTab extends DbTreeTab {
 		super(parent, item);
 		
 		setControl(getContents(parent.getTabFolder()));
+		getControl().setFocus();
 	}
 
 	protected Composite getContents(Composite parent) {
