@@ -5,6 +5,7 @@ import java.util.Vector;
 import java.util.function.Predicate;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.SWT;
@@ -312,6 +313,15 @@ public class RelPanel extends Composite {
 		}
 	}
 
+	private void focusOnSelectedTab() {
+		CTabItem selectedItem = tabFolder.getSelection();
+		if (selectedItem != null) {
+			Control tabControl = selectedItem.getControl();
+			if (tabControl != null)
+				tabControl.setFocus();
+		}
+	}
+
 	public DbTab getDbTab() {
 		return parentTab;
 	}
@@ -327,7 +337,7 @@ public class RelPanel extends Composite {
 				return index;
 		return -1;
 	}
-
+	
 	public void notifyTabCreated() {
 		fireDbTreeTabchangeEvent();
 	}
@@ -726,6 +736,16 @@ public class RelPanel extends Composite {
 
 	public void switchToCmdMode() {
 		parentTab.switchToCmdMode();
+	}
+
+	public void setTab(CTabItem tab) {
+		getTabFolder().setSelection(tab);
+		focusOnSelectedTab();
+	}
+
+	public void setTab(CTabItem tab, Image image) {
+		tab.setImage(image);
+		setTab(tab);
 	}
 	
 }

@@ -17,14 +17,13 @@ public class VarDesigner extends DbTreeAction {
 		CTabItem tab = relPanel.getTab(item);
 		if (tab != null) {
 			if (tab instanceof VarRealDesignerTab) {
-				tab.getParent().setSelection(tab);
+				relPanel.setTab(tab);
 				return;
 			} else
 				tab.dispose();
 		}
 		VarRealDesignerTab varDesignTab = new VarRealDesignerTab(relPanel, item);
-		varDesignTab.setImage(image);
-		relPanel.getTabFolder().setSelection(varDesignTab);
+		relPanel.setTab(varDesignTab, image);
 	}
 
 }

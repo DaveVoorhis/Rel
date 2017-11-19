@@ -20,8 +20,7 @@ public class OperatorCreator extends DbTreeAction {
 				return "OPERATOR " + name + " " + definition + ";";
 			}
 		};
-		typetab.setImage(image);
-		relPanel.getTabFolder().setSelection(typetab);
+		relPanel.setTab(typetab, image);
 	}
 
 }

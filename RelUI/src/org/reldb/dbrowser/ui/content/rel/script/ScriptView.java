@@ -20,8 +20,7 @@ public class ScriptView extends DbTreeAction {
 			ScriptTab revtab = new ScriptTab(relPanel, item, Rev.EDITABLE);
 			tab = revtab;
 		}
-		tab.setImage(image);
-		relPanel.getTabFolder().setSelection(tab);
+		relPanel.setTab(tab, image);
 	}
 
 }

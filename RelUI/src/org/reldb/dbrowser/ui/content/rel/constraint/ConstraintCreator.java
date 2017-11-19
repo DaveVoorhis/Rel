@@ -20,8 +20,7 @@ public class ConstraintCreator extends DbTreeAction {
 				return "CONSTRAINT " + name + " " + definition + ";";
 			}
 		};
-		typetab.setImage(image);
-		relPanel.getTabFolder().setSelection(typetab);
+		relPanel.setTab(typetab, image);
 	}
 
 }

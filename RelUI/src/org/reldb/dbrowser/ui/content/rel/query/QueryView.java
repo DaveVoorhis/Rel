@@ -37,8 +37,7 @@ public class QueryView extends DbTreeAction {
 			});
 			tab = revtab;
 		}
-		tab.setImage(image);
-		relPanel.getTabFolder().setSelection(tab);
+		relPanel.setTab(tab, image);
 	}
 
 }

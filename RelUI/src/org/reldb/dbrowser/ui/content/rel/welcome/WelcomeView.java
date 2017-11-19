@@ -17,8 +17,7 @@ public class WelcomeView extends DbTreeAction {
 		CTabItem tab = relPanel.getTab(item);
 		if (tab == null)
 			tab = new WelcomeTab(relPanel, item);
-		tab.setImage(image);
-		relPanel.getTabFolder().setSelection(tab);
+		relPanel.setTab(tab, image);
 	}
 
 }

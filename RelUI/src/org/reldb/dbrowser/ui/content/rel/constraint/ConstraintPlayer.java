@@ -22,8 +22,7 @@ public class ConstraintPlayer extends DbTreeAction {
 			for (Tuple tuple: tuples)
 				definition = tuple.getAttributeValue("Definition").toString();
 		NaiveShowTab typetab = new NaiveShowTab(relPanel, item, definition);
-		typetab.setImage(image);
-		relPanel.getTabFolder().setSelection(typetab);
+		relPanel.setTab(typetab, image);
 	}
 
 }

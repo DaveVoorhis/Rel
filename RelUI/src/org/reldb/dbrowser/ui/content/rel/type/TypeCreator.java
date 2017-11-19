@@ -20,8 +20,7 @@ public class TypeCreator extends DbTreeAction {
 				return "TYPE " + name + " " + definition + ";";
 			}			
 		};
-		typetab.setImage(image);
-		relPanel.getTabFolder().setSelection(typetab);
+		relPanel.setTab(typetab, image);
 	}
 
 }

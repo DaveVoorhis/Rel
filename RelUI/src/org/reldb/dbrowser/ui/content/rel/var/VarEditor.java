@@ -17,14 +17,13 @@ public class VarEditor extends DbTreeAction {
 		CTabItem tab = relPanel.getTab(item);
 		if (tab != null) {
 			if (tab instanceof VarEditorTab) {
-				tab.getParent().setSelection(tab);
+				relPanel.setTab(tab);
 				return;
 			} else
 				tab.dispose();
 		}
 		VarEditorTab editor = new VarEditorTab(relPanel, item);
-		editor.setImage(image);
-		relPanel.getTabFolder().setSelection(editor);
+		relPanel.setTab(editor, image);
 	}
 
 }

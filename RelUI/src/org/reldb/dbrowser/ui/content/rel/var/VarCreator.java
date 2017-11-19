@@ -43,8 +43,7 @@ public class VarCreator extends DbTreeAction {
 			if (tab != null)
 				tab.dispose();
 			VarRealDesignerTab varDesignTab = new VarRealDesignerTab(relPanel, newItem);
-			varDesignTab.setImage(image);
-			relPanel.getTabFolder().setSelection(varDesignTab);
+			relPanel.setTab(varDesignTab, image);
 		} else {
 			VarExternalDefinitionDialog veDialog = new VarExternalDefinitionDialog(database, relPanel.getShell(), typeString, "Variable" + database.getUniqueNumber());
 			if (veDialog.create())

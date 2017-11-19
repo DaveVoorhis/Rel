@@ -37,8 +37,7 @@ public class ScriptCreator extends DbTreeAction {
 		if (tab != null)
 			tab.dispose();
 		ScriptTab revtab = new ScriptTab(relPanel, newItem, Rev.EDITABLE);
-		revtab.setImage(image);
-		relPanel.getTabFolder().setSelection(revtab);
+		relPanel.setTab(revtab, image);
 	}
 
 }

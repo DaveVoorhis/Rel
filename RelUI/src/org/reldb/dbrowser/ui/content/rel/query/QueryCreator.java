@@ -37,8 +37,7 @@ public class QueryCreator extends DbTreeAction {
 				relPanel.redisplayed();
 			}
 		});
-		revtab.setImage(image);
-		relPanel.getTabFolder().setSelection(revtab);
+		relPanel.setTab(revtab, image);
 	}
 
 }

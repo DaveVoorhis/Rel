@@ -476,8 +476,8 @@ public class CmdPanelInput extends Composite {
 		inputText.setCaretOffset(before.length() + newText.length());
 	}
 
-	public void setFocused() {
-		inputText.setFocus();
+	public boolean setFocused() {
+		return inputText.setFocus();
 	}
 
 	private String loadFileImage(String fname) throws Exception {

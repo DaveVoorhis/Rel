@@ -20,8 +20,7 @@ public class VarViewCreator extends DbTreeAction {
 				return "VAR " + name + " VIRTUAL " + definition + ";";
 			}
 		};
-		typetab.setImage(image);
-		relPanel.getTabFolder().setSelection(typetab);
+		relPanel.setTab(typetab, image);
 	}
 
 }

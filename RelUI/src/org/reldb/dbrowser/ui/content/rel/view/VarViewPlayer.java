@@ -18,14 +18,13 @@ public class VarViewPlayer extends DbTreeAction {
 		CTabItem tab = relPanel.getTab(item);
 		if (tab != null) {
 			if (tab instanceof ExpressionResultViewerTab) {
-				tab.getParent().setSelection(tab);
+				relPanel.setTab(tab);
 				return;
 			} else
 				tab.dispose();
 		}
 		ExpressionResultViewerTab viewer = new ExpressionResultViewerTab(relPanel, item);
-		viewer.setImage(image);
-		relPanel.getTabFolder().setSelection(viewer);
+		relPanel.setTab(viewer, image);
 	}
 
 }
