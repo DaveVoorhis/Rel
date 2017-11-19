@@ -1,8 +1,6 @@
 ** TO DO **
 
-- Work on setting focus on double-clicked or activated DbTreeTab. See DbTreeTab::ready
-
-- Fix: clicking on or launching new tab should set focus on contents
+- Fix: some database tree dialogs don't focus or support tabbing. E.g., drop, export.
 
 - Fix:
 

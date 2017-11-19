@@ -2,6 +2,9 @@ Last used Exception* number: RS0502
 
 Version 3.010 (1.0.23):
 
+  - enhancement: Rel: Double-click on database tree item causes focus
+    to be set to the contents of the tab.
+
   - enhancement: Rel DBMS: All Unicode asymmetric quotes (‘ ’ “ ”) now treated,
     for better or worse, as equivalent to '"'. 
 
