@@ -2,6 +2,9 @@ Last used Exception* number: RS0502
 
 Version 3.010 (1.0.23):
 
+  - enhancement: Rel DBMS: All Unicode asymmetric quotes (‘ ’ “ ”) now treated,
+    for better or worse, as equivalent to '"'. 
+
   - fix: Rel: CSS on exported HTML for tabular displays did not correctly
     format table heading text. Fixed.
 
