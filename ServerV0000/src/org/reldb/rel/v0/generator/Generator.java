@@ -2806,6 +2806,12 @@ public class Generator {
 
 	// Push delimited string literal to stack
 	public void compilePushDelimitedString(String value) {
+		char start = value.charAt(0);
+		char end = value.charAt(value.length() - 1);
+		if (start != end)
+			throw new ExceptionSemantic("RS0503: A CHARACTER literal must start and end with the same delimiter, not start with " + start + " and end with " + end + ".");
+		if (start != '\'' && start != '"')
+			throw new ExceptionSemantic("RS0504: A CHARACTER literal must start and end with ' or \". Unicode asymmetric quotes are not allowed.");			
 		compilePush(ValueCharacter.stripDelimited(Generator.this, value));
 	}
 	

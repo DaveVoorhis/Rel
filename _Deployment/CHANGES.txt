@@ -1,12 +1,12 @@
-Last used Exception* number: RS0502
+Last used Exception* number: RS0504
 
 Version 3.010 (1.0.23):
 
   - enhancement: Rel: Double-click on database tree item causes focus
     to be set to the contents of the tab.
 
-  - enhancement: Rel DBMS: All Unicode asymmetric quotes (‘ ’ “ ”) now treated,
-    for better or worse, as equivalent to '"'. 
+  - enhancement: Rel DBMS: Unicode asymmetric quotes (‘ ’ “ ”) now explicitly
+    recognised and generate a human-friendly error. 
 
   - fix: Rel: CSS on exported HTML for tabular displays did not correctly
     format table heading text. Fixed.
