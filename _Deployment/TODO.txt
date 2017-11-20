@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Fix: some database tree dialogs don't focus or support tabbing. E.g., drop, export.
-
 - Fix:
 
 Given:
