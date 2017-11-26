@@ -1,5 +1,8 @@
 ** TO DO **
 
+- In Rel database tree view under Windows, double-click of heading opens
+  and immediately closes it.
+
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 
 - Allow overwrite of attributes in EXTEND (and RENAME?)
