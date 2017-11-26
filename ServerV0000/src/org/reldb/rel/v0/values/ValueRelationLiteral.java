@@ -182,8 +182,9 @@ public class ValueRelationLiteral extends ValueRelation implements Relvar {
 			while (iterator.hasNext()) {
 				ValueTuple tuple = iterator.next();
 				if (whereFilter.filter(tuple)) {
-					ValueTuple newTuple = updateMap.map(tuple);
 					iterator.remove();
+					lookupTuples.remove(tuple);
+					ValueTuple newTuple = updateMap.map(tuple);
 					ValueTuple data = (ValueTuple)newTuple.getSerializableClone();
 					temp.insert(data);
 					updateCount++;
@@ -191,7 +192,7 @@ public class ValueRelationLiteral extends ValueRelation implements Relvar {
 			}
 		} finally {
 			iterator.close();
-		}		
+		}
 		iterator = temp.iterator();
 		try {
 			while (iterator.hasNext())

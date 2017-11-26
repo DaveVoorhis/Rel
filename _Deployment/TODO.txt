@@ -1,22 +1,5 @@
 ** TO DO **
 
-- Fix:
-
-Given:
-
-VAR TEST4 REAL RELATION {ID INTEGER, RVA RELATION {RID INTEGER, STR CHAR}} KEY {ID};
-
-INSERT TEST4 RELATION {
-	TUPLE {ID 1, RVA RELATION {TUPLE {RID 11, STR 'A'}, TUPLE {RID 22, STR 'E'}}}
-};
-
-Then execute:
-
-UPDATE TEST4 WHERE ID = 1: {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};
-UPDATE TEST4 WHERE ID = 1: {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};
-
-Instead of winding up with the expected tuple in the RVA relation-valued attribute, it vanishes!
-
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 
 - Allow overwrite of attributes in EXTEND (and RENAME?)

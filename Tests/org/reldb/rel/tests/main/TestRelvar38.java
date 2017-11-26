@@ -28,11 +28,11 @@ public class TestRelvar38 extends BaseOfTest {
 			"	UPDATE TEST5 WHERE ID = 1: {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};" +
 			"END; TEST5\n";
 		String expected = 
-				"RELATION {ID INTEGER, RVA RELATION {RID INTEGER, STR CHARACTER}} {\r\n" + 
-				"\tTUPLE {ID 1, RVA RELATION {RID INTEGER, STR CHARACTER} {\r\n" + 
-				"\tTUPLE {RID 11, STR \"A\"},\r\n" + 
-				"\tTUPLE {RID 22, STR \"blah\"}\r\n" + 
-				"}}\r\n" + 
+				"RELATION {ID INTEGER, RVA RELATION {RID INTEGER, STR CHARACTER}} {\n" + 
+				"\tTUPLE {ID 1, RVA RELATION {RID INTEGER, STR CHARACTER} {\n" + 
+				"\tTUPLE {RID 11, STR \"A\"},\n" + 
+				"\tTUPLE {RID 22, STR \"blah\"}\n" + 
+				"}}\n" + 
 				"}";
 		testEquals(expected, src);
 	}

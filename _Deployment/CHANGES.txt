@@ -1,13 +1,27 @@
 Last used Exception* number: RS0504
 
 Version 3.010 (1.0.23):
-
+ 
   - enhancement: Rel: Double-click on database tree item causes focus
     to be set to the contents of the tab.
 
   - enhancement: Rel DBMS: Unicode asymmetric quotes (‘ ’ “ ”) now explicitly
     recognised and generate a human-friendly error. 
 
+  - fix: Rel DBMS:
+		Given:
+			VAR TEST4 REAL RELATION 
+				{ID INTEGER, RVA RELATION {RID INTEGER, STR CHAR}} KEY {ID};
+			INSERT TEST4 RELATION {
+				TUPLE {ID 1, RVA RELATION 
+					{TUPLE {RID 11, STR 'A'}, TUPLE {RID 22, STR 'E'}}}
+			};
+		Execute:
+			UPDATE TEST4 WHERE ID = 1: {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};
+			UPDATE TEST4 WHERE ID = 1: {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};
+		Result: TUPLE {RID 22, STR 'blah'} is incorrectly deleted.
+		Fixed.
+ 
   - fix: Rel: CSS on exported HTML for tabular displays did not correctly
     format table heading text. Fixed.
 
