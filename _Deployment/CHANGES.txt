@@ -8,6 +8,14 @@ Version 3.010 (1.0.23):
   - enhancement: Rel DBMS: Unicode asymmetric quotes (‘ ’ “ ”) now explicitly
     recognised and generate a human-friendly error. 
 
+  - enhancement: Rel: Variable and VIEW "play" mode shows relation
+    with improved formatting.
+
+  - enhancement: Rel: Double-click now expands/contracts database tree item headings.
+
+  - enhancement: Rel: CPU and memory displays now follow typical
+    paradigm of showing usage rather than (as before) showing available.
+
   - fix: Rel DBMS:
 		Given:
 			VAR TEST4 REAL RELATION 
@@ -27,14 +35,6 @@ Version 3.010 (1.0.23):
 
   - fix: Rel: Command-line better detects execute vs evaluate by ignoring
     whitespace and comments.
-
-  - enhancement: Rel: Variable and VIEW "play" mode shows relation
-    with improved formatting.
-
-  - enhancement: Rel: Double-click now expands/contracts database tree item headings.
-
-  - enhancement: Rel: CPU and memory displays now follow typical
-    paradigm of showing usage rather than (as before) showing available.
 
 Version 3.009 (1.0.22):
 
