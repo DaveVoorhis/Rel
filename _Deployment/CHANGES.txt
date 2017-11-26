@@ -1,6 +1,8 @@
 Last used Exception* number: RS0504
 
 Version 3.010 (1.0.23):
+
+  - enhancement: Update to Berkeley Java DB version 7.5.11
  
   - enhancement: Rel: Double-click on database tree item causes focus
     to be set to the contents of the tab.

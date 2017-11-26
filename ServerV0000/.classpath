@@ -34,6 +34,6 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/jackcess-2.1.6.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/commons-lang-2.6.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/je-7.4.5.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/je-7.5.11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
