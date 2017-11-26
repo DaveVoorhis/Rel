@@ -185,6 +185,4 @@
   Implementing this may be deferred until everything (code, data, types) is stored in the catalog,
   with appropriate triggers and foreign key constraints.
   
-- Eliminate the Rel VM and compile directly to Java bytecode.
-  
 - Build JDBC and/or ODBC drivers.
