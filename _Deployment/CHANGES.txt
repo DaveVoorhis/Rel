@@ -17,6 +17,13 @@ Version 3.010 (1.0.23):
     paradigm of showing usage rather than (as before) showing available.
 
   - fix: Rel DBMS:
+  		Given:
+			COUNT {S WHERE CITY = CITY, S WHERE STATUS = STATUS}
+   		Result:
+   			Returns type mismatch error when it shouldn't.
+  		Fixed.
+
+  - fix: Rel DBMS:
 		Given:
 			VAR TEST4 REAL RELATION 
 				{ID INTEGER, RVA RELATION {RID INTEGER, STR CHAR}} KEY {ID};

@@ -3568,7 +3568,7 @@ public class TutorialDParser implements TutorialDVisitor {
 			Type t = (Type)compileChild(node, i, data);
 			if (commalist.exprType == null)
 				commalist.exprType = t;
-			else if (commalist.exprType != t)
+			else if (!commalist.exprType.canAccept(t))
 				throw new ExceptionSemantic("RS0190: Argument " + i + " of an n-adic expression list is " + t + " but " + commalist.exprType + " was expected.");
 		}
 		return commalist;

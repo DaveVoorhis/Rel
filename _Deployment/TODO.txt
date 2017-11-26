@@ -4,9 +4,6 @@
 
 - Allow overwrite of attributes in EXTEND (and RENAME?)
 
-- Fix bug: COUNT{ S WHERE CITY = CITY, S WHERE STATUS = STATUS }.
-   Returns error when it shouldn't.
-
 - "Standard library": A mechanism to load/include/use/import specific types, 
   sets of operators, or other definitions (e.g., pre-built database schemas) 
   in-language and by name, which then loads and executes them if they’re not 
