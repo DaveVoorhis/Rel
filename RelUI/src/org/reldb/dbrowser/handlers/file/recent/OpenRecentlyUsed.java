@@ -1,5 +1,5 @@
  
-package org.reldb.dbrowser.handlers;
+package org.reldb.dbrowser.handlers.file.recent;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.ui.model.application.ui.menu.MDirectMenuItem;

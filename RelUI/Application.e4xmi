@@ -11,10 +11,23 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_XU6QcLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.newDatabase" label="New database" iconURI="platform:/plugin/RelUI/icons/NewDBIcon.png" tooltip="New database" mnemonics="M1+n" command="_eqs_ALqpEeSSsbhT1QHqRQ"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_YysdELqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openLocalDatabase" label="Open local database" iconURI="platform:/plugin/RelUI/icons/OpenDBLocalIcon.png" tooltip="Open local database" mnemonics="M1+l" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_aF044LqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.openRemoteDatabase" label="Open remote database" iconURI="platform:/plugin/RelUI/icons/OpenDBRemoteIcon.png" tooltip="Open remote database" mnemonics="M1+r" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
-        <children xsi:type="menu:DynamicMenuContribution" xmi:id="_eKiEMG3KEea3U5Pl8kuzZg" elementId="relui.dynamicmenucontribution.recentlyUsed" label="Open recently used databases" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.ObtainRecentlyUsedDatabaseList"/>
+        <children xsi:type="menu:DynamicMenuContribution" xmi:id="_eKiEMG3KEea3U5Pl8kuzZg" elementId="relui.dynamicmenucontribution.recentlyUsed" label="Open recently used databases" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.file.recent.ObtainRecentlyUsedDatabaseList"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_XDnE0G3KEea3U5Pl8kuzZg" elementId="relui.menuseparator.2"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_-x_hUMfrEeSqd4GfyFqaAQ" elementId="relui.handledmenuitem.about" label="About" tooltip="About" command="_1_YZiqbsEeSFCpZI3OEurw"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_58XzsLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.exit" label="Exit" tooltip="Exit application" mnemonics="M1+x" command="_1_YZgKbsEeSFCpZI3OEurw"/>
+      </children>
+      <children xsi:type="menu:Menu" xmi:id="_DJ3V4NN-EeeGdbvWSjewsQ" elementId="relui.menu.edit" label="Edit">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_PfcygNN-EeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.undo" label="Undo" iconURI="platform:/plugin/RelUI/icons/undo.png" tooltip="" mnemonics="M1+Z" command="_2c99wNODEeeGdbvWSjewsQ"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_SsfWQNN-EeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.redo" label="Redo" iconURI="platform:/plugin/RelUI/icons/redo.png" mnemonics="M1+Y" command="_60q90NODEeeGdbvWSjewsQ"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_W4sQ8NN-EeeGdbvWSjewsQ" elementId="relui.menuseparator.0"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_bJG9QNN-EeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.cut" label="Cut" iconURI="platform:/plugin/RelUI/icons/cut.png" command="_8o57kNODEeeGdbvWSjewsQ"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_5a2oANN_EeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.copy" label="Copy" iconURI="platform:/plugin/RelUI/icons/copy.png" command="_-c5owNODEeeGdbvWSjewsQ"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_8VMSMNN_EeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.paste" label="Paste" iconURI="platform:/plugin/RelUI/icons/paste.png" command="_ADJ04NOEEeeGdbvWSjewsQ"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_AgTnwNOAEeeGdbvWSjewsQ" elementId="relui.menuseparator.3"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_CyiwINOAEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.delete" label="Delete" iconURI="platform:/plugin/RelUI/icons/delete.png" command="_CSpyUNOEEeeGdbvWSjewsQ"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_ElBaYNOAEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.selectAll" label="Select All" iconURI="platform:/plugin/RelUI/icons/selectAll.png" command="_FahiMNOEEeeGdbvWSjewsQ"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_IHe0gNOAEeeGdbvWSjewsQ" elementId="relui.menuseparator.4"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_JnU2oNOAEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.findReplace" label="Find/Replace" iconURI="platform:/plugin/RelUI/icons/edit_find_replace.png" command="_HhP-INOEEeeGdbvWSjewsQ"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_V4OQALqZEeSSsbhT1QHqRQ" elementId="relui.menu.tools" label="Tools" tooltip="">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_giqZcLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.options" label="Preferences" iconURI="platform:/plugin/RelUI/icons/settingsIcon.png" tooltip="Preferences" mnemonics="M1+p" command="_85hu4No2EeSw-PA_k-Gusw"/>
@@ -26,16 +39,24 @@
       </children>
     </mainMenu>
   </children>
-  <handlers xmi:id="_1_YZgabsEeSFCpZI3OEurw" elementId="RelUI.handler.quitCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.Quit" command="_1_YZgKbsEeSFCpZI3OEurw"/>
-  <handlers xmi:id="_1_YZi6bsEeSFCpZI3OEurw" elementId="RelUI.handler.aboutCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.About" command="_1_YZiqbsEeSFCpZI3OEurw"/>
-  <handlers xmi:id="_Up7doLqpEeSSsbhT1QHqRQ" elementId="relui.handler.newdatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.NewDatabase" command="_eqs_ALqpEeSSsbhT1QHqRQ"/>
-  <handlers xmi:id="_vSU4kLqpEeSSsbhT1QHqRQ" elementId="relui.handler.openlocaldatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.OpenLocalDatabase" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
-  <handlers xmi:id="_4xZbELqpEeSSsbhT1QHqRQ" elementId="relui.handler.openremotedatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.OpenRemoteDatabase" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
-  <handlers xmi:id="_ziLoUNiyEeSgZfqMAYQ1XA" elementId="relui.handler.1" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.ViewLog" command="_sr9-cNiyEeSgZfqMAYQ1XA"/>
-  <handlers xmi:id="_CkUugNo3EeSw-PA_k-Gusw" elementId="relui.handler.preferences" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.OpenPreferences" command="_85hu4No2EeSw-PA_k-Gusw"/>
-  <handlers xmi:id="_s3rogFPIEeatz8M60Y6h3Q" elementId="relui.handler.submitReport" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.SubmitBugReport" command="_ws_GIFPIEeatz8M60Y6h3Q"/>
-  <handlers xmi:id="_S3VPkFPJEeatz8M60Y6h3Q" elementId="relui.handler.checkForUpdates" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.CheckForUpdates" command="_7_8BEFPIEeatz8M60Y6h3Q"/>
-  <handlers xmi:id="_A06LIFP5Eeatz8M60Y6h3Q" elementId="relui.handler.submitFeedback" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.SubmitFeedback" command="_6cuhEFP4Eeatz8M60Y6h3Q"/>
+  <handlers xmi:id="_1_YZgabsEeSFCpZI3OEurw" elementId="RelUI.handler.quitCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.file.Quit" command="_1_YZgKbsEeSFCpZI3OEurw"/>
+  <handlers xmi:id="_1_YZi6bsEeSFCpZI3OEurw" elementId="RelUI.handler.aboutCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.file.About" command="_1_YZiqbsEeSFCpZI3OEurw"/>
+  <handlers xmi:id="_Up7doLqpEeSSsbhT1QHqRQ" elementId="relui.handler.newdatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.file.NewDatabase" command="_eqs_ALqpEeSSsbhT1QHqRQ"/>
+  <handlers xmi:id="_vSU4kLqpEeSSsbhT1QHqRQ" elementId="relui.handler.openlocaldatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.file.OpenLocalDatabase" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
+  <handlers xmi:id="_4xZbELqpEeSSsbhT1QHqRQ" elementId="relui.handler.openremotedatabaseCommand" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.file.OpenRemoteDatabase" command="_mkgz4LqpEeSSsbhT1QHqRQ"/>
+  <handlers xmi:id="_ziLoUNiyEeSgZfqMAYQ1XA" elementId="relui.handler.1" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.tools.ViewLog" command="_sr9-cNiyEeSgZfqMAYQ1XA"/>
+  <handlers xmi:id="_CkUugNo3EeSw-PA_k-Gusw" elementId="relui.handler.preferences" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.tools.OpenPreferences" command="_85hu4No2EeSw-PA_k-Gusw"/>
+  <handlers xmi:id="_s3rogFPIEeatz8M60Y6h3Q" elementId="relui.handler.submitReport" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.tools.SubmitBugReport" command="_ws_GIFPIEeatz8M60Y6h3Q"/>
+  <handlers xmi:id="_S3VPkFPJEeatz8M60Y6h3Q" elementId="relui.handler.checkForUpdates" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.tools.CheckForUpdates" command="_7_8BEFPIEeatz8M60Y6h3Q"/>
+  <handlers xmi:id="_A06LIFP5Eeatz8M60Y6h3Q" elementId="relui.handler.submitFeedback" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.tools.SubmitFeedback" command="_6cuhEFP4Eeatz8M60Y6h3Q"/>
+  <handlers xmi:id="_hrX-INODEeeGdbvWSjewsQ" elementId="relui.handler.undo" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.Undo" command="_2c99wNODEeeGdbvWSjewsQ"/>
+  <handlers xmi:id="_P5UcUNOEEeeGdbvWSjewsQ" elementId="relui.handler.0" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.Redo" command="_60q90NODEeeGdbvWSjewsQ"/>
+  <handlers xmi:id="_XgMHENOEEeeGdbvWSjewsQ" elementId="relui.handler.2" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.Cut" command="_8o57kNODEeeGdbvWSjewsQ"/>
+  <handlers xmi:id="_wYxKMNOEEeeGdbvWSjewsQ" elementId="relui.handler.3" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.Copy" command="_-c5owNODEeeGdbvWSjewsQ"/>
+  <handlers xmi:id="_0iweYNOEEeeGdbvWSjewsQ" elementId="relui.handler.4" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.Paste" command="_ADJ04NOEEeeGdbvWSjewsQ"/>
+  <handlers xmi:id="_5SHJcNOEEeeGdbvWSjewsQ" elementId="relui.handler.5" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.Delete" command="_CSpyUNOEEeeGdbvWSjewsQ"/>
+  <handlers xmi:id="_8Gq7wNOEEeeGdbvWSjewsQ" elementId="relui.handler.6" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.SelectAll" command="_FahiMNOEEeeGdbvWSjewsQ"/>
+  <handlers xmi:id="__xIbUNOEEeeGdbvWSjewsQ" elementId="relui.handler.7" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.FindReplace" command="_HhP-INOEEeeGdbvWSjewsQ"/>
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
     <bindings xmi:id="_1_YZg6bsEeSFCpZI3OEurw" keySequence="M1+Q" command="_1_YZgKbsEeSFCpZI3OEurw"/>
     <bindings xmi:id="_1_YZhqbsEeSFCpZI3OEurw" keySequence="M1+O" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
@@ -54,6 +75,14 @@
   <commands xmi:id="_ws_GIFPIEeatz8M60Y6h3Q" elementId="relui.command.submitBugReportCommand" commandName="submitBugReportCommand" description="Submit bug report"/>
   <commands xmi:id="_7_8BEFPIEeatz8M60Y6h3Q" elementId="relui.command.checkForUpdates" commandName="checkForUpdates" description="Check for updates"/>
   <commands xmi:id="_6cuhEFP4Eeatz8M60Y6h3Q" elementId="relui.command.submitFeedback" commandName="submitFeedback" description="Submit feedback or feature request"/>
+  <commands xmi:id="_2c99wNODEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.undo" commandName="undoCommand"/>
+  <commands xmi:id="_60q90NODEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.redo" commandName="redoCommand"/>
+  <commands xmi:id="_8o57kNODEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.cut" commandName="cutCommand"/>
+  <commands xmi:id="_-c5owNODEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.copy" commandName="copyCommand"/>
+  <commands xmi:id="_ADJ04NOEEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.paste" commandName="pasteCommand"/>
+  <commands xmi:id="_CSpyUNOEEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.delete" commandName="deleteCommand"/>
+  <commands xmi:id="_FahiMNOEEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.selectAll" commandName="selectAllCommand"/>
+  <commands xmi:id="_HhP-INOEEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.findReplace" commandName="findReplaceCommand"/>
   <addons xmi:id="_1_XycqbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_1_Xyc6bsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_1_XydKbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

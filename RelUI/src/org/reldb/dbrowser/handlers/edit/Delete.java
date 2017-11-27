@@ -9,15 +9,22 @@
  *     IBM Corporation - initial API and implementation
  *     Lars Vogel <lars.Vogel@gmail.com> - Bug 419770
  *******************************************************************************/
-package org.reldb.dbrowser.handlers;
+package org.reldb.dbrowser.handlers.edit;
 
+import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.swt.widgets.Shell;
-import org.reldb.dbrowser.ui.updates.UpdatesCheckDialog;
+import org.reldb.dbrowser.ui.AboutDialog;
 
-public class CheckForUpdates {
+public class Delete {
+
+	@CanExecute
+	public boolean canExecute() {
+		return false;
+	}
+
 	@Execute
 	public void execute(Shell shell) {
-		UpdatesCheckDialog.launch(shell);
+		new AboutDialog(shell).open();
 	}
 }

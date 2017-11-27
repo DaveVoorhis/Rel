@@ -9,15 +9,15 @@
  *     IBM Corporation - initial API and implementation
  *     Lars Vogel <lars.Vogel@gmail.com> - Bug 419770
  *******************************************************************************/
-package org.reldb.dbrowser.handlers;
+package org.reldb.dbrowser.handlers.tools;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.swt.widgets.Shell;
-import org.reldb.dbrowser.ui.log.LogWin;
+import org.reldb.dbrowser.ui.feedback.BugReportDialog;
 
-public class ViewLog {
+public class SubmitBugReport {
 	@Execute
 	public void execute(Shell shell) {
-		LogWin.open();
+		BugReportDialog.launch(shell);
 	}
 }

@@ -9,15 +9,23 @@
  *     IBM Corporation - initial API and implementation
  *     Lars Vogel <lars.Vogel@gmail.com> - Bug 419770
  *******************************************************************************/
-package org.reldb.dbrowser.handlers;
+package org.reldb.dbrowser.handlers.edit;
 
+import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.ui.workbench.IWorkbench;
-import org.eclipse.swt.widgets.Shell;
 
-public class Quit {
+import org.eclipse.swt.widgets.Shell;
+import org.reldb.dbrowser.ui.AboutDialog;
+
+public class Undo {
+
+	@CanExecute
+	public boolean canExecute() {
+		return false;
+	}
+
 	@Execute
-	public void execute(IWorkbench workbench, Shell shell) {
-		workbench.close();
+	public void execute(Shell shell) {
+		new AboutDialog(shell).open();
 	}
 }

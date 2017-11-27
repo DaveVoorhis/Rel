@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.handlers;
+package org.reldb.dbrowser.handlers.file.recent;
 
 import java.util.List;
 
@@ -22,18 +22,18 @@ public class ObtainRecentlyUsedDatabaseList {
 				menuItem.setLabel("Open " + dbURL);
 				menuItem.setIconURI("platform:/plugin/RelUI/icons/" + 
 						(dbURL.startsWith("db:") ? "OpenDBLocalIcon.png" : "OpenDBRemoteIcon.png"));
-				menuItem.setContributionURI("bundleclass://RelUI/org.reldb.dbrowser.handlers.OpenRecentlyUsed");
+				menuItem.setContributionURI("bundleclass://RelUI/org.reldb.dbrowser.handlers.file.recent.OpenRecentlyUsed");
 				items.add(menuItem);
 			}
 			separator = MMenuFactory.INSTANCE.createMenuSeparator();
 			items.add(separator);
 			MDirectMenuItem managementItem = MMenuFactory.INSTANCE.createDirectMenuItem();
 			managementItem.setLabel("Clear above list of recently-opened databases");
-			managementItem.setContributionURI("bundleclass://RelUI/org.reldb.dbrowser.handlers.ClearRecentlyUsed");
+			managementItem.setContributionURI("bundleclass://RelUI/org.reldb.dbrowser.handlers.file.recent.ClearRecentlyUsed");
 			items.add(managementItem);
 			managementItem = MMenuFactory.INSTANCE.createDirectMenuItem();
 			managementItem.setLabel("Manage list of recently-opened databases...");
-			managementItem.setContributionURI("bundleclass://RelUI/org.reldb.dbrowser.handlers.ManageRecentlyUsed");
+			managementItem.setContributionURI("bundleclass://RelUI/org.reldb.dbrowser.handlers.file.recent.ManageRecentlyUsed");
 			items.add(managementItem);
 		}
 	}

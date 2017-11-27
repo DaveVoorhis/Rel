@@ -9,15 +9,15 @@
  *     IBM Corporation - initial API and implementation
  *     Lars Vogel <lars.Vogel@gmail.com> - Bug 419770
  *******************************************************************************/
-package org.reldb.dbrowser.handlers;
+package org.reldb.dbrowser.handlers.tools;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.swt.widgets.Shell;
-import org.reldb.dbrowser.ui.feedback.SuggestionboxDialog;
+import org.reldb.dbrowser.ui.updates.UpdatesCheckDialog;
 
-public class SubmitFeedback {
+public class CheckForUpdates {
 	@Execute
 	public void execute(Shell shell) {
-		SuggestionboxDialog.launch(shell);
+		UpdatesCheckDialog.launch(shell);
 	}
 }

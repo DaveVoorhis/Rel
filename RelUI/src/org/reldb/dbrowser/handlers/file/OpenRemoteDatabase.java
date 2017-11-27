@@ -1,12 +1,12 @@
  
-package org.reldb.dbrowser.handlers;
+package org.reldb.dbrowser.handlers.file;
 
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.reldb.dbrowser.DBrowser;
 
-public class NewDatabase {
+public class OpenRemoteDatabase {
 	@Execute
 	public void execute() {
-		DBrowser.newDatabase();
+		DBrowser.openRemoteDatabase();
 	}
 }
