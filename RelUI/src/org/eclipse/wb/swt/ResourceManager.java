@@ -122,6 +122,7 @@ public class ResourceManager extends SWTResourceManager {
 	 *            the corner to place decorator image.
 	 * @return the resulting decorated {@link Image}.
 	 */
+	@SuppressWarnings("deprecation")
 	public static Image decorateImage(final Image baseImage, final Image decorator, final int corner) {
 		if (corner <= 0 || corner >= LAST_CORNER_KEY) {
 			throw new IllegalArgumentException("Wrong decorate corner");
