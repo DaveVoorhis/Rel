@@ -129,10 +129,24 @@ public class RelPanel extends Composite {
 			}
 		});
 		
+		tree.addListener(SWT.KeyUp, evt -> {
+			if (evt.character == 13) {
+				TreeItem items[] = tree.getSelection();
+				for (TreeItem item: items)
+					item.setExpanded(!item.getExpanded());
+				DbTreeItem selection = getSelection();
+				if (selection != null && selection.canPlay())
+					playItem();
+			}
+		});
+		
 		tree.addListener(SWT.MouseDoubleClick, evt -> {
-			TreeItem items[] = tree.getSelection();
-			for (TreeItem item: items)
-				item.setExpanded(!item.getExpanded());
+			String osName = System.getProperty("os.name").toLowerCase();
+			if (!osName.startsWith("win")) {		// don't do this under Windows!
+				TreeItem items[] = tree.getSelection();
+				for (TreeItem item: items)
+					item.setExpanded(!item.getExpanded());
+			}
 			DbTreeItem selection = getSelection();
 			if (selection != null && selection.canPlay())
 				playItem();
