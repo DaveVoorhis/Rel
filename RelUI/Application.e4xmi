@@ -29,6 +29,17 @@
         <children xsi:type="menu:MenuSeparator" xmi:id="_IHe0gNOAEeeGdbvWSjewsQ" elementId="relui.menuseparator.4"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_JnU2oNOAEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.findReplace" label="Find/Replace" iconURI="platform:/plugin/RelUI/icons/edit_find_replace.png" command="_HhP-INOEEeeGdbvWSjewsQ"/>
       </children>
+      <children xsi:type="menu:Menu" xmi:id="_jurpINPEEee2ravf7u6htQ" elementId="relui.menu.database" label="Database" mnemonics="&amp;D">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_l7Vt8NPEEee2ravf7u6htQ" elementId="relui.handledmenuitem.backup" label="Backup" iconURI="platform:/plugin/RelUI/icons/safeIcon.png" tooltip="Make a backup" mnemonics="" command="_91ib0NRJEeerO4zAq7e_BA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_etskoNRKEeerO4zAq7e_BA" elementId="relui.handledmenuitem.design" label="Design" iconURI="platform:/plugin/RelUI/icons/item_design.png" command="__JIKoNRJEeerO4zAq7e_BA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_tcUVMNRKEeerO4zAq7e_BA" elementId="relui.handledmenuitem.drop" label="Drop" iconURI="platform:/plugin/RelUI/icons/item_delete.png" command="_BjzdUNRKEeerO4zAq7e_BA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_B1PWINRLEeerO4zAq7e_BA" elementId="relui.handledmenuitem.edit" label="Edit" iconURI="platform:/plugin/RelUI/icons/item_edit.png" command="_QayfsNRKEeerO4zAq7e_BA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_HYpUUNRLEeerO4zAq7e_BA" elementId="relui.handledmenuitem.export" label="Export" iconURI="platform:/plugin/RelUI/icons/export.png" command="_R3aOsNRKEeerO4zAq7e_BA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_LjI-0NRLEeerO4zAq7e_BA" elementId="relui.handledmenuitem.new" label="New" iconURI="platform:/plugin/RelUI/icons/item_add.png" command="_TrCvgNRKEeerO4zAq7e_BA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_Pq9v0NRLEeerO4zAq7e_BA" elementId="relui.handledmenuitem.rename" label="Rename" iconURI="platform:/plugin/RelUI/icons/rename.png" command="_VDV_MNRKEeerO4zAq7e_BA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_XqIl0NRLEeerO4zAq7e_BA" elementId="relui.handledmenuitem.show" label="Show" iconURI="platform:/plugin/RelUI/icons/play.png" command="_WZhH8NRKEeerO4zAq7e_BA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_fITnkNRLEeerO4zAq7e_BA" elementId="relui.handledmenuitem.showsystemobjects" label="Show system objects" iconURI="platform:/plugin/RelUI/icons/gears.png" type="Check" command="_afkXUNRKEeerO4zAq7e_BA"/>
+      </children>
       <children xsi:type="menu:Menu" xmi:id="_V4OQALqZEeSSsbhT1QHqRQ" elementId="relui.menu.tools" label="Tools" tooltip="">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_giqZcLqZEeSSsbhT1QHqRQ" elementId="relui.handledmenuitem.options" label="Preferences" iconURI="platform:/plugin/RelUI/icons/settingsIcon.png" tooltip="Preferences" mnemonics="M1+p" command="_85hu4No2EeSw-PA_k-Gusw"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_68AVkNiyEeSgZfqMAYQ1XA" elementId="relui.handledmenuitem.viewLog" label="View log" tooltip="View system log messages" command="_sr9-cNiyEeSgZfqMAYQ1XA"/>
@@ -57,6 +68,7 @@
   <handlers xmi:id="_5SHJcNOEEeeGdbvWSjewsQ" elementId="relui.handler.5" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.Delete" command="_CSpyUNOEEeeGdbvWSjewsQ"/>
   <handlers xmi:id="_8Gq7wNOEEeeGdbvWSjewsQ" elementId="relui.handler.6" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.SelectAll" command="_FahiMNOEEeeGdbvWSjewsQ"/>
   <handlers xmi:id="__xIbUNOEEeeGdbvWSjewsQ" elementId="relui.handler.7" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.FindReplace" command="_HhP-INOEEeeGdbvWSjewsQ"/>
+  <handlers xmi:id="_lYxncNRIEeerO4zAq7e_BA" elementId="relui.handler.8" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.database.Backup" command="_iw1U0NRIEeerO4zAq7e_BA"/>
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
     <bindings xmi:id="_1_YZg6bsEeSFCpZI3OEurw" keySequence="M1+Q" command="_1_YZgKbsEeSFCpZI3OEurw"/>
     <bindings xmi:id="_1_YZhqbsEeSFCpZI3OEurw" keySequence="M1+O" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
@@ -83,6 +95,16 @@
   <commands xmi:id="_CSpyUNOEEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.delete" commandName="deleteCommand"/>
   <commands xmi:id="_FahiMNOEEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.selectAll" commandName="selectAllCommand"/>
   <commands xmi:id="_HhP-INOEEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.findReplace" commandName="findReplaceCommand"/>
+  <commands xmi:id="_iw1U0NRIEeerO4zAq7e_BA" elementId="relui.command.backupcommand" commandName="backupCommand"/>
+  <commands xmi:id="_91ib0NRJEeerO4zAq7e_BA" elementId="relui.command.backupcommand" commandName="backupCommand"/>
+  <commands xmi:id="__JIKoNRJEeerO4zAq7e_BA" elementId="relui.command.designcommand" commandName="designCommand"/>
+  <commands xmi:id="_BjzdUNRKEeerO4zAq7e_BA" elementId="relui.command.dropcommand" commandName="dropCommand"/>
+  <commands xmi:id="_QayfsNRKEeerO4zAq7e_BA" elementId="relui.command.editcommand" commandName="editCommand"/>
+  <commands xmi:id="_R3aOsNRKEeerO4zAq7e_BA" elementId="relui.command.exportcommand" commandName="exportCommand"/>
+  <commands xmi:id="_TrCvgNRKEeerO4zAq7e_BA" elementId="relui.command.newcommand" commandName="newCommand"/>
+  <commands xmi:id="_VDV_MNRKEeerO4zAq7e_BA" elementId="relui.command.renamecommand" commandName="renameCommand"/>
+  <commands xmi:id="_WZhH8NRKEeerO4zAq7e_BA" elementId="relui.command.showcommand" commandName="showCommand"/>
+  <commands xmi:id="_afkXUNRKEeerO4zAq7e_BA" elementId="relui.command.showsystemobjectscommand" commandName="showSystemObjectsCommand"/>
   <addons xmi:id="_1_XycqbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_1_Xyc6bsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_1_XydKbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
