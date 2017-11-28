@@ -9,22 +9,23 @@
  *     IBM Corporation - initial API and implementation
  *     Lars Vogel <lars.Vogel@gmail.com> - Bug 419770
  *******************************************************************************/
-package org.reldb.dbrowser.handlers.database;
+package org.reldb.dbrowser.handlers.edit;
 
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.e4.ui.model.application.ui.menu.MDirectMenuItem;
-import org.eclipse.swt.widgets.Shell;
 
-public class ShowSystemObjects {
+import org.eclipse.swt.widgets.Shell;
+import org.reldb.dbrowser.ui.AboutDialog;
+
+public class NextHistory {
 
 	@CanExecute
 	public boolean canExecute() {
-		return true;
+		return false;
 	}
-	
+
 	@Execute
-	public void execute(Shell shell, MDirectMenuItem me) {
-		me.setSelected(!me.isSelected());
+	public void execute(Shell shell) {
+		new AboutDialog(shell).open();
 	}
 }
