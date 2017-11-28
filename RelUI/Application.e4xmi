@@ -40,6 +40,18 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_XM1hoNRSEeerO4zAq7e_BA" elementId="relui.handledmenuitem.copyinputtooutput" label="Copy input to output" iconURI="platform:/plugin/RelUI/icons/copyToOutputIcon.png" type="Check" command="_wyp3gNRNEeerO4zAq7e_BA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_mMRVYNRSEeerO4zAq7e_BA" elementId="relui.handledmenuitem.wraptext" label="Wrap text" iconURI="platform:/plugin/RelUI/icons/wrapIcon.png" type="Check" command="_0yGIkNRNEeerO4zAq7e_BA"/>
       </children>
+      <children xsi:type="menu:Menu" xmi:id="_z6Fn4NRgEeemrrcqwS3xUw" elementId="relui.menu.output" label="Output">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_5q1egNRgEeemrrcqwS3xUw" elementId="relui.handledmenuitem.copyoutputtoinput" label="Copy output to input" iconURI="platform:/plugin/RelUI/icons/copyToInputIcon.png" command="_XoKf0NRfEeemrrcqwS3xUw"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_CLreMNRhEeemrrcqwS3xUw" elementId="relui.handledmenuitem.clear" label="Clear" iconURI="platform:/plugin/RelUI/icons/clearIcon.png" command="_aI2T4NRfEeemrrcqwS3xUw"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_HOdbkNRhEeemrrcqwS3xUw" elementId="relui.handledmenuitem.saveashtml" label="Save as HTML" iconURI="platform:/plugin/RelUI/icons/saveHTMLIcon.png" command="_cGfsUNRfEeemrrcqwS3xUw"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_LWSzoNRhEeemrrcqwS3xUw" elementId="relui.handledmenuitem.saveastext" label="Save as text" iconURI="platform:/plugin/RelUI/icons/saveTextIcon.png" command="_eqWJINRfEeemrrcqwS3xUw"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_QbGKQNRhEeemrrcqwS3xUw" elementId="relui.menuseparator.5"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_RlmOgNRhEeemrrcqwS3xUw" elementId="relui.handledmenuitem.enhancedoutput" label="Enhanced output" iconURI="platform:/plugin/RelUI/icons/enhancedIcon.png" type="Check" command="_j5uYENRfEeemrrcqwS3xUw"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_Yc3oUNRhEeemrrcqwS3xUw" elementId="relui.handledmenuitem.writeokafterexecution" label="Write 'Ok' after execution" iconURI="platform:/plugin/RelUI/icons/showOkIcon.png" command="_oDPyMNRfEeemrrcqwS3xUw"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_pWVf0NRhEeemrrcqwS3xUw" elementId="relui.handledmenuitem.automaticallyclearoutput" label="Automatically clear output" iconURI="platform:/plugin/RelUI/icons/autoclearIcon.png" type="Check" command="_iMbd4NRhEeemrrcqwS3xUw"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_vfku8NRhEeemrrcqwS3xUw" elementId="relui.handledmenuitem.showrelationheadings" label="Show relation headings" iconURI="platform:/plugin/RelUI/icons/headingIcon.png" command="_rpA_ANRfEeemrrcqwS3xUw"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_08IeQNRhEeemrrcqwS3xUw" elementId="relui.handledmenuitem.showattributetypesinrelationheadings" label="Show attribute types in relation headings" iconURI="platform:/plugin/RelUI/icons/headingIcon.png" type="Check" command="_tlxmoNRfEeemrrcqwS3xUw"/>
+      </children>
       <children xsi:type="menu:Menu" xmi:id="_jurpINPEEee2ravf7u6htQ" elementId="relui.menu.database" label="Database" mnemonics="&amp;D">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_l7Vt8NPEEee2ravf7u6htQ" elementId="relui.handledmenuitem.backup" label="Backup" iconURI="platform:/plugin/RelUI/icons/safeIcon.png" tooltip="Make a backup" mnemonics="" command="_91ib0NRJEeerO4zAq7e_BA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_etskoNRKEeerO4zAq7e_BA" elementId="relui.handledmenuitem.design" label="Design" iconURI="platform:/plugin/RelUI/icons/item_design.png" command="__JIKoNRJEeerO4zAq7e_BA"/>
@@ -92,6 +104,15 @@
   <handlers xmi:id="_VvYXENRQEeerO4zAq7e_BA" elementId="relui.handler.18" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.CopyInputToOutput" command="_wyp3gNRNEeerO4zAq7e_BA"/>
   <handlers xmi:id="_bcBw0NRQEeerO4zAq7e_BA" elementId="relui.handler.19" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.WrapText" command="_0yGIkNRNEeerO4zAq7e_BA"/>
   <handlers xmi:id="_7pZ6cNRUEeerO4zAq7e_BA" elementId="relui.handler.20" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.database.ShowSystemObjects" command="_afkXUNRKEeerO4zAq7e_BA"/>
+  <handlers xmi:id="_5xNowNRfEeemrrcqwS3xUw" elementId="relui.handler.21" command="_XoKf0NRfEeemrrcqwS3xUw"/>
+  <handlers xmi:id="_ck308NRgEeemrrcqwS3xUw" elementId="relui.handler.22" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.ClearOutput" command="_aI2T4NRfEeemrrcqwS3xUw"/>
+  <handlers xmi:id="_g2hQUNRgEeemrrcqwS3xUw" elementId="relui.handler.23" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.DisplayEnhancedOutput" command="_j5uYENRfEeemrrcqwS3xUw"/>
+  <handlers xmi:id="_krmEcNRgEeemrrcqwS3xUw" elementId="relui.handler.24" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.DisplayOk" command="_oDPyMNRfEeemrrcqwS3xUw"/>
+  <handlers xmi:id="_nN96kNRgEeemrrcqwS3xUw" elementId="relui.handler.25" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.DisplayRelationHeadings" command="_rpA_ANRfEeemrrcqwS3xUw"/>
+  <handlers xmi:id="_qDSh4NRgEeemrrcqwS3xUw" elementId="relui.handler.26" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.DisplayRelationHeadingsType" command="_tlxmoNRfEeemrrcqwS3xUw"/>
+  <handlers xmi:id="_tOf5oNRgEeemrrcqwS3xUw" elementId="relui.handler.27" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.SaveAsHTML" command="_cGfsUNRfEeemrrcqwS3xUw"/>
+  <handlers xmi:id="_v6UmsNRgEeemrrcqwS3xUw" elementId="relui.handler.28" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.SaveAsText" command="_eqWJINRfEeemrrcqwS3xUw"/>
+  <handlers xmi:id="_lQcBcNRhEeemrrcqwS3xUw" elementId="relui.handler.29" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.DisplayAutoclear" command="_iMbd4NRhEeemrrcqwS3xUw"/>
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
     <bindings xmi:id="_1_YZg6bsEeSFCpZI3OEurw" keySequence="M1+Q" command="_1_YZgKbsEeSFCpZI3OEurw"/>
     <bindings xmi:id="_1_YZhqbsEeSFCpZI3OEurw" keySequence="M1+O" command="_hYmvsLqpEeSSsbhT1QHqRQ"/>
@@ -139,6 +160,15 @@
   <commands xmi:id="_wyp3gNRNEeerO4zAq7e_BA" elementId="relui.command.copyinputtooutputcommand" commandName="copyInputToOutputCommand"/>
   <commands xmi:id="_0yGIkNRNEeerO4zAq7e_BA" elementId="relui.command.wraptextcommand" commandName="wrapTextCommand"/>
   <commands xmi:id="_4Mh9MNRPEeerO4zAq7e_BA" elementId="relui.command.clearcommand" commandName="clearCommand"/>
+  <commands xmi:id="_XoKf0NRfEeemrrcqwS3xUw" elementId="relui.command.copyoutputtoinputcommand" commandName="copyOutputToInputCommand"/>
+  <commands xmi:id="_aI2T4NRfEeemrrcqwS3xUw" elementId="relui.command.clearoutputcommand" commandName="clearOutputCommand"/>
+  <commands xmi:id="_cGfsUNRfEeemrrcqwS3xUw" elementId="relui.command.saveashtmlcommand" commandName="saveAsHTMLCommand"/>
+  <commands xmi:id="_eqWJINRfEeemrrcqwS3xUw" elementId="relui.command.saveastextcommand" commandName="saveAsTextCommand"/>
+  <commands xmi:id="_j5uYENRfEeemrrcqwS3xUw" elementId="relui.command.displayenhancedoutputcommand" commandName="displayEnhancedOutputCommand"/>
+  <commands xmi:id="_oDPyMNRfEeemrrcqwS3xUw" elementId="relui.command.displayokcommand" commandName="displayOkCommand"/>
+  <commands xmi:id="_rpA_ANRfEeemrrcqwS3xUw" elementId="relui.command.displayrelationheadingscommand" commandName="displayRelationHeadingsCommand"/>
+  <commands xmi:id="_tlxmoNRfEeemrrcqwS3xUw" elementId="relui.command.displayrelationheadingstypecommand" commandName="displayRelationHeadingsTypeCommand"/>
+  <commands xmi:id="_iMbd4NRhEeemrrcqwS3xUw" elementId="relui.command.displayautoclearcommand" commandName="displayAutoclearCommand"/>
   <addons xmi:id="_1_XycqbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_1_Xyc6bsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_1_XydKbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
