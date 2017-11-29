@@ -28,6 +28,10 @@ public class UndoRedo {
 			text.setCaretOffset(caretOffset);
 			text.setTopIndex(topIndex);
 		}
+		
+		public String toString() {
+			return content;
+		}
 	}
 
 	private StyledText text;
@@ -40,7 +44,7 @@ public class UndoRedo {
 	private boolean ignore = false;
 
 	private void capture() {
-		if (!(buffer.size() > 0 && text.getText().equals(buffer.get(buffer.size() - 1)))) {
+		if (!(buffer.size() > 0 && text.getText().equals(buffer.get(buffer.size() - 1).toString()))) {
 			buffer.add(new Capture(text));
 			if (buffer.size() > 100)
 				buffer.remove(0);
