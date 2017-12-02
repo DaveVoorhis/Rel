@@ -11,20 +11,14 @@
  *******************************************************************************/
 package org.reldb.dbrowser.handlers.edit;
 
-import org.eclipse.e4.core.di.annotations.CanExecute;
-import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.ui.model.application.ui.menu.MHandledMenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.reldb.dbrowser.handlers.MenuItem;
 import org.reldb.dbrowser.ui.AboutDialog;
 
-public class Delete {
-
-	@CanExecute
-	public boolean canExecute() {
-		return false;
-	}
-
-	@Execute
-	public void execute(Shell shell) {
+public class Delete extends MenuItem {
+	@Override
+	public void execute(Shell shell, MHandledMenuItem item) {
 		new AboutDialog(shell).open();
 	}
 }
