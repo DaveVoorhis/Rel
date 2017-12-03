@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.reldb.dbrowser.handlers.MenuItem;
 import org.reldb.dbrowser.ui.AboutDialog;
 
-public class insertFileName extends MenuItem {
+public class InsertFileName extends MenuItem {
 	@Override
 	public void execute(Shell shell, MHandledMenuItem item) {
 		new AboutDialog(shell).open();

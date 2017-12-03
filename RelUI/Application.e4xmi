@@ -37,6 +37,7 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_m4kQINRREeerO4zAq7e_BA" elementId="relui.handledmenuitem.insertfilename" label="Insert file name" iconURI="platform:/plugin/RelUI/icons/pathIcon.png" command="_dVLyMNRNEeerO4zAq7e_BA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_3yRYMNRREeerO4zAq7e_BA" elementId="relui.handledmenuitem.savefile" label="Save file" iconURI="platform:/plugin/RelUI/icons/saveIcon.png" command="_rcoOANRNEeerO4zAq7e_BA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_72vTMNRREeerO4zAq7e_BA" elementId="relui.handledmenuitem.savehistory" label="Save history" iconURI="platform:/plugin/RelUI/icons/saveHistoryIcon.png" command="_ti0ecNRNEeerO4zAq7e_BA"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_l2aKQNhcEeedLsSozeNIAA" elementId="relui.menuseparator.6"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_XM1hoNRSEeerO4zAq7e_BA" elementId="relui.handledmenuitem.copyinputtooutput" label="Copy input to output" iconURI="platform:/plugin/RelUI/icons/copyToOutputIcon.png" selected="true" type="Check" command="_wyp3gNRNEeerO4zAq7e_BA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_mMRVYNRSEeerO4zAq7e_BA" elementId="relui.handledmenuitem.wraptext" label="Wrap text" iconURI="platform:/plugin/RelUI/icons/wrapIcon.png" selected="true" type="Check" command="_0yGIkNRNEeerO4zAq7e_BA"/>
       </children>
@@ -98,7 +99,7 @@
   <handlers xmi:id="_6M1BANRPEeerO4zAq7e_BA" elementId="relui.handler.12" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.Clear" command="_4Mh9MNRPEeerO4zAq7e_BA"/>
   <handlers xmi:id="__4IW8NRPEeerO4zAq7e_BA" elementId="relui.handler.13" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.LoadFile" command="_ZtAxoNRNEeerO4zAq7e_BA"/>
   <handlers xmi:id="_Gx_KsNRQEeerO4zAq7e_BA" elementId="relui.handler.14" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.InsertFile" command="_bHLCgNRNEeerO4zAq7e_BA"/>
-  <handlers xmi:id="_Me7fYNRQEeerO4zAq7e_BA" elementId="relui.handler.15" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.insertFileName" command="_dVLyMNRNEeerO4zAq7e_BA"/>
+  <handlers xmi:id="_Me7fYNRQEeerO4zAq7e_BA" elementId="relui.handler.15" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.InsertFileName" command="_dVLyMNRNEeerO4zAq7e_BA"/>
   <handlers xmi:id="_PuNe0NRQEeerO4zAq7e_BA" elementId="relui.handler.16" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.SaveFile" command="_rcoOANRNEeerO4zAq7e_BA"/>
   <handlers xmi:id="_Sh9Y0NRQEeerO4zAq7e_BA" elementId="relui.handler.17" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.SaveHistory" command="_ti0ecNRNEeerO4zAq7e_BA"/>
   <handlers xmi:id="_VvYXENRQEeerO4zAq7e_BA" elementId="relui.handler.18" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.CopyInputToOutput" command="_wyp3gNRNEeerO4zAq7e_BA"/>
@@ -121,6 +122,7 @@
   <handlers xmi:id="_l6vR4NeyEeedLsSozeNIAA" elementId="relui.handler.35" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.database.Rename" command="_VDV_MNRKEeerO4zAq7e_BA"/>
   <handlers xmi:id="_oZRw4NeyEeedLsSozeNIAA" elementId="relui.handler.36" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.database.Show" command="_WZhH8NRKEeerO4zAq7e_BA"/>
   <handlers xmi:id="_rXB7cNeyEeedLsSozeNIAA" elementId="relui.handler.37" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.database.ShowSystemObjects" command="_afkXUNRKEeerO4zAq7e_BA"/>
+  <handlers xmi:id="_da-M0NhNEeedLsSozeNIAA" elementId="relui.handler.38" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.CopyOutputToInput" command="_XoKf0NRfEeemrrcqwS3xUw"/>
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
     <bindings xmi:id="_1_YZg6bsEeSFCpZI3OEurw" keySequence="M1+Q" command="_1_YZgKbsEeSFCpZI3OEurw"/>
   </bindingTables>

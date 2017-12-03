@@ -17,12 +17,15 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+
+import org.reldb.dbrowser.handlers.edit.*;
+
+import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.Tabs;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
@@ -37,23 +40,23 @@ public class CmdPanelInput extends Composite {
 	private CmdPanelBottom cmdPanelBottom;
 	private StyledText inputText;
 
-	private ToolItem tlitmPrevHistory;
-	private ToolItem tlitmNextHistory;
-	private ToolItem tlitmClear;
-	private ToolItem tlitmUndo;
-	private ToolItem tlitmRedo;
-	private ToolItem tlitmCut;
-	private ToolItem tlitmCopy;
-	private ToolItem tlitmPaste;
-	private ToolItem tlitmFindReplace;
-	private ToolItem tlitmLoad;
-	private ToolItem tlitmLoadInsert;
-	private ToolItem tlitmGetPath;
-	private ToolItem tlitmSave;
-	private ToolItem tlitmSaveHistory;
-	private ToolItem tlitmCopyToOutput;
-	private ToolItem tlitmWrap;
-	private ToolItem tlitmCharacters;
+	private CommandActivator tlitmPrevHistory;
+	private CommandActivator tlitmNextHistory;
+	private CommandActivator tlitmClear;
+	private CommandActivator tlitmUndo;
+	private CommandActivator tlitmRedo;
+	private CommandActivator tlitmCut;
+	private CommandActivator tlitmCopy;
+	private CommandActivator tlitmPaste;
+	private CommandActivator tlitmFindReplace;
+	private CommandActivator tlitmLoad;
+	private CommandActivator tlitmLoadInsert;
+	private CommandActivator tlitmGetPath;
+	private CommandActivator tlitmSave;
+	private CommandActivator tlitmSaveHistory;
+	private CommandActivator tlitmCopyToOutput;
+	private CommandActivator tlitmWrap;
+	private CommandActivator tlitmCharacters;
 
 	private Vector<String> entryHistory = new Vector<String>();
 	private int currentHistoryItem = 0;
@@ -187,11 +190,11 @@ public class CmdPanelInput extends Composite {
 		cmdPanelBottom.setLayoutData(fd_cmdPanelBottom);
 
 		if ((cmdStyle & CmdPanel.NO_INPUT_TOOLBAR) == 0) {
-			tlitmCharacters = new ToolItem(toolBar, SWT.NONE);
+			tlitmCharacters = new CommandActivator(SpecialChars.class, toolBar, SWT.NONE);
 			tlitmCharacters.setToolTipText("Special characters");
 			tlitmCharacters.addListener(SWT.Selection, e -> specialCharacterDisplay.open());
 
-			tlitmPrevHistory = new ToolItem(toolBar, SWT.NONE);
+			tlitmPrevHistory = new CommandActivator(PreviousHistory.class, toolBar, SWT.NONE);
 			tlitmPrevHistory.setToolTipText("Load previous historical entry");
 			tlitmPrevHistory.addListener(SWT.Selection, e -> {
 				inputText.setText(getPreviousHistoryItem());
@@ -199,7 +202,7 @@ public class CmdPanelInput extends Composite {
 				inputText.setFocus();
 			});
 
-			tlitmNextHistory = new ToolItem(toolBar, SWT.NONE);
+			tlitmNextHistory = new CommandActivator(NextHistory.class, toolBar, SWT.NONE);
 			tlitmNextHistory.setToolTipText("Load next historical entry");
 			tlitmNextHistory.addListener(SWT.Selection, e -> {
 				inputText.setText(getNextHistoryItem());
@@ -207,38 +210,38 @@ public class CmdPanelInput extends Composite {
 				inputText.setFocus();
 			});
 
-			tlitmClear = new ToolItem(toolBar, SWT.NONE);
+			tlitmClear = new CommandActivator(Clear.class, toolBar, SWT.NONE);
 			tlitmClear.setToolTipText("Clear");
 			tlitmClear.addListener(SWT.Selection, e -> {
 				inputText.setText("");
 				inputText.setFocus();
 			});
 
-			tlitmUndo = new ToolItem(toolBar, SWT.NONE);
+			tlitmUndo = new CommandActivator(Undo.class, toolBar, SWT.NONE);
 			tlitmUndo.setToolTipText("Undo");
 			tlitmUndo.addListener(SWT.Selection, e -> doUndo());
 
-			tlitmRedo = new ToolItem(toolBar, SWT.NONE);
+			tlitmRedo = new CommandActivator(Redo.class, toolBar, SWT.NONE);
 			tlitmRedo.setToolTipText("Redo");
 			tlitmRedo.addListener(SWT.Selection, e -> doRedo());
 
-			tlitmCut = new ToolItem(toolBar, SWT.NONE);
+			tlitmCut = new CommandActivator(Cut.class, toolBar, SWT.NONE);
 			tlitmCut.setToolTipText("Cut");
 			tlitmCut.addListener(SWT.Selection, e -> doCut());
 
-			tlitmCopy = new ToolItem(toolBar, SWT.NONE);
+			tlitmCopy = new CommandActivator(Copy.class, toolBar, SWT.NONE);
 			tlitmCopy.setToolTipText("Copy");
 			tlitmCopy.addListener(SWT.Selection, e -> doCopy());
 
-			tlitmPaste = new ToolItem(toolBar, SWT.NONE);
+			tlitmPaste = new CommandActivator(Paste.class, toolBar, SWT.NONE);
 			tlitmPaste.setToolTipText("Paste");
 			tlitmPaste.addListener(SWT.Selection, e -> doPaste());
 
-			tlitmFindReplace = new ToolItem(toolBar, SWT.NONE);
+			tlitmFindReplace = new CommandActivator(FindReplace.class, toolBar, SWT.NONE);
 			tlitmFindReplace.setToolTipText("Find/Replace");
 			tlitmFindReplace.addListener(SWT.Selection, e -> doFindReplace());
 
-			tlitmLoad = new ToolItem(toolBar, SWT.NONE);
+			tlitmLoad = new CommandActivator(LoadFile.class, toolBar, SWT.NONE);
 			tlitmLoad.setToolTipText("Load file");
 			tlitmLoad.addListener(SWT.Selection, e -> {
 				ensureLoadDialogExists();
@@ -253,7 +256,7 @@ public class CmdPanelInput extends Composite {
 				saveDialog.setFilterPath(loadDialog.getFilterPath());
 			});
 
-			tlitmLoadInsert = new ToolItem(toolBar, SWT.NONE);
+			tlitmLoadInsert = new CommandActivator(InsertFile.class, toolBar, SWT.NONE);
 			tlitmLoadInsert.setToolTipText("Load and insert file");
 			tlitmLoadInsert.addListener(SWT.Selection, e -> {
 				ensureLoadDialogExists();
@@ -265,7 +268,7 @@ public class CmdPanelInput extends Composite {
 				loadInsertFile(fname);
 			});
 
-			tlitmGetPath = new ToolItem(toolBar, SWT.NONE);
+			tlitmGetPath = new CommandActivator(InsertFileName.class, toolBar, SWT.NONE);
 			tlitmGetPath.setToolTipText("Get file path");
 			tlitmGetPath.addListener(SWT.Selection, e -> {
 				ensureLoadPathDialogExists();
@@ -277,7 +280,7 @@ public class CmdPanelInput extends Composite {
 				insertInputText('"' + fname.replace("\\", "\\\\") + '"');
 			});
 
-			tlitmSave = new ToolItem(toolBar, SWT.NONE);
+			tlitmSave = new CommandActivator(SaveFile.class, toolBar, SWT.NONE);
 			tlitmSave.setToolTipText("Save");
 			tlitmSave.addListener(SWT.Selection, e -> {
 				ensureSaveDialogExists();
@@ -297,7 +300,7 @@ public class CmdPanelInput extends Composite {
 				}
 			});
 
-			tlitmSaveHistory = new ToolItem(toolBar, SWT.NONE);
+			tlitmSaveHistory = new CommandActivator(SaveHistory.class, toolBar, SWT.NONE);
 			tlitmSaveHistory.setToolTipText("Save history");
 			tlitmSaveHistory.addListener(SWT.Selection, e -> {
 				ensureSaveHistoryDialogExists();
@@ -323,12 +326,12 @@ public class CmdPanelInput extends Composite {
 				}
 			});
 
-			tlitmCopyToOutput = new ToolItem(toolBar, SWT.CHECK);
+			tlitmCopyToOutput = new CommandActivator(CopyInputToOutput.class, toolBar, SWT.CHECK);
 			tlitmCopyToOutput.setToolTipText("Copy input to output");
 			tlitmCopyToOutput.setSelection(true);
 			tlitmCopyToOutput.addListener(SWT.Selection, e -> setCopyInputToOutput(tlitmCopyToOutput.getSelection()));
 
-			tlitmWrap = new ToolItem(toolBar, SWT.CHECK);
+			tlitmWrap = new CommandActivator(WrapText.class, toolBar, SWT.CHECK);
 			tlitmWrap.setToolTipText("Wrap text");
 			tlitmWrap.setSelection(true);
 			tlitmWrap.addListener(SWT.Selection, e -> inputText.setWordWrap(tlitmWrap.getSelection()));
@@ -388,7 +391,7 @@ public class CmdPanelInput extends Composite {
 	}
 
 	private void doFindReplace() {
-		new FindReplace(getShell(), inputText).open();
+		new FindReplaceDialog(getShell(), inputText).open();
 	}
 
 	public void copyOutputToInput() {

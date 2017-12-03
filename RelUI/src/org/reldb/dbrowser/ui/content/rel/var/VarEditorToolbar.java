@@ -12,10 +12,10 @@ public class VarEditorToolbar extends ManagedToolbar {
 
 		addAdditionalItemsBefore(this);
 
-		addItem("Refresh", "arrow_refresh", SWT.PUSH).addListener(SWT.Selection, e -> relvarEditor.refresh());
-		addItem("Go to INSERT row", "table_row_insert", SWT.PUSH).addListener(SWT.Selection,
+		addItem(null, "Refresh", "arrow_refresh", SWT.PUSH).addListener(SWT.Selection, e -> relvarEditor.refresh());
+		addItem(null, "Go to INSERT row", "table_row_insert", SWT.PUSH).addListener(SWT.Selection,
 				e -> relvarEditor.goToInsertRow());
-		addItem("DELETE selected tuples", "table_row_delete", SWT.PUSH).addListener(SWT.Selection,
+		addItem(null, "DELETE selected tuples", "table_row_delete", SWT.PUSH).addListener(SWT.Selection,
 				e -> relvarEditor.askDeleteSelected());
 	}
 

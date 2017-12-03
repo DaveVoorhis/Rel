@@ -5,7 +5,8 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.dbrowser.handlers.database.Backup;
+import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.ManagedToolbar;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
@@ -19,7 +20,7 @@ public class DbTabContentRev extends Composite {
 	private void addZoom(ManagedToolbar toolbar) {
 		toolbar.addSeparatorFill();
 		// zoom
-		toolbar.addItem("Zoom in or out", "view_fullscreen", SWT.PUSH).addListener(SWT.Selection, e -> zoom());
+		toolbar.addItem(null, "Zoom in or out", "view_fullscreen", SWT.PUSH).addListener(SWT.Selection, e -> zoom());
 	}
 
 	private void makeToolbar(DbTab parentTab) {
@@ -34,7 +35,7 @@ public class DbTabContentRev extends Composite {
 				@Override
 				public void addAdditionalItemsBefore(VarEditorToolbar toolbar) {
 					// backup icon
-					ToolItem tlitmBackup = addItem("Make backup", "safeIcon", SWT.PUSH);
+					CommandActivator tlitmBackup = addItem(Backup.class, "Make backup", "safeIcon", SWT.PUSH);
 					tlitmBackup.addListener(SWT.Selection, e -> parentTab.makeBackup());
 				}
 			};
@@ -43,7 +44,7 @@ public class DbTabContentRev extends Composite {
 				@Override
 				public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
 					// backup icon
-					ToolItem tlitmBackup = addItem("Make backup", "safeIcon", SWT.PUSH);
+					CommandActivator tlitmBackup = addItem(Backup.class, "Make backup", "safeIcon", SWT.PUSH);
 					tlitmBackup.addListener(SWT.Selection, e -> parentTab.makeBackup());
 				}
 			};

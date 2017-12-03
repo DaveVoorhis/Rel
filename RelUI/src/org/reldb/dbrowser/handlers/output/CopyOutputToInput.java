@@ -14,11 +14,12 @@ package org.reldb.dbrowser.handlers.output;
 import org.eclipse.e4.ui.model.application.ui.menu.MHandledMenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.reldb.dbrowser.handlers.MenuItem;
-import org.reldb.dbrowser.ui.AboutDialog;
 
 public class CopyOutputToInput extends MenuItem {
+
 	@Override
 	public void execute(Shell shell, MHandledMenuItem item) {
-		new AboutDialog(shell).open();
+		// TODO Auto-generated method stub
+		
 	}
 }

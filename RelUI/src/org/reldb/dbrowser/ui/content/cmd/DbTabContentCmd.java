@@ -7,7 +7,9 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.dbrowser.handlers.database.Backup;
+import org.reldb.dbrowser.handlers.output.CopyOutputToInput;
+import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.RevDatabase.Script;
@@ -20,7 +22,7 @@ public class DbTabContentCmd extends Composite {
 	private String name = "Untitled";
 	private String oldScript;
 	
-	private ToolItem copyOutputToInputBtn;
+	private CommandActivator copyOutputToInputBtn;
 	
 	public DbTabContentCmd(DbTab parentTab, Composite contentParent) throws NumberFormatException, ClassNotFoundException, IOException, DatabaseFormatVersionException {
 		super(contentParent, SWT.None);
@@ -47,9 +49,9 @@ public class DbTabContentCmd extends Composite {
 			@Override
 			public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
 				// backup icon
-				addItem("Make backup", "safeIcon", SWT.PUSH).addListener(SWT.Selection, e -> parentTab.makeBackup());
+				addItem(Backup.class, "Make backup", "safeIcon", SWT.PUSH).addListener(SWT.Selection, e -> parentTab.makeBackup());
 				// copy output to input
-				copyOutputToInputBtn = addItem("Copy output to input", "copyToInputIcon", SWT.PUSH);
+				copyOutputToInputBtn = addItem(CopyOutputToInput.class, "Copy output to input", "copyToInputIcon", SWT.PUSH);
 				copyOutputToInputBtn.setEnabled(!cmdPanel.getEnhancedOutput());
 				copyOutputToInputBtn.addListener(SWT.Selection, e -> cmdPanel.copyOutputToInput());
 			}
@@ -57,7 +59,7 @@ public class DbTabContentCmd extends Composite {
 			public void addAdditionalItemsAfter(CmdPanelToolbar toolbar) {
 				addSeparatorFill();
 				// zoom
-				addItem("Zoom in or out", "view_fullscreen", SWT.PUSH).addListener(SWT.Selection, e -> zoom());
+				addItem(null, "Zoom in or out", "view_fullscreen", SWT.PUSH).addListener(SWT.Selection, e -> zoom());
 			}
 		};
 		

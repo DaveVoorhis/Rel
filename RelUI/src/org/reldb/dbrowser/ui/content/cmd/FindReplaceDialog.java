@@ -43,7 +43,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.RowLayout;
 
-public class FindReplace extends Dialog {
+public class FindReplaceDialog extends Dialog {
 
 	private Shell shell;
 
@@ -96,7 +96,7 @@ public class FindReplace extends Dialog {
 	 * @param parent
 	 * @param style
 	 */
-	public FindReplace(Shell parent, StyledText text) {
+	public FindReplaceDialog(Shell parent, StyledText text) {
 		super(parent, SWT.DIALOG_TRIM | SWT.RESIZE);
 		this.text = text;
 		setText("Find/Replace");

@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Shell;
 public abstract class MenuItem {
 	@CanExecute
 	public boolean canExecute(MHandledMenuItem item) {
-		System.out.println("MenuItem: canExecute");
+		System.out.println("MenuItem: " + getClass().toString() + " canExecute");
 		return true;
 	}
 

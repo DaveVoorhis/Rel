@@ -10,8 +10,8 @@ public class VarRealDesignerToolbar extends ManagedToolbar {
 	public VarRealDesignerToolbar(Composite parent, RelvarDesigner relvarDesigner) {
 		super(parent);
 
-		addItem("Refresh", "arrow_refresh", SWT.PUSH).addListener(SWT.Selection, e -> relvarDesigner.refresh());
-		addItem("DELETE selected tuples", "table_row_delete", SWT.PUSH).addListener(SWT.Selection,
+		addItem(null, "Refresh", "arrow_refresh", SWT.PUSH).addListener(SWT.Selection, e -> relvarDesigner.refresh());
+		addItem(null, "DELETE selected tuples", "table_row_delete", SWT.PUSH).addListener(SWT.Selection,
 				e -> relvarDesigner.askDeleteSelected());
 	}
 

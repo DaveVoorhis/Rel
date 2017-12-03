@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
@@ -65,9 +65,9 @@ public class Rev extends Composite {
 
 	private PreferenceChangeListener preferenceChangeListener;
 
-	private ToolItem loadBtn = null;
-	private ToolItem saveBtn = null;
-	private ToolItem stopBtn = null;
+	private CommandActivator loadBtn = null;
+	private CommandActivator saveBtn = null;
+	private CommandActivator stopBtn = null;
 
 	private Label modelLabel;
 
@@ -138,16 +138,16 @@ public class Rev extends Composite {
 		ToolBar revTools = new ToolBar(inputView, SWT.NONE);
 
 		if ((revstyle & SAVE_AND_LOAD_BUTTONS) != 0) {
-			loadBtn = new ToolItem(revTools, SWT.PUSH);
+			loadBtn = new CommandActivator(null, revTools, SWT.PUSH);
 			loadBtn.setToolTipText("Load");
 			loadBtn.addListener(SWT.Selection, e -> doLoad());
 
-			saveBtn = new ToolItem(revTools, SWT.PUSH);
+			saveBtn = new CommandActivator(null, revTools, SWT.PUSH);
 			saveBtn.setToolTipText("Save as");
 			saveBtn.addListener(SWT.Selection, e -> doSaveAs());
 		}
 
-		stopBtn = new ToolItem(revTools, SWT.PUSH);
+		stopBtn = new CommandActivator(null, revTools, SWT.PUSH);
 		stopBtn.setToolTipText("Cancel running query.");
 		stopBtn.addListener(SWT.Selection, e -> outputView.notifyStop());
 		stopBtn.setEnabled(false);

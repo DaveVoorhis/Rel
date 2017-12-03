@@ -2,37 +2,38 @@ package org.reldb.dbrowser.ui.content.cmd;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.ManagedToolbar;
+import org.reldb.dbrowser.handlers.output.*;
 
 public class CmdPanelToolbar extends ManagedToolbar {
 
-	private ToolItem clearOutputBtn;
-	private ToolItem saveOutputAsHTMLBtn;
-	private ToolItem saveOutputAsTextBtn;
-	private ToolItem enhancedOutputToggle;
-	private ToolItem showOkToggle;
-	private ToolItem autoclearToggle;
-	private ToolItem headingToggle;
-	private ToolItem headingTypesToggle;
+	private CommandActivator clearOutputBtn;
+	private CommandActivator saveOutputAsHTMLBtn;
+	private CommandActivator saveOutputAsTextBtn;
+	private CommandActivator enhancedOutputToggle;
+	private CommandActivator showOkToggle;
+	private CommandActivator autoclearToggle;
+	private CommandActivator headingToggle;
+	private CommandActivator headingTypesToggle;
 	
 	public CmdPanelToolbar(Composite parent, CmdPanelOutput cmdPanel) {
 		super(parent);
 		
 		addAdditionalItemsBefore(this);
 
-		clearOutputBtn = addItem("Clear", "clearIcon", SWT.PUSH);
+		clearOutputBtn = addItem(ClearOutput.class, "Clear", "clearIcon", SWT.PUSH);
 		clearOutputBtn.addListener(SWT.Selection, e -> cmdPanel.clearOutput());
 
-		saveOutputAsHTMLBtn = addItem("Save as HTML", "saveHTMLIcon", SWT.PUSH);
+		saveOutputAsHTMLBtn = addItem(SaveAsHTML.class, "Save as HTML", "saveHTMLIcon", SWT.PUSH);
 		saveOutputAsHTMLBtn.addListener(SWT.Selection, e -> cmdPanel.saveOutputAsHtml());
 
-		saveOutputAsTextBtn = addItem("Save as text", "saveTextIcon", SWT.PUSH);
+		saveOutputAsTextBtn = addItem(SaveAsText.class, "Save as text", "saveTextIcon", SWT.PUSH);
 		saveOutputAsTextBtn.addListener(SWT.Selection, e -> cmdPanel.saveOutputAsText());
 
 		addSeparator();
 
-		enhancedOutputToggle = addItem("Display enhanced output", "enhancedIcon", SWT.CHECK);
+		enhancedOutputToggle = addItem(DisplayEnhancedOutput.class, "Display enhanced output", "enhancedIcon", SWT.CHECK);
 		enhancedOutputToggle.setSelection(cmdPanel.getEnhancedOutput());
 		enhancedOutputToggle.addListener(SWT.Selection, e -> {
 			cmdPanel.setEnhancedOutput(enhancedOutputToggle.getSelection());
@@ -46,16 +47,16 @@ public class CmdPanelToolbar extends ManagedToolbar {
 		});
 
 		if (!cmdPanel.isForEvaluationOnly()) {
-			showOkToggle = addItem("Write 'Ok.' after execution", "showOkIcon", SWT.CHECK);
+			showOkToggle = addItem(DisplayOk.class, "Write 'Ok.' after execution", "showOkIcon", SWT.CHECK);
 			showOkToggle.setSelection(cmdPanel.getShowOk());
 			showOkToggle.addListener(SWT.Selection, e -> cmdPanel.setShowOk(showOkToggle.getSelection()));
 			
-			autoclearToggle = addItem("Automatically clear output", "autoclearIcon", SWT.CHECK);
+			autoclearToggle = addItem(DisplayAutoclear.class, "Automatically clear output", "autoclearIcon", SWT.CHECK);
 			autoclearToggle.setSelection(cmdPanel.getAutoclear());
 			autoclearToggle.addListener(SWT.Selection, e -> cmdPanel.setAutoclear(autoclearToggle.getSelection()));
 		}
 
-		headingToggle = addItem("Show relation headings", "headingIcon", SWT.CHECK);
+		headingToggle = addItem(DisplayRelationHeadings.class, "Show relation headings", "headingIcon", SWT.CHECK);
 		headingToggle.setEnabled(enhancedOutputToggle.getSelection());
 		headingToggle.setSelection(cmdPanel.getHeadingVisible()
 				&& headingToggle.getEnabled());
@@ -66,7 +67,7 @@ public class CmdPanelToolbar extends ManagedToolbar {
 			cmdPanel.setHeadingVisible(headingToggle.getSelection());
 		});
 		
-		headingTypesToggle = addItem("Suppress attribute types in relation headings", "typeSuppressIcon", SWT.CHECK);
+		headingTypesToggle = addItem(DisplayRelationHeadingsType.class, "Display attribute types in relation headings", "typeSuppressIcon", SWT.CHECK);
 		headingTypesToggle.setEnabled(headingToggle.getSelection()
 				&& enhancedOutputToggle.getSelection());
 		headingTypesToggle.setSelection(cmdPanel.getHeadingTypesVisible()

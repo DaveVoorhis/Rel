@@ -9,12 +9,12 @@ public class Toggler extends MenuItem {
 	
 	@CanExecute
 	public boolean canExecute(MHandledMenuItem item) {
-		System.out.println("Toggler: canExecute");
+		System.out.println("Toggler: " + getClass().toString() + " canExecute");
 		return true;
 	}
 	
 	@Execute
 	public void execute(Shell shell, MHandledMenuItem item) {
-		System.out.println("Toggler: execute. Selected = " + item.isSelected());
+		System.out.println("Toggler: " + getClass().toString() + " execute. Selected = " + item.isSelected());
 	}
 }
