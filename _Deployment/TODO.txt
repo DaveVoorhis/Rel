@@ -15,6 +15,9 @@
   nice way to provide a “standard library” that can be extended, upgraded, 
   customised, or removed as needed.
 
+- Provide "prepared statement" or parameterised query mechanism in client
+  library, to promote code re-use and avoid "Tutorial D injection".
+
 - Remove read-only UPDATE operator (as long as EXTEND can serve the same purpose.)
 
 - Fix EXACTLY.
