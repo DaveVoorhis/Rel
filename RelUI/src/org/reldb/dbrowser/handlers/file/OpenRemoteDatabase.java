@@ -1,4 +1,3 @@
- 
 package org.reldb.dbrowser.handlers.file;
 
 import org.eclipse.e4.core.di.annotations.Execute;

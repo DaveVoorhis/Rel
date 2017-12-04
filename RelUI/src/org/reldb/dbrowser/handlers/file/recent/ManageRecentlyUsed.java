@@ -1,4 +1,3 @@
- 
 package org.reldb.dbrowser.handlers.file.recent;
 
 import org.eclipse.e4.core.di.annotations.Execute;

@@ -17,25 +17,24 @@ public class ManagedToolbar {
     private PreferenceChangeListener preferenceChangeListener;
     private ToolBar toolBar;
     
-	private static class ToolbarItem {
-		private ToolItem toolItem;
+	private static class CommandActivatorItem {
+		private CommandActivator item;
 		private String iconName;
-		public ToolbarItem(ToolItem toolItem, String iconName) {
-			this.toolItem = toolItem;
+		public CommandActivatorItem(CommandActivator item, String iconName) {
+			this.item = item;
 			this.iconName = iconName;
 		}
-		ToolItem getToolItem() {return toolItem;}
+		CommandActivator getItem() {return item;}
 		String getIconName() {return iconName;}
 	}
 	
-	private Vector<ToolbarItem> toolbarItems = new Vector<ToolbarItem>();
+	private Vector<CommandActivatorItem> items = new Vector<CommandActivatorItem>();
 	
 	public CommandActivator addItem(Class<? extends MenuItem> menuClass, String toolTip, String iconName, int style) {
 		CommandActivator item = new CommandActivator(menuClass, toolBar, style);
 		item.setToolTipText(toolTip);
 		item.setImage(IconLoader.loadIcon(iconName));
-		ToolbarItem toolbarItem = new ToolbarItem(item, iconName);
-		toolbarItems.add(toolbarItem);
+		items.add(new CommandActivatorItem(item, iconName));
 		return item;
 	}
 	
@@ -49,6 +48,7 @@ public class ManagedToolbar {
 	
 	public ManagedToolbar(Composite parent) {
 		toolBar = new ToolBar(parent, SWT.None);
+		toolBar.addDisposeListener(e -> disposed());
 		preferenceChangeListener = new PreferenceChangeAdapter("ManagedToolbar") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
@@ -63,9 +63,14 @@ public class ManagedToolbar {
 		toolBar.dispose();
 	}
 
+	private void disposed() {
+		for (CommandActivatorItem tbi: items)
+			tbi.getItem().notifyToolbarDisposed();
+	}
+
 	private void setupIcons() {
-		for (ToolbarItem tbi: toolbarItems)
-			tbi.getToolItem().setImage(IconLoader.loadIcon(tbi.getIconName()));
+		for (CommandActivatorItem tbi: items)
+			tbi.getItem().setImage(IconLoader.loadIcon(tbi.getIconName()));
 	}
 
 	public ToolBar getToolBar() {
