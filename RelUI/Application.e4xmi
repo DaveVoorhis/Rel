@@ -52,6 +52,8 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_pWVf0NRhEeemrrcqwS3xUw" elementId="relui.handledmenuitem.automaticallyclearoutput" label="Automatically clear output" iconURI="platform:/plugin/RelUI/icons/autoclearIcon.png" selected="true" type="Check" command="_iMbd4NRhEeemrrcqwS3xUw"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_vfku8NRhEeemrrcqwS3xUw" elementId="relui.handledmenuitem.showrelationheadings" label="Show relation headings" iconURI="platform:/plugin/RelUI/icons/headingIcon.png" selected="true" type="Check" command="_rpA_ANRfEeemrrcqwS3xUw"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_08IeQNRhEeemrrcqwS3xUw" elementId="relui.handledmenuitem.showattributetypesinrelationheadings" label="Show attribute types in relation headings" iconURI="platform:/plugin/RelUI/icons/headingIcon.png" selected="true" type="Check" command="_tlxmoNRfEeemrrcqwS3xUw"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_qeiYcNkLEeedLsSozeNIAA" elementId="relui.menuseparator.7"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_rYkXwNkLEeedLsSozeNIAA" elementId="relui.handledmenuitem.refresh" label="Refresh" iconURI="platform:/plugin/RelUI/icons/arrow_refresh.png" command="_xPBNwNkLEeedLsSozeNIAA"/>
       </children>
       <children xsi:type="menu:Menu" xmi:id="_jurpINPEEee2ravf7u6htQ" elementId="relui.menu.database" label="Database" mnemonics="&amp;D">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_l7Vt8NPEEee2ravf7u6htQ" elementId="relui.handledmenuitem.backup" label="Backup" iconURI="platform:/plugin/RelUI/icons/safeIcon.png" tooltip="Make a backup" mnemonics="" command="_iw1U0NRIEeerO4zAq7e_BA"/>
@@ -123,6 +125,7 @@
   <handlers xmi:id="_oZRw4NeyEeedLsSozeNIAA" elementId="relui.handler.36" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.database.Show" command="_WZhH8NRKEeerO4zAq7e_BA"/>
   <handlers xmi:id="_rXB7cNeyEeedLsSozeNIAA" elementId="relui.handler.37" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.database.ShowSystemObjects" command="_afkXUNRKEeerO4zAq7e_BA"/>
   <handlers xmi:id="_da-M0NhNEeedLsSozeNIAA" elementId="relui.handler.38" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.CopyOutputToInput" command="_XoKf0NRfEeemrrcqwS3xUw"/>
+  <handlers xmi:id="_3RV8kNkLEeedLsSozeNIAA" elementId="relui.handler.39" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.Refresh" command="_xPBNwNkLEeedLsSozeNIAA"/>
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
     <bindings xmi:id="_1_YZg6bsEeSFCpZI3OEurw" keySequence="M1+Q" command="_1_YZgKbsEeSFCpZI3OEurw"/>
   </bindingTables>
@@ -177,6 +180,7 @@
   <commands xmi:id="_rpA_ANRfEeemrrcqwS3xUw" elementId="relui.command.displayrelationheadingscommand" commandName="displayRelationHeadingsCommand"/>
   <commands xmi:id="_tlxmoNRfEeemrrcqwS3xUw" elementId="relui.command.displayrelationheadingstypecommand" commandName="displayRelationHeadingsTypeCommand"/>
   <commands xmi:id="_iMbd4NRhEeemrrcqwS3xUw" elementId="relui.command.displayautoclearcommand" commandName="displayAutoclearCommand"/>
+  <commands xmi:id="_xPBNwNkLEeedLsSozeNIAA" elementId="relui.command.refreshcommand" commandName="refreshCommand"/>
   <addons xmi:id="_1_XycqbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_1_Xyc6bsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_1_XydKbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

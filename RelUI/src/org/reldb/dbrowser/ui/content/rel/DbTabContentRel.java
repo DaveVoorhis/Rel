@@ -133,7 +133,6 @@ public class DbTabContentRel extends Composite {
 	}
 
 	protected void changeToolbar() {
-		System.out.println("DbTabContentRel: changeToolbar");
 		if (tabToolBar != null) {
 			tabToolBar.dispose();
 			tabToolBar = null;

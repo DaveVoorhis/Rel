@@ -185,6 +185,7 @@ public class DbTab extends CTabItem {
 		modeContent.layout();
 		if (existing)
 			contentRel.redisplayed();
+		contentRel.refreshMenu();
 	}
 
 	private void showRev() {
@@ -204,6 +205,7 @@ public class DbTab extends CTabItem {
 		modeContent.layout();
 		if (existing)
 			contentRev.redisplayed();
+		contentRev.refreshMenu();
 	}
 
 	private void showCmd() {
@@ -229,6 +231,7 @@ public class DbTab extends CTabItem {
 		modeContent.layout();
 		if (existing)
 			contentCmd.redisplayed();
+		contentCmd.refreshMenu();
 	}
 
 	private void showConversion(String message, String dbURL) {
