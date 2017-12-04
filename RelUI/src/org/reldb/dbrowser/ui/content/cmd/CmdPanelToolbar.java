@@ -81,5 +81,5 @@ public class CmdPanelToolbar extends ManagedToolbar {
 	protected void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {}
 
 	/** Override to add additional toolbar items after the default items. */
-	protected void addAdditionalItemsAfter(CmdPanelToolbar toolbar) {}	
+	protected void addAdditionalItemsAfter(CmdPanelToolbar toolbar) {}
 }

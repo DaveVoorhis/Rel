@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.DBrowser;
+import org.reldb.dbrowser.handlers.MenuItem;
 import org.reldb.dbrowser.ui.backup.Backup;
 import org.reldb.dbrowser.ui.content.cmd.DbTabContentCmd;
 import org.reldb.dbrowser.ui.content.conversion.DbTabContentConversion;
@@ -169,6 +170,7 @@ public class DbTab extends CTabItem {
 	}
 
 	private void showRel() {
+		MenuItem.clear();
 		boolean existing = true;
 		if (contentRel == null) {
 			existing = false;
@@ -185,10 +187,11 @@ public class DbTab extends CTabItem {
 		modeContent.layout();
 		if (existing)
 			contentRel.redisplayed();
-		contentRel.refreshMenu();
+		contentRel.activateMenu();
 	}
 
 	private void showRev() {
+		MenuItem.clear();
 		boolean existing = true;
 		if (contentRev == null) {
 			existing = false;
@@ -205,10 +208,11 @@ public class DbTab extends CTabItem {
 		modeContent.layout();
 		if (existing)
 			contentRev.redisplayed();
-		contentRev.refreshMenu();
+		contentRev.activateMenu();
 	}
 
 	private void showCmd() {
+		MenuItem.clear();
 		boolean existing = true;
 		if (contentCmd == null) {
 			existing = false;
@@ -231,7 +235,7 @@ public class DbTab extends CTabItem {
 		modeContent.layout();
 		if (existing)
 			contentCmd.redisplayed();
-		contentCmd.refreshMenu();
+		contentCmd.activateMenu();
 	}
 
 	private void showConversion(String message, String dbURL) {

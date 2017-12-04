@@ -19,6 +19,10 @@ public abstract class MenuItem {
 	public static void deactivate(Class<? extends MenuItem> tag) {
 		activated.remove(tag);
 	}
+
+	public static void clear() {
+		activated.clear();
+	}
 	
 	@CanExecute
 	public boolean canExecute(MHandledMenuItem item) {

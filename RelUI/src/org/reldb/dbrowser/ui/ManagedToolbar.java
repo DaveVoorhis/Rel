@@ -76,4 +76,13 @@ public class ManagedToolbar {
 	public ToolBar getToolBar() {
 		return toolBar;
 	}
+
+	public void activate() {
+		for (CommandActivatorItem tbi: items)
+			tbi.getItem().activate();
+	}
+	
+	public void deactivate() {
+		MenuItem.clear();
+	}
 }

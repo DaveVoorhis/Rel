@@ -23,7 +23,7 @@ public class CommandActivator extends ToolItem {
 
 	private Class<? extends MenuItem>mnuClass;
 	
-	private void activate() {
+	public void activate() {
 		if (mnuClass == null)
 			return;
 		try {
@@ -34,7 +34,7 @@ public class CommandActivator extends ToolItem {
 		}
 	}
 	
-	private void deactivate() {
+	public void deactivate() {
 		if (mnuClass == null)
 			return;
 		try {

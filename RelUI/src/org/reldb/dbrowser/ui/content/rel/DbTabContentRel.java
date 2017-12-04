@@ -179,4 +179,16 @@ public class DbTabContentRel extends Composite {
 		rel.redisplayed();
 	}
 
+	public void activateMenu() {
+		tlitmBackup.activate();
+		tlitmShow.activate();
+		tlitmEdit.activate();
+		tlitmNew.activate();
+		tlitmDrop.activate();
+		tlitmDesign.activate();
+		tlitmRename.activate();
+		tlitmExport.activate();
+		tlitmShowSystem.activate();
+	}
+
 }

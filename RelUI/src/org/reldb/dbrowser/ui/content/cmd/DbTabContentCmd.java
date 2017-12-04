@@ -21,6 +21,7 @@ public class DbTabContentCmd extends Composite {
 	private RevDatabase database = null;
 	private String name = "Untitled";
 	private String oldScript;
+	private CmdPanelToolbar toolBar;
 	
 	private CommandActivator copyOutputToInputBtn;
 	
@@ -45,7 +46,7 @@ public class DbTabContentCmd extends Composite {
 			}
 		};
 
-		CmdPanelToolbar toolBar = new CmdPanelToolbar(this, cmdPanel.getCmdPanelOutput()) {
+		toolBar = new CmdPanelToolbar(this, cmdPanel.getCmdPanelOutput()) {
 			@Override
 			public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
 				// backup icon
@@ -110,5 +111,9 @@ public class DbTabContentCmd extends Composite {
 	
 	public void setContent(String content) {
 		cmdPanel.setContent(content);
+	}
+
+	public void activateMenu() {
+		toolBar.activate();
 	}
 }
