@@ -3,7 +3,7 @@
 - Make sure drop-down menus work properly to show command-line input.
 
 - In Rel database tree view under Windows, double-click of heading opens
-  and immediately closes it.
+  and immediately closes it. (Check?)
 
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 
