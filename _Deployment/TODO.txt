@@ -1,6 +1,6 @@
 ** TO DO **
 
-- Make sure drop-down menus work properly to show command-line input.
+- Implement Delete and SelectAll Edit menu items.
 
 - In Rel database tree view under Windows, double-click of heading opens
   and immediately closes it. (Check?)

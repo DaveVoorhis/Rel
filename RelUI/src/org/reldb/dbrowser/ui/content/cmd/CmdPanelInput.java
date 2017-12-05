@@ -91,7 +91,7 @@ public class CmdPanelInput extends Composite {
 		setLayout(new FormLayout());
 
 		this.cmdPanelOutput = cmdPanelOutput;
-
+		
 		ToolBar toolBar = new ToolBar(this, SWT.FLAT);
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);
@@ -811,6 +811,26 @@ public class CmdPanelInput extends Composite {
 			t.printStackTrace();
 		}
 		return null;
+	}
+
+	public void activateMenu() {
+		tlitmPrevHistory.activate();
+		tlitmNextHistory.activate();
+		tlitmClear.activate();
+		tlitmUndo.activate();
+		tlitmRedo.activate();
+		tlitmCut.activate();
+		tlitmCopy.activate();
+		tlitmPaste.activate();
+		tlitmFindReplace.activate();
+		tlitmLoad.activate();
+		tlitmLoadInsert.activate();
+		tlitmGetPath.activate();
+		tlitmSave.activate();
+		tlitmSaveHistory.activate();
+		tlitmCopyToOutput.activate();
+		tlitmWrap.activate();
+		tlitmCharacters.activate();
 	}
 
 }

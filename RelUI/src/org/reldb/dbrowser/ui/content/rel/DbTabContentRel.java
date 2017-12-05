@@ -8,6 +8,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
+import org.reldb.dbrowser.handlers.MenuItem;
 import org.reldb.dbrowser.handlers.database.*;
 import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.DbTab;
@@ -132,26 +133,33 @@ public class DbTabContentRel extends Composite {
 		tlitmExport.setEnabled(false);
 	}
 
+	public DbTreeTab getSelectedDbTreeTab() {
+		CTabFolder tabs = rel.getTabFolder();
+		CTabItem selectedTab = tabs.getSelection();
+		if (selectedTab != null && selectedTab instanceof DbTreeTab)
+			return (DbTreeTab)selectedTab;
+		return null;
+	}
+	
 	protected void changeToolbar() {
+		MenuItem.clear();
 		if (tabToolBar != null) {
 			tabToolBar.dispose();
 			tabToolBar = null;
 		}
-		CTabFolder tabs = rel.getTabFolder();
-		CTabItem selectedTab = tabs.getSelection();
+		DbTreeTab selectedTab = getSelectedDbTreeTab();
 		if (selectedTab != null) {
-			if (selectedTab instanceof DbTreeTab) {
-				tabToolBar = ((DbTreeTab)selectedTab).getToolBar(DbTabContentRel.this);
-				if (tabToolBar != null) {
-					FormData fd_toolBar = new FormData();
-					fd_toolBar.left = new FormAttachment(mainToolBar);
-					fd_toolBar.top = new FormAttachment(0);
-					fd_toolBar.right = new FormAttachment(100);
-					tabToolBar.setLayoutData(fd_toolBar);
-				}
+			tabToolBar = ((DbTreeTab)selectedTab).getToolBar(DbTabContentRel.this);
+			if (tabToolBar != null) {
+				FormData fd_toolBar = new FormData();
+				fd_toolBar.left = new FormAttachment(mainToolBar);
+				fd_toolBar.top = new FormAttachment(0);
+				fd_toolBar.right = new FormAttachment(100);
+				tabToolBar.setLayoutData(fd_toolBar);
 			}
 		}
 		layout();
+		activateMenu();
 	}
 	
 	public void dispose() {
@@ -189,6 +197,9 @@ public class DbTabContentRel extends Composite {
 		tlitmRename.activate();
 		tlitmExport.activate();
 		tlitmShowSystem.activate();
+		DbTreeTab selectedTab = getSelectedDbTreeTab();
+		if (selectedTab != null)
+			selectedTab.activateMenu();
 	}
 
 }

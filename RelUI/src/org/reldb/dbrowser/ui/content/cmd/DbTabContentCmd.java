@@ -115,5 +115,6 @@ public class DbTabContentCmd extends Composite {
 
 	public void activateMenu() {
 		toolBar.activate();
+		cmdPanel.activateMenu();
 	}
 }

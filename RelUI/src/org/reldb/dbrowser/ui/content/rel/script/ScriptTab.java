@@ -99,4 +99,9 @@ public class ScriptTab extends DbTreeTab {
 		cmdPanel.zoom();
 	}
 	
+	@Override
+	public void activateMenu() {
+		cmdPanel.activateMenu();
+	}
+	
 }

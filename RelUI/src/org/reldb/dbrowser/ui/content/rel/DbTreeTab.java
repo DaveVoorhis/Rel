@@ -47,4 +47,7 @@ public class DbTreeTab extends CTabItem {
 	public boolean canClose() {
 		return true;
 	}
+
+	/** Override to activate additional menu items, other than those defined by the main toolbar returned by getToolBar(). */
+	public void activateMenu() {}
 }
