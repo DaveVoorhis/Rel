@@ -57,6 +57,7 @@
       </children>
       <children xsi:type="menu:Menu" xmi:id="_jurpINPEEee2ravf7u6htQ" elementId="relui.menu.database" label="Database" mnemonics="&amp;D">
         <children xsi:type="menu:HandledMenuItem" xmi:id="_l7Vt8NPEEee2ravf7u6htQ" elementId="relui.handledmenuitem.backup" label="Backup" iconURI="platform:/plugin/RelUI/icons/safeIcon.png" tooltip="Make a backup" mnemonics="" command="_iw1U0NRIEeerO4zAq7e_BA"/>
+        <children xsi:type="menu:MenuSeparator" xmi:id="_bjH6ENmwEeeE-aXypZqPBQ" elementId="relui.menuseparator.8"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_etskoNRKEeerO4zAq7e_BA" elementId="relui.handledmenuitem.design" label="Design" iconURI="platform:/plugin/RelUI/icons/item_design.png" command="__JIKoNRJEeerO4zAq7e_BA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_tcUVMNRKEeerO4zAq7e_BA" elementId="relui.handledmenuitem.drop" label="Drop" iconURI="platform:/plugin/RelUI/icons/item_delete.png" command="_BjzdUNRKEeerO4zAq7e_BA"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_B1PWINRLEeerO4zAq7e_BA" elementId="relui.handledmenuitem.edit" label="Edit" iconURI="platform:/plugin/RelUI/icons/item_edit.png" command="_QayfsNRKEeerO4zAq7e_BA"/>
