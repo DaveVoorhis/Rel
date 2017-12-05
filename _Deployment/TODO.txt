@@ -1,6 +1,8 @@
 ** TO DO **
 
-- Implement Delete and SelectAll Edit menu items.
+- Check that menus are appropriately updated when zoom is used.
+
+- Check that Backup menu item is appropriately disabled when no database is shown.
 
 - In Rel database tree view under Windows, double-click of heading opens
   and immediately closes it. (Check?)
