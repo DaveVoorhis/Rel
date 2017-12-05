@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyledText;
 
 import org.eclipse.swt.SWT;
@@ -48,6 +49,8 @@ public class CmdPanelInput extends Composite {
 	private CommandActivator tlitmCut;
 	private CommandActivator tlitmCopy;
 	private CommandActivator tlitmPaste;
+	private CommandActivator tlitmDelete;
+	private CommandActivator tlitmSelectAll;
 	private CommandActivator tlitmFindReplace;
 	private CommandActivator tlitmLoad;
 	private CommandActivator tlitmLoadInsert;
@@ -237,6 +240,14 @@ public class CmdPanelInput extends Composite {
 			tlitmPaste.setToolTipText("Paste");
 			tlitmPaste.addListener(SWT.Selection, e -> doPaste());
 
+			tlitmDelete = new CommandActivator(Delete.class, toolBar, SWT.NONE);
+			tlitmDelete.setToolTipText("Delete");
+			tlitmDelete.addListener(SWT.Selection, e -> delete());
+			
+			tlitmSelectAll = new CommandActivator(SelectAll.class, toolBar, SWT.NONE);
+			tlitmSelectAll.setToolTipText("Select all");
+			tlitmSelectAll.addListener(SWT.Selection, e -> selectAll());
+			
 			tlitmFindReplace = new CommandActivator(FindReplace.class, toolBar, SWT.NONE);
 			tlitmFindReplace.setToolTipText("Find/Replace");
 			tlitmFindReplace.addListener(SWT.Selection, e -> doFindReplace());
@@ -416,10 +427,14 @@ public class CmdPanelInput extends Composite {
 		showRunningStop();
 	}
 
+	public void delete() {
+		inputText.invokeAction(ST.DELETE_NEXT);
+	}
+	
 	public void selectAll() {
 		inputText.selectAll();
 	}
-
+	
 	private void setupIcons() {
 		if (tlitmPrevHistory == null)
 			return;
@@ -431,6 +446,8 @@ public class CmdPanelInput extends Composite {
 		tlitmCut.setImage(IconLoader.loadIcon("cut"));
 		tlitmCopy.setImage(IconLoader.loadIcon("copy"));
 		tlitmPaste.setImage(IconLoader.loadIcon("paste"));
+		tlitmDelete.setImage(IconLoader.loadIcon("delete"));
+		tlitmSelectAll.setImage(IconLoader.loadIcon("selectAll"));
 		tlitmFindReplace.setImage(IconLoader.loadIcon("edit_find_replace"));
 		tlitmLoad.setImage(IconLoader.loadIcon("loadIcon"));
 		tlitmLoadInsert.setImage(IconLoader.loadIcon("loadInsertIcon"));
@@ -822,6 +839,8 @@ public class CmdPanelInput extends Composite {
 		tlitmCut.activate();
 		tlitmCopy.activate();
 		tlitmPaste.activate();
+		tlitmDelete.activate();
+		tlitmSelectAll.activate();
 		tlitmFindReplace.activate();
 		tlitmLoad.activate();
 		tlitmLoadInsert.activate();

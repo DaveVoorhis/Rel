@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_1_XycKbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ide.application" bindingContexts="_1_XyeabsEeSFCpZI3OEurw">
-  <children xsi:type="basic:TrimmedWindow" xmi:id="_8rfnILaNEeSTFNGxwQXIhw" elementId="relui.trimmedwindow.rel" label="Rel" iconURI="platform:/plugin/RelUI/icons/RelAppIcon/32x32.png">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_8rfnILaNEeSTFNGxwQXIhw" elementId="relui.trimmedwindow.rel" label="Rel" iconURI="platform:/plugin/RelUI/icons/RelAppIcon/32x32.png" bindingContexts="_1_XyeabsEeSFCpZI3OEurw">
     <children xsi:type="advanced:PerspectiveStack" xmi:id="_BV6u4LaOEeSTFNGxwQXIhw" elementId="relui.perspectivestack.0">
       <children xsi:type="advanced:Perspective" xmi:id="_CGugwLaOEeSTFNGxwQXIhw" elementId="relui.perspective.0">
         <children xsi:type="basic:Part" xmi:id="_Gcb8wLaOEeSTFNGxwQXIhw" elementId="relui.part.0" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.parts.Main"/>
@@ -25,7 +25,7 @@
         <children xsi:type="menu:HandledMenuItem" xmi:id="_8VMSMNN_EeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.paste" label="Paste" iconURI="platform:/plugin/RelUI/icons/paste.png" command="_ADJ04NOEEeeGdbvWSjewsQ"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_AgTnwNOAEeeGdbvWSjewsQ" elementId="relui.menuseparator.3"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_CyiwINOAEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.delete" label="Delete" iconURI="platform:/plugin/RelUI/icons/delete.png" command="_CSpyUNOEEeeGdbvWSjewsQ"/>
-        <children xsi:type="menu:HandledMenuItem" xmi:id="_ElBaYNOAEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.selectAll" label="Select All" iconURI="platform:/plugin/RelUI/icons/selectAll.png" command="_FahiMNOEEeeGdbvWSjewsQ"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_n9LmANm7EeeE-aXypZqPBQ" elementId="org.eclipse.ui.edit.selectAll" label="Select all" iconURI="platform:/plugin/RelUI/icons/selectAll.png" mnemonics="" command="_GWLdYNm_EeeE-aXypZqPBQ"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_JnU2oNOAEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.findReplace" label="Find/Replace" iconURI="platform:/plugin/RelUI/icons/edit_find_replace.png" command="_HhP-INOEEeeGdbvWSjewsQ"/>
         <children xsi:type="menu:MenuSeparator" xmi:id="_70n6sNROEeerO4zAq7e_BA" elementId="relui.menuseparator.4"/>
         <children xsi:type="menu:HandledMenuItem" xmi:id="_vlvRENRQEeerO4zAq7e_BA" elementId="relui.handledmenuitem.specialcharacters" label="Special characters" iconURI="platform:/plugin/RelUI/icons/characters.png" command="_SVkC8NRNEeerO4zAq7e_BA"/>
@@ -93,7 +93,6 @@
   <handlers xmi:id="_wYxKMNOEEeeGdbvWSjewsQ" elementId="relui.handler.3" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.Copy" command="_-c5owNODEeeGdbvWSjewsQ"/>
   <handlers xmi:id="_0iweYNOEEeeGdbvWSjewsQ" elementId="relui.handler.4" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.Paste" command="_ADJ04NOEEeeGdbvWSjewsQ"/>
   <handlers xmi:id="_5SHJcNOEEeeGdbvWSjewsQ" elementId="relui.handler.5" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.Delete" command="_CSpyUNOEEeeGdbvWSjewsQ"/>
-  <handlers xmi:id="_8Gq7wNOEEeeGdbvWSjewsQ" elementId="relui.handler.6" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.SelectAll" command="_FahiMNOEEeeGdbvWSjewsQ"/>
   <handlers xmi:id="__xIbUNOEEeeGdbvWSjewsQ" elementId="relui.handler.7" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.FindReplace" command="_HhP-INOEEeeGdbvWSjewsQ"/>
   <handlers xmi:id="_lYxncNRIEeerO4zAq7e_BA" elementId="relui.handler.8" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.database.Backup" command="_iw1U0NRIEeerO4zAq7e_BA"/>
   <handlers xmi:id="_kDkD0NRPEeerO4zAq7e_BA" elementId="relui.handler.9" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.SpecialChars" command="_SVkC8NRNEeerO4zAq7e_BA"/>
@@ -127,6 +126,7 @@
   <handlers xmi:id="_rXB7cNeyEeedLsSozeNIAA" elementId="relui.handler.37" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.database.ShowSystemObjects" command="_afkXUNRKEeerO4zAq7e_BA"/>
   <handlers xmi:id="_da-M0NhNEeedLsSozeNIAA" elementId="relui.handler.38" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.CopyOutputToInput" command="_XoKf0NRfEeemrrcqwS3xUw"/>
   <handlers xmi:id="_3RV8kNkLEeedLsSozeNIAA" elementId="relui.handler.39" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.output.Refresh" command="_xPBNwNkLEeedLsSozeNIAA"/>
+  <handlers xmi:id="_LM7w8Nm_EeeE-aXypZqPBQ" elementId="relui.handler.6" contributionURI="bundleclass://RelUI/org.reldb.dbrowser.handlers.edit.SelectAll" command="_GWLdYNm_EeeE-aXypZqPBQ"/>
   <bindingTables xmi:id="_1_YZgqbsEeSFCpZI3OEurw" bindingContext="_1_XyeabsEeSFCpZI3OEurw">
     <bindings xmi:id="_1_YZg6bsEeSFCpZI3OEurw" keySequence="M1+Q" command="_1_YZgKbsEeSFCpZI3OEurw"/>
   </bindingTables>
@@ -150,7 +150,6 @@
   <commands xmi:id="_-c5owNODEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.copy" commandName="copyCommand"/>
   <commands xmi:id="_ADJ04NOEEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.paste" commandName="pasteCommand"/>
   <commands xmi:id="_CSpyUNOEEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.delete" commandName="deleteCommand"/>
-  <commands xmi:id="_FahiMNOEEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.selectAll" commandName="selectAllCommand"/>
   <commands xmi:id="_HhP-INOEEeeGdbvWSjewsQ" elementId="org.eclipse.ui.edit.findReplace" commandName="findReplaceCommand"/>
   <commands xmi:id="_iw1U0NRIEeerO4zAq7e_BA" elementId="relui.command.backupcommand" commandName="backupCommand"/>
   <commands xmi:id="__JIKoNRJEeerO4zAq7e_BA" elementId="relui.command.designcommand" commandName="designCommand"/>
@@ -182,6 +181,7 @@
   <commands xmi:id="_tlxmoNRfEeemrrcqwS3xUw" elementId="relui.command.displayrelationheadingstypecommand" commandName="displayRelationHeadingsTypeCommand"/>
   <commands xmi:id="_iMbd4NRhEeemrrcqwS3xUw" elementId="relui.command.displayautoclearcommand" commandName="displayAutoclearCommand"/>
   <commands xmi:id="_xPBNwNkLEeedLsSozeNIAA" elementId="relui.command.refreshcommand" commandName="refreshCommand"/>
+  <commands xmi:id="_GWLdYNm_EeeE-aXypZqPBQ" elementId="org.eclipse.ui.edit.selectAll" commandName="selectAllCommand"/>
   <addons xmi:id="_1_XycqbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_1_Xyc6bsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_1_XydKbsEeSFCpZI3OEurw" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
