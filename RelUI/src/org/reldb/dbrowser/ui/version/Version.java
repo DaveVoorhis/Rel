@@ -3,7 +3,7 @@ package org.reldb.dbrowser.ui.version;
 public class Version {
 	
 	public static double getVersionNumber() {
-		return 3.010;
+		return 3.011;
 	}
 	
 	public static String getVersion() {
