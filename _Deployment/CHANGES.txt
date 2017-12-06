@@ -2,6 +2,8 @@ Last used Exception* number: RS0504
 
 Version 3.010 (1.0.23):
 
+  - enhancement: Rel: Drop-down menus provided for major operations.
+
   - enhancement: Update to Berkeley Java DB version 7.5.11
  
   - enhancement: Rel: Double-click on database tree item causes focus
@@ -42,7 +44,7 @@ Version 3.010 (1.0.23):
   - fix: Rel: CSS on exported HTML for tabular displays did not correctly
     format table heading text. Fixed.
 
-  - fix: Rel: Command-line better detects execute vs evaluate by ignoring
+  - fix: Rel: Command-line correctly detects execute vs evaluate by ignoring
     whitespace and comments.
 
 Version 3.009 (1.0.22):
