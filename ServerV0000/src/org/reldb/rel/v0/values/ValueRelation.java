@@ -21,21 +21,22 @@ import org.reldb.rel.v0.types.builtin.TypeInteger;
 import org.reldb.rel.v0.vm.Context;
 
 public abstract class ValueRelation extends ValueAbstract implements Projectable, TupleIteratable {
-	
+
 	public ValueRelation(Generator generator) {
 		super(generator);
 	}
 
 	private static final long serialVersionUID = 0;
-	
+
 	/** Obtain a serializable clone of this value. */
 	public Value getSerializableClone() {
-		// TODO - fix this to use TempStorageTuples in an appropriate manner, i.e., one that doesn't invoke getSerializableClone()
+		// TODO - fix this to use TempStorageTuples in an appropriate manner, i.e., one
+		// that doesn't invoke getSerializableClone()
 		ValueRelationLiteral newRelation = new ValueRelationLiteral(getGenerator());
 		TupleIterator iterator = iterator();
 		try {
 			while (iterator.hasNext())
-				newRelation.insert((ValueTuple)iterator.next().getSerializableClone());
+				newRelation.insert((ValueTuple) iterator.next().getSerializableClone());
 		} finally {
 			iterator.close();
 		}
@@ -49,7 +50,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 			public int hashCode() {
 				return 0;
 			}
-			
+
 			public TupleIterator newIterator() {
 				return new TupleIterator() {
 					public boolean hasNext() {
@@ -59,8 +60,9 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 					public ValueTuple next() {
 						throw new NoSuchElementException();
 					}
-					
-					public void close() {}
+
+					public void close() {
+					}
 				};
 			}
 		};
@@ -73,7 +75,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 			public int hashCode() {
 				return 1;
 			}
-			
+
 			public TupleIterator newIterator() {
 				return new TupleIterator() {
 					public boolean available = true;
@@ -91,11 +93,12 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 							}
 						throw new NoSuchElementException();
 					}
-					
-					public void close() {}
+
+					public void close() {
+					}
 				};
 			}
-		};	
+		};
 	}
 
 	public ValueTuple getTuple() {
@@ -129,9 +132,9 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 					}
 
 					public ValueTuple next() {
-						return (ValueTuple)tuples.next().project(map);
+						return (ValueTuple) tuples.next().project(map);
 					}
-					
+
 					public void close() {
 						tuples.close();
 					}
@@ -164,7 +167,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 							return right.next();
 						throw new NoSuchElementException();
 					}
-					
+
 					public void close() {
 						left.close();
 						right.close();
@@ -173,7 +176,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 			}
 		};
 	}
-	
+
 	public ValueRelation xunion(final ValueRelation rightRelation) {
 		return union(rightRelation).minus(intersect(rightRelation));
 	}
@@ -202,7 +205,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 							return right.next();
 						throw new NoSuchElementException();
 					}
-					
+
 					public void close() {
 						left.close();
 						right.close();
@@ -247,7 +250,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 							}
 						throw new NoSuchElementException();
 					}
-					
+
 					public void close() {
 						left.close();
 					}
@@ -291,7 +294,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 							}
 						throw new NoSuchElementException();
 					}
-					
+
 					public void close() {
 						left.close();
 					}
@@ -305,7 +308,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 			throw new ExceptionSemantic("RS0275: In I_MINUS, the right operand must be a subset of the left operand.");
 		return minus(rightRelation);
 	}
-	
+
 	public ValueRelation product(final ValueRelation rightRelation) {
 		return new ValueRelation(getGenerator()) {
 			private final static long serialVersionUID = 0;
@@ -355,7 +358,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 							}
 						throw new NoSuchElementException();
 					}
-					
+
 					public void close() {
 						left.close();
 						if (right != null)
@@ -365,7 +368,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 			}
 		};
 	}
-	
+
 	public ValueRelation join(final RelDatabase database, final JoinMap map, final ValueRelation rightRelation) {
 		return new ValueRelation(getGenerator()) {
 			private final static long serialVersionUID = 0;
@@ -373,7 +376,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 			public int hashCode() {
 				return 0;
 			}
-		
+
 			public TupleIterator newIterator() {
 				return new TupleIterator() {
 					boolean indexed = false;
@@ -383,7 +386,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 					ValueTuple current = null;
 					ValueTuple leftTuple = null;
 					ValueTuple rightTuple = null;
-					
+
 					public boolean hasNextPair() {
 						while (true) {
 							if (rightIterator == null) {
@@ -391,7 +394,8 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 									return false;
 								leftTuple = leftIterator.next();
 								if (indexed)
-									rightIterator = rightTuples.keySearch(map.getLeftTupleCommon(getGenerator(), leftTuple));
+									rightIterator = rightTuples
+											.keySearch(map.getLeftTupleCommon(getGenerator(), leftTuple));
 								else
 									rightIterator = rightRelation.iterator();
 							}
@@ -400,10 +404,11 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 								if (indexed)
 									return true;
 								else {
-									ValueTuple rightClone = (ValueTuple)rightTuple.getSerializableClone();
-									rightTuples.put((ValueTuple)map.getRightTupleCommon(getGenerator(), rightClone), rightClone);
+									ValueTuple rightClone = (ValueTuple) rightTuple.getSerializableClone();
+									rightTuples.put((ValueTuple) map.getRightTupleCommon(getGenerator(), rightClone),
+											rightClone);
 									if (map.isJoinable(leftTuple, rightTuple))
-										return true;						
+										return true;
 								}
 							} else {
 								indexed = true;
@@ -412,7 +417,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 							}
 						}
 					}
-					
+
 					public boolean hasNext() {
 						if (current != null)
 							return true;
@@ -438,7 +443,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 						leftIterator.close();
 						rightTuples.close();
 					}
-					
+
 				};
 			}
 		};
@@ -448,7 +453,8 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 	 * Apply a native tuple operator to each tuple in a given relation, in order to
 	 * generate a new relation.
 	 * 
-	 * @param map - a TupleMap
+	 * @param map
+	 *            - a TupleMap
 	 * @return - a ValueRelation
 	 */
 	public TupleIteratable map(final TupleMap map) {
@@ -470,7 +476,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 					public ValueTuple next() {
 						return map.map(iterator.next());
 					}
-					
+
 					public void close() {
 						iterator.close();
 					}
@@ -480,8 +486,9 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 	}
 
 	/**
-	 * Order by attributes in orderMap. For each group of equal orderMap attributes, 
-	 * return one tuple of orderMap attributes with all groupAttributes in an appended relation-valued attribute.
+	 * Order by attributes in orderMap. For each group of equal orderMap attributes,
+	 * return one tuple of orderMap attributes with all groupAttributes in an
+	 * appended relation-valued attribute.
 	 *
 	 * @param orderAttributes
 	 * @param groupAttributes
@@ -490,21 +497,21 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 	public Value group(AttributeMap orderAttributes, AttributeMap groupAttributes) {
 		// TODO - MEM - fix so that high-cardinality relations don't run out of RAM
 		final Map<ValueTuple, ValueRelationLiteral> group = new HashMap<ValueTuple, ValueRelationLiteral>();
-    	(new TupleIteration(iterator()) {
-    		public void process(ValueTuple tuple) {
-    			ValueTuple orderTuple = (ValueTuple)tuple.project(orderAttributes);
-    			ValueTuple groupAttributeTuple = (ValueTuple)tuple.project(groupAttributes);
-    			ValueRelationLiteral groupAttributeValue = group.get(orderTuple);
-    			if (groupAttributeValue == null) {
-    				groupAttributeValue = new ValueRelationLiteral(getGenerator());
-        			group.put(orderTuple, groupAttributeValue);
-    			}
-    			groupAttributeValue.insert(groupAttributeTuple);
-    		}
-    	}).run();
+		(new TupleIteration(iterator()) {
+			public void process(ValueTuple tuple) {
+				ValueTuple orderTuple = (ValueTuple) tuple.project(orderAttributes);
+				ValueTuple groupAttributeTuple = (ValueTuple) tuple.project(groupAttributes);
+				ValueRelationLiteral groupAttributeValue = group.get(orderTuple);
+				if (groupAttributeValue == null) {
+					groupAttributeValue = new ValueRelationLiteral(getGenerator());
+					group.put(orderTuple, groupAttributeValue);
+				}
+				groupAttributeValue.insert(groupAttributeTuple);
+			}
+		}).run();
 		return new ValueRelation(getGenerator()) {
 			private final static long serialVersionUID = 0;
-			
+
 			public int hashCode() {
 				return 0;
 			}
@@ -522,36 +529,37 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 						Entry<ValueTuple, ValueRelationLiteral> entry = iterator.next();
 						ValueTuple sortedTuple = entry.getKey();
 						ValueRelationLiteral rva = entry.getValue();
-						Value[] rvaTupleArray = {rva};
+						Value[] rvaTupleArray = { rva };
 						ValueTuple rvaTuple = new ValueTuple(getGenerator(), rvaTupleArray);
 						return sortedTuple.joinDisjoint(rvaTuple);
 					}
-					
+
 					public void close() {
 					}
 				};
 			}
-		};    	
+		};
 	}
 
 	/**
 	 * Ungroup a relation.
 	 * 
-	 * Note that the result includes ALL the original tuple attributes,
-	 * including the specified RVA.
+	 * Note that the result includes ALL the original tuple attributes, including
+	 * the specified RVA.
 	 * 
-	 * @param sourceMap -
-	 *            mapping between original tuples and new tuples
-	 * @param rvaMap -
-	 *            mapping between original tuples' RVA and new tuples
-	 * @param rvaIndex -
-	 *            index of RVA in original tuple
-	 * @param source -
-	 *            ValueRelation containing at least one RVA, to which rvaIndex
+	 * @param sourceMap
+	 *            - mapping between original tuples and new tuples
+	 * @param rvaMap
+	 *            - mapping between original tuples' RVA and new tuples
+	 * @param rvaIndex
+	 *            - index of RVA in original tuple
+	 * @param source
+	 *            - ValueRelation containing at least one RVA, to which rvaIndex
 	 *            points
 	 * @return - ValueRelation
 	 */
-	public ValueRelation ungroup(final int resultDegree, final AttributeMap sourceMap, final AttributeMap rvaMap, final int rvaIndex) {
+	public ValueRelation ungroup(final int resultDegree, final AttributeMap sourceMap, final AttributeMap rvaMap,
+			final int rvaIndex) {
 		return new ValueRelation(getGenerator()) {
 			private final static long serialVersionUID = 0;
 
@@ -580,7 +588,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 							outerTuple = outerIterator.next();
 							if (innerIterator != null)
 								innerIterator.close();
-							innerIterator = ((ValueRelation)outerTuple.getValues()[rvaIndex]).iterator();
+							innerIterator = ((ValueRelation) outerTuple.getValues()[rvaIndex]).iterator();
 							if (innerIterator.hasNext())
 								break;
 							else
@@ -602,7 +610,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 							}
 						throw new NoSuchElementException();
 					}
-					
+
 					public void close() {
 						outerIterator.close();
 						if (innerIterator != null)
@@ -614,8 +622,8 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 	}
 
 	/**
-	 * Apply a native boolean operator to each tuple in a given relation, in order to
-	 * generate a new relation.
+	 * Apply a native boolean operator to each tuple in a given relation, in order
+	 * to generate a new relation.
 	 * 
 	 * Tuples only appear in result if the operator returns true.
 	 */
@@ -656,7 +664,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 							}
 						throw new NoSuchElementException();
 					}
-					
+
 					public void close() {
 						iterator.close();
 					}
@@ -676,9 +684,9 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 					ValueTuple current = getCurrentValue();
 
 					private ValueTuple getCurrentValue() {
-						return new ValueTuple(generator, new Value[] {ValueInteger.select(generator, currentValue)});
+						return new ValueTuple(generator, new Value[] { ValueInteger.select(generator, currentValue) });
 					}
-					
+
 					public boolean hasNext() {
 						if (current != null)
 							return true;
@@ -698,7 +706,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 							}
 						throw new NoSuchElementException();
 					}
-					
+
 					public void close() {
 					}
 				};
@@ -708,26 +716,26 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 			public int hashCode() {
 				return 0;
 			}
-			
+
 		};
 	}
-	
+
 	public static Value sequence(Generator generator, ValueInteger start, ValueInteger end) {
 		return sequence(generator, start, end, ValueInteger.select(generator, 1));
 	}
-	
+
 	private ValueArray doSort(OrderMap map) {
 		// TODO - MEM - fix so that high-cardinality relations don't run out of RAM
 		final ArrayList<ValueTuple> array = new ArrayList<ValueTuple>();
-    	(new TupleIteration(iterator()) {
-    		public void process(ValueTuple tuple) {
-    			array.add(tuple);		
-    		}
-    	}).run();
+		(new TupleIteration(iterator()) {
+			public void process(ValueTuple tuple) {
+				array.add(tuple);
+			}
+		}).run();
 		Collections.sort(array, new Sorter(map));
-		return new ValueArray(getGenerator(), array);		
+		return new ValueArray(getGenerator(), array);
 	}
-	
+
 	/** Return a new, possibly-sorted ValueArray */
 	public ValueArray sort(OrderMap map) {
 		if (map.getMap().length == 0)
@@ -735,24 +743,31 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 		else
 			return doSort(map);
 	}
-	
-	/** Return a ranked relation. Each ValueTuple has an appended ValueInteger that indicates the tuple's rank. */
+
+	/**
+	 * Return a ranked relation. Each ValueTuple has an appended ValueInteger that
+	 * indicates the tuple's rank.
+	 */
 	public ValueRelation rank(OrderMap map) {
 		ValueArray array = doSort(map);
 		return new ValueRelation(getGenerator()) {
 			private final static long serialVersionUID = 0;
+
 			public int hashCode() {
 				return 0;
 			}
+
 			public TupleIterator newIterator() {
 				TupleIterator source = array.iterator();
 				return new TupleIterator() {
 					long rank = 0;
 					Value[] oldTupleValues = null;
+
 					@Override
 					public boolean hasNext() {
 						return source.hasNext();
 					}
+
 					@Override
 					public ValueTuple next() {
 						ValueTuple newTuple = source.next();
@@ -760,10 +775,11 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 						if (oldTupleValues == null || map.isDifferentSortKey(oldTupleValues, newTupleValues))
 							rank++;
 						oldTupleValues = newTupleValues;
-						Value[] rankTupleRaw = new Value[] {ValueInteger.select(getGenerator(), rank)};
+						Value[] rankTupleRaw = new Value[] { ValueInteger.select(getGenerator(), rank) };
 						ValueTuple rankTuple = new ValueTuple(getGenerator(), rankTupleRaw);
 						return newTuple.joinDisjoint(rankTuple);
 					}
+
 					@Override
 					public void close() {
 						source.close();
@@ -774,16 +790,17 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 	}
 
 	public abstract TupleIterator newIterator();
-	
+
 	public abstract int hashCode();
-	
+
 	public final TupleIterator iterator() {
 		return newIterator();
 	}
-	
-	// TODO - MEM - replace this with something that won't out-of-memory on high-cardinality relations
+
+	// TODO - MEM - replace this with something that won't out-of-memory on
+	// high-cardinality relations
 	private HashSet<ValueTuple> cache = null;
-		
+
 	private void buildCache() {
 		cache = new HashSet<ValueTuple>();
 		(new TupleIteration(iterator()) {
@@ -805,7 +822,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 
 	/** Output this Value to a PrintStream. */
 	public void toStream(Context context, Type type, PrintStream p, int depth) {
-		Heading heading = ((TypeRelation)type).getHeading();
+		Heading heading = ((TypeRelation) type).getHeading();
 		TypeTuple tupleType = new TypeTuple(heading);
 		p.print("RELATION" + " " + heading + " {");
 		long count = 0;
@@ -843,13 +860,13 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 		s += "}";
 		return s;
 	}
-	
+
 	public long getCardinality() {
 		if (cache == null)
 			buildCache();
 		return cache.size();
 	}
-	
+
 	private final boolean isTestedSubsetOf(ValueRelation rightSide) {
 		TupleIterator iterator = iterator();
 		try {
@@ -889,7 +906,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 	}
 
 	public int compareTo(Value v) {
-		ValueRelation rightSide = ((ValueRelation)v);
+		ValueRelation rightSide = ((ValueRelation) v);
 		long cardinalityLeft = getCardinality();
 		long cardinalityRight = rightSide.getCardinality();
 		if (cardinalityLeft == cardinalityRight)
@@ -897,7 +914,7 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 		else
 			return 1;
 	}
-	
+
 	/** Test this relation and another for equality. */
 	public boolean eq(ValueRelation rightSide) {
 		if (getCardinality() == rightSide.getCardinality())
@@ -911,16 +928,17 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 		return !eq(v);
 	}
 
-	private static ValueRelation tclose(Generator generator, JoinMap joinMap, AttributeMap projectMap, ValueRelation xy) {
-		ValueRelation ttt = xy.union((ValueRelation)xy.join(generator.getDatabase(), joinMap, xy).project(projectMap));
+	private static ValueRelation tclose(Generator generator, JoinMap joinMap, AttributeMap projectMap,
+			ValueRelation xy) {
+		ValueRelation ttt = xy.union((ValueRelation) xy.join(generator.getDatabase(), joinMap, xy).project(projectMap));
 		return (ttt.eq(xy)) ? ttt : tclose(generator, joinMap, projectMap, ttt);
 	}
-	
+
 	public Value tclose() {
 		Type attributeType = TypeInteger.getInstance(); // type is irrelevant here; any will do
 		Heading left = new Heading();
 		left.add("X", attributeType);
-		left.add("LINK", attributeType);	
+		left.add("LINK", attributeType);
 		Heading right = new Heading();
 		right.add("LINK", attributeType);
 		right.add("Y", attributeType);
@@ -939,12 +957,12 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 	public ValueBoolean is_empty() {
 		TupleIterator iterator = iterator();
 		try {
-			return (ValueBoolean)ValueBoolean.select(getGenerator(), !iterator.hasNext());
+			return (ValueBoolean) ValueBoolean.select(getGenerator(), !iterator.hasNext());
 		} finally {
 			iterator.close();
 		}
 	}
-	
+
 	/** Aggregate operator */
 	public ValueBoolean exactly(long nCount, int attributeIndex) {
 		long trueCount = 0;
@@ -952,12 +970,12 @@ public abstract class ValueRelation extends ValueAbstract implements Projectable
 		try {
 			while (iterator.hasNext()) {
 				ValueTuple t = iterator.next();
-				trueCount += ((((ValueBoolean)t.getValues()[attributeIndex]).booleanValue()) ? 1 : 0);
+				trueCount += ((((ValueBoolean) t.getValues()[attributeIndex]).booleanValue()) ? 1 : 0);
 			}
 		} finally {
 			iterator.close();
 		}
-		return (ValueBoolean)ValueBoolean.select(getGenerator(), trueCount == nCount);
+		return (ValueBoolean) ValueBoolean.select(getGenerator(), trueCount == nCount);
 	}
-	
+
 }
