@@ -1,9 +1,8 @@
 ** TO DO **
 
-- Check that menus are appropriately updated when zoom is used.
-
-- In Rel database tree view under Windows, double-click of heading opens
-  and immediately closes it. (Check?)
+- In the Rel UI's table editor, "Go to INSERT row" button was supposed to 
+  do what Ctrl-End should also do: position the display on the blank row
+  and put the cursor in it. It doesn't. Fix it.
 
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 
