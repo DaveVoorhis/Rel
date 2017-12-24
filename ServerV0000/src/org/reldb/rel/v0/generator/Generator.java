@@ -2066,7 +2066,10 @@ public class Generator {
 		Heading sourceHeading = sourceType.getHeading();
 		Heading sortAttributeHeading = new Heading(sourceHeading);
 		for (String attributeName: itemList.getNames()) {
-			groupedAttributeHeading.add(attributeName, sourceHeading.getAttribute(attributeName).getType());
+			Attribute attribute = sourceHeading.getAttribute(attributeName);
+			if (attribute == null)
+	            throw new ExceptionSemantic("RS0505: Attribute '" + attributeName + "' not found in " + sourceType);				
+			groupedAttributeHeading.add(attributeName, attribute.getType());
 			sortAttributeHeading.remove(attributeName);
 		}
 		Heading resultHeading = new Heading(sortAttributeHeading);

@@ -1,7 +1,13 @@
-Last used Exception* number: RS0504
+Last used Exception* number: RS0505
 
 Version 3.011 (1.0.24):
 
+  - fix: Rel DBMS:
+  		Given:
+  			S GROUP {blah} AS rva
+  		Result:
+  			Java NullPointerException due to undefined attribute 'blah'.
+  		Fixed.
 
 Version 3.010 (1.0.23):
 
