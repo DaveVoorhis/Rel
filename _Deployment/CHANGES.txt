@@ -9,6 +9,9 @@ Version 3.011 (1.0.24):
   			Java NullPointerException due to undefined attribute 'blah'.
   		Fixed.
 
+
+  - fix: Rel DBMS: ABS(n) always returns rational value, even if n is INTEGER. Fixed.
+
 Version 3.010 (1.0.23):
 
   - enhancement: Rel: Drop-down menus provided for major operations.

@@ -1239,7 +1239,7 @@ public class BuiltinOperators {
 				new NativeFunction() {
 					public Value evaluate(Value arguments[]) {
 						// Returns the absolute value of an INTEGER value.
-						return ValueRational.select(generator, Math.abs(arguments[0].longValue()));
+						return ValueInteger.select(generator, Math.abs(arguments[0].longValue()));
 					}
 				}
 			)
