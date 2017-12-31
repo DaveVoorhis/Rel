@@ -10,6 +10,10 @@ Version 3.011 (1.0.24):
   		Fixed.
 
   - fix: Rel DBMS: ABS(n) always returns rational value, even if n is INTEGER. Fixed.
+  
+  - enhancement: Rel UI: Log inconsistencies found in malformed Rev queries.
+  
+  - enhancement: Rel DBMS and Rel Client: Check for 'null' source code.
 
 Version 3.010 (1.0.23):
 

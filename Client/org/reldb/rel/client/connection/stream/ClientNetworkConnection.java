@@ -20,6 +20,8 @@ public class ClientNetworkConnection extends ClientConnection {
 	}
 
 	private void send(String src) throws IOException {
+		if (src == null)
+			throw new IllegalArgumentException("Attempt to execute null source code.");
 		outputToServer.println(src);
 		outputToServer.flush();
 		if (outputToServer.checkError())

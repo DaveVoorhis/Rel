@@ -117,6 +117,8 @@ public class Rel {
 	}
 	
 	public void sendEvaluate(final String source) throws Throwable {
+		if (source == null)
+			throw new IllegalArgumentException("Attempt to evaluate null source code.");
 		send(new Action() {
 			public void execute() throws ParseException {
 				interpreter.evaluate(source).toStream(output);
@@ -126,6 +128,8 @@ public class Rel {
 	}
 	
 	public void sendExecute(final String source) throws Throwable {
+		if (source == null)
+			throw new IllegalArgumentException("Attempt to execute null source code.");
 		send(new Action() {
 			public void execute() throws ParseException {
 				interpreter.interpret(source);

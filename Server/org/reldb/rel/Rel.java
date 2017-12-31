@@ -81,10 +81,14 @@ public class Rel {
 	}
 	
 	public void sendEvaluate(String source) throws Throwable {
+		if (source == null)
+			throw new IllegalArgumentException("Attempt to evaluate null source code.");
 		rel.sendEvaluate(source);
 	}
 	
 	public void sendExecute(String source) throws Throwable {
+		if (source == null)
+			throw new IllegalArgumentException("Attempt to execute null source code.");
 		rel.sendExecute(source);
 	}
 
