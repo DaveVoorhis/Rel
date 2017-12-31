@@ -1,5 +1,9 @@
 ** TO DO **
 
+- In Rev, create an Expression and set its text to "WRITELN '&blah'". The
+  & won't show. If you change the text to "WRITELN '&&blah'", it shows
+  &, but is treated as "WRITELN '&&blah'". Fix.
+
 - Provide "Comment" visualiser in Rev.
 
 - In the Rel UI's table editor, "Go to INSERT row" button was supposed to 
