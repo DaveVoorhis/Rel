@@ -1,5 +1,7 @@
 ** TO DO **
 
+- ABS(n) always returns rational value, even if n is INTEGER. Fix.
+
 - In the Rel UI's table editor, "Go to INSERT row" button was supposed to 
   do what Ctrl-End should also do: position the display on the blank row
   and put the cursor in it. It doesn't. Fix it.
