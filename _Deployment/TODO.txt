@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Provide encrypted backups (and log-ins to a given database).
+
 - In Rev, create an Expression and set its text to "WRITELN '&blah'". The
   & won't show. If you change the text to "WRITELN '&&blah'", it shows
   &, but is treated as "WRITELN '&&blah'". Fix.
