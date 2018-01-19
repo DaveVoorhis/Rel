@@ -1,5 +1,9 @@
 ** TO DO **
 
+- Fix https://reldb.org/forum/viewtopic.php?f=2&t=1527&p=2863#p2863
+
+- Enable copy/paste/clear on all text boxes.
+
 - Provide encrypted backups (and log-ins to a given database).
 
 - In Rev, create an Expression and set its text to "WRITELN '&blah'". The
