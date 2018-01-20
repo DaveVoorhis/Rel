@@ -1,5 +1,5 @@
 package org.reldb.dbrowser.handlers.edit;
 
-import org.reldb.dbrowser.handlers.MenuItem;
+import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
 
-public class SaveHistory  extends MenuItem {}
+public class SaveHistory  extends MenuItemWithToolbar {}

@@ -1,5 +1,5 @@
 package org.reldb.dbrowser.handlers.edit;
 
-import org.reldb.dbrowser.handlers.MenuItem;
+import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
 
-public class WrapText extends MenuItem {}
+public class WrapText extends MenuItemWithToolbar {}

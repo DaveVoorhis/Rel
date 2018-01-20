@@ -6,7 +6,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.reldb.dbrowser.handlers.MenuItem;
+import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
@@ -30,7 +30,7 @@ public class ManagedToolbar {
 	
 	private Vector<CommandActivatorItem> items = new Vector<CommandActivatorItem>();
 	
-	public CommandActivator addItem(Class<? extends MenuItem> menuClass, String toolTip, String iconName, int style) {
+	public CommandActivator addItem(Class<? extends MenuItemWithToolbar> menuClass, String toolTip, String iconName, int style) {
 		CommandActivator item = new CommandActivator(menuClass, toolBar, style);
 		item.setToolTipText(toolTip);
 		item.setImage(IconLoader.loadIcon(iconName));
@@ -83,6 +83,6 @@ public class ManagedToolbar {
 	}
 	
 	public void deactivate() {
-		MenuItem.clear();
+		MenuItemWithToolbar.clear();
 	}
 }

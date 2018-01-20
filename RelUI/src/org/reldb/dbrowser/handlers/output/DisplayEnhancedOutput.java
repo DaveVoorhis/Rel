@@ -1,5 +1,5 @@
 package org.reldb.dbrowser.handlers.output;
 
-import org.reldb.dbrowser.handlers.MenuItem;
+import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
 
-public class DisplayEnhancedOutput extends MenuItem {}
+public class DisplayEnhancedOutput extends MenuItemWithToolbar {}

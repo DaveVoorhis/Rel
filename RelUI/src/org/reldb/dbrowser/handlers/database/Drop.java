@@ -1,5 +1,5 @@
 package org.reldb.dbrowser.handlers.database;
 
-import org.reldb.dbrowser.handlers.MenuItem;
+import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
 
-public class Drop extends MenuItem {}
+public class Drop extends MenuItemWithToolbar {}

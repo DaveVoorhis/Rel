@@ -7,7 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.reldb.dbrowser.handlers.MenuItem;
+import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
 
 /*
  * A combination of a ToolItem, for display on a ToolBar, and an optional reference to a menu handler.
@@ -21,7 +21,7 @@ import org.reldb.dbrowser.handlers.MenuItem;
  */
 public class CommandActivator extends ToolItem {
 
-	private Class<? extends MenuItem>mnuClass;
+	private Class<? extends MenuItemWithToolbar>mnuClass;
 	
 	public void activate() {
 		if (mnuClass == null)
@@ -45,7 +45,7 @@ public class CommandActivator extends ToolItem {
 		}
 	}
 	
-	public CommandActivator(Class<? extends MenuItem> mnuClass, ToolBar parent, int style) {
+	public CommandActivator(Class<? extends MenuItemWithToolbar> mnuClass, ToolBar parent, int style) {
 		super(parent, style);
 		this.mnuClass = mnuClass;
 		activate();

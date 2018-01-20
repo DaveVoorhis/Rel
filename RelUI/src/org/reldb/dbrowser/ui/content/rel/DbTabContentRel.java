@@ -8,7 +8,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
-import org.reldb.dbrowser.handlers.MenuItem;
+import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
 import org.reldb.dbrowser.handlers.database.*;
 import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.DbTab;
@@ -142,7 +142,7 @@ public class DbTabContentRel extends Composite {
 	}
 	
 	protected void changeToolbar() {
-		MenuItem.clear();
+		MenuItemWithToolbar.clear();
 		if (tabToolBar != null) {
 			tabToolBar.dispose();
 			tabToolBar = null;

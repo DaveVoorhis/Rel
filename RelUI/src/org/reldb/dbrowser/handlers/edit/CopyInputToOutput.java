@@ -1,5 +1,5 @@
 package org.reldb.dbrowser.handlers.edit;
 
-import org.reldb.dbrowser.handlers.MenuItem;
+import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
 
-public class CopyInputToOutput extends MenuItem {}
+public class CopyInputToOutput extends MenuItemWithToolbar {}

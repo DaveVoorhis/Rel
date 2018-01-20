@@ -135,13 +135,13 @@ public class CmdPanelInput extends Composite {
 						doFindReplace();
 						return;
 					case 'y':
-						doRedo();
+						redo();
 						return;
 					case 'z':
 						if ((e.stateMask & SWT.SHIFT) != 0)
-							doRedo();
+							redo();
 						else
-							doUndo();
+							undo();
 						return;
 					}
 				}
@@ -215,30 +215,27 @@ public class CmdPanelInput extends Composite {
 
 			tlitmClear = new CommandActivator(Clear.class, toolBar, SWT.NONE);
 			tlitmClear.setToolTipText("Clear");
-			tlitmClear.addListener(SWT.Selection, e -> {
-				inputText.setText("");
-				inputText.setFocus();
-			});
+			tlitmClear.addListener(SWT.Selection, e -> clear());
 
 			tlitmUndo = new CommandActivator(Undo.class, toolBar, SWT.NONE);
 			tlitmUndo.setToolTipText("Undo");
-			tlitmUndo.addListener(SWT.Selection, e -> doUndo());
+			tlitmUndo.addListener(SWT.Selection, e -> undo());
 
 			tlitmRedo = new CommandActivator(Redo.class, toolBar, SWT.NONE);
 			tlitmRedo.setToolTipText("Redo");
-			tlitmRedo.addListener(SWT.Selection, e -> doRedo());
+			tlitmRedo.addListener(SWT.Selection, e -> redo());
 
 			tlitmCut = new CommandActivator(Cut.class, toolBar, SWT.NONE);
 			tlitmCut.setToolTipText("Cut");
-			tlitmCut.addListener(SWT.Selection, e -> doCut());
+			tlitmCut.addListener(SWT.Selection, e -> cut());
 
 			tlitmCopy = new CommandActivator(Copy.class, toolBar, SWT.NONE);
 			tlitmCopy.setToolTipText("Copy");
-			tlitmCopy.addListener(SWT.Selection, e -> doCopy());
+			tlitmCopy.addListener(SWT.Selection, e -> copy());
 
 			tlitmPaste = new CommandActivator(Paste.class, toolBar, SWT.NONE);
 			tlitmPaste.setToolTipText("Paste");
-			tlitmPaste.addListener(SWT.Selection, e -> doPaste());
+			tlitmPaste.addListener(SWT.Selection, e -> paste());
 
 			tlitmDelete = new CommandActivator(Delete.class, toolBar, SWT.NONE);
 			tlitmDelete.setToolTipText("Delete");
@@ -371,27 +368,32 @@ public class CmdPanelInput extends Composite {
 		specialCharacterDisplay = new SpecialCharacters(parent.getShell(), inputText);
 	}
 
+	private void clear() {
+		inputText.setText("");
+		inputText.setFocus();
+	}
+
 	protected String getDefaultSaveFileName() {
 		return "Untitled";
 	}
 
-	private void doUndo() {
+	private void undo() {
 		undoredo.undo();
 	}
 
-	private void doRedo() {
+	private void redo() {
 		undoredo.redo();
 	}
 
-	protected void doPaste() {
+	protected void paste() {
 		inputText.paste();
 	}
 
-	protected void doCopy() {
+	protected void copy() {
 		inputText.copy();
 	}
 
-	protected void doCut() {
+	protected void cut() {
 		inputText.cut();
 	}
 

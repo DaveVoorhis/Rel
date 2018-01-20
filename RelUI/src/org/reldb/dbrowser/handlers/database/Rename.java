@@ -1,5 +1,5 @@
 package org.reldb.dbrowser.handlers.database;
 
-import org.reldb.dbrowser.handlers.MenuItem;
+import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
 
-public class Rename extends MenuItem {}
+public class Rename extends MenuItemWithToolbar {}

@@ -1,5 +1,5 @@
 package org.reldb.dbrowser.handlers.edit;
 
-import org.reldb.dbrowser.handlers.MenuItem;
+import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
 
-public class SpecialChars extends MenuItem {}
+public class SpecialChars extends MenuItemWithToolbar {}

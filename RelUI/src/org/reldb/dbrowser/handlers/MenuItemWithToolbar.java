@@ -8,14 +8,14 @@ import org.eclipse.e4.ui.model.application.ui.menu.MHandledMenuItem;
 import org.eclipse.swt.SWT;
 import org.reldb.dbrowser.ui.CommandActivator;
 
-public abstract class MenuItem {
-	private static HashMap<Class<? extends MenuItem>, CommandActivator> activated = new HashMap<>();
+public abstract class MenuItemWithToolbar {
+	private static HashMap<Class<? extends MenuItemWithToolbar>, CommandActivator> activated = new HashMap<>();
 	
-	public static void activate(Class<? extends MenuItem> tag, CommandActivator activator) {
+	public static void activate(Class<? extends MenuItemWithToolbar> tag, CommandActivator activator) {
 		activated.put(tag, activator);
 	}
 	
-	public static void deactivate(Class<? extends MenuItem> tag) {
+	public static void deactivate(Class<? extends MenuItemWithToolbar> tag) {
 		activated.remove(tag);
 	}
 
@@ -33,13 +33,19 @@ public abstract class MenuItem {
 		return activator.getEnabled();
 	}
 	
-	@Execute
-	public void execute() {
+	protected boolean doExecute() {
 		CommandActivator activator = activated.get(getClass());
 		if (activator != null) {
 			if ((activator.getStyle() & (SWT.CHECK | SWT.RADIO)) != 0)
 				activator.setSelection(!activator.getSelection());
 			activator.click();
-		}
+			return true;
+		} else
+			return false;
+	}
+	
+	@Execute
+	public void execute() {
+		doExecute();
 	}
 }
