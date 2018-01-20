@@ -129,7 +129,7 @@ public class CmdPanelInput extends Composite {
 				if (((e.stateMask & SWT.CTRL) != 0 || (e.stateMask & SWT.COMMAND) != 0) && inputText.isEnabled()) {
 					switch (e.keyCode) {
 					case 'a':
-						doSelectAll();
+						selectAll();
 						return;
 					case 'f':
 						doFindReplace();
@@ -396,8 +396,8 @@ public class CmdPanelInput extends Composite {
 	protected void cut() {
 		inputText.cut();
 	}
-
-	private void doSelectAll() {
+	
+	protected void selectAll() {
 		int topIndex = inputText.getTopIndex();
 		inputText.setSelection(0, inputText.getCharCount());
 		inputText.setTopIndex(topIndex);
@@ -431,10 +431,6 @@ public class CmdPanelInput extends Composite {
 
 	public void delete() {
 		inputText.invokeAction(ST.DELETE_NEXT);
-	}
-	
-	public void selectAll() {
-		inputText.selectAll();
 	}
 	
 	private void setupIcons() {
