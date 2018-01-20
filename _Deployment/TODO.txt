@@ -1,18 +1,25 @@
 ** TO DO **
 
-- Enable copy/paste/clear on all text boxes.
+- Fix. Enable copy/paste/clear on all text boxes.
+
+- Fix. Rev:
+	Given:
+		Create an Expression and set its text to "WRITELN '&blah'".
+	Result: 
+		The & won't show. If you change the text to "WRITELN '&&blah'", 
+		it shows &, but is treated as "WRITELN '&&blah'".
+
+- Fix. RelUI:
+	Given:
+		In the Rel UI's table editor, press "Go to INSERT row" button.
+	Result:
+	 	It was was supposed to do what Ctrl-End should also do: 
+	 	position the display on the blank row and put the cursor 
+	 	in it. It doesn't. Fix it.
 
 - Provide encrypted backups (and log-ins to a given database).
 
-- In Rev, create an Expression and set its text to "WRITELN '&blah'". The
-  & won't show. If you change the text to "WRITELN '&&blah'", it shows
-  &, but is treated as "WRITELN '&&blah'". Fix.
-
-- Provide "Comment" visualiser in Rev.
-
-- In the Rel UI's table editor, "Go to INSERT row" button was supposed to 
-  do what Ctrl-End should also do: position the display on the blank row
-  and put the cursor in it. It doesn't. Fix it.
+- Rev: Provide "Comment" visualiser in Rev.
 
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 
