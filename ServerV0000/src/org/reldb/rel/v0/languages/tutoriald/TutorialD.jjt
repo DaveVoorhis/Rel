@@ -1852,7 +1852,7 @@ void relation() :
 void relation_heading() #RelationHeading :
 {}
 {
-	[ LOOKAHEAD(heading()) heading() ]
+	[ LOOKAHEAD(heading_type()) heading_type() ]
 }
 
 void heading() #Heading :

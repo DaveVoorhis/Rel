@@ -4,6 +4,15 @@ Version 3.011 (1.0.24):
 
   - fix: Rel DBMS:
   		Given:
+  			https://reldb.org/forum/viewtopic.php?f=2&t=1527&p=2863#p2863
+  		Result:
+  			Fatal error instead of semantic error.
+  		Fix:
+  			Now throws semantic error, plus helpful hint for fixing
+  			typical error.
+
+  - fix: Rel DBMS:
+  		Given:
   			S GROUP {blah} AS rva
   		Result:
   			Java NullPointerException due to undefined attribute 'blah'.

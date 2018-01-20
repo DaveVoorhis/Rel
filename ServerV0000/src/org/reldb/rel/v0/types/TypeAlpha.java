@@ -111,7 +111,7 @@ public class TypeAlpha extends TypeAbstract implements Comparable<TypeAlpha> {
 					return listItem;
 			parent = parent.superType;
 		}
-		throw new ExceptionFatal("RS0383: Unable to find most specific common supertype.");
+		throw new ExceptionSemantic("RS0383: Unable to find most specific common supertype. If this error is caused by a tuple in a relation, try explicitly specifying the relation's heading.");
 	}
 	
 	public void addSubtype(TypeAlpha subType) {

@@ -1,6 +1,6 @@
 ** TO DO **
 
-- Fix https://reldb.org/forum/viewtopic.php?f=2&t=1527&p=2863#p2863
+- Verify that SAME_HEADING_AS(...) can be used in a relation literal.
 
 - Enable copy/paste/clear on all text boxes.
 
