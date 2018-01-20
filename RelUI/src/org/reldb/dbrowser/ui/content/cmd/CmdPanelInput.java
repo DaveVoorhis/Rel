@@ -11,7 +11,6 @@ import java.util.Vector;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.custom.ST;
-import org.eclipse.swt.custom.StyledText;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
@@ -39,7 +38,7 @@ import org.reldb.dbrowser.ui.preferences.Preferences;
 public class CmdPanelInput extends Composite {
 
 	private CmdPanelBottom cmdPanelBottom;
-	private StyledText inputText;
+	private CmdStyledText inputText;
 
 	private CommandActivator tlitmPrevHistory;
 	private CommandActivator tlitmNextHistory;
@@ -76,8 +75,6 @@ public class CmdPanelInput extends Composite {
 
 	private boolean copyInputToOutput = true;
 
-	private UndoRedo undoredo;
-
 	private static final Color backgroundHighlight = SWTResourceManager.getColor(250, 255, 252);
 
 	private SpecialCharacters specialCharacterDisplay;
@@ -102,14 +99,13 @@ public class CmdPanelInput extends Composite {
 		fd_toolBar.right = new FormAttachment(100);
 		toolBar.setLayoutData(fd_toolBar);
 
-		inputText = new StyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		inputText = new CmdStyledText(this, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		FormData fd_inputText = new FormData();
 		fd_inputText.right = new FormAttachment(toolBar, 0, SWT.RIGHT);
 		fd_inputText.top = new FormAttachment(toolBar);
 		fd_inputText.left = new FormAttachment(toolBar, 0, SWT.LEFT);
 		inputText.setLayoutData(fd_inputText);
 
-		undoredo = new UndoRedo(inputText);
 		RelLineStyler lineStyler = new RelLineStyler(keywords);
 
 		inputText.addLineStyleListener(lineStyler);
@@ -129,19 +125,19 @@ public class CmdPanelInput extends Composite {
 				if (((e.stateMask & SWT.CTRL) != 0 || (e.stateMask & SWT.COMMAND) != 0) && inputText.isEnabled()) {
 					switch (e.keyCode) {
 					case 'a':
-						selectAll();
+						inputText.selectAll();
 						return;
 					case 'f':
 						doFindReplace();
 						return;
 					case 'y':
-						redo();
+						inputText.redo();
 						return;
 					case 'z':
 						if ((e.stateMask & SWT.SHIFT) != 0)
-							redo();
+							inputText.redo();
 						else
-							undo();
+							inputText.undo();
 						return;
 					}
 				}
@@ -213,37 +209,37 @@ public class CmdPanelInput extends Composite {
 				inputText.setFocus();
 			});
 
-			tlitmClear = new CommandActivator(Clear.class, toolBar, SWT.NONE);
+			tlitmClear = new CommandActivator(null, toolBar, SWT.NONE);
 			tlitmClear.setToolTipText("Clear");
 			tlitmClear.addListener(SWT.Selection, e -> clear());
 
-			tlitmUndo = new CommandActivator(Undo.class, toolBar, SWT.NONE);
+			tlitmUndo = new CommandActivator(null, toolBar, SWT.NONE);
 			tlitmUndo.setToolTipText("Undo");
-			tlitmUndo.addListener(SWT.Selection, e -> undo());
+			tlitmUndo.addListener(SWT.Selection, e -> inputText.undo());
 
-			tlitmRedo = new CommandActivator(Redo.class, toolBar, SWT.NONE);
+			tlitmRedo = new CommandActivator(null, toolBar, SWT.NONE);
 			tlitmRedo.setToolTipText("Redo");
-			tlitmRedo.addListener(SWT.Selection, e -> redo());
+			tlitmRedo.addListener(SWT.Selection, e -> inputText.redo());
 
-			tlitmCut = new CommandActivator(Cut.class, toolBar, SWT.NONE);
+			tlitmCut = new CommandActivator(null, toolBar, SWT.NONE);
 			tlitmCut.setToolTipText("Cut");
-			tlitmCut.addListener(SWT.Selection, e -> cut());
+			tlitmCut.addListener(SWT.Selection, e -> inputText.cut());
 
-			tlitmCopy = new CommandActivator(Copy.class, toolBar, SWT.NONE);
+			tlitmCopy = new CommandActivator(null, toolBar, SWT.NONE);
 			tlitmCopy.setToolTipText("Copy");
-			tlitmCopy.addListener(SWT.Selection, e -> copy());
+			tlitmCopy.addListener(SWT.Selection, e -> inputText.copy());
 
-			tlitmPaste = new CommandActivator(Paste.class, toolBar, SWT.NONE);
+			tlitmPaste = new CommandActivator(null, toolBar, SWT.NONE);
 			tlitmPaste.setToolTipText("Paste");
-			tlitmPaste.addListener(SWT.Selection, e -> paste());
+			tlitmPaste.addListener(SWT.Selection, e -> inputText.paste());
+			
+			tlitmSelectAll = new CommandActivator(null, toolBar, SWT.NONE);
+			tlitmSelectAll.setToolTipText("Select all");
+			tlitmSelectAll.addListener(SWT.Selection, e -> inputText.selectAll());
 
 			tlitmDelete = new CommandActivator(Delete.class, toolBar, SWT.NONE);
 			tlitmDelete.setToolTipText("Delete");
 			tlitmDelete.addListener(SWT.Selection, e -> delete());
-			
-			tlitmSelectAll = new CommandActivator(SelectAll.class, toolBar, SWT.NONE);
-			tlitmSelectAll.setToolTipText("Select all");
-			tlitmSelectAll.addListener(SWT.Selection, e -> selectAll());
 			
 			tlitmFindReplace = new CommandActivator(FindReplace.class, toolBar, SWT.NONE);
 			tlitmFindReplace.setToolTipText("Find/Replace");
@@ -368,6 +364,10 @@ public class CmdPanelInput extends Composite {
 		specialCharacterDisplay = new SpecialCharacters(parent.getShell(), inputText);
 	}
 
+	public void selectAll() {
+		inputText.selectAll();
+	}
+
 	private void clear() {
 		inputText.setText("");
 		inputText.setFocus();
@@ -375,32 +375,6 @@ public class CmdPanelInput extends Composite {
 
 	protected String getDefaultSaveFileName() {
 		return "Untitled";
-	}
-
-	private void undo() {
-		undoredo.undo();
-	}
-
-	private void redo() {
-		undoredo.redo();
-	}
-
-	protected void paste() {
-		inputText.paste();
-	}
-
-	protected void copy() {
-		inputText.copy();
-	}
-
-	protected void cut() {
-		inputText.cut();
-	}
-	
-	protected void selectAll() {
-		int topIndex = inputText.getTopIndex();
-		inputText.setSelection(0, inputText.getCharCount());
-		inputText.setTopIndex(topIndex);
 	}
 
 	private void doFindReplace() {

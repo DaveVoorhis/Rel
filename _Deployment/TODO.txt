@@ -1,8 +1,6 @@
 ** TO DO **
 
-- Better integrate copy/cut/paste/selectAll/delete/etc. on CmdPanelInput,
-  perhaps by using method name lookup. Toolbar items can then be independent of
-  menu items, at least for edit menu items.
+- Integrate cut/copy/paste with Browser.
 
 - Fix. Rev:
 	Given:
