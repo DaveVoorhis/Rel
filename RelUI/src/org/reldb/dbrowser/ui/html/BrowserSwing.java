@@ -1,6 +1,8 @@
 package org.reldb.dbrowser.ui.html;
 
 import java.awt.Frame;
+import java.awt.GridLayout;
+import java.awt.Panel;
 import java.io.IOException;
 
 import javax.swing.JScrollPane;
@@ -26,6 +28,7 @@ public class BrowserSwing implements HtmlBrowser {
 	private void setEnhancedOutputStyle(JTextPane pane) {
 		pane.setContentType("text/html");
 		pane.setEditable(false);
+		pane.setEnabled(true);
 		HTMLEditorKit editorKit = new HTMLEditorKit();
 		HTMLDocument defaultDocument = (HTMLDocument) editorKit.createDefaultDocument();
 		pane.setEditorKit(editorKit);
@@ -37,12 +40,21 @@ public class BrowserSwing implements HtmlBrowser {
 
 	@Override
 	public boolean createWidget(Composite parent) {
-		browserPanel = new Composite(parent, SWT.EMBEDDED);
+		browserPanel = new Composite(parent, SWT.EMBEDDED) {
+			@SuppressWarnings("unused")
+			public void copy() {
+				browser.copy();
+			}
+		};
 		Frame frame = SWT_AWT.new_Frame(browserPanel);
 
 		style = new Style(0);
 
+		Panel root = new Panel();
+		root.setLayout(new GridLayout());
+		
 		browser = new JTextPane();
+		
 		setEnhancedOutputStyle(browser);
 		browser.setDoubleBuffered(true);
 		DefaultCaret caret = (DefaultCaret) browser.getCaret();
@@ -52,7 +64,9 @@ public class BrowserSwing implements HtmlBrowser {
 		jScrollPaneOutput.setAutoscrolls(true);
 		jScrollPaneOutput.setViewportView(browser);
 
-		frame.add(jScrollPaneOutput);
+		root.add(jScrollPaneOutput);
+		
+		frame.add(root);
 
 		clear();
 

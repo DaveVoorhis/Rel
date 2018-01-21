@@ -1,8 +1,7 @@
 ** TO DO **
 
-- Integrate cut/copy/paste with Browser. Somehow. Enable Copy always? Only when browser
-  is displayed? Disable when browser displayed? Does that work?
-  Remove all cut/copy/paste key bindings and just make it look like they're there?
+- Fix 'Copy' menu item in BrowserSwing. Keystroke works; 
+  Copy drop-down menu doesn't.
 
 - Fix. Rev:
 	Given:
