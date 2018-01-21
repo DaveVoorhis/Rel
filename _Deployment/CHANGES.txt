@@ -2,6 +2,9 @@ Last used Exception* number: RS0505
 
 Version 3.011 (1.0.24):
 
+  - fix: Rel UI: Cut/copy/paste/selectAll/clear/undo/redo now work consistently
+    and are generally available where they should appear.
+
   - Enhancement: Rel DBMS:
   	Using SAME_HEADING_AS(...) in a relation literal heading
   	was not permitted. E.g., REL SAME_HEADING_AS(S) {} was
