@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 public class BrowserSwing implements HtmlBrowser {
-	
+
 	private Composite browserPanel;
 	private JTextPane browser;
 	private Style style;
@@ -27,35 +27,35 @@ public class BrowserSwing implements HtmlBrowser {
 		pane.setContentType("text/html");
 		pane.setEditable(false);
 		HTMLEditorKit editorKit = new HTMLEditorKit();
-		HTMLDocument defaultDocument = (HTMLDocument)editorKit.createDefaultDocument();
+		HTMLDocument defaultDocument = (HTMLDocument) editorKit.createDefaultDocument();
 		pane.setEditorKit(editorKit);
 		pane.setDocument(defaultDocument);
 		StyleSheet css = editorKit.getStyleSheet();
-		for (String entry: style.getFormattedStyle())
+		for (String entry : style.getFormattedStyle())
 			css.addRule(entry);
 	}
 
 	@Override
 	public boolean createWidget(Composite parent) {
-	    browserPanel = new Composite(parent, SWT.EMBEDDED);
-	    Frame frame = SWT_AWT.new_Frame(browserPanel);
-	    
-	    style = new Style(0);
-	    
+		browserPanel = new Composite(parent, SWT.EMBEDDED);
+		Frame frame = SWT_AWT.new_Frame(browserPanel);
+
+		style = new Style(0);
+
 		browser = new JTextPane();
 		setEnhancedOutputStyle(browser);
 		browser.setDoubleBuffered(true);
-		DefaultCaret caret = (DefaultCaret)browser.getCaret();
-	    caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-	 		
+		DefaultCaret caret = (DefaultCaret) browser.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
 		JScrollPane jScrollPaneOutput = new JScrollPane();
 		jScrollPaneOutput.setAutoscrolls(true);
 		jScrollPaneOutput.setViewportView(browser);
-		
+
 		frame.add(jScrollPaneOutput);
-		
+
 		clear();
-		
+
 		return true;
 	}
 
@@ -67,18 +67,19 @@ public class BrowserSwing implements HtmlBrowser {
 
 	@Override
 	public void appendHtml(String s) {
-		HTMLDocument doc = (HTMLDocument)browser.getDocument();
-		HTMLEditorKit kit = (HTMLEditorKit)browser.getEditorKit();
-	    try {
-	    	kit.insertHTML((HTMLDocument) doc, doc.getLength(), s, 0, 0, null);
+		HTMLDocument doc = (HTMLDocument) browser.getDocument();
+		HTMLEditorKit kit = (HTMLEditorKit) browser.getEditorKit();
+		try {
+			kit.insertHTML((HTMLDocument) doc, doc.getLength(), s, 0, 0, null);
 		} catch (BadLocationException | IOException e) {
 			e.printStackTrace();
 		}
-	    text.append(s);
+		text.append(s);
 	}
 
 	@Override
-	public void scrollToBottom() {}
+	public void scrollToBottom() {
+	}
 
 	@Override
 	public Control getWidget() {
@@ -114,7 +115,7 @@ public class BrowserSwing implements HtmlBrowser {
 		text = new StringBuffer(content);
 		browser.setText(style.getHTMLDocument(content));
 	}
-	
+
 	@Override
 	public String getContent() {
 		return text.toString();
