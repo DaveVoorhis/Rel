@@ -1,6 +1,6 @@
 ** TO DO **
 
-- Integrate cut/copy/paste with Browser.
+- Integrate cut/copy/paste with Browser. Somehow.
 
 - Fix. Rev:
 	Given:

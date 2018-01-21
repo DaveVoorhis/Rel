@@ -19,12 +19,10 @@ public class CmdStyledText extends StyledText {
 		undoredo.redo();
 	}
 	
-	/*
 	public void selectAll() {
 		int topIndex = getTopIndex();
 		setSelection(0, getCharCount());
 		setTopIndex(topIndex);
 	}
-	*/
 
 }
