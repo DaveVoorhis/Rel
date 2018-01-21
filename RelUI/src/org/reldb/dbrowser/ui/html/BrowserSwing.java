@@ -13,14 +13,13 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 public class BrowserSwing implements HtmlBrowser {
 
-	private Composite browserPanel;
+	private BrowserSwingWidget browserPanel;
 	private JTextPane browser;
 	private Style style;
 	private StringBuffer text;
@@ -40,12 +39,7 @@ public class BrowserSwing implements HtmlBrowser {
 
 	@Override
 	public boolean createWidget(Composite parent) {
-		browserPanel = new Composite(parent, SWT.EMBEDDED) {
-			@SuppressWarnings("unused")
-			public void copy() {
-				browser.copy();
-			}
-		};
+		browserPanel = new BrowserSwingWidget(parent);
 		Frame frame = SWT_AWT.new_Frame(browserPanel);
 
 		style = new Style(0);
@@ -54,6 +48,8 @@ public class BrowserSwing implements HtmlBrowser {
 		root.setLayout(new GridLayout());
 		
 		browser = new JTextPane();
+		
+		browserPanel.setJTextPane(browser);
 		
 		setEnhancedOutputStyle(browser);
 		browser.setDoubleBuffered(true);

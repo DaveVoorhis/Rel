@@ -1,7 +1,6 @@
 ** TO DO **
 
-- Fix 'Copy' menu item in BrowserSwing. Keystroke works; 
-  Copy drop-down menu doesn't.
+- Provide copy() in native browser via Browser widget.
 
 - Fix. Rev:
 	Given:

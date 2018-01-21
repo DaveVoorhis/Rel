@@ -35,6 +35,7 @@ public abstract class EditMenuItem extends MenuItemWithToolbar {
 			try {
 				method.invoke(getControl(), new Object[0]);
 			} catch (Throwable e) {
+				System.out.println("EditMenuItem: doMethod: " + e);
 			}
 	}
 	
