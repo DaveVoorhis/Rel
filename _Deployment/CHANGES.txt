@@ -4,6 +4,13 @@ Version 3.011 (1.0.24):
 
   - Enhancement: Bundled JRE now version 8u161.
 
+  - Enhancement: Rel DBMS:
+  	Using SAME_HEADING_AS(...) in a relation literal heading
+  	was not permitted. E.g., REL SAME_HEADING_AS(S) {} was
+  	a syntax error. It is now permitted.
+  
+  - Enhancement: Rel DBMS and Rel Client now check for 'null' source code.
+
   - Fix. Rev:
 	Given:
 		Create an Expression and set its text to "WRITELN '&blah'".
@@ -12,15 +19,10 @@ Version 3.011 (1.0.24):
 		it shows &, but is treated as "WRITELN '&&blah'".
 	Fixed.
 
-  - fix: Rel UI: Cut/copy/paste/selectAll/clear/undo/redo now work consistently
+  - Fix: Rel UI: Cut/copy/paste/selectAll/clear/undo/redo now work consistently
     and are generally available where they should appear.
-
-  - Enhancement: Rel DBMS:
-  	Using SAME_HEADING_AS(...) in a relation literal heading
-  	was not permitted. E.g., REL SAME_HEADING_AS(S) {} was
-  	a syntax error. It is now permitted.
   			
-  - fix: Rel DBMS:
+  - Fix: Rel DBMS:
   		Given:
   			https://reldb.org/forum/viewtopic.php?f=2&t=1527&p=2863#p2863
   		Result:
@@ -29,18 +31,14 @@ Version 3.011 (1.0.24):
   			Now throws semantic error, plus helpful hint for fixing
   			typical error.
 
-  - fix: Rel DBMS:
+  - Fix: Rel DBMS:
   		Given:
   			S GROUP {blah} AS rva
   		Result:
   			Java NullPointerException due to undefined attribute 'blah'.
   		Fixed.
 
-  - fix: Rel DBMS: ABS(n) always returns rational value, even if n is INTEGER. Fixed.
-  
-  - enhancement: Rel UI: Log inconsistencies found in malformed Rev queries.
-  
-  - enhancement: Rel DBMS and Rel Client: Check for 'null' source code.
+  - Fix: Rel DBMS: ABS(n) always returns rational value, even if n is INTEGER. Fixed.
 
 Version 3.010 (1.0.23):
 
