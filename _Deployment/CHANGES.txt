@@ -38,7 +38,7 @@ Version 3.011 (1.0.24):
   			Java NullPointerException due to undefined attribute 'blah'.
   		Fixed.
 
-  - Fix: Rel DBMS: ABS(n) always returns rational value, even if n is INTEGER. Fixed.
+  - Fix: Rel DBMS: ABS(n) always returned a rational value, even if n was INTEGER. Fixed.
 
 Version 3.010 (1.0.23):
 
