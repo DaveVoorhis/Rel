@@ -7,6 +7,8 @@
 	 	It was was supposed to do what Ctrl-End should also do: 
 	 	position the display on the blank row and put the cursor 
 	 	in it. It doesn't. Fix it.
+	Note:
+		Works in OS X.
 
 - Provide encrypted backups (and log-ins to a given database).
 
