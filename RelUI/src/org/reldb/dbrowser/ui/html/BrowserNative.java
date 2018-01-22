@@ -40,7 +40,7 @@ public class BrowserNative implements HtmlBrowser {
 		else
 			style = new Style(0);
 		try {
-			browser = new Browser(parent, SWT.BORDER);
+			browser = new BrowserNativeWidget(parent, SWT.BORDER);
 			browser.setJavascriptEnabled(true);
 			browser.addProgressListener(new ProgressAdapter() {
 				@Override
