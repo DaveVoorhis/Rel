@@ -2,6 +2,14 @@ Last used Exception* number: RS0505
 
 Version 3.011 (1.0.24):
 
+  - Fix. Rev:
+	Given:
+		Create an Expression and set its text to "WRITELN '&blah'".
+	Result: 
+		The & won't show. If you change the text to "WRITELN '&&blah'", 
+		it shows &, but is treated as "WRITELN '&&blah'".
+	Fixed.
+
   - fix: Rel UI: Cut/copy/paste/selectAll/clear/undo/redo now work consistently
     and are generally available where they should appear.
 

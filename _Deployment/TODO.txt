@@ -1,11 +1,6 @@
 ** TO DO **
 
-- Fix. Rev:
-	Given:
-		Create an Expression and set its text to "WRITELN '&blah'".
-	Result: 
-		The & won't show. If you change the text to "WRITELN '&&blah'", 
-		it shows &, but is treated as "WRITELN '&&blah'".
+- Check that Cmd-C/Ctrl-C is equivalent to drop-down menu Copy.
 
 - Fix. RelUI:
 	Given:

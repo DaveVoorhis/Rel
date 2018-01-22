@@ -5,7 +5,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.reldb.dbrowser.ui.content.rev.ControlPanel;
 import org.reldb.dbrowser.ui.content.rev.Operator;
 import org.reldb.dbrowser.ui.content.rev.Rev;
@@ -13,7 +13,7 @@ import org.reldb.dbrowser.ui.content.rev.Visualiser;
 
 public abstract class OperatorWithControlPanel extends Operator {
 
-	protected Label operatorLabel;
+	protected Text operatorLabel;
 
 	public OperatorWithControlPanel(Rev rev, String name, String title, int xpos, int ypos) {
 		super(rev.getModel(), name, title, xpos, ypos);
@@ -23,7 +23,8 @@ public abstract class OperatorWithControlPanel extends Operator {
 	protected Control obtainControlPanel(Visualiser parent) {
 		Composite controlPanel = new Composite(parent, SWT.NONE);
 		controlPanel.setLayout(new FillLayout());
-		operatorLabel = new Label(controlPanel, SWT.NONE);
+		operatorLabel = new Text(controlPanel, SWT.NONE);
+		operatorLabel.setEditable(false);
 		operatorLabel.setBackground(BackgroundColor);
 		if (!getModel().getRev().isReadOnly())
 			operatorLabel.addListener(SWT.MouseUp, e -> {
