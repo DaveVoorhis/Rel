@@ -43,19 +43,46 @@ public class Style {
 	}
 
 	public String getHTMLDocument(String content) {
-		return	 "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" +
-			     "<html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"en-gb\" xml:lang=\"en-gb\">\n" +
-			     "<head>\n" +
-			     "<style type=\"text/css\">\n" +
-			     "<!--\n" +
-			     getHTMLStyle() +
-				 "-->\n" +
-				 "</style>\n" +
-				 "</head>\n" +
-				 "<body id=\"body\">\n" +
-				 content +
-				 "</body>\n" +
-				 "</html>";
+		return	 
+			"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" +
+			"<html xmlns=\"http://www.w3.org/1999/xhtml\" dir=\"ltr\" lang=\"en-gb\" xml:lang=\"en-gb\">\n" +
+			"<script type=\"text/javascript\">" +
+			"function selectAll() {" +
+			"    document.execCommand(\"selectall\", null, false);" +
+			"}" +
+			"function getSelectionHtml() {" +
+			"    var html = \"\";" +
+			"    if (typeof window.getSelection != \"undefined\") {" +
+			"        var sel = window.getSelection();" +
+			"        if (sel.rangeCount) {" +
+			"            var container = document.createElement(\"div\");" +
+			"            for (var i = 0, len = sel.rangeCount; i < len; ++i) {" +
+			"                container.appendChild(sel.getRangeAt(i).cloneContents());" +
+			"            }" +
+			"            html = container.innerHTML;" +
+			"        }" +
+			"    } else if (typeof document.selection != \"undefined\") {" +
+			"        if (document.selection.type == \"Text\") {" +
+			"            html = document.selection.createRange().htmlText;" +
+			"        }" +
+			"    }" +
+			"    return html;" +
+			"}" +
+			"function obtainSel() {" +
+			"    window.status = getSelectionHtml();" +
+			"}" +
+			"</script>" +
+			"<head>\n" +
+			"<style type=\"text/css\">\n" +
+			"<!--\n" +
+			getHTMLStyle() +
+			"-->\n" +
+			"</style>\n" +
+			"</head>\n" +
+			"<body id=\"body\">\n" +
+			content +
+			"</body>\n" +
+			"</html>";
 	}
 	
 	public String getEmptyHTMLDocument() {
