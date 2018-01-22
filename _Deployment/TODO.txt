@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Check that Cmd-C/Ctrl-C is equivalent to drop-down menu Copy.
-
 - Fix. RelUI:
 	Given:
 		In the Rel UI's table editor, press "Go to INSERT row" button.
