@@ -25,7 +25,6 @@ public abstract class EditMenuItem extends MenuItemWithToolbar {
 			Method method = control.getClass().getMethod(methodName, new Class<?>[0]);
 			return method;
 		} catch (NoSuchMethodException | SecurityException e) {
-			System.out.println("EditMenuItem: getMethod exception: " + e);
 			return null;
 		}		
 	}

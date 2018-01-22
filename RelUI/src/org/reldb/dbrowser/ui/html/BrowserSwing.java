@@ -3,6 +3,10 @@ package org.reldb.dbrowser.ui.html;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Panel;
+import java.awt.Toolkit;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 
 import javax.swing.JScrollPane;
@@ -48,6 +52,25 @@ public class BrowserSwing implements HtmlBrowser {
 		root.setLayout(new GridLayout());
 		
 		browser = new JTextPane();
+		KeyListener[] listeners = browser.getKeyListeners();
+		for (KeyListener listener: listeners)
+			browser.removeKeyListener(listener);
+		browser.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!(e.getKeyCode() == KeyEvent.VK_C))
+					return;
+				if (!(e.getModifiers() == Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()))
+					return;
+				e.consume();
+				browserPanel.getDisplay().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						browserPanel.copy();
+					}
+				});
+			}
+		});
 		
 		browserPanel.setJTextPane(browser);
 		
