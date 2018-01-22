@@ -35,20 +35,14 @@ public abstract class Operator extends Visualiser {
 	private String getQueryForParameter(int parameterNumber, boolean allowParentheses) {
 		Parameter parameter = parameters.get(parameterNumber);
 		Argument argument = parameter.getArgument();
-		if (argument == null) {
-			System.out.println("Operator: argument for parameter " + parameterNumber + " in operator " + toString() + " is null!");
+		if (argument == null)
 			return null;
-		}
 		Visualiser operand = argument.getOperand();
-		if (operand == null) {
-			System.out.println("Operator: operand for parameter " + parameterNumber + " in operator " + toString() + " is null!");
+		if (operand == null)
 			return null;
-		}
 		String query = operand.getQuery();
-		if (query == null) {
-			System.out.println("Operator: query for parameter " + parameterNumber + " in operator " + toString() + " is null!");
+		if (query == null)
 			return null;
-		}		
 		if (allowParentheses && operand instanceof Operator)
 			return "(" + query + ")";
 		return query;
