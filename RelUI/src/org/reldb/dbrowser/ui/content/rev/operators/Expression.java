@@ -15,14 +15,14 @@ import org.reldb.rel.client.Tuples;
 import org.reldb.rel.utilities.StringUtils;
 
 public class Expression extends OperatorWithControlPanel {
-	
+
 	public Expression(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "Expression", xpos, ypos);
 		load();
 		pack();
 		notifyArgumentChanged(true);
 	}
-	
+
 	protected void load() {
 		Tuples tuples = getDatabase().getPreservedStateOperator(getID());
 		Tuple tuple = tuples.iterator().next();
@@ -33,19 +33,19 @@ public class Expression extends OperatorWithControlPanel {
 			operatorLabel.setText(definition);
 		}
 	}
-	
+
 	private void save() {
 		String quotedDefinition = StringUtils.quote(operatorLabel.getText());
 		getDatabase().updatePreservedStateOperator(getID(), quotedDefinition);
 	}
-	
+
 	@Override
 	protected void buildControlPanel(Composite container) {
 		container.setLayout(new GridLayout(2, false));
-		
+
 		Label label = new Label(container, SWT.None);
 		label.setText("Expression:");
-		
+
 		Text expression = new Text(container, SWT.None);
 		expression.setText(operatorLabel.getText());
 		expression.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -63,21 +63,21 @@ public class Expression extends OperatorWithControlPanel {
 		save();
 		pack();
 	}
-	
+
 	@Override
 	protected void controlPanelCancelPressed() {
 		load();
 		pack();
 	}
-	
+
 	@Override
 	public String getQuery() {
-		return operatorLabel.getText();		
+		return operatorLabel.getText();
 	}
-	
-    protected void delete() {
+
+	protected void delete() {
 		getDatabase().removeOperator(getID());
-    	super.delete();
-    }
+		super.delete();
+	}
 
 }
