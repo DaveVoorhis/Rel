@@ -42,6 +42,11 @@ public class Style {
 		return out;
 	}
 
+	/** If window.status is prefixed with this string, it is almost certainly a selection obtained via JavaScript obtainSel() */
+	public static String getSelectionIndicator() {
+		return "f94kdjsfdjk3048slekf";
+	}
+	
 	public String getHTMLDocument(String content) {
 		return	 
 			"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" +
@@ -69,7 +74,7 @@ public class Style {
 			"    return html;" +
 			"}" +
 			"function obtainSel() {" +
-			"    window.status = getSelectionHtml();" +
+			"    window.status = \"" + getSelectionIndicator() + "\" + getSelectionHtml();" +
 			"}" +
 			"</script>" +
 			"<head>\n" +

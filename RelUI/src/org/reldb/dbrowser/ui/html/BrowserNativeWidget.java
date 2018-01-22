@@ -12,7 +12,9 @@ public class BrowserNativeWidget extends Browser {
 	public BrowserNativeWidget(Composite parent, int style) {
 		super(parent, style);
 		this.addStatusTextListener(evt -> {
-			String text = evt.text.replace("<table", "<table border=\"1\"");
+			if (!evt.text.startsWith(Style.getSelectionIndicator()))
+				return;
+			String text = evt.text.substring(Style.getSelectionIndicator().length()).replace("<table", "<table border=\"1\"");
 			Clipboard clipboard = new Clipboard(parent.getDisplay());
 			TextTransfer textTransfer = TextTransfer.getInstance();
 			HTMLTransfer htmlTransfer = HTMLTransfer.getInstance();
