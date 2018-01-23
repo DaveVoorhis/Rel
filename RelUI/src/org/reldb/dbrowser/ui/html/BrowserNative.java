@@ -10,7 +10,6 @@ import org.eclipse.swt.browser.ProgressAdapter;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 public class BrowserNative implements HtmlBrowser {
 
@@ -36,7 +35,6 @@ public class BrowserNative implements HtmlBrowser {
 	
 	@Override
 	public boolean createWidget(Composite parent) {
-		System.out.println("BrowserNative: display DPI = " + Display.getCurrent().getDPI().x);
 		if (Util.isMac())
 			style = new Style(-3);
 		else
