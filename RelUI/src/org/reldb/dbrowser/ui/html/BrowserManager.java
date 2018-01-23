@@ -35,7 +35,6 @@ public class BrowserManager implements HtmlBrowser {
 		browser.createWidget(parent);
 		if (content != null)
 			browser.setContent(content);
-		System.out.println("BrowserManager: Using built-in (limited) browser.");
 		return true;
 	}
 

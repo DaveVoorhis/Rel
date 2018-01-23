@@ -24,6 +24,7 @@ import org.eclipse.swt.graphics.ImageDataProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.wb.swt.ResourceManager;
 
 public class BrowserSwing implements HtmlBrowser {
 
@@ -54,7 +55,7 @@ public class BrowserSwing implements HtmlBrowser {
 	private int getZoom() {
 		final ImageDataProvider imageDataProvider = zoom -> {
 			setZoomFactor(zoom);
-			return null;
+			return ResourceManager.getPluginImage("RelUI", "icons/noimage.png").getImageData();
 		};
 		new Image(Display.getCurrent(), imageDataProvider);
 		return zoom;
@@ -66,7 +67,7 @@ public class BrowserSwing implements HtmlBrowser {
 		Frame frame = SWT_AWT.new_Frame(browserPanel);
 		
 		if (Util.isWin32())
-			style = new Style((int)(14.0 * (double)getZoom() / 100.0));
+			style = new Style(3, (double)getZoom() / 100.0);
 		else
 			style = new Style(0);
 
