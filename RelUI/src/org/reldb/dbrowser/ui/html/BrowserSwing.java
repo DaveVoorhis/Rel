@@ -19,6 +19,8 @@ import javax.swing.text.html.StyleSheet;
 
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageDataProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -43,15 +45,28 @@ public class BrowserSwing implements HtmlBrowser {
 			css.addRule(entry);
 	}
 
+	private int zoom;
+	
+	private void setZoomFactor(int zoom) {
+		this.zoom = zoom;
+	}
+	
+	private int getZoom() {
+		final ImageDataProvider imageDataProvider = zoom -> {
+			setZoomFactor(zoom);
+			return null;
+		};
+		new Image(Display.getCurrent(), imageDataProvider);
+		return zoom;
+	}
+	
 	@Override
 	public boolean createWidget(Composite parent) {
 		browserPanel = new BrowserSwingWidget(parent);
 		Frame frame = SWT_AWT.new_Frame(browserPanel);
-
-		// Mac DPI = 72
-		// Windows DPI = 96
+		
 		if (Util.isWin32())
-			style = new Style((int)(14 * ((double)Display.getCurrent().getDPI().x / 72.0)));
+			style = new Style((int)(14.0 * (double)getZoom() / 100.0));
 		else
 			style = new Style(0);
 
