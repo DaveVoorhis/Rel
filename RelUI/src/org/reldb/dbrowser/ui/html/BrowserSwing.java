@@ -48,9 +48,10 @@ public class BrowserSwing implements HtmlBrowser {
 		browserPanel = new BrowserSwingWidget(parent);
 		Frame frame = SWT_AWT.new_Frame(browserPanel);
 
-		System.out.println("BrowserSwing: display DPI = " + Display.getCurrent().getDPI().x);
+		// Mac DPI = 72
+		// Windows DPI = 96
 		if (Util.isWin32())
-			style = new Style((int)(14 * ((double)Display.getCurrent().getDPI().x / 96.0)));
+			style = new Style((int)(14 * ((double)Display.getCurrent().getDPI().x / 72.0)));
 		else
 			style = new Style(0);
 
