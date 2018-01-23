@@ -8,10 +8,17 @@ import org.reldb.dbrowser.ui.preferences.Preferences;
 
 public class Style {
 	
-	private int sizeAdjustment;
+	private int sizeOffset;
+	private double sizeMultiplier = 1.0;
 	
-	public Style(int sizeAdjustment) {
-		this.sizeAdjustment = sizeAdjustment;
+	public Style(int sizeOffset) {
+		this.sizeOffset = sizeOffset;
+		this.sizeMultiplier = 1;
+	}
+	
+	public Style(int sizeOffset, double sizeMultiplier) {
+		this.sizeOffset = sizeOffset;
+		this.sizeMultiplier = sizeMultiplier;
 	}
 	
 	private static final String[] formattedStyle = {
@@ -31,7 +38,7 @@ public class Style {
 		FontData datum = data[0];
 		// eliminate leading '.', if there is one
 		String fontName = (datum.getName().startsWith(".") ? datum.getName().substring(1) : datum.getName());
-		int fullSize = datum.getHeight() + sizeAdjustment;
+		int fullSize = (int)((double)(datum.getHeight() + sizeOffset) * sizeMultiplier);
 		int smaller = (int)((double)fullSize * 0.75);
 		return 
 				"body, p, td, th {font-family: " + fontName + ", sans-serif; font-size: " + fullSize + "pt;}\n" +
