@@ -15,9 +15,7 @@ public class BrowserNativeWidget extends Browser {
 			if (!evt.text.startsWith(Style.getSelectionIndicator()))
 				return;
 			String text = evt.text.substring(Style.getSelectionIndicator().length()).replace("<table", "<table border=\"1\"");
-			System.out.println("BrowserNativeWidget: copy text = '" + text + "'");
 			if (text == null || text.length() == 0) {
-				System.out.println("BrowserNativeWidget: text is null.");
 				return;
 			}
 			Clipboard clipboard = new Clipboard(parent.getDisplay());
