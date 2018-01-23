@@ -15,7 +15,7 @@ public class BrowserNativeWidget extends Browser {
 			if (!evt.text.startsWith(Style.getSelectionIndicator()))
 				return;
 			String text = evt.text.substring(Style.getSelectionIndicator().length()).replace("<table", "<table border=\"1\"");
-			if (text == null || text.length() == 0)
+			if (text.length() == 0)
 				return;
 			Clipboard clipboard = new Clipboard(parent.getDisplay());
 			TextTransfer textTransfer = TextTransfer.getInstance();

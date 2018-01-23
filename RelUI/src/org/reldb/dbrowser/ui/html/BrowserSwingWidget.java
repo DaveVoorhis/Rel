@@ -39,6 +39,8 @@ public class BrowserSwingWidget extends Composite {
 	public void copy() {
 		if (jTextPane != null) {
 			String text = getSelectionAsHTML().replace("<table", "<table border=\"1\"");
+			if (text.length() == 0)
+				return;
 			Clipboard clipboard = new Clipboard(getParent().getDisplay());
 			TextTransfer textTransfer = TextTransfer.getInstance();
 			HTMLTransfer htmlTransfer = HTMLTransfer.getInstance();
