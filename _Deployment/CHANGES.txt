@@ -2,6 +2,11 @@ Last used Exception* number: RS0505
 
 Version 3.011 (1.0.24):
 
+  - Enhancement: Rel UI: Opening a relvar in Edit mode now positions cursor
+    in blank row at bottom, ready to insert. Cursor keys may be used to
+    navigate, and Ctrl/Cmd-Cursor keys may be used to jump to top/bottom or
+    right/left. 
+
   - Enhancement: Bundled JRE now version 8u161.
 
   - Enhancement: Rel DBMS:
@@ -10,6 +15,18 @@ Version 3.011 (1.0.24):
   	a syntax error. It is now permitted.
   
   - Enhancement: Rel DBMS and Rel Client now check for 'null' source code.
+
+- Fix. RelUI:
+	Given:
+		In the Rel UI's table editor, press "Go to INSERT row" button.
+	Result:
+	 	It was was supposed to do what Ctrl-End should also do: 
+	 	position the display on the blank row and put the cursor 
+	 	in it. It doesn't. Fix it.
+	Note:
+		Works in OS X; now working in Windows. Possibly fixed in
+		underlying library. Ctrl/Cmd-Cursor preferred over
+		Ctrl-End.
 
   - Fix. Rev:
 	Given:

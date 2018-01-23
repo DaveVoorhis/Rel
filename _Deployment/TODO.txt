@@ -1,18 +1,8 @@
 ** TO DO **
 
-- Fix. RelUI:
-	Given:
-		In the Rel UI's table editor, press "Go to INSERT row" button.
-	Result:
-	 	It was was supposed to do what Ctrl-End should also do: 
-	 	position the display on the blank row and put the cursor 
-	 	in it. It doesn't. Fix it.
-	Note:
-		Works in OS X.
+- Rev: Provide "Comment" visualiser in Rev.
 
 - Provide encrypted backups (and log-ins to a given database).
-
-- Rev: Provide "Comment" visualiser in Rev.
 
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 

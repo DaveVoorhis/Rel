@@ -68,6 +68,8 @@ import org.eclipse.nebula.widgets.nattable.ui.util.CellEdgeEnum;
 import org.eclipse.nebula.widgets.nattable.util.GCFactory;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -781,6 +783,7 @@ public abstract class Editor extends Grid {
 						table.doCommand(rowCommand);
 					}
 					table.removeListener(SWT.Paint, this);
+			        goToInsertRow();
 				}
 			});
 			table.configure();
@@ -831,6 +834,16 @@ public abstract class Editor extends Grid {
 
 		table = new NatTable(parent, gridLayer, false);
 
+		// Put cursor in table when it's initialised.
+		table.addPaintListener(new PaintListener() {
+		    @Override
+		    public void paintControl(PaintEvent e) {
+		        table.setFocus();
+		        table.removePaintListener(this);
+		        goToInsertRow();
+		    }
+		});		
+		
 		DefaultNatTableStyleConfiguration defaultStyle = new DefaultNatTableStyleConfiguration();
 		table.addConfiguration(defaultStyle);
 		table.addConfiguration(new EditorConfiguration());

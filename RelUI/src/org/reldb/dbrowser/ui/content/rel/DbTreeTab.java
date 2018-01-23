@@ -24,7 +24,6 @@ public class DbTreeTab extends CTabItem {
 	public void ready() {
 		relPanel.getTabFolder().setSelection(this);
 		relPanel.fireDbTreeTabchangeEvent();
-		// set focus
 		getControl().setFocus();
 	}
 	
