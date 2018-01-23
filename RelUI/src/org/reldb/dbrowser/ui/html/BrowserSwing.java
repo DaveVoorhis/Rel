@@ -48,6 +48,7 @@ public class BrowserSwing implements HtmlBrowser {
 		browserPanel = new BrowserSwingWidget(parent);
 		Frame frame = SWT_AWT.new_Frame(browserPanel);
 
+		System.out.println("BrowserSwing: display DPI = " + Display.getCurrent().getDPI().x);
 		if (Util.isWin32())
 			style = new Style((int)(14 * ((double)Display.getCurrent().getDPI().x / 96.0)));
 		else
