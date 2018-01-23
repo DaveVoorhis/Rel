@@ -31,7 +31,11 @@ public class Style {
 		FontData datum = data[0];
 		// eliminate leading '.', if there is one
 		String fontName = (datum.getName().startsWith(".") ? datum.getName().substring(1) : datum.getName());
-		return "body, p, td, th {font-family: " + fontName + ", sans-serif; font-size: " + (datum.getHeight() + sizeAdjustment) + "pt;}\n";
+		int fullSize = datum.getHeight() + sizeAdjustment;
+		int smaller = (int)((double)fullSize * 0.75);
+		return 
+				"body, p, td, th {font-family: " + fontName + ", sans-serif; font-size: " + fullSize + "pt;}\n" +
+				"small {font-family: " + fontName + ", sans-serif; font-size: " + smaller + "pt;}\n";
 	}
 
 	private String getHTMLStyle() {
