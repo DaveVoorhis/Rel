@@ -17,9 +17,11 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 
 public class BrowserSwing implements HtmlBrowser {
 
@@ -46,7 +48,10 @@ public class BrowserSwing implements HtmlBrowser {
 		browserPanel = new BrowserSwingWidget(parent);
 		Frame frame = SWT_AWT.new_Frame(browserPanel);
 
-		style = new Style(0);
+		if (Util.isWin32())
+			style = new Style((int)(14 * ((double)Display.getCurrent().getDPI().x / 96.0)));
+		else
+			style = new Style(0);
 
 		Panel root = new Panel();
 		root.setLayout(new GridLayout());
