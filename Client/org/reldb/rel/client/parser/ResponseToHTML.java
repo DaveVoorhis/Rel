@@ -46,7 +46,7 @@ public abstract class ResponseToHTML extends ResponseProcessor {
 	
 	public void typeReference(String name) {
 		if (emitHeadingTypes)
-			emitHTML("<font size=\"1\"><i>" + name + "</i></font>");
+			emitHTML("<small><i>" + name + "</i></small>");
 	}
 	
 	public void endAttributeSpec() {
@@ -57,7 +57,7 @@ public abstract class ResponseToHTML extends ResponseProcessor {
 	
 	public void beginTupleDefinition() {
 		if (isEmitHeadingTypes())
-			emitHTML("<font size=\"1\"><i>TUPLE</i></font>");
+			emitHTML("<small><i>TUPLE</i></small>");
 		emitHTML("<table cellpadding=\"1\" cellspacing=\"0\" width=\"100%\">");
 	}
 	
@@ -67,7 +67,7 @@ public abstract class ResponseToHTML extends ResponseProcessor {
 	
 	public void beginContainerDefinition() {
 		if (isEmitHeadingTypes())
-			emitHTML("<font size=\"1\"><i>RELATION</i></font>");
+			emitHTML("<small><i>RELATION</i></small>");
 		emitHTML("<table cellpadding=\"1\" cellspacing=\"0\" width=\"100%\">");
 	}
 	
@@ -159,11 +159,11 @@ public abstract class ResponseToHTML extends ResponseProcessor {
 	}
 
 	public void beginOperatorDefinition() {
-		emitHTML("<font size=\"1\">OPERATOR </font>");
+		emitHTML("<small>OPERATOR </small>");
 	}
 	
 	public void beginOperatorDefinitionParameters() {
-		emitHTML("<font size=\"1\">(</font>");
+		emitHTML("<small>(</small>");
 	}
 	
 	public void beginOperatorParameter() {}
@@ -171,15 +171,15 @@ public abstract class ResponseToHTML extends ResponseProcessor {
 	public void endOperatorParameter() {}
 	
 	public void emitOperatorParameterSeparator() {
-		emitHTML("<font size=\"1\">, </font>");
+		emitHTML("<small>, </small>");
 	}
 	
 	public void endOperatorDefinitionParameters() {
-		emitHTML("<font size=\"1\">)</font>");
+		emitHTML("<small>)</small>");
 	}
 	
 	public void beginOperatorReturnType() {
-		emitHTML("<font size=\"1\"> RETURNS </font>");
+		emitHTML("<small> RETURNS </small>");
 	}
 	
 	public void endOperatorReturnType() {}
