@@ -25,7 +25,6 @@ public abstract class EditMenuItem extends MenuItemWithToolbar {
 	
 	protected static Method getMethod(String methodName) {
 		Control control = getControl();
-		System.out.println("EditMenuItem: looking for method " + methodName + " in control " + control.getClass());
 		try {
 			Method method = control.getClass().getMethod(methodName, new Class<?>[0]);
 			return method;
