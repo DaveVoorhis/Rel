@@ -1,5 +1,8 @@
 ** TO DO **
 
+- Windows with HIDPI needs to detect scaling and appropriately increase font size
+  when using BrowserSwing.
+
 - Rev: Provide "Comment" visualiser in Rev.
 
 - Provide encrypted backups (and log-ins to a given database).
