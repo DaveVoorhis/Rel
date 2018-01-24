@@ -2,20 +2,19 @@ Last used Exception* number: RS0505
 
 Version 3.011 (1.0.24):
 
-  - Enhancement: Rel UI: Better font scaling when using alternative
-    output display on HiDPI Windows displays.
-
   - Enhancement: Rel UI: Opening a relvar in Edit mode now positions cursor
     in blank row at bottom, ready to insert. Cursor keys may be used to
     navigate, and Ctrl/Cmd-Cursor keys may be used to jump to top/bottom or
     right/left. 
 
-  - Enhancement: Bundled JRE now version 8u161.
-
-  - Enhancement: Rel DBMS:
-  	Using SAME_HEADING_AS(...) in a relation literal heading
-  	was not permitted. E.g., REL SAME_HEADING_AS(S) {} was
+  - Enhancement: Rel DBMS: Using SAME_HEADING_AS(...) in a relation literal 
+    heading was not permitted. E.g., REL SAME_HEADING_AS(S) {} was
   	a syntax error. It is now permitted.
+
+  - Enhancement: Rel UI: Better font scaling when using alternative
+    output display on HiDPI Windows displays.
+
+  - Enhancement: Bundled JRE now version 8u161.
   
   - Enhancement: Rel DBMS and Rel Client now check for 'null' source code.
 
