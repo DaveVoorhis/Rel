@@ -1,5 +1,9 @@
 ** TO DO **
 
+- Opening relvar in edit view initially positions cursor
+  at blank row, but subsequent activations of "Go to INSERT row"
+  fail to scroll to bottom row or position cursor.
+
 - Rev: Provide "Comment" visualiser in Rev.
 
 - Provide encrypted backups (and log-ins to a given database).
