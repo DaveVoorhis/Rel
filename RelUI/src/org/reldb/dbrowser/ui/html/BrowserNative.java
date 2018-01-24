@@ -157,5 +157,10 @@ public class BrowserNative implements HtmlBrowser {
 	public String getContent() {
 		return text.toString();
 	}
+
+	@Override
+	public boolean setFocus() {
+		return browser.setFocus();
+	}
 	
 }

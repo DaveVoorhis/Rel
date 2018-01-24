@@ -195,6 +195,11 @@ public class CmdPanelOutput extends Composite {
 		isForEvaluationOnly = (style & SHOW_FOR_EVALUATION_ONLY) != 0;
 	}
 
+	@Override
+	public boolean setFocus() {
+		return browser.setFocus();
+	}
+	
 	public boolean isForEvaluationOnly() {
 		return isForEvaluationOnly;
 	}

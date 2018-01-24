@@ -110,4 +110,8 @@ public class BrowserManager implements HtmlBrowser {
 	public String getContent() {
 		return browser.getContent();
 	}
+
+	public boolean setFocus() {
+		return browser.setFocus();
+	}
 }

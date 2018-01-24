@@ -16,4 +16,5 @@ public interface HtmlBrowser {
 	public void dispose();
 	public void setContent(String content);
 	public String getContent();
+	public boolean setFocus();
 }

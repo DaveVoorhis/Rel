@@ -1,5 +1,6 @@
 package org.reldb.dbrowser.ui.html;
 
+import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Panel;
@@ -19,6 +20,8 @@ import javax.swing.text.html.StyleSheet;
 
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageDataProvider;
 import org.eclipse.swt.widgets.Composite;
@@ -29,6 +32,7 @@ import org.eclipse.wb.swt.ResourceManager;
 public class BrowserSwing implements HtmlBrowser {
 
 	private BrowserSwingWidget browserPanel;
+	private Frame frame;
 	private JTextPane browser;
 	private Style style;
 	private StringBuffer text;
@@ -63,8 +67,19 @@ public class BrowserSwing implements HtmlBrowser {
 	
 	@Override
 	public boolean createWidget(Composite parent) {
-		browserPanel = new BrowserSwingWidget(parent);
-		Frame frame = SWT_AWT.new_Frame(browserPanel);
+		browserPanel = new BrowserSwingWidget(parent);		
+		frame = SWT_AWT.new_Frame(browserPanel);
+		
+		// seize focus
+		browserPanel.addFocusListener(new FocusAdapter() {
+			public void focusGained(FocusEvent e) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						browser.requestFocus();
+					}
+				});
+			}
+		});
 		
 		if (Util.isWin32())
 			style = new Style(3, (double)getZoom() / 100.0);
@@ -115,6 +130,11 @@ public class BrowserSwing implements HtmlBrowser {
 		return true;
 	}
 
+	@Override
+	public boolean setFocus() {
+		return browserPanel.setFocus();
+	}
+	
 	@Override
 	public void clear() {
 		text = new StringBuffer();
