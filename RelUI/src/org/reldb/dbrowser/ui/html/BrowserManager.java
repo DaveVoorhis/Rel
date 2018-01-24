@@ -1,13 +1,31 @@
 package org.reldb.dbrowser.ui.html;
 
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.HTMLTransfer;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.reldb.dbrowser.ui.preferences.PreferencePageCmd;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
 public class BrowserManager implements HtmlBrowser {
 
 	private HtmlBrowser browser = null;
+
+	public static void copyToClipboard(String html) {
+		if (html == null || html.length() == 0)
+			return;
+		html = html.replace("<table", "<table border=\"1\"");
+		Clipboard clipboard = new Clipboard(Display.getCurrent());
+		TextTransfer textTransfer = TextTransfer.getInstance();
+		HTMLTransfer htmlTransfer = HTMLTransfer.getInstance();
+		Transfer[] transfers = new Transfer[] {textTransfer, htmlTransfer};
+		Object[] data = new Object[] {html, html};
+		clipboard.setContents(data, transfers);
+		clipboard.dispose();	
+	}
 	
 	@Override
 	public boolean createWidget(Composite parent) {

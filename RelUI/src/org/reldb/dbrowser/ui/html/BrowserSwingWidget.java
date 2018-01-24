@@ -6,10 +6,6 @@ import java.io.StringWriter;
 import javax.swing.JTextPane;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.HTMLTransfer;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 
 import javax.swing.text.BadLocationException;
@@ -37,18 +33,8 @@ public class BrowserSwingWidget extends Composite {
 	}
 	
 	public void copy() {
-		if (jTextPane != null) {
-			String text = getSelectionAsHTML().replace("<table", "<table border=\"1\"");
-			if (text.length() == 0)
-				return;
-			Clipboard clipboard = new Clipboard(getParent().getDisplay());
-			TextTransfer textTransfer = TextTransfer.getInstance();
-			HTMLTransfer htmlTransfer = HTMLTransfer.getInstance();
-			Transfer[] transfers = new Transfer[] {textTransfer, htmlTransfer};
-			Object[] data = new Object[] {text, text};
-			clipboard.setContents(data, transfers);
-			clipboard.dispose();			
-		}
+		if (jTextPane != null)
+			BrowserManager.copyToClipboard(getSelectionAsHTML());
 	}
 
 	public void selectAll() {
