@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Only enable Paste menu item when there's something to paste.
-
 - Rev: Provide "Comment" visualiser in Rev.
 
 - Provide encrypted backups (and log-ins to a given database).

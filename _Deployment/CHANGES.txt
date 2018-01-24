@@ -39,7 +39,7 @@ Version 3.011 (1.0.24):
 		it shows &, but is treated as "WRITELN '&&blah'".
 	Fixed.
 
-  - Fix: Rel UI: Cut/copy/paste/selectAll/clear/undo/redo now work consistently
+  - Fix: Rel UI: Cut/copy/paste/selectAll now work consistently
     and are generally available where they should appear.
   			
   - Fix: Rel DBMS:
