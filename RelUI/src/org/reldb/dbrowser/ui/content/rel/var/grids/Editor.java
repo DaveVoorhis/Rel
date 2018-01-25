@@ -67,6 +67,7 @@ import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
 import org.eclipse.nebula.widgets.nattable.ui.util.CellEdgeEnum;
 import org.eclipse.nebula.widgets.nattable.util.GCFactory;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
+import org.eclipse.nebula.widgets.nattable.viewport.command.ShowRowInViewportCommand;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -838,7 +839,6 @@ public abstract class Editor extends Grid {
 		table.addPaintListener(new PaintListener() {
 		    @Override
 		    public void paintControl(PaintEvent e) {
-		        table.setFocus();
 		        table.removePaintListener(this);
 		        goToInsertRow();
 		    }
@@ -1021,11 +1021,13 @@ public abstract class Editor extends Grid {
 
 	public void goToInsertRow() {
 		if (table.commitAndCloseActiveCellEditor()) {
-			table.doCommand(new ClearAllSelectionsCommand());
-			if (gridLayer != null && dataProvider != null)
-				table.doCommand(
-						new SelectCellCommand(gridLayer.getBodyLayer(), 0, dataProvider.getRowCount() - 1, true, true));
 			table.setFocus();
+			table.doCommand(new ClearAllSelectionsCommand());
+			if (gridLayer != null && dataProvider != null) {
+				int lastRow = dataProvider.getRowCount() - 1;
+				table.doCommand(new ShowRowInViewportCommand(gridLayer.getBodyLayer().getViewportLayer(), lastRow));
+				table.doCommand(new SelectCellCommand(gridLayer.getBodyLayer().getSelectionLayer(), 0, lastRow, true, true));
+			}
 		}
 	}
 

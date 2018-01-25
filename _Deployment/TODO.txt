@@ -1,11 +1,5 @@
 ** TO DO **
 
-- Opening relvar in edit view initially positions cursor
-  at blank row, but subsequent activations of "Go to INSERT row"
-  fail to scroll to bottom row or position cursor.
-  Seems goToInsertRow() works if table fills the display
-  area, but not if it scrolls.
-
 - Rev: Provide "Comment" visualiser in Rev.
 
 - Provide encrypted backups (and log-ins to a given database).
