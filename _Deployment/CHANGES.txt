@@ -20,15 +20,15 @@ Version 3.011 (1.0.24):
 
 - Fix. RelUI:
 	Given:
-		In the Rel UI's table editor, press "Go to INSERT row" button.
+		In the relvar Edit mode, press "Go to INSERT row" button on
+		relvar with high enough cardinality to require scrolling.
 	Result:
 	 	It was was supposed to do what Ctrl-End should also do: 
 	 	position the display on the blank row and put the cursor 
 	 	in it. It doesn't. Fix it.
+	Fixed.
 	Note:
-		Works in OS X; now working in Windows. Possibly fixed in
-		underlying library. Ctrl/Cmd-Cursor preferred over
-		Ctrl-End.
+		Ctrl/Cmd-Cursor preferred over Ctrl-End.
 
   - Fix. Rev:
 	Given:
