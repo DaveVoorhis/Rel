@@ -19,6 +19,15 @@ Version 3.011 (1.0.24):
   - Enhancement: Rel DBMS and Rel Client now check for 'null' source code.
 
   - Fix. RelUI:
+  	Given:
+  		Ubuntu 16.xx or 17.xx environment.
+  	Result:
+  		Multiple GUI failures.
+  	Fixed.
+  	Note:
+  		Startup forces GTK2. Some issues remain, but at least usable...
+
+  - Fix. RelUI:
 	Given:
 		In the relvar Edit mode, press "Go to INSERT row" button on
 		relvar with high enough cardinality to require scrolling.
