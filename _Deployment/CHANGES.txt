@@ -18,7 +18,7 @@ Version 3.011 (1.0.24):
   
   - Enhancement: Rel DBMS and Rel Client now check for 'null' source code.
 
-- Fix. RelUI:
+  - Fix. RelUI:
 	Given:
 		In the relvar Edit mode, press "Go to INSERT row" button on
 		relvar with high enough cardinality to require scrolling.
