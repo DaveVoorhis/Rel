@@ -1,5 +1,6 @@
 package org.reldb.dbrowser.loading;
 
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -74,12 +75,9 @@ public class Loading {
 		shell.setSize(backgroundWidth, backgroundHeight);
 		
 		Image background = IconLoader.loadIconNormal("loading");
-		shell.setBackgroundImage(background);
-		shell.setBackgroundMode(SWT.INHERIT_FORCE);
 		
 		Label lblTitle = new Label(shell, SWT.TRANSPARENT);
 		lblTitle.setFont(FontSize.getThisFontInNewSize(lblTitle.getFont(), 24, SWT.BOLD));
-		lblTitle.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		FormData fd_lblTitle = new FormData();
 		fd_lblTitle.top = new FormAttachment(0, 0);
 		fd_lblTitle.left = new FormAttachment(0, 10);
@@ -99,7 +97,6 @@ public class Loading {
 		
 		lblAction = new Text(shell, SWT.WRAP | SWT.TRANSPARENT);
 		lblAction.setEditable(false);
-		lblAction.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		FormData fd_lblAction = new FormData();
 		fd_lblAction.top = new FormAttachment(progressBar, -60);
 		fd_lblAction.bottom = new FormAttachment(progressBar, -10);
@@ -107,6 +104,13 @@ public class Loading {
 		fd_lblAction.right = new FormAttachment(100, -200);
 		lblAction.setLayoutData(fd_lblAction);
 		lblAction.setText("Starting...");
+		
+		if (!Util.isGtk()) {
+			shell.setBackgroundImage(background);
+			shell.setBackgroundMode(SWT.INHERIT_FORCE);
+			lblTitle.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+			lblAction.setForeground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		}
 		
 		shell.setSize(background.getBounds().x, background.getBounds().y);
 		shell.setLocation(getMonitorCenter(shell));

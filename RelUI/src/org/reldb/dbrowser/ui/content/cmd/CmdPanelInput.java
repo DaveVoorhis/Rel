@@ -469,7 +469,7 @@ public class CmdPanelInput extends Composite {
 	}
 
 	public boolean setFocused() {
-		return inputText.setFocus();
+		return (inputText.isDisposed()) ? false : inputText.setFocus();
 	}
 
 	private String loadFileImage(String fname) throws Exception {

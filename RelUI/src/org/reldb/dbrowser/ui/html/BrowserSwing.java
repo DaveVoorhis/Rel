@@ -132,7 +132,7 @@ public class BrowserSwing implements HtmlBrowser {
 
 	@Override
 	public boolean setFocus() {
-		return browserPanel.setFocus();
+		return (browserPanel.isDisposed()) ? false : browserPanel.setFocus();
 	}
 	
 	@Override

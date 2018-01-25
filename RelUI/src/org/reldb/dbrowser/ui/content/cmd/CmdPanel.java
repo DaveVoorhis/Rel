@@ -160,7 +160,7 @@ public class CmdPanel extends Composite {
 	}
 	
 	public boolean focusOnInput() {
-		return cmdPanelInput.setFocused();
+		return (cmdPanelInput.isDisposed()) ? false : cmdPanelInput.setFocused();
 	}
 
 	public void redisplayed() {

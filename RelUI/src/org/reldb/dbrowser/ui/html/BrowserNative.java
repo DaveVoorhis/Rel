@@ -160,7 +160,7 @@ public class BrowserNative implements HtmlBrowser {
 
 	@Override
 	public boolean setFocus() {
-		return browser.setFocus();
+		return (browser.isDisposed()) ? false : browser.setFocus();
 	}
 	
 }
