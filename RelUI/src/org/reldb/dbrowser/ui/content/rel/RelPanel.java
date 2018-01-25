@@ -331,7 +331,7 @@ public class RelPanel extends Composite {
 		CTabItem selectedItem = tabFolder.getSelection();
 		if (selectedItem != null) {
 			Control tabControl = selectedItem.getControl();
-			if (tabControl != null)
+			if (tabControl != null && !tabControl.isDisposed())
 				tabControl.setFocus();
 		}
 	}
