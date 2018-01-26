@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RelUI
 Bundle-SymbolicName: RelUI;singleton:=true
-Bundle-Version: 1.0.24.Beta
+Bundle-Version: 1.0.25.Beta
 Bundle-ClassPath: .,
  lib/commons-cli-1.2.jar,
  lib/commons-codec-1.10.jar,

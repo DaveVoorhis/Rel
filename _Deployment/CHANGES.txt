@@ -1,5 +1,7 @@
 Last used Exception* number: RS0505
 
+Version 3.012 (1.0.25):
+
 Version 3.011 (1.0.24):
 
   - Enhancement: Rel UI: Opening a relvar in Edit mode now positions cursor
