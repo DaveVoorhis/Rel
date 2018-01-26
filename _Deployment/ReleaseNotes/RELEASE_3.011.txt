@@ -24,8 +24,9 @@ The following enhancements have been made:
 
 The following bugs have been fixed:
 
-- Rel UI: Cut/copy/paste/selectAll now work consistently and are
-  generally available wherever they should appear.
+- Rel UI: Cut/copy/paste/selectAll drop-down menus and keyboard
+  shortcuts now work consistently and are generally available wherever
+  they should appear.
 
 - Rel DBMS: ABS(n) always returned a RATIONAL value, even if n was
   INTEGER. Fixed.
