@@ -81,7 +81,7 @@ public class BrowserSwing implements HtmlBrowser {
 			}
 		});
 		
-		if (Util.isWin32())
+		if (Util.isWin32() || Util.isGtk())
 			style = new Style(3, (double)getZoom() / 100.0);
 		else
 			style = new Style(0);
