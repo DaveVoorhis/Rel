@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Rel: Provide means to emit CSV files (and files in general) programmatically.
+
 - Rev: Provide "Comment" visualiser in Rev.
 
 - Provide encrypted backups (and log-ins to a given database).
