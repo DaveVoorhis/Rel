@@ -1,6 +1,9 @@
 ** TO DO **
 
-- Rel: Provide means to emit CSV files (and files in general) programmatically.
+- Rel: Provide means to emit CSV files (and files in general) programmatically and/or otherwise
+  from the command-line without emitting Rel startup/shutdown messages.
+  
+- Rel UI: Provide search/sort mechanisms in editable grids.
 
 - Rev: Provide "Comment" visualiser in Rev.
 
