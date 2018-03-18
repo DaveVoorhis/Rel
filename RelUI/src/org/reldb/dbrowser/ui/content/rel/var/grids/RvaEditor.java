@@ -4,9 +4,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.ui.DbConnection;
 
 public class RvaEditor extends Editor {
-	
+
 	private String rvaValue;
-	
+
 	// Relvar attribute designer
 	public RvaEditor(Composite parent, DbConnection connection) {
 		super(parent, connection, null);
@@ -25,8 +25,8 @@ public class RvaEditor extends Editor {
 	public void setRVAValue(String rvaValue) {
 		this.rvaValue = rvaValue;
 		tuples = obtainTuples();
-    	heading = tuples.getHeading().toArray();
+		heading = tuples.getHeading().toArray();
 		init();
 	}
-	
+
 }

@@ -5,26 +5,26 @@ import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.rel.client.Heading;
 
 public class RelvarEditor extends Editor {
-    
+
 	public RelvarEditor(Composite parent, DbConnection connection, String relvarName) {
 		super(parent, connection, relvarName);
-	    syncFromDatabase();
-	    init();
+		syncFromDatabase();
+		init();
 	}
-	
+
 	private void syncFromDatabase() {
 		refresh();
 	}
 
 	public void refresh() {
-		obtainKeyDefinitions();		
+		obtainKeyDefinitions();
 		tuples = obtainTuples();
 		if (tuples != null) {
 			Heading relvarHeading = tuples.getHeading();
 			if (relvarHeading != null)
 				heading = relvarHeading.toArray();
 		}
-    	super.refresh();
+		super.refresh();
 	}
 
 	protected String getAttributeSource() {
