@@ -81,6 +81,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.IconLoader;
+import org.reldb.dbrowser.ui.content.filtersorter.FilterSorter;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Connection.ExecuteResult;
 import org.reldb.rel.client.Tuple;
@@ -101,6 +102,8 @@ public abstract class Editor extends Grid {
 	private boolean popupEdit = false;
 
 	private int lastRowSelected = -1;
+	
+	private FilterSorter filterSorter;
 
 	enum RowAction {
 		UPDATE, INSERT
@@ -720,8 +723,9 @@ public abstract class Editor extends Grid {
 		}
 	}
 
-	public Editor(Composite parent, DbConnection connection, String relvarName) {
-		super(parent, connection, relvarName);
+	public Editor(Composite parent, DbConnection connection, FilterSorter filterSorter) {
+		super(parent, connection, filterSorter.getExpression());
+		this.filterSorter = filterSorter;
 	}
 
 	private static class EmptyGridData implements IDataProvider {
@@ -1016,7 +1020,7 @@ public abstract class Editor extends Grid {
 	protected abstract String getAttributeSource();
 
 	protected Tuples obtainTuples() {
-		return connection.getTuples(getAttributeSource());
+		return connection.getTuples(filterSorter.getQuery());
 	}
 
 	public void goToInsertRow() {

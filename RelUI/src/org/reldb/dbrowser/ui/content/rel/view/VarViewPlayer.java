@@ -23,7 +23,7 @@ public class VarViewPlayer extends DbTreeAction {
 			} else
 				tab.dispose();
 		}
-		ExpressionResultViewerTab viewer = new ExpressionResultViewerTab(relPanel, item);
+		ExpressionResultViewerTab viewer = new ExpressionResultViewerTab(relPanel, item, null);
 		relPanel.setTab(viewer, image);
 	}
 

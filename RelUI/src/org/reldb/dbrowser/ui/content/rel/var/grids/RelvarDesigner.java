@@ -6,26 +6,26 @@ import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.ui.DbConnection;
 
 public class RelvarDesigner extends Designer {
-	
+
 	// Relvar designer
 	public RelvarDesigner(Composite parent, DbConnection connection, String relvarName) {
 		super(parent, connection, relvarName);
-	    syncFromDatabase();
-	    init();
+		syncFromDatabase();
+		init();
 	}
-	
+
 	private void syncFromDatabase() {
-		obtainKeyDefinitions();		
+		obtainKeyDefinitions();
 		// Blank key definition allows user to add keys
 		keys.add(new HashSet<String>());
 	}
 
 	public void refresh() {
 		syncFromDatabase();
-    	dataProvider.reload();
-    	super.refresh();
+		dataProvider.reload();
+		super.refresh();
 	}
-	
+
 	protected String getAttributeSource() {
 		return "Attributes FROM TUPLE FROM (sys.Catalog WHERE Name='" + relvarName + "')";
 	}
