@@ -25,9 +25,9 @@ public class FilterSorter extends Composite {
 			listener.update(this);
 	}
 	
-	public FilterSorter(Composite parent, int style, String expression) {
+	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState initialState) {
 		super(parent, style);
-		this.expression = expression;
+		this.expression = baseExpression;
 
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.verticalSpacing = 0;
@@ -38,11 +38,17 @@ public class FilterSorter extends Composite {
 		
 		clause = new Text(this, SWT.BORDER);
 		clause.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		clause.setText("");
+		
+		if (initialState != null)
+			clause.setText(initialState.getRepresentation());
 		
 		Button activate = new Button(this, SWT.NONE);
 		activate.setText("Go");
-		activate.addListener(SWT.Selection, e -> fireUpdate());
+		activate.addListener(SWT.Selection, e -> fireUpdate());		
+	}
+	
+	public FilterSorter(Composite parent, int style, String baseExpression) {
+		this(parent, style, baseExpression, null);
 	}
 
 	public String getExpression() {
@@ -63,11 +69,6 @@ public class FilterSorter extends Composite {
 
 	public FilterSorterState getState() {
 		return new FilterSorterState(clause.getText());
-	}
-
-	public void setState(FilterSorterState state) {
-		if (state != null)
-			clause.setText(state.getRepresentation());
 	}
 
 }

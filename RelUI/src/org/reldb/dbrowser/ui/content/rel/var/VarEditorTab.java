@@ -31,8 +31,7 @@ public class VarEditorTab extends DbTreeTab {
 		gridLayout.marginHeight = 0;
 		displayPanel.setLayout(gridLayout);
 		
-		filterSorter = new FilterSorter(displayPanel, SWT.BORDER, item.getName());
-		filterSorter.setState(state);
+		filterSorter = new FilterSorter(displayPanel, SWT.BORDER, item.getName(), state);
 		filterSorter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		filterSorter.addUpdateListener(source -> {
 			relvarEditor.refresh();
