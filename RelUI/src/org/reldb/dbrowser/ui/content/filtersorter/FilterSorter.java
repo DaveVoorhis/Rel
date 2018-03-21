@@ -139,6 +139,9 @@ public class FilterSorter extends Composite {
 		
 		tltmQuickSearch.setSelection(true);
 		stack.topControl = quickSearchPanel;
+		
+		if (initialState != null)
+			quickFinder.setText(initialState.getRepresentation());
 	}
 
 	public FilterSorter(Composite parent, int style, String baseExpression) {
