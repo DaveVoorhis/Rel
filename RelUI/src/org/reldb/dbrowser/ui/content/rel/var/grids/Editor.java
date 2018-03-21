@@ -724,7 +724,7 @@ public abstract class Editor extends Grid {
 	}
 
 	public Editor(Composite parent, DbConnection connection, FilterSorter filterSorter) {
-		super(parent, connection, filterSorter.getExpression());
+		super(parent, connection, filterSorter.getBaseExpression());
 		this.filterSorter = filterSorter;
 	}
 

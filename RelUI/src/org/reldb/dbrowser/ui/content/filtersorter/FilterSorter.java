@@ -20,12 +20,9 @@ public class FilterSorter extends Composite {
 		public void update(FilterSorter originator);
 	}
 	
-	private Composite quickSearchPanel;
 	private Text quickFinder;
 	
-	private Label advancedSearchPanel;
-	private Label sortPanel;
-	private String expression;
+	private String baseExpression;
 	private Vector<FilterSorterUpdate> updateListeners = new Vector<>();
 	
 	private void fireUpdate() {
@@ -33,9 +30,59 @@ public class FilterSorter extends Composite {
 			listener.update(this);
 	}
 	
+	private Composite createQuickSearchPanel(Composite contentPanel) {		
+		Composite panel = new Composite(contentPanel, SWT.NONE);
+		
+		GridLayout layout = new GridLayout(2, false);
+		layout.horizontalSpacing = 0;
+		layout.verticalSpacing = 0;
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		panel.setLayout(layout);		
+		
+		quickFinder = new Text(panel, SWT.BORDER);
+		quickFinder.addListener(SWT.Traverse, event -> {
+			if (event.detail == SWT.TRAVERSE_RETURN) {
+				fireUpdate()	;
+			}
+		});
+		quickFinder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		ToolBar quickFinderBar = new ToolBar(panel, SWT.NONE);
+		ToolItem clear = new ToolItem(quickFinderBar, SWT.PUSH);
+		clear.addListener(SWT.Selection, e -> {
+			quickFinder.setText("");
+			fireUpdate();
+		});
+		clear.setText("Clear");
+		quickFinderBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		
+		return panel;
+	}
+
+	private Composite createAdvancedSearchPanel(Composite contentPanel) {
+		Composite panel = new Composite(contentPanel, SWT.NONE);
+		panel.setLayout(new FillLayout());
+		
+		Label label = new Label(panel, SWT.NONE);
+		label.setText("Advanced search panel goes here.");
+		
+		return panel;
+	}
+
+	private Composite createSortPanel(Composite contentPanel) {
+		Composite panel = new Composite(contentPanel, SWT.NONE);
+		panel.setLayout(new FillLayout());
+		
+		Label label = new Label(panel, SWT.NONE);
+		label.setText("Sort panel goes here.");	
+		
+		return panel;
+	}
+	
 	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState initialState) {
-		super(parent, style);
-		this.expression = baseExpression;
+		super(parent, SWT.NONE);
+		this.baseExpression = baseExpression;
 
 		GridLayout layout = new GridLayout(2, false);
 		layout.horizontalSpacing = 0;
@@ -52,10 +99,14 @@ public class FilterSorter extends Composite {
 		ToolItem tltmSort = new ToolItem(toolBar, SWT.CHECK);
 		
 		Composite contentPanel = new Composite(this, SWT.NONE);
-		contentPanel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+		contentPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		StackLayout stack = new StackLayout();
 		contentPanel.setLayout(stack);
 
+		final Composite quickSearchPanel = createQuickSearchPanel(contentPanel);
+		final Composite advancedSearchPanel = createAdvancedSearchPanel(contentPanel);
+		final Composite sortPanel = createSortPanel(contentPanel);
+		
 		tltmQuickSearch.setToolTipText("Quick search.");
 		tltmQuickSearch.setText("Q");
 		tltmQuickSearch.addListener(SWT.Selection, e -> {
@@ -85,22 +136,6 @@ public class FilterSorter extends Composite {
 			stack.topControl = sortPanel;
 			contentPanel.layout();
 		});
-
-		quickSearchPanel = new Composite(contentPanel, SWT.NONE);
-		quickSearchPanel.setLayout(new FillLayout());
-		
-		quickFinder = new Text(quickSearchPanel, SWT.BORDER);
-		quickFinder.addListener(SWT.Traverse, event -> {
-			if (event.detail == SWT.TRAVERSE_RETURN) {
-				fireUpdate()	;
-			}
-		});
-
-		advancedSearchPanel = new Label(contentPanel, SWT.NONE);
-		advancedSearchPanel.setText("Advanced search panel goes here.");
-		
-		sortPanel = new Label(contentPanel, SWT.NONE);
-		sortPanel.setText("Sort panel goes here.");	
 		
 		tltmQuickSearch.setSelection(true);
 		stack.topControl = quickSearchPanel;
@@ -110,12 +145,12 @@ public class FilterSorter extends Composite {
 		this(parent, style, baseExpression, null);
 	}
 
-	public String getExpression() {
-		return expression;
+	public String getBaseExpression() {
+		return baseExpression;
 	}
 	
 	public String getQuery() {
-		return "(" + expression + ")" + ((quickFinder.getText().trim().length() > 0) ? " WHERE " + quickFinder.getText() : "");
+		return "(" + baseExpression + ")" + ((quickFinder.getText().trim().length() > 0) ? " WHERE " + quickFinder.getText() : "");
 	}
 	
 	public void addUpdateListener(FilterSorterUpdate updateListener) {

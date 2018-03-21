@@ -19,6 +19,7 @@ public class VarEditorTab extends DbTreeTab {
 	
 	public VarEditorTab(RelPanel parent, DbTreeItem item, FilterSorterState state) {
 		super(parent, item);
+		parent.setLayout(null);
 		
 		Composite displayPanel = new Composite(parent.getTabFolder(), SWT.NONE) {
 			public boolean setFocus() {
