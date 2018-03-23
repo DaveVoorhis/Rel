@@ -885,6 +885,12 @@ public class TutorialDDebugger implements TutorialDVisitor {
 		return dump(node, data);
 	}
 
+	// SEARCH pseudo-operator
+	@Override
+	public Object visit(ASTSearch node, Object data) {
+		return null;
+	}
+
 	// TYPE_OF pseudo-operator
 	public Object visit(ASTTypeOf node, Object data) {
 		return dump(node, data);

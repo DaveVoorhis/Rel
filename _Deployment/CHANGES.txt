@@ -1,6 +1,11 @@
-Last used Exception* number: RS0505
+Last used Exception* number: RS0507
 
 Version 3.012 (1.0.25):
+
+  - Enhancement: Rel DBMS: new built-in operator 
+  	SEARCH(t TUPLE{*}, regex CHAR) RETURNS BOOLEAN
+  	Returns true if any CAST_AS_CHAR(a), where a is an attribute of t,
+  	matches regex.
 
 Version 3.011 (1.0.24):
 

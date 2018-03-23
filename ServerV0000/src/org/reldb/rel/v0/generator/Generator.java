@@ -140,6 +140,7 @@ import org.reldb.rel.v0.vm.instructions.tuple.OpTupleJoin;
 import org.reldb.rel.v0.vm.instructions.tuple.OpTupleJoinDisjoint;
 import org.reldb.rel.v0.vm.instructions.tuple.OpTupleProject;
 import org.reldb.rel.v0.vm.instructions.tuple.OpTuplePushLiteral;
+import org.reldb.rel.v0.vm.instructions.tuple.OpTupleSearch;
 import org.reldb.rel.v0.vm.instructions.tuple.OpTupleSetAttribute;
 import org.reldb.rel.v0.vm.instructions.tupleIteratable.OpTupleIteratableProject;
 import org.reldb.rel.v0.vm.instructions.tupleIteratable.OpTupleIteratableOrder;
@@ -1245,6 +1246,11 @@ public class Generator {
 		compileInstruction(new OpTransactionRollback());
 	}
 
+	/** Compile tuple SEARCH(t TUPLE {*}, regex CHAR) RETURNS BOOLEAN */
+	public void compileSearch(TypeTuple tupleType) {
+		compileInstruction(new OpTupleSearch(tupleType));
+	}
+	
 	// Define new slots in the given operator definition to expose individual tuple
 	// attributes (where the tuple is assumed to be
 	// a parameter in the current operation definition, with a name specified by

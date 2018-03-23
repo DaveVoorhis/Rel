@@ -1681,6 +1681,23 @@ public class TutorialDParser implements TutorialDVisitor {
 			throw new ExceptionSemantic("RS0128: ARRAY expected type TUPLE, but got " + maybeArrayType);
 		return new TypeArray(((TypeTuple)maybeArrayType).getHeading());
 	}
+
+	// SEARCH pseudo-operator SEARCH(t TUPLE {*}, regex CHAR) RETURNS BOOLEAN.
+	// Returns true if any CAST_AS_CHAR conversion of an attribute of t matches regex.
+	@Override
+	public Object visit(ASTSearch node, Object data) {
+		currentNode = node;
+		// Child 0
+		Type maybeTupleType = (Type)compileChild(node, 0, data);
+		if (!(maybeTupleType instanceof TypeTuple))
+			throw new ExceptionSemantic("RS0506: SEARCH expected first operand of type TUPLE, but got " + maybeTupleType);
+		// Child 1
+		Type maybeCharType = (Type)compileChild(node, 1, data);
+		if (!(maybeCharType instanceof TypeCharacter))
+			throw new ExceptionSemantic("RS0507: SEARCH expected second operand of type TUPLE, but got " + maybeCharType);
+		generator.compileSearch((TypeTuple)maybeTupleType);
+		return TypeBoolean.getInstance();
+	}
 	
 	// TYPE_OF pseudo-operator.  Return TypeInfo for given expression.
 	public Object visit(ASTTypeOf node, Object data) {

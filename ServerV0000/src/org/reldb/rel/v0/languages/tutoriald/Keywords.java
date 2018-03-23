@@ -105,6 +105,7 @@ public class Keywords {
 	    "ROLLBACK",
 	    "SAME_HEADING_AS",
 	    "SAME_TYPE_AS",
+	    "SEARCH",
 	    "SET",
 	    "SEMIJOIN" ,
 	    "SEMIMINUS",

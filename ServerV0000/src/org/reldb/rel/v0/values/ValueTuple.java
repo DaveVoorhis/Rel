@@ -60,6 +60,18 @@ public class ValueTuple extends ValueAbstract implements Projectable {
 	public void assign(AttributeMap map, ValueTuple source) {
 		map.assign(this.values, source);
 	}
+
+	/** Given a tuple and a regular expression, return true if the regular expression matches the CAST_AS_CHAR conversion of any of the tuple's attributes. */
+	public boolean search(Type type, String regexp) {
+		Vector<Attribute> attributes = ((TypeTuple)type).getHeading().getAttributes();
+		int i = 0;
+		for (Attribute attribute: attributes) {
+			if (values[i].toString(attribute.getType()).matches(regexp))
+				return true;
+			i++;
+		}
+		return false;
+	}
 	
 	/** Create a new tuple by projecting this ValueTuple according to an AttributeMap. */
 	public Value project(AttributeMap map) {

@@ -168,6 +168,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < ROLLBACK: "ROLLBACK" >
 | < SAME_HEADING_AS: "SAME_HEADING_AS" >
 | < SAME_TYPE_AS: "SAME_TYPE_AS" >
+| < SEARCH: "SEARCH" >
 | < SET: "SET" >
 | < SEMIJOIN: "SEMIJOIN" > 
 | < SEMIMINUS: "SEMIMINUS" >
@@ -1440,11 +1441,18 @@ void primary_expression() :
 	|	substitute()
 	|	case_expression()
 	|	if_expression()
+	| 	search()
 	|  	type_of()
 	| 	image_in()
 	|	LOOKAHEAD(2) fn_invoke() 
 	| 	dereference() 
 	| 	"(" expression() ")"
+}
+
+void search() #Search :
+{}
+{
+  	<SEARCH> "(" expression() "," expression() ")"
 }
 
 void type_of() #TypeOf :
