@@ -5,7 +5,9 @@ Version 3.012 (1.0.25):
   - Enhancement: Rel DBMS: new built-in operator 
   	SEARCH(t TUPLE{*}, regex CHAR) RETURNS BOOLEAN
   	Returns true if any CAST_AS_CHAR(a), where a is an attribute of t,
-  	matches regex.
+  	matches regex. This permits general text search of tuples, e.g.,
+  		S WHERE SEARCH(TUP {*}, ".*3.*")
+  	returns any tuple in S with a '3' in some attribute value.
 
 Version 3.011 (1.0.24):
 
