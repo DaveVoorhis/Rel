@@ -19,11 +19,20 @@ public class FilterSorter extends Composite {
 	public interface FilterSorterUpdate {
 		public void update(FilterSorter originator);
 	}
+
+	private enum SearchType {
+		QUICK,
+		ADVANCED
+	};
 	
 	private Text quickFinder;
+	private boolean wholeWordSearch = false;
+	private boolean caseSensitiveSearch = false;
 	
 	private String baseExpression;
 	private Vector<FilterSorterUpdate> updateListeners = new Vector<>();
+
+	private SearchType search = SearchType.QUICK;
 	
 	private void fireUpdate() {
 		for (FilterSorterUpdate listener: updateListeners)
@@ -49,12 +58,36 @@ public class FilterSorter extends Composite {
 		quickFinder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		ToolBar quickFinderBar = new ToolBar(panel, SWT.NONE);
+		
+		ToolItem wholeWord = new ToolItem(quickFinderBar, SWT.PUSH);
+		wholeWord.addListener(SWT.Selection, e -> {
+			wholeWordSearch = !wholeWordSearch;
+			wholeWord.setText(wholeWordSearch ? "Whole word" : "Any match");
+			panel.layout();
+			if (quickFinder.getText().trim().length() > 0)
+				fireUpdate();
+		});
+		wholeWord.setText("Any match");
+
+		ToolItem caseSensitive = new ToolItem(quickFinderBar, SWT.PUSH);
+		caseSensitive.addListener(SWT.Selection, e -> {
+			caseSensitiveSearch = !caseSensitiveSearch;
+			caseSensitive.setText(caseSensitiveSearch ? "Case sensitive" : "Case insensitive");
+			panel.layout();
+			if (quickFinder.getText().trim().length() > 0)
+				fireUpdate();
+		});
+		caseSensitive.setText("Case insensitive");
+		
 		ToolItem clear = new ToolItem(quickFinderBar, SWT.PUSH);
 		clear.addListener(SWT.Selection, e -> {
+			if (quickFinder.getText().trim().length() == 0)
+				return;
 			quickFinder.setText("");
 			fireUpdate();
 		});
 		clear.setText("Clear");
+		
 		quickFinderBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		
 		return panel;
@@ -78,6 +111,24 @@ public class FilterSorter extends Composite {
 		label.setText("Sort panel goes here.");	
 		
 		return panel;
+	}
+	
+	private String getQuickSearchWhereClause() {
+		// TODO use SEARCH in Rel here
+		return (quickFinder.getText().trim().length() > 0) ? " WHERE " + quickFinder.getText() : "";
+	}
+	
+	private String getAdvancedSearchWhereClause() {
+		return "";
+	}
+	
+	private String getSortClause() {
+		return "";
+	}
+	
+	private String getWhereClause() {
+		return ((search == SearchType.QUICK) ? getQuickSearchWhereClause() : getAdvancedSearchWhereClause())
+				+ getSortClause();
 	}
 	
 	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState initialState) {
@@ -115,6 +166,7 @@ public class FilterSorter extends Composite {
 			tltmSort.setSelection(false);
 			stack.topControl = quickSearchPanel;
 			contentPanel.layout();
+			search = SearchType.QUICK;
 		});
 		
 		tltmAdvancedSearch.setToolTipText("Advanced search...");
@@ -125,6 +177,7 @@ public class FilterSorter extends Composite {
 			tltmSort.setSelection(false);
 			stack.topControl = advancedSearchPanel;
 			contentPanel.layout();
+			search = SearchType.ADVANCED;
 		});
 		
 		tltmSort.setToolTipText("Sort...");
@@ -153,7 +206,7 @@ public class FilterSorter extends Composite {
 	}
 	
 	public String getQuery() {
-		return "(" + baseExpression + ")" + ((quickFinder.getText().trim().length() > 0) ? " WHERE " + quickFinder.getText() : "");
+		return "(" + baseExpression + ")" + getWhereClause();
 	}
 	
 	public void addUpdateListener(FilterSorterUpdate updateListener) {
