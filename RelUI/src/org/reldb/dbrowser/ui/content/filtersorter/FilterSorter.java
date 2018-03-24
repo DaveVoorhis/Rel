@@ -43,7 +43,7 @@ public class FilterSorter extends Composite {
 		quickFinder = new Text(panel, SWT.BORDER);
 		quickFinder.addListener(SWT.Traverse, event -> {
 			if (event.detail == SWT.TRAVERSE_RETURN) {
-				fireUpdate()	;
+				fireUpdate();
 			}
 		});
 		quickFinder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
