@@ -1,6 +1,7 @@
 package org.reldb.dbrowser.ui.content.filtersorter;
 
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -12,6 +13,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.rel.v0.values.StringUtils;
 
 public class FilterSorter extends Composite {
 
@@ -28,6 +30,7 @@ public class FilterSorter extends Composite {
 	private Text quickFinder;
 	private boolean wholeWordSearch = false;
 	private boolean caseSensitiveSearch = false;
+	private boolean regexSearch = false;
 	
 	private String baseExpression;
 	private Vector<FilterSorterUpdate> updateListeners = new Vector<>();
@@ -79,6 +82,16 @@ public class FilterSorter extends Composite {
 		});
 		caseSensitive.setText("Case insensitive");
 		
+		ToolItem regex = new ToolItem(quickFinderBar, SWT.CHECK);
+		regex.addListener(SWT.Selection, e -> {
+			if (quickFinder.getText().trim().length() > 0)
+				fireUpdate();
+			regexSearch = regex.getSelection();
+			wholeWord.setEnabled(!regexSearch);
+			caseSensitive.setEnabled(!regexSearch);
+		});
+		regex.setText("Regex");
+		
 		ToolItem clear = new ToolItem(quickFinderBar, SWT.PUSH);
 		clear.addListener(SWT.Selection, e -> {
 			if (quickFinder.getText().trim().length() == 0)
@@ -114,8 +127,21 @@ public class FilterSorter extends Composite {
 	}
 	
 	private String getQuickSearchWhereClause() {
-		// TODO use SEARCH in Rel here
-		return (quickFinder.getText().trim().length() > 0) ? " WHERE " + quickFinder.getText() : "";
+		String needle = quickFinder.getText().trim();
+		if (needle.length() == 0)
+			return "";
+		String regex;
+		if (regexSearch)
+			regex = needle;
+		else {
+			if (wholeWordSearch)
+				regex = "\\b(" + Pattern.quote(needle) + ")\\b";
+			else
+				regex = ".*" + Pattern.quote(needle) + ".*";
+			if (!caseSensitiveSearch)
+				regex = "(?i)" + regex;
+		}
+		return "WHERE SEARCH(TUP {*}, \"" + StringUtils.quote(regex) + "\")";
 	}
 	
 	private String getAdvancedSearchWhereClause() {
