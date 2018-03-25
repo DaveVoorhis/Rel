@@ -84,11 +84,11 @@ public class FilterSorter extends Composite {
 		
 		ToolItem regex = new ToolItem(quickFinderBar, SWT.CHECK);
 		regex.addListener(SWT.Selection, e -> {
-			if (quickFinder.getText().trim().length() > 0)
-				fireUpdate();
 			regexSearch = regex.getSelection();
 			wholeWord.setEnabled(!regexSearch);
 			caseSensitive.setEnabled(!regexSearch);
+			if (quickFinder.getText().trim().length() > 0)
+				fireUpdate();
 		});
 		regex.setText("Regex");
 		
