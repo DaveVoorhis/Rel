@@ -19,7 +19,7 @@ public class OpTupleSearch extends Instruction {
 	public void execute(Context context) {
 		ValueCharacter regex = (ValueCharacter)context.pop();
 		ValueTuple tuple = (ValueTuple)context.pop();
-		context.push(ValueBoolean.select(context.getGenerator(), tuple.search(type, regex.stringValue())));
+		context.push(ValueBoolean.select(context.getGenerator(), tuple.search(context, type, regex.stringValue())));
 	}
 
 }
