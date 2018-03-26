@@ -16,21 +16,13 @@ public class FilterSorter extends Composite {
 	public interface FilterSorterUpdate {
 		public void update(FilterSorter originator);
 	}
-
-	private enum SearchType {
-		QUICK,
-		ADVANCED
-	};
 		
 	private String baseExpression;
 	
 	private Vector<FilterSorterUpdate> updateListeners = new Vector<>();
 	
-	private SearchQuick quickSearchPanel;
-	private SearchAdvanced advancedSearchPanel;
-	private Sorter sortPanel;
-
-	private SearchType search = SearchType.QUICK;
+	private Searcher searcher;
+	private Sorter sorter;
 	
 	void fireUpdate() {
 		for (FilterSorterUpdate listener: updateListeners)
@@ -38,7 +30,7 @@ public class FilterSorter extends Composite {
 	}
 	
 	private String getWhereSortClauses() {
-		return ((search == SearchType.QUICK) ? quickSearchPanel.getQuery() : advancedSearchPanel.getQuery()) + sortPanel.getQuery();
+		return searcher.getQuery() + sorter.getQuery();
 	}
 	
 	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState initialState) {
@@ -64,9 +56,9 @@ public class FilterSorter extends Composite {
 		StackLayout stack = new StackLayout();
 		contentPanel.setLayout(stack);
 
-		quickSearchPanel = new SearchQuick(this, contentPanel);
-		advancedSearchPanel = new SearchAdvanced(this, contentPanel);
-		sortPanel = new Sorter(this, contentPanel);
+		SearchQuick quickSearchPanel = new SearchQuick(this, contentPanel);
+		SearchAdvanced advancedSearchPanel = new SearchAdvanced(this, contentPanel);
+		sorter = new Sorter(this, contentPanel);
 		
 		tltmQuickSearch.setToolTipText("Quick search.");
 		tltmQuickSearch.setText("Q");
@@ -74,9 +66,9 @@ public class FilterSorter extends Composite {
 			tltmQuickSearch.setSelection(true);
 			tltmAdvancedSearch.setSelection(false);
 			tltmSort.setSelection(false);
+			searcher = quickSearchPanel;
 			stack.topControl = quickSearchPanel;
 			contentPanel.layout();
-			search = SearchType.QUICK;
 		});
 		
 		tltmAdvancedSearch.setToolTipText("Advanced search...");
@@ -85,9 +77,9 @@ public class FilterSorter extends Composite {
 			tltmQuickSearch.setSelection(false);
 			tltmAdvancedSearch.setSelection(true);
 			tltmSort.setSelection(false);
+			searcher = advancedSearchPanel;
 			stack.topControl = advancedSearchPanel;
 			contentPanel.layout();
-			search = SearchType.ADVANCED;
 		});
 		
 		tltmSort.setToolTipText("Sort...");
@@ -96,11 +88,12 @@ public class FilterSorter extends Composite {
 			tltmQuickSearch.setSelection(false);
 			tltmAdvancedSearch.setSelection(false);
 			tltmSort.setSelection(true);
-			stack.topControl = sortPanel;
+			stack.topControl = sorter;
 			contentPanel.layout();
 		});
 		
 		tltmQuickSearch.setSelection(true);
+		searcher = quickSearchPanel;
 		stack.topControl = quickSearchPanel;
 		
 		if (initialState != null)
@@ -128,7 +121,7 @@ public class FilterSorter extends Composite {
 	}
 
 	public FilterSorterState getState() {
-		return new FilterSorterState(quickSearchPanel.getState());
+		return new FilterSorterState(searcher.getState());
 	}
 
 }

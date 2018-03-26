@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.reldb.rel.v0.values.StringUtils;
 
-public class SearchQuick extends Composite {
+public class SearchQuick extends Composite implements Searcher {
 	
 	private Text findText;
 	private boolean wholeWordSearch = false;

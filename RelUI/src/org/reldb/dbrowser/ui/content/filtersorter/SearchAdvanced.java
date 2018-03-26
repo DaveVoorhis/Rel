@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
-public class SearchAdvanced extends Composite {
+public class SearchAdvanced extends Composite implements Searcher {
 	
 	public SearchAdvanced(FilterSorter filterSorter, Composite contentPanel) {
 		super(contentPanel, SWT.NONE);
