@@ -66,13 +66,13 @@ public class ValueTuple extends ValueAbstract implements Projectable {
 	/** Given a tuple and a regular expression, return true if the regular expression matches the CAST_AS_CHAR conversion of any of the tuple's attributes. */
 	public boolean search(Context context, Type type, String regexp) {
 		Vector<Attribute> attributes = ((TypeTuple)type).getHeading().getAttributes();
-		int i = 0;			
+		int i = 0;		
 		for (Attribute attribute: attributes) {
 			String encoding = "utf-8";
 			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 			try {
 				PrintStream ps = new PrintStream(buffer, true, encoding);
-				values[i].toStream(context, attribute.getType(), ps, 1);			
+				values[i].toStream(context, attribute.getType(), ps, 1);
 				if (buffer.toString(encoding).matches(regexp))
 					return true;
 			} catch (UnsupportedEncodingException e) {
