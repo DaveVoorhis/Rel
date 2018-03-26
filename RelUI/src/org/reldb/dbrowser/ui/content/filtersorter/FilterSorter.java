@@ -29,10 +29,6 @@ public class FilterSorter extends Composite {
 			listener.update(this);
 	}
 	
-	private String getWhereSortClauses() {
-		return searcher.getQuery() + sorter.getQuery();
-	}
-	
 	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState initialState) {
 		super(parent, SWT.NONE);
 		this.baseExpression = baseExpression;
@@ -109,7 +105,7 @@ public class FilterSorter extends Composite {
 	}
 	
 	public String getQuery() {
-		return "(" + baseExpression + ") " + getWhereSortClauses();
+		return "(" + baseExpression + ") " + searcher.getQuery() + sorter.getQuery();
 	}
 	
 	public void addUpdateListener(FilterSorterUpdate updateListener) {
