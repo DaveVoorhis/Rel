@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.wb.swt.SWTResourceManager;
 import org.reldb.rel.v0.values.StringUtils;
 
 public class SearchQuick extends Composite {
@@ -17,14 +18,24 @@ public class SearchQuick extends Composite {
 	private boolean wholeWordSearch = false;
 	private boolean caseSensitiveSearch = false;
 	private boolean regexSearch = false;
+	
+	private FilterSorter filterSorter;
 
-	private void fireUpdateIfSearch(FilterSorter filterSorter) {
+	private void fireUpdate() {
+		findText.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
+		filterSorter.fireUpdate();		
+	}
+	
+	private void fireUpdateIfSearch() {
 		if (findText.getText().trim().length() > 0)
-			filterSorter.fireUpdate();
+			fireUpdate();
 	}
 	
 	public SearchQuick(FilterSorter filterSorter, Composite contentPanel) {
 		super(contentPanel, SWT.NONE);
+		
+		this.filterSorter = filterSorter;
+		
 		GridLayout layout = new GridLayout(2, false);
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
@@ -35,8 +46,11 @@ public class SearchQuick extends Composite {
 		findText = new Text(this, SWT.BORDER);
 		findText.addListener(SWT.Traverse, event -> {
 			if (event.detail == SWT.TRAVERSE_RETURN) {
-				filterSorter.fireUpdate();
+				fireUpdate();
 			}
+		});
+		findText.addListener(SWT.Modify, event -> {
+			findText.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
 		});
 		findText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
@@ -47,7 +61,7 @@ public class SearchQuick extends Composite {
 			wholeWordSearch = !wholeWordSearch;
 			wholeWord.setText(wholeWordSearch ? "Whole word" : "Any match");
 			layout();
-			fireUpdateIfSearch(filterSorter);
+			fireUpdateIfSearch();
 		});
 		wholeWord.setText("Any match");
 
@@ -56,7 +70,7 @@ public class SearchQuick extends Composite {
 			caseSensitiveSearch = !caseSensitiveSearch;
 			caseSensitive.setText(caseSensitiveSearch ? "Case sensitive" : "Case insensitive");
 			layout();
-			fireUpdateIfSearch(filterSorter);
+			fireUpdateIfSearch();
 		});
 		caseSensitive.setText("Case insensitive");
 		
@@ -65,7 +79,7 @@ public class SearchQuick extends Composite {
 			regexSearch = regex.getSelection();
 			wholeWord.setEnabled(!regexSearch);
 			caseSensitive.setEnabled(!regexSearch);
-			fireUpdateIfSearch(filterSorter);
+			fireUpdateIfSearch();
 		});
 		regex.setText("Regex");
 		
@@ -74,7 +88,7 @@ public class SearchQuick extends Composite {
 			if (findText.getText().trim().length() == 0)
 				return;
 			findText.setText("");
-			filterSorter.fireUpdate();
+			fireUpdate();
 		});
 		clear.setText("Clear");
 		
@@ -90,7 +104,7 @@ public class SearchQuick extends Composite {
 			regex = needle;
 		else {
 			if (wholeWordSearch)
-				regex = ".*\\b" + Pattern.quote(needle) + "\\b.*";
+				regex = "\\b" + Pattern.quote(needle) + "\\b";
 			else
 				regex = ".*" + Pattern.quote(needle) + ".*";
 			if (!caseSensitiveSearch)
