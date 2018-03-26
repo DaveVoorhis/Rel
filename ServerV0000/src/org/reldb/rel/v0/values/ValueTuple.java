@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.reldb.rel.exceptions.ExceptionFatal;
 import org.reldb.rel.v0.generator.Generator;
@@ -66,14 +68,16 @@ public class ValueTuple extends ValueAbstract implements Projectable {
 	/** Given a tuple and a regular expression, return true if the regular expression matches the CAST_AS_CHAR conversion of any of the tuple's attributes. */
 	public boolean search(Context context, Type type, String regexp) {
 		Vector<Attribute> attributes = ((TypeTuple)type).getHeading().getAttributes();
-		int i = 0;		
+		int i = 0;
+		Pattern compiledRegex = Pattern.compile(regexp);
 		for (Attribute attribute: attributes) {
 			String encoding = "utf-8";
 			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 			try {
 				PrintStream ps = new PrintStream(buffer, true, encoding);
 				values[i].toStream(context, attribute.getType(), ps, 1);
-				if (buffer.toString(encoding).matches(regexp))
+				Matcher matcher = compiledRegex.matcher(buffer.toString(encoding));
+				if (matcher.find())
 					return true;
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
