@@ -1,19 +1,14 @@
 package org.reldb.dbrowser.ui.content.filtersorter;
 
 import java.util.Vector;
-import java.util.regex.Pattern;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.reldb.rel.v0.values.StringUtils;
 
 public class FilterSorter extends Composite {
 
@@ -26,135 +21,24 @@ public class FilterSorter extends Composite {
 		QUICK,
 		ADVANCED
 	};
-	
-	private Text quickFinder;
-	private boolean wholeWordSearch = false;
-	private boolean caseSensitiveSearch = false;
-	private boolean regexSearch = false;
-	
+		
 	private String baseExpression;
+	
 	private Vector<FilterSorterUpdate> updateListeners = new Vector<>();
+	
+	private SearchQuick quickSearchPanel;
+	private SearchAdvanced advancedSearchPanel;
+	private Sorter sortPanel;
 
 	private SearchType search = SearchType.QUICK;
 	
-	private void fireUpdate() {
+	void fireUpdate() {
 		for (FilterSorterUpdate listener: updateListeners)
 			listener.update(this);
 	}
 	
-	private Composite createQuickSearchPanel(Composite contentPanel) {		
-		Composite panel = new Composite(contentPanel, SWT.NONE);
-		
-		GridLayout layout = new GridLayout(2, false);
-		layout.horizontalSpacing = 0;
-		layout.verticalSpacing = 0;
-		layout.marginWidth = 0;
-		layout.marginHeight = 0;
-		panel.setLayout(layout);		
-		
-		quickFinder = new Text(panel, SWT.BORDER);
-		quickFinder.addListener(SWT.Traverse, event -> {
-			if (event.detail == SWT.TRAVERSE_RETURN) {
-				fireUpdate();
-			}
-		});
-		quickFinder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		ToolBar quickFinderBar = new ToolBar(panel, SWT.NONE);
-		
-		ToolItem wholeWord = new ToolItem(quickFinderBar, SWT.PUSH);
-		wholeWord.addListener(SWT.Selection, e -> {
-			wholeWordSearch = !wholeWordSearch;
-			wholeWord.setText(wholeWordSearch ? "Whole word" : "Any match");
-			panel.layout();
-			if (quickFinder.getText().trim().length() > 0)
-				fireUpdate();
-		});
-		wholeWord.setText("Any match");
-
-		ToolItem caseSensitive = new ToolItem(quickFinderBar, SWT.PUSH);
-		caseSensitive.addListener(SWT.Selection, e -> {
-			caseSensitiveSearch = !caseSensitiveSearch;
-			caseSensitive.setText(caseSensitiveSearch ? "Case sensitive" : "Case insensitive");
-			panel.layout();
-			if (quickFinder.getText().trim().length() > 0)
-				fireUpdate();
-		});
-		caseSensitive.setText("Case insensitive");
-		
-		ToolItem regex = new ToolItem(quickFinderBar, SWT.CHECK);
-		regex.addListener(SWT.Selection, e -> {
-			regexSearch = regex.getSelection();
-			wholeWord.setEnabled(!regexSearch);
-			caseSensitive.setEnabled(!regexSearch);
-			if (quickFinder.getText().trim().length() > 0)
-				fireUpdate();
-		});
-		regex.setText("Regex");
-		
-		ToolItem clear = new ToolItem(quickFinderBar, SWT.PUSH);
-		clear.addListener(SWT.Selection, e -> {
-			if (quickFinder.getText().trim().length() == 0)
-				return;
-			quickFinder.setText("");
-			fireUpdate();
-		});
-		clear.setText("Clear");
-		
-		quickFinderBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		
-		return panel;
-	}
-
-	private Composite createAdvancedSearchPanel(Composite contentPanel) {
-		Composite panel = new Composite(contentPanel, SWT.NONE);
-		panel.setLayout(new FillLayout());
-		
-		Label label = new Label(panel, SWT.NONE);
-		label.setText("Advanced search panel goes here.");
-		
-		return panel;
-	}
-
-	private Composite createSortPanel(Composite contentPanel) {
-		Composite panel = new Composite(contentPanel, SWT.NONE);
-		panel.setLayout(new FillLayout());
-		
-		Label label = new Label(panel, SWT.NONE);
-		label.setText("Sort panel goes here.");	
-		
-		return panel;
-	}
-	
-	private String getQuickSearchWhereClause() {
-		String needle = quickFinder.getText().trim();
-		if (needle.length() == 0)
-			return "";
-		String regex;
-		if (regexSearch)
-			regex = needle;
-		else {
-			if (wholeWordSearch)
-				regex = "\\b(" + Pattern.quote(needle) + ")\\b";
-			else
-				regex = ".*" + Pattern.quote(needle) + ".*";
-			if (!caseSensitiveSearch)
-				regex = "(?i)" + regex;
-		}
-		return "WHERE SEARCH(TUP {*}, \"" + StringUtils.quote(regex) + "\")";
-	}
-	
-	private String getAdvancedSearchWhereClause() {
-		return "";
-	}
-	
-	private String getSortClause() {
-		return "";
-	}
-	
-	private String getWhereClause() {
-		return ((search == SearchType.QUICK) ? getQuickSearchWhereClause() : getAdvancedSearchWhereClause())
-				+ getSortClause();
+	private String getWhereSortClauses() {
+		return ((search == SearchType.QUICK) ? quickSearchPanel.getQuery() : advancedSearchPanel.getQuery()) + sortPanel.getQuery();
 	}
 	
 	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState initialState) {
@@ -180,9 +64,9 @@ public class FilterSorter extends Composite {
 		StackLayout stack = new StackLayout();
 		contentPanel.setLayout(stack);
 
-		final Composite quickSearchPanel = createQuickSearchPanel(contentPanel);
-		final Composite advancedSearchPanel = createAdvancedSearchPanel(contentPanel);
-		final Composite sortPanel = createSortPanel(contentPanel);
+		quickSearchPanel = new SearchQuick(this, contentPanel);
+		advancedSearchPanel = new SearchAdvanced(this, contentPanel);
+		sortPanel = new Sorter(this, contentPanel);
 		
 		tltmQuickSearch.setToolTipText("Quick search.");
 		tltmQuickSearch.setText("Q");
@@ -220,7 +104,7 @@ public class FilterSorter extends Composite {
 		stack.topControl = quickSearchPanel;
 		
 		if (initialState != null)
-			quickFinder.setText(initialState.getRepresentation());
+			quickSearchPanel.setState(initialState.getRepresentation());
 	}
 
 	public FilterSorter(Composite parent, int style, String baseExpression) {
@@ -232,7 +116,7 @@ public class FilterSorter extends Composite {
 	}
 	
 	public String getQuery() {
-		return "(" + baseExpression + ")" + getWhereClause();
+		return "(" + baseExpression + ") " + getWhereSortClauses();
 	}
 	
 	public void addUpdateListener(FilterSorterUpdate updateListener) {
@@ -244,7 +128,7 @@ public class FilterSorter extends Composite {
 	}
 
 	public FilterSorterState getState() {
-		return new FilterSorterState(quickFinder.getText());
+		return new FilterSorterState(quickSearchPanel.getState());
 	}
 
 }
