@@ -105,7 +105,7 @@ public class FilterSorter extends Composite {
 	}
 	
 	public String getQuery() {
-		return "(" + baseExpression + ") " + searcher.getQuery() + sorter.getQuery();
+		return "(" + baseExpression + ")" + searcher.getQuery() + sorter.getQuery();
 	}
 	
 	public void addUpdateListener(FilterSorterUpdate updateListener) {

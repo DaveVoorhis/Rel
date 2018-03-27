@@ -105,14 +105,12 @@ public class SearchQuick extends Composite implements Searcher {
 		if (regexSearch)
 			regex = needle;
 		else {
-			if (wholeWordSearch)
-				regex = "\\b" + Pattern.quote(needle) + "\\b";
-			else
-				regex = ".*" + Pattern.quote(needle) + ".*";
+			String delimiter = wholeWordSearch ? "\\b" : ".*";
+			regex = delimiter + Pattern.quote(needle) + delimiter;
 			if (!caseSensitiveSearch)
 				regex = "(?i)" + regex;
 		}
-		return "WHERE SEARCH(TUP {*}, \"" + StringUtils.quote(regex) + "\")";
+		return " WHERE SEARCH(TUP {*}, \"" + StringUtils.quote(regex) + "\")";
 	}
 
 	public void setState(String state) {
