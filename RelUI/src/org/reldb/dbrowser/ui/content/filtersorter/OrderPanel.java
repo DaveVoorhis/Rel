@@ -8,7 +8,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -16,7 +15,7 @@ import org.eclipse.swt.widgets.Label;
 public class OrderPanel extends Composite {
 
 	private Vector<Label> labelAttributes;
-	private Vector<Combo> orderAttributes;
+	private Vector<SortOrderPicker> orderAttributes;
 
 	private Vector<String> availableAttributes = new Vector<String>();
 
@@ -41,7 +40,7 @@ public class OrderPanel extends Composite {
 	public String getText() {
 		String attributeList = "";
 		for (int i = 0; i < labelAttributes.size(); i++) {
-			String order = orderAttributes.get(i).getText();
+			String order = orderAttributes.get(i).getState();
 			if (order.trim().length() > 0) {
 				if (attributeList.length() > 0)
 					attributeList += ", ";
@@ -98,9 +97,9 @@ public class OrderPanel extends Composite {
 		labelAttributes.get(toRow).setText(labelAttributes.get(fromRow).getText());
 		labelAttributes.get(fromRow).setText(tmpLabelText);
 
-		String tmpComboState = orderAttributes.get(toRow).getText();
-		orderAttributes.get(toRow).setText(orderAttributes.get(fromRow).getText());
-		orderAttributes.get(fromRow).setText(tmpComboState);
+		String tmpComboState = orderAttributes.get(toRow).getState();
+		orderAttributes.get(toRow).setState(orderAttributes.get(fromRow).getState());
+		orderAttributes.get(fromRow).setState(tmpComboState);
 	}
 
 	private void addRow(OrderPanel.SortedAttribute attribute, int rowNum, boolean last) {
@@ -109,11 +108,8 @@ public class OrderPanel extends Composite {
 		lblNewLabel.setText(attribute.getName());
 		labelAttributes.add(lblNewLabel);
 
-		Combo ordering = new Combo(this, SWT.CHECK | SWT.BORDER);
-		ordering.add("");
-		ordering.add("ASC");
-		ordering.add("DESC");
-		ordering.setText(attribute.getSort());
+		SortOrderPicker ordering = new SortOrderPicker(this, SWT.NONE);
+		ordering.setState(attribute.getSort());
 		orderAttributes.add(ordering);
 
 		Composite buttonPanel = new Composite(this, SWT.NONE);
@@ -130,7 +126,7 @@ public class OrderPanel extends Composite {
 		for (Control control : getChildren())
 			control.dispose();
 		labelAttributes = new Vector<Label>();
-		orderAttributes = new Vector<Combo>();
+		orderAttributes = new Vector<SortOrderPicker>();
 		int rowNum = 0;
 		Vector<OrderPanel.SortedAttribute> definitionAttributes = getDefinitionAttributes();
 		HashSet<String> definitionAttributeNames = new HashSet<String>();
