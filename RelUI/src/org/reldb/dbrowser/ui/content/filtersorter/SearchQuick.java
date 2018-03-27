@@ -3,10 +3,10 @@ package org.reldb.dbrowser.ui.content.filtersorter;
 import java.util.regex.Pattern;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
@@ -14,7 +14,7 @@ import org.reldb.rel.v0.values.StringUtils;
 
 public class SearchQuick extends Composite implements Searcher {
 	
-	private Text findText;
+	private StyledText findText;
 	private boolean wholeWordSearch = false;
 	private boolean caseSensitiveSearch = false;
 	private boolean regexSearch = false;
@@ -23,6 +23,7 @@ public class SearchQuick extends Composite implements Searcher {
 
 	private void fireUpdate() {
 		findText.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
+		findText.setBackground(null);
 		filterSorter.fireUpdate();		
 	}
 	
@@ -41,9 +42,9 @@ public class SearchQuick extends Composite implements Searcher {
 		layout.verticalSpacing = 0;
 		layout.marginWidth = 0;
 		layout.marginHeight = 0;
-		setLayout(layout);		
+		setLayout(layout);
 		
-		findText = new Text(this, SWT.BORDER);
+		findText = new StyledText(this, SWT.BORDER | SWT.SINGLE);
 		findText.addListener(SWT.Traverse, event -> {
 			if (event.detail == SWT.TRAVERSE_RETURN) {
 				fireUpdate();
@@ -51,6 +52,7 @@ public class SearchQuick extends Composite implements Searcher {
 		});
 		findText.addListener(SWT.Modify, event -> {
 			findText.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
+			findText.setBackground(SWTResourceManager.getColor(255, 225, 225));
 		});
 		findText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
