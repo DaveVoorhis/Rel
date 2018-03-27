@@ -38,7 +38,7 @@ public class RelvarEditorPanel extends Composite {
 		gridLayout.marginHeight = 0;
 		editorComposite.setLayout(gridLayout);
 		
-		FilterSorter filterSorter = new FilterSorter(editorComposite, SWT.BORDER, title);
+		FilterSorter filterSorter = new FilterSorter(editorComposite, SWT.BORDER, title, connection);
 		filterSorter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		filterSorter.addUpdateListener(source -> editor.refresh());
 		

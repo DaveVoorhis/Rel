@@ -9,6 +9,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.dbrowser.ui.DbConnection;
 
 public class FilterSorter extends Composite {
 
@@ -23,16 +24,19 @@ public class FilterSorter extends Composite {
 	
 	private Searcher searcher;
 	private Sorter sorter;
+
+	private DbConnection dbConnection;
 	
 	void fireUpdate() {
 		for (FilterSorterUpdate listener: updateListeners)
 			listener.update(this);
 	}
 	
-	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState initialState) {
+	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState initialState, DbConnection dbConnection) {
 		super(parent, style);
 		this.baseExpression = baseExpression;
-
+		this.dbConnection = dbConnection;
+		
 		GridLayout layout = new GridLayout(2, false);
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
@@ -85,6 +89,7 @@ public class FilterSorter extends Composite {
 			tltmAdvancedSearch.setSelection(false);
 			tltmSort.setSelection(true);
 			stack.topControl = sorter;
+			sorter.clicked();
 			contentPanel.layout();
 		});
 		
@@ -96,12 +101,16 @@ public class FilterSorter extends Composite {
 			quickSearchPanel.setState(initialState.getRepresentation());
 	}
 
-	public FilterSorter(Composite parent, int style, String baseExpression) {
-		this(parent, style, baseExpression, null);
+	public FilterSorter(Composite parent, int style, String baseExpression, DbConnection dbConnection) {
+		this(parent, style, baseExpression, null, dbConnection);
 	}
-
+	
 	public String getBaseExpression() {
 		return baseExpression;
+	}
+
+	public Vector<String> getAttributeNames() {
+		return dbConnection.getAttributesOf(getBaseExpression());
 	}
 	
 	public String getQuery() {

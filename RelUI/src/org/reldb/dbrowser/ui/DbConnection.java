@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.FileLocator;
@@ -13,8 +14,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Error;
+import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.NullTuples;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
@@ -156,6 +159,20 @@ public class DbConnection {
 			}
 		}
 		return keywordCache;
+	}
+
+	public Vector<String> getAttributesOf(String query) {
+		Vector<String> attributeNames = new Vector<String>();		
+		try (Connection conn = new Connection(connection.getDbURL())) {
+			Tuples tuples = conn.getTuples("REL SAME_HEADING_AS(" + query + ") {}", QUERY_WAIT_MILLISECONDS);
+			Heading heading = tuples.getHeading();
+			Iterator<Attribute> attributes = heading.getAttributes();
+			while (attributes.hasNext())
+				attributeNames.add(attributes.next().getName());
+		} catch (Exception e) {
+			System.out.println("Unable to obtain attributes for " + query);
+		}
+		return attributeNames;
 	}
 
 }
