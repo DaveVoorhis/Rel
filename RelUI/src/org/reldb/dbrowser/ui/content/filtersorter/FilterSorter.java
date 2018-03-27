@@ -30,7 +30,7 @@ public class FilterSorter extends Composite {
 	}
 	
 	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState initialState) {
-		super(parent, SWT.NONE);
+		super(parent, style);
 		this.baseExpression = baseExpression;
 
 		GridLayout layout = new GridLayout(2, false);
