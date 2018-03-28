@@ -9,9 +9,10 @@ Version 3.012 (1.0.25):
   		S WHERE SEARCH(TUP {*}, ".*3.*")
   	returns any tuple in S with a '3' in some attribute value.
   	
-  - Bug fix: Rel UI: WRITELN "blah//"; or other string with embedded comment
-  	character sequence caused syntax error, because // was treated
-	as an expression ending in a comment rather than a statement.
+  - Bug fix: Rel UI: In command-line interface, WRITELN "blah//"; 
+  	or other string with embedded comment character sequence caused 
+  	syntax error, because // was treated as an expression ending in 
+  	a comment rather than a statement.
 	Fixed.
 
 Version 3.011 (1.0.24):
