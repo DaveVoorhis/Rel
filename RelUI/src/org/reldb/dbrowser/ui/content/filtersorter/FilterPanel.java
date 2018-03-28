@@ -22,18 +22,18 @@ public class FilterPanel extends Composite {
 	private Vector<String[]> finderSavedState = null;
 	
 	public FilterPanel(Vector<String> attributes, Composite parent, Vector<String[]> finderSavedState) {
-		super(parent, SWT.PRIMARY_MODAL | SWT.DIALOG_TRIM | SWT.RESIZE);
+		super(parent, SWT.NONE);
 		this.finderSavedState = finderSavedState;
 		this.attributes = attributes;
 		createFindPanelContent();		
-		pack();
+		doResize();
 	}
 
 	public void clear() {
 		finderSavedState.clear();
 		finderSavedState.add(new String[] {"","","",""});
 		createFindPanelContent();			
-		pack();		
+		doResize();		
 	}
 
 	public void ok() {
@@ -52,6 +52,10 @@ public class FilterPanel extends Composite {
 
 	public String getWhereClause() {
 		return " WHERE " + whereClause;
+	}
+	
+	protected void doResize() {
+		getParent().pack();	
 	}
 	
 	private void removeEmptyRows() {
@@ -150,12 +154,12 @@ public class FilterPanel extends Composite {
 			if (comboBoolean.getText().trim().length() > 0) {
 				if (row >= controls.size() - 1) {
 					addRow(row + 1);
-					pack();
+					doResize();
 				}
 			} else {
 				if (row < controls.size() - 1) {
 					removeRow(row + 1);
-					pack();
+					doResize();
 				}
 			}
 		});

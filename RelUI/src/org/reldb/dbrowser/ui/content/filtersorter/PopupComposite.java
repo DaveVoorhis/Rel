@@ -33,7 +33,7 @@ public class PopupComposite extends Composite {
 	/**
 	 * Style of the shell that will house the composite
 	 */ 
-	private static final int SHELL_STYLE = SWT.MODELESS | SWT.NO_TRIM | SWT.ON_TOP | SWT.BORDER;	
+	private static final int SHELL_STYLE = SWT.MODELESS | SWT.NO_TRIM | SWT.ON_TOP | SWT.BORDER;
 	
 	/**
 	 * Shell that will house the composite
@@ -155,6 +155,14 @@ public class PopupComposite extends Composite {
 		return s1.x > s2.x ? s1 : s2;
 	}	
 
+	/**
+	 * Pack this Composite and its Shell.
+	 */
+	public void pack() {
+		super.pack();
+		getShell().pack();
+	}
+	
 	/**
 	 * Class that handles shell appearance and disappearance appropriately.
 	 * Specifically, it hides the shell when it becomes de-activated (for example,
