@@ -1,5 +1,8 @@
 ** TO DO **
 
+- Rel UI (or Rel DBMS): WRITELN "blah//"; causes syntax error, because // is treated
+  as a comment.
+
 - Rel: Provide means to emit CSV files (and files in general) programmatically and/or otherwise
   from the command-line without emitting Rel startup/shutdown messages.
   
