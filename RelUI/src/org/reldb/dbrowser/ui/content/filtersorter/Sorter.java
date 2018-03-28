@@ -71,7 +71,6 @@ public class Sorter extends Composite {
 				sortSpec.setText(emptySortPrompt);
 			else
 				sortSpec.setText(spec);
-			sortSpec.setText(orderer.getText());
 			popup.close();
 			filterSorter.fireUpdate();
 		});
