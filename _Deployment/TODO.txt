@@ -5,6 +5,8 @@
   
 - Rel UI: Provide search/sort mechanisms in editable grids.
 
+- Rel: Provide CAST_AS_CHARACTER(OPERATOR) and CAST_AS_OPERATOR(CHARACTER).
+
 - Rev: Provide "Comment" visualiser in Rev.
 
 - Provide encrypted backups (and log-ins to a given database).
