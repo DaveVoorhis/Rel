@@ -38,7 +38,7 @@ public class Order extends Monadic {
 		container.setLayout(new FillLayout());
 		orderPanel = new OrderPanel(container, SWT.None);
 		orderPanel.setText(operatorLabel.getText());
-		orderPanel.setAvailableAttributes(getAttributeNamesOfParameter(0));
+		orderPanel.setAvailableAttributeNames(getAttributeNamesOfParameter(0));
 	}
 
 	@Override

@@ -57,7 +57,7 @@ public class Sorter extends Composite {
 		
 		OrderPanel orderer = new OrderPanel(popup, SWT.NONE);
 		orderer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
-		orderer.setAvailableAttributes(filterSorter.getAttributeNames());
+		orderer.setAvailableAttributeNames(filterSorter.getAttributeNames());
 		
 		Composite buttonPanel = new Composite(popup, SWT.NONE);
 		buttonPanel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -96,8 +96,8 @@ public class Sorter extends Composite {
 	}
 
 	public String getQuery() {
-		String sortSpecText = sortSpec.getText();		
-		return (!sortSpecText.equals(emptySortPrompt)) ? " ORDER (" + sortSpecText + ")" : "";
+		String spec = sortSpec.getText();		
+		return !spec.equals(emptySortPrompt) ? " ORDER (" + spec + ")" : "";
 	}
 
 	public void setState(String state) {

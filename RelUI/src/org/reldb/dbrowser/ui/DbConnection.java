@@ -161,18 +161,18 @@ public class DbConnection {
 		return keywordCache;
 	}
 
-	public Vector<String> getAttributesOf(String query) {
-		Vector<String> attributeNames = new Vector<String>();		
+	public Vector<Attribute> getAttributesOf(String query) {
+		Vector<Attribute> attributes = new Vector<Attribute>();		
 		try (Connection conn = new Connection(connection.getDbURL())) {
 			Tuples tuples = conn.getTuples("REL SAME_HEADING_AS(" + query + ") {}", QUERY_WAIT_MILLISECONDS);
 			Heading heading = tuples.getHeading();
-			Iterator<Attribute> attributes = heading.getAttributes();
-			while (attributes.hasNext())
-				attributeNames.add(attributes.next().getName());
+			Iterator<Attribute> attributeIterator = heading.getAttributes();
+			while (attributeIterator.hasNext())
+				attributes.add(attributeIterator.next());
 		} catch (Exception e) {
 			System.out.println("Unable to obtain attributes for " + query);
 		}
-		return attributeNames;
+		return attributes;
 	}
 
 }

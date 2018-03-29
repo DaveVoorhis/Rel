@@ -10,18 +10,22 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.reldb.rel.client.Attribute;
+import org.reldb.rel.client.ScalarType;
+import org.reldb.rel.client.Type;
+import org.reldb.rel.v0.values.StringUtils;
 
 public class FilterPanel extends Composite {
 	
 	private static final String[] queryOperationDisplay = new String[] {"=", "≠", "<", ">", "≤", "≥", "contains", "starts with", "doesn’t contain"};
 	private static final String[] queryOperationCode = new String[] {"=", "!=", "<", ">", "<=", ">=", "LIKE", "LIKE", "NOT LIKE"}; 
 	
-	private Vector<String> attributes;
-	private String whereClause = "TRUE";
+	private Vector<Attribute> attributes;
+	private String whereClause = "";
 	private Vector<Control[]> controls = new Vector<Control[]>();
 	private Vector<String[]> finderSavedState = null;
 	
-	public FilterPanel(Vector<String> attributes, Composite parent, Vector<String[]> finderSavedState) {
+	public FilterPanel(Vector<Attribute> attributes, Composite parent, Vector<String[]> finderSavedState) {
 		super(parent, SWT.NONE);
 		this.finderSavedState = finderSavedState;
 		this.attributes = attributes;
@@ -47,11 +51,11 @@ public class FilterPanel extends Composite {
 		removeEmptyRows();
 		removeTrailingAndOr();
 		preserveState();
-		whereClause = "TRUE";		
+		whereClause = "";		
 	}
 
 	public String getWhereClause() {
-		return " WHERE " + whereClause;
+		return whereClause;
 	}
 	
 	protected void doResize() {
@@ -128,7 +132,10 @@ public class FilterPanel extends Composite {
 		Combo newComboColumn;
 		newComboColumn = new Combo(this, SWT.READ_ONLY);
 		newComboColumn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		newComboColumn.setItems(attributes.toArray(new String[0]));		
+		Vector<String> attributeNames = new Vector<>();
+		for (Attribute attribute: attributes)
+			attributeNames.add(attribute.getName());
+		newComboColumn.setItems(attributeNames.toArray(new String[0]));
 		rowControls[0] = newComboColumn;
 		if (rowNum == 0)
 			newComboColumn.setFocus();
@@ -215,12 +222,17 @@ public class FilterPanel extends Composite {
 				continue;
 			if (whereClause.length() > 0)
 				comparison += " ";
-			comparison += attributes.get(columnIndex);
+			Attribute attribute = attributes.get(columnIndex);
+			comparison += attribute.getName();
 			int operationIndex = ((Combo)control[1]).getSelectionIndex();
-			String value = ((Text)control[2]).getText();
 			if (operationIndex < 0)
 				continue;
-			comparison += " " + queryOperationCode[operationIndex] + " ?";
+			String value = ((Text)control[2]).getText();
+			Type type = attribute.getType();
+			if (type instanceof ScalarType)
+				if (((ScalarType)type).getName().equals("CHARACTER"))
+					value = "'" + StringUtils.quote(value) + "'";
+			comparison += " " + queryOperationCode[operationIndex] + " " + value;
 			if (queryOperationDisplay[operationIndex].contains("contain"))
 				arguments.add("%" + value + "%");
 			else if (queryOperationDisplay[operationIndex].contains("starts with"))
@@ -232,8 +244,6 @@ public class FilterPanel extends Composite {
 				comparison += " " + booleanOp;
 			whereClause += comparison;
 		}
-		if (whereClause.length() == 0)
-			whereClause = "TRUE";
 	}
 
 }

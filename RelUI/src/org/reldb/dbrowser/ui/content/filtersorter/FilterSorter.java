@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbConnection;
+import org.reldb.rel.client.Attribute;
 
 public class FilterSorter extends Composite {
 
@@ -26,6 +27,8 @@ public class FilterSorter extends Composite {
 	private Sorter sorter;
 
 	private DbConnection dbConnection;
+
+	private Searcher lastSearch = null;
 	
 	void fireUpdate() {
 		for (FilterSorterUpdate listener: updateListeners)
@@ -66,9 +69,12 @@ public class FilterSorter extends Composite {
 			tltmQuickSearch.setSelection(true);
 			tltmAdvancedSearch.setSelection(false);
 			tltmSort.setSelection(false);
-			searcher = quickSearchPanel;
+			searcher = quickSearchPanel;				
 			stack.topControl = quickSearchPanel;
 			contentPanel.layout();
+			if (lastSearch != quickSearchPanel && (quickSearchPanel.getQuery().length() > 0 || advancedSearchPanel.getQuery().length() > 0))
+				fireUpdate();
+			lastSearch = searcher;
 		});
 		
 		tltmAdvancedSearch.setToolTipText("Advanced search...");
@@ -79,7 +85,11 @@ public class FilterSorter extends Composite {
 			tltmSort.setSelection(false);
 			searcher = advancedSearchPanel;
 			stack.topControl = advancedSearchPanel;
+			advancedSearchPanel.clicked();
 			contentPanel.layout();
+			if (lastSearch != advancedSearchPanel && (quickSearchPanel.getQuery().length() > 0 || advancedSearchPanel.getQuery().length() > 0))
+				fireUpdate();
+			lastSearch = searcher;
 		});
 		
 		tltmSort.setToolTipText("Sort...");
@@ -109,8 +119,15 @@ public class FilterSorter extends Composite {
 		return baseExpression;
 	}
 
-	public Vector<String> getAttributeNames() {
+	public Vector<Attribute> getAttributes() {
 		return dbConnection.getAttributesOf(getBaseExpression());
+	}
+
+	public Vector<String> getAttributeNames() {
+		Vector<String> names = new Vector<>();
+		for (Attribute attribute: getAttributes())
+			names.add(attribute.getName());
+		return names;
 	}
 	
 	public String getQuery() {

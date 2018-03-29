@@ -19,6 +19,8 @@ public class SearchAdvanced extends Composite implements Searcher {
 	private FilterPanel filterer;
 	private Label filterSpec;
 	
+	private Vector<String[]> savedState = new Vector<>();
+	
 	public SearchAdvanced(FilterSorter filterSorter, Composite contentPanel) {
 		super(contentPanel, SWT.NONE);
 		
@@ -58,9 +60,7 @@ public class SearchAdvanced extends Composite implements Searcher {
 		PopupComposite popup = new PopupComposite(getShell());
 		popup.setLayout(new GridLayout(1, false));
 		
-		Vector<String[]> savedState = new Vector<>();
-		
-		filterer = new FilterPanel(filterSorter.getAttributeNames(), popup, savedState);
+		filterer = new FilterPanel(filterSorter.getAttributes(), popup, savedState);
 		filterer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
 		
 		Composite buttonPanel = new Composite(popup, SWT.NONE);
@@ -95,10 +95,6 @@ public class SearchAdvanced extends Composite implements Searcher {
 			filterSorter.fireUpdate();
 		});
 		
-//		String sortSpecText = filterSpec.getText();
-//		if (!sortSpecText.equals(emptyFilterPrompt))
-//			filterer.setText(sortSpecText);
-		
 		popup.pack();
 		popup.show(toDisplay(0, 0));
 	}
@@ -110,14 +106,13 @@ public class SearchAdvanced extends Composite implements Searcher {
 	}
 
 	public String getQuery() {
-		return filterer.getWhereClause();
+		String spec = filterSpec.getText();
+		return !spec.equals(emptyFilterPrompt)  ? " WHERE " + spec : "";
 	}
 
-	public void setState(String state) {
-	}
-
+	@Override
 	public String getState() {
-		return "";
+		return null;
 	}
 	
 }

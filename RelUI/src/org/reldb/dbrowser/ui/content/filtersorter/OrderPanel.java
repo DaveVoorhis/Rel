@@ -27,8 +27,8 @@ public class OrderPanel extends Composite {
 		setup();
 	}
 
-	public void setAvailableAttributes(Vector<String> availableAttributes) {
-		this.availableAttributes = availableAttributes;
+	public void setAvailableAttributeNames(Vector<String> availableAttributeNames) {
+		this.availableAttributes = availableAttributeNames;
 		setup();
 	}
 
