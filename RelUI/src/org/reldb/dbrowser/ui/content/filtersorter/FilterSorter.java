@@ -32,9 +32,27 @@ public class FilterSorter extends Composite {
 	
 	private FilterSorterState filterSorterState;
 	
+	private boolean deferring = false;
+	private boolean updateRequested = false;
+	
+	private void deferUpdates() {
+		deferring = true;
+	}
+	
 	void fireUpdate() {
+		if (deferring) {
+			updateRequested = true;
+			return;
+		}
 		for (FilterSorterUpdate listener: updateListeners)
 			listener.update(this);
+	}
+	
+	private void allowUpdates() {
+		deferring = false;
+		if (updateRequested)
+			fireUpdate();
+		updateRequested = false;
 	}
 	
 	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState state, DbConnection dbConnection) {
@@ -68,7 +86,7 @@ public class FilterSorter extends Composite {
 
 		SearchQuick quickSearchPanel = new SearchQuick(this, contentPanel, filterSorterState);
 		SearchAdvanced advancedSearchPanel = new SearchAdvanced(this, contentPanel, filterSorterState);
-		sorter = new Sorter(this, contentPanel);
+		sorter = new Sorter(this, contentPanel, filterSorterState);
 		
 		tltmQuickSearch.setToolTipText("Quick search.");
 		tltmQuickSearch.setText("Q");
@@ -110,6 +128,8 @@ public class FilterSorter extends Composite {
 			contentPanel.layout();
 		});
 
+		deferUpdates();
+		
 		if (filterSorterState.isQuickSearch()) {
 			tltmQuickSearch.setSelection(true);
 			searcher = quickSearchPanel;
@@ -121,6 +141,11 @@ public class FilterSorter extends Composite {
 			stack.topControl = advancedSearchPanel;
 			advancedSearchPanel.ok();
 		}
+		
+		if (filterSorterState.getSortSpec().trim().length() > 0)
+			fireUpdate();
+		
+		allowUpdates();
 	}
 	
 	public FilterSorter(Composite parent, int style, String baseExpression, DbConnection dbConnection) {

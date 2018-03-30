@@ -18,10 +18,13 @@ public class Sorter extends Composite {
 	
 	private PopupComposite popup;
 	
-	public Sorter(FilterSorter filterSorter, Composite contentPanel) {
+	private FilterSorterState filterSorterState;
+	
+	public Sorter(FilterSorter filterSorter, Composite contentPanel, FilterSorterState filterSorterState) {
 		super(contentPanel, SWT.NONE);
 		
 		this.filterSorter = filterSorter;
+		this.filterSorterState = filterSorterState;
 		
 		GridLayout layout = new GridLayout(2, false);
 		layout.horizontalSpacing = 0;
@@ -31,7 +34,7 @@ public class Sorter extends Composite {
 		setLayout(layout);		
 
 		sortSpec = new Label(this, SWT.NONE);
-		sortSpec.setText(emptySortPrompt);
+		sortSpec.setText((filterSorterState.getSortSpec().length() == 0) ? emptySortPrompt : filterSorterState.getSortSpec());
 		sortSpec.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
 		
 		sortSpec.addListener(SWT.MouseUp, e -> popup());		
@@ -54,7 +57,7 @@ public class Sorter extends Composite {
 		
 		createPopup();
 	}
-	
+
 	private void createPopup() {
 		popup = new PopupComposite(getShell());
 		popup.setLayout(new GridLayout(1, false));
@@ -76,6 +79,7 @@ public class Sorter extends Composite {
 			else
 				sortSpec.setText(spec);
 			popup.hide();
+			filterSorterState.setSortSpec(spec);
 			filterSorter.fireUpdate();
 		});
 		
@@ -106,13 +110,6 @@ public class Sorter extends Composite {
 	public String getQuery() {
 		String spec = sortSpec.getText();		
 		return !spec.equals(emptySortPrompt) ? " ORDER (" + spec + ")" : "";
-	}
-
-	public void setState(String state) {
-	}
-
-	public String getState() {
-		return "";
 	}
 	
 }
