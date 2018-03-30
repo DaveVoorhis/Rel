@@ -117,14 +117,17 @@ public class OrderPanel extends Composite {
 		Button btnUp = new Button(buttonPanel, SWT.ARROW | SWT.UP | SWT.ARROW_UP);
 		btnUp.addListener(SWT.Selection, e -> moveAttributeRow(rowNum, rowNum - 1));
 		btnUp.setVisible(!(rowNum == 0));
+		btnUp.setToolTipText("Move up; increase sort priority.");
+		
 		Button btnDown = new Button(buttonPanel, SWT.ARROW | SWT.DOWN | SWT.ARROW_DOWN);
 		btnDown.addListener(SWT.Selection, e -> moveAttributeRow(rowNum, rowNum + 1));
 		btnDown.setVisible(!last);
+		btnDown.setToolTipText("Move down; decrease sort priority.");
 	}
-
+	
 	private void setup() {
 		for (Control control : getChildren())
-			control.dispose();
+			control.dispose();		
 		labelAttributes = new Vector<Label>();
 		orderAttributes = new Vector<SortOrderPicker>();
 		int rowNum = 0;

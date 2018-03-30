@@ -26,14 +26,17 @@ public class SortOrderPicker extends Composite {
 		ascending = new Button(this, SWT.TOGGLE);
 		ascending.setImage(IconLoader.loadIcon("sort-ascending"));
 		ascending.addListener(SWT.Selection, e -> setState("ASC"));
+		ascending.setToolTipText("ASC - ascending");
 		
 		descending = new Button(this, SWT.TOGGLE);
 		descending.setImage(IconLoader.loadIcon("sort-descending"));
 		descending.addListener(SWT.Selection, e -> setState("DESC"));
+		descending.setToolTipText("DESC - descending");
 		
 		cancel = new Button(this, SWT.PUSH);
 		cancel.setImage(IconLoader.loadIcon("cancel"));		
 		cancel.addListener(SWT.Selection, e -> setState(""));
+		cancel.setToolTipText("Unsorted");
 		
 		setState("");	
 	}
