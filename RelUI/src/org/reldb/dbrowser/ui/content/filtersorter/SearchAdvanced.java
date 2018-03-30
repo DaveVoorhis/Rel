@@ -19,19 +19,22 @@ public class SearchAdvanced extends Composite implements Searcher {
 	private SearchAdvancedPanel filterer;
 	private Label filterSpec;
 	
-	private Vector<String[]> savedState = new Vector<>();
+	private PopupComposite popup;
 	
-	public SearchAdvanced(FilterSorter filterSorter, Composite contentPanel) {
+	private FilterSorterState state = new FilterSorterState();
+	
+	public SearchAdvanced(FilterSorter filterSorter, Composite contentPanel, FilterSorterState filterSorterState) {
 		super(contentPanel, SWT.NONE);
 		
 		this.filterSorter = filterSorter;
+		this.state = filterSorterState;
 		
 		GridLayout layout = new GridLayout(2, false);
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
 		layout.marginWidth = 0;
 		layout.marginHeight = 0;
-		setLayout(layout);		
+		setLayout(layout);
 
 		filterSpec = new Label(this, SWT.NONE);
 		filterSpec.setText(emptyFilterPrompt);
@@ -54,10 +57,12 @@ public class SearchAdvanced extends Composite implements Searcher {
 			if (filterSpec.getText().equals(emptyFilterPrompt))
 				popup();
 		});
+		
+		constructPopup(state.getAdvancedSearchState());
 	}
 	
-	private void popup() {
-		PopupComposite popup = new PopupComposite(getShell());
+	private void constructPopup(Vector<String[]> savedState) {
+		popup = new PopupComposite(getShell());
 		popup.setLayout(new GridLayout(1, false));
 		
 		filterer = new SearchAdvancedPanel(filterSorter.getAttributes(), popup, savedState);
@@ -69,22 +74,13 @@ public class SearchAdvanced extends Composite implements Searcher {
 		
 		Button okButton = new Button(buttonPanel, SWT.PUSH);
 		okButton.setText("Ok");
-		okButton.addListener(SWT.Selection, e -> {
-			filterer.ok();
-			String spec = filterer.getWhereClause().trim();
-			if (spec.length() == 0)
-				filterSpec.setText(emptyFilterPrompt);
-			else
-				filterSpec.setText(spec);
-			popup.close();
-			filterSorter.fireUpdate();
-		});
+		okButton.addListener(SWT.Selection, e -> ok());
 		
 		Button cancelButton = new Button(buttonPanel, SWT.PUSH);
 		cancelButton.setText("Cancel");
 		cancelButton.addListener(SWT.Selection, e -> {
 			filterer.cancel();
-			popup.close();
+			popup.hide();
 		});
 		
 		Button clearButton = new Button(buttonPanel, SWT.PUSH);
@@ -95,8 +91,24 @@ public class SearchAdvanced extends Composite implements Searcher {
 			filterSorter.fireUpdate();
 		});
 		
-		popup.pack();
-		popup.show(toDisplay(0, 0));
+		popup.pack();		
+	}
+
+	public void ok() {
+		filterer.ok();
+		String spec = filterer.getWhereClause().trim();
+		if (spec.length() == 0)
+			filterSpec.setText(emptyFilterPrompt);
+		else
+			filterSpec.setText(spec);
+		popup.hide();
+		state.setAdvancedSearchIsActive();
+		filterSorter.fireUpdate();
+	}
+	
+	private void popup() {
+		if (!popup.isDisplayed())
+			popup.show(toDisplay(0, 0));
 	}
 
 	public void clicked() {
@@ -108,11 +120,6 @@ public class SearchAdvanced extends Composite implements Searcher {
 	public String getQuery() {
 		String spec = filterSpec.getText();
 		return !spec.equals(emptyFilterPrompt)  ? " WHERE " + spec : "";
-	}
-
-	@Override
-	public String getState() {
-		return null;
 	}
 	
 }

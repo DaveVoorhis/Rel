@@ -16,6 +16,8 @@ public class Sorter extends Composite {
 	private FilterSorter filterSorter;
 	private Label sortSpec;
 	
+	private PopupComposite popup;
+	
 	public Sorter(FilterSorter filterSorter, Composite contentPanel) {
 		super(contentPanel, SWT.NONE);
 		
@@ -49,10 +51,12 @@ public class Sorter extends Composite {
 			if (sortSpec.getText().equals(emptySortPrompt))
 				popup();
 		});
+		
+		createPopup();
 	}
 	
-	private void popup() {
-		PopupComposite popup = new PopupComposite(getShell());
+	private void createPopup() {
+		popup = new PopupComposite(getShell());
 		popup.setLayout(new GridLayout(1, false));
 		
 		OrderPanel orderer = new OrderPanel(popup, SWT.NONE);
@@ -71,22 +75,26 @@ public class Sorter extends Composite {
 				sortSpec.setText(emptySortPrompt);
 			else
 				sortSpec.setText(spec);
-			popup.close();
+			popup.hide();
 			filterSorter.fireUpdate();
 		});
 		
 		Button cancelButton = new Button(buttonPanel, SWT.PUSH);
 		cancelButton.setText("Cancel");
 		cancelButton.addListener(SWT.Selection, e -> {
-			popup.close();
+			popup.hide();
 		});
 		
 		String sortSpecText = sortSpec.getText();
 		if (!sortSpecText.equals(emptySortPrompt))
 			orderer.setText(sortSpecText);
 		
-		popup.pack();
-		popup.show(toDisplay(0, 0));
+		popup.pack();		
+	}
+	
+	private void popup() {
+		if (!popup.isDisplayed())
+			popup.show(toDisplay(0, 0));
 	}
 
 	public void clicked() {

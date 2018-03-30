@@ -20,22 +20,13 @@ public class SearchQuick extends Composite implements Searcher {
 	private boolean regexSearch = false;
 	
 	private FilterSorter filterSorter;
-
-	private void fireUpdate() {
-		findText.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
-		findText.setBackground(null);
-		filterSorter.fireUpdate();		
-	}
+	private FilterSorterState filterSorterState;
 	
-	private void fireUpdateIfSearch() {
-		if (findText.getText().trim().length() > 0)
-			fireUpdate();
-	}
-	
-	public SearchQuick(FilterSorter filterSorter, Composite contentPanel) {
+	public SearchQuick(FilterSorter filterSorter, Composite contentPanel, FilterSorterState filterSorterState) {
 		super(contentPanel, SWT.NONE);
 		
 		this.filterSorter = filterSorter;
+		this.filterSorterState = filterSorterState;
 		
 		GridLayout layout = new GridLayout(2, false);
 		layout.horizontalSpacing = 0;
@@ -51,10 +42,13 @@ public class SearchQuick extends Composite implements Searcher {
 			}
 		});
 		findText.addListener(SWT.Modify, event -> {
-			findText.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
-			findText.setBackground(SWTResourceManager.getColor(255, 225, 225));
+			if (findText.getText().trim().length() > 0) {
+				findText.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
+				findText.setBackground(SWTResourceManager.getColor(255, 225, 225));
+			}
 		});
 		findText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		findText.setText(filterSorterState.getQuickSearchState());
 		
 		ToolBar toolBar = new ToolBar(this, SWT.NONE);
 		
@@ -113,12 +107,25 @@ public class SearchQuick extends Composite implements Searcher {
 		return " WHERE SEARCH(TUP {*}, \"" + StringUtils.quote(regex) + "\")";
 	}
 
-	public void setState(String state) {
-		this.findText.setText(state);
-	}
-
 	public String getState() {
 		return findText.getText();
+	}
+
+	public void ok() {
+		fireUpdateIfSearch();
+	}
+
+	private void fireUpdate() {
+		findText.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
+		findText.setBackground(null);
+		filterSorter.fireUpdate();		
+		filterSorterState.setQuickSearchState(findText.getText());
+		filterSorterState.setQuickSearchIsActive();
+	}
+	
+	private void fireUpdateIfSearch() {
+		if (findText.getText().trim().length() > 0)
+			fireUpdate();
 	}
 	
 }

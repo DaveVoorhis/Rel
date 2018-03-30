@@ -30,15 +30,22 @@ public class FilterSorter extends Composite {
 
 	private Searcher lastSearch = null;
 	
+	private FilterSorterState filterSorterState;
+	
 	void fireUpdate() {
 		for (FilterSorterUpdate listener: updateListeners)
 			listener.update(this);
 	}
 	
-	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState initialState, DbConnection dbConnection) {
+	public FilterSorter(Composite parent, int style, String baseExpression, FilterSorterState state, DbConnection dbConnection) {
 		super(parent, style);
 		this.baseExpression = baseExpression;
 		this.dbConnection = dbConnection;
+		
+		if (state == null)
+			filterSorterState = new FilterSorterState();
+		else
+			filterSorterState = state;
 		
 		GridLayout layout = new GridLayout(2, false);
 		layout.horizontalSpacing = 0;
@@ -59,8 +66,8 @@ public class FilterSorter extends Composite {
 		StackLayout stack = new StackLayout();
 		contentPanel.setLayout(stack);
 
-		SearchQuick quickSearchPanel = new SearchQuick(this, contentPanel);
-		SearchAdvanced advancedSearchPanel = new SearchAdvanced(this, contentPanel);
+		SearchQuick quickSearchPanel = new SearchQuick(this, contentPanel, filterSorterState);
+		SearchAdvanced advancedSearchPanel = new SearchAdvanced(this, contentPanel, filterSorterState);
 		sorter = new Sorter(this, contentPanel);
 		
 		tltmQuickSearch.setToolTipText("Quick search.");
@@ -102,15 +109,20 @@ public class FilterSorter extends Composite {
 			sorter.clicked();
 			contentPanel.layout();
 		});
-		
-		tltmQuickSearch.setSelection(true);
-		searcher = quickSearchPanel;
-		stack.topControl = quickSearchPanel;
-		
-		if (initialState != null)
-			quickSearchPanel.setState(initialState.getRepresentation());
-	}
 
+		if (filterSorterState.isQuickSearch()) {
+			tltmQuickSearch.setSelection(true);
+			searcher = quickSearchPanel;
+			stack.topControl = quickSearchPanel;
+			quickSearchPanel.ok();
+		} else {
+			tltmAdvancedSearch.setSelection(true);
+			searcher = advancedSearchPanel;
+			stack.topControl = advancedSearchPanel;
+			advancedSearchPanel.ok();
+		}
+	}
+	
 	public FilterSorter(Composite parent, int style, String baseExpression, DbConnection dbConnection) {
 		this(parent, style, baseExpression, null, dbConnection);
 	}
@@ -143,7 +155,7 @@ public class FilterSorter extends Composite {
 	}
 
 	public FilterSorterState getState() {
-		return new FilterSorterState(searcher.getState());
+		return filterSorterState;
 	}
 
 }

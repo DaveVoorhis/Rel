@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Rel UI: On search/sort panels, do not re-create popups on each popup, in order to preserve state.
-
 - Rel UI: On advanced search, implement LIKE/contains/etc. searches.
 
 - Rel: Provide means to emit CSV files (and files in general) programmatically and/or otherwise

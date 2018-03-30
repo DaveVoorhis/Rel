@@ -18,7 +18,7 @@ public class SearchAdvancedPanel extends Composite {
 	private Text manualFilter;
 	private boolean isManualOverride = false;
 	
-	public SearchAdvancedPanel(Vector<Attribute> attributes, Composite parent, Vector<String[]> savedState) {
+	public SearchAdvancedPanel(Vector<Attribute> attributes, Composite parent, Vector<String[]> finderSavedState) {
 		super(parent, SWT.NONE);		
 		setLayout(new GridLayout(1, false));
 		
@@ -26,7 +26,7 @@ public class SearchAdvancedPanel extends Composite {
 		StackLayout definitionStack = new StackLayout();
 		filterDefinition.setLayout(definitionStack);
 		
-		filterPanel = new FilterPanel(attributes, filterDefinition, savedState);
+		filterPanel = new FilterPanel(attributes, filterDefinition, finderSavedState);
 		definitionStack.topControl = filterPanel;
 		
 		Composite manualPanel = new Composite(filterDefinition, SWT.NONE);

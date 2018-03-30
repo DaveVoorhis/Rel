@@ -70,14 +70,12 @@ public class PopupComposite extends Composite {
 	 * Display the composite below the given tool item. The item will be sized
 	 * such that it's width is at least the width of the given tool item.
 	 * 
-	 * @param bar
-	 *          The tool bar.
 	 * @param item
 	 *          The tool item.
 	 */
-	public void showBelow(ToolBar bar, ToolItem item) {
+	public void showBelow(ToolItem item) {
 		Rectangle r = item.getBounds();
-		Point p = bar.toDisplay(new Point(r.x, r.y + r.height));
+		Point p = item.getParent().toDisplay(new Point(r.x, r.y + r.height));
 		setSize(computeSize(item));
 		show(p);
 	}
@@ -163,42 +161,10 @@ public class PopupComposite extends Composite {
 		getShell().pack();
 	}
 	
-	/**
-	 * Class that handles shell appearance and disappearance appropriately.
-	 * Specifically, it hides the shell when it becomes de-activated (for example,
-	 * when the user clicks on the parent shell). Also, there is a minimum delay
-	 * which is enforced between showing and hiding the pop-up, to prevent
-	 * undesirable behavior such as hiding and immediately re-displaying the
-	 * pop-up when the user selects a button responsible for showing the tool
-	 * item.
-	 */
 	private final class ActivationListener extends ShellAdapter {
-		private static final int TIMEOUT = 500;
-		private long time = -1;
-
 		@Override
 		public void shellDeactivated(ShellEvent e) {
-			// Record time of event
-			time = (e.time & 0xFFFFFFFFL);
-			
-			// Hide
 			hide();
-		}
-
-		@Override
-		public void shellActivated(ShellEvent e) {
-			if (time > 0) {
-				// Find elapsed time 
-				long elapsed = ((e.time & 0xFFFFFFFFL) - time);
-				
-				// If less than a timeout, don't activate
-				if (elapsed < TIMEOUT) {
-					hide();
-					
-					// Next activation event is fine
-					time = -1;
-				}
-			}
 		}
 	};
 	

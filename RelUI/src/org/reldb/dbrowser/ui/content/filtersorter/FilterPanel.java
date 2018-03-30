@@ -34,9 +34,11 @@ public class FilterPanel extends Composite {
 	}
 
 	public void clear() {
-		finderSavedState.clear();
-		finderSavedState.add(new String[] {"","","",""});
-		createFindPanelContent();			
+		while (controls.size() > 1)
+			removeRow(1);
+		clearRow(0);
+		preserveState();
+		buildWhere();
 		doResize();		
 	}
 
@@ -101,7 +103,7 @@ public class FilterPanel extends Composite {
 		boolean doRemoveRows = true;
 		while (doRemoveRows) {
 			doRemoveRows = false;
-			for (int row = 0; row < controls.size(); row++) {
+			for (int row = 1; row < controls.size(); row++) {
 				Control[] controlArray = controls.get(row);
 				if (((Combo)controlArray[0]).getText().isEmpty() || ((Combo)controlArray[1]).getText().isEmpty()) {
 					removeRow(row);
@@ -132,6 +134,14 @@ public class FilterPanel extends Composite {
 			savedText[3] = ((Combo)controlArray[3]).getText();
 			finderSavedState.add(savedText);
 		}
+	}
+	
+	private void clearRow(int rowNum) {
+		Control[] controlArray = controls.get(rowNum);
+		((Combo)controlArray[0]).deselectAll();
+		((Combo)controlArray[1]).setText("=");
+		((Text)controlArray[2]).setText("");
+		((Combo)controlArray[3]).deselectAll();		
 	}
 	
 	private void initialiseRow(int rowNum) {
