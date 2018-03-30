@@ -54,12 +54,47 @@ public class FilterPanel extends Composite {
 		whereClause = "";		
 	}
 
+	public String getWhereClauseInProgress() {
+		String output = "";
+		Vector<String> arguments = new Vector<String>();
+		for (Control[] control: controls) {
+			String comparison = "";
+			int columnIndex = ((Combo)control[0]).getSelectionIndex();			
+			if (columnIndex < 0)
+				continue;
+			if (output.length() > 0)
+				comparison += " ";
+			Attribute attribute = attributes.get(columnIndex);
+			comparison += attribute.getName();
+			int operationIndex = ((Combo)control[1]).getSelectionIndex();
+			if (operationIndex < 0)
+				continue;
+			String value = ((Text)control[2]).getText();
+			Type type = attribute.getType();
+			if (type instanceof ScalarType)
+				if (((ScalarType)type).getName().equals("CHARACTER"))
+					value = "'" + StringUtils.quote(value) + "'";
+			comparison += " " + queryOperationCode[operationIndex] + " " + value;
+			if (queryOperationDisplay[operationIndex].contains("contain"))
+				arguments.add("%" + value + "%");
+			else if (queryOperationDisplay[operationIndex].contains("starts with"))
+				arguments.add(value + "%");
+			else
+				arguments.add(value);
+			String booleanOp = ((Combo)control[3]).getText().trim();
+			if (booleanOp.length() > 0)
+				comparison += " " + booleanOp;
+			output += comparison;
+		}
+		return output;
+	}
+
 	public String getWhereClause() {
 		return whereClause;
 	}
 	
 	protected void doResize() {
-		getParent().pack();	
+		getShell().pack();	
 	}
 	
 	private void removeEmptyRows() {
@@ -213,37 +248,7 @@ public class FilterPanel extends Composite {
 	}
 	
 	private void buildWhere() {
-		whereClause = "";
-		Vector<String> arguments = new Vector<String>();
-		for (Control[] control: controls) {
-			String comparison = "";
-			int columnIndex = ((Combo)control[0]).getSelectionIndex();			
-			if (columnIndex < 0)
-				continue;
-			if (whereClause.length() > 0)
-				comparison += " ";
-			Attribute attribute = attributes.get(columnIndex);
-			comparison += attribute.getName();
-			int operationIndex = ((Combo)control[1]).getSelectionIndex();
-			if (operationIndex < 0)
-				continue;
-			String value = ((Text)control[2]).getText();
-			Type type = attribute.getType();
-			if (type instanceof ScalarType)
-				if (((ScalarType)type).getName().equals("CHARACTER"))
-					value = "'" + StringUtils.quote(value) + "'";
-			comparison += " " + queryOperationCode[operationIndex] + " " + value;
-			if (queryOperationDisplay[operationIndex].contains("contain"))
-				arguments.add("%" + value + "%");
-			else if (queryOperationDisplay[operationIndex].contains("starts with"))
-				arguments.add(value + "%");
-			else
-				arguments.add(value);
-			String booleanOp = ((Combo)control[3]).getText().trim();
-			if (booleanOp.length() > 0)
-				comparison += " " + booleanOp;
-			whereClause += comparison;
-		}
+		whereClause = getWhereClauseInProgress();
 	}
 
 }

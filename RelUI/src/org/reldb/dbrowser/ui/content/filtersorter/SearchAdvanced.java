@@ -16,7 +16,7 @@ public class SearchAdvanced extends Composite implements Searcher {
 	private static final String emptyFilterPrompt = "Click here to set filter criteria.";
 	
 	private FilterSorter filterSorter;
-	private FilterPanel filterer;
+	private SearchAdvancedPanel filterer;
 	private Label filterSpec;
 	
 	private Vector<String[]> savedState = new Vector<>();
@@ -60,7 +60,7 @@ public class SearchAdvanced extends Composite implements Searcher {
 		PopupComposite popup = new PopupComposite(getShell());
 		popup.setLayout(new GridLayout(1, false));
 		
-		filterer = new FilterPanel(filterSorter.getAttributes(), popup, savedState);
+		filterer = new SearchAdvancedPanel(filterSorter.getAttributes(), popup, savedState);
 		filterer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
 		
 		Composite buttonPanel = new Composite(popup, SWT.NONE);
