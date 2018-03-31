@@ -1,10 +1,8 @@
 ** TO DO **
 
-- Rel UI: On advanced search state, be sure to correctly handle manual override.
+- Rel UI: On advanced search, implement LIKE/contains/etc. searches.
 
 - Rev: Support advanced search in WHERE visualiser.
-
-- Rel UI: On advanced search, implement LIKE/contains/etc. searches.
 
 - Rel: Provide means to emit CSV files (and files in general) programmatically and/or otherwise
   from the command-line without emitting Rel startup/shutdown messages.

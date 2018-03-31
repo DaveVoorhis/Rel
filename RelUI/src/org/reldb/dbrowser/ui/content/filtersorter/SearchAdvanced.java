@@ -1,7 +1,5 @@
 package org.reldb.dbrowser.ui.content.filtersorter;
 
-import java.util.Vector;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -58,14 +56,14 @@ public class SearchAdvanced extends Composite implements Searcher {
 				popup();
 		});
 		
-		constructPopup(state.getAdvancedSearchState());
+		constructPopup(filterSorterState);
 	}
 	
-	private void constructPopup(Vector<String[]> savedState) {
+	private void constructPopup(FilterSorterState state) {
 		popup = new PopupComposite(getShell());
 		popup.setLayout(new GridLayout(1, false));
 		
-		filterer = new SearchAdvancedPanel(filterSorter.getAttributes(), popup, savedState);
+		filterer = new SearchAdvancedPanel(filterSorter.getAttributes(), popup, state);
 		filterer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
 		
 		Composite buttonPanel = new Composite(popup, SWT.NONE);

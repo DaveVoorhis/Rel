@@ -7,11 +7,15 @@ public class FilterSorterState {
 	private boolean quickSearchIsActive = true;
 	private String quickSearchState;
 	private Vector<String[]> advancedSearchState;
+	private String advancedSearchManualOverride;
+	boolean isAdvancedSearchManualOverride;
 	private String sortSpec;
 	
 	public FilterSorterState() {
 		quickSearchState = "";
 		advancedSearchState = new Vector<>();
+		advancedSearchManualOverride = "";
+		isAdvancedSearchManualOverride = false;
 		sortSpec = "";
 	}
 	
@@ -45,5 +49,21 @@ public class FilterSorterState {
 
 	public String getSortSpec() {
 		return sortSpec;
+	}
+
+	public void setAdvancedSearchManualOverride(String search) {
+		advancedSearchManualOverride = search;
+	}
+	
+	public String getAdvancedSearchManualOverride() {
+		return advancedSearchManualOverride;
+	}
+
+	public boolean isAdvancedSearchManualOverrideActive() {
+		return isAdvancedSearchManualOverride;
+	}
+
+	public void setAdvancedSearchManualOverrideActive(boolean override) {
+		isAdvancedSearchManualOverride = override;
 	}
 }
