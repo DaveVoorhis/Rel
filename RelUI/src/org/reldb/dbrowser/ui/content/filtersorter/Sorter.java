@@ -33,7 +33,8 @@ public class Sorter extends Composite {
 		sortSpec = new Label(this, SWT.NONE);
 		sortSpec.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
 		
-		sortSpec.addListener(SWT.MouseUp, e -> popup());		
+		sortSpec.addListener(SWT.MouseUp, e -> popup());
+		sortSpec.setText(emptySortPrompt);
 		
 		ToolBar toolBar = new ToolBar(this, SWT.NONE);
 		
