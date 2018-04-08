@@ -81,7 +81,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.IconLoader;
-import org.reldb.dbrowser.ui.content.rel.var.FilterSorterSource;
+import org.reldb.dbrowser.ui.content.filtersorter.FilterSorterSource;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Connection.ExecuteResult;
 import org.reldb.rel.client.Tuple;

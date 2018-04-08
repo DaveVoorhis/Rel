@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.content.filtersorter.FilterSorter;
-import org.reldb.dbrowser.ui.content.rel.var.FilterSorterSource;
+import org.reldb.dbrowser.ui.content.filtersorter.FilterSorterSource;
 import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarEditor;
 
 public class RelvarEditorPanel extends Composite implements FilterSorterSource {
