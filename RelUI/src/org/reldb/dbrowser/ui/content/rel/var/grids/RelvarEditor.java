@@ -2,13 +2,13 @@ package org.reldb.dbrowser.ui.content.rel.var.grids;
 
 import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.ui.DbConnection;
-import org.reldb.dbrowser.ui.content.filtersorter.FilterSorter;
+import org.reldb.dbrowser.ui.content.rel.var.FilterSorterSource;
 import org.reldb.rel.client.Heading;
 
 public class RelvarEditor extends Editor {
 
-	public RelvarEditor(Composite parent, DbConnection connection, FilterSorter filterSorter) {
-		super(parent, connection, filterSorter);
+	public RelvarEditor(Composite parent, DbConnection connection, FilterSorterSource filterSorterSource) {
+		super(parent, connection, filterSorterSource);
 		syncFromDatabase();
 		init();
 	}

@@ -19,13 +19,10 @@ public class SearchAdvanced extends Composite implements Searcher {
 	
 	private PopupComposite popup;
 	
-	private FilterSorterState state = new FilterSorterState();
-	
-	public SearchAdvanced(FilterSorter filterSorter, Composite contentPanel, FilterSorterState filterSorterState) {
+	public SearchAdvanced(FilterSorter filterSorter, Composite contentPanel) {
 		super(contentPanel, SWT.NONE);
 		
 		this.filterSorter = filterSorter;
-		this.state = filterSorterState;
 		
 		GridLayout layout = new GridLayout(2, false);
 		layout.horizontalSpacing = 0;
@@ -45,7 +42,7 @@ public class SearchAdvanced extends Composite implements Searcher {
 		ToolItem clear = new ToolItem(toolBar, SWT.PUSH);
 		clear.addListener(SWT.Selection, e -> {
 			filterSpec.setText(emptyFilterPrompt);
-			filterSorter.fireUpdate();
+			filterSorter.refresh();
 		});
 		clear.setText("Clear");
 		
@@ -56,14 +53,14 @@ public class SearchAdvanced extends Composite implements Searcher {
 				popup();
 		});
 		
-		constructPopup(filterSorterState);
+		constructPopup();
 	}
 	
-	private void constructPopup(FilterSorterState state) {
+	private void constructPopup() {
 		popup = new PopupComposite(getShell());
 		popup.setLayout(new GridLayout(1, false));
 		
-		filterer = new SearchAdvancedPanel(filterSorter.getAttributes(), popup, state);
+		filterer = new SearchAdvancedPanel(filterSorter.getAttributes(), popup);
 		filterer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
 		
 		Composite buttonPanel = new Composite(popup, SWT.NONE);
@@ -86,7 +83,7 @@ public class SearchAdvanced extends Composite implements Searcher {
 		clearButton.addListener(SWT.Selection, e -> {
 			filterer.clear();
 			filterSpec.setText(emptyFilterPrompt);
-			filterSorter.fireUpdate();
+			filterSorter.refresh();
 		});
 		
 		popup.pack();		
@@ -100,8 +97,7 @@ public class SearchAdvanced extends Composite implements Searcher {
 		else
 			filterSpec.setText(spec);
 		popup.hide();
-		state.setAdvancedSearchIsActive();
-		filterSorter.fireUpdate();
+		filterSorter.refresh();
 	}
 	
 	private void popup() {

@@ -17,19 +17,17 @@ public class SearchAdvancedPanel extends Composite {
 	private FilterPanel filterPanel;
 	private Text manualFilter;
 	private boolean isManualOverride = false;
-	private FilterSorterState state;
+	private Vector<String[]> filterState = new Vector<>();
 	
-	public SearchAdvancedPanel(Vector<Attribute> attributes, Composite parent, FilterSorterState state) {
+	public SearchAdvancedPanel(Vector<Attribute> attributes, Composite parent) {
 		super(parent, SWT.NONE);		
 		setLayout(new GridLayout(1, false));
-		
-		this.state = state;
 		
 		Composite filterDefinition = new Composite(this, SWT.NONE);
 		StackLayout definitionStack = new StackLayout();
 		filterDefinition.setLayout(definitionStack);
 		
-		filterPanel = new FilterPanel(attributes, filterDefinition, state.getAdvancedSearchState());
+		filterPanel = new FilterPanel(attributes, filterDefinition, filterState);
 		
 		Composite manualPanel = new Composite(filterDefinition, SWT.NONE);
 		manualPanel.setLayout(new GridLayout(2, false));
@@ -38,8 +36,6 @@ public class SearchAdvancedPanel extends Composite {
 		prompt.setText("Filter expression:");
 		manualFilter = new Text(manualPanel, SWT.BORDER);
 		manualFilter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		manualFilter.addListener(SWT.Modify, e -> state.setAdvancedSearchManualOverride(manualFilter.getText()));		
-		manualFilter.setText(state.getAdvancedSearchManualOverride());
 		
 		Button manualOverrideButton = new Button(this, SWT.CHECK);
 		manualOverrideButton.setText("Manual override");
@@ -56,15 +52,10 @@ public class SearchAdvancedPanel extends Composite {
 			filterDefinition.layout();
 		});
 
-		if (state.isAdvancedSearchManualOverrideActive()) {
-			definitionStack.topControl = manualPanel;
-			isManualOverride = true;
-			manualOverrideButton.setSelection(true);
-		} else {
-			definitionStack.topControl = filterPanel;
-			isManualOverride = false;
-			manualOverrideButton.setSelection(false);
-		}
+		definitionStack.topControl = filterPanel;
+		isManualOverride = false;
+		manualOverrideButton.setSelection(false);
+		
 		filterDefinition.layout();
 	}
 	
@@ -73,13 +64,8 @@ public class SearchAdvancedPanel extends Composite {
 	}
 
 	public void ok() {
-		if (isManualOverride) {
-			state.setAdvancedSearchManualOverride(manualFilter.getText());
-			state.setAdvancedSearchManualOverrideActive(true);
-		} else {
-			state.setAdvancedSearchManualOverrideActive(false);
+		if (!isManualOverride)
 			filterPanel.ok();
-		}
 	}
 
 	public void cancel() {
@@ -89,7 +75,6 @@ public class SearchAdvancedPanel extends Composite {
 
 	public void clear() {
 		if (isManualOverride) {
-			state.setAdvancedSearchManualOverride(manualFilter.getText());
 			manualFilter.setText("");
 		} else
 			filterPanel.clear();

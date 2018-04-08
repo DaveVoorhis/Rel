@@ -6,18 +6,17 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.reldb.dbrowser.ui.content.filtersorter.FilterSorter;
-import org.reldb.dbrowser.ui.content.filtersorter.FilterSorterState;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarEditor;
 
-public class VarEditorTab extends DbTreeTab {
+public class VarEditorTab extends DbTreeTab implements FilterSorterSource {
 	
 	private RelvarEditor relvarEditor;
 	private FilterSorter filterSorter;
 	
-	public VarEditorTab(RelPanel parent, DbTreeItem item, FilterSorterState state) {
+	public VarEditorTab(RelPanel parent, DbTreeItem item, FilterSorter filterSorter) {
 		super(parent, item);
 		parent.setLayout(null);
 		
@@ -32,14 +31,20 @@ public class VarEditorTab extends DbTreeTab {
 		gridLayout.marginHeight = 0;
 		displayPanel.setLayout(gridLayout);
 		
-		filterSorter = new FilterSorter(displayPanel, SWT.BORDER, item.getName(), state, parent.getConnection());
-		filterSorter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		filterSorter.addUpdateListener(source -> {
+		if (filterSorter == null)
+			this.filterSorter = new FilterSorter(displayPanel, SWT.BORDER, item.getName(), parent.getConnection());
+		else {
+			this.filterSorter = filterSorter;
+			filterSorter.clearListeners();
+			filterSorter.setParent(displayPanel);
+		}
+		this.filterSorter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		this.filterSorter.addUpdateListener(source -> {
 			relvarEditor.refresh();
 			ready();
 		});
 		
-		relvarEditor = new RelvarEditor(displayPanel, parent.getConnection(), filterSorter);
+		relvarEditor = new RelvarEditor(displayPanel, parent.getConnection(), this);
 		relvarEditor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		setControl(displayPanel);
@@ -49,9 +54,9 @@ public class VarEditorTab extends DbTreeTab {
 	public ToolBar getToolBar(Composite parent) {
 		return new VarEditorToolbar(parent, relvarEditor).getToolBar();
 	}
-	
-	public FilterSorterState getFilterSorterState() {
-		return filterSorter.getState();
+
+	public FilterSorter getFilterSorter() {
+		return filterSorter;
 	}
 	
 }

@@ -11,7 +11,6 @@ import org.reldb.dbrowser.handlers.output.Refresh;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 import org.reldb.dbrowser.ui.content.filtersorter.FilterSorter;
-import org.reldb.dbrowser.ui.content.filtersorter.FilterSorterState;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
@@ -21,7 +20,7 @@ public class ExpressionResultViewerTab extends DbTreeTab {
 	private CmdPanelOutput cmdPanel;
 	private FilterSorter filterSorter;
 
-	public ExpressionResultViewerTab(RelPanel parent, DbTreeItem item, FilterSorterState state) {
+	public ExpressionResultViewerTab(RelPanel parent, DbTreeItem item, FilterSorter filterSorter) {
 		super(parent, item);
 		
 		Composite displayPanel = new Composite(parent.getTabFolder(), SWT.NONE) {
@@ -35,10 +34,16 @@ public class ExpressionResultViewerTab extends DbTreeTab {
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		displayPanel.setLayout(gridLayout);
-		
-		filterSorter = new FilterSorter(displayPanel, SWT.BORDER, item.getName(), state, parent.getConnection());
-		filterSorter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		filterSorter.addUpdateListener(source -> {
+
+		if (filterSorter == null)
+			this.filterSorter = new FilterSorter(displayPanel, SWT.BORDER, item.getName(), parent.getConnection());
+		else {
+			this.filterSorter = filterSorter;
+			filterSorter.clearListeners();
+			filterSorter.setParent(displayPanel);
+		}
+		this.filterSorter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		this.filterSorter.addUpdateListener(source -> {
 			evaluate();
 			cmdPanel.setFocus();
 		});
@@ -70,8 +75,8 @@ public class ExpressionResultViewerTab extends DbTreeTab {
 		}).getToolBar();
 	}
 	
-	public FilterSorterState getFilterSorterState() {
-		return filterSorter.getState();
+	public FilterSorter getFilterSorter() {
+		return filterSorter;
 	}
-
+	
 }

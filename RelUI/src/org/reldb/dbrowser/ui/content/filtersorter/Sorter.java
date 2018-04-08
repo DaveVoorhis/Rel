@@ -18,13 +18,10 @@ public class Sorter extends Composite {
 	
 	private PopupComposite popup;
 	
-	private FilterSorterState filterSorterState;
-	
-	public Sorter(FilterSorter filterSorter, Composite contentPanel, FilterSorterState filterSorterState) {
+	public Sorter(FilterSorter filterSorter, Composite contentPanel) {
 		super(contentPanel, SWT.NONE);
 		
 		this.filterSorter = filterSorter;
-		this.filterSorterState = filterSorterState;
 		
 		GridLayout layout = new GridLayout(2, false);
 		layout.horizontalSpacing = 0;
@@ -34,7 +31,6 @@ public class Sorter extends Composite {
 		setLayout(layout);		
 
 		sortSpec = new Label(this, SWT.NONE);
-		sortSpec.setText((filterSorterState.getSortSpec().length() == 0) ? emptySortPrompt : filterSorterState.getSortSpec());
 		sortSpec.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
 		
 		sortSpec.addListener(SWT.MouseUp, e -> popup());		
@@ -44,7 +40,7 @@ public class Sorter extends Composite {
 		ToolItem clear = new ToolItem(toolBar, SWT.PUSH);
 		clear.addListener(SWT.Selection, e -> {
 			sortSpec.setText(emptySortPrompt);
-			filterSorter.fireUpdate();
+			filterSorter.refresh();
 		});
 		clear.setText("Clear");
 		
@@ -79,8 +75,7 @@ public class Sorter extends Composite {
 			else
 				sortSpec.setText(spec);
 			popup.hide();
-			filterSorterState.setSortSpec(spec);
-			filterSorter.fireUpdate();
+			filterSorter.refresh();
 		});
 		
 		Button cancelButton = new Button(buttonPanel, SWT.PUSH);

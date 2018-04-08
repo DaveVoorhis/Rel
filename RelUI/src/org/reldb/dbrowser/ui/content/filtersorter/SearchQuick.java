@@ -20,13 +20,11 @@ public class SearchQuick extends Composite implements Searcher {
 	private boolean regexSearch = false;
 	
 	private FilterSorter filterSorter;
-	private FilterSorterState filterSorterState;
 	
-	public SearchQuick(FilterSorter filterSorter, Composite contentPanel, FilterSorterState filterSorterState) {
+	public SearchQuick(FilterSorter filterSorter, Composite contentPanel) {
 		super(contentPanel, SWT.NONE);
 		
 		this.filterSorter = filterSorter;
-		this.filterSorterState = filterSorterState;
 		
 		GridLayout layout = new GridLayout(2, false);
 		layout.horizontalSpacing = 0;
@@ -48,7 +46,6 @@ public class SearchQuick extends Composite implements Searcher {
 			}
 		});
 		findText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		findText.setText(filterSorterState.getQuickSearchState());
 		
 		ToolBar toolBar = new ToolBar(this, SWT.NONE);
 		
@@ -118,9 +115,7 @@ public class SearchQuick extends Composite implements Searcher {
 	private void fireUpdate() {
 		findText.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
 		findText.setBackground(null);
-		filterSorter.fireUpdate();		
-		filterSorterState.setQuickSearchState(findText.getText());
-		filterSorterState.setQuickSearchIsActive();
+		filterSorter.refresh();		
 	}
 	
 	private void fireUpdateIfSearch() {

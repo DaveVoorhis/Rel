@@ -3,6 +3,7 @@ package org.reldb.dbrowser.ui.content.rel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
 
@@ -24,7 +25,11 @@ public class DbTreeTab extends CTabItem {
 	public void ready() {
 		relPanel.getTabFolder().setSelection(this);
 		relPanel.fireDbTreeTabchangeEvent();
-		getControl().setFocus();
+		if (isDisposed())
+			return;
+		Control control = getControl();
+		if (!control.isDisposed())
+			control.setFocus();
 	}
 	
 	public void dispose() {

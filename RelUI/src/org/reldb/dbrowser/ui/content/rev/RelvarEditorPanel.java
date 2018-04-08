@@ -11,10 +11,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.content.filtersorter.FilterSorter;
+import org.reldb.dbrowser.ui.content.rel.var.FilterSorterSource;
 import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarEditor;
 
-public class RelvarEditorPanel extends Composite {
+public class RelvarEditorPanel extends Composite implements FilterSorterSource {
 	private RelvarEditor editor;
+	private FilterSorter filterSorter;
 	
 	public RelvarEditorPanel(Composite parent, DbConnection connection, String title, int style) {
 		super(parent, style);
@@ -38,11 +40,11 @@ public class RelvarEditorPanel extends Composite {
 		gridLayout.marginHeight = 0;
 		editorComposite.setLayout(gridLayout);
 		
-		FilterSorter filterSorter = new FilterSorter(editorComposite, SWT.BORDER, title, connection);
+		filterSorter = new FilterSorter(editorComposite, SWT.BORDER, title, connection);
 		filterSorter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		filterSorter.addUpdateListener(source -> editor.refresh());
 		
-		editor = new RelvarEditor(editorComposite, connection, filterSorter);		
+		editor = new RelvarEditor(editorComposite, connection, this);		
 		editor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		editor.refresh();
 		
@@ -56,6 +58,11 @@ public class RelvarEditorPanel extends Composite {
 
 	public RelvarEditor getRelvarEditor() {
 		return editor;
+	}
+
+	@Override
+	public FilterSorter getFilterSorter() {
+		return filterSorter;
 	}
 
 }
