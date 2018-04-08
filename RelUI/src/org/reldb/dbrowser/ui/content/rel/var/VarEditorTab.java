@@ -12,7 +12,6 @@ import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarEditor;
 
 public class VarEditorTab extends DbTreeTab implements FilterSorterSource {
-	
 	private RelvarEditor relvarEditor;
 	private FilterSorter filterSorter;
 	
