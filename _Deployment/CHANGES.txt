@@ -2,6 +2,10 @@ Last used Exception* number: RS0507
 
 Version 3.012 (1.0.25):
 
+  - Enhancement: Rel UI: Tabular displays of views, relvars, or
+    expression evaluation results (in Rev visual query editor) now
+    provide mechanism to search and sort the results.
+
   - Enhancement: Rel DBMS: new built-in operator 
   	SEARCH(t TUPLE{*}, regex CHAR) RETURNS BOOLEAN
   	Returns true if any CAST_AS_CHAR(a), where a is an attribute of t,
