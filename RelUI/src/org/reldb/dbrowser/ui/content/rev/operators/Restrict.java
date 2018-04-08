@@ -1,20 +1,23 @@
 package org.reldb.dbrowser.ui.content.rev.operators;
 
+import org.reldb.dbrowser.ui.content.filtersorter.SearchAdvancedPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 
+import java.util.Iterator;
+import java.util.Vector;
+
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.reldb.rel.client.Attribute;
+import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.v0.values.StringUtils;
 
 public class Restrict extends Monadic {
+	
+	private SearchAdvancedPanel searchAdvancedPanel;
 	
 	public Restrict(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "Restrict", xpos, ypos);
@@ -38,31 +41,33 @@ public class Restrict extends Monadic {
 	
 	@Override
 	protected void buildControlPanel(Composite container) {
-		container.setLayout(new GridLayout(2, false));
-		
-		Label label = new Label(container, SWT.None);
-		label.setText("Boolean expression:");
-		
-		Text expression = new Text(container, SWT.None);
-		expression.setText(operatorLabel.getText());
-		expression.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		expression.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				operatorLabel.setText(expression.getText());
-				Restrict.this.pack();
-			}
+		container.setLayout(new FillLayout());
+		Heading heading = getHeadingOfParameter(0);
+		Iterator<Attribute> attributes = heading.getAttributes();
+		Vector<Attribute> attributeList = new Vector<>();
+		while (attributes.hasNext())
+			attributeList.add(attributes.next());
+		searchAdvancedPanel = new SearchAdvancedPanel(attributeList, container);
+		searchAdvancedPanel.addListener(SWT.Activate, e -> { 
+			container.getShell().pack();
 		});
+		if (!operatorLabel.getText().equalsIgnoreCase("true")) {
+			searchAdvancedPanel.setManualOverride(true);
+			searchAdvancedPanel.setManualOverrideText(operatorLabel.getText());
+		}
 	}
 
 	@Override
 	protected void controlPanelOkPressed() {
+		searchAdvancedPanel.ok();
+		operatorLabel.setText(searchAdvancedPanel.getWhereClause());
 		save();
 		pack();
 	}
 	
 	@Override
 	protected void controlPanelCancelPressed() {
+		searchAdvancedPanel.cancel();
 		load();
 		pack();
 	}

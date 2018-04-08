@@ -2,6 +2,9 @@ Last used Exception* number: RS0507
 
 Version 3.012 (1.0.25):
 
+  - Enhancement: Rev: Advanced search available in Restrict
+    (WHERE) operator.
+  
   - Enhancement: Rel UI: Tabular displays of views, relvars, or
     expression evaluation results (in Rev visual query editor) now
     provide mechanism to search and sort the results.

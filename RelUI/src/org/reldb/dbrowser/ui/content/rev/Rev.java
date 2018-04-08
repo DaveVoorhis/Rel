@@ -461,6 +461,7 @@ public class Rev extends Composite {
 		return subMenu;
 	}
 
+	@FunctionalInterface
 	private static interface OpSelectorRun {
 		public Operator obtain(Rev rev, String name, int xpos, int ypos);
 	}
@@ -501,171 +502,43 @@ public class Rev extends Composite {
 
 	private OpSelector[] getOperators() {
 		OpSelector[] operators = { 
-			new OpSelector("Project", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Project(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector("Restrict", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Restrict(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector(), new OpSelector("COMPOSE", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "COMPOSE", xpos, ypos);
-				}
-			}),
-			/*
-			 * new OpSelector("DIVIDEBY", new OpSelectorRun() { public Operator obtain(Rev
-			 * rev, String name, int xpos, int ypos) { return new
-			 * VisualiserOfOperatorDivideby(rev, name, xpos, ypos); }}),
-			 */
-			new OpSelector("EXTEND", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Extend(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector("GROUP", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new GroupOrWrap(rev, name, "GROUP", xpos, ypos);
-				}
-			}), 
-			new OpSelector("INTERSECT", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "INTERSECT", xpos, ypos);
-				}
-			}), 
-			new OpSelector("JOIN", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "JOIN", xpos, ypos);
-				}
-			}), 
-			new OpSelector("MATCHING", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "MATCHING", xpos, ypos);
-				}
-			}), 
-			new OpSelector("MINUS", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "MINUS", xpos, ypos);
-				}
-			}), 
-			new OpSelector("NOT MATCHING", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "NOT MATCHING", xpos, ypos);
-				}
-			}), 
-			new OpSelector("ORDER", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Order(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector("RENAME", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Rename(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector("SUMMARIZE", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Summarize(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector("TIMES", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "TIMES", xpos, ypos);
-				}
-			}), 
-			new OpSelector("UNGROUP", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new UngroupOrUnwrap(rev, name, "UNGROUP", "RELATION", xpos, ypos);
-				}
-			}), 
-			new OpSelector("UNION", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "UNION", xpos, ypos);
-				}
-			}), 
-			new OpSelector("UNORDER", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Unorder(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector("UNWRAP", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new UngroupOrUnwrap(rev, name, "UNWRAP", "TUPLE", xpos, ypos);
-				}
-			}), 
-			new OpSelector("UPDATE", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Update(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector("WRAP", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new GroupOrWrap(rev, name, "WRAP", xpos, ypos);
-				}
-			}), 
-			new OpSelector(), new OpSelector("TABLE_DEE", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new TableDee(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector("TABLE_DUM", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new TableDum(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector(), new OpSelector("=", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "=", xpos, ypos);
-				}
-			}), 
-			new OpSelector("<>", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "<>", xpos, ypos);
-				}
-			}), 
-			new OpSelector("<", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "<", xpos, ypos);
-				}
-			}), 
-			new OpSelector(">", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, ">", xpos, ypos);
-				}
-			}), 
-			new OpSelector("<=", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "<=", xpos, ypos);
-				}
-			}), 
-			new OpSelector(">=", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, ">=", xpos, ypos);
-				}
-			}), 
-			new OpSelector("IN", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Diadic(rev, name, "IN", xpos, ypos);
-				}
-			}), 
-			new OpSelector(), new OpSelector("FROM", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new From(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector("TUPLE FROM", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new TupleFrom(rev, name, xpos, ypos);
-				}
-			}), 
-			new OpSelector(), new OpSelector("Expression", new OpSelectorRun() {
-				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
-					return new Expression(rev, name, xpos, ypos);
-				}
-			}) 
+			new OpSelector("Project {}", "Project", (rev, name, xpos, ypos) -> new Project(rev, name, xpos, ypos)), 
+			new OpSelector("Restrict (WHERE)", "Restrict", (rev, name, xpos, ypos) -> new Restrict(rev, name, xpos, ypos)),
+			new OpSelector(), new OpSelector("COMPOSE", (rev, name, xpos, ypos) -> new Diadic(rev, name, "COMPOSE", xpos, ypos)),
+			// new OpSelector("DIVIDEBY", (rev, name, xpos, ypos) -> new VisualiserOfOperatorDivideby(rev, name, xpos, ypos)),
+			new OpSelector("EXTEND", (rev, name, xpos, ypos) -> new Extend(rev, name, xpos, ypos)), 
+			new OpSelector("GROUP", (rev, name, xpos, ypos) -> new GroupOrWrap(rev, name, "GROUP", xpos, ypos)), 
+			new OpSelector("INTERSECT", (rev, name, xpos, ypos) -> new Diadic(rev, name, "INTERSECT", xpos, ypos)), 
+			new OpSelector("JOIN", (rev, name, xpos, ypos) -> new Diadic(rev, name, "JOIN", xpos, ypos)), 
+			new OpSelector("MATCHING", (rev, name, xpos, ypos) -> new Diadic(rev, name, "MATCHING", xpos, ypos)), 
+			new OpSelector("MINUS", (rev, name, xpos, ypos) -> new Diadic(rev, name, "MINUS", xpos, ypos)), 
+			new OpSelector("NOT MATCHING", (rev, name, xpos, ypos) -> new Diadic(rev, name, "NOT MATCHING", xpos, ypos)), 
+			new OpSelector("ORDER", (rev, name, xpos, ypos) -> new Order(rev, name, xpos, ypos)), 
+			new OpSelector("RENAME", (rev, name, xpos, ypos) -> new Rename(rev, name, xpos, ypos)), 
+			new OpSelector("SUMMARIZE", (rev, name, xpos, ypos) -> new Summarize(rev, name, xpos, ypos)), 
+			new OpSelector("TIMES", (rev, name, xpos, ypos) -> new Diadic(rev, name, "TIMES", xpos, ypos)), 
+			new OpSelector("UNGROUP", (rev, name, xpos, ypos) -> new UngroupOrUnwrap(rev, name, "UNGROUP", "RELATION", xpos, ypos)), 
+			new OpSelector("UNION", (rev, name, xpos, ypos) -> new Diadic(rev, name, "UNION", xpos, ypos)), 
+			new OpSelector("UNORDER", (rev, name, xpos, ypos) -> new Unorder(rev, name, xpos, ypos)), 
+			new OpSelector("UNWRAP", (rev, name, xpos, ypos) -> new UngroupOrUnwrap(rev, name, "UNWRAP", "TUPLE", xpos, ypos)), 
+			new OpSelector("UPDATE", (rev, name, xpos, ypos) -> new Update(rev, name, xpos, ypos)), 
+			new OpSelector("WRAP", (rev, name, xpos, ypos) -> new GroupOrWrap(rev, name, "WRAP", xpos, ypos)), 
+			new OpSelector(), 
+			new OpSelector("TABLE_DEE", (rev, name, xpos, ypos) -> new TableDee(rev, name, xpos, ypos)), 
+			new OpSelector("TABLE_DUM", (rev, name, xpos, ypos) -> new TableDum(rev, name, xpos, ypos)), 
+			new OpSelector(), 
+			new OpSelector("=", (rev, name, xpos, ypos) -> new Diadic(rev, name, "=", xpos, ypos)), 
+			new OpSelector("<>", (rev, name, xpos, ypos) -> new Diadic(rev, name, "<>", xpos, ypos)), 
+			new OpSelector("<", (rev, name, xpos, ypos) -> new Diadic(rev, name, "<", xpos, ypos)), 
+			new OpSelector(">", (rev, name, xpos, ypos) -> new Diadic(rev, name, ">", xpos, ypos)), 
+			new OpSelector("<=", (rev, name, xpos, ypos) -> new Diadic(rev, name, "<=", xpos, ypos)), 
+			new OpSelector(">=", (rev, name, xpos, ypos) -> new Diadic(rev, name, ">=", xpos, ypos)), 
+			new OpSelector("IN", (rev, name, xpos, ypos) -> new Diadic(rev, name, "IN", xpos, ypos)), 
+			new OpSelector(), 
+			new OpSelector("FROM", (rev, name, xpos, ypos) -> new From(rev, name, xpos, ypos)), 
+			new OpSelector("TUPLE FROM", (rev, name, xpos, ypos) -> new TupleFrom(rev, name, xpos, ypos)), 
+			new OpSelector(),
+			new OpSelector("Expression", (rev, name, xpos, ypos) -> new Expression(rev, name, xpos, ypos)) 
 		};
 		return operators;
 	}
