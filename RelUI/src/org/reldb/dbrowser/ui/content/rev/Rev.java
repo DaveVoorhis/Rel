@@ -388,15 +388,15 @@ public class Rev extends Composite {
 		insOperatorsItem.setText("Operators and constants");
 		Menu insOperatorsMenu = new Menu(menuBar);
 		for (int i = 0; i < queryOperators.length; i++) {
-			String opName = queryOperators[i].toString();
-			if (opName == null)
+			OpSelector selector = queryOperators[i];
+			if (selector.toString() == null)
 				new MenuItem(insOperatorsMenu, SWT.SEPARATOR);
 			else {
 				MenuItem item = new MenuItem(insOperatorsMenu, SWT.PUSH);
-				item.setText(opName);
+				item.setText(selector.getMenuTitle());
 				item.addListener(SWT.Selection, e -> {
 					Point lastMousePosition = model.getLastMousePosition();
-					obtainOperatorForKind(opName, opName + getUniqueNumber(), lastMousePosition.x, lastMousePosition.y);
+					obtainOperatorForKind(selector.toString(), selector.toString() + getUniqueNumber(), lastMousePosition.x, lastMousePosition.y);
 				});
 			}
 		}
@@ -467,20 +467,31 @@ public class Rev extends Composite {
 
 	private static class OpSelector {
 		private String menuTitle;
+		private String opName;
 		private OpSelectorRun run;
 
-		public OpSelector(String menuTitle, OpSelectorRun run) {
+		public OpSelector(String menuTitle, String opName, OpSelectorRun run) {
 			this.menuTitle = menuTitle;
+			this.opName = opName;
 			this.run = run;
+		}
+		
+		public OpSelector(String menuTitle, OpSelectorRun run) {
+			this(menuTitle, menuTitle, run);
 		}
 
 		public OpSelector() {
 			this.menuTitle = null;
+			this.opName = null;
 			this.run = null;
 		}
 
-		public String toString() {
+		public String getMenuTitle() {
 			return menuTitle;
+		}
+		
+		public String toString() {
+			return opName;
 		}
 
 		public Operator getOperator(Rev rev, String name, int xpos, int ypos) {
@@ -490,12 +501,12 @@ public class Rev extends Composite {
 
 	private OpSelector[] getOperators() {
 		OpSelector[] operators = { 
-			new OpSelector("Project {}", new OpSelectorRun() {
+			new OpSelector("Project", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new Project(rev, name, xpos, ypos);
 				}
 			}), 
-			new OpSelector("Restrict (WHERE)", new OpSelectorRun() {
+			new OpSelector("Restrict", new OpSelectorRun() {
 				public Operator obtain(Rev rev, String name, int xpos, int ypos) {
 					return new Restrict(rev, name, xpos, ypos);
 				}
