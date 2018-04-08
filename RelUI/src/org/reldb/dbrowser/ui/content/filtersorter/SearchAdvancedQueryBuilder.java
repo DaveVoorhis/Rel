@@ -18,7 +18,7 @@ import org.reldb.rel.v0.values.StringUtils;
 public class SearchAdvancedQueryBuilder extends Composite {
 	
 	private static final String[] queryOperationDisplay = new String[] {"=", "≠", "<", ">", "≤", "≥", "contains", "starts with", "doesn’t contain"};
-	private static final String[] queryOperationCode = new String[] {"=", "!=", "<", ">", "<=", ">=", "LIKE", "LIKE", "NOT LIKE"}; 
+	private static final String[] queryOperationCode = new String[] {"=", "!=", "<", ">", "<=", ">=", "INDEX_OF(%s, %p) >= 0", "STARTS_WITH(%s, %p)", "INDEX_OF(%s, %p) < 0"}; 
 	
 	private Vector<Attribute> attributes;
 	private String whereClause = "";
@@ -58,7 +58,6 @@ public class SearchAdvancedQueryBuilder extends Composite {
 
 	public String getWhereClauseInProgress() {
 		String output = "";
-		Vector<String> arguments = new Vector<String>();
 		for (Control[] control: controls) {
 			String comparison = "";
 			int columnIndex = ((Combo)control[0]).getSelectionIndex();			
@@ -67,22 +66,20 @@ public class SearchAdvancedQueryBuilder extends Composite {
 			if (output.length() > 0)
 				comparison += " ";
 			Attribute attribute = attributes.get(columnIndex);
-			comparison += attribute.getName();
 			int operationIndex = ((Combo)control[1]).getSelectionIndex();
 			if (operationIndex < 0)
 				continue;
+			String name = attribute.getName();
 			String value = ((Text)control[2]).getText();
 			Type type = attribute.getType();
 			if (type instanceof ScalarType)
 				if (((ScalarType)type).getName().equals("CHARACTER"))
-					value = "'" + StringUtils.quote(value) + "'";
-			comparison += " " + queryOperationCode[operationIndex] + " " + value;
-			if (queryOperationDisplay[operationIndex].contains("contain"))
-				arguments.add("%" + value + "%");
-			else if (queryOperationDisplay[operationIndex].contains("starts with"))
-				arguments.add(value + "%");
+					value = "'" + StringUtils.quote(value) + "'";			
+			String op = queryOperationCode[operationIndex];
+			if (op.contains("%s"))
+				comparison += op.replace("%s", name).replace("%p", value);
 			else
-				arguments.add(value);
+				comparison += name + " " + op + " " + value;
 			String booleanOp = ((Combo)control[3]).getText().trim();
 			if (booleanOp.length() > 0)
 				comparison += " " + booleanOp;
