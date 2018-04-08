@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
-public class OrderPanel extends Composite {
+public class SorterPanel extends Composite {
 
 	private Vector<Label> labelAttributes;
 	private Vector<SortOrderPicker> orderAttributes;
@@ -21,7 +21,7 @@ public class OrderPanel extends Composite {
 
 	private String text = "";
 
-	public OrderPanel(Composite parent, int style) {
+	public SorterPanel(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new GridLayout(3, false));
 		setup();
@@ -72,9 +72,9 @@ public class OrderPanel extends Composite {
 		}
 	}
 
-	private Vector<OrderPanel.SortedAttribute> getDefinitionAttributes() {
+	private Vector<SorterPanel.SortedAttribute> getDefinitionAttributes() {
 		String definition = text.trim().replaceAll("\\(", "").replaceAll("\\)", "");
-		Vector<OrderPanel.SortedAttribute> output = new Vector<OrderPanel.SortedAttribute>();
+		Vector<SorterPanel.SortedAttribute> output = new Vector<SorterPanel.SortedAttribute>();
 		String[] specs = definition.split(",");
 		for (String spec : specs) {
 			String order[] = spec.trim().split("\\s");
@@ -102,7 +102,7 @@ public class OrderPanel extends Composite {
 		orderAttributes.get(fromRow).setState(tmpComboState);
 	}
 
-	private void addRow(OrderPanel.SortedAttribute attribute, int rowNum, boolean last) {
+	private void addRow(SorterPanel.SortedAttribute attribute, int rowNum, boolean last) {
 		Label lblNewLabel = new Label(this, SWT.NONE);
 		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblNewLabel.setText(attribute.getName());
@@ -131,10 +131,10 @@ public class OrderPanel extends Composite {
 		labelAttributes = new Vector<Label>();
 		orderAttributes = new Vector<SortOrderPicker>();
 		int rowNum = 0;
-		Vector<OrderPanel.SortedAttribute> definitionAttributes = getDefinitionAttributes();
+		Vector<SorterPanel.SortedAttribute> definitionAttributes = getDefinitionAttributes();
 		HashSet<String> definitionAttributeNames = new HashSet<String>();
-		Vector<OrderPanel.SortedAttribute> panelAttributeList = new Vector<OrderPanel.SortedAttribute>();
-		for (OrderPanel.SortedAttribute orderSpec : definitionAttributes) {
+		Vector<SorterPanel.SortedAttribute> panelAttributeList = new Vector<SorterPanel.SortedAttribute>();
+		for (SorterPanel.SortedAttribute orderSpec : definitionAttributes) {
 			definitionAttributeNames.add(orderSpec.getName());
 			if (availableAttributes.contains(orderSpec.getName()))
 				panelAttributeList.add(orderSpec);
@@ -142,7 +142,7 @@ public class OrderPanel extends Composite {
 		for (String attribute : availableAttributes)
 			if (!definitionAttributeNames.contains(attribute))
 				panelAttributeList.add(new SortedAttribute(attribute));
-		for (OrderPanel.SortedAttribute attribute : panelAttributeList)
+		for (SorterPanel.SortedAttribute attribute : panelAttributeList)
 			addRow(attribute, rowNum++, rowNum == panelAttributeList.size());
 	}
 }

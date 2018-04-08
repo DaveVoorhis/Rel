@@ -14,7 +14,7 @@ import org.reldb.rel.client.Attribute;
 
 public class SearchAdvancedPanel extends Composite {
 
-	private FilterPanel filterPanel;
+	private SearchAdvancedQueryBuilder filterPanel;
 	private Text manualFilter;
 	private boolean isManualOverride = false;
 	private Vector<String[]> filterState = new Vector<>();
@@ -27,7 +27,7 @@ public class SearchAdvancedPanel extends Composite {
 		StackLayout definitionStack = new StackLayout();
 		filterDefinition.setLayout(definitionStack);
 		
-		filterPanel = new FilterPanel(attributes, filterDefinition, filterState);
+		filterPanel = new SearchAdvancedQueryBuilder(attributes, filterDefinition, filterState);
 		
 		Composite manualPanel = new Composite(filterDefinition, SWT.NONE);
 		manualPanel.setLayout(new GridLayout(2, false));

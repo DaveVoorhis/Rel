@@ -3,14 +3,14 @@ package org.reldb.dbrowser.ui.content.rev.operators;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.reldb.dbrowser.ui.content.filtersorter.OrderPanel;
+import org.reldb.dbrowser.ui.content.filtersorter.SorterPanel;
 import org.reldb.dbrowser.ui.content.rev.Rev;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 
 public class Order extends Monadic {
 
-	private OrderPanel orderPanel;
+	private SorterPanel orderPanel;
 
 	public Order(Rev rev, String name, int xpos, int ypos) {
 		super(rev, name, "ORDER", xpos, ypos);
@@ -36,7 +36,7 @@ public class Order extends Monadic {
 	@Override
 	protected void buildControlPanel(Composite container) {
 		container.setLayout(new FillLayout());
-		orderPanel = new OrderPanel(container, SWT.None);
+		orderPanel = new SorterPanel(container, SWT.None);
 		orderPanel.setText(operatorLabel.getText());
 		orderPanel.setAvailableAttributeNames(getAttributeNamesOfParameter(0));
 	}

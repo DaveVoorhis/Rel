@@ -15,7 +15,7 @@ import org.reldb.rel.client.ScalarType;
 import org.reldb.rel.client.Type;
 import org.reldb.rel.v0.values.StringUtils;
 
-public class FilterPanel extends Composite {
+public class SearchAdvancedQueryBuilder extends Composite {
 	
 	private static final String[] queryOperationDisplay = new String[] {"=", "≠", "<", ">", "≤", "≥", "contains", "starts with", "doesn’t contain"};
 	private static final String[] queryOperationCode = new String[] {"=", "!=", "<", ">", "<=", ">=", "LIKE", "LIKE", "NOT LIKE"}; 
@@ -25,7 +25,7 @@ public class FilterPanel extends Composite {
 	private Vector<Control[]> controls = new Vector<Control[]>();
 	private Vector<String[]> finderSavedState = null;
 	
-	public FilterPanel(Vector<Attribute> attributes, Composite parent, Vector<String[]> finderSavedState) {
+	public SearchAdvancedQueryBuilder(Vector<Attribute> attributes, Composite parent, Vector<String[]> finderSavedState) {
 		super(parent, SWT.NONE);
 		this.finderSavedState = finderSavedState;
 		this.attributes = attributes;

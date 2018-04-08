@@ -59,7 +59,7 @@ public class Sorter extends Composite {
 		popup = new PopupComposite(getShell());
 		popup.setLayout(new GridLayout(1, false));
 		
-		OrderPanel orderer = new OrderPanel(popup, SWT.NONE);
+		SorterPanel orderer = new SorterPanel(popup, SWT.NONE);
 		orderer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
 		orderer.setAvailableAttributeNames(filterSorter.getAttributeNames());
 		
