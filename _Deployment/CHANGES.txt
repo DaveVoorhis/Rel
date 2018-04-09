@@ -2,6 +2,10 @@ Last used Exception* number: RS0507
 
 Version 3.012 (1.0.25):
 
+  - Enhancement: Rel DBMS, duplicate StringUtils class removed
+    from ServerV0000 subproject. Now uses StringUtils from Shared
+    subproject.
+
   - Enhancement: Rev: Advanced search available in Restrict
     (WHERE) operator.
   

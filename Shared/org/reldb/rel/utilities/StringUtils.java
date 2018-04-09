@@ -14,6 +14,8 @@ public class StringUtils {
 
 	/* Turn spaces to _ */
 	public static String nospaces(String s) {
+		if (s == null)
+			return null;
 		return s.replace(' ', '_');
 	}
 	
@@ -30,6 +32,8 @@ public class StringUtils {
 	@return a string which is a quoted representation of the input
 	string. */
 	public static String quote(String s) {
+		if (s == null)
+			return null;
 		char[] in = s.toCharArray();
 		int n = in.length;
 		StringBuffer out = new StringBuffer(n);
@@ -80,6 +84,8 @@ public class StringUtils {
 	@return a string with quotes removed and escape sequences
 	replaced by the respective character codes. */
 	public static String unquote(String s) {
+		if (s == null)
+			return null;
 		char[] in = s.toCharArray();
 		char[] out = new char[in.length];
 		boolean inEscape = false;

@@ -3,6 +3,7 @@ package org.reldb.rel.v0.values;
 import java.io.PrintStream;
 
 import org.reldb.rel.exceptions.ExceptionSemantic;
+import org.reldb.rel.utilities.StringUtils;
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.types.Type;
 import org.reldb.rel.v0.types.TypeAlpha;

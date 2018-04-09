@@ -13,7 +13,7 @@ import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Heading;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
-import org.reldb.rel.v0.values.StringUtils;
+import org.reldb.rel.utilities.StringUtils;
 
 public class Restrict extends Monadic {
 	

@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Text;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.ScalarType;
 import org.reldb.rel.client.Type;
-import org.reldb.rel.v0.values.StringUtils;
+import org.reldb.rel.utilities.StringUtils;
 
 public class SearchAdvancedQueryBuilder extends Composite {
 	

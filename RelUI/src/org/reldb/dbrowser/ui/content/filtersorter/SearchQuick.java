@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.reldb.rel.v0.values.StringUtils;
+import org.reldb.rel.utilities.StringUtils;
 
 public class SearchQuick extends Composite implements Searcher {
 	

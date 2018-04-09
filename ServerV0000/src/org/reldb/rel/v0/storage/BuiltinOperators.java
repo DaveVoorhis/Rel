@@ -1,5 +1,6 @@
 package org.reldb.rel.v0.storage;
 
+import org.reldb.rel.utilities.StringUtils;
 import org.reldb.rel.v0.generator.*;
 import org.reldb.rel.v0.types.*;
 import org.reldb.rel.v0.types.builtin.TypeBoolean;
