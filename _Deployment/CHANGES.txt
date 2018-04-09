@@ -13,6 +13,9 @@ Version 3.012 (1.0.25):
 
   - Enhancement: Rev: Advanced search available in Restrict
     (WHERE) operator.
+
+  - Enhancement: Rev: A Comment node has been provided, to add
+    commentary to a visual query.
   
   - Enhancement: Rel UI: Tabular displays of views, relvars, or
     expression evaluation results (in Rev visual query editor) now

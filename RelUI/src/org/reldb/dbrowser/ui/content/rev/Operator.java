@@ -122,8 +122,10 @@ public abstract class Operator extends Visualiser {
 	private void notifyArgumentChanged() {
 		if (isQueryable()) {
 			setReadyColour();
-			btnInfo.setEnabled(true);
-			btnRun.setEnabled(true);
+			if (!btnInfo.isDisposed())
+				btnInfo.setEnabled(true);
+			if (!btnRun.isDisposed())
+				btnRun.setEnabled(true);
 			String query = getQuery();
 			if (cachedQuery == null || query.compareTo(cachedQuery) != 0) {
 				notifyArgumentChanged(true);
@@ -131,8 +133,10 @@ public abstract class Operator extends Visualiser {
 			}
 		} else {
 			setWarningColour();
-			btnInfo.setEnabled(false);
-			btnRun.setEnabled(false);
+			if (!btnInfo.isDisposed())
+				btnInfo.setEnabled(false);
+			if (!btnRun.isDisposed())
+				btnRun.setEnabled(false);
 			if (cachedQuery != null) {
 				notifyArgumentChanged(false);
 				cachedQuery = null;

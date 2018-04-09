@@ -110,6 +110,8 @@ public class Model extends Composite {
 			if (!(child instanceof Visualiser))
 				continue;
 			Visualiser childVisualiser = (Visualiser) child;
+			if (!childVisualiser.isDropCandidate())
+				continue;
 			if (visualiser.getBounds().intersects(childVisualiser.getBounds())
 					&& childVisualiser.canReceiveDropOf(visualiser))
 				return childVisualiser;

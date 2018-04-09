@@ -2,8 +2,6 @@
   
 - Rel: Provide CAST_AS_CHARACTER(OPERATOR) and CAST_AS_OPERATOR(CHARACTER).
 
-- Rev: Provide "Comment" visualiser in Rev.
-
 - Provide encrypted backups (and log-ins to a given database).
 
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.

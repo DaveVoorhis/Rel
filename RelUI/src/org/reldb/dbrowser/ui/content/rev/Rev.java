@@ -26,6 +26,7 @@ import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
+import org.reldb.dbrowser.ui.content.rev.operators.Comment;
 import org.reldb.dbrowser.ui.content.rev.operators.Diadic;
 import org.reldb.dbrowser.ui.content.rev.operators.Expression;
 import org.reldb.dbrowser.ui.content.rev.operators.Extend;
@@ -538,6 +539,7 @@ public class Rev extends Composite {
 			new OpSelector("FROM", (rev, name, xpos, ypos) -> new From(rev, name, xpos, ypos)), 
 			new OpSelector("TUPLE FROM", (rev, name, xpos, ypos) -> new TupleFrom(rev, name, xpos, ypos)), 
 			new OpSelector(),
+			new OpSelector("Comment", (rev, name, xpos, ypos) -> new Comment(rev, name, xpos, ypos)),
 			new OpSelector("Expression", (rev, name, xpos, ypos) -> new Expression(rev, name, xpos, ypos)) 
 		};
 		return operators;

@@ -36,7 +36,6 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 	protected final static Color DropCandidateColor = new Color(Display.getDefault(), 100, 255, 100);
 
 	private Color titleColor = BaseColor;
-	private Label lblTitle;
 
 	private int mouseOffsetX;
 	private int mouseOffsetY;
@@ -47,6 +46,8 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 
 	private String id;
 	private String title;
+	
+	protected Label lblTitle;
 
 	protected Button btnInfo;
 	protected Button btnRun;
@@ -405,5 +406,9 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 	public void verify() {
 		for (Argument argument : arguments)
 			argument.getOperator().verify();
+	}
+
+	public boolean isDropCandidate() {
+		return true;
 	}
 }
