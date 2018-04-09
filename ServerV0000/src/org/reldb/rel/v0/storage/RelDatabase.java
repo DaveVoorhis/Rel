@@ -119,6 +119,9 @@ public class RelDatabase {
 	// compiling.
 	private String[] additionalJarsForJavaCompilerClasspath = null;
 
+	// Quiet mode. Don't emit startup/shutdown messages to the console.
+	private boolean quiet = false;
+
 	public void setAdditionalJarsForJavaCompilerClasspath(String[] additionalJarsForClasspath) {
 		this.additionalJarsForJavaCompilerClasspath = additionalJarsForClasspath;
 	}
@@ -226,9 +229,18 @@ public class RelDatabase {
 		}
 	}
 
+	public void setQuietMode(boolean quiet) {
+		this.quiet = quiet;
+	}
+
+	public boolean isQuiet() {
+		return quiet;
+	}
+
 	public void open(File envHome, boolean canCreateDb, PrintStream outputStream)
 			throws DatabaseFormatVersionException {
-		System.out.println("Opening database in " + envHome + "\nIf it doesn't exist, we'll "
+		if (!quiet)
+			System.out.println("Opening database in " + envHome + "\nIf it doesn't exist, we'll "
 				+ ((canCreateDb) ? "try to create it" : "cause an error") + ".");
 
 		String usingBerkeleyJavaDBVersion = getBerkeleyJavaDBVersion();
@@ -358,7 +370,8 @@ public class RelDatabase {
 			// Construct built-in type types.
 			if (!isTypeExists(generator, "TypeInfo")) {
 				try {
-					System.out.println("Creating TypeInfo types.");
+					if (!quiet)
+						System.out.println("Creating TypeInfo types.");
 					Interpreter.executeStatementPrivileged(this, "TYPE TypeInfo UNION;", "Rel", System.out);
 					Interpreter.executeStatementPrivileged(this, "TYPE Scalar IS {TypeInfo POSSREP {TypeName CHAR}};",
 							"Rel", System.out);
@@ -376,7 +389,8 @@ public class RelDatabase {
 			// Construct DDL log relvar.
 			if (!isRelvarExists(Catalog.relvarDefinitionHistory))
 				try {
-					System.out.println("Creating " + Catalog.relvarDefinitionHistory + " relvar.");
+					if (!quiet)
+						System.out.println("Creating " + Catalog.relvarDefinitionHistory + " relvar.");
 					Interpreter.executeStatementPrivileged(this,
 							"VAR " + Catalog.relvarDefinitionHistory
 									+ " REAL RELATION {Definition CHAR, SerialNumber INTEGER} KEY {SerialNumber};",
@@ -390,7 +404,8 @@ public class RelDatabase {
 
 			loadConstraints(outputStream);
 
-			System.out.println("Database " + envHome + " is open.");
+			if (!quiet)
+				System.out.println("Database " + envHome + " is open.");
 
 		} catch (DatabaseException db) {
 			String msg = "Unable to open database: " + db.getMessage();
@@ -426,8 +441,10 @@ public class RelDatabase {
 			(new Throwable()).printStackTrace();
 			return;
 		}
-		System.out.println("Closing database in " + homeDir);
-		System.out.println("\tClosing active tuple iterators in " + homeDir);
+		if (!quiet) {
+			System.out.println("Closing database in " + homeDir);
+			System.out.println("\tClosing active tuple iterators in " + homeDir);
+		}
 		int activeTupleIterators = 0;
 		try {
 			for (RegisteredTupleIterator tupleIterator : registeredTupleIterators)
@@ -440,7 +457,8 @@ public class RelDatabase {
 			System.err.println("\t" + activeTupleIterators + " active tuple iterator was closed.");
 		else if (activeTupleIterators > 1)
 			System.err.println("\t" + activeTupleIterators + " active tuple iterators were closed.");
-		System.out.println("\tCommitting open transactions in " + homeDir);
+		if (!quiet)
+			System.out.println("\tCommitting open transactions in " + homeDir);
 		int openTransactions = 0;
 		for (RelTransaction transaction : transactions.values())
 			while (transaction.getReferenceCount() > 0)
@@ -456,7 +474,8 @@ public class RelDatabase {
 			System.err.println("\t" + openTransactions + " open transaction was closed.");
 		else if (openTransactions > 1)
 			System.err.println("\t" + openTransactions + " open transactions were closed.");
-		System.out.println("\tClosing relvars in " + homeDir);
+		if (!quiet)
+			System.out.println("\tClosing relvars in " + homeDir);
 		try {
 			for (Database table : openStorage.values())
 				table.close();
@@ -465,7 +484,8 @@ public class RelDatabase {
 		} catch (Exception e) {
 			System.err.println("\tUnknown shutdown error 2: " + e);
 		}
-		System.out.println("\tPurging temporary data in " + homeDir);
+		if (!quiet)
+			System.out.println("\tPurging temporary data in " + homeDir);
 		try {
 			for (String tableName : tempStorageNames)
 				environment.removeDatabase(null, tableName);
@@ -474,7 +494,8 @@ public class RelDatabase {
 		} catch (Exception e) {
 			System.err.println("\tUnknown shutdown error 3: " + e);
 		}
-		System.out.println("\tTemporary data purged in " + homeDir);
+		if (!quiet)
+			System.out.println("\tTemporary data purged in " + homeDir);
 		try {
 			relvarDb.close();
 		} catch (DatabaseException dbe) {
@@ -482,7 +503,8 @@ public class RelDatabase {
 		} catch (Exception e) {
 			System.err.println("\tUnknown shutdown error 4: " + e);
 		}
-		System.out.println("\tClosing environment in " + homeDir);
+		if (!quiet)
+			System.out.println("\tClosing environment in " + homeDir);
 		try {
 			environment.close();
 		} catch (DatabaseException dbe) {
@@ -498,7 +520,8 @@ public class RelDatabase {
 		} catch (Exception e) {
 			System.err.println("\tUnknown shutdown error 6: " + e);
 		}
-		System.out.println("Database " + homeDir + " is closed.");
+		if (!quiet)
+			System.out.println("Database " + homeDir + " is closed.");
 	}
 
 	public void reset() {
@@ -689,7 +712,8 @@ public class RelDatabase {
 			nextid = id + 1;
 			dis.close();
 		} catch (Throwable t) {
-			System.out.println("Creating new ID file.");
+			if (!quiet)
+				System.out.println("Creating new ID file.");
 		}
 		try {
 			DataOutputStream dos = new DataOutputStream(new FileOutputStream(uniquidFile));
@@ -714,7 +738,8 @@ public class RelDatabase {
 			nextid = id + 1;
 			dis.close();
 		} catch (Throwable t) {
-			System.out.println("Creating new ID file.");
+			if (!quiet)
+				System.out.println("Creating new ID file.");
 		}
 		try {
 			DataOutputStream dos = new DataOutputStream(new FileOutputStream(uniquidFile));

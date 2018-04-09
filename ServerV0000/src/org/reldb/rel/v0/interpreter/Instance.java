@@ -35,6 +35,7 @@ public class Instance {
 	
 	private RelDatabase database;
 	private boolean evaluate = false;
+	private boolean quiet = false;
 	private boolean debugOnRun = false;
 	private boolean debugAST = false;
 	
@@ -120,6 +121,7 @@ public class Instance {
 		database = openDatabases.get(dbPath);
 		if (database == null) {
 			database = new RelDatabase();
+			database.setQuietMode(quiet);
 			database.setAdditionalJarsForJavaCompilerClasspath(additionalJarsForClasspath);
 			database.open(dbPath, createDbAllowed, output);
 			openDatabases.put(dbPath, database);
@@ -198,10 +200,11 @@ public class Instance {
 	}
 	
 	private void usage(String databasePath) {
-		System.out.println("Usage: RelDBMS [-f<database>] [-D[port] | [-e] [-v0 | -v1]] < <source>");
+		System.out.println("Usage: RelDBMS [-f<database>] [-D[port] | [-e] [-q] [-v0 | -v1]] < <source>");
 		System.out.println(" -f<database>    -- database - default is " + databasePath);
 		System.out.println(" -D[port]        -- run as server (port optional - default is " + Defaults.getDefaultPort() + ")");
 		System.out.println(" -e              -- evaluate expression");
+		System.out.println(" -q              -- quiet mode; do not emit startup/shutdown information messages"); 
 		System.out.println(" -v0             -- run-time debugging");
 		System.out.println(" -v1             -- output AST");
 	}
@@ -241,6 +244,8 @@ public class Instance {
 					debugAST = true;
 				else if (args[i].equals("-e"))
 					evaluate = true;
+				else if (args[i].equals("-q"))
+					quiet = true;
 				else if (args[i].startsWith("-f")) {
 					if (args[i].length() <= 2) {
 						usage(databasePath);
@@ -268,7 +273,8 @@ public class Instance {
 		Interpreter interpreter = new Interpreter(database, System.out);
 		interpreter.setDebugOnRun(debugOnRun);
 		interpreter.setDebugAST(debugAST);
-		announceActive(System.out);
+		if (!quiet)
+			announceActive(System.out);
 		try {
 			if (evaluate)
 				interpreter.evaluate(System.in).toStream(System.out);

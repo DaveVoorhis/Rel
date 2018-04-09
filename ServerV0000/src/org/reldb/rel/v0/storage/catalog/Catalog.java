@@ -113,7 +113,8 @@ public class Catalog {
 		abstract void process() throws DatabaseException;
 		public void go() throws DatabaseException {
 	        if (!database.isRelvarExists(name)) {
-	        	System.out.println("Creating " + name + " relvar.");
+	        	if (!database.isQuiet())
+	        		System.out.println("Creating " + name + " relvar.");
 	        	process();
 	        }
 	        // Make sure it's open
