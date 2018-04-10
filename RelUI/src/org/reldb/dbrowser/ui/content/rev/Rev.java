@@ -233,6 +233,8 @@ public class Rev extends Composite {
 			title = "Edit " + model.getModelName() + ".  Right-click for options.";
 		if (database.hasRevExtensions() < 0)
 			title += " WARNING: Rev extensions are not installed, so nothing will be saved!";
+		if (isDisposed() || modelLabel.isDisposed())
+			return;
 		modelLabel.setText(title);
 	}
 
