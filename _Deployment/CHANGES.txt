@@ -1,5 +1,8 @@
 Last used Exception* number: RS0507
 
+Version 3.013 (1.0.26):
+
+
 Version 3.012 (1.0.25):
 
   - Enhancement: Rel DBMS: Now provides -q command-line option

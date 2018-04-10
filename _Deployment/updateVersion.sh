@@ -1,16 +1,16 @@
 #!/bin/bash
 
-olddbrowserVersion=3.011
-newdbrowserVersion=3.012
+olddbrowserVersion=3.012
+newdbrowserVersion=3.013
 
 oldPRODUCT_VERSION=1
 oldDATABASE_VERSION=0
-oldREVISION=24
+oldREVISION=25
 oldRELEASE=Beta
 
 newPRODUCT_VERSION=1
 newDATABASE_VERSION=0
-newREVISION=25
+newREVISION=26
 newRELEASE=Beta
 
 oldRelV=$oldPRODUCT_VERSION.$oldDATABASE_VERSION.$oldREVISION
