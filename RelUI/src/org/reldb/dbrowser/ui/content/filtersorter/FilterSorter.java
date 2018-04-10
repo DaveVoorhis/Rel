@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.DbConnection;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.rel.client.Attribute;
 
 public class FilterSorter extends Composite {
@@ -64,7 +65,7 @@ public class FilterSorter extends Composite {
 		sorter = new Sorter(this, contentPanel);
 		
 		tltmQuickSearch.setToolTipText("Quick search.");
-		tltmQuickSearch.setText("Q");
+		tltmQuickSearch.setImage(IconLoader.loadIcon("filtersorter_search"));
 		tltmQuickSearch.addListener(SWT.Selection, e -> {
 			tltmQuickSearch.setSelection(true);
 			tltmAdvancedSearch.setSelection(false);
@@ -78,7 +79,7 @@ public class FilterSorter extends Composite {
 		});
 		
 		tltmAdvancedSearch.setToolTipText("Advanced search...");
-		tltmAdvancedSearch.setText("A");
+		tltmAdvancedSearch.setImage(IconLoader.loadIcon("filtersorter_filter"));
 		tltmAdvancedSearch.addListener(SWT.Selection, e -> {
 			tltmQuickSearch.setSelection(false);
 			tltmAdvancedSearch.setSelection(true);
@@ -93,7 +94,7 @@ public class FilterSorter extends Composite {
 		});
 		
 		tltmSort.setToolTipText("Sort...");
-		tltmSort.setText("S");
+		tltmSort.setImage(IconLoader.loadIcon("filtersorter_sort"));
 		tltmSort.addListener(SWT.Selection, e -> {
 			tltmQuickSearch.setSelection(false);
 			tltmAdvancedSearch.setSelection(false);
