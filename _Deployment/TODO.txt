@@ -1,4 +1,11 @@
 ** TO DO **
+ 
+- Rel: Check that UNGROUP of an RVA with a single attribute works correctly.
+  (RELATION {RATE RELATION {RATE RATIONAL}} {
+	TUPLE {RATE RELATION {RATE RATIONAL} {
+		TUPLE {RATE 22.0}}}})
+  UNGROUP RATE
+  Fails?
   
 - Rev: Comment visualiser does not handle line breaks correctly on Windows or Linux.
   
