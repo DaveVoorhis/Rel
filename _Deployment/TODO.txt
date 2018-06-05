@@ -5,7 +5,11 @@
 	TUPLE {RATE RELATION {RATE RATIONAL} {
 		TUPLE {RATE 22.0}}}})
   UNGROUP RATE
-  Fails?
+  Fails?  Looks like RATE reference winds up being ambiguous. This works:
+  (RELATION {r RELATION {RATE RATIONAL}} {
+	TUPLE {r RELATION {RATE RATIONAL} {
+		TUPLE {RATE 22.0}}}})
+  UNGROUP r
   
 - Rev: Comment visualiser does not handle line breaks correctly on Windows or Linux.
   
