@@ -1,5 +1,13 @@
 ** TO DO **
 
+- Rel: This throws a fatal error:
+    RELATION {TUPLE {RVA RELATION {TUPLE {K 1}}}} EXTEND {RR := RVA RANK (ASC K AS R)}
+  This prevents the fatal error, and works:
+    RELATION {TUPLE {RVA RELATION {TUPLE {K 1}}}} EXTEND {RR := RVA {K} RANK (ASC K AS R)}
+
+- RelUI: Graphical editing of RVA value does not work. Appears to
+  fail to launch editor.
+
 - RelUI: Saving a script with escape chars, e.g., \\blah, loads as \blah.
  
 - Rel: Check that UNGROUP of an RVA with a single attribute works correctly.
