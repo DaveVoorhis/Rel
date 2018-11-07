@@ -608,7 +608,7 @@ public abstract class Editor extends Grid {
 							if (canonicalValue == null)
 								return null;
 							boolean isTrue = canonicalValue.toString().equalsIgnoreCase("True");
-							return new Boolean(isTrue);
+							return Boolean.valueOf(isTrue);
 						}
 
 						@Override

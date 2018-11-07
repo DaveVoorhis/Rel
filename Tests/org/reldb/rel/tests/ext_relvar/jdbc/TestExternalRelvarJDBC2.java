@@ -1,6 +1,5 @@
 package org.reldb.rel.tests.ext_relvar.jdbc;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,14 +9,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.reldb.rel.tests.ext_relvar.TestMySQLJDBCSettings;
-import org.reldb.rel.v0.interpreter.ClassPathHack;
 
 public class TestExternalRelvarJDBC2 extends TestMySQLJDBCSettings {
 
 	@Before
 	public void testJDBC1() {
 		try {
-			ClassPathHack.addFile(driverLocation);
 			Class.forName(driver);
 			Connection connect = DriverManager.getConnection(address, user, password);
 			Statement statement = connect.createStatement();
@@ -46,8 +43,6 @@ public class TestExternalRelvarJDBC2 extends TestMySQLJDBCSettings {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		String src = "BEGIN;\n" + "var myvar external jdbc \"" + absolutePath + "\" dup_remove;" + "END;\n" + "true";
 		testEquals("true", src);
@@ -64,14 +59,12 @@ public class TestExternalRelvarJDBC2 extends TestMySQLJDBCSettings {
 	public void testJDBC3() {
 		String src = "BEGIN;\n" + "drop var myvar;" + "END;\n" + "true";
 		try {
-			ClassPathHack.addFile(driverLocation);
 			Class.forName(driver);
 			Connection connect = DriverManager.getConnection(address, user, password);
 			Statement statement = connect.createStatement();
 			statement.executeUpdate("drop database " + database);
 		} catch (SQLException e) {
 		} catch (ClassNotFoundException e) {
-		} catch (IOException e) {
 		}
 		testEquals("true", src);
 	}

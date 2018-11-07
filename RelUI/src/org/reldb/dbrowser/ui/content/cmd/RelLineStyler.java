@@ -224,7 +224,7 @@ public class RelLineStyler implements LineStyleListener {
 		 */
 		void initialize() {
 			fgKeys = new Hashtable<String, Integer>();
-			Integer k = new Integer(KEYWORD);
+			Integer k = Integer.valueOf(KEYWORD);
 			for (int i = 0; i < keywords.length; i++)
 				fgKeys.put(keywords[i], k);
 		}

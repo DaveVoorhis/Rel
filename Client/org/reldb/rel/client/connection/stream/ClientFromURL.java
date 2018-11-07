@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.reldb.rel.client.connection.CrashHandler;
-import org.reldb.rel.client.utilities.ClassPathHack;
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 import org.reldb.rel.shared.Defaults;
 
@@ -21,7 +20,6 @@ public class ClientFromURL {
 			else
 				throw new MalformedURLException("Please specify a local database as db:<directory>");
 		else {
-			ClassPathHack.addFile("lib/relshared.jar");
 			String hostName = databaseURL;
 			int port = Defaults.getDefaultPort();
 			int colonPosition = databaseURL.indexOf(':');

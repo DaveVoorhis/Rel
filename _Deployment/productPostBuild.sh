@@ -1,8 +1,8 @@
 #!/bin/bash
 
 relversion=3.013
-javaversion=8u161
-jredir=~/Documents/JavaJREs
+javaversion=jdk-11.0.1
+jredir=~/Documents/OpenJDKs
 proddir=~/git/Rel/_Deployment/product
 
 # Grammar
@@ -17,7 +17,7 @@ zip -9r Rel_ExamplesAndUtilities_$relversion.zip RelScripts
 popd
 
 # Linux GTK 64bit
-cp -R $jredir/jre-$javaversion-linux-x64 $proddir/linux.gtk.x86_64/Rel.app/jre
+cp -R $jredir/linux/$javaversion $proddir/linux.gtk.x86_64/Rel.app/jre
 mv $proddir/linux.gtk.x86_64/Rel.app $proddir/linux.gtk.x86_64/Rel
 chmod +x $proddir/linux.gtk.x86_64/Rel/jre/bin/*
 pushd $proddir/linux.gtk.x86_64
@@ -25,16 +25,8 @@ rm ../Rel$relversion.linux.gtk.x86_84.tar.gz
 tar cfz ../Rel$relversion.linux.gtk.x86_84.tar.gz Rel
 popd
 
-# Windows 32bit
-cp -R $jredir/jre-$javaversion-windows-i586 $proddir/win32.win32.x86/Rel.app/jre
-mv $proddir/win32.win32.x86/Rel.app $proddir/win32.win32.x86/Rel
-pushd $proddir/win32.win32.x86
-rm ../Rel$relversion.win32.win32.x86.zip
-zip -9r ../Rel$relversion.win32.win32.x86.zip Rel
-popd
-
 # Windows 64bit
-cp -R $jredir/jre-$javaversion-windows-x64 $proddir/win32.win32.x86_64/Rel.app/jre
+cp -R $jredir/windows/$javaversion $proddir/win32.win32.x86_64/Rel.app/jre
 mv $proddir/win32.win32.x86_64/Rel.app $proddir/win32.win32.x86_64/Rel
 pushd $proddir/win32.win32.x86_64
 rm ../Rel$relversion.win32.win32.x86_64.zip
@@ -42,7 +34,7 @@ zip -9r ../Rel$relversion.win32.win32.x86_64.zip Rel
 popd
 
 # OS X (64bit)
-cp -R $jredir/jre-$javaversion-macosx-x64/Contents/Home $proddir/macosx.cocoa.x86_64/Rel.app/Contents/MacOS/jre
+cp -R $jredir/osx/$javaversion.jdk/Contents/Home $proddir/macosx.cocoa.x86_64/Rel.app/Contents/MacOS/jre
 xsltproc -o tmp.plist ./productMacOS_updatePlist.xslt $proddir/macosx.cocoa.x86_64/Rel.app/Contents/Info.plist
 mv tmp.plist $proddir/macosx.cocoa.x86_64/Rel.app/Contents/Info.plist
 cp OSXPackager/Background.png $proddir/macosx.cocoa.x86_64

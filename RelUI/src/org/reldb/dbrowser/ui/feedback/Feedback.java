@@ -26,7 +26,7 @@ public class Feedback {
 	private ProgressBar progressBar;
 
 	private SendWorker sendWorker = null;
-	private Object sendWorkerMutex = new Integer(0);
+	private Object sendWorkerMutex = Integer.valueOf(0);
 
 	public Feedback(Button btnSend, Label lblProgress, ProgressBar progressBar) {
 		this.btnSend = btnSend;

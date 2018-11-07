@@ -99,14 +99,14 @@ public class Server {
 	 * Server that the Session should be removed.
 	 */
 	synchronized void removeSession(Session s) {
-		sessions.remove(new Long(s.getId()));
+		sessions.remove(Long.valueOf(s.getId()));
 	}
 
 	/* This is invoked by a Session when it successfully starts, to advise the
 	 * Server that it is managing the Session.
 	 */
 	synchronized void addSession(Session s) {
-		sessions.put(new Long(s.getId()), s);
+		sessions.put(Long.valueOf(s.getId()), s);
 	}
 	
 	/** Kill all SessionS. */

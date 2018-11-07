@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.reldb.rel.tests.ClassPathHack;
-import org.reldb.rel.v0.version.Version;
-
 public class AllTests {
 	
 	private static final String tests[] = {
@@ -101,48 +98,6 @@ public class AllTests {
 	}
 	
 	public static void main(String args[]) {
-		try {
-			ClassPathHack.addFile("lib/junit.jar");
-			ClassPathHack.addFile("lib/commons-cli-1.2.jar");
-			ClassPathHack.addFile("lib/commons-codec-1.10.jar");
-			ClassPathHack.addFile("lib/commons-collections4-4.1.jar");
-			ClassPathHack.addFile("lib/commons-lang-2.6.jar");
-			ClassPathHack.addFile("lib/commons-logging-1.2.jar");
-			ClassPathHack.addFile("lib/curvesapi-1.04.jar");
-			ClassPathHack.addFile("lib/ecj-4.6.1.jar");
-			ClassPathHack.addFile("lib/fluent-hc-4.5.2.jar");
-			ClassPathHack.addFile("lib/httpclient-4.5.2.jar");
-			ClassPathHack.addFile("lib/httpclient-cache-4.5.2.jar");
-			ClassPathHack.addFile("lib/httpclient-win-4.5.2.jar");
-			ClassPathHack.addFile("lib/httpcore-4.4.4.jar");
-			ClassPathHack.addFile("lib/httpcore-4.4.5.jar");
-			ClassPathHack.addFile("lib/httpcore-ab-4.4.5.jar");
-			ClassPathHack.addFile("lib/httpcore-nio-4.4.5.jar");
-			ClassPathHack.addFile("lib/httpmime-4.5.2.jar");
-			ClassPathHack.addFile("lib/jackcess-2.1.6.jar");
-			ClassPathHack.addFile("lib/jna-4.1.0.jar");
-			ClassPathHack.addFile("lib/jna-platform-4.1.0.jar");
-			ClassPathHack.addFile("lib/junit.jar");
-			ClassPathHack.addFile("lib/log4j-1.2.17.jar");
-			ClassPathHack.addFile("lib/mariadb-java-client-1.5.6.jar");
-			ClassPathHack.addFile("lib/ojdbc7.jar");
-			ClassPathHack.addFile("lib/poi-3.15.jar");
-			ClassPathHack.addFile("lib/poi-excelant-3.15.jar");
-			ClassPathHack.addFile("lib/poi-ooxml-3.15.jar");
-			ClassPathHack.addFile("lib/poi-ooxml-schemas-3.15.jar");
-			ClassPathHack.addFile("lib/poi-scratchpad-3.15.jar");
-			ClassPathHack.addFile("lib/postgresql-9.4.1212.jar");
-			ClassPathHack.addFile("lib/rel0000.jar");
-			ClassPathHack.addFile("lib/relclient.jar");
-			ClassPathHack.addFile("lib/relshared.jar");
-			ClassPathHack.addFile("lib/jtds-1.3.1.jar");
-			ClassPathHack.addFile("lib/xmlbeans-2.6.0.jar");
-			ClassPathHack.addFile("lib/" + Version.getBerkeleyDbJarFilename());
-		} catch (IOException ioe) {
-			System.out.println(ioe.toString());
-			return;
-		}
-		
 		ArrayList<String> classes = new ArrayList<String>();
 		
 		try {

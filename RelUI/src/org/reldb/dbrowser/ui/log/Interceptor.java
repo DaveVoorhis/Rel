@@ -27,7 +27,6 @@ public class Interceptor extends PrintStream {
 	@Override
 	protected void finalize() throws Throwable {
 		detachOut();
-		super.finalize();
 	}
 
 	/**

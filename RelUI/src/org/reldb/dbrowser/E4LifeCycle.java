@@ -15,7 +15,6 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.reldb.dbrowser.loading.Loading;
 
-@SuppressWarnings("restriction")
 public class E4LifeCycle {
 	
 	@PostContextCreate

@@ -13,7 +13,6 @@ import org.reldb.rel.exceptions.ExceptionFatal;
 import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.v0.generator.Generator;
 import org.reldb.rel.v0.generator.SelectAttributes;
-import org.reldb.rel.v0.interpreter.ClassPathHack;
 import org.reldb.rel.v0.storage.RelDatabase;
 import org.reldb.rel.v0.storage.relvars.RelvarCustomMetadata;
 import org.reldb.rel.v0.storage.relvars.RelvarExternal;
@@ -42,10 +41,25 @@ public class RelvarJDBCMetadata extends RelvarCustomMetadata {
 
 	private static boolean driversLoaded = false;
 	
+	private static boolean osgiTested = false;
+	private static boolean isInOSGI = false;
+	
+	private static boolean isInOSGI() {
+		if (osgiTested)
+			return isInOSGI;
+		try {
+			Class.forName("org.osgi.framework.BundleReference");
+			isInOSGI = true;
+		} catch (ClassNotFoundException e) {
+		}
+		osgiTested = true;
+		return isInOSGI;
+	}
+	
 	public static void loadDrivers(RelDatabase database) {
 		if (driversLoaded)
 			return;
-		if (!ClassPathHack.isInOSGI()) {
+		if (!isInOSGI()) {
 			ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
 			ClassLoader newClassLoader;
 			try {

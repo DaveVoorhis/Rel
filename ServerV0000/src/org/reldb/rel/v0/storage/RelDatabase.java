@@ -754,7 +754,7 @@ public class RelDatabase {
 
 	// Obtain the current thread ID
 	private Long getThreadID() {
-		return new Long(Thread.currentThread().getId());
+		return Long.valueOf(Thread.currentThread().getId());
 	}
 
 	/** Return true if a relvar exists. */
@@ -1569,7 +1569,7 @@ public class RelDatabase {
 		try {
 			return ((Boolean) (new TransactionRunner() {
 				public Object run(Transaction txn) throws Throwable {
-					return new Boolean(isRelvarExists(txn, name));
+					return Boolean.valueOf(isRelvarExists(txn, name));
 				}
 			}).execute(this)).booleanValue();
 		} catch (ExceptionSemantic es) {

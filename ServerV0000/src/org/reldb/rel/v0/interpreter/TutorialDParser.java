@@ -2307,10 +2307,10 @@ public class TutorialDParser implements TutorialDVisitor {
 		generator.beginAssignment();
 		// Compile expression evaluations.
 		for (int i = getChildCount(node) - 1; i >= 0; i--)
-			compileChild(node, i, new Integer(1));
+			compileChild(node, i, Integer.valueOf(1));
 		// Compile slot assignments.
 		for (int i = 0; i < getChildCount(node); i++)
-			compileChild(node, i, new Integer(2));
+			compileChild(node, i, Integer.valueOf(2));
 		generator.endAssignment();
 		return null;
 	}
@@ -2404,7 +2404,7 @@ public class TutorialDParser implements TutorialDVisitor {
 	// TODO - ensure UPDATE in multiple-assignment conforms to TTM. 
 	public Object visit(ASTUpdateStatement node, Object data) {
 		currentNode = node;
-		if (data != null && data.equals(new Integer(1)))
+		if (data != null && data.equals(Integer.valueOf(1)))
 			return null;
 		// Child 0 - variable name
 		String identifier = getTokenOfChild(node, 0);
@@ -2448,7 +2448,7 @@ public class TutorialDParser implements TutorialDVisitor {
 	// TODO - ensure DELETE in multiple-assignment conforms to TTM. 
 	public Object visit(ASTDelete node, Object data) {
 		currentNode = node;
-		if (data != null && data.equals(new Integer(1)))
+		if (data != null && data.equals(Integer.valueOf(1)))
 			return null;
 		// Child 0 - relvar name
 		String identifier = getTokenOfChild(node, 0);
@@ -2508,7 +2508,7 @@ public class TutorialDParser implements TutorialDVisitor {
 	// TODO - ensure DELETE in multiple-assignment conforms to TTM. 
 	public Object visit(ASTIDelete node, Object data) {
 		currentNode = node;
-		if (data != null && data.equals(new Integer(1)))
+		if (data != null && data.equals(Integer.valueOf(1)))
 			return null;
 		// Child 0 - relvar name
 		String identifier = getTokenOfChild(node, 0);
@@ -3601,7 +3601,7 @@ public class TutorialDParser implements TutorialDVisitor {
 			if (!(t instanceof TypeBoolean))
 				throw new ExceptionSemantic("RS0191: Argument " + i + " of an n-adic boolean expression list is " + t + " but BOOLEAN was expected.");
 		}
-		return new Integer(count);
+		return Integer.valueOf(count);
 	}
 
 	// IN

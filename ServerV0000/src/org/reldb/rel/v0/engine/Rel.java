@@ -9,13 +9,11 @@ import java.io.PrintStream;
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 import org.reldb.rel.exceptions.ExceptionFatal;
 import org.reldb.rel.exceptions.ExceptionSemantic;
-import org.reldb.rel.v0.interpreter.ClassPathHack;
 import org.reldb.rel.v0.interpreter.Instance;
 import org.reldb.rel.v0.interpreter.Interpreter;
 import org.reldb.rel.v0.interpreter.ParseExceptionPrinter;
 import org.reldb.rel.v0.languages.tutoriald.parser.ParseException;
 import org.reldb.rel.v0.languages.tutoriald.parser.TokenMgrError;
-import org.reldb.rel.v0.version.Version;
 
 /** Convenient access point for running an embedded or stand-alone interpreter. */
 
@@ -26,22 +24,14 @@ public class Rel {
 	private PipedInputStream input;
 	private PrintStream output;
 	
-	private static void buildClasspath() throws IOException {
-		ClassPathHack.addFile("lib/" + Version.getBerkeleyDbJarFilename());
-		ClassPathHack.addFile("lib/relshared.jar");	
-		ClassPathHack.addFile("lib/ecj-4.6.1.jar");
-	}
-	
 	/** Convenient runner for a stand-alone Rel interpreter. 
 	 * @throws IOException */
 	public static void main(String[] args) throws IOException {
-		buildClasspath();
 		org.reldb.rel.v0.interpreter.Instance.main(args);
 	}
 	
 	/** Open this database and back it up to the named file. */
 	public static void backup(String databaseDir, String backupFileName) throws IOException, ParseException, DatabaseFormatVersionException {
-		buildClasspath();
 		PrintStream output = new PrintStream(backupFileName);
 		Instance instance = new Instance(databaseDir, false, output);
 		Interpreter interpreter = new Interpreter(instance.getDatabase(), output);
@@ -53,13 +43,11 @@ public class Rel {
 	/** Convert this database to the latest format, if necessary.  Throw exception if not necessary.  Normally only needed if invoking
 	 * the constructor throws DatabaseFormatVersionException. */
 	public static void convertToLatestFormat(String databaseDir, PrintStream conversionOutput, String[] additionalJars) throws DatabaseFormatVersionException, IOException {
-		buildClasspath();
 		Instance.convertToLatestFormat(databaseDir, conversionOutput, additionalJars);
 	}
 	
 	/** Establish a connection with this server. */
 	public Rel(String databaseDir, boolean createDbAllowed, String[] additionalJars) throws IOException, DatabaseFormatVersionException {
-		buildClasspath();
 		input = new PipedInputStream();
 		PipedOutputStream pipeOutput = new PipedOutputStream(input);
 		output = new PrintStream(pipeOutput, true);		

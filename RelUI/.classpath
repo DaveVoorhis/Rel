@@ -1,47 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/mariadb-java-client-1.5.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/je-7.5.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jtds-1.3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-lang-2.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackcess-2.1.6.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
-		<accessrules>
-			<accessrule kind="accessible" pattern="com/sun/management/**"/>
-		</accessrules>
-	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-api-2.11.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-core-2.11.1.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec-1.10.jar"/>
-	<classpathentry kind="lib" path="lib/commons-collections4-4.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/commons-cli-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.11.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections4-4.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient-4.5.6.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.4.10.jar"/>
+	<classpathentry kind="lib" path="lib/jackcess-2.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="lib/mariadb-java-client-2.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/poi-4.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-3.9.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.9.jar"/>
+	<classpathentry kind="lib" path="lib/postgresql-42.2.5.jar"/>
+	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis-1.0.b2.jar"/>
+	<classpathentry kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2-api-2.11.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/curvesapi-1.04.jar"/>
 	<classpathentry kind="lib" path="lib/ecj-4.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/fluent-hc-4.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/httpclient-4.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/httpclient-cache-4.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/httpclient-win-4.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/httpcore-4.4.4.jar"/>
-	<classpathentry kind="lib" path="lib/httpcore-4.4.5.jar"/>
-	<classpathentry kind="lib" path="lib/httpcore-ab-4.4.5.jar"/>
-	<classpathentry kind="lib" path="lib/httpcore-nio-4.4.5.jar"/>
-	<classpathentry kind="lib" path="lib/httpmime-4.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/jna-4.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/jna-platform-4.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/junit.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="lib/poi-3.15.jar"/>
-	<classpathentry kind="lib" path="lib/poi-excelant-3.15.jar"/>
-	<classpathentry kind="lib" path="lib/poi-ooxml-3.15.jar"/>
-	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.15.jar"/>
-	<classpathentry kind="lib" path="lib/poi-scratchpad-3.15.jar"/>
-	<classpathentry kind="lib" path="lib/rel0000.jar" sourcepath="/ServerV0000"/>
+	<classpathentry kind="lib" path="lib/rel0000.jar"/>
 	<classpathentry kind="lib" path="lib/relclient.jar"/>
-	<classpathentry kind="lib" path="lib/relshared.jar"/>
-	<classpathentry kind="lib" path="lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/RelDBMS.jar"/>
-	<classpathentry kind="lib" path="lib/ojdbc7.jar"/>
-	<classpathentry kind="lib" path="lib/postgresql-9.4.1212.jar"/>
-	<classpathentry kind="lib" path="lib/je-7.5.11.jar"/>
+	<classpathentry kind="lib" path="lib/relshared.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

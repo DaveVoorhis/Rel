@@ -151,7 +151,7 @@ public abstract class Table {
 					} finally {
 						tmp.close();
 					}
-					return new Long(insertCount);
+					return Long.valueOf(insertCount);
 				}
 			}).execute(database)).longValue();
 		} catch (ExceptionSemantic se) {
@@ -182,7 +182,7 @@ public abstract class Table {
 		try {
 			return ((Long) (new TransactionRunner() {
 				public Object run(Transaction txn) throws Throwable {
-					return new Long(getStorage(txn).getDatabase(0).count());
+					return Long.valueOf(getStorage(txn).getDatabase(0).count());
 				}
 			}).execute(database)).longValue();
 		} catch (ExceptionSemantic se) {
@@ -310,7 +310,7 @@ public abstract class Table {
 					} finally {
 						cursor.close();
 					}
-					return new Long(deleteCount);
+					return Long.valueOf(deleteCount);
 				}
 			}).execute(database)).longValue();
 		} catch (ExceptionSemantic se) {
@@ -402,7 +402,7 @@ public abstract class Table {
 					} finally {
 						insertionTemporaryTable.close();
 					}
-					return new Long(updateCount);
+					return Long.valueOf(updateCount);
 				}
 			}).execute(database)).longValue();
 		} catch (ExceptionSemantic se) {

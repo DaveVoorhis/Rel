@@ -1,6 +1,5 @@
 package org.reldb.rel.tests.ext_relvar.jdbc;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,14 +10,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.reldb.rel.exceptions.ExceptionSemantic;
 import org.reldb.rel.tests.ext_relvar.TestMySQLJDBCSettings;
-import org.reldb.rel.v0.interpreter.ClassPathHack;
 
 public class TestExceptionsRelvarJDBC extends TestMySQLJDBCSettings {
 
 	@Before
 	public void testJDBC1() {
 		try {
-			ClassPathHack.addFile(driverLocation);
 			Class.forName(driver);
 			Connection connect = DriverManager.getConnection(address, user, password);
 			Statement statement = connect.createStatement();
@@ -34,7 +31,6 @@ public class TestExceptionsRelvarJDBC extends TestMySQLJDBCSettings {
 
 		} catch (SQLException e) {
 		} catch (ClassNotFoundException e) {
-		} catch (IOException e) {
 		}
 
 		String src = "BEGIN;\n" + "var myvar external jdbc \"" + absolutePath + "\" dup_remove;" + "END;\n" + "true";
@@ -44,7 +40,6 @@ public class TestExceptionsRelvarJDBC extends TestMySQLJDBCSettings {
 	@Test(expected = ExceptionSemantic.class)
 	public void testJDBC2() { // Calling relvar after manually deleting database
 		try {
-			ClassPathHack.addFile(driverLocation);
 			Class.forName(driver);
 			Connection connect = DriverManager.getConnection(address, user, password);
 			Statement statement = connect.createStatement();
@@ -52,7 +47,6 @@ public class TestExceptionsRelvarJDBC extends TestMySQLJDBCSettings {
 			statement.executeUpdate("drop database " + database);
 		} catch (SQLException e) {
 		} catch (ClassNotFoundException e) {
-		} catch (IOException e) {
 		}
 
 		String src = "myvar";
@@ -76,14 +70,12 @@ public class TestExceptionsRelvarJDBC extends TestMySQLJDBCSettings {
 	@After
 	public void testJDBC5() { // Drop relvar and database
 		try {
-			ClassPathHack.addFile(driverLocation);
 			Class.forName(driver);
 			Connection connect = DriverManager.getConnection(address, user, password);
 			Statement statement = connect.createStatement();
 			statement.executeUpdate("drop database " + database);
 		} catch (SQLException e) {
 		} catch (ClassNotFoundException e) {
-		} catch (IOException e) {
 		}
 
 		String src = "BEGIN;\n" + "drop var myvar;" + "END;\n" + "true";
