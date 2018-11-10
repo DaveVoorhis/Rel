@@ -1,8 +1,5 @@
 package org.reldb.dbrowser;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.SplashScreen;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +17,6 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.reldb.dbrowser.loading.Loading;
 import org.reldb.dbrowser.ui.version.Version;
 import org.reldb.swt.os_specific.OSSpecific;
 
