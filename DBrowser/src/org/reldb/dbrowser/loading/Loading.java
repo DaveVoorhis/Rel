@@ -24,6 +24,8 @@ public class Loading {
 	private static final int backgroundWidth = 600;
 	private static final int backgroundHeight = 183;
 	
+	private static int msgCount = 0;
+	
 	private static Loading loading = null;
 	
 	private Shell loadingShell;
@@ -41,25 +43,26 @@ public class Loading {
 	}
 	
 	public static void open() {
-		System.err.println("Loading: open");
 		if (loading != null)
 			return;
 		loading = new Loading();
 		loading.openInstance();
-		System.err.println("Loading: opened");
 	}
 
 	public static void close() {
-		System.err.println("Loading close");
 		if (loading != null)
 			loading.closeInstance();
 		loading = null;
-		System.err.println("Loading: closed");
 	}
 
 	public static void action(String message) {
 		if (loading != null)
 			loading.setMessage(message);
+		msgCount++;
+	}
+
+	public static int getPercentageOfExpectedMessages() {
+		return msgCount * 100 / expectedMessageCount;
 	}
 	
 	public static boolean isDisplayed() {

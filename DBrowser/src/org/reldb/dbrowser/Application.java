@@ -1,5 +1,8 @@
 package org.reldb.dbrowser;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.SplashScreen;
 import java.io.IOException;
 import java.io.InputStream;
@@ -262,8 +265,6 @@ public class Application {
 		Display.setAppName(Version.getAppName());
 		final Display display = new Display();
 		
-		Loading.open();
-		
 		configureLog4j();
 
 		OSSpecific.launch(Version.getAppName(),
@@ -272,11 +273,40 @@ public class Application {
 			event -> preferences()
 		);
 		
+//		Loading.open();	
+
 		executeSplashInteractor(() -> {
 			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				/*
+				SplashScreen splash = SplashScreen.getSplashScreen();
+				if (splash != null) {
+					Graphics2D gc = splash.createGraphics();
+					Rectangle rect = splash.getBounds();
+					System.out.println("Application: rect = " + rect);
+					int barWidth = rect.width - 20;
+					int barHeight = 10;
+					Rectangle progressBarRect = new Rectangle(10, rect.height - 20, barWidth, barHeight);
+					gc.draw3DRect(progressBarRect.x, progressBarRect.y, progressBarRect.width, progressBarRect.height, false);
+					gc.setColor(Color.green);
+					(new Thread() {
+						public void run() {
+							while (SplashScreen.getSplashScreen() != null) {
+								int percent = Loading.getPercentageOfExpectedMessages();
+								System.out.println("Application: percent = " + percent);
+								int drawExtent = Math.min(barWidth * percent / 100, barWidth);
+								gc.fillRect(progressBarRect.x, progressBarRect.y, drawExtent, barHeight);
+								splash.update();
+								try {
+									Thread.sleep(250);
+								} catch (InterruptedException e) {
+								}
+							}							
+						}
+					}).start();
+				}
+				*/
+				Thread.sleep(300);
+			} catch (InterruptedException e1) {
 			}
 		});
 		
@@ -290,9 +320,13 @@ public class Application {
 		shell.open();		
 		shell.layout();
 		
+		// Loading.open();
+		
 		DBrowser.launch(args, shell);
 	
-		Loading.close();
+//		Loading.close();
+		
+		shell.layout(true);
 		
 		while (!display.isDisposed()) {
 			try {
