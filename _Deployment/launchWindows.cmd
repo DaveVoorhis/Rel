@@ -1,1 +1,1 @@
-@java -splash:Splash.bmp -cp "lib/*;lib/nattable/*;lib/swt/*;lib/swt/win_64/*" Rel
+@java -splash:Splash.png -cp "lib/*;lib/nattable/*;lib/swt/*;lib/swt/win_64/*" DBrowser
