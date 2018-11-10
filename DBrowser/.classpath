@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/_Deploy/lib/macos_64/swt.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/macos_64/swt_reldb.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/ca.odell.glazedlists_1.9.0.v201303080712.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.apache.commons.codec_1.6.0.v201305230611.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.apache.commons.logging_1.1.1.v201101211721.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.apache.poi_3.9.0.v201405241750.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.cwt_1.0.0.201703081533.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.cdatetime_1.0.0.201703081533.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.nattable.core_1.5.0.201703192131.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.nattable.core.feature_1.5.0.201703192131.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.e4_1.1.0.201703192131.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.e4.feature_1.1.0.201703192131.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.glazedlists_1.5.0.201703192131.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature_1.5.0.201703192131.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.nebula_1.1.0.201703192131.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.nebula.feature_1.1.0.201703192131.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.poi_1.5.0.201703192131.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.poi.feature_1.5.0.201703192131.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.nebula.widgets.richtext_1.2.0.201703081533.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/commons-cli-1.4.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/commons-codec-1.11.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/commons-collections4-4.2.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/commons-lang3-3.8.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/ecj-4.6.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/httpclient-4.5.6.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/httpcore-4.4.10.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/jackcess-2.2.0.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/je-7.5.11.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/jtds-1.3.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/log4j-1.2-api-2.11.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/log4j-api-2.11.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/log4j-core-2.11.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/mariadb-java-client-2.3.0.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/poi-4.0.0.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/poi-ooxml-3.9.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/poi-ooxml-schemas-3.9.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/postgresql-42.2.5.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/rel0000.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/RelDBMS.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/RelTest.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/stax-api-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/xml-apis-1.0.b2.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/xmlbeans-2.3.0.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/relshared.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/relclient.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.jface_3.13.2.v20171022-1656.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.jface.text_3.12.2.v20180112-1341.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.core.commands_3.9.200.v20180827-1727.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.core.runtime_3.15.0.v20180817-1401.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/nattable/org.eclipse.equinox.common_3.10.100.v20180827-1235.jar"/>
+	<classpathentry kind="lib" path="/_Deploy/lib/org.eclipse.swt_3.108.0.v20180904-1901.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
