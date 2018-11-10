@@ -1,0 +1,1 @@
+java -splash:Splash.bmp -cp "lib/*:lib/nattable/*:lib/swt/*:lib/swt/linux_64/*" Rel
