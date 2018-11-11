@@ -1,12 +1,11 @@
 package org.reldb.dbrowser.ui.content.cmd;
 
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.widgets.Composite;
 
 public class CmdStyledText extends StyledText {
 	private UndoRedo undoredo;
 
-	public CmdStyledText(Composite parent, int style) {
+	public CmdStyledText(CmdPanelInput parent, int style) {
 		super(parent, style);
 		undoredo = new UndoRedo(this);
 	}
@@ -23,6 +22,10 @@ public class CmdStyledText extends StyledText {
 		int topIndex = getTopIndex();
 		setSelection(0, getCharCount());
 		setTopIndex(topIndex);
+	}
+
+	public void findReplace() {
+		new FindReplaceDialog(getShell(), this).open();
 	}
 
 }

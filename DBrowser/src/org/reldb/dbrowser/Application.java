@@ -14,15 +14,22 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.*;
+import org.eclipse.swt.events.MenuAdapter;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.reldb.dbrowser.ui.AboutDialog;
+import org.reldb.dbrowser.ui.preferences.Preferences;
 import org.reldb.dbrowser.ui.version.Version;
 import org.reldb.swt.os_specific.OSSpecific;
 
 public class Application {
 
 	static boolean createdScreenBar = false;
+	
+	static Shell shell = null;
 	
 	static boolean isMac() {
 		return SWT.getPlatform().equals("cocoa");
@@ -40,62 +47,100 @@ public class Application {
 		System.exit(0);
 	}
 	
-	private static void about() {
-		System.out.println("Rel: about");
-	}
-	
-	private static void preferences() {
-		System.out.println("Rel: preferences");
-	}
-	
 	private static void createFileMenu(Menu bar) {	
 		MenuItem fileItem = new MenuItem(bar, SWT.CASCADE);			
 		fileItem.setText("File");
 		
 		Menu menu = new Menu(fileItem);
 		fileItem.setMenu(menu);
-/*
-		new DecoratedMenuItem(menu, "&New Datasheet\tCtrl-N", SWT.MOD1 | 'N', IconLoader.loadIcon("add-new-document"), event -> {
-		});
 		
-		new DecoratedMenuItem(menu, "Open Datasheet...\tCtrl-O", SWT.MOD1 | 'O', IconLoader.loadIcon("open-folder-outline"), event -> {
-			
-		});
-*/
+		new DecoratedMenuItem(menu, "&New Database\tCtrl-N", SWT.MOD1 | 'N', "NewDBIcon", e -> DBrowser.newDatabase());
+		new DecoratedMenuItem(menu, "Open &local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> DBrowser.openLocalDatabase());
+		new DecoratedMenuItem(menu, "Open remote database\tCtrl-r", SWT.MOD1 | 'r', "OpenDBRemoteIcon", e -> DBrowser.openRemoteDatabase());
+		
+		String[] dbURLs = DBrowser.getRecentlyUsedDatabaseList();
+		if (dbURLs.length > 0) {
+			new MenuItem(menu, SWT.SEPARATOR);
+			for (String dbURL: dbURLs)
+				new DecoratedMenuItem(menu, "Open " + dbURL, 0, "OpenDBLocalIcon", e -> DBrowser.openDatabase(dbURL));
+			new MenuItem(menu, SWT.SEPARATOR);			
+			new DecoratedMenuItem(menu, "Clear above list of recently-opened databases", 0, (String)null, e -> DBrowser.clearRecentlyUsedDatabaseList());
+			new DecoratedMenuItem(menu, "Manage list of recently-opened databases...", 0, (String)null, e -> DBrowser.manageRecentlyUsedDatabaseList());
+		}
 		OSSpecific.addFileMenuItems(menu);
 	}
 	
-	private static void createEditMenuItem(String methodName, DecoratedMenuItem menuItem) {
-		abstract class EditTimerTask extends TimerTask {
-			Control focusControl = null;
-			Method menuItemMethod = null;
+	private static boolean isWebSite(Control control) {
+		return control.getClass().getName().equals("org.eclipse.swt.browser.WebSite");		
+	}
+		
+	private static Method getEditMethod(String methodName, Control control) {
+		if (control == null)
+			return null;
+		if (isWebSite(control)) {
+			// Browser browser = (Browser)getParent().getParent();
+			Object webSite = control;
+			Method getParent;
+			try {
+				getParent = webSite.getClass().getMethod("getParent");
+				Object webSiteParent = getParent.invoke(webSite);
+				Method getParentOfParent = webSiteParent.getClass().getMethod("getParent");
+				Object browser = getParentOfParent.invoke(webSiteParent);
+				return browser.getClass().getMethod(methodName);
+			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				return null;
+			}
+		} else {		
+			Class<?> controlClass = control.getClass();
+			try {
+				return (Method)controlClass.getMethod(methodName, new Class<?>[0]);
+			} catch (NoSuchMethodException | SecurityException e) {
+				return null;
+			}
 		}
-		Timer editTimer = new Timer();
-		EditTimerTask editMenuItemTimer = new EditTimerTask() {
-			public void run() {
-				Display display = Display.getCurrent();
-				if (display == null)
-					return;
-				focusControl = display.getFocusControl();
+	}
+	
+	private static void createEditMenuItem(String methodName, DecoratedMenuItem menuItem) {
+		class EditMenuAdapter extends MenuAdapter { 
+			Control focusControl;
+			LinkedList<Method> menuItemMethods = new LinkedList<Method>();
+		};
+		EditMenuAdapter menuAdapter = new EditMenuAdapter() {
+			@Override
+			public void menuShown(MenuEvent arg0) {
+				focusControl = menuItem.getDisplay().getFocusControl();
 				if (focusControl == null)
-					return;
-				Class<?> focusControlClass = focusControl.getClass();
-				try {
-					menuItemMethod = (Method)focusControlClass.getMethod(methodName, new Class[] {null});
+					return;			
+				Method method = getEditMethod(methodName, focusControl);
+				if (method != null) {
+					menuItemMethods.add(method);
+					System.out.println("Appication: " + focusControl.getClass() + " supports " + methodName);
 					menuItem.setEnabled(true);
-				} catch (NoSuchMethodException | SecurityException e) {
-					menuItem.setEnabled(false);
+				} else {
+					if (methodName.equals("clear")) {
+						Method selectAll = getEditMethod("selectAll", focusControl);
+						Method cut = getEditMethod("cut", focusControl);
+						if (selectAll != null && cut != null) {
+							menuItemMethods.add(selectAll);
+							menuItemMethods.add(cut);
+							menuItem.setEnabled(true);
+							System.out.println("Appication: " + focusControl.getClass() + " supports " + methodName);
+						} else
+							menuItem.setEnabled(false);
+					} else
+						menuItem.setEnabled(false);
 				}
 			}
 		};
-		menuItem.setEnabled(false);
+		menuItem.getParent().addMenuListener(menuAdapter);
 		menuItem.addListener(SWT.Selection, evt -> {
 			try {
-				editMenuItemTimer.menuItemMethod.invoke(editMenuItemTimer.focusControl, new Object[] {null});
+				for (Method method: menuAdapter.menuItemMethods)
+					method.invoke(menuAdapter.focusControl, new Object[0]);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			}
 		});
-		editTimer.schedule(editMenuItemTimer, 250);
+		menuItem.setEnabled(false);
 	}
 	
 	private static void createEditMenu(Menu bar) {		
@@ -104,20 +149,40 @@ public class Application {
 		
 		Menu menu = new Menu(editItem);
 		editItem.setMenu(menu);
-/*		
-		createEditMenuItem("undo", new DecoratedMenuItem(menu, "Undo\tCtrl-Z", SWT.MOD1 | 'Z', IconLoader.loadIcon("undo")));
+		
+		createEditMenuItem("undo", new DecoratedMenuItem(menu, "Undo\tCtrl-Z", SWT.MOD1 | 'Z', "undo"));
 		
 		int redoAccelerator = SWT.MOD1 | (isMac() ? SWT.SHIFT | 'Z' : 'Y');
-		createEditMenuItem("redo", new DecoratedMenuItem(menu, "Redo\tCtrl-Y", redoAccelerator, IconLoader.loadIcon("redo")));
+		createEditMenuItem("redo", new DecoratedMenuItem(menu, "Redo\tCtrl-Y", redoAccelerator, "redo"));
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		
-		createEditMenuItem("cut", new DecoratedMenuItem(menu, "Cut\tCtrl-X", SWT.MOD1 | 'X', IconLoader.loadIcon("cut")));
-		createEditMenuItem("copy", new DecoratedMenuItem(menu, "Copy\tCtrl-C", SWT.MOD1 | 'C', IconLoader.loadIcon("copy")));
-		createEditMenuItem("paste", new DecoratedMenuItem(menu, "Paste\tCtrl-V", SWT.MOD1 | 'V', IconLoader.loadIcon("paste")));
-		createEditMenuItem("delete", new DecoratedMenuItem(menu, "Delete\tDel", SWT.DEL, IconLoader.loadIcon("rubbish-bin")));
-		createEditMenuItem("selectAll", new DecoratedMenuItem(menu, "Select All\tCtrl-A", SWT.MOD1 | 'A', IconLoader.loadIcon("select-all")));
-		*/
+		createEditMenuItem("cut", new DecoratedMenuItem(menu, "Cut\tCtrl-X", SWT.MOD1 | 'X', "cut"));
+		createEditMenuItem("copy", new DecoratedMenuItem(menu, "Copy\tCtrl-C", SWT.MOD1 | 'C', "copy"));
+		createEditMenuItem("paste", new DecoratedMenuItem(menu, "Paste\tCtrl-V", SWT.MOD1 | 'V', "paste"));
+		
+		new MenuItem(menu, SWT.SEPARATOR);
+		
+		createEditMenuItem("delete", new DecoratedMenuItem(menu, "Delete\tDel", SWT.DEL, "delete"));
+		createEditMenuItem("selectAll", new DecoratedMenuItem(menu, "Select All\tCtrl-A", SWT.MOD1 | 'A', "selectAll"));
+		createEditMenuItem("findReplace", new DecoratedMenuItem(menu, "Find/Replace", 0, "edit_find_replace"));
+		
+		new MenuItem(menu, SWT.SEPARATOR);
+		
+		new DecoratedMenuItem(menu, "Special characters", 0, "characters", e -> {});
+		new DecoratedMenuItem(menu, "Previous history", 0, "previousIcon", e -> {});
+		new DecoratedMenuItem(menu, "Next history", 0, "nextIcon", e -> {});
+		createEditMenuItem("clear", new DecoratedMenuItem(menu, "Clear", 0, "clearIcon"));
+		new DecoratedMenuItem(menu, "Load file", 0, "loadIcon", e -> {});
+		new DecoratedMenuItem(menu, "Insert file", 0, "loadInsertIcon", e -> {});
+		new DecoratedMenuItem(menu, "Insert file name", 0, "pathIcon", e -> {});
+		new DecoratedMenuItem(menu, "Save file", 0, "saveIcon", e -> {});
+		new DecoratedMenuItem(menu, "Save history", 0, "saveHistoryIcon", e -> {});
+ 
+ 		new MenuItem(menu, SWT.SEPARATOR);
+ 
+ 		new DecoratedMenuItem(menu, "Copy input to output", 0, "copyToOutputIcon", SWT.CHECK, e -> {});
+ 		new DecoratedMenuItem(menu, "Wrap text", 0, "wrapIcon", SWT.CHECK, e -> {});
 	}
 
 	private static void createDatabaseMenu(Menu bar) {
@@ -265,8 +330,8 @@ public class Application {
 
 		OSSpecific.launch(Version.getAppName(),
 			event -> quit(),
-			event -> about(),
-			event -> preferences()
+			event -> new AboutDialog(shell).open(),
+			event -> (new Preferences(shell)).show()
 		);
 		
 //		Loading.open();	
@@ -306,7 +371,7 @@ public class Application {
 			}
 		});
 		
-		Shell shell = createShell();
+		shell = createShell();
 		shell.setImages(loadIcons(display));
 		shell.setText(Version.getAppID());
 		shell.addListener(SWT.Close, e -> {

@@ -128,7 +128,7 @@ public class CmdPanelInput extends Composite {
 						inputText.selectAll();
 						return;
 					case 'f':
-						doFindReplace();
+						inputText.findReplace();
 						return;
 					case 'y':
 						inputText.redo();
@@ -243,7 +243,7 @@ public class CmdPanelInput extends Composite {
 			
 			tlitmFindReplace = new CommandActivator(FindReplace.class, toolBar, SWT.NONE);
 			tlitmFindReplace.setToolTipText("Find/Replace");
-			tlitmFindReplace.addListener(SWT.Selection, e -> doFindReplace());
+			tlitmFindReplace.addListener(SWT.Selection, e -> inputText.findReplace());
 
 			tlitmLoad = new CommandActivator(LoadFile.class, toolBar, SWT.NONE);
 			tlitmLoad.setToolTipText("Load file");
@@ -363,7 +363,7 @@ public class CmdPanelInput extends Composite {
 
 		specialCharacterDisplay = new SpecialCharacters(parent.getShell(), inputText);
 	}
-
+	
 	public void selectAll() {
 		inputText.selectAll();
 	}
@@ -375,10 +375,6 @@ public class CmdPanelInput extends Composite {
 
 	protected String getDefaultSaveFileName() {
 		return "Untitled";
-	}
-
-	private void doFindReplace() {
-		new FindReplaceDialog(getShell(), inputText).open();
 	}
 
 	public void copyOutputToInput() {
