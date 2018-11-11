@@ -4,7 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.ManagedToolbar;
-import org.reldb.dbrowser.handlers.output.*;
+import org.reldb.dbrowser.Application;
 
 public class CmdPanelToolbar extends ManagedToolbar {
 
@@ -22,18 +22,18 @@ public class CmdPanelToolbar extends ManagedToolbar {
 		
 		addAdditionalItemsBefore(this);
 
-		clearOutputBtn = addItem(ClearOutput.class, "Clear", "clearIcon", SWT.PUSH);
+		clearOutputBtn = addItem(Application.getClearOutputMenuItem(), "Clear", "clearIcon", SWT.PUSH);
 		clearOutputBtn.addListener(SWT.Selection, e -> cmdPanel.clearOutput());
 
-		saveOutputAsHTMLBtn = addItem(SaveAsHTML.class, "Save as HTML", "saveHTMLIcon", SWT.PUSH);
+		saveOutputAsHTMLBtn = addItem(Application.getSaveAsHTMLMenuItem(), "Save as HTML", "saveHTMLIcon", SWT.PUSH);
 		saveOutputAsHTMLBtn.addListener(SWT.Selection, e -> cmdPanel.saveOutputAsHtml());
 
-		saveOutputAsTextBtn = addItem(SaveAsText.class, "Save as text", "saveTextIcon", SWT.PUSH);
+		saveOutputAsTextBtn = addItem(Application.getSaveAsTextMenuItem(), "Save as text", "saveTextIcon", SWT.PUSH);
 		saveOutputAsTextBtn.addListener(SWT.Selection, e -> cmdPanel.saveOutputAsText());
 
 		addSeparator();
 
-		enhancedOutputToggle = addItem(DisplayEnhancedOutput.class, "Display enhanced output", "enhancedIcon", SWT.CHECK);
+		enhancedOutputToggle = addItem(Application.getDisplayEnhancedOutputMenuItem(), "Display enhanced output", "enhancedIcon", SWT.CHECK);
 		enhancedOutputToggle.setSelection(cmdPanel.getEnhancedOutput());
 		enhancedOutputToggle.addListener(SWT.Selection, e -> {
 			cmdPanel.setEnhancedOutput(enhancedOutputToggle.getSelection());
@@ -47,16 +47,16 @@ public class CmdPanelToolbar extends ManagedToolbar {
 		});
 
 		if (!cmdPanel.isForEvaluationOnly()) {
-			showOkToggle = addItem(DisplayOk.class, "Write 'Ok.' after execution", "showOkIcon", SWT.CHECK);
+			showOkToggle = addItem(Application.getDisplayOkMenuItem(), "Write 'Ok.' after execution", "showOkIcon", SWT.CHECK);
 			showOkToggle.setSelection(cmdPanel.getShowOk());
 			showOkToggle.addListener(SWT.Selection, e -> cmdPanel.setShowOk(showOkToggle.getSelection()));
 			
-			autoclearToggle = addItem(DisplayAutoclear.class, "Automatically clear output", "autoclearIcon", SWT.CHECK);
+			autoclearToggle = addItem(Application.getDisplayAutoClearOutputMenuItem(), "Automatically clear output", "autoclearIcon", SWT.CHECK);
 			autoclearToggle.setSelection(cmdPanel.getAutoclear());
 			autoclearToggle.addListener(SWT.Selection, e -> cmdPanel.setAutoclear(autoclearToggle.getSelection()));
 		}
 
-		headingToggle = addItem(DisplayRelationHeadings.class, "Show relation headings", "headingIcon", SWT.CHECK);
+		headingToggle = addItem(Application.getShowRelationHeadingsMenuItem(), "Show relation headings", "headingIcon", SWT.CHECK);
 		headingToggle.setEnabled(enhancedOutputToggle.getSelection());
 		headingToggle.setSelection(cmdPanel.getHeadingVisible()
 				&& headingToggle.getEnabled());
@@ -67,7 +67,7 @@ public class CmdPanelToolbar extends ManagedToolbar {
 			cmdPanel.setHeadingVisible(headingToggle.getSelection());
 		});
 		
-		headingTypesToggle = addItem(DisplayRelationHeadingsType.class, "Display attribute types in relation headings", "typeSuppressIcon", SWT.CHECK);
+		headingTypesToggle = addItem(Application.getSHowRelationHeadingAttributeTypesMenuItem(), "Display attribute types in relation headings", "typeSuppressIcon", SWT.CHECK);
 		headingTypesToggle.setEnabled(headingToggle.getSelection()
 				&& enhancedOutputToggle.getSelection());
 		headingTypesToggle.setSelection(cmdPanel.getHeadingTypesVisible()

@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
@@ -30,8 +31,8 @@ public class ManagedToolbar {
 	
 	private Vector<CommandActivatorItem> items = new Vector<CommandActivatorItem>();
 	
-	public CommandActivator addItem(Class<? extends MenuItemWithToolbar> menuClass, String toolTip, String iconName, int style) {
-		CommandActivator item = new CommandActivator(menuClass, toolBar, style);
+	public CommandActivator addItem(MenuItem menuItem, String toolTip, String iconName, int style) {
+		CommandActivator item = new CommandActivator(menuItem, toolBar, style);
 		item.setToolTipText(toolTip);
 		item.setImage(IconLoader.loadIcon(iconName));
 		items.add(new CommandActivatorItem(item, iconName));
@@ -78,8 +79,8 @@ public class ManagedToolbar {
 	}
 
 	public void activate() {
-		for (CommandActivatorItem tbi: items)
-			tbi.getItem().activate();
+		// for (CommandActivatorItem tbi: items)
+		//	tbi.getItem().activate();
 	}
 	
 	public void deactivate() {

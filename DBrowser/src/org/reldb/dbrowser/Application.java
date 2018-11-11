@@ -6,8 +6,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.BasicConfigurator;
@@ -16,7 +14,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.wb.swt.SWTResourceManager;
@@ -169,15 +166,15 @@ public class Application {
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		
-		new DecoratedMenuItem(menu, "Special characters", 0, "characters", e -> {});
-		new DecoratedMenuItem(menu, "Previous history", 0, "previousIcon", e -> {});
-		new DecoratedMenuItem(menu, "Next history", 0, "nextIcon", e -> {});
+		createEditMenuItem("specialCharacters", new DecoratedMenuItem(menu, "Special characters", 0, "characters"));
+		createEditMenuItem("previousHistory", new DecoratedMenuItem(menu, "Previous history", 0, "previousIcon"));
+		createEditMenuItem("nextHistory", new DecoratedMenuItem(menu, "Next history", 0, "nextIcon"));
 		createEditMenuItem("clear", new DecoratedMenuItem(menu, "Clear", 0, "clearIcon"));
-		new DecoratedMenuItem(menu, "Load file", 0, "loadIcon", e -> {});
-		new DecoratedMenuItem(menu, "Insert file", 0, "loadInsertIcon", e -> {});
-		new DecoratedMenuItem(menu, "Insert file name", 0, "pathIcon", e -> {});
-		new DecoratedMenuItem(menu, "Save file", 0, "saveIcon", e -> {});
-		new DecoratedMenuItem(menu, "Save history", 0, "saveHistoryIcon", e -> {});
+		createEditMenuItem("loadFile", new DecoratedMenuItem(menu, "Load file", 0, "loadIcon"));
+		createEditMenuItem("insertFile", new DecoratedMenuItem(menu, "Insert file", 0, "loadInsertIcon"));
+		createEditMenuItem("insertFileName", new DecoratedMenuItem(menu, "Insert file name", 0, "pathIcon"));
+		createEditMenuItem("saveFile", new DecoratedMenuItem(menu, "Save file", 0, "saveIcon"));
+		createEditMenuItem("saveHistory", new DecoratedMenuItem(menu, "Save history", 0, "saveHistoryIcon"));
  
  		new MenuItem(menu, SWT.SEPARATOR);
  
@@ -400,5 +397,190 @@ public class Application {
 		}
 
 		SWTResourceManager.dispose();
+	}
+
+	public static MenuItem getBackupMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getRefreshMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getShowMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getEditMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getNewMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getDropMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getDesignMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getRenameMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getExportMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getShowSystemObjectsMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getCopyInputToOutputMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getClearOutputMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getSaveAsHTMLMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getSaveAsTextMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getDisplayEnhancedOutputMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getDisplayOkMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getDisplayAutoClearOutputMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getShowRelationHeadingsMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getSHowRelationHeadingAttributeTypesMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getSpecialCharactersMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getPreviousHistoryMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getNextHistoryMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getClearMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getUndoMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getRedoMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getCutMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getCopyMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getPasteMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getSelectAllMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getDeleteMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getFindReplaceMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getLoadFileMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getFileNameMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getInsertFileMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getSaveFileMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getSaveHistoryMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static MenuItem getWrapTextMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

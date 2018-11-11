@@ -7,7 +7,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
-import org.reldb.dbrowser.handlers.output.Refresh;
+import org.reldb.dbrowser.Application;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 import org.reldb.dbrowser.ui.content.filtersorter.FilterSorter;
@@ -70,7 +70,7 @@ public class ExpressionResultViewerTab extends DbTreeTab {
 		return (new CmdPanelToolbar(parent, cmdPanel) {
 			protected void addAdditionalItemsAfter(CmdPanelToolbar toolbar) {
 				super.addAdditionalItemsAfter(toolbar);
-				addItem(Refresh.class, "Refresh", "arrow_refresh", SWT.PUSH).addListener(SWT.Selection, e -> evaluate());
+				addItem(Application.getRefreshMenuItem(), "Refresh", "arrow_refresh", SWT.PUSH).addListener(SWT.Selection, e -> evaluate());
 			}
 		}).getToolBar();
 	}

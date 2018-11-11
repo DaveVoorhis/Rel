@@ -235,7 +235,6 @@ public class DbTab extends CTabItem {
 		modeContent.layout();
 		if (existing)
 			contentCmd.redisplayed();
-		contentCmd.activateMenu();
 	}
 
 	private void showConversion(String message, String dbURL) {

@@ -5,7 +5,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.reldb.dbrowser.handlers.database.Backup;
+import org.reldb.dbrowser.Application;
 import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.ManagedToolbar;
@@ -35,7 +35,7 @@ public class DbTabContentRev extends Composite {
 				@Override
 				public void addAdditionalItemsBefore(VarEditorToolbar toolbar) {
 					// backup icon
-					CommandActivator tlitmBackup = addItem(Backup.class, "Make backup", "safeIcon", SWT.PUSH);
+					CommandActivator tlitmBackup = addItem(Application.getBackupMenuItem(), "Make backup", "safeIcon", SWT.PUSH);
 					tlitmBackup.addListener(SWT.Selection, e -> parentTab.makeBackup());
 				}
 			};
@@ -44,7 +44,7 @@ public class DbTabContentRev extends Composite {
 				@Override
 				public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
 					// backup icon
-					CommandActivator tlitmBackup = addItem(Backup.class, "Make backup", "safeIcon", SWT.PUSH);
+					CommandActivator tlitmBackup = addItem(Application.getBackupMenuItem(), "Make backup", "safeIcon", SWT.PUSH);
 					tlitmBackup.addListener(SWT.Selection, e -> parentTab.makeBackup());
 				}
 			};

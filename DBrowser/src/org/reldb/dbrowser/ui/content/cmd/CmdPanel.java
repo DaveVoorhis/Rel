@@ -197,8 +197,4 @@ public class CmdPanel extends Composite {
 		cmdPanelInput.setText(text);
 	}
 
-	public void activateMenu() {
-		cmdPanelInput.activateMenu();
-	}
-
 }

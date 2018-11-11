@@ -22,9 +22,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-
-import org.reldb.dbrowser.handlers.edit.*;
-
+import org.reldb.dbrowser.Application;
 import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.Tabs;
@@ -189,153 +187,80 @@ public class CmdPanelInput extends Composite {
 		cmdPanelBottom.setLayoutData(fd_cmdPanelBottom);
 
 		if ((cmdStyle & CmdPanel.NO_INPUT_TOOLBAR) == 0) {
-			tlitmCharacters = new CommandActivator(SpecialChars.class, toolBar, SWT.NONE);
+			tlitmCharacters = new CommandActivator(Application.getSpecialCharactersMenuItem(), toolBar, SWT.NONE);
 			tlitmCharacters.setToolTipText("Special characters");
-			tlitmCharacters.addListener(SWT.Selection, e -> specialCharacterDisplay.open());
+			tlitmCharacters.addListener(SWT.Selection, e -> specialCharacters());
 
-			tlitmPrevHistory = new CommandActivator(PreviousHistory.class, toolBar, SWT.NONE);
+			tlitmPrevHistory = new CommandActivator(Application.getPreviousHistoryMenuItem(), toolBar, SWT.NONE);
 			tlitmPrevHistory.setToolTipText("Load previous historical entry");
-			tlitmPrevHistory.addListener(SWT.Selection, e -> {
-				inputText.setText(getPreviousHistoryItem());
-				inputText.setSelection(0, inputText.getText().length());
-				inputText.setFocus();
-			});
+			tlitmPrevHistory.addListener(SWT.Selection, e -> previousHistory());
 
-			tlitmNextHistory = new CommandActivator(NextHistory.class, toolBar, SWT.NONE);
+			tlitmNextHistory = new CommandActivator(Application.getNextHistoryMenuItem(), toolBar, SWT.NONE);
 			tlitmNextHistory.setToolTipText("Load next historical entry");
-			tlitmNextHistory.addListener(SWT.Selection, e -> {
-				inputText.setText(getNextHistoryItem());
-				inputText.setSelection(0, inputText.getText().length());
-				inputText.setFocus();
-			});
+			tlitmNextHistory.addListener(SWT.Selection, e -> nextHistory());
 
-			tlitmClear = new CommandActivator(null, toolBar, SWT.NONE);
+			tlitmClear = new CommandActivator(Application.getClearMenuItem(), toolBar, SWT.NONE);
 			tlitmClear.setToolTipText("Clear");
 			tlitmClear.addListener(SWT.Selection, e -> clear());
 
-			tlitmUndo = new CommandActivator(null, toolBar, SWT.NONE);
+			tlitmUndo = new CommandActivator(Application.getUndoMenuItem(), toolBar, SWT.NONE);
 			tlitmUndo.setToolTipText("Undo");
 			tlitmUndo.addListener(SWT.Selection, e -> inputText.undo());
 
-			tlitmRedo = new CommandActivator(null, toolBar, SWT.NONE);
+			tlitmRedo = new CommandActivator(Application.getRedoMenuItem(), toolBar, SWT.NONE);
 			tlitmRedo.setToolTipText("Redo");
 			tlitmRedo.addListener(SWT.Selection, e -> inputText.redo());
 
-			tlitmCut = new CommandActivator(null, toolBar, SWT.NONE);
+			tlitmCut = new CommandActivator(Application.getCutMenuItem(), toolBar, SWT.NONE);
 			tlitmCut.setToolTipText("Cut");
 			tlitmCut.addListener(SWT.Selection, e -> inputText.cut());
 
-			tlitmCopy = new CommandActivator(null, toolBar, SWT.NONE);
+			tlitmCopy = new CommandActivator(Application.getCopyMenuItem(), toolBar, SWT.NONE);
 			tlitmCopy.setToolTipText("Copy");
 			tlitmCopy.addListener(SWT.Selection, e -> inputText.copy());
 
-			tlitmPaste = new CommandActivator(null, toolBar, SWT.NONE);
+			tlitmPaste = new CommandActivator(Application.getPasteMenuItem(), toolBar, SWT.NONE);
 			tlitmPaste.setToolTipText("Paste");
 			tlitmPaste.addListener(SWT.Selection, e -> inputText.paste());
 			
-			tlitmSelectAll = new CommandActivator(null, toolBar, SWT.NONE);
+			tlitmSelectAll = new CommandActivator(Application.getSelectAllMenuItem(), toolBar, SWT.NONE);
 			tlitmSelectAll.setToolTipText("Select all");
 			tlitmSelectAll.addListener(SWT.Selection, e -> inputText.selectAll());
 
-			tlitmDelete = new CommandActivator(Delete.class, toolBar, SWT.NONE);
+			tlitmDelete = new CommandActivator(Application.getDeleteMenuItem(), toolBar, SWT.NONE);
 			tlitmDelete.setToolTipText("Delete");
 			tlitmDelete.addListener(SWT.Selection, e -> delete());
 			
-			tlitmFindReplace = new CommandActivator(FindReplace.class, toolBar, SWT.NONE);
+			tlitmFindReplace = new CommandActivator(Application.getFindReplaceMenuItem(), toolBar, SWT.NONE);
 			tlitmFindReplace.setToolTipText("Find/Replace");
 			tlitmFindReplace.addListener(SWT.Selection, e -> inputText.findReplace());
 
-			tlitmLoad = new CommandActivator(LoadFile.class, toolBar, SWT.NONE);
+			tlitmLoad = new CommandActivator(Application.getLoadFileMenuItem(), toolBar, SWT.NONE);
 			tlitmLoad.setToolTipText("Load file");
-			tlitmLoad.addListener(SWT.Selection, e -> {
-				ensureLoadDialogExists();
-				loadDialog.setFileName("");
-				loadDialog.setText("Load File");
-				String fname = loadDialog.open();
-				if (fname == null)
-					return;
-				loadFile(fname);
-				ensureSaveDialogExists();
-				saveDialog.setFileName(loadDialog.getFileName());
-				saveDialog.setFilterPath(loadDialog.getFilterPath());
-			});
+			tlitmLoad.addListener(SWT.Selection, e -> loadFile());
 
-			tlitmLoadInsert = new CommandActivator(InsertFile.class, toolBar, SWT.NONE);
+			tlitmLoadInsert = new CommandActivator(Application.getInsertFileMenuItem(), toolBar, SWT.NONE);
 			tlitmLoadInsert.setToolTipText("Load and insert file");
-			tlitmLoadInsert.addListener(SWT.Selection, e -> {
-				ensureLoadDialogExists();
-				loadDialog.setFileName("");
-				loadDialog.setText("Load and Insert File");
-				String fname = loadDialog.open();
-				if (fname == null)
-					return;
-				loadInsertFile(fname);
-			});
+			tlitmLoadInsert.addListener(SWT.Selection, e -> insertFile());
 
-			tlitmGetPath = new CommandActivator(InsertFileName.class, toolBar, SWT.NONE);
+			tlitmGetPath = new CommandActivator(Application.getFileNameMenuItem(), toolBar, SWT.NONE);
 			tlitmGetPath.setToolTipText("Get file path");
-			tlitmGetPath.addListener(SWT.Selection, e -> {
-				ensureLoadPathDialogExists();
-				loadPathDialog.setFileName("");
-				loadPathDialog.setText("Get File Path");
-				String fname = loadPathDialog.open();
-				if (fname == null)
-					return;
-				insertInputText('"' + fname.replace("\\", "\\\\") + '"');
-			});
+			tlitmGetPath.addListener(SWT.Selection, e -> insertFileName());
 
-			tlitmSave = new CommandActivator(SaveFile.class, toolBar, SWT.NONE);
+			tlitmSave = new CommandActivator(Application.getSaveFileMenuItem(), toolBar, SWT.NONE);
 			tlitmSave.setToolTipText("Save");
-			tlitmSave.addListener(SWT.Selection, e -> {
-				ensureSaveDialogExists();
-				saveDialog.setText("Save Input");
-				if (saveDialog.getFileName().length() == 0)
-					saveDialog.setFileName(getDefaultSaveFileName());
-				String fname = saveDialog.open();
-				if (fname == null)
-					return;
-				try {
-					BufferedWriter f = new BufferedWriter(new FileWriter(fname));
-					f.write(inputText.getText());
-					f.close();
-					announcement("Saved " + fname);
-				} catch (IOException ioe) {
-					announceError(ioe.toString(), ioe);
-				}
-			});
+			tlitmSave.addListener(SWT.Selection, e -> saveFile());
 
-			tlitmSaveHistory = new CommandActivator(SaveHistory.class, toolBar, SWT.NONE);
+			tlitmSaveHistory = new CommandActivator(Application.getSaveHistoryMenuItem(), toolBar, SWT.NONE);
 			tlitmSaveHistory.setToolTipText("Save history");
-			tlitmSaveHistory.addListener(SWT.Selection, e -> {
-				ensureSaveHistoryDialogExists();
-				saveHistoryDialog.setText("Save History");
-				if (saveHistoryDialog.getFileName().length() == 0)
-					saveHistoryDialog.setFileName("InputHistory");
-				String fname = saveHistoryDialog.open();
-				if (fname == null)
-					return;
-				try {
-					BufferedWriter f = new BufferedWriter(new FileWriter(fname));
-					for (int i = 0; i < getHistorySize(); i++) {
-						f.write("// History item #" + (i + 1) + "\n");
-						f.write(getHistoryItemAt(i));
-						f.write("\n\n");
-					}
-					f.write("// Current entry" + "\n");
-					f.write(inputText.getText());
-					f.close();
-					announcement("Saved " + fname);
-				} catch (IOException ioe) {
-					announceError(ioe.toString(), ioe);
-				}
-			});
+			tlitmSaveHistory.addListener(SWT.Selection, e -> saveHistory());
 
-			tlitmCopyToOutput = new CommandActivator(CopyInputToOutput.class, toolBar, SWT.CHECK);
+			tlitmCopyToOutput = new CommandActivator(Application.getCopyInputToOutputMenuItem(), toolBar, SWT.CHECK);
 			tlitmCopyToOutput.setToolTipText("Copy input to output");
 			tlitmCopyToOutput.setSelection(true);
 			tlitmCopyToOutput.addListener(SWT.Selection, e -> setCopyInputToOutput(tlitmCopyToOutput.getSelection()));
 
-			tlitmWrap = new CommandActivator(WrapText.class, toolBar, SWT.CHECK);
+			tlitmWrap = new CommandActivator(Application.getWrapTextMenuItem(), toolBar, SWT.CHECK);
 			tlitmWrap.setToolTipText("Wrap text");
 			tlitmWrap.setSelection(true);
 			tlitmWrap.addListener(SWT.Selection, e -> inputText.setWordWrap(tlitmWrap.getSelection()));
@@ -366,6 +291,97 @@ public class CmdPanelInput extends Composite {
 	
 	public void selectAll() {
 		inputText.selectAll();
+	}
+
+	public void specialCharacters() {
+		specialCharacterDisplay.open();
+	}
+
+	public void previousHistory() {
+		inputText.setText(getPreviousHistoryItem());
+		inputText.setSelection(0, inputText.getText().length());
+		inputText.setFocus();
+	}
+
+	public void nextHistory() {
+		inputText.setText(getNextHistoryItem());
+		inputText.setSelection(0, inputText.getText().length());
+		inputText.setFocus();
+	}
+
+	public void loadFile() {
+		ensureLoadDialogExists();
+		loadDialog.setFileName("");
+		loadDialog.setText("Load File");
+		String fname = loadDialog.open();
+		if (fname == null)
+			return;
+		loadFile(fname);
+		ensureSaveDialogExists();
+		saveDialog.setFileName(loadDialog.getFileName());
+		saveDialog.setFilterPath(loadDialog.getFilterPath());
+	}
+
+	public void insertFile() {
+		ensureLoadDialogExists();
+		loadDialog.setFileName("");
+		loadDialog.setText("Load and Insert File");
+		String fname = loadDialog.open();
+		if (fname == null)
+			return;
+		loadInsertFile(fname);
+	}
+
+	public void insertFileName() {
+		ensureLoadPathDialogExists();
+		loadPathDialog.setFileName("");
+		loadPathDialog.setText("Get File Path");
+		String fname = loadPathDialog.open();
+		if (fname == null)
+			return;
+		insertInputText('"' + fname.replace("\\", "\\\\") + '"');
+	}
+
+	public void saveFile() {
+		ensureSaveDialogExists();
+		saveDialog.setText("Save Input");
+		if (saveDialog.getFileName().length() == 0)
+			saveDialog.setFileName(getDefaultSaveFileName());
+		String fname = saveDialog.open();
+		if (fname == null)
+			return;
+		try {
+			BufferedWriter f = new BufferedWriter(new FileWriter(fname));
+			f.write(inputText.getText());
+			f.close();
+			announcement("Saved " + fname);
+		} catch (IOException ioe) {
+			announceError(ioe.toString(), ioe);
+		}
+	}
+
+	public void saveHistory() {
+		ensureSaveHistoryDialogExists();
+		saveHistoryDialog.setText("Save History");
+		if (saveHistoryDialog.getFileName().length() == 0)
+			saveHistoryDialog.setFileName("InputHistory");
+		String fname = saveHistoryDialog.open();
+		if (fname == null)
+			return;
+		try {
+			BufferedWriter f = new BufferedWriter(new FileWriter(fname));
+			for (int i = 0; i < getHistorySize(); i++) {
+				f.write("// History item #" + (i + 1) + "\n");
+				f.write(getHistoryItemAt(i));
+				f.write("\n\n");
+			}
+			f.write("// Current entry" + "\n");
+			f.write(inputText.getText());
+			f.close();
+			announcement("Saved " + fname);
+		} catch (IOException ioe) {
+			announceError(ioe.toString(), ioe);
+		}
 	}
 
 	private void clear() {
@@ -797,27 +813,4 @@ public class CmdPanelInput extends Composite {
 		}
 		return null;
 	}
-
-	public void activateMenu() {
-		tlitmPrevHistory.activate();
-		tlitmNextHistory.activate();
-		tlitmClear.activate();
-		tlitmUndo.activate();
-		tlitmRedo.activate();
-		tlitmCut.activate();
-		tlitmCopy.activate();
-		tlitmPaste.activate();
-		tlitmDelete.activate();
-		tlitmSelectAll.activate();
-		tlitmFindReplace.activate();
-		tlitmLoad.activate();
-		tlitmLoadInsert.activate();
-		tlitmGetPath.activate();
-		tlitmSave.activate();
-		tlitmSaveHistory.activate();
-		tlitmCopyToOutput.activate();
-		tlitmWrap.activate();
-		tlitmCharacters.activate();
-	}
-
 }

@@ -7,8 +7,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.reldb.dbrowser.handlers.database.Backup;
-import org.reldb.dbrowser.handlers.output.CopyOutputToInput;
+import org.reldb.dbrowser.Application;
 import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.RevDatabase;
@@ -50,9 +49,9 @@ public class DbTabContentCmd extends Composite {
 			@Override
 			public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
 				// backup icon
-				addItem(Backup.class, "Make backup", "safeIcon", SWT.PUSH).addListener(SWT.Selection, e -> parentTab.makeBackup());
+				addItem(Application.getBackupMenuItem(), "Make backup", "safeIcon", SWT.PUSH).addListener(SWT.Selection, e -> parentTab.makeBackup());
 				// copy output to input
-				copyOutputToInputBtn = addItem(CopyOutputToInput.class, "Copy output to input", "copyToInputIcon", SWT.PUSH);
+				copyOutputToInputBtn = addItem(Application.getCopyInputToOutputMenuItem(), "Copy output to input", "copyToInputIcon", SWT.PUSH);
 				copyOutputToInputBtn.setEnabled(!cmdPanel.getEnhancedOutput());
 				copyOutputToInputBtn.addListener(SWT.Selection, e -> cmdPanel.copyOutputToInput());
 			}
@@ -111,10 +110,5 @@ public class DbTabContentCmd extends Composite {
 	
 	public void setContent(String content) {
 		cmdPanel.setContent(content);
-	}
-
-	public void activateMenu() {
-		toolBar.activate();
-		cmdPanel.activateMenu();
 	}
 }

@@ -8,8 +8,8 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
+import org.reldb.dbrowser.Application;
 import org.reldb.dbrowser.handlers.MenuItemWithToolbar;
-import org.reldb.dbrowser.handlers.database.*;
 import org.reldb.dbrowser.ui.CommandActivator;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
@@ -62,39 +62,39 @@ public class DbTabContentRel extends Composite {
 		fd_composite.bottom = new FormAttachment(100);
 		rel.setLayoutData(fd_composite);
 			
-		tlitmBackup = new CommandActivator(Backup.class, mainToolBar, SWT.None);
+		tlitmBackup = new CommandActivator(Application.getBackupMenuItem(), mainToolBar, SWT.None);
 		tlitmBackup.setToolTipText("Make backup");
 		tlitmBackup.addListener(SWT.Selection, e -> parentTab.makeBackup());
 		
-		tlitmShow = new CommandActivator(Show.class, mainToolBar, SWT.None);
+		tlitmShow = new CommandActivator(Application.getShowMenuItem(), mainToolBar, SWT.None);
 		tlitmShow.setToolTipText("Show");
 		tlitmShow.addListener(SWT.Selection, e -> rel.playItem());
 		
-		tlitmEdit = new CommandActivator(Edit.class, mainToolBar, SWT.None);
+		tlitmEdit = new CommandActivator(Application.getEditMenuItem(), mainToolBar, SWT.None);
 		tlitmEdit.setToolTipText("Edit");
 		tlitmEdit.addListener(SWT.Selection, e -> rel.editItem());
 		
-		tlitmNew = new CommandActivator(New.class, mainToolBar, SWT.None);
+		tlitmNew = new CommandActivator(Application.getNewMenuItem(), mainToolBar, SWT.None);
 		tlitmNew.setToolTipText("New");
 		tlitmNew.addListener(SWT.Selection, e -> rel.createItem());
 		
-		tlitmDrop = new CommandActivator(Drop.class, mainToolBar, SWT.None);
+		tlitmDrop = new CommandActivator(Application.getDropMenuItem(), mainToolBar, SWT.None);
 		tlitmDrop.setToolTipText("Drop");
 		tlitmDrop.addListener(SWT.Selection, e -> rel.dropItem());
 		
-		tlitmDesign = new CommandActivator(Design.class, mainToolBar, SWT.None);
+		tlitmDesign = new CommandActivator(Application.getDesignMenuItem(), mainToolBar, SWT.None);
 		tlitmDesign.setToolTipText("Design");
 		tlitmDesign.addListener(SWT.Selection, e -> rel.designItem());
 		
-		tlitmRename = new CommandActivator(Rename.class, mainToolBar, SWT.None);
+		tlitmRename = new CommandActivator(Application.getRenameMenuItem(), mainToolBar, SWT.None);
 		tlitmRename.setToolTipText("Rename");
 		tlitmRename.addListener(SWT.Selection, e -> rel.renameItem());
 		
-		tlitmExport = new CommandActivator(Export.class, mainToolBar, SWT.None);
+		tlitmExport = new CommandActivator(Application.getExportMenuItem(), mainToolBar, SWT.None);
 		tlitmExport.setToolTipText("Export");
 		tlitmExport.addListener(SWT.Selection, e -> rel.exportItem());
 		
-		tlitmShowSystem = new CommandActivator(ShowSystemObjects.class, mainToolBar, SWT.CHECK);
+		tlitmShowSystem = new CommandActivator(Application.getShowSystemObjectsMenuItem(), mainToolBar, SWT.CHECK);
 		tlitmShowSystem.setToolTipText("Show system objects");
 		tlitmShowSystem.setSelection(rel.getShowSystemObjects());
 		tlitmShowSystem.addListener(SWT.Selection, e -> rel.setShowSystemObjects(tlitmShowSystem.getSelection()));
@@ -188,15 +188,6 @@ public class DbTabContentRel extends Composite {
 	}
 
 	public void activateMenu() {
-		tlitmBackup.activate();
-		tlitmShow.activate();
-		tlitmEdit.activate();
-		tlitmNew.activate();
-		tlitmDrop.activate();
-		tlitmDesign.activate();
-		tlitmRename.activate();
-		tlitmExport.activate();
-		tlitmShowSystem.activate();
 		DbTreeTab selectedTab = getSelectedDbTreeTab();
 		if (selectedTab != null)
 			selectedTab.activateMenu();
