@@ -18,7 +18,11 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.reldb.dbrowser.ui.AboutDialog;
+import org.reldb.dbrowser.ui.feedback.BugReportDialog;
+import org.reldb.dbrowser.ui.feedback.SuggestionboxDialog;
+import org.reldb.dbrowser.ui.log.LogWin;
 import org.reldb.dbrowser.ui.preferences.Preferences;
+import org.reldb.dbrowser.ui.updates.UpdatesCheckDialog;
 import org.reldb.dbrowser.ui.version.Version;
 import org.reldb.swt.os_specific.OSSpecific;
 
@@ -183,11 +187,11 @@ public class Application {
 	}
 
 	private static void createDatabaseMenu(Menu bar) {
-		MenuItem dataItem = new MenuItem(bar, SWT.CASCADE);
-		dataItem.setText("Database");
+		MenuItem databaseItem = new MenuItem(bar, SWT.CASCADE);
+		databaseItem.setText("Database");
 		
-		Menu menu = new Menu(dataItem);
-		dataItem.setMenu(menu);
+		Menu menu = new Menu(databaseItem);
+		databaseItem.setMenu(menu);
 /*
 		new DecoratedMenuItem(menu, "Add Grid...\tCtrl-G", SWT.MOD1 | 'G', IconLoader.loadIcon("newgrid"), event -> {
 			
@@ -204,15 +208,23 @@ public class Application {
 	}
 	
 	private static void createOutputMenu(Menu bar) {
-		MenuItem dataItem = new MenuItem(bar, SWT.CASCADE);
-		dataItem.setText("Output");
+		MenuItem outputItem = new MenuItem(bar, SWT.CASCADE);
+		outputItem.setText("Output");
 		
 	}
 	
 	private static void createToolsMenu(Menu bar) {
-		MenuItem dataItem = new MenuItem(bar, SWT.CASCADE);
-		dataItem.setText("Tools");
+		MenuItem toolsItem = new MenuItem(bar, SWT.CASCADE);
+		toolsItem.setText("Tools");
 		
+		Menu menu = new Menu(toolsItem);
+		toolsItem.setMenu(menu);
+		
+		new DecoratedMenuItem(menu, "View log", 0, e -> LogWin.open());
+		new MenuItem(menu, SWT.SEPARATOR);
+		new DecoratedMenuItem(menu, "Submit Feedback", 0, "ButterflyIcon", e -> SuggestionboxDialog.launch(shell));
+		new DecoratedMenuItem(menu, "Bug Report", 0, "BugIcon", e -> BugReportDialog.launch(shell));
+		new DecoratedMenuItem(menu, "Check for Updates", 0, e -> UpdatesCheckDialog.launch(shell));
 	}
 	
 	private static void createHelpMenu(Menu bar) {
@@ -241,7 +253,7 @@ public class Application {
 			createOutputMenu(bar);
 			createDatabaseMenu(bar);
 			createToolsMenu(bar);
-			// createHelpMenu(bar);
+			createHelpMenu(bar);
 			
 			if (!hasAppMenuBar) 
 				shell.setMenuBar(bar);
