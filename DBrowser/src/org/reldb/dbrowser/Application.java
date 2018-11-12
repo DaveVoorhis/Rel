@@ -12,6 +12,9 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.*;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.HTMLTransfer;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.graphics.Image;
@@ -101,6 +104,19 @@ public class Application {
 		}
 	}
 	
+	private static boolean isThereSomethingToPaste() {
+		Clipboard clipboard = new Clipboard(Display.getCurrent());
+		try {
+			TextTransfer textTransfer = TextTransfer.getInstance();
+			HTMLTransfer htmlTransfer = HTMLTransfer.getInstance();
+			String textData = (String)clipboard.getContents(textTransfer);
+			String htmlData = (String)clipboard.getContents(htmlTransfer);
+			return (textData != null && textData.length() > 0) || (htmlData != null && htmlData.length() > 0);
+		} finally {
+			clipboard.dispose();	
+		}
+	}
+
 	private static void createEditMenuItem(String methodName, DecoratedMenuItem menuItem) {
 		class EditMenuAdapter extends MenuAdapter { 
 			Control focusControl;
@@ -111,11 +127,15 @@ public class Application {
 			public void menuShown(MenuEvent arg0) {
 				focusControl = menuItem.getDisplay().getFocusControl();
 				if (focusControl == null)
-					return;			
+					return;
+				if (!menuItem.canExecute()) {
+					menuItem.setEnabled(false);
+					return;
+				}
 				Method method = getEditMethod(methodName, focusControl);
 				if (method != null) {
 					menuItemMethods.add(method);
-					System.out.println("Appication: " + focusControl.getClass() + " supports " + methodName);
+					System.out.println("Application: " + focusControl.getClass() + " supports " + methodName);
 					menuItem.setEnabled(true);
 				} else {
 					if (methodName.equals("clear")) {
@@ -125,7 +145,7 @@ public class Application {
 							menuItemMethods.add(selectAll);
 							menuItemMethods.add(cut);
 							menuItem.setEnabled(true);
-							System.out.println("Appication: " + focusControl.getClass() + " supports " + methodName);
+							System.out.println("Application: " + focusControl.getClass() + " supports " + methodName);
 						} else
 							menuItem.setEnabled(false);
 					} else
@@ -160,7 +180,11 @@ public class Application {
 		
 		createEditMenuItem("cut", new DecoratedMenuItem(menu, "Cut\tCtrl-X", SWT.MOD1 | 'X', "cut"));
 		createEditMenuItem("copy", new DecoratedMenuItem(menu, "Copy\tCtrl-C", SWT.MOD1 | 'C', "copy"));
-		createEditMenuItem("paste", new DecoratedMenuItem(menu, "Paste\tCtrl-V", SWT.MOD1 | 'V', "paste"));
+		createEditMenuItem("paste", new DecoratedMenuItem(menu, "Paste\tCtrl-V", SWT.MOD1 | 'V', "paste") {
+			public boolean canExecute() {
+				return isThereSomethingToPaste();
+			}
+		});
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		

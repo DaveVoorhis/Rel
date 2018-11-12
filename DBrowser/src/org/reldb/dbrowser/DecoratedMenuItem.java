@@ -61,6 +61,6 @@ public class DecoratedMenuItem extends MenuItem {
 	public boolean canExecute() {
 		return true;
 	}
-	
+		
 	public void checkSubclass() {}
 }
