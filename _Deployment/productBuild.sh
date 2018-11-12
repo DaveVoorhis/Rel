@@ -8,9 +8,6 @@ proddir=~/git/Rel/_Deployment/product
 # Clear
 ./productClear.sh
 
-# Make product directories
-
-
 # Grammar
 ~/bin/jjdoc ../ServerV0000/src/org/reldb/rel/v0/languages/tutoriald/parser/TutorialD.jj
 mv TutorialD.html $proddir
@@ -28,33 +25,50 @@ pushd MakeJRE
 popd
 
 # Linux GTK 64bit
-#cp -R $jredir/linux/$javaversion $proddir/linux.gtk.x86_64/Rel.app/jre
-mv MakeJRE/linux_jre $proddir/linux.gtk.x86_64/Rel.app/jre
-mv $proddir/linux.gtk.x86_64/Rel.app $proddir/linux.gtk.x86_64/Rel
-chmod +x $proddir/linux.gtk.x86_64/Rel/jre/bin/*
-pushd $proddir/linux.gtk.x86_64
-rm ../Rel$relversion.linux.gtk.x86_84.tar.gz
-tar cfz ../Rel$relversion.linux.gtk.x86_84.tar.gz Rel
+echo "---------------------- Linux Build ----------------------"
+linuxtarget=linux.gtk.x86_64
+linuxtargetRel=$linuxtarget/Rel
+mkdir -p $proddir/$linuxtargetRel
+cp splash.png $proddir/$linuxtargetRel
+mv MakeJRE/linux_jre $proddir/$linuxtargetRel/jre
+cp nativeLaunchers/RelLaunchLinux/Rel $proddir/$linuxtargetRel
+cp -R lib $proddir/$linuxtargetRel
+rm -rf $proddir/$linuxtargetRel/lib/swt/win_64
+rm -rf $proddir/$linuxtargetRel/lib/swt/macos_64
+chmod +x $proddir/$linuxtargetRel/jre/bin/*
+pushd $proddir/$linuxtarget
+tar cfz ../Rel$relversion.$linuxtarget.tar.gz Rel
 popd
 
 # Windows 64bit
-#cp -R $jredir/windows/$javaversion $proddir/win32.win32.x86_64/Rel.app/jre
-mv MakeJRE/windows_jre $proddir/win32.win32.x86_64/Rel.app/jre
-mv $proddir/win32.win32.x86_64/Rel.app $proddir/win32.win32.x86_64/Rel
-pushd $proddir/win32.win32.x86_64
-rm ../Rel$relversion.win32.win32.x86_64.zip
-zip -9r ../Rel$relversion.win32.win32.x86_64.zip Rel
+echo "---------------------- Windows Build ----------------------"
+wintarget=win32.win32.x86_64
+wintargetRel=$wintarget/Rel
+mkdir -p $proddir/$wintargetRel
+cp splash.png $proddir/$wintargetRel
+mv MakeJRE/windows_jre $proddir/$wintargetRel/jre
+cp nativeLaunchers/RelLaunchWin/x64/Release/Rel.exe $proddir/$wintargetRel
+cp -R lib $proddir/$wintargetRel
+rm -rf $proddir/$wintargetRel/lib/swt/linux_64
+rm -rf $proddir/$wintargetRel/lib/swt/macos_64
+pushd $proddir/$wintarget
+zip -9r ../Rel$relversion.$wintarget.zip Rel
 popd
 
-# OS X (64bit)
-#cp -R $jredir/osx/$javaversion.jdk/Contents/Home $proddir/macosx.cocoa.x86_64/Rel.app/Contents/MacOS/jre
-mv MakeJRE/osx_jre $proddir/macosx.cocoa.x86_64/Rel.app/Contents/MacOS/jre
-xsltproc -o tmp.plist ./productMacOS_updatePlist.xslt $proddir/macosx.cocoa.x86_64/Rel.app/Contents/Info.plist
-mv tmp.plist $proddir/macosx.cocoa.x86_64/Rel.app/Contents/Info.plist
-cp OSXPackager/Background.png $proddir/macosx.cocoa.x86_64
-cp OSXPackager/Package.command $proddir/macosx.cocoa.x86_64
-rm $proddir/*.dmg
-pushd $proddir/macosx.cocoa.x86_64
+# MacOS (64bit)
+echo "---------------------- MacOS Build ----------------------"
+mactarget=macosx.cocoa.x86_64
+mkdir $proddir/$mactarget
+cp -R nativeLaunchers/RelLaunchMacOS/Rel.app $proddir/$mactarget
+cp nativeLaunchers/RelLaunchMacOS/launchBinSrc/Rel $proddir/$mactarget/Rel.app/Contents/MacOS
+cp splash.png $proddir/$mactarget/Rel.app/Contents/MacOS
+mv MakeJRE/osx_jre $proddir/$mactarget/Rel.app/Contents/MacOS/jre
+cp -R lib $proddir/$mactarget/Rel.app/Contents/MacOS/
+rm -rf $proddir/$mactarget/Rel.app/Contents/MacOS/lib/swt/linux_64
+rm -rf $proddir/$mactarget/Rel.app/Contents/MacOS/lib/swt/win_64
+cp OSXPackager/Background.png $proddir/$mactarget
+cp OSXPackager/Package.command $proddir/$mactarget
+pushd $proddir/$mactarget
 ./Package.command $relversion
 mv *.dmg $proddir
 rm Background.png
@@ -62,7 +76,8 @@ rm Package.command
 popd
 
 # Standalone Rel DBMS (Java)
-tar cf $proddir/Rel$relversion.DBMS.tar RelDBMS RelDBMS.bat RelDBMSServer RelDBMSServer.bat RelTest RelTest.bat LICENSE.txt AUTHORS.txt CHANGES.txt LIBRARIES.txt TODO.txt README.txt lib/[a-z]*.jar lib/RelDBMS.jar lib/RelTest.jar
+echo "---------------------- Standalone DBMS Build ----------------------"
+tar cf $proddir/Rel$relversion.DBMS.tar RelDBMS RelDBMS.cmd RelDBMSServer RelDBMSServer.cmd RelTest RelTest.cmd LICENSE.txt AUTHORS.txt CHANGES.txt LIBRARIES.txt TODO.txt README.txt lib/[a-z]*.jar lib/RelDBMS.jar lib/RelTest.jar
 pushd $proddir
 gzip -9 Rel$relversion.DBMS.tar
 popd
