@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<plist version="1.0">
+
+<dict>
+	<key>CFBundleExecutable</key>
+		<string>Rel</string>
+	<key>CFBundleGetInfoString</key>
+		<string>Rel for Mac OS X, Copyright reldb.org 2004 - 2018. All rights reserved.</string>
+	<key>CFBundleIconFile</key>
+		<string>RelAppIcon.icns</string>
+	<key>CFBundleIdentifier</key>
+		<string>Rel</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+		<string>6.0</string>
+	<key>CFBundleName</key>
+		<string>Rel</string>
+	<key>CFBundlePackageType</key>
+		<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+		<string>3</string>
+	<key>CFBundleSignature</key>
+		<string>????</string>
+	<key>CFBundleVersion</key>
+		<string>3</string>
+	<key>NSHighResolutionCapable</key>
+		<true/>
+	<key>CFBundleDevelopmentRegion</key>
+		<string>English</string>		
+	<key>CFBundleDisplayName</key>
+	        <string>Rel</string>
+  </dict>
+
+</plist>
