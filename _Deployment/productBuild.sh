@@ -29,7 +29,7 @@ echo "---------------------- Linux Build ----------------------"
 linuxtarget=linux.gtk.x86_64
 linuxtargetRel=$linuxtarget/Rel
 mkdir -p $proddir/$linuxtargetRel
-cp splash.png $proddir/$linuxtargetRel
+cp splash.png $proddir/$linuxtargetRel/lib
 mv MakeJRE/linux_jre $proddir/$linuxtargetRel/jre
 cp nativeLaunchers/Linux/Rel $proddir/$linuxtargetRel
 cp -R lib $proddir/$linuxtargetRel
@@ -45,7 +45,7 @@ echo "---------------------- Windows Build ----------------------"
 wintarget=win32.win32.x86_64
 wintargetRel=$wintarget/Rel
 mkdir -p $proddir/$wintargetRel
-cp splash.png $proddir/$wintargetRel
+cp splash.png $proddir/$wintargetRel/lib
 mv MakeJRE/windows_jre $proddir/$wintargetRel/jre
 cp nativeLaunchers/Windows/x64/Release/Rel.exe $proddir/$wintargetRel
 cp -R lib $proddir/$wintargetRel
@@ -59,9 +59,9 @@ popd
 echo "---------------------- MacOS Build ----------------------"
 mactarget=macosx.cocoa.x86_64
 mkdir $proddir/$mactarget
-cp -R nativeLaunchers/RelLaunchMacOS/Rel.app $proddir/$mactarget
+cp -R nativeLaunchers/MacOS/Rel.app $proddir/$mactarget
 cp nativeLaunchers/MacOS/launchBinSrc/Rel $proddir/$mactarget/Rel.app/Contents/MacOS
-cp splash.png $proddir/$mactarget/Rel.app/Contents/MacOS
+cp splash.png $proddir/$mactarget/Rel.app/Contents/MacOS/lib
 mv MakeJRE/osx_jre $proddir/$mactarget/Rel.app/Contents/MacOS/jre
 cp -R lib $proddir/$mactarget/Rel.app/Contents/MacOS/
 rm -rf $proddir/$mactarget/Rel.app/Contents/MacOS/lib/swt/linux_64
