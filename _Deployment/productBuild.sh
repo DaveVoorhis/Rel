@@ -5,6 +5,12 @@ javaversion=jdk-11.0.1
 jredir=~/Documents/OpenJDKs
 proddir=~/git/Rel/_Deployment/product
 
+# Clear
+./productClear.sh
+
+# Make product directories
+
+
 # Grammar
 ~/bin/jjdoc ../ServerV0000/src/org/reldb/rel/v0/languages/tutoriald/parser/TutorialD.jj
 mv TutorialD.html $proddir
@@ -17,13 +23,13 @@ zip -9r Rel_ExamplesAndUtilities_$relversion.zip RelScripts
 popd
 
 # Build JREs
-#pushd MakeJRE
-#./build.sh
-#popd
+pushd MakeJRE
+./build.sh
+popd
 
 # Linux GTK 64bit
-cp -R $jredir/linux/$javaversion $proddir/linux.gtk.x86_64/Rel.app/jre
-#mv MakeJRE/linux_jre $proddir/linux.gtk.x86_64/Rel.app/jre
+#cp -R $jredir/linux/$javaversion $proddir/linux.gtk.x86_64/Rel.app/jre
+mv MakeJRE/linux_jre $proddir/linux.gtk.x86_64/Rel.app/jre
 mv $proddir/linux.gtk.x86_64/Rel.app $proddir/linux.gtk.x86_64/Rel
 chmod +x $proddir/linux.gtk.x86_64/Rel/jre/bin/*
 pushd $proddir/linux.gtk.x86_64
@@ -32,8 +38,8 @@ tar cfz ../Rel$relversion.linux.gtk.x86_84.tar.gz Rel
 popd
 
 # Windows 64bit
-cp -R $jredir/windows/$javaversion $proddir/win32.win32.x86_64/Rel.app/jre
-#mv MakeJRE/windows_jre $proddir/win32.win32.x86_64/Rel.app/jre
+#cp -R $jredir/windows/$javaversion $proddir/win32.win32.x86_64/Rel.app/jre
+mv MakeJRE/windows_jre $proddir/win32.win32.x86_64/Rel.app/jre
 mv $proddir/win32.win32.x86_64/Rel.app $proddir/win32.win32.x86_64/Rel
 pushd $proddir/win32.win32.x86_64
 rm ../Rel$relversion.win32.win32.x86_64.zip
@@ -41,8 +47,8 @@ zip -9r ../Rel$relversion.win32.win32.x86_64.zip Rel
 popd
 
 # OS X (64bit)
-cp -R $jredir/osx/$javaversion.jdk/Contents/Home $proddir/macosx.cocoa.x86_64/Rel.app/Contents/MacOS/jre
-#mv MakeJRE/osx_jre $proddir/macosx.cocoa.x86_64/Rel.app/Contents/MacOS/jre
+#cp -R $jredir/osx/$javaversion.jdk/Contents/Home $proddir/macosx.cocoa.x86_64/Rel.app/Contents/MacOS/jre
+mv MakeJRE/osx_jre $proddir/macosx.cocoa.x86_64/Rel.app/Contents/MacOS/jre
 xsltproc -o tmp.plist ./productMacOS_updatePlist.xslt $proddir/macosx.cocoa.x86_64/Rel.app/Contents/Info.plist
 mv tmp.plist $proddir/macosx.cocoa.x86_64/Rel.app/Contents/Info.plist
 cp OSXPackager/Background.png $proddir/macosx.cocoa.x86_64
