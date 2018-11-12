@@ -1,3 +1,4 @@
 Rel: Rel.cpp
-	gcc Rel.cpp -o Rel
+	g++ Rel.cpp -o Rel
+	strip Rel
 
