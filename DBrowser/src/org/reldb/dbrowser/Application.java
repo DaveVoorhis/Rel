@@ -418,7 +418,7 @@ public class Application {
 		
 		DBrowser.launch(args, shell);
 	
-//		Loading.close();
+		// Loading.close();
 		
 		shell.layout(true);
 		
