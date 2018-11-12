@@ -1,1 +1,0 @@
-java -splash:Splash.png -cp "lib/*:lib/nattable/*:lib/swt/*:lib/swt/linux_64/*" DBrowser
