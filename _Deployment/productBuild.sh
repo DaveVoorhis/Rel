@@ -31,7 +31,7 @@ linuxtargetRel=$linuxtarget/Rel
 mkdir -p $proddir/$linuxtargetRel
 cp splash.png $proddir/$linuxtargetRel
 mv MakeJRE/linux_jre $proddir/$linuxtargetRel/jre
-cp nativeLaunchers/RelLaunchLinux/Rel $proddir/$linuxtargetRel
+cp nativeLaunchers/Linux/Rel $proddir/$linuxtargetRel
 cp -R lib $proddir/$linuxtargetRel
 rm -rf $proddir/$linuxtargetRel/lib/swt/win_64
 rm -rf $proddir/$linuxtargetRel/lib/swt/macos_64
@@ -47,7 +47,7 @@ wintargetRel=$wintarget/Rel
 mkdir -p $proddir/$wintargetRel
 cp splash.png $proddir/$wintargetRel
 mv MakeJRE/windows_jre $proddir/$wintargetRel/jre
-cp nativeLaunchers/RelLaunchWin/x64/Release/Rel.exe $proddir/$wintargetRel
+cp nativeLaunchers/Windows/x64/Release/Rel.exe $proddir/$wintargetRel
 cp -R lib $proddir/$wintargetRel
 rm -rf $proddir/$wintargetRel/lib/swt/linux_64
 rm -rf $proddir/$wintargetRel/lib/swt/macos_64
@@ -60,7 +60,7 @@ echo "---------------------- MacOS Build ----------------------"
 mactarget=macosx.cocoa.x86_64
 mkdir $proddir/$mactarget
 cp -R nativeLaunchers/RelLaunchMacOS/Rel.app $proddir/$mactarget
-cp nativeLaunchers/RelLaunchMacOS/launchBinSrc/Rel $proddir/$mactarget/Rel.app/Contents/MacOS
+cp nativeLaunchers/MacOS/launchBinSrc/Rel $proddir/$mactarget/Rel.app/Contents/MacOS
 cp splash.png $proddir/$mactarget/Rel.app/Contents/MacOS
 mv MakeJRE/osx_jre $proddir/$mactarget/Rel.app/Contents/MacOS/jre
 cp -R lib $proddir/$mactarget/Rel.app/Contents/MacOS/
