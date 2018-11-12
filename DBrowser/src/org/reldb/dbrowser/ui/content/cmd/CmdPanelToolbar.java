@@ -2,9 +2,9 @@ package org.reldb.dbrowser.ui.content.cmd;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.reldb.dbrowser.ui.CommandActivator;
-import org.reldb.dbrowser.ui.ManagedToolbar;
 import org.reldb.dbrowser.Application;
+import org.reldb.dbrowser.CommandActivator;
+import org.reldb.dbrowser.ManagedToolbar;
 
 public class CmdPanelToolbar extends ManagedToolbar {
 

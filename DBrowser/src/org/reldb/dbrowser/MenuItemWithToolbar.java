@@ -1,10 +1,8 @@
-package org.reldb.dbrowser.handlers;
+package org.reldb.dbrowser;
 
 import java.util.HashMap;
 
 import org.eclipse.swt.SWT;
-import org.reldb.dbrowser.DecoratedMenuItem;
-import org.reldb.dbrowser.ui.CommandActivator;
 
 public abstract class MenuItemWithToolbar {
 	private static HashMap<Class<? extends MenuItemWithToolbar>, CommandActivator> activated = new HashMap<>();

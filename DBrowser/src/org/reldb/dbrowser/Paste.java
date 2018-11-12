@@ -1,10 +1,9 @@
-package org.reldb.dbrowser.handlers.edit;
+package org.reldb.dbrowser;
 
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.HTMLTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.widgets.Display;
-import org.reldb.dbrowser.DecoratedMenuItem;
 import org.reldb.dbrowser.handlers.EditMenuItem;
 
 public class Paste extends EditMenuItem {

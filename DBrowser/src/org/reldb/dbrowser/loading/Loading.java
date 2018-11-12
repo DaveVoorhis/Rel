@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.reldb.dbrowser.ui.IconLoader;
+import org.reldb.dbrowser.IconLoader;
 import org.reldb.dbrowser.utilities.FontSize;
 
 public class Loading {

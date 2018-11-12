@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui;
+package org.reldb.dbrowser;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageDataProvider;

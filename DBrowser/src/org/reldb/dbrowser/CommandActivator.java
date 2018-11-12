@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.ui;
+package org.reldb.dbrowser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

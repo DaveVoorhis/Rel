@@ -8,7 +8,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.reldb.dbrowser.Application;
-import org.reldb.dbrowser.ui.CommandActivator;
+import org.reldb.dbrowser.CommandActivator;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.RevDatabase.Script;

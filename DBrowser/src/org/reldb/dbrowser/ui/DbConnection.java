@@ -1,19 +1,13 @@
 package org.reldb.dbrowser.ui;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
 
-//import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
-//import org.osgi.framework.Bundle;
-//import org.osgi.framework.FrameworkUtil;
 import org.reldb.rel.client.Attribute;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.Error;

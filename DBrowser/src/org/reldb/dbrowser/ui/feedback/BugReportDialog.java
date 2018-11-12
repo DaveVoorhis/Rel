@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
-import org.reldb.dbrowser.ui.IconLoader;
+import org.reldb.dbrowser.IconLoader;
 import org.reldb.dbrowser.ui.version.Version;
 
 public class BugReportDialog extends FeedbackDialog {

@@ -4,7 +4,6 @@ package org.reldb.dbrowser;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
-import org.reldb.dbrowser.ui.IconLoader;
 
 public class DecoratedMenuItem extends MenuItem {
 	
