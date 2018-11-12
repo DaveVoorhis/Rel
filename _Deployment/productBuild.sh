@@ -29,12 +29,12 @@ echo "---------------------- Linux Build ----------------------"
 linuxtarget=linux.gtk.x86_64
 linuxtargetRel=$linuxtarget/Rel
 mkdir -p $proddir/$linuxtargetRel
-cp splash.png $proddir/$linuxtargetRel/lib
 mv MakeJRE/linux_jre $proddir/$linuxtargetRel/jre
 cp nativeLaunchers/Linux/Rel $proddir/$linuxtargetRel
 cp -R lib $proddir/$linuxtargetRel
 rm -rf $proddir/$linuxtargetRel/lib/swt/win_64
 rm -rf $proddir/$linuxtargetRel/lib/swt/macos_64
+cp splash.png $proddir/$linuxtargetRel/lib
 chmod +x $proddir/$linuxtargetRel/jre/bin/*
 pushd $proddir/$linuxtarget
 tar cfz ../Rel$relversion.$linuxtarget.tar.gz Rel
@@ -45,12 +45,12 @@ echo "---------------------- Windows Build ----------------------"
 wintarget=win32.win32.x86_64
 wintargetRel=$wintarget/Rel
 mkdir -p $proddir/$wintargetRel
-cp splash.png $proddir/$wintargetRel/lib
 mv MakeJRE/windows_jre $proddir/$wintargetRel/jre
 cp nativeLaunchers/Windows/x64/Release/Rel.exe $proddir/$wintargetRel
 cp -R lib $proddir/$wintargetRel
 rm -rf $proddir/$wintargetRel/lib/swt/linux_64
 rm -rf $proddir/$wintargetRel/lib/swt/macos_64
+cp splash.png $proddir/$wintargetRel/lib
 pushd $proddir/$wintarget
 zip -9r ../Rel$relversion.$wintarget.zip Rel
 popd
@@ -61,11 +61,11 @@ mactarget=macosx.cocoa.x86_64
 mkdir $proddir/$mactarget
 cp -R nativeLaunchers/MacOS/Rel.app $proddir/$mactarget
 cp nativeLaunchers/MacOS/launchBinSrc/Rel $proddir/$mactarget/Rel.app/Contents/MacOS
-cp splash.png $proddir/$mactarget/Rel.app/Contents/MacOS/lib
 mv MakeJRE/osx_jre $proddir/$mactarget/Rel.app/Contents/MacOS/jre
 cp -R lib $proddir/$mactarget/Rel.app/Contents/MacOS/
 rm -rf $proddir/$mactarget/Rel.app/Contents/MacOS/lib/swt/linux_64
 rm -rf $proddir/$mactarget/Rel.app/Contents/MacOS/lib/swt/win_64
+cp splash.png $proddir/$mactarget/Rel.app/Contents/MacOS/lib
 cp OSXPackager/Background.png $proddir/$mactarget
 cp OSXPackager/Package.command $proddir/$mactarget
 pushd $proddir/$mactarget
