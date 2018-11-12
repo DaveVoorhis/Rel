@@ -9,3 +9,10 @@
 hs_err_pid*
 *.class
 .DS_Store
+/_Deployment/nativeLaunchers/RelLaunchWin/.vs/Rel/v15
+/_Deployment/nativeLaunchers/RelLaunchWin/Rel/x64/Release/Rel.tlog
+/.vs
+/_Deployment/nativeLaunchers/RelLaunchWin/Rel/x64/Release
+/_Deployment/nativeLaunchers/RelLaunchWin/x64/Release/Rel.pdb
+/_Deployment/nativeLaunchers/RelLaunchWin/x64/Release/Rel.ipdb
+/_Deployment/nativeLaunchers/RelLaunchWin/x64/Release/Rel.iobj

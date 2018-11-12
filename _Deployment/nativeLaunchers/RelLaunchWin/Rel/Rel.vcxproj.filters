@@ -36,7 +36,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\RelAppIcon.ico">
+    <Image Include="RelAppIcon.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
