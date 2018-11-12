@@ -7,5 +7,5 @@
 int main(int argc, char **argv)
 {
 	chdir(argv[0]);
-	system("jre/bin/java -splash:Splash.png -cp \"lib/*:lib/nattable/*:lib/swt/*:lib/swt/macos_64/*\" -XstartOnFirstThread DBrowser ");
+	system("jre/bin/java -splash:lib/Splash.png -cp \"lib/*:lib/nattable/*:lib/swt/*:lib/swt/macos_64/*\" -XstartOnFirstThread DBrowser ");
 }
