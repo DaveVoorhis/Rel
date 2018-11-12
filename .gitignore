@@ -16,3 +16,11 @@ hs_err_pid*
 /_Deployment/nativeLaunchers/RelLaunchWin/x64/Release/Rel.pdb
 /_Deployment/nativeLaunchers/RelLaunchWin/x64/Release/Rel.ipdb
 /_Deployment/nativeLaunchers/RelLaunchWin/x64/Release/Rel.iobj
+/_Deployment/nativeLaunchers/Windows/Rel/x64/Debug
+/_Deployment/nativeLaunchers/Windows/x64/Debug
+/_Deployment/nativeLaunchers/Windows/Rel/x64/Release
+/_Deployment/nativeLaunchers/Windows/x64/Release/Rel.pdb
+/_Deployment/nativeLaunchers/Windows/x64/Release/Rel.ipdb
+/_Deployment/nativeLaunchers/Windows/x64/Release/Rel.iobj
+/_Deployment/nativeLaunchers/Windows/.vs/Rel/v15/ipch
+/_Deployment/nativeLaunchers/Windows/.vs/Rel/v15
