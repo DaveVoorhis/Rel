@@ -10,6 +10,8 @@
 
 - DBrowser: delete RelUI.
 
+- DBrowser: Remove POI from nattable, including Export option.
+
 - DBrowser: Graphical editing of RVA value does not work. Appears to
   fail to launch editor.
 
