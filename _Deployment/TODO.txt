@@ -1,5 +1,9 @@
 ** TO DO **
 
+- DBrowser: Make Windows native launcher dockable (hidden window?)
+
+- DBrowser: Make Linux native launcher use GTK2?
+
 - RelUI: https://github.com/DaveVoorhis/Rel/issues/1
   Navigation keys and undo appear to be consumed by Nattable without performing
   appropriate actions. Fix.
