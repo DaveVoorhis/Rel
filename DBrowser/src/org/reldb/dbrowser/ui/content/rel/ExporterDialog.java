@@ -201,9 +201,7 @@ public class ExporterDialog extends Dialog {
 	}
 
 	private void emitCSV(File file, Tuples tuples) throws FileNotFoundException {
-		PrintWriter writer = null;
-		try {
-		    writer = new PrintWriter(file);
+		try (PrintWriter writer = new PrintWriter(file)) {
 		    Heading heading = tuples.getHeading();
 		    if (heading != null)
 		    	writer.println(tuples.getHeading().toCSV());
@@ -213,81 +211,70 @@ public class ExporterDialog extends Dialog {
 					Tuple tuple = tupleIterator.next();
 					writer.println(tuple.toCSV());
 				}
-		} finally {
-			if (writer != null)
-				writer.close();
 		}
 	}
 
 	private void emitXLS(File file, Tuples tuples) throws IOException {
-		HSSFWorkbook workbook = new HSSFWorkbook();
-		HSSFSheet sheet = workbook.createSheet(name);
-		int rownum = 0;
-	    Heading resultsetHeading = tuples.getHeading();
-	    Row row;
-	    int column = 0;
-	    if (resultsetHeading != null) {
-			row = sheet.createRow(rownum++);
-			column = 0;
-		    for (Attribute attribute: resultsetHeading.toArray()) {
-				Cell cell = row.createCell(column++);
-				cell.setCellValue(attribute.getName());
-		    }
-	    }
-		Iterator<Tuple> tupleIterator = tuples.iterator();
-		if (tupleIterator != null)
-			while (tupleIterator.hasNext()) {
-				Tuple tuple = tupleIterator.next();
+		try (HSSFWorkbook workbook = new HSSFWorkbook()) {
+			HSSFSheet sheet = workbook.createSheet(name);
+			int rownum = 0;
+		    Heading resultsetHeading = tuples.getHeading();
+		    Row row;
+		    int column = 0;
+		    if (resultsetHeading != null) {
 				row = sheet.createRow(rownum++);
-				for (column=0; column < tuple.getAttributeCount(); column++) {
-					Value value = tuple.get(column);
-					Cell cell = row.createCell(column);
-					cell.setCellValue(value.toString());
-				}
-			}	
-		FileOutputStream out = null;
-		try {
-			out = new FileOutputStream(file);
-			workbook.write(out);
-		} finally {
-			if (out != null)
-				out.close();
+				column = 0;
+			    for (Attribute attribute: resultsetHeading.toArray()) {
+					Cell cell = row.createCell(column++);
+					cell.setCellValue(attribute.getName());
+			    }
+		    }
+			Iterator<Tuple> tupleIterator = tuples.iterator();
+			if (tupleIterator != null)
+				while (tupleIterator.hasNext()) {
+					Tuple tuple = tupleIterator.next();
+					row = sheet.createRow(rownum++);
+					for (column=0; column < tuple.getAttributeCount(); column++) {
+						Value value = tuple.get(column);
+						Cell cell = row.createCell(column);
+						cell.setCellValue(value.toString());
+					}
+				}	
+			try (FileOutputStream out = new FileOutputStream(file)) {
+				workbook.write(out);
+			}
 		}
 	}
 	
 	private void emitXLSX(File file, Tuples tuples) throws IOException {
-		XSSFWorkbook workbook = new XSSFWorkbook();
-		XSSFSheet sheet = workbook.createSheet(name);
-		int rownum = 0;
-	    Heading resultsetHeading = tuples.getHeading();
-	    Row row;
-	    int column;
-	    if (resultsetHeading != null) {
-			row = sheet.createRow(rownum++);
-			column = 0;
-		    for (Attribute attribute: resultsetHeading.toArray()) {
-				Cell cell = row.createCell(column++);
-				cell.setCellValue(attribute.getName());
-		    }
-	    }
-		Iterator<Tuple> tupleIterator = tuples.iterator();
-		if (tupleIterator != null)
-			while (tupleIterator.hasNext()) {
-				Tuple tuple = tupleIterator.next();
+		try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+			XSSFSheet sheet = workbook.createSheet(name);
+			int rownum = 0;
+		    Heading resultsetHeading = tuples.getHeading();
+		    Row row;
+		    int column;
+		    if (resultsetHeading != null) {
 				row = sheet.createRow(rownum++);
-				for (column=0; column < tuple.getAttributeCount(); column++) {
-					Value value = tuple.get(column);
-					Cell cell = row.createCell(column);
-					cell.setCellValue(value.toString());
-				}
-			}	
-		FileOutputStream out = null;
-		try {
-			out = new FileOutputStream(file);
-			workbook.write(out);
-		} finally {
-			if (out != null)
-				out.close();
+				column = 0;
+			    for (Attribute attribute: resultsetHeading.toArray()) {
+					Cell cell = row.createCell(column++);
+					cell.setCellValue(attribute.getName());
+			    }
+		    }
+			Iterator<Tuple> tupleIterator = tuples.iterator();
+			if (tupleIterator != null)
+				while (tupleIterator.hasNext()) {
+					Tuple tuple = tupleIterator.next();
+					row = sheet.createRow(rownum++);
+					for (column=0; column < tuple.getAttributeCount(); column++) {
+						Value value = tuple.get(column);
+						Cell cell = row.createCell(column);
+						cell.setCellValue(value.toString());
+					}
+				}	
+			try (FileOutputStream out = new FileOutputStream(file)) {
+				workbook.write(out);
+			}
 		}
 	}
 
