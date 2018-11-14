@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Rel: Get Java-based types and operators working again.
-
 - DBrowser: Make Windows native launcher dockable (hidden window?)
 
 - DBrowser: Make Linux native launcher use GTK2?
