@@ -9,7 +9,6 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/ca.odell.glazedlists_1.9.0.v201303080712.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.apache.commons.codec_1.6.0.v201305230611.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.apache.commons.logging_1.1.1.v201101211721.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.apache.poi_3.9.0.v201405241750.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.core.commands_3.9.200.v20180827-1727.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.core.runtime_3.15.0.v20180817-1401.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.equinox.common_3.10.100.v20180827-1235.jar"/>

@@ -2,6 +2,12 @@ Last used Exception* number: RS0507
 
 Version 3.013 (1.0.26):
 
+  - Enhancement: RelUI phased out in favour of DBrowser.
+    DBrowser provides same interface, but significantly
+    fewer Eclipse framework dependencies.
+
+  - DBrowser: Export option from relvar grids, as there
+    are other, better facilities for exporting to Excel.
 
 Version 3.012 (1.0.25):
 

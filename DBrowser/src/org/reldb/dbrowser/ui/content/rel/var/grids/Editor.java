@@ -29,9 +29,6 @@ import org.eclipse.nebula.widgets.nattable.edit.editor.CheckBoxCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.editor.MultiLineTextCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.editor.TextCellEditor;
 import org.eclipse.nebula.widgets.nattable.edit.gui.ICellEditDialog;
-import org.eclipse.nebula.widgets.nattable.export.ExportConfigAttributes;
-import org.eclipse.nebula.widgets.nattable.export.command.ExportCommand;
-import org.eclipse.nebula.widgets.nattable.extension.poi.HSSFExcelExporter;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultGridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
@@ -528,8 +525,6 @@ public abstract class Editor extends Grid {
 					"error");
 			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, errorStyle, DisplayMode.SELECT,
 					"error");
-			// options for Excel export
-			configRegistry.registerConfigAttribute(ExportConfigAttributes.EXPORTER, new HSSFExcelExporter());
 			// style for selected cells
 			Style selectStyle = new Style();
 			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, selectStyle, DisplayMode.SELECT);
@@ -865,10 +860,6 @@ public abstract class Editor extends Grid {
 					table.addConfiguration(new PopupEditorConfiguration());
 					table.configure();
 				});
-				MenuItem export = new MenuItem(menu, SWT.PUSH);
-				export.setText("Export");
-				export.setImage(IconLoader.loadIcon("export"));
-				export.addListener(SWT.Selection, e -> export());
 			}
 		};
 		table.addConfiguration(new MenuConfiguration(GridRegion.COLUMN_HEADER,
@@ -881,10 +872,6 @@ public abstract class Editor extends Grid {
 				doesDelete.setText("Delete");
 				doesDelete.setImage(IconLoader.loadIcon("table_row_delete"));
 				doesDelete.addListener(SWT.Selection, e -> askDeleteSelected());
-				MenuItem export = new MenuItem(menu, SWT.PUSH);
-				export.setText("Export");
-				export.setImage(IconLoader.loadIcon("export"));
-				export.addListener(SWT.Selection, e -> export());
 			}
 		};
 		table.addConfiguration(new MenuConfiguration(GridRegion.ROW_HEADER,
@@ -963,11 +950,6 @@ public abstract class Editor extends Grid {
 				return false;
 			}
 		};
-	}
-
-	public void export() {
-		ExportCommand cmd = new ExportCommand(table.getConfigRegistry(), table.getShell());
-		table.doCommand(cmd);
 	}
 
 	public void processDirtyRows() {
