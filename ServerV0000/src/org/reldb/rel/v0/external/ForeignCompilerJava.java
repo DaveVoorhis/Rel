@@ -231,7 +231,7 @@ public class ForeignCompilerJava {
    		notify("ForeignCompilerJava: classpath = " + classpath);
     	
     	// Start compilation using JDT
-   		String commandLine = "-1.8 -source 1.8 -warn:" + 
+   		String commandLine = "-1.9 -source 1.9 -warn:" + 
     			warningSetting + " " + 
     			"-cp " + classpath + " \"" + sourcef + "\"";
     	boolean compiled = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(

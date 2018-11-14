@@ -10,7 +10,8 @@ public class TestExternal05 extends BaseOfTest {
 	@BeforeClass
 	public static void testExternal05() {
 		String src =
-			"BEGIN;" +
+			"BEGIN; " +
+			"SET VerboseExternalCompilation On; " +
 			"OPERATOR ZOT(s CHAR) Java FOREIGN\n" + 
 			"  System.out.println(s);\n" +
 			"END OPERATOR;" +

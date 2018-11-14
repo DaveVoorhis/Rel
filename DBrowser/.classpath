@@ -34,7 +34,6 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/commons-lang3-3.8.1.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/ecj-4.6.1.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/hamcrest-core-1.3.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/httpclient-4.5.6.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/httpcore-4.4.10.jar"/>
@@ -59,5 +58,6 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/xmlbeans-3.0.1.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/commons-io-2.6.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/commons-compress-1.18.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/jdt/ecj-4.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
