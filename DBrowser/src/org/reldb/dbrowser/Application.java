@@ -142,7 +142,6 @@ public class Application {
 				Method method = getEditMethod(methodName, focusControl);
 				if (method != null) {
 					menuItemMethods.add(method);
-					System.out.println("Application: " + focusControl.getClass() + " supports " + methodName);
 					menuItem.setEnabled(true);
 				} else {
 					if (methodName.equals("clear")) {
@@ -152,7 +151,6 @@ public class Application {
 							menuItemMethods.add(selectAll);
 							menuItemMethods.add(cut);
 							menuItem.setEnabled(true);
-							System.out.println("Application: " + focusControl.getClass() + " supports " + methodName);
 						} else
 							menuItem.setEnabled(false);
 					} else
@@ -179,38 +177,38 @@ public class Application {
 		Menu menu = new Menu(editItem);
 		editItem.setMenu(menu);
 		
-		linkCommand(Commands.Do.Undo, createEditMenuItem("undo", new DecoratedMenuItem(menu, "Undo\tCtrl-Z", SWT.MOD1 | 'Z', "undo")));
+		createEditMenuItem("undo", new DecoratedMenuItem(menu, "Undo\tCtrl-Z", SWT.MOD1 | 'Z', "undo"));
 		
 		int redoAccelerator = SWT.MOD1 | (isMac() ? SWT.SHIFT | 'Z' : 'Y');
-		linkCommand(Commands.Do.Redo, createEditMenuItem("redo", new DecoratedMenuItem(menu, "Redo\tCtrl-Y", redoAccelerator, "redo")));
+		createEditMenuItem("redo", new DecoratedMenuItem(menu, "Redo\tCtrl-Y", redoAccelerator, "redo"));
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		
-		linkCommand(Commands.Do.Edit, createEditMenuItem("cut", new DecoratedMenuItem(menu, "Cut\tCtrl-X", SWT.MOD1 | 'X', "cut")));
-		linkCommand(Commands.Do.Copy, createEditMenuItem("copy", new DecoratedMenuItem(menu, "Copy\tCtrl-C", SWT.MOD1 | 'C', "copy")));
-		linkCommand(Commands.Do.Paste, createEditMenuItem("paste", new DecoratedMenuItem(menu, "Paste\tCtrl-V", SWT.MOD1 | 'V', "paste") {
+		createEditMenuItem("cut", new DecoratedMenuItem(menu, "Cut\tCtrl-X", SWT.MOD1 | 'X', "cut"));
+		createEditMenuItem("copy", new DecoratedMenuItem(menu, "Copy\tCtrl-C", SWT.MOD1 | 'C', "copy"));
+		createEditMenuItem("paste", new DecoratedMenuItem(menu, "Paste\tCtrl-V", SWT.MOD1 | 'V', "paste") {
 			public boolean canExecute() {
 				return isThereSomethingToPaste();
 			}
-		}));
+		});
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		
-		linkCommand(Commands.Do.Delete, createEditMenuItem("delete", new DecoratedMenuItem(menu, "Delete\tDel", SWT.DEL, "delete")));
-		linkCommand(Commands.Do.SelectAll, createEditMenuItem("selectAll", new DecoratedMenuItem(menu, "Select All\tCtrl-A", SWT.MOD1 | 'A', "selectAll")));
-		linkCommand(Commands.Do.FindReplace, createEditMenuItem("findReplace", new DecoratedMenuItem(menu, "Find/Replace", 0, "edit_find_replace")));
+		createEditMenuItem("clear", new DecoratedMenuItem(menu, "Clear", 0, "clearIcon"));
+		createEditMenuItem("delete", new DecoratedMenuItem(menu, "Delete\tDel", SWT.DEL, "delete"));
+		createEditMenuItem("selectAll", new DecoratedMenuItem(menu, "Select All\tCtrl-A", SWT.MOD1 | 'A', "selectAll"));
+		linkCommand(Commands.Do.FindReplace, new DecoratedMenuItem(menu, "Find/Replace", 0, "edit_find_replace"));
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		
-		linkCommand(Commands.Do.SpecialCharacters, createEditMenuItem("specialCharacters", new DecoratedMenuItem(menu, "Special characters", 0, "characters")));
-		linkCommand(Commands.Do.PreviousHistory, createEditMenuItem("previousHistory", new DecoratedMenuItem(menu, "Previous history", 0, "previousIcon")));
-		linkCommand(Commands.Do.NextHistory, createEditMenuItem("nextHistory", new DecoratedMenuItem(menu, "Next history", 0, "nextIcon")));
-		linkCommand(Commands.Do.Clear, createEditMenuItem("clear", new DecoratedMenuItem(menu, "Clear", 0, "clearIcon")));
-		linkCommand(Commands.Do.LoadFile, createEditMenuItem("loadFile", new DecoratedMenuItem(menu, "Load file", 0, "loadIcon")));
-		linkCommand(Commands.Do.InsertFile, createEditMenuItem("insertFile", new DecoratedMenuItem(menu, "Insert file", 0, "loadInsertIcon")));
-		linkCommand(Commands.Do.InsertFileName, createEditMenuItem("insertFileName", new DecoratedMenuItem(menu, "Insert file name", 0, "pathIcon")));
-		linkCommand(Commands.Do.SaveFile, createEditMenuItem("saveFile", new DecoratedMenuItem(menu, "Save file", 0, "saveIcon")));
-		linkCommand(Commands.Do.SaveHistory, createEditMenuItem("saveHistory", new DecoratedMenuItem(menu, "Save history", 0, "saveHistoryIcon")));
+		linkCommand(Commands.Do.SpecialCharacters, new DecoratedMenuItem(menu, "Special characters", 0, "characters"));
+		linkCommand(Commands.Do.PreviousHistory, new DecoratedMenuItem(menu, "Previous history", 0, "previousIcon"));
+		linkCommand(Commands.Do.NextHistory, new DecoratedMenuItem(menu, "Next history", 0, "nextIcon"));
+		linkCommand(Commands.Do.LoadFile, new DecoratedMenuItem(menu, "Load file", 0, "loadIcon"));
+		linkCommand(Commands.Do.InsertFile, new DecoratedMenuItem(menu, "Insert file", 0, "loadInsertIcon"));
+		linkCommand(Commands.Do.InsertFileName, new DecoratedMenuItem(menu, "Insert file name", 0, "pathIcon"));
+		linkCommand(Commands.Do.SaveFile, new DecoratedMenuItem(menu, "Save file", 0, "saveIcon"));
+		linkCommand(Commands.Do.SaveHistory, new DecoratedMenuItem(menu, "Save history", 0, "saveHistoryIcon"));
  
  		new MenuItem(menu, SWT.SEPARATOR);
  

@@ -24,7 +24,7 @@ public class CommandActivator extends ToolItem {
 	
 	public CommandActivator(Do command, ToolBar toolBar, int style) {
 		super(toolBar, style);
-		menuItem = Commands.getMenuItem(toolBar, command);
+		menuItem = Commands.getMenuItem(command, this);
 	}
 
 	public void setEnabled(boolean enabled) {
