@@ -1,14 +1,14 @@
-package org.eclipse.dbrowser.commands;
+package org.reldb.dbrowser.commands;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.eclipse.dbrowser.commands.Commands.Do;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.dbrowser.commands.Commands.Do;
 
 /*
  * A combination of a ToolItem for display on a ToolBar, and an optional reference to a MenuItem.

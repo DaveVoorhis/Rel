@@ -2,12 +2,12 @@ package org.reldb.dbrowser.ui.content.rel.var;
 
 import java.io.IOException;
 
-import org.eclipse.dbrowser.commands.Commands;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
+import org.reldb.dbrowser.commands.Commands;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 import org.reldb.dbrowser.ui.content.filtersorter.FilterSorter;

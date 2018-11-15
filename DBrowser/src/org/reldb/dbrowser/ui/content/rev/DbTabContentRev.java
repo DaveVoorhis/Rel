@@ -1,13 +1,13 @@
 package org.reldb.dbrowser.ui.content.rev;
 
-import org.eclipse.dbrowser.commands.CommandActivator;
-import org.eclipse.dbrowser.commands.Commands;
-import org.eclipse.dbrowser.commands.ManagedToolbar;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.reldb.dbrowser.commands.CommandActivator;
+import org.reldb.dbrowser.commands.Commands;
+import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 import org.reldb.dbrowser.ui.content.rel.var.VarEditorToolbar;

@@ -1,12 +1,12 @@
-package org.eclipse.dbrowser.commands;
+package org.reldb.dbrowser.commands;
 
 import java.util.Vector;
 
-import org.eclipse.dbrowser.commands.Commands.Do;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.dbrowser.commands.Commands.Do;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;

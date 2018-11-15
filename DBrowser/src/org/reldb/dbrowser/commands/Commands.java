@@ -1,4 +1,4 @@
-package org.eclipse.dbrowser.commands;
+package org.reldb.dbrowser.commands;
 
 import java.util.HashMap;
 import java.util.Map;

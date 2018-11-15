@@ -1,9 +1,9 @@
 package org.reldb.dbrowser.ui.content.rel.var;
 
-import org.eclipse.dbrowser.commands.Commands;
-import org.eclipse.dbrowser.commands.ManagedToolbar;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.reldb.dbrowser.commands.Commands;
+import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarDesigner;
 
 public class VarRealDesignerToolbar extends ManagedToolbar {

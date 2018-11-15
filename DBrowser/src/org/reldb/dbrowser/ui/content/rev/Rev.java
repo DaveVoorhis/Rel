@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
 
-import org.eclipse.dbrowser.commands.CommandActivator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -21,6 +20,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
+import org.reldb.dbrowser.commands.CommandActivator;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
