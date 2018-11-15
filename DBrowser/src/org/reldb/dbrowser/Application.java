@@ -304,7 +304,8 @@ public class Application {
 			createOutputMenu(bar);
 			createDatabaseMenu(bar);
 			createToolsMenu(bar);
-			createHelpMenu(bar);
+			if (!isMac())
+				createHelpMenu(bar);
 			
 			if (!hasAppMenuBar) 
 				shell.setMenuBar(bar);
