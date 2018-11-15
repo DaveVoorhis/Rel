@@ -4,7 +4,6 @@ import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Panel;
-import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -98,7 +97,7 @@ public class BrowserSwing implements HtmlBrowser {
 			public void keyReleased(KeyEvent e) {
 				if (!(e.getKeyCode() == KeyEvent.VK_C))
 					return;
-				if (!(e.getModifiers() == Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()))
+				if (!((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK))
 					return;
 				e.consume();
 				browserPanel.getDisplay().asyncExec(new Runnable() {
