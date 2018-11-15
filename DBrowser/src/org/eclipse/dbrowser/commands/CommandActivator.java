@@ -1,8 +1,9 @@
-package org.reldb.dbrowser;
+package org.eclipse.dbrowser.commands;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.eclipse.dbrowser.commands.Commands.Do;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.MenuItem;
@@ -10,22 +11,20 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 /*
- * A combination of a ToolItem, for display on a ToolBar, and an optional reference to a MenuItem.
+ * A combination of a ToolItem for display on a ToolBar, and an optional reference to a MenuItem.
  * 
  * When the ToolItem is active, the associated MenuItem will be enabled and can launch the ToolItem.
  * 
  * When the ToolItem is inactive or disposed, the associated MenuItem will be inactive.
  * 
- * If MenuItem is null, there is no associated menu item.
- * 
  */
 public class CommandActivator extends ToolItem {
-
+	
 	private MenuItem menuItem;
 	
-	public CommandActivator(MenuItem menuItem, ToolBar parent, int style) {
-		super(parent, style);
-		this.menuItem = menuItem;
+	public CommandActivator(Do command, ToolBar toolBar, int style) {
+		super(toolBar, style);
+		menuItem = Commands.getMenuItem(toolBar, command);
 	}
 
 	public void setEnabled(boolean enabled) {
@@ -51,6 +50,28 @@ public class CommandActivator extends ToolItem {
 			e.printStackTrace();
 		}
 	}
+	
+	/*
+	public boolean canExecute(DecoratedMenuItem item) {
+		CommandActivator activator = activated.get(getClass());
+		if (activator == null)
+			return false;
+		if ((activator.getStyle() & (SWT.CHECK | SWT.RADIO)) != 0)
+			item.setSelection(activator.getSelection());
+		return activator.getEnabled();
+	}
+	
+	protected boolean doExecute() {
+		CommandActivator activator = activated.get(getClass());
+		if (activator != null) {
+			if ((activator.getStyle() & (SWT.CHECK | SWT.RADIO)) != 0)
+				activator.setSelection(!activator.getSelection());
+			activator.click();
+			return true;
+		} else
+			return false;
+	}
+	*/
 	
 	public void checkSubclass() {}
 }

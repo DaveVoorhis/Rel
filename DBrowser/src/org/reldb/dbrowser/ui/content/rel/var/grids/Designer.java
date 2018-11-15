@@ -46,8 +46,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.reldb.dbrowser.IconLoader;
 import org.reldb.dbrowser.ui.DbConnection;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 

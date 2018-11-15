@@ -2,13 +2,13 @@ package org.reldb.dbrowser.ui.content.cmd;
 
 import java.io.IOException;
 
+import org.eclipse.dbrowser.commands.CommandActivator;
+import org.eclipse.dbrowser.commands.Commands;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.reldb.dbrowser.Application;
-import org.reldb.dbrowser.CommandActivator;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.RevDatabase.Script;
@@ -49,9 +49,9 @@ public class DbTabContentCmd extends Composite {
 			@Override
 			public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
 				// backup icon
-				addItem(Application.getBackupMenuItem(), "Make backup", "safeIcon", SWT.PUSH).addListener(SWT.Selection, e -> parentTab.makeBackup());
+				addItem(Commands.Do.MakeBackup, "Make backup", "safeIcon", SWT.PUSH).addListener(SWT.Selection, e -> parentTab.makeBackup());
 				// copy output to input
-				copyOutputToInputBtn = addItem(Application.getCopyInputToOutputMenuItem(), "Copy output to input", "copyToInputIcon", SWT.PUSH);
+				copyOutputToInputBtn = addItem(Commands.Do.CopyOutputToInput, "Copy output to input", "copyToInputIcon", SWT.PUSH);
 				copyOutputToInputBtn.setEnabled(!cmdPanel.getEnhancedOutput());
 				copyOutputToInputBtn.addListener(SWT.Selection, e -> cmdPanel.copyOutputToInput());
 			}

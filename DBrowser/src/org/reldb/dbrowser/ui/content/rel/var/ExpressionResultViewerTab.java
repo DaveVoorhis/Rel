@@ -2,12 +2,12 @@ package org.reldb.dbrowser.ui.content.rel.var;
 
 import java.io.IOException;
 
+import org.eclipse.dbrowser.commands.Commands;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
-import org.reldb.dbrowser.Application;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelToolbar;
 import org.reldb.dbrowser.ui.content.filtersorter.FilterSorter;
@@ -70,7 +70,7 @@ public class ExpressionResultViewerTab extends DbTreeTab {
 		return (new CmdPanelToolbar(parent, cmdPanel) {
 			protected void addAdditionalItemsAfter(CmdPanelToolbar toolbar) {
 				super.addAdditionalItemsAfter(toolbar);
-				addItem(Application.getRefreshMenuItem(), "Refresh", "arrow_refresh", SWT.PUSH).addListener(SWT.Selection, e -> evaluate());
+				addItem(Commands.Do.Refresh, "Refresh", "arrow_refresh", SWT.PUSH).addListener(SWT.Selection, e -> evaluate());
 			}
 		}).getToolBar();
 	}

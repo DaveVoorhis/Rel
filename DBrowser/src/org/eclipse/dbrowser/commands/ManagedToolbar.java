@@ -1,12 +1,13 @@
-package org.reldb.dbrowser;
+package org.eclipse.dbrowser.commands;
 
 import java.util.Vector;
 
+import org.eclipse.dbrowser.commands.Commands.Do;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
@@ -30,8 +31,8 @@ public class ManagedToolbar {
 	
 	private Vector<CommandActivatorItem> items = new Vector<CommandActivatorItem>();
 	
-	public CommandActivator addItem(MenuItem menuItem, String toolTip, String iconName, int style) {
-		CommandActivator item = new CommandActivator(menuItem, toolBar, style);
+	public CommandActivator addItem(Do makebackup, String toolTip, String iconName, int style) {
+		CommandActivator item = new CommandActivator(makebackup, toolBar, style);
 		item.setToolTipText(toolTip);
 		item.setImage(IconLoader.loadIcon(iconName));
 		items.add(new CommandActivatorItem(item, iconName));
@@ -83,6 +84,6 @@ public class ManagedToolbar {
 	}
 	
 	public void deactivate() {
-		MenuItemWithToolbar.clear();
+		Commands.clearToolbar(toolBar);
 	}
 }

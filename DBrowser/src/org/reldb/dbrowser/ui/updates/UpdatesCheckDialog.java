@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
-import org.reldb.dbrowser.IconLoader;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.updates.UpdatesCheck.SendStatus;
 import org.reldb.dbrowser.utilities.FontSize;
 

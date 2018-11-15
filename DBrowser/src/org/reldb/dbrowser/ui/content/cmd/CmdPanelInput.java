@@ -11,7 +11,8 @@ import java.util.Vector;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.custom.ST;
-
+import org.eclipse.dbrowser.commands.CommandActivator;
+import org.eclipse.dbrowser.commands.Commands;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -22,9 +23,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-import org.reldb.dbrowser.Application;
-import org.reldb.dbrowser.CommandActivator;
-import org.reldb.dbrowser.IconLoader;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.Tabs;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
@@ -187,80 +186,80 @@ public class CmdPanelInput extends Composite {
 		cmdPanelBottom.setLayoutData(fd_cmdPanelBottom);
 
 		if ((cmdStyle & CmdPanel.NO_INPUT_TOOLBAR) == 0) {
-			tlitmCharacters = new CommandActivator(Application.getSpecialCharactersMenuItem(), toolBar, SWT.NONE);
+			tlitmCharacters = new CommandActivator(Commands.Do.SpecialCharacters, toolBar, SWT.NONE);
 			tlitmCharacters.setToolTipText("Special characters");
 			tlitmCharacters.addListener(SWT.Selection, e -> specialCharacters());
 
-			tlitmPrevHistory = new CommandActivator(Application.getPreviousHistoryMenuItem(), toolBar, SWT.NONE);
+			tlitmPrevHistory = new CommandActivator(Commands.Do.PreviousHistory, toolBar, SWT.NONE);
 			tlitmPrevHistory.setToolTipText("Load previous historical entry");
 			tlitmPrevHistory.addListener(SWT.Selection, e -> previousHistory());
 
-			tlitmNextHistory = new CommandActivator(Application.getNextHistoryMenuItem(), toolBar, SWT.NONE);
+			tlitmNextHistory = new CommandActivator(Commands.Do.NextHistory, toolBar, SWT.NONE);
 			tlitmNextHistory.setToolTipText("Load next historical entry");
 			tlitmNextHistory.addListener(SWT.Selection, e -> nextHistory());
 
-			tlitmClear = new CommandActivator(Application.getClearMenuItem(), toolBar, SWT.NONE);
+			tlitmClear = new CommandActivator(Commands.Do.Clear, toolBar, SWT.NONE);
 			tlitmClear.setToolTipText("Clear");
 			tlitmClear.addListener(SWT.Selection, e -> clear());
 
-			tlitmUndo = new CommandActivator(Application.getUndoMenuItem(), toolBar, SWT.NONE);
+			tlitmUndo = new CommandActivator(Commands.Do.Undo, toolBar, SWT.NONE);
 			tlitmUndo.setToolTipText("Undo");
 			tlitmUndo.addListener(SWT.Selection, e -> inputText.undo());
 
-			tlitmRedo = new CommandActivator(Application.getRedoMenuItem(), toolBar, SWT.NONE);
+			tlitmRedo = new CommandActivator(Commands.Do.Redo, toolBar, SWT.NONE);
 			tlitmRedo.setToolTipText("Redo");
 			tlitmRedo.addListener(SWT.Selection, e -> inputText.redo());
 
-			tlitmCut = new CommandActivator(Application.getCutMenuItem(), toolBar, SWT.NONE);
+			tlitmCut = new CommandActivator(Commands.Do.Cut, toolBar, SWT.NONE);
 			tlitmCut.setToolTipText("Cut");
 			tlitmCut.addListener(SWT.Selection, e -> inputText.cut());
 
-			tlitmCopy = new CommandActivator(Application.getCopyMenuItem(), toolBar, SWT.NONE);
+			tlitmCopy = new CommandActivator(Commands.Do.Copy, toolBar, SWT.NONE);
 			tlitmCopy.setToolTipText("Copy");
 			tlitmCopy.addListener(SWT.Selection, e -> inputText.copy());
 
-			tlitmPaste = new CommandActivator(Application.getPasteMenuItem(), toolBar, SWT.NONE);
+			tlitmPaste = new CommandActivator(Commands.Do.Paste, toolBar, SWT.NONE);
 			tlitmPaste.setToolTipText("Paste");
 			tlitmPaste.addListener(SWT.Selection, e -> inputText.paste());
 			
-			tlitmSelectAll = new CommandActivator(Application.getSelectAllMenuItem(), toolBar, SWT.NONE);
+			tlitmSelectAll = new CommandActivator(Commands.Do.SelectAll, toolBar, SWT.NONE);
 			tlitmSelectAll.setToolTipText("Select all");
 			tlitmSelectAll.addListener(SWT.Selection, e -> inputText.selectAll());
 
-			tlitmDelete = new CommandActivator(Application.getDeleteMenuItem(), toolBar, SWT.NONE);
+			tlitmDelete = new CommandActivator(Commands.Do.Delete, toolBar, SWT.NONE);
 			tlitmDelete.setToolTipText("Delete");
 			tlitmDelete.addListener(SWT.Selection, e -> delete());
 			
-			tlitmFindReplace = new CommandActivator(Application.getFindReplaceMenuItem(), toolBar, SWT.NONE);
+			tlitmFindReplace = new CommandActivator(Commands.Do.FindReplace, toolBar, SWT.NONE);
 			tlitmFindReplace.setToolTipText("Find/Replace");
 			tlitmFindReplace.addListener(SWT.Selection, e -> inputText.findReplace());
 
-			tlitmLoad = new CommandActivator(Application.getLoadFileMenuItem(), toolBar, SWT.NONE);
+			tlitmLoad = new CommandActivator(Commands.Do.LoadFile, toolBar, SWT.NONE);
 			tlitmLoad.setToolTipText("Load file");
 			tlitmLoad.addListener(SWT.Selection, e -> loadFile());
 
-			tlitmLoadInsert = new CommandActivator(Application.getInsertFileMenuItem(), toolBar, SWT.NONE);
+			tlitmLoadInsert = new CommandActivator(Commands.Do.InsertFile, toolBar, SWT.NONE);
 			tlitmLoadInsert.setToolTipText("Load and insert file");
 			tlitmLoadInsert.addListener(SWT.Selection, e -> insertFile());
 
-			tlitmGetPath = new CommandActivator(Application.getFileNameMenuItem(), toolBar, SWT.NONE);
+			tlitmGetPath = new CommandActivator(Commands.Do.InsertFileName, toolBar, SWT.NONE);
 			tlitmGetPath.setToolTipText("Get file path");
 			tlitmGetPath.addListener(SWT.Selection, e -> insertFileName());
 
-			tlitmSave = new CommandActivator(Application.getSaveFileMenuItem(), toolBar, SWT.NONE);
+			tlitmSave = new CommandActivator(Commands.Do.SaveFile, toolBar, SWT.NONE);
 			tlitmSave.setToolTipText("Save");
 			tlitmSave.addListener(SWT.Selection, e -> saveFile());
 
-			tlitmSaveHistory = new CommandActivator(Application.getSaveHistoryMenuItem(), toolBar, SWT.NONE);
+			tlitmSaveHistory = new CommandActivator(Commands.Do.SaveHistory, toolBar, SWT.NONE);
 			tlitmSaveHistory.setToolTipText("Save history");
 			tlitmSaveHistory.addListener(SWT.Selection, e -> saveHistory());
 
-			tlitmCopyToOutput = new CommandActivator(Application.getCopyInputToOutputMenuItem(), toolBar, SWT.CHECK);
+			tlitmCopyToOutput = new CommandActivator(Commands.Do.CopyInputToOutput, toolBar, SWT.CHECK);
 			tlitmCopyToOutput.setToolTipText("Copy input to output");
 			tlitmCopyToOutput.setSelection(true);
 			tlitmCopyToOutput.addListener(SWT.Selection, e -> setCopyInputToOutput(tlitmCopyToOutput.getSelection()));
 
-			tlitmWrap = new CommandActivator(Application.getWrapTextMenuItem(), toolBar, SWT.CHECK);
+			tlitmWrap = new CommandActivator(Commands.Do.WrapText, toolBar, SWT.CHECK);
 			tlitmWrap.setToolTipText("Wrap text");
 			tlitmWrap.setSelection(true);
 			tlitmWrap.addListener(SWT.Selection, e -> inputText.setWordWrap(tlitmWrap.getSelection()));

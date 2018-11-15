@@ -11,6 +11,8 @@ import java.util.concurrent.Semaphore;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.eclipse.dbrowser.commands.Commands;
+import org.eclipse.dbrowser.commands.DecoratedMenuItem;
 import org.eclipse.swt.*;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.HTMLTransfer;
@@ -116,8 +118,47 @@ public class Application {
 			clipboard.dispose();	
 		}
 	}
+	
+	// Link a command (which implies a toolbar-accessible action) with a menu item.
+	private static void linkCommand(Commands.Do command, DecoratedMenuItem menuItem) {
+		Commands.linkCommand(command, menuItem);
+	}
 
-	private static void createEditMenuItem(String methodName, DecoratedMenuItem menuItem) {
+	private static DecoratedMenuItem createMenuItem(String methodName, DecoratedMenuItem menuItem) {
+		class EditMenuAdapter extends MenuAdapter { 
+			Control focusControl;
+			Method menuItemMethod;
+		};
+		EditMenuAdapter menuAdapter = new EditMenuAdapter() {
+			@Override
+			public void menuShown(MenuEvent arg0) {
+				focusControl = menuItem.getDisplay().getFocusControl();
+				if (focusControl == null)
+					return;
+				if (!menuItem.canExecute()) {
+					menuItem.setEnabled(false);
+					return;
+				}
+				menuItemMethod = getEditMethod(methodName, focusControl);
+				if (menuItemMethod != null) {
+					System.out.println("Application: " + focusControl.getClass() + " supports " + methodName);
+					menuItem.setEnabled(true);
+				} else
+					menuItem.setEnabled(false);
+			}
+		};
+		menuItem.getParent().addMenuListener(menuAdapter);
+		menuItem.addListener(SWT.Selection, evt -> {
+			try {
+				menuAdapter.menuItemMethod.invoke(menuAdapter.focusControl, new Object[0]);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			}
+		});
+		menuItem.setEnabled(false);
+		return menuItem;
+	}
+	
+	private static DecoratedMenuItem createEditMenuItem(String methodName, DecoratedMenuItem menuItem) {
 		class EditMenuAdapter extends MenuAdapter { 
 			Control focusControl;
 			LinkedList<Method> menuItemMethods = new LinkedList<Method>();
@@ -162,6 +203,7 @@ public class Application {
 			}
 		});
 		menuItem.setEnabled(false);
+		return menuItem;
 	}
 	
 	private static void createEditMenu(Menu bar) {		
@@ -171,43 +213,68 @@ public class Application {
 		Menu menu = new Menu(editItem);
 		editItem.setMenu(menu);
 		
-		createEditMenuItem("undo", new DecoratedMenuItem(menu, "Undo\tCtrl-Z", SWT.MOD1 | 'Z', "undo"));
+		linkCommand(Commands.Do.Undo, createEditMenuItem("undo", new DecoratedMenuItem(menu, "Undo\tCtrl-Z", SWT.MOD1 | 'Z', "undo")));
 		
 		int redoAccelerator = SWT.MOD1 | (isMac() ? SWT.SHIFT | 'Z' : 'Y');
-		createEditMenuItem("redo", new DecoratedMenuItem(menu, "Redo\tCtrl-Y", redoAccelerator, "redo"));
+		linkCommand(Commands.Do.Redo, createEditMenuItem("redo", new DecoratedMenuItem(menu, "Redo\tCtrl-Y", redoAccelerator, "redo")));
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		
-		createEditMenuItem("cut", new DecoratedMenuItem(menu, "Cut\tCtrl-X", SWT.MOD1 | 'X', "cut"));
-		createEditMenuItem("copy", new DecoratedMenuItem(menu, "Copy\tCtrl-C", SWT.MOD1 | 'C', "copy"));
-		createEditMenuItem("paste", new DecoratedMenuItem(menu, "Paste\tCtrl-V", SWT.MOD1 | 'V', "paste") {
+		linkCommand(Commands.Do.Edit, createEditMenuItem("cut", new DecoratedMenuItem(menu, "Cut\tCtrl-X", SWT.MOD1 | 'X', "cut")));
+		linkCommand(Commands.Do.Copy, createEditMenuItem("copy", new DecoratedMenuItem(menu, "Copy\tCtrl-C", SWT.MOD1 | 'C', "copy")));
+		linkCommand(Commands.Do.Paste, createEditMenuItem("paste", new DecoratedMenuItem(menu, "Paste\tCtrl-V", SWT.MOD1 | 'V', "paste") {
 			public boolean canExecute() {
 				return isThereSomethingToPaste();
 			}
-		});
+		}));
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		
-		createEditMenuItem("delete", new DecoratedMenuItem(menu, "Delete\tDel", SWT.DEL, "delete"));
-		createEditMenuItem("selectAll", new DecoratedMenuItem(menu, "Select All\tCtrl-A", SWT.MOD1 | 'A', "selectAll"));
-		createEditMenuItem("findReplace", new DecoratedMenuItem(menu, "Find/Replace", 0, "edit_find_replace"));
+		linkCommand(Commands.Do.Delete, createEditMenuItem("delete", new DecoratedMenuItem(menu, "Delete\tDel", SWT.DEL, "delete")));
+		linkCommand(Commands.Do.SelectAll, createEditMenuItem("selectAll", new DecoratedMenuItem(menu, "Select All\tCtrl-A", SWT.MOD1 | 'A', "selectAll")));
+		linkCommand(Commands.Do.FindReplace, createEditMenuItem("findReplace", new DecoratedMenuItem(menu, "Find/Replace", 0, "edit_find_replace")));
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		
-		createEditMenuItem("specialCharacters", new DecoratedMenuItem(menu, "Special characters", 0, "characters"));
-		createEditMenuItem("previousHistory", new DecoratedMenuItem(menu, "Previous history", 0, "previousIcon"));
-		createEditMenuItem("nextHistory", new DecoratedMenuItem(menu, "Next history", 0, "nextIcon"));
-		createEditMenuItem("clear", new DecoratedMenuItem(menu, "Clear", 0, "clearIcon"));
-		createEditMenuItem("loadFile", new DecoratedMenuItem(menu, "Load file", 0, "loadIcon"));
-		createEditMenuItem("insertFile", new DecoratedMenuItem(menu, "Insert file", 0, "loadInsertIcon"));
-		createEditMenuItem("insertFileName", new DecoratedMenuItem(menu, "Insert file name", 0, "pathIcon"));
-		createEditMenuItem("saveFile", new DecoratedMenuItem(menu, "Save file", 0, "saveIcon"));
-		createEditMenuItem("saveHistory", new DecoratedMenuItem(menu, "Save history", 0, "saveHistoryIcon"));
+		linkCommand(Commands.Do.SpecialCharacters, createEditMenuItem("specialCharacters", new DecoratedMenuItem(menu, "Special characters", 0, "characters")));
+		linkCommand(Commands.Do.PreviousHistory, createEditMenuItem("previousHistory", new DecoratedMenuItem(menu, "Previous history", 0, "previousIcon")));
+		linkCommand(Commands.Do.NextHistory, createEditMenuItem("nextHistory", new DecoratedMenuItem(menu, "Next history", 0, "nextIcon")));
+		linkCommand(Commands.Do.Clear, createEditMenuItem("clear", new DecoratedMenuItem(menu, "Clear", 0, "clearIcon")));
+		linkCommand(Commands.Do.LoadFile, createEditMenuItem("loadFile", new DecoratedMenuItem(menu, "Load file", 0, "loadIcon")));
+		linkCommand(Commands.Do.InsertFile, createEditMenuItem("insertFile", new DecoratedMenuItem(menu, "Insert file", 0, "loadInsertIcon")));
+		linkCommand(Commands.Do.InsertFileName, createEditMenuItem("insertFileName", new DecoratedMenuItem(menu, "Insert file name", 0, "pathIcon")));
+		linkCommand(Commands.Do.SaveFile, createEditMenuItem("saveFile", new DecoratedMenuItem(menu, "Save file", 0, "saveIcon")));
+		linkCommand(Commands.Do.SaveHistory, createEditMenuItem("saveHistory", new DecoratedMenuItem(menu, "Save history", 0, "saveHistoryIcon")));
  
  		new MenuItem(menu, SWT.SEPARATOR);
  
- 		new DecoratedMenuItem(menu, "Copy input to output", 0, "copyToOutputIcon", SWT.CHECK, e -> {});
- 		new DecoratedMenuItem(menu, "Wrap text", 0, "wrapIcon", SWT.CHECK, e -> {});
+ 		linkCommand(Commands.Do.CopyOutputToInput, new DecoratedMenuItem(menu, "Copy input to output", 0, "copyToOutputIcon", SWT.CHECK, e -> {}));
+ 		linkCommand(Commands.Do.WrapText, new DecoratedMenuItem(menu, "Wrap text", 0, "wrapIcon", SWT.CHECK, e -> {}));
+	}
+	
+	private static void createOutputMenu(Menu bar) {
+		MenuItem outputItem = new MenuItem(bar, SWT.CASCADE);
+		outputItem.setText("Output");
+
+		Menu menu = new Menu(outputItem);
+		outputItem.setMenu(menu);
+		
+		linkCommand(Commands.Do.CopyOutputToInput, createMenuItem("copyOutputToInput", new DecoratedMenuItem(menu, "Copy output to input", 0, "copyToInputIcon")));
+	    linkCommand(Commands.Do.ClearOutput, createMenuItem("clearOutput", new DecoratedMenuItem(menu, "Clear", 0, "clearIcon")));
+	    linkCommand(Commands.Do.SaveAsHTML, createMenuItem("saveAsHTML", new DecoratedMenuItem(menu, "Save as HTML", 0, "saveHTMLIcon")));
+	    linkCommand(Commands.Do.SaveAsText, createMenuItem("saveAsText", new DecoratedMenuItem(menu, "Save as text", 0, "saveTextIcon")));
+	    
+	    new MenuItem(menu, SWT.SEPARATOR);
+	    
+	    linkCommand(Commands.Do.DisplayEnhancedOutput, createMenuItem("setEnhancedOutput", new DecoratedMenuItem(menu, "Enhanced output", 0, "enhancedIcon", SWT.CHECK, e -> {})));
+	    linkCommand(Commands.Do.DisplayOk, createMenuItem("setWriteOk", new DecoratedMenuItem(menu, "Write 'Ok' after execution", 0, "showOkIcon", SWT.CHECK, e -> {})));
+	    linkCommand(Commands.Do.DisplayAutoClear, createMenuItem("setAutoClear", new DecoratedMenuItem(menu, "Automatically clear output", 0, "autoclearIcon", SWT.CHECK, e -> {})));
+	    linkCommand(Commands.Do.ShowRelationHeadings, createMenuItem("setShowRelationHeadings", new DecoratedMenuItem(menu, "Show relation headings", 0, "headingIcon", SWT.CHECK, e -> {})));
+	    linkCommand(Commands.Do.ShowRelationHeadingAttributeTypes, createMenuItem("setShowRelationHeadingTypes", new DecoratedMenuItem(menu, "Show attribute types in relation headings", 0, "headingIcon.png", SWT.CHECK, e -> {})));
+	    
+	    new MenuItem(menu, SWT.SEPARATOR);
+	    
+	    createMenuItem("refresh", new DecoratedMenuItem(menu, "Refresh", 0, "arrow_refresh"));
 	}
 
 	private static void createDatabaseMenu(Menu bar) {
@@ -216,25 +283,19 @@ public class Application {
 		
 		Menu menu = new Menu(databaseItem);
 		databaseItem.setMenu(menu);
-/*
-		new DecoratedMenuItem(menu, "Add Grid...\tCtrl-G", SWT.MOD1 | 'G', IconLoader.loadIcon("newgrid"), event -> {
-			
-		});
 		
-		new DecoratedMenuItem(menu, "Link...\tCtrl-L", SWT.MOD1 | 'L', IconLoader.loadIcon("link"), event -> {
-			
-		});
-		
-		new DecoratedMenuItem(menu, "Import...\tCtrl-I", SWT.MOD1 | 'I', IconLoader.loadIcon("import"), event -> {
-			
-		});
-		*/
-	}
-	
-	private static void createOutputMenu(Menu bar) {
-		MenuItem outputItem = new MenuItem(bar, SWT.CASCADE);
-		outputItem.setText("Output");
-		
+		linkCommand(Commands.Do.MakeBackup, new DecoratedMenuItem(menu, "Backup", 0, "safeIcon"));
+        
+	    new MenuItem(menu, SWT.SEPARATOR);
+	    
+	    linkCommand(Commands.Do.Design, new DecoratedMenuItem(menu, "Design", 0, "item_design"));
+	    linkCommand(Commands.Do.Drop, new DecoratedMenuItem(menu, "Drop", 0, "item_delete"));
+	    linkCommand(Commands.Do.Edit, new DecoratedMenuItem(menu, "Edit", 0, "item_edit"));
+	    linkCommand(Commands.Do.Export, new DecoratedMenuItem(menu, "Export", 0, "export"));
+	    linkCommand(Commands.Do.New, new DecoratedMenuItem(menu, "New", 0, "item_add"));
+	    linkCommand(Commands.Do.Rename, new DecoratedMenuItem(menu, "Rename", 0, "rename"));
+	    linkCommand(Commands.Do.Show, new DecoratedMenuItem(menu, "Show", 0, "play"));
+	    linkCommand(Commands.Do.ShowSystemObjects, new DecoratedMenuItem(menu, "Show system objects", 0, "gears", SWT.CHECK, e -> {}));
 	}
 	
 	private static void createToolsMenu(Menu bar) {
@@ -435,188 +496,4 @@ public class Application {
 		SWTResourceManager.dispose();
 	}
 
-	public static MenuItem getBackupMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getRefreshMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getShowMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getEditMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getNewMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getDropMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getDesignMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getRenameMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getExportMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getShowSystemObjectsMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getCopyInputToOutputMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getClearOutputMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getSaveAsHTMLMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getSaveAsTextMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getDisplayEnhancedOutputMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getDisplayOkMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getDisplayAutoClearOutputMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getShowRelationHeadingsMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getSHowRelationHeadingAttributeTypesMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getSpecialCharactersMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getPreviousHistoryMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getNextHistoryMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getClearMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getUndoMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getRedoMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getCutMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getCopyMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getPasteMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getSelectAllMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getDeleteMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getFindReplaceMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getLoadFileMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getFileNameMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getInsertFileMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getSaveFileMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getSaveHistoryMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static MenuItem getWrapTextMenuItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

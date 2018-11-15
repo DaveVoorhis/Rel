@@ -1,5 +1,6 @@
 package org.reldb.dbrowser.ui;
 
+import org.eclipse.dbrowser.commands.Commands;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CBanner;
@@ -18,8 +19,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.DBrowser;
-import org.reldb.dbrowser.IconLoader;
-import org.reldb.dbrowser.MenuItemWithToolbar;
 import org.reldb.dbrowser.ui.backup.Backup;
 import org.reldb.dbrowser.ui.content.cmd.DbTabContentCmd;
 import org.reldb.dbrowser.ui.content.conversion.DbTabContentConversion;
@@ -171,7 +170,7 @@ public class DbTab extends CTabItem {
 	}
 
 	private void showRel() {
-		MenuItemWithToolbar.clear();
+		Commands.clearAllToolbars();
 		boolean existing = true;
 		if (contentRel == null) {
 			existing = false;
@@ -192,7 +191,7 @@ public class DbTab extends CTabItem {
 	}
 
 	private void showRev() {
-		MenuItemWithToolbar.clear();
+		Commands.clearAllToolbars();
 		boolean existing = true;
 		if (contentRev == null) {
 			existing = false;
@@ -213,7 +212,7 @@ public class DbTab extends CTabItem {
 	}
 
 	private void showCmd() {
-		MenuItemWithToolbar.clear();
+		Commands.clearAllToolbars();
 		boolean existing = true;
 		if (contentCmd == null) {
 			existing = false;
