@@ -79,7 +79,25 @@ public class Application {
 	private static boolean isWebSite(Control control) {
 		return control.getClass().getName().equals("org.eclipse.swt.browser.WebSite");		
 	}
-		
+	
+	private static boolean isThereSomethingToPaste() {
+		Clipboard clipboard = new Clipboard(Display.getCurrent());
+		try {
+			TextTransfer textTransfer = TextTransfer.getInstance();
+			HTMLTransfer htmlTransfer = HTMLTransfer.getInstance();
+			String textData = (String)clipboard.getContents(textTransfer);
+			String htmlData = (String)clipboard.getContents(htmlTransfer);
+			return (textData != null && textData.length() > 0) || (htmlData != null && htmlData.length() > 0);
+		} finally {
+			clipboard.dispose();	
+		}
+	}
+	
+	// Link a command (which implies a toolbar-accessible action) with a menu item.
+	private static void linkCommand(Commands.Do command, DecoratedMenuItem menuItem) {
+		Commands.linkCommand(command, menuItem);
+	}
+	
 	private static Method getEditMethod(String methodName, Control control) {
 		if (control == null)
 			return null;
@@ -104,58 +122,6 @@ public class Application {
 				return null;
 			}
 		}
-	}
-	
-	private static boolean isThereSomethingToPaste() {
-		Clipboard clipboard = new Clipboard(Display.getCurrent());
-		try {
-			TextTransfer textTransfer = TextTransfer.getInstance();
-			HTMLTransfer htmlTransfer = HTMLTransfer.getInstance();
-			String textData = (String)clipboard.getContents(textTransfer);
-			String htmlData = (String)clipboard.getContents(htmlTransfer);
-			return (textData != null && textData.length() > 0) || (htmlData != null && htmlData.length() > 0);
-		} finally {
-			clipboard.dispose();	
-		}
-	}
-	
-	// Link a command (which implies a toolbar-accessible action) with a menu item.
-	private static void linkCommand(Commands.Do command, DecoratedMenuItem menuItem) {
-		Commands.linkCommand(command, menuItem);
-	}
-
-	private static DecoratedMenuItem createMenuItem(String methodName, DecoratedMenuItem menuItem) {
-		class EditMenuAdapter extends MenuAdapter { 
-			Control focusControl;
-			Method menuItemMethod;
-		};
-		EditMenuAdapter menuAdapter = new EditMenuAdapter() {
-			@Override
-			public void menuShown(MenuEvent arg0) {
-				focusControl = menuItem.getDisplay().getFocusControl();
-				if (focusControl == null)
-					return;
-				if (!menuItem.canExecute()) {
-					menuItem.setEnabled(false);
-					return;
-				}
-				menuItemMethod = getEditMethod(methodName, focusControl);
-				if (menuItemMethod != null) {
-					System.out.println("Application: " + focusControl.getClass() + " supports " + methodName);
-					menuItem.setEnabled(true);
-				} else
-					menuItem.setEnabled(false);
-			}
-		};
-		menuItem.getParent().addMenuListener(menuAdapter);
-		menuItem.addListener(SWT.Selection, evt -> {
-			try {
-				menuAdapter.menuItemMethod.invoke(menuAdapter.focusControl, new Object[0]);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			}
-		});
-		menuItem.setEnabled(false);
-		return menuItem;
 	}
 	
 	private static DecoratedMenuItem createEditMenuItem(String methodName, DecoratedMenuItem menuItem) {
@@ -259,22 +225,22 @@ public class Application {
 		Menu menu = new Menu(outputItem);
 		outputItem.setMenu(menu);
 		
-		linkCommand(Commands.Do.CopyOutputToInput, createMenuItem("copyOutputToInput", new DecoratedMenuItem(menu, "Copy output to input", 0, "copyToInputIcon")));
-	    linkCommand(Commands.Do.ClearOutput, createMenuItem("clearOutput", new DecoratedMenuItem(menu, "Clear", 0, "clearIcon")));
-	    linkCommand(Commands.Do.SaveAsHTML, createMenuItem("saveAsHTML", new DecoratedMenuItem(menu, "Save as HTML", 0, "saveHTMLIcon")));
-	    linkCommand(Commands.Do.SaveAsText, createMenuItem("saveAsText", new DecoratedMenuItem(menu, "Save as text", 0, "saveTextIcon")));
+		linkCommand(Commands.Do.CopyOutputToInput, new DecoratedMenuItem(menu, "Copy output to input", 0, "copyToInputIcon"));
+	    linkCommand(Commands.Do.ClearOutput, new DecoratedMenuItem(menu, "Clear", 0, "clearIcon"));
+	    linkCommand(Commands.Do.SaveAsHTML, new DecoratedMenuItem(menu, "Save as HTML", 0, "saveHTMLIcon"));
+	    linkCommand(Commands.Do.SaveAsText, new DecoratedMenuItem(menu, "Save as text", 0, "saveTextIcon"));
 	    
 	    new MenuItem(menu, SWT.SEPARATOR);
 	    
-	    linkCommand(Commands.Do.DisplayEnhancedOutput, createMenuItem("setEnhancedOutput", new DecoratedMenuItem(menu, "Enhanced output", 0, "enhancedIcon", SWT.CHECK, e -> {})));
-	    linkCommand(Commands.Do.DisplayOk, createMenuItem("setWriteOk", new DecoratedMenuItem(menu, "Write 'Ok' after execution", 0, "showOkIcon", SWT.CHECK, e -> {})));
-	    linkCommand(Commands.Do.DisplayAutoClear, createMenuItem("setAutoClear", new DecoratedMenuItem(menu, "Automatically clear output", 0, "autoclearIcon", SWT.CHECK, e -> {})));
-	    linkCommand(Commands.Do.ShowRelationHeadings, createMenuItem("setShowRelationHeadings", new DecoratedMenuItem(menu, "Show relation headings", 0, "headingIcon", SWT.CHECK, e -> {})));
-	    linkCommand(Commands.Do.ShowRelationHeadingAttributeTypes, createMenuItem("setShowRelationHeadingTypes", new DecoratedMenuItem(menu, "Show attribute types in relation headings", 0, "headingIcon.png", SWT.CHECK, e -> {})));
+	    linkCommand(Commands.Do.DisplayEnhancedOutput, new DecoratedMenuItem(menu, "Enhanced output", 0, "enhancedIcon", SWT.CHECK, e -> {}));
+	    linkCommand(Commands.Do.DisplayOk, new DecoratedMenuItem(menu, "Write 'Ok' after execution", 0, "showOkIcon", SWT.CHECK, e -> {}));
+	    linkCommand(Commands.Do.DisplayAutoClear, new DecoratedMenuItem(menu, "Automatically clear output", 0, "autoclearIcon", SWT.CHECK, e -> {}));
+	    linkCommand(Commands.Do.ShowRelationHeadings, new DecoratedMenuItem(menu, "Show relation headings", 0, "headingIcon", SWT.CHECK, e -> {}));
+	    linkCommand(Commands.Do.ShowRelationHeadingAttributeTypes, new DecoratedMenuItem(menu, "Show attribute types in relation headings", 0, "headingIcon.png", SWT.CHECK, e -> {}));
 	    
 	    new MenuItem(menu, SWT.SEPARATOR);
 	    
-	    createMenuItem("refresh", new DecoratedMenuItem(menu, "Refresh", 0, "arrow_refresh"));
+	    linkCommand(Commands.Do.Refresh, new DecoratedMenuItem(menu, "Refresh", 0, "arrow_refresh"));
 	}
 
 	private static void createDatabaseMenu(Menu bar) {
