@@ -1,7 +1,5 @@
 ** TO DO **
 
-- DBrowser: Under Windows, move Preferences from Help menu to File menu?
-
 - DBrowser: Under Preferences, move alternate output display option to
   General tab?
 
