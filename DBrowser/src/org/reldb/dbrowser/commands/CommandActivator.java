@@ -51,6 +51,14 @@ public class CommandActivator extends ToolItem {
 		}
 	}
 	
+	public boolean isVisible() {
+		return getParent().isVisible();
+	}
+
+	public boolean isFullyEnabled() {
+		return !isDisposed() && isVisible() && isEnabled();
+	}
+	
 	/*
 	public boolean canExecute(DecoratedMenuItem item) {
 		CommandActivator activator = activated.get(getClass());

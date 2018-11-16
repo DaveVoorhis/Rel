@@ -59,7 +59,7 @@ public class Commands {
 			public void menuShown(MenuEvent arg0) {
 				CommandActivator activator = activatorDoMapping.get(command);
 				System.out.println("Commands: MenuItem " + menuItem.getText() + " shown. Activator is " + activator);
-				if (activator != null && activator.getEnabled()) {
+				if (activator != null && activator.isFullyEnabled()) {
 					menuItem.setEnabled(true);
 					listener = e -> activator.click();
 					menuItem.addListener(SWT.Selection, listener);
@@ -81,8 +81,7 @@ public class Commands {
 	}
 
 	public static void clearToolbar(ToolBar toolBar) {
-		activatorDoMapping.clear();
-		/*
+		//activatorDoMapping.clear();
 		for (ToolItem toolItem: toolBar.getItems()) {
 			Iterator<Entry<Do, CommandActivator>> items = activatorDoMapping.entrySet().iterator();
 			while (items.hasNext()) {
@@ -92,11 +91,10 @@ public class Commands {
 				}
 			}			
 		}
-		*/
 	}
 
 	public static void clearAllToolbars() {
-		activatorDoMapping.clear();
+		//activatorDoMapping.clear();
 	};
 
 }
