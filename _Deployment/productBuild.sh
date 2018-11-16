@@ -80,7 +80,10 @@ popd
 
 # Standalone Rel DBMS (Java)
 echo "---------------------- Standalone DBMS Build ----------------------"
-tar cf $proddir/Rel$relversion.DBMS.tar RelDBMS RelDBMS.cmd RelDBMSServer RelDBMSServer.cmd RelTest RelTest.cmd LICENSE.txt AUTHORS.txt CHANGES.txt LIBRARIES.txt TODO.txt README.txt lib/[a-z]*.jar lib/RelDBMS.jar lib/RelTest.jar
+tar cf $proddir/Rel$relversion.DBMS.tar LICENSE.txt AUTHORS.txt CHANGES.txt LIBRARIES.txt TODO.txt README.txt lib/jdt/* lib/misc/* lib/rel/RelDBMS.jar lib/rel/RelTest.jar lib/rel/relshared.jar lib/rel/rel0000.jar lib/rel/relclient.jar
+pushd launchDBMSScripts
+tar rf $proddir/Rel$relversion.DBMS.tar *
+popd
 pushd $proddir
 gzip -9 Rel$relversion.DBMS.tar
 popd

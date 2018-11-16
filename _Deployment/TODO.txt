@@ -1,5 +1,7 @@
 ** TO DO **
 
+- RelDBMS: fix classpaths
+
 - DBrowser: Under Preferences, move alternate output display option to
   General tab?
 

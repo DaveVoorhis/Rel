@@ -29,7 +29,7 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>lib</outputDirectory>
+							<outputDirectory>lib/misc</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -79,12 +79,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
 			<version>1.18</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.eclipse.jdt.core.compiler/ecj -->
-		<dependency>
-			<groupId>org.eclipse.jdt.core.compiler</groupId>
-			<artifactId>ecj</artifactId>
-			<version>4.6.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
 		<dependency>

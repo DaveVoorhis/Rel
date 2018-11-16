@@ -8,33 +8,32 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/commons-cli-1.4.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/commons-codec-1.11.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/commons-collections4-4.2.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/commons-compress-1.18.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/commons-io-2.6.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/commons-lang-2.6.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/commons-lang3-3.8.1.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/curvesapi-1.04.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/httpclient-4.5.6.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/httpcore-4.4.10.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/jackcess-2.2.0.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/je-7.5.11.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/jtds-1.3.1.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/junit-4.12.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/log4j-1.2-api-2.11.1.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/log4j-api-2.11.1.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/log4j-core-2.11.1.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/mariadb-java-client-2.3.0.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/poi-4.0.0.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/poi-ooxml-4.0.0.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/poi-ooxml-schemas-4.0.0.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/postgresql-42.2.5.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/relclient.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/relshared.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/xmlbeans-3.0.1.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/jdt/ecj-4.9.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-cli-1.4.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-codec-1.11.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-collections4-4.2.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-compress-1.18.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-io-2.6.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-lang3-3.8.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/curvesapi-1.04.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/httpclient-4.5.6.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/httpcore-4.4.10.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/jackcess-2.2.0.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/je-7.5.11.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/jtds-1.3.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/log4j-1.2-api-2.11.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/log4j-api-2.11.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/log4j-core-2.11.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/mariadb-java-client-2.3.0.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/poi-4.0.0.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/poi-ooxml-4.0.0.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/poi-ooxml-schemas-4.0.0.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/postgresql-42.2.5.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/xmlbeans-3.0.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/rel/relclient.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

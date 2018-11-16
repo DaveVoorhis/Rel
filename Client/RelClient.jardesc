@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="_Deployment/lib/relclient.jar"/>
+    <jar path="_Deployment/lib/rel/relclient.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/Client/RelClient.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -20,14 +20,11 @@
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseAdapter.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{ResponseParserConstants.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{Token.java"/>
-        <file path="/Client/.project"/>
-        <file path="/Client/RelClient.jardesc"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.connection"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseToHTMLProgressive.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseProcessor.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.utilities"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser{ResponseHandler.java"/>
-        <file path="/Client/.classpath"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{JavaCharStream.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{ResponseParser.java"/>
         <javaElement handleIdentifier="=Client/&lt;org.reldb.rel.client.parser.core{TokenMgrError.java"/>
