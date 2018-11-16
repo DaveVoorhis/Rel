@@ -11,8 +11,6 @@
 
 - DBrowser: Finish menus, including enable/disable and tooltips.
 
-- DBrowser: delete RelUI.
-
 - DBrowser: Ensure command-line load of .rel files and databases works.
 
 - DBrowser: Graphical editing of RVA value does not work. Appears to
