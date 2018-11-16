@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.DBrowser;
-import org.reldb.dbrowser.commands.Commands;
 import org.reldb.dbrowser.ui.backup.Backup;
 import org.reldb.dbrowser.ui.content.cmd.DbTabContentCmd;
 import org.reldb.dbrowser.ui.content.conversion.DbTabContentConversion;
@@ -170,7 +169,6 @@ public class DbTab extends CTabItem {
 	}
 
 	private void showRel() {
-		Commands.clearAllToolbars();
 		boolean existing = true;
 		if (contentRel == null) {
 			existing = false;
@@ -191,7 +189,6 @@ public class DbTab extends CTabItem {
 	}
 
 	private void showRev() {
-		Commands.clearAllToolbars();
 		boolean existing = true;
 		if (contentRev == null) {
 			existing = false;
@@ -208,11 +205,9 @@ public class DbTab extends CTabItem {
 		modeContent.layout();
 		if (existing)
 			contentRev.redisplayed();
-		contentRev.activateMenu();
 	}
 
 	private void showCmd() {
-		Commands.clearAllToolbars();
 		boolean existing = true;
 		if (contentCmd == null) {
 			existing = false;

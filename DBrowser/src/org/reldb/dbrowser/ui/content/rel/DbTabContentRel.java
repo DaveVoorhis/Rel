@@ -141,7 +141,6 @@ public class DbTabContentRel extends Composite {
 	}
 	
 	protected void changeToolbar() {
-		Commands.clearAllToolbars();
 		if (tabToolBar != null) {
 			tabToolBar.dispose();
 			tabToolBar = null;

@@ -88,9 +88,5 @@ public class DbTabContentRev extends Composite {
 	public void redisplayed() {
 		rev.refresh();
 	}
-	
-	public void activateMenu() {
-		toolBar.activate();
-	}
 
 }

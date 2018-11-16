@@ -31,6 +31,18 @@ public class ManagedToolbar {
 	
 	private Vector<CommandActivatorItem> items = new Vector<CommandActivatorItem>();
 	
+	public ManagedToolbar(Composite parent) {
+		toolBar = new ToolBar(parent, SWT.None);
+		toolBar.addDisposeListener(e -> disposed());
+		preferenceChangeListener = new PreferenceChangeAdapter("ManagedToolbar") {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent evt) {
+				setupIcons();
+			}
+		};
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
+	}
+	
 	public CommandActivator addItem(Do makebackup, String toolTip, String iconName, int style) {
 		CommandActivator item = new CommandActivator(makebackup, toolBar, style);
 		item.setToolTipText(toolTip);
@@ -47,18 +59,6 @@ public class ManagedToolbar {
 		new ToolItem(toolBar, SWT.SEPARATOR);
 	}
 	
-	public ManagedToolbar(Composite parent) {
-		toolBar = new ToolBar(parent, SWT.None);
-		toolBar.addDisposeListener(e -> disposed());
-		preferenceChangeListener = new PreferenceChangeAdapter("ManagedToolbar") {
-			@Override
-			public void preferenceChange(PreferenceChangeEvent evt) {
-				setupIcons();
-			}
-		};
-		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
-	}
-	
 	public void dispose() {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 		toolBar.dispose();
@@ -67,6 +67,7 @@ public class ManagedToolbar {
 	private void disposed() {
 		for (CommandActivatorItem tbi: items)
 			tbi.getItem().notifyToolbarDisposed();
+		Commands.clearToolbar(toolBar);
 	}
 
 	private void setupIcons() {
@@ -76,14 +77,5 @@ public class ManagedToolbar {
 
 	public ToolBar getToolBar() {
 		return toolBar;
-	}
-
-	public void activate() {
-		// for (CommandActivatorItem tbi: items)
-		//	tbi.getItem().activate();
-	}
-	
-	public void deactivate() {
-		Commands.clearToolbar(toolBar);
 	}
 }
