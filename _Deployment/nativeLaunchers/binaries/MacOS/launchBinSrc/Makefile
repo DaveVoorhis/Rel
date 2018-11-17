@@ -1,3 +1,3 @@
 Rel: Rel.cpp
-	g++ Rel.cpp -o Rel
-
+	g++ -mmacosx-version-min=10.9 Rel.cpp -o Rel
+	strip Rel
