@@ -1,5 +1,7 @@
 ** TO DO **
 
+- DBrowser: Finish menus, including enable/disable and tooltips.
+
 - DBrowser: Check that use of alternate output display option doesn't
   interfere with Rel shutting down properly. Note that using command-line
   with any output appears to cause problems exiting on Windows.
@@ -12,8 +14,6 @@
 - DBrowser: Make Linux native launcher use GTK2?
 
 - DBrowser: Make all native launchers pass command-line parms to DBrowser
-
-- DBrowser: Finish menus, including enable/disable and tooltips.
 
 - DBrowser: Ensure command-line load of .rel files and databases works.
 
