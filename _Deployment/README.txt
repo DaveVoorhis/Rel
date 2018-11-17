@@ -15,9 +15,8 @@ maintaining personal, workgroup, and classroom databases.
 2. Open the downloaded archive to extract the Rel folder.
    Move the Rel folder to a convenient location.
    
-   On MacOS, it will running the .dmg will start a
-   minimal installer to help you copy the Rel application to 
-   your Applications folder.
+   On MacOS, running the .dmg will start a minimal installer 
+   to help you copy the Rel application to your Applications folder.
 
 3. Download and unzip the Rel / Tutorial D source code examples to a
    convenient location:
