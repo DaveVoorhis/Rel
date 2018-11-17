@@ -44,12 +44,16 @@ public class Application {
 	private static void quit() {
 		Display display = Display.getCurrent();
 		Shell[] shells = display.getShells();
+		System.out.println("Application: close shells.");
 		for (Shell shell: shells)
 			if (!shell.isDisposed())
 				shell.close();
+		System.out.println("Application: close display.");
 		if (!display.isDisposed()) 
 			display.dispose();
+		System.out.println("Application: free resources.");
 		SWTResourceManager.dispose();
+		System.out.println("Application: shutdown.");
 		System.exit(0);
 	}
 	
