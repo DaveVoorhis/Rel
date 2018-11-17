@@ -39,7 +39,6 @@ public class CommandActivator extends ToolItem {
 	}
 
 	public void click() {
-		System.out.println("CommandActivator: click on " + getToolTipText());
 		// cheat to invoke sendSelectionEvent(), which is private
         Class<?>toolItemClass = getClass().getSuperclass().getSuperclass().getSuperclass();	// i.e., Widget class
         Method method;

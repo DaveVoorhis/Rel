@@ -65,6 +65,8 @@ public class Commands {
 						menuItem.removeListener(SWT.Selection, oldListener);
 					listener = e -> activator.click();
 					menuItem.addListener(SWT.Selection, listener);
+					if ((menuItem.getStyle() & (SWT.CHECK | SWT.RADIO)) != 0)
+						menuItem.setSelection(activator.getSelection());
 				} else {
 					menuItem.setEnabled(false);
 				}
