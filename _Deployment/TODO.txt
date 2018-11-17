@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Main README: Note need to change native SWT depending on platform.
+
 - DBrowser: Fix checkbox menuitem / toolbar integration.
 
 - DBrowser: Finish menus, including enable/disable and tooltips.
