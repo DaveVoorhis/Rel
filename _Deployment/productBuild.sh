@@ -3,7 +3,23 @@
 # This script constructs distributable Rel products. It is intended to run on MacOS.
 #
 # It assumes copies of Java JDKs are available in the folder denoted by $jredir,
-# below.
+# below, which expects to find untarred JDKs in linux, osx, and windows folders,
+# respectively. Each JDK should be untarred but in its folder, so the expected
+# directory subtree for JDK version 11.0.1 would be:
+# 
+# OpenJDKs
+#   linux
+#      jdk-11.0.1
+#         bin 
+#         ...etc...
+#   osx
+#      jdk-11.0.1.jdk
+#         bin 
+#         ...etc...
+#   windows
+#      jdk-11.0.1
+#         bin 
+#         ...etc...
 #
 
 relversion=3.013
@@ -20,14 +36,15 @@ macosTargetDBMS=macosDBMS
 windowsTargetDBMS=windowsDBMS
 
 # Clear
+mkdir $proddir &>/dev/null
 ./productClear.sh
+rm `find ./ -name .DS_Store -print` &>/dev/null
 
 # Grammar
 ~/bin/jjdoc ../ServerV0000/src/org/reldb/rel/v0/languages/tutoriald/parser/TutorialD.jj
 mv TutorialD.html $proddir
 
 # Scripts
-rm -rf Scripts/.DS_Store
 cp -R Scripts $proddir/RelScripts
 pushd $proddir/
 zip -9r Rel_ExamplesAndUtilities_$relversion.zip RelScripts
