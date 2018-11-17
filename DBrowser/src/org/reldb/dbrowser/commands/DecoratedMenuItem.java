@@ -23,15 +23,7 @@ public class DecoratedMenuItem extends MenuItem {
 
 	/** MenuItem with text, accelerator, image, style and Listener. */
 	public DecoratedMenuItem(Menu parentMenu, String text, int accelerator, String imageName, int style, Listener listener) {
-		super(parentMenu, style);
-		if (text != null)
-			setText(text);
-		if (accelerator != 0)
-			setAccelerator(accelerator);
-		if (imageName != null)
-			setImage(IconLoader.loadIcon(imageName));
-		if (listener != null)
-			addListener(SWT.Selection, listener);
+		this(parentMenu, text, accelerator, IconLoader.loadIcon(imageName), style, listener);
 	}
 	
 	/** MenuItem with text, accelerator, image and Listener. */
@@ -56,9 +48,19 @@ public class DecoratedMenuItem extends MenuItem {
 	
 	/** MenuItem with text, accelerator, and image */
 	public DecoratedMenuItem(Menu parentMenu, String text, int accelerator, String imageName) {
-		this(parentMenu, text, accelerator, IconLoader.loadIcon(imageName), null);
+		this(parentMenu, text, accelerator, IconLoader.loadIcon(imageName));
 	}
 	
+	/** MenuItem with text, accelerator, image, and explicit style */
+	public DecoratedMenuItem(Menu parentMenu, String text, int accelerator, Image image, int style) {
+		this(parentMenu, text, accelerator, image, style, null);
+	}
+	
+	/** MenuItem with text, accelerator, image, and explicit style */
+	public DecoratedMenuItem(Menu parentMenu, String text, int accelerator, String imageName, int style) {
+		this(parentMenu, text, accelerator, IconLoader.loadIcon(imageName), style);
+	}
+
 	public boolean canExecute() {
 		return true;
 	}

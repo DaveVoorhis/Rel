@@ -216,8 +216,8 @@ public class Application {
  
  		new MenuItem(menu, SWT.SEPARATOR);
  
- 		linkCommand(Commands.Do.CopyOutputToInput, new DecoratedMenuItem(menu, "Copy input to output", 0, "copyToOutputIcon", SWT.CHECK, e -> {}));
- 		linkCommand(Commands.Do.WrapText, new DecoratedMenuItem(menu, "Wrap text", 0, "wrapIcon", SWT.CHECK, e -> {}));
+ 		linkCommand(Commands.Do.CopyOutputToInput, new DecoratedMenuItem(menu, "Copy input to output", 0, "copyToOutputIcon", SWT.CHECK));
+ 		linkCommand(Commands.Do.WrapText, new DecoratedMenuItem(menu, "Wrap text", 0, "wrapIcon", SWT.CHECK));
 	}
 	
 	private static void createOutputMenu(Menu bar) {
@@ -234,11 +234,11 @@ public class Application {
 	    
 	    new MenuItem(menu, SWT.SEPARATOR);
 	    
-	    linkCommand(Commands.Do.DisplayEnhancedOutput, new DecoratedMenuItem(menu, "Enhanced output", 0, "enhancedIcon", SWT.CHECK, e -> {}));
-	    linkCommand(Commands.Do.DisplayOk, new DecoratedMenuItem(menu, "Write 'Ok' after execution", 0, "showOkIcon", SWT.CHECK, e -> {}));
-	    linkCommand(Commands.Do.DisplayAutoClear, new DecoratedMenuItem(menu, "Automatically clear output", 0, "autoclearIcon", SWT.CHECK, e -> {}));
-	    linkCommand(Commands.Do.ShowRelationHeadings, new DecoratedMenuItem(menu, "Show relation headings", 0, "headingIcon", SWT.CHECK, e -> {}));
-	    linkCommand(Commands.Do.ShowRelationHeadingAttributeTypes, new DecoratedMenuItem(menu, "Show attribute types in relation headings", 0, "headingIcon.png", SWT.CHECK, e -> {}));
+	    linkCommand(Commands.Do.DisplayEnhancedOutput, new DecoratedMenuItem(menu, "Enhanced output", 0, "enhancedIcon", SWT.CHECK));
+	    linkCommand(Commands.Do.DisplayOk, new DecoratedMenuItem(menu, "Write 'Ok' after execution", 0, "showOkIcon", SWT.CHECK));
+	    linkCommand(Commands.Do.DisplayAutoClear, new DecoratedMenuItem(menu, "Automatically clear output", 0, "autoclearIcon", SWT.CHECK));
+	    linkCommand(Commands.Do.ShowRelationHeadings, new DecoratedMenuItem(menu, "Show relation headings", 0, "headingIcon", SWT.CHECK));
+	    linkCommand(Commands.Do.ShowRelationHeadingAttributeTypes, new DecoratedMenuItem(menu, "Show attribute types in relation headings", 0, "headingIcon.png", SWT.CHECK));
 	    
 	    new MenuItem(menu, SWT.SEPARATOR);
 	    
@@ -263,7 +263,7 @@ public class Application {
 	    linkCommand(Commands.Do.New, new DecoratedMenuItem(menu, "New", 0, "item_add"));
 	    linkCommand(Commands.Do.Rename, new DecoratedMenuItem(menu, "Rename", 0, "rename"));
 	    linkCommand(Commands.Do.Show, new DecoratedMenuItem(menu, "Show", 0, "play"));
-	    linkCommand(Commands.Do.ShowSystemObjects, new DecoratedMenuItem(menu, "Show system objects", 0, "gears", SWT.CHECK, e -> {}));
+	    linkCommand(Commands.Do.ShowSystemObjects, new DecoratedMenuItem(menu, "Show system objects", 0, "gears", SWT.CHECK));
 	}
 	
 	private static void createToolsMenu(Menu bar) {
