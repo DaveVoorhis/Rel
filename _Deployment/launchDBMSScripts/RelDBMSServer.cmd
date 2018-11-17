@@ -1,1 +1,1 @@
-@java -cp lib\rel\*;lib\rel\misc/*;lib\jdt\* -jar lib\rel\RelDBMS.jar -D %1 %2 %3 %4 %5 %6 %7 %8 %9
+@java -cp "lib\rel\*;lib\misc\*;lib\jdt\*" org.reldb.rel.Rel -D %1 %2 %3 %4 %5 %6 %7 %8 %9

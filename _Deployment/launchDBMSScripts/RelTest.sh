@@ -1,3 +1,2 @@
 #!/bin/sh
-java -cp lib/rel/*:lib/rel/misc/*:lib/jdt/* -jar lib/rel/RelTest.jar
-
+java -cp "lib/rel/*:lib/misc/*:lib/jdt/*" AllTests
