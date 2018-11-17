@@ -124,7 +124,7 @@ zip -9r $proddir/Rel$relversion.$windowsTargetDBMS.zip *.txt lib/jdt/* lib/misc/
 pushd nativeLaunchers/RelDBMS/Windows
 zip -9r $proddir/Rel$relversion.$windowsTargetDBMS.zip *
 popd
-pushd MakeJRE/MacOS
+pushd MakeJRE/Windows
 zip -9r $proddir/Rel$relversion.$windowsTargetDBMS.zip *
 popd
 
