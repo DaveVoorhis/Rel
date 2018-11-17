@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
@@ -53,22 +53,21 @@ public class Commands {
 	
 	public static void linkCommand(Do command, DecoratedMenuItem menuItem) {
 		menuDoMapping.put(command, menuItem);
-		menuItem.getParent().addMenuListener(new MenuListener() {
+		menuItem.getParent().addMenuListener(new MenuAdapter() {
 			Listener listener = null;
 			@Override
 			public void menuShown(MenuEvent arg0) {
 				CommandActivator activator = activatorDoMapping.get(command);
 				if (activator != null && activator.isFullyEnabled()) {
 					menuItem.setEnabled(true);
+					Listener[] oldListeners = menuItem.getListeners(SWT.Selection);
+					for (Listener oldListener: oldListeners)
+						menuItem.removeListener(SWT.Selection, oldListener);
 					listener = e -> activator.click();
 					menuItem.addListener(SWT.Selection, listener);
-				} else
+				} else {
 					menuItem.setEnabled(false);
-			}
-			@Override
-			public void menuHidden(MenuEvent arg0) {
-				if (listener != null)
-					menuItem.removeListener(SWT.Selection, listener);
+				}
 			}
 		});
 		menuItem.setEnabled(false);
@@ -86,7 +85,6 @@ public class Commands {
 			while (items.hasNext()) {
 				Entry<Do, CommandActivator> entry = items.next();
 				if (entry.getValue() == toolItem) {
-					System.out.println("Commands: remove toolItem " + toolItem.getToolTipText());
 					items.remove();
 				}
 			}
