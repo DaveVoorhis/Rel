@@ -9,7 +9,6 @@ maintaining personal, workgroup, and classroom databases.
 1. Download the file appropriate for your platform:
 
    Rel3.xxx.win32.win32.x86_64.zip      Windows 64 bit
-   Rel3.xxx.win32.win32.x86.zip         Windows 32 bit
    Rel3.xxx.dmg                         Mac OS X 64 bit
    Rel3.xxx.linux.gtk.x86_64.tar.gz     Linux 64 bit
 
