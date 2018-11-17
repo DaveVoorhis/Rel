@@ -1,6 +1,6 @@
 ** TO DO **
 
-- RelDBMS: fix classpaths
+- Build: Make sure *.txt files are included with distributions.
 
 - DBrowser: Under Preferences, move alternate output display option to
   General tab?
