@@ -46,7 +46,7 @@ directory on your host machine:
 
    Rel3.xxx.DBMS.tar.gz
 
-It requires that Java 11 runtime already be installed on the
+It requires that a Java 11 runtime already be installed on the
 machine. You can download a Java runtime from https://jdk.java.net/
 
 ** To run the stand-alone Rel DBMS server from the command line:
