@@ -9,13 +9,14 @@ maintaining personal, workgroup, and classroom databases.
 1. Download the file appropriate for your platform:
 
    Rel3.xxx.win32.win32.x86_64.zip      Windows 64 bit
-   Rel3.xxx.dmg                         Mac OS X 64 bit
+   Rel3.xxx.dmg                         MacOS 64 bit
    Rel3.xxx.linux.gtk.x86_64.tar.gz     Linux 64 bit
 
 2. Open the downloaded archive to extract the Rel folder.
    Move the Rel folder to a convenient location.
    
-   On Mac OS X, it will help you copy the application to 
+   On MacOS, it will running the .dmg will start a
+   minimal installer to help you copy the Rel application to 
    your Applications folder.
 
 3. Download and unzip the Rel / Tutorial D source code examples to a
@@ -28,10 +29,6 @@ maintaining personal, workgroup, and classroom databases.
 
 4. To run Rel, open the Rel folder or directory and run the Rel
    executable. It's normally shown with a Rel icon.
-
-NOTE: The first time you run Rel on Mac OS X, you may
-      be asked to install Java 1.6, which is not actually used
-      by Rel, but is apparently required in order to launch it.
 
 *** USING THE STAND-ALONE REL DBMS ***
 
@@ -49,8 +46,8 @@ directory on your host machine:
 
    Rel3.xxx.DBMS.tar.gz
 
-It requires that Java 8 runtime already be installed on the
-machine. You can download a Java runtime from http://java.com
+It requires that Java 11 runtime already be installed on the
+machine. You can download a Java runtime from https://jdk.java.net/
 
 ** To run the stand-alone Rel DBMS server from the command line:
 
