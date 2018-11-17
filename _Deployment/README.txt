@@ -8,10 +8,12 @@ maintaining personal, workgroup, and classroom databases.
 
 1. Download the file appropriate for your platform:
 
-   Rel3.xxx.win32.win32.x86_64.zip      Windows 64 bit
-   Rel3.xxx.dmg                         MacOS 64 bit
-   Rel3.xxx.linux.gtk.x86_64.tar.gz     Linux 64 bit
+   Rel3.xxx.windows.zip      Windows 64 bit
+   Rel3.xxx.dmg              MacOS 64 bit
+   Rel3.xxx.linux.tar.gz     Linux 64 bit
 
+   Note: xxx represents the current version number.
+   
 2. Open the downloaded archive to extract the Rel folder.
    Move the Rel folder to a convenient location.
    
@@ -43,20 +45,25 @@ If you wish to use the standalone Rel DBMS -- which is not needed to
 use Rel -- download the following and extract it to a suitable
 directory on your host machine:
 
-   Rel3.xxx.DBMS.tar.gz
+   Rel3.xxx.windowsDBMS.zip      Windows 64 bit
+   Rel3.xxx.macosDBMS.tar.gz     MacOS 64 bit
+   Rel3.xxx.linuxDBMS.tar.gz     Linux 64 bit
 
-It requires that a Java 11 runtime already be installed on the
-machine. You can download a Java runtime from https://jdk.java.net/
-
-** To run the stand-alone Rel DBMS server from the command line:
+** To run just the stand-alone Rel DBMS server from the command line:
 
    RelDBMSServer
+
+   Note: The script file will have a .sh extension on Linux and 
+   MacOS, .cmd on Windows. 
 
 ** To run the stand-alone command-line Rel language interpreter or
    server from your operating system command-line, go to the Rel 
    folder or directory and run:
 
    RelDBMS
+
+   Note: The script file will have a .sh extension on Linux and 
+   MacOS, .cmd on Windows. 
 
 ** The stand-alone command-line Rel language interpreter provides
    various options, including the option to run the server.  
