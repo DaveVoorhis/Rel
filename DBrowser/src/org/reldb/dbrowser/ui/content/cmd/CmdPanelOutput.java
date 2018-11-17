@@ -20,6 +20,7 @@ import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
 import org.reldb.dbrowser.ui.preferences.PreferencePageCmd;
+import org.reldb.dbrowser.ui.preferences.PreferencePageDisplay;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 import org.reldb.rel.client.parser.ResponseToHTML;
 import org.reldb.rel.client.parser.core.ParseException;
@@ -97,7 +98,7 @@ public class CmdPanelOutput extends Composite {
 			}
 		};
 
-		Preferences.addPreferenceChangeListener(PreferencePageCmd.CMD_BROWSER_SWING, browserPreferenceChangeListener);
+		Preferences.addPreferenceChangeListener(PreferencePageDisplay.CMD_BROWSER_SWING, browserPreferenceChangeListener);
 
 		styledText.setFont(Preferences.getPreferenceFont(getDisplay(), PreferencePageCmd.CMD_FONT));
 		fontPreferenceChangeListener = new PreferenceChangeAdapter("CmdPanel_font") {
@@ -339,7 +340,7 @@ public class CmdPanelOutput extends Composite {
 	}
 
 	public void dispose() {
-		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_BROWSER_SWING,
+		Preferences.removePreferenceChangeListener(PreferencePageDisplay.CMD_BROWSER_SWING,
 				browserPreferenceChangeListener);
 		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
 		connection.close();

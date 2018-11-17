@@ -7,7 +7,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.reldb.dbrowser.ui.preferences.PreferencePageCmd;
+import org.reldb.dbrowser.ui.preferences.PreferencePageDisplay;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
 public class BrowserManager implements HtmlBrowser {
@@ -40,7 +40,7 @@ public class BrowserManager implements HtmlBrowser {
 			content = browser.getContent();
 			browser.dispose();
 		}
-		if (!Preferences.getPreferenceBoolean(PreferencePageCmd.CMD_BROWSER_SWING)) {
+		if (!Preferences.getPreferenceBoolean(PreferencePageDisplay.CMD_BROWSER_SWING)) {
 			browser = new BrowserNative();
 			if (browser.createWidget(parent)) {
 				if (content != null)

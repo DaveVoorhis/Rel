@@ -171,6 +171,9 @@ public class Preferences {
 		PreferenceNode cmd = new PreferenceNode("Command line", new PreferencePageCmd());
 		preferenceManager.addToRoot(cmd);
 		
+		PreferenceNode display = new PreferenceNode("Display", new PreferencePageDisplay());
+		preferenceManager.addToRoot(display);
+		
 		preferenceDialog = new PreferenceDialog(parent, preferenceManager);
 		preferenceDialog.setPreferenceStore(preferences);
  	}

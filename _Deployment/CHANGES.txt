@@ -9,6 +9,10 @@ Version 3.013 (1.0.26):
   - DBrowser: Export option dropped from relvar grids, as there
     are other, better facilities for exporting to Excel.
 
+  - DBrowser: Under Preferences, moved alternate output display 
+    option to Display tab.
+
+
 Version 3.012 (1.0.25):
 
   - Enhancement: Rel DBMS: Now provides -q command-line option
