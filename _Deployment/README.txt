@@ -52,19 +52,15 @@ machine. You can download a Java runtime from https://jdk.java.net/
 
    RelDBMSServer
 
-** The stand-alone Rel DBMS server provides various options.  To see
-   these, type:
-
-   RelDBMSServer -?
-
-** To run the stand-alone command-line Rel language interpreter from
-   your operating system command-line, go to the Rel folder or
-   directory and run:
+** To run the stand-alone command-line Rel language interpreter or
+   server from your operating system command-line, go to the Rel 
+   folder or directory and run:
 
    RelDBMS
 
 ** The stand-alone command-line Rel language interpreter provides
-   various options.  To see these, type:
+   various options, including the option to run the server.  
+   To see these options, type:
    
    RelDBMS -?
 
