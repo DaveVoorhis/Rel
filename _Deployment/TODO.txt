@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Tests: Why do tests fail when run standalone?
+
 - Docs: Update README.txt
 
 - DBrowser: Under Preferences, move alternate output display option to
