@@ -6,4 +6,5 @@ module makejre.reldb {
     requires java.management;
     requires jdk.management;
     requires jdk.unsupported;
+    requires jdk.charsets;
 }
