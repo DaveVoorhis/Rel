@@ -24,7 +24,7 @@ public class VarRealDesignerTab extends DbTreeTab {
 	}
 	
 	public ToolBar getToolBar(Composite parent) {
-		return new VarRealDesignerToolbar(parent, relvarDesigner.getRelvarDesigner()).getToolBar();
+		return new VarRealDesignerToolbar(parent, relvarDesigner.getRelvarDesigner());
 	}
 	
 }

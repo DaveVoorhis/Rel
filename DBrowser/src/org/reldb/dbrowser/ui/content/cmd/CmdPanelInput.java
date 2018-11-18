@@ -15,8 +15,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -24,13 +22,12 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.reldb.dbrowser.commands.CommandActivator;
 import org.reldb.dbrowser.commands.Commands;
-import org.reldb.dbrowser.ui.IconLoader;
+import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.Tabs;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
 import org.reldb.dbrowser.ui.preferences.PreferencePageCmd;
-import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
 public class CmdPanelInput extends Composite {
@@ -40,23 +37,8 @@ public class CmdPanelInput extends Composite {
 
 	private CommandActivator tlitmPrevHistory;
 	private CommandActivator tlitmNextHistory;
-	private ToolItem tlitmClear;
-	private ToolItem tlitmUndo;
-	private ToolItem tlitmRedo;
-	private ToolItem tlitmCut;
-	private ToolItem tlitmCopy;
-	private ToolItem tlitmPaste;
-	private ToolItem tlitmDelete;
-	private ToolItem tlitmSelectAll;
-	private CommandActivator tlitmFindReplace;
-	private CommandActivator tlitmLoad;
-	private CommandActivator tlitmLoadInsert;
-	private CommandActivator tlitmGetPath;
-	private CommandActivator tlitmSave;
-	private CommandActivator tlitmSaveHistory;
 	private CommandActivator tlitmCopyToOutput;
 	private CommandActivator tlitmWrap;
-	private CommandActivator tlitmCharacters;
 
 	private Vector<String> entryHistory = new Vector<String>();
 	private int currentHistoryItem = 0;
@@ -66,7 +48,6 @@ public class CmdPanelInput extends Composite {
 	private FileDialog saveDialog = null;
 	private FileDialog saveHistoryDialog = null;
 
-	private PreferenceChangeListener iconPreferenceChangeListener;
 	private PreferenceChangeListener fontPreferenceChangeListener;
 
 	private CmdPanelOutput cmdPanelOutput;
@@ -90,7 +71,7 @@ public class CmdPanelInput extends Composite {
 
 		this.cmdPanelOutput = cmdPanelOutput;
 		
-		ToolBar toolBar = new ToolBar(this, SWT.FLAT);
+		ManagedToolbar toolBar = new ManagedToolbar(this);
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);
 		fd_toolBar.top = new FormAttachment(0);
@@ -185,97 +166,33 @@ public class CmdPanelInput extends Composite {
 		fd_cmdPanelBottom.bottom = new FormAttachment(100);
 		fd_inputText.bottom = new FormAttachment(cmdPanelBottom);
 		cmdPanelBottom.setLayoutData(fd_cmdPanelBottom);
-
+		
 		if ((cmdStyle & CmdPanel.NO_INPUT_TOOLBAR) == 0) {
-			tlitmCharacters = new CommandActivator(Commands.Do.SpecialCharacters, toolBar, SWT.NONE);
-			tlitmCharacters.setToolTipText("Special characters");
-			tlitmCharacters.addListener(SWT.Selection, e -> specialCharacters());
-
-			tlitmPrevHistory = new CommandActivator(Commands.Do.PreviousHistory, toolBar, SWT.NONE);
-			tlitmPrevHistory.setToolTipText("Load previous historical entry");
-			tlitmPrevHistory.addListener(SWT.Selection, e -> previousHistory());
-
-			tlitmNextHistory = new CommandActivator(Commands.Do.NextHistory, toolBar, SWT.NONE);
-			tlitmNextHistory.setToolTipText("Load next historical entry");
-			tlitmNextHistory.addListener(SWT.Selection, e -> nextHistory());
-
-			tlitmClear = new ToolItem(toolBar, SWT.NONE);
-			tlitmClear.setToolTipText("Clear");
-			tlitmClear.addListener(SWT.Selection, e -> clear());
-
-			tlitmUndo = new ToolItem(toolBar, SWT.NONE);
-			tlitmUndo.setToolTipText("Undo");
-			tlitmUndo.addListener(SWT.Selection, e -> inputText.undo());
-
-			tlitmRedo = new ToolItem(toolBar, SWT.NONE);
-			tlitmRedo.setToolTipText("Redo");
-			tlitmRedo.addListener(SWT.Selection, e -> inputText.redo());
-
-			tlitmCut = new ToolItem(toolBar, SWT.NONE);
-			tlitmCut.setToolTipText("Cut");
-			tlitmCut.addListener(SWT.Selection, e -> inputText.cut());
-
-			tlitmCopy = new ToolItem(toolBar, SWT.NONE);
-			tlitmCopy.setToolTipText("Copy");
-			tlitmCopy.addListener(SWT.Selection, e -> inputText.copy());
-
-			tlitmPaste = new ToolItem(toolBar, SWT.NONE);
-			tlitmPaste.setToolTipText("Paste");
-			tlitmPaste.addListener(SWT.Selection, e -> inputText.paste());
+			new CommandActivator(Commands.Do.SpecialCharacters, toolBar, "characters", SWT.NONE, "Special characters", e -> specialCharacters());
+			tlitmPrevHistory = new CommandActivator(Commands.Do.PreviousHistory, toolBar, "previousIcon", SWT.NONE, "Load previous historical entry", e -> previousHistory());
+			tlitmNextHistory = new CommandActivator(Commands.Do.NextHistory, toolBar, "nextIcon", SWT.NONE, "Load next historical entry", e -> nextHistory());
+			new CommandActivator(null, toolBar, "clearIcon", SWT.NONE, "Clear", e -> clear());
+			new CommandActivator(null, toolBar, "undo", SWT.NONE, "Undo", e -> inputText.undo());
+			new CommandActivator(null, toolBar, "redo", SWT.NONE, "Redo", e -> inputText.redo());
+			new CommandActivator(null, toolBar, "cut", SWT.NONE, "Cut", e -> inputText.cut());
+			new CommandActivator(null, toolBar, "copy", SWT.NONE, "Copy", e -> inputText.copy());
+			new CommandActivator(null, toolBar, "paste", SWT.NONE, "Paste", e -> inputText.paste());
+			new CommandActivator(null, toolBar, "selectAll", SWT.NONE, "Select all", e -> inputText.selectAll());
+			new CommandActivator(null, toolBar, "delete", SWT.NONE, "Delete", e -> delete());
+			new CommandActivator(Commands.Do.FindReplace, toolBar, "edit_find_replace", SWT.NONE, "Find/Replace", e -> inputText.findReplace());
+			new CommandActivator(Commands.Do.LoadFile, toolBar, "loadIcon", SWT.NONE, "Load file", e -> loadFile());
+			new CommandActivator(Commands.Do.InsertFile, toolBar, "loadInsertIcon", SWT.NONE, "Load and insert file", e -> insertFile());
+			new CommandActivator(Commands.Do.InsertFileName, toolBar, "pathIcon", SWT.NONE, "Get file path", e -> insertFileName());
+			new CommandActivator(Commands.Do.SaveFile, toolBar, "saveIcon", SWT.NONE, "Save", e -> saveFile());
+			new CommandActivator(Commands.Do.SaveHistory, toolBar, "saveHistoryIcon", SWT.NONE, "Save history", e -> saveHistory());
+			tlitmCopyToOutput = new CommandActivator(Commands.Do.CopyInputToOutput, toolBar, "copyToOutputIcon", SWT.CHECK, "Copy input to output", e -> setCopyInputToOutput(tlitmCopyToOutput.getSelection()));
+			tlitmWrap = new CommandActivator(Commands.Do.WrapText, toolBar, "wrapIcon", SWT.CHECK, "Wrap text", e -> inputText.setWordWrap(tlitmWrap.getSelection()));
 			
-			tlitmSelectAll = new ToolItem(toolBar, SWT.NONE);
-			tlitmSelectAll.setToolTipText("Select all");
-			tlitmSelectAll.addListener(SWT.Selection, e -> inputText.selectAll());
-
-			tlitmDelete = new ToolItem(toolBar, SWT.NONE);
-			tlitmDelete.setToolTipText("Delete");
-			tlitmDelete.addListener(SWT.Selection, e -> delete());
-			
-			tlitmFindReplace = new CommandActivator(Commands.Do.FindReplace, toolBar, SWT.NONE);
-			tlitmFindReplace.setToolTipText("Find/Replace");
-			tlitmFindReplace.addListener(SWT.Selection, e -> inputText.findReplace());
-
-			tlitmLoad = new CommandActivator(Commands.Do.LoadFile, toolBar, SWT.NONE);
-			tlitmLoad.setToolTipText("Load file");
-			tlitmLoad.addListener(SWT.Selection, e -> loadFile());
-
-			tlitmLoadInsert = new CommandActivator(Commands.Do.InsertFile, toolBar, SWT.NONE);
-			tlitmLoadInsert.setToolTipText("Load and insert file");
-			tlitmLoadInsert.addListener(SWT.Selection, e -> insertFile());
-
-			tlitmGetPath = new CommandActivator(Commands.Do.InsertFileName, toolBar, SWT.NONE);
-			tlitmGetPath.setToolTipText("Get file path");
-			tlitmGetPath.addListener(SWT.Selection, e -> insertFileName());
-
-			tlitmSave = new CommandActivator(Commands.Do.SaveFile, toolBar, SWT.NONE);
-			tlitmSave.setToolTipText("Save");
-			tlitmSave.addListener(SWT.Selection, e -> saveFile());
-
-			tlitmSaveHistory = new CommandActivator(Commands.Do.SaveHistory, toolBar, SWT.NONE);
-			tlitmSaveHistory.setToolTipText("Save history");
-			tlitmSaveHistory.addListener(SWT.Selection, e -> saveHistory());
-
-			tlitmCopyToOutput = new CommandActivator(Commands.Do.CopyInputToOutput, toolBar, SWT.CHECK);
-			tlitmCopyToOutput.setToolTipText("Copy input to output");
 			tlitmCopyToOutput.setSelection(true);
-			tlitmCopyToOutput.addListener(SWT.Selection, e -> setCopyInputToOutput(tlitmCopyToOutput.getSelection()));
-
-			tlitmWrap = new CommandActivator(Commands.Do.WrapText, toolBar, SWT.CHECK);
-			tlitmWrap.setToolTipText("Wrap text");
 			tlitmWrap.setSelection(true);
-			tlitmWrap.addListener(SWT.Selection, e -> inputText.setWordWrap(tlitmWrap.getSelection()));
 
 			setupButtons();
 		}
-
-		setupIcons();
-		iconPreferenceChangeListener = new PreferenceChangeAdapter("CmdPanelInput_icon") {
-			@Override
-			public void preferenceChange(PreferenceChangeEvent evt) {
-				setupIcons();
-			}
-		};
-		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, iconPreferenceChangeListener);
 
 		setupFont();
 		fontPreferenceChangeListener = new PreferenceChangeAdapter("CmdPanelInput_font") {
@@ -402,7 +319,6 @@ public class CmdPanelInput extends Composite {
 	}
 
 	public void dispose() {
-		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, iconPreferenceChangeListener);
 		Preferences.removePreferenceChangeListener(PreferencePageCmd.CMD_FONT, fontPreferenceChangeListener);
 		super.dispose();
 	}
@@ -417,30 +333,6 @@ public class CmdPanelInput extends Composite {
 
 	public void delete() {
 		inputText.invokeAction(ST.DELETE_NEXT);
-	}
-	
-	private void setupIcons() {
-		if (tlitmPrevHistory == null)
-			return;
-		tlitmPrevHistory.setImage(IconLoader.loadIcon("previousIcon"));
-		tlitmNextHistory.setImage(IconLoader.loadIcon("nextIcon"));
-		tlitmClear.setImage(IconLoader.loadIcon("clearIcon"));
-		tlitmUndo.setImage(IconLoader.loadIcon("undo"));
-		tlitmRedo.setImage(IconLoader.loadIcon("redo"));
-		tlitmCut.setImage(IconLoader.loadIcon("cut"));
-		tlitmCopy.setImage(IconLoader.loadIcon("copy"));
-		tlitmPaste.setImage(IconLoader.loadIcon("paste"));
-		tlitmDelete.setImage(IconLoader.loadIcon("delete"));
-		tlitmSelectAll.setImage(IconLoader.loadIcon("selectAll"));
-		tlitmFindReplace.setImage(IconLoader.loadIcon("edit_find_replace"));
-		tlitmLoad.setImage(IconLoader.loadIcon("loadIcon"));
-		tlitmLoadInsert.setImage(IconLoader.loadIcon("loadInsertIcon"));
-		tlitmGetPath.setImage(IconLoader.loadIcon("pathIcon"));
-		tlitmSave.setImage(IconLoader.loadIcon("saveIcon"));
-		tlitmSaveHistory.setImage(IconLoader.loadIcon("saveHistoryIcon"));
-		tlitmCopyToOutput.setImage(IconLoader.loadIcon("copyToOutputIcon"));
-		tlitmWrap.setImage(IconLoader.loadIcon("wrapIcon"));
-		tlitmCharacters.setImage(IconLoader.loadIcon("characters"));
 	}
 
 	private void setupFont() {

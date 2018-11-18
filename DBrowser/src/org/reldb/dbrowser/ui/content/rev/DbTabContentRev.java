@@ -19,8 +19,7 @@ public class DbTabContentRev extends Composite {
 
 	private void addZoom(ManagedToolbar toolbar) {
 		toolbar.addSeparatorFill();
-		// zoom
-		toolbar.addItem(null, "Zoom in or out", "view_fullscreen", SWT.PUSH).addListener(SWT.Selection, e -> zoom());
+		new CommandActivator(null, toolBar, "view_fullscreen", SWT.PUSH, "Zoom in or out", e -> rev.zoom());
 	}
 
 	private void makeToolbar(DbTab parentTab) {
@@ -34,18 +33,14 @@ public class DbTabContentRev extends Composite {
 			toolBar = new VarEditorToolbar(this, relvarEditorView.getRelvarEditor()) {
 				@Override
 				public void addAdditionalItemsBefore(VarEditorToolbar toolbar) {
-					// backup icon
-					CommandActivator tlitmBackup = addItem(Commands.Do.MakeBackup, "Make backup", "safeIcon", SWT.PUSH);
-					tlitmBackup.addListener(SWT.Selection, e -> parentTab.makeBackup());
+					new CommandActivator(Commands.Do.MakeBackup, toolBar, "safeIcon", SWT.PUSH, "Make backup", e -> parentTab.makeBackup());
 				}
 			};
 		else
 			toolBar = new CmdPanelToolbar(this, rev.getCmdPanelOutput()) {
 				@Override
 				public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
-					// backup icon
-					CommandActivator tlitmBackup = addItem(Commands.Do.MakeBackup, "Make backup", "safeIcon", SWT.PUSH);
-					tlitmBackup.addListener(SWT.Selection, e -> parentTab.makeBackup());
+					new CommandActivator(Commands.Do.MakeBackup, toolBar, "safeIcon", SWT.PUSH, "Make backup", e -> parentTab.makeBackup());
 				}
 			};
 		addZoom(toolBar);
@@ -54,11 +49,11 @@ public class DbTabContentRev extends Composite {
 		fd_toolBar.left = new FormAttachment(0);
 		fd_toolBar.top = new FormAttachment(0);
 		fd_toolBar.right = new FormAttachment(100);
-		toolBar.getToolBar().setLayoutData(fd_toolBar);
+		toolBar.setLayoutData(fd_toolBar);
 
 		FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
-		fd_composite.top = new FormAttachment(toolBar.getToolBar());
+		fd_composite.top = new FormAttachment(toolBar);
 		fd_composite.right = new FormAttachment(100);
 		fd_composite.bottom = new FormAttachment(100);
 		rev.setLayoutData(fd_composite);
@@ -70,8 +65,7 @@ public class DbTabContentRev extends Composite {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 
-		rev = new Rev(this, parentTab, parentTab.getConnection(), parentTab.getCrashHandler(), "scratchpad",
-				Rev.SAVE_AND_LOAD_BUTTONS) {
+		rev = new Rev(this, parentTab, parentTab.getConnection(), parentTab.getCrashHandler(), "scratchpad", Rev.SAVE_AND_LOAD_BUTTONS) {
 			@Override
 			protected void changeToolbar() {
 				makeToolbar(parentTab);
@@ -79,10 +73,6 @@ public class DbTabContentRev extends Composite {
 		};
 
 		makeToolbar(parentTab);
-	}
-
-	private void zoom() {
-		rev.zoom();
 	}
 
 	public void redisplayed() {

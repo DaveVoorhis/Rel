@@ -86,7 +86,7 @@ public class ScriptTab extends DbTreeTab {
 	}
 	
 	public ToolBar getToolBar(Composite parent) {
-		return new CmdPanelToolbar(parent, cmdPanel.getCmdPanelOutput()).getToolBar();
+		return new CmdPanelToolbar(parent, cmdPanel.getCmdPanelOutput());
 	}
 	
 	@Override

@@ -45,14 +45,26 @@ public class Application {
 		Display display = Display.getCurrent();
 		Shell[] shells = display.getShells();
 		System.out.println("Application: close shells.");
+		try {
 		for (Shell shell: shells)
 			if (!shell.isDisposed())
 				shell.close();
+		} catch (Throwable t) {
+			System.out.println("Error trying to close shells: " + t);
+		}
 		System.out.println("Application: close display.");
-		if (!display.isDisposed()) 
-			display.dispose();
+		try {
+			if (!display.isDisposed()) 
+				display.dispose();
+		} catch (Throwable t) {
+			System.out.println("Error trying to close display: " + t);
+		}
 		System.out.println("Application: free resources.");
-		SWTResourceManager.dispose();
+		try {
+			SWTResourceManager.dispose();
+		} catch (Throwable t) {
+			System.out.println("Error trying to free resources: " + t);
+		}
 		System.out.println("Application: shutdown.");
 		System.exit(0);
 	}

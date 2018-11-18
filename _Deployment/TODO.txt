@@ -1,5 +1,7 @@
 ** TO DO **
 
+- DBrowser: Fix some of the broken menu icons on the File menu.
+
 - DBrowser: Check and fix Preferences icon resizing on all toolbars.
 
 - Main README: Note need to change native SWT depending on platform.

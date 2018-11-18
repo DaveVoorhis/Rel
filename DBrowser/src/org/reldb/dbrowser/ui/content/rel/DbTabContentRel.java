@@ -10,17 +10,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.reldb.dbrowser.commands.CommandActivator;
 import org.reldb.dbrowser.commands.Commands;
+import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.DbTab;
-import org.reldb.dbrowser.ui.IconLoader;
-import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
-import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
-import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
-import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
-import org.reldb.dbrowser.ui.preferences.Preferences;
 
 public class DbTabContentRel extends Composite {
 
-	private CommandActivator tlitmBackup;
 	private CommandActivator tlitmShow;
 	private CommandActivator tlitmEdit;
 	private CommandActivator tlitmNew;
@@ -32,17 +26,15 @@ public class DbTabContentRel extends Composite {
     
 	private RelPanel rel;
 	
-    private PreferenceChangeListener preferenceChangeListener;
-	
     private ToolBar tabToolBar = null;
 
-    private ToolBar mainToolBar;
+    private ManagedToolbar mainToolBar;
     
 	public DbTabContentRel(DbTab parentTab, Composite contentParent) {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 
-		mainToolBar = new ToolBar(this, SWT.None);
+		mainToolBar = new ManagedToolbar(this);
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);
 		fd_toolBar.top = new FormAttachment(0);
@@ -61,44 +53,17 @@ public class DbTabContentRel extends Composite {
 		fd_composite.bottom = new FormAttachment(100);
 		rel.setLayoutData(fd_composite);
 			
-		tlitmBackup = new CommandActivator(Commands.Do.MakeBackup, mainToolBar, SWT.None);
-		tlitmBackup.setToolTipText("Make backup");
-		tlitmBackup.addListener(SWT.Selection, e -> parentTab.makeBackup());
+		new CommandActivator(Commands.Do.MakeBackup, mainToolBar, "SafeIcon", SWT.None, "Make backup", e -> parentTab.makeBackup());
+		tlitmShow = new CommandActivator(Commands.Do.Show, mainToolBar, "play", SWT.None, "Show", e -> rel.playItem());
+		tlitmEdit = new CommandActivator(Commands.Do.Edit, mainToolBar, "item_edit", SWT.None, "Edit", e -> rel.editItem());
+		tlitmNew = new CommandActivator(Commands.Do.New, mainToolBar, "item_add", SWT.None, "New", e -> rel.createItem());
+		tlitmDrop = new CommandActivator(Commands.Do.Drop, mainToolBar, "item_delete", SWT.None, "Drop", e -> rel.dropItem());
+		tlitmDesign = new CommandActivator(Commands.Do.Design, mainToolBar, "item_design", SWT.None, "Design", e -> rel.designItem());
+		tlitmRename = new CommandActivator(Commands.Do.Rename, mainToolBar, "rename", SWT.None, "Rename", e -> rel.renameItem());
+		tlitmExport = new CommandActivator(Commands.Do.Export, mainToolBar, "export", SWT.None, "Export", e -> rel.exportItem());
+		tlitmShowSystem = new CommandActivator(Commands.Do.ShowSystemObjects, mainToolBar, "gears", SWT.CHECK, "Show system objects", e -> rel.setShowSystemObjects(tlitmShowSystem.getSelection()));
 		
-		tlitmShow = new CommandActivator(Commands.Do.Show, mainToolBar, SWT.None);
-		tlitmShow.setToolTipText("Show");
-		tlitmShow.addListener(SWT.Selection, e -> rel.playItem());
-		
-		tlitmEdit = new CommandActivator(Commands.Do.Edit, mainToolBar, SWT.None);
-		tlitmEdit.setToolTipText("Edit");
-		tlitmEdit.addListener(SWT.Selection, e -> rel.editItem());
-		
-		tlitmNew = new CommandActivator(Commands.Do.New, mainToolBar, SWT.None);
-		tlitmNew.setToolTipText("New");
-		tlitmNew.addListener(SWT.Selection, e -> rel.createItem());
-		
-		tlitmDrop = new CommandActivator(Commands.Do.Drop, mainToolBar, SWT.None);
-		tlitmDrop.setToolTipText("Drop");
-		tlitmDrop.addListener(SWT.Selection, e -> rel.dropItem());
-		
-		tlitmDesign = new CommandActivator(Commands.Do.Design, mainToolBar, SWT.None);
-		tlitmDesign.setToolTipText("Design");
-		tlitmDesign.addListener(SWT.Selection, e -> rel.designItem());
-		
-		tlitmRename = new CommandActivator(Commands.Do.Rename, mainToolBar, SWT.None);
-		tlitmRename.setToolTipText("Rename");
-		tlitmRename.addListener(SWT.Selection, e -> rel.renameItem());
-		
-		tlitmExport = new CommandActivator(Commands.Do.Export, mainToolBar, SWT.None);
-		tlitmExport.setToolTipText("Export");
-		tlitmExport.addListener(SWT.Selection, e -> rel.exportItem());
-		
-		tlitmShowSystem = new CommandActivator(Commands.Do.ShowSystemObjects, mainToolBar, SWT.CHECK);
-		tlitmShowSystem.setToolTipText("Show system objects");
 		tlitmShowSystem.setSelection(rel.getShowSystemObjects());
-		tlitmShowSystem.addListener(SWT.Selection, e -> rel.setShowSystemObjects(tlitmShowSystem.getSelection()));
-		
-		setupIcons();
 		
 		rel.addDbTreeListener(new DbTreeListener() {
 			public void select(DbTreeItem item) {
@@ -114,14 +79,6 @@ public class DbTabContentRel extends Composite {
 				changeToolbar();
 			}
 		});
-		
-		preferenceChangeListener = new PreferenceChangeAdapter("DbTabContentRel") {
-			@Override
-			public void preferenceChange(PreferenceChangeEvent evt) {
-				setupIcons();
-			}
-		};		
-		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 		
 		tlitmShow.setEnabled(false);
 		tlitmEdit.setEnabled(false);
@@ -147,7 +104,10 @@ public class DbTabContentRel extends Composite {
 		}
 		DbTreeTab selectedTab = getSelectedDbTreeTab();
 		if (selectedTab != null) {
-			tabToolBar = ((DbTreeTab)selectedTab).getToolBar(DbTabContentRel.this);
+			DbTreeTab dbTreeTab = (DbTreeTab)selectedTab;
+			if (dbTreeTab.isDisposed())
+				return;
+			tabToolBar = dbTreeTab.getToolBar(DbTabContentRel.this);
 			if (tabToolBar != null) {
 				FormData fd_toolBar = new FormData();
 				fd_toolBar.left = new FormAttachment(mainToolBar);
@@ -159,26 +119,8 @@ public class DbTabContentRel extends Composite {
 		layout();
 		activateMenu();
 	}
-	
-	public void dispose() {
-		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
-		super.dispose();
-	}
-	
-	private void setupIcons() {
-		tlitmBackup.setImage(IconLoader.loadIcon("safeIcon"));
-		tlitmShow.setImage(IconLoader.loadIcon("play"));
-		tlitmEdit.setImage(IconLoader.loadIcon("item_edit"));
-		tlitmNew.setImage(IconLoader.loadIcon("item_add"));
-		tlitmDrop.setImage(IconLoader.loadIcon("item_delete"));
-		tlitmDesign.setImage(IconLoader.loadIcon("item_design"));
-		tlitmRename.setImage(IconLoader.loadIcon("rename"));
-		tlitmExport.setImage(IconLoader.loadIcon("export"));
-		tlitmShowSystem.setImage(IconLoader.loadIcon("gears"));
-	}
 
 	public void notifyIconSizeChange() {
-		setupIcons();
 	}
 
 	public void redisplayed() {

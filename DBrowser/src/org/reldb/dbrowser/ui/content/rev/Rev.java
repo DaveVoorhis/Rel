@@ -19,11 +19,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ToolBar;
 import org.reldb.dbrowser.commands.CommandActivator;
+import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.DbTab;
-import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanelOutput;
 import org.reldb.dbrowser.ui.content.rev.operators.Comment;
@@ -43,11 +42,6 @@ import org.reldb.dbrowser.ui.content.rev.operators.TupleFrom;
 import org.reldb.dbrowser.ui.content.rev.operators.UngroupOrUnwrap;
 import org.reldb.dbrowser.ui.content.rev.operators.Unorder;
 import org.reldb.dbrowser.ui.content.rev.operators.Update;
-import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
-import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
-import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
-import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
-import org.reldb.dbrowser.ui.preferences.Preferences;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.connection.CrashHandler;
@@ -63,11 +57,7 @@ public class Rev extends Composite {
 	private CmdPanelOutput outputView;
 	private SashForm sashForm;
 	private RevDatabase database;
-
-	private PreferenceChangeListener preferenceChangeListener;
-
-	private CommandActivator loadBtn = null;
-	private CommandActivator saveBtn = null;
+	
 	private CommandActivator stopBtn = null;
 
 	private Label modelLabel;
@@ -136,21 +126,14 @@ public class Rev extends Composite {
 
 		inputView.addListener(SWT.FocusIn, e -> setTitle());
 
-		ToolBar revTools = new ToolBar(inputView, SWT.NONE);
+		ManagedToolbar revTools = new ManagedToolbar(inputView);
 
 		if ((revstyle & SAVE_AND_LOAD_BUTTONS) != 0) {
-			loadBtn = new CommandActivator(null, revTools, SWT.PUSH);
-			loadBtn.setToolTipText("Load");
-			loadBtn.addListener(SWT.Selection, e -> doLoad());
-
-			saveBtn = new CommandActivator(null, revTools, SWT.PUSH);
-			saveBtn.setToolTipText("Save as");
-			saveBtn.addListener(SWT.Selection, e -> doSaveAs());
+			new CommandActivator(null, revTools, "loadIcon", SWT.PUSH, "Load", e -> doLoad());
+			new CommandActivator(null, revTools, "saveIcon", SWT.PUSH, "Save as", e -> doSaveAs());
 		}
 
-		stopBtn = new CommandActivator(null, revTools, SWT.PUSH);
-		stopBtn.setToolTipText("Cancel running query.");
-		stopBtn.addListener(SWT.Selection, e -> outputView.notifyStop());
+		stopBtn = new CommandActivator(null, revTools, "stopIcon", SWT.PUSH, "Cancel running query.", e -> outputView.notifyStop());
 		stopBtn.setEnabled(false);
 
 		modelLabel = new Label(inputView, SWT.NONE);
@@ -186,16 +169,6 @@ public class Rev extends Composite {
 		scrollPanel.setMinSize(model.getSize());
 
 		sashForm.setWeights(new int[] { 1, 1 });
-
-		setupIcons();
-
-		preferenceChangeListener = new PreferenceChangeAdapter("Rev") {
-			@Override
-			public void preferenceChange(PreferenceChangeEvent evt) {
-				setupIcons();
-			}
-		};
-		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 
 		pack();
 
@@ -337,14 +310,6 @@ public class Rev extends Composite {
 			model.setModelName(load.getSelectedItem());
 			loadModel();
 		}
-	}
-
-	private void setupIcons() {
-		if (loadBtn != null)
-			loadBtn.setImage(IconLoader.loadIcon("loadIcon"));
-		if (saveBtn != null)
-			saveBtn.setImage(IconLoader.loadIcon("saveIcon"));
-		stopBtn.setImage(IconLoader.loadIcon("stopIcon"));
 	}
 
 	public CmdPanelOutput getCmdPanelOutput() {

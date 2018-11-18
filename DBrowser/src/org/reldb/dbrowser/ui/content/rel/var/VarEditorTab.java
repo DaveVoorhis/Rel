@@ -52,7 +52,7 @@ public class VarEditorTab extends DbTreeTab implements FilterSorterSource {
 	}
 	
 	public ToolBar getToolBar(Composite parent) {
-		return new VarEditorToolbar(parent, relvarEditor).getToolBar();
+		return new VarEditorToolbar(parent, relvarEditor);
 	}
 
 	public FilterSorter getFilterSorter() {

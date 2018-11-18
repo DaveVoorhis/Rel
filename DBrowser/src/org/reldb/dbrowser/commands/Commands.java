@@ -60,22 +60,24 @@ public class Commands {
 				CommandActivator activator = activatorDoMapping.get(command);
 				if (activator != null && activator.isFullyEnabled()) {
 					menuItem.setEnabled(true);
+					// remove old listeners
 					Listener[] oldListeners = menuItem.getListeners(SWT.Selection);
 					for (Listener oldListener: oldListeners)
 						menuItem.removeListener(SWT.Selection, oldListener);
+					// add new listener
 					listener = e -> activator.click();
 					menuItem.addListener(SWT.Selection, listener);
 					if ((menuItem.getStyle() & (SWT.CHECK | SWT.RADIO)) != 0)
 						menuItem.setSelection(activator.getSelection());
-				} else {
+				} else
 					menuItem.setEnabled(false);
-				}
 			}
 		});
 		menuItem.setEnabled(false);
 	}
 
 	public static MenuItem getMenuItem(Do command, CommandActivator toolitem) {
+		System.out.println("Commands: add tool item: " + toolitem.getText() + ": " + toolitem.getToolTipText());
 		activatorDoMapping.put(command, toolitem);
 		return menuDoMapping.get(command);
 	}

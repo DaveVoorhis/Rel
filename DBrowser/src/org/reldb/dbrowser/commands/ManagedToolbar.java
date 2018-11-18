@@ -1,12 +1,9 @@
 package org.reldb.dbrowser.commands;
 
-import java.util.Vector;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.reldb.dbrowser.commands.Commands.Do;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
 import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
@@ -14,26 +11,12 @@ import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
 import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
-public class ManagedToolbar {    
+public class ManagedToolbar extends ToolBar {    
     private PreferenceChangeListener preferenceChangeListener;
-    private ToolBar toolBar;
-    
-	private static class CommandActivatorItem {
-		private CommandActivator item;
-		private String iconName;
-		public CommandActivatorItem(CommandActivator item, String iconName) {
-			this.item = item;
-			this.iconName = iconName;
-		}
-		CommandActivator getItem() {return item;}
-		String getIconName() {return iconName;}
-	}
-	
-	private Vector<CommandActivatorItem> items = new Vector<CommandActivatorItem>();
 	
 	public ManagedToolbar(Composite parent) {
-		toolBar = new ToolBar(parent, SWT.None);
-		toolBar.addDisposeListener(e -> disposed());
+		super(parent, SWT.NONE);
+		addDisposeListener(e -> disposed());
 		preferenceChangeListener = new PreferenceChangeAdapter("ManagedToolbar") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
@@ -43,39 +26,38 @@ public class ManagedToolbar {
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 	}
 	
-	public CommandActivator addItem(Do makebackup, String toolTip, String iconName, int style) {
-		CommandActivator item = new CommandActivator(makebackup, toolBar, style);
-		item.setToolTipText(toolTip);
-		item.setImage(IconLoader.loadIcon(iconName));
-		items.add(new CommandActivatorItem(item, iconName));
-		return item;
-	}
-	
 	public void addSeparator() {
-		new ToolItem(toolBar, SWT.SEPARATOR);
+		new ToolItem(this, SWT.SEPARATOR);
 	}
 	
 	public void addSeparatorFill() {
-		new ToolItem(toolBar, SWT.SEPARATOR);
+		new ToolItem(this, SWT.SEPARATOR);
 	}
 	
 	public void dispose() {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
-		toolBar.dispose();
+		super.dispose();
 	}
 
 	private void disposed() {
-		for (CommandActivatorItem tbi: items)
-			tbi.getItem().notifyToolbarDisposed();
-		Commands.clearToolbar(toolBar);
+		for (ToolItem item: getItems()) {
+			if (item instanceof CommandActivator) {
+				CommandActivator activator = (CommandActivator)item;
+				activator.notifyToolbarDisposed();
+			}
+		}
+		Commands.clearToolbar(this);
 	}
 
 	private void setupIcons() {
-		for (CommandActivatorItem tbi: items)
-			tbi.getItem().setImage(IconLoader.loadIcon(tbi.getIconName()));
+		for (ToolItem item: getItems()) {
+			if (item instanceof CommandActivator) {
+				CommandActivator activator = (CommandActivator)item;
+				activator.setImage(IconLoader.loadIcon(activator.getIconName()));
+			}
+		}
+		layout();
 	}
 
-	public ToolBar getToolBar() {
-		return toolBar;
-	}
+	public void checkSubclass() {}
 }

@@ -43,9 +43,9 @@ public class RevTab extends DbTreeTab {
 	public ToolBar getToolBar(Composite parent) {
 		RelvarEditorPanel relvarEditorView = rev.getCmdPanelOutput().getRelvarEditorView();
 		if (relvarEditorView != null)
-			return new VarEditorToolbar(parent, relvarEditorView.getRelvarEditor()).getToolBar();
+			return new VarEditorToolbar(parent, relvarEditorView.getRelvarEditor());
 		else
-			return new CmdPanelToolbar(parent, rev.getCmdPanelOutput()).getToolBar();
+			return new CmdPanelToolbar(parent, rev.getCmdPanelOutput());
 	}
 	
 	@Override

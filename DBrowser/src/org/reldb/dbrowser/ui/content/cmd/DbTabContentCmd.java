@@ -48,18 +48,14 @@ public class DbTabContentCmd extends Composite {
 		toolBar = new CmdPanelToolbar(this, cmdPanel.getCmdPanelOutput()) {
 			@Override
 			public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
-				// backup icon
-				addItem(Commands.Do.MakeBackup, "Make backup", "safeIcon", SWT.PUSH).addListener(SWT.Selection, e -> parentTab.makeBackup());
-				// copy output to input
-				copyOutputToInputBtn = addItem(Commands.Do.CopyOutputToInput, "Copy output to input", "copyToInputIcon", SWT.PUSH);
+				new CommandActivator(Commands.Do.MakeBackup, this, "safeIcon", SWT.PUSH,  "Make backup", e -> parentTab.makeBackup());
+				copyOutputToInputBtn = new CommandActivator(Commands.Do.CopyOutputToInput, this, "copyToInputIcon", SWT.PUSH,  "Copy output to input", e -> cmdPanel.copyOutputToInput());
 				copyOutputToInputBtn.setEnabled(!cmdPanel.getEnhancedOutput());
-				copyOutputToInputBtn.addListener(SWT.Selection, e -> cmdPanel.copyOutputToInput());
 			}
 			@Override
 			public void addAdditionalItemsAfter(CmdPanelToolbar toolbar) {
 				addSeparatorFill();
-				// zoom
-				addItem(null, "Zoom in or out", "view_fullscreen", SWT.PUSH).addListener(SWT.Selection, e -> zoom());
+				new CommandActivator(null, this, "view_fullscreen", SWT.PUSH, "Zoom in or out", e -> cmdPanel.zoom());
 			}
 		};
 		
@@ -67,11 +63,11 @@ public class DbTabContentCmd extends Composite {
 		fd_toolBar.left = new FormAttachment(0);
 		fd_toolBar.top = new FormAttachment(0);
 		fd_toolBar.right = new FormAttachment(100);
-		toolBar.getToolBar().setLayoutData(fd_toolBar);
+		toolBar.setLayoutData(fd_toolBar);
 
 		FormData fd_composite = new FormData();
 		fd_composite.left = new FormAttachment(0);
-		fd_composite.top = new FormAttachment(toolBar.getToolBar());
+		fd_composite.top = new FormAttachment(toolBar);
 		fd_composite.right = new FormAttachment(100);
 		fd_composite.bottom = new FormAttachment(100);
 		cmdPanel.setLayoutData(fd_composite);
@@ -83,10 +79,6 @@ public class DbTabContentCmd extends Composite {
 		    oldScript = script.getContent();
 		    cmdPanel.setContent(script);
 	    }
-	}
-
-	private void zoom() {
-		cmdPanel.zoom();
 	}
 	
 	public void dispose() {

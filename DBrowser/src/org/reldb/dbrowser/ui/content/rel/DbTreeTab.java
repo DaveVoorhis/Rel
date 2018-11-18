@@ -34,7 +34,7 @@ public class DbTreeTab extends CTabItem {
 	
 	public void dispose() {
 		super.dispose();
-		relPanel.fireDbTreeTabchangeEvent();		
+		relPanel.fireDbTreeTabchangeEvent();
 	}
 	
 	public ToolBar getToolBar(Composite parent) {
