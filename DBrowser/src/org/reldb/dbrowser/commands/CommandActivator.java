@@ -45,6 +45,8 @@ public class CommandActivator extends ToolItem {
 			stateTimer.schedule(new TimerTask() {
 				@Override
 				public void run() {
+					// TODO - Not visible? Don't deactivate unless there's no other visible CommandActivator for the given command
+					// TODO - Visible? Always activate.
 					CommandActivator.this.getDisplay().asyncExec(() -> {
 						if (isDisposed() || getParent().isDisposed()) {
 							stateTimer.cancel();
