@@ -18,10 +18,10 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.reldb.dbrowser.commands.CommandActivator;
+import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
@@ -298,10 +298,8 @@ public class RelPanel extends Composite {
 				tabFolder.getItem(0).dispose();
 		});
 		
-		ToolBar zoomer = new ToolBar(tabFolder, SWT.NONE);
-		ToolItem zoomItem = new ToolItem(zoomer, SWT.NONE);
-		zoomItem.setImage(IconLoader.loadIcon("view_fullscreen"));
-		zoomItem.addListener(SWT.Selection, e -> zoom());
+		ManagedToolbar zoomer = new ManagedToolbar(tabFolder, "Zoom");
+		new CommandActivator(null, zoomer, "view_fullscreen", SWT.NONE, "Zoom in or out", e -> zoom());
 		tabFolder.setTopRight(zoomer);
 		
 		sashForm.setWeights(new int[] {1, 4});

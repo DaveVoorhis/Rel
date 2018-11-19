@@ -23,7 +23,7 @@ public class DecoratedMenuItem extends MenuItem {
 
 	/** MenuItem with text, accelerator, image, style and Listener. */
 	public DecoratedMenuItem(Menu parentMenu, String text, int accelerator, String imageName, int style, Listener listener) {
-		this(parentMenu, text, accelerator, IconLoader.loadIcon(imageName), style, listener);
+		this(parentMenu, text, accelerator, (imageName != null) ? IconLoader.loadIcon(imageName) : null, style, listener);
 	}
 	
 	/** MenuItem with text, accelerator, image and Listener. */

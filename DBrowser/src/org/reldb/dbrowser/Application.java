@@ -51,6 +51,7 @@ public class Application {
 				shell.close();
 		} catch (Throwable t) {
 			System.out.println("Error trying to close shells: " + t);
+			t.printStackTrace();
 		}
 		System.out.println("Application: close display.");
 		try {
@@ -58,6 +59,7 @@ public class Application {
 				display.dispose();
 		} catch (Throwable t) {
 			System.out.println("Error trying to close display: " + t);
+			t.printStackTrace();
 		}
 		System.out.println("Application: free resources.");
 		try {
@@ -78,7 +80,7 @@ public class Application {
 		
 		new DecoratedMenuItem(menu, "&New Database\tCtrl-N", SWT.MOD1 | 'N', "NewDBIcon", e -> DBrowser.newDatabase());
 		new DecoratedMenuItem(menu, "Open &local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> DBrowser.openLocalDatabase());
-		new DecoratedMenuItem(menu, "Open remote database\tCtrl-r", SWT.MOD1 | 'r', "OpenDBRemoteIcon", e -> DBrowser.openRemoteDatabase());
+		new DecoratedMenuItem(menu, "Open remote database\tCtrl-r", SWT.MOD1 | 'r', "OpenDBRemoteIcon", e-> DBrowser.openRemoteDatabase());
 		
 		String[] dbURLs = DBrowser.getRecentlyUsedDatabaseList();
 		if (dbURLs.length > 0) {

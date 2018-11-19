@@ -2,12 +2,13 @@ package org.reldb.dbrowser.commands;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.commands.Commands.Do;
 import org.reldb.dbrowser.ui.IconLoader;
@@ -23,8 +24,8 @@ import org.reldb.dbrowser.ui.IconLoader;
 public class CommandActivator extends ToolItem {
 	
 	private MenuItem menuItem;
-	private boolean toolbarDisposed = false;
 	private String iconName;
+    private boolean visible = false;
 	
 	public CommandActivator(Do command, ManagedToolbar toolBar, String iconName, int style, String tooltipText, Listener listener) {
 		super(toolBar, style);
@@ -32,21 +33,46 @@ public class CommandActivator extends ToolItem {
 		setToolTipText(tooltipText);
 		setImage(IconLoader.loadIcon(iconName));
 		addListener(SWT.Selection, listener);
-		if (command != null)
+		if (command != null) {
 			menuItem = Commands.getMenuItem(command, this);
+			addListener(SWT.Paint, e -> {
+				synchronized (iconName) {
+					Commands.addCommandDoMapping(command, CommandActivator.this);
+					visible = true;
+				}
+			});
+			Timer stateTimer = new Timer();
+			stateTimer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					CommandActivator.this.getDisplay().asyncExec(() -> {
+						if (isDisposed() || getParent().isDisposed()) {
+							stateTimer.cancel();
+							synchronized (iconName) {
+								Commands.removeCommandDoMapping(command);
+								visible = false;
+							}
+						} else if (getParent().isVisible()) {
+							synchronized (iconName) {
+								Commands.addCommandDoMapping(command, CommandActivator.this);
+								visible = true;
+							}
+						} else if (!getParent().isVisible()) {
+							synchronized (iconName) {
+								Commands.removeCommandDoMapping(command);
+								visible = false;
+							}
+						}
+					});
+				}
+			}, 1000, 1000);			
+		}
 	}
 
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
 		if (menuItem != null)
 			menuItem.setEnabled(true);
-	}
-
-	public void notifyToolbarDisposed() {
-		System.out.println("CommandActivator: notifyToolbarDisposed in toolItem " + getToolTipText());
-		if (menuItem != null)
-			menuItem.setEnabled(false);
-		toolbarDisposed = true;
 	}
 
 	public void click() {
@@ -63,30 +89,11 @@ public class CommandActivator extends ToolItem {
 	}
 	
 	public boolean isVisible() {
-		System.out.println("\t\tCommandActivator: isVisible: 1 in toolItem " + getToolTipText() + " where toolbarDisposed = " + toolbarDisposed);
-		ToolBar parent = getParent();
-		System.out.println("\t\tCommandActivator: isVisible: 2");
-		if (toolbarDisposed || parent.isDisposed()) {
-			System.out.println("\t\tCommandActivator: isVisible: 3");
-			return false;
-		}
-		System.out.println("\t\tCommandActivator: isVisible: 4");
-		boolean v = parent.isVisible();
-		System.out.println("\t\tCommandActivator: isVisible: 5");		
-		return v;
+		return visible;
 	}
 
 	public boolean isFullyEnabled() {
-		System.out.println("\tCommandActivator: 1");
-		boolean b = isDisposed();
-		System.out.println("\tCommandActivator: 2");
-		if (b)
-			return false;
-		System.out.println("\tCommandActivator: 3");
-		boolean c = isVisible();
-		System.out.println("\tCommandActivator: 4");
-		boolean d = isEnabled();
-		return !b && c && d;
+		return !isDisposed() && isVisible() && isEnabled();
 	}
 
 	public String getIconName() {

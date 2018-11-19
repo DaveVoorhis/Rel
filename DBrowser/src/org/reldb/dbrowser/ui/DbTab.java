@@ -15,9 +15,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.DBrowser;
+import org.reldb.dbrowser.commands.CommandActivator;
+import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.backup.Backup;
 import org.reldb.dbrowser.ui.content.cmd.DbTabContentCmd;
 import org.reldb.dbrowser.ui.content.conversion.DbTabContentConversion;
@@ -48,14 +48,11 @@ public class DbTab extends CTabItem {
 	private DbTabContentRev contentRev = null;
 	private DbTabContentConversion contentConversion = null;
 
-	private ToolBar toolBarMode;
+	private ManagedToolbar toolBarMode;
 
-	private ToolItem tltmOpenRemoteDb;
-	private ToolItem tltmOpenLocalDb;
-	private ToolItem tltmNewLocalDb;
-	private ToolItem tltmModeRel;
-	private ToolItem tltmModeRev;
-	private ToolItem tltmModeCmd;
+	private CommandActivator tltmModeRel;
+	private CommandActivator tltmModeRev;
+	private CommandActivator tltmModeCmd;
 
 	private Composite modeContent;
 	private StackLayout contentStack;
@@ -87,19 +84,11 @@ public class DbTab extends CTabItem {
 		gl_compDbLocation.marginHeight = 0;
 		compDbLocation.setLayout(gl_compDbLocation);
 
-		ToolBar toolBarDatabase = new ToolBar(compDbLocation, SWT.None);
-
-		tltmNewLocalDb = new ToolItem(toolBarDatabase, SWT.NONE);
-		tltmNewLocalDb.setToolTipText("Create or open local database");
-		tltmNewLocalDb.addListener(SWT.Selection, e -> DBrowser.newDatabase());
-
-		tltmOpenLocalDb = new ToolItem(toolBarDatabase, SWT.NONE);
-		tltmOpenLocalDb.setToolTipText("Open local database");
-		tltmOpenLocalDb.addListener(SWT.Selection, e -> DBrowser.openLocalDatabase());
-
-		tltmOpenRemoteDb = new ToolItem(toolBarDatabase, SWT.NONE);
-		tltmOpenRemoteDb.setToolTipText("Open remote database");
-		tltmOpenRemoteDb.addListener(SWT.Selection, e -> DBrowser.openRemoteDatabase());
+		ManagedToolbar toolBarDatabase = new ManagedToolbar(compDbLocation, "Select Database");
+		
+		new CommandActivator(null, toolBarDatabase, "NewDBIcon", SWT.NONE, "Create or open local database", e -> DBrowser.newDatabase());
+		new CommandActivator(null, toolBarDatabase, "OpenDBLocalIcon", SWT.NONE, "Open local database", e -> DBrowser.openLocalDatabase());
+		new CommandActivator(null, toolBarDatabase, "OpenDBRemoteIcon", SWT.NONE, "Open remote database", e -> DBrowser.openRemoteDatabase());
 
 		textDbLocation = new Text(compDbLocation, SWT.BORDER);
 		textDbLocation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
@@ -114,7 +103,7 @@ public class DbTab extends CTabItem {
 			}
 		});
 
-		toolBarMode = new ToolBar(bannerDbLocationMode, SWT.None);
+		toolBarMode = new ManagedToolbar(bannerDbLocationMode, "Mode");
 		toolBarMode.setEnabled(false);
 		bannerDbLocationMode.setRight(toolBarMode);
 
@@ -128,26 +117,15 @@ public class DbTab extends CTabItem {
 		fd_modeContent.left = new FormAttachment(0);
 		modeContent.setLayoutData(fd_modeContent);
 
-		tltmModeRel = new ToolItem(toolBarMode, SWT.RADIO);
-		tltmModeRel.setToolTipText("Rel");
-		tltmModeRel.addListener(SWT.Selection, e -> showRel());
-
-		tltmModeRev = new ToolItem(toolBarMode, SWT.RADIO);
-		tltmModeRev.setToolTipText("Rev");
-		tltmModeRev.addListener(SWT.Selection, e -> showRev());
-
-		tltmModeCmd = new ToolItem(toolBarMode, SWT.RADIO);
-		tltmModeCmd.setToolTipText("Command line");
-		tltmModeCmd.addListener(SWT.Selection, e -> showCmd());
+		tltmModeRel = new CommandActivator(null, toolBarMode, "ModeRelIcon", SWT.RADIO, "Rel", e -> showRel());
+		tltmModeRev = new CommandActivator(null, toolBarMode, "ModeRevIcon", SWT.RADIO, "Rev", e -> showRev());
+		tltmModeCmd = new CommandActivator(null, toolBarMode, "ModeCmdIcon", SWT.RADIO, "Command line", e -> showCmd());
 
 		setControl(core);
-
-		setupIcons();
 
 		preferenceChangeListener = new PreferenceChangeAdapter("DbTab") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
-				setupIcons();
 				if (connection != null && connection.client != null)
 					setImage(IconLoader.loadIcon("DatabaseIcon"));
 				else
@@ -157,15 +135,6 @@ public class DbTab extends CTabItem {
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 
 		core.pack();
-	}
-
-	private void setupIcons() {
-		tltmNewLocalDb.setImage(IconLoader.loadIcon("NewDBIcon"));
-		tltmOpenLocalDb.setImage(IconLoader.loadIcon("OpenDBLocalIcon"));
-		tltmOpenRemoteDb.setImage(IconLoader.loadIcon("OpenDBRemoteIcon"));
-		tltmModeRel.setImage(IconLoader.loadIcon("ModeRelIcon"));
-		tltmModeRev.setImage(IconLoader.loadIcon("ModeRevIcon"));
-		tltmModeCmd.setImage(IconLoader.loadIcon("ModeCmdIcon"));
 	}
 
 	private void showRel() {

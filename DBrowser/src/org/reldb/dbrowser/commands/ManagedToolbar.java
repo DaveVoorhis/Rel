@@ -13,17 +13,28 @@ import org.reldb.dbrowser.ui.preferences.Preferences;
 
 public class ManagedToolbar extends ToolBar {    
     private PreferenceChangeListener preferenceChangeListener;
-	
-	public ManagedToolbar(Composite parent) {
+    private String name;
+    
+	public ManagedToolbar(Composite parent, String name) {
 		super(parent, SWT.NONE);
-		addDisposeListener(e -> disposed());
+		this.name = name;
 		preferenceChangeListener = new PreferenceChangeAdapter("ManagedToolbar") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
-				setupIcons();
+				for (ToolItem item: getItems()) {
+					if (item instanceof CommandActivator) {
+						CommandActivator activator = (CommandActivator)item;
+						activator.setImage(IconLoader.loadIcon(activator.getIconName()));
+					}
+				}
+				layout();
 			}
 		};
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
+	}
+		
+	public String getToolbarName() {
+		return name;
 	}
 	
 	public void addSeparator() {
@@ -37,26 +48,6 @@ public class ManagedToolbar extends ToolBar {
 	public void dispose() {
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 		super.dispose();
-	}
-
-	private void disposed() {
-		for (ToolItem item: getItems()) {
-			if (item instanceof CommandActivator) {
-				CommandActivator activator = (CommandActivator)item;
-				activator.notifyToolbarDisposed();
-			}
-		}
-		Commands.clearToolbar(this);
-	}
-
-	private void setupIcons() {
-		for (ToolItem item: getItems()) {
-			if (item instanceof CommandActivator) {
-				CommandActivator activator = (CommandActivator)item;
-				activator.setImage(IconLoader.loadIcon(activator.getIconName()));
-			}
-		}
-		layout();
 	}
 
 	public void checkSubclass() {}

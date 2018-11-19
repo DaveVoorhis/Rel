@@ -1,22 +1,18 @@
 package org.reldb.dbrowser.commands;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 
 public class Commands {
 
 	public static enum Do {
-		MakeBackup, 
+		MakeBackup,
 		Refresh, 
 		Show, 
 		Edit, 
@@ -49,7 +45,21 @@ public class Commands {
 	}
 
 	private static Map<Do, MenuItem> menuDoMapping = new HashMap<>();
-	private static Map<Do, CommandActivator> activatorDoMapping = new HashMap<>();
+	private static Map<Do, CommandActivator> commandDoMapping = new HashMap<>();
+
+	public static void addCommandDoMapping(Do command, CommandActivator activator) {
+		System.out.println("Commands: add mapping for " + command + ": " + activator.getToolTipText());
+		commandDoMapping.put(command, activator);
+	}
+	
+	public static void removeCommandDoMapping(Do command) {
+		System.out.println("Commands: remove mapping for " + command);
+		commandDoMapping.remove(command);
+	}
+	
+	public static CommandActivator getCommandDoMapping(Do command) {
+		return commandDoMapping.get(command);
+	}
 	
 	public static void linkCommand(Do command, DecoratedMenuItem menuItem) {
 		menuDoMapping.put(command, menuItem);
@@ -57,7 +67,7 @@ public class Commands {
 			Listener listener = null;
 			@Override
 			public void menuShown(MenuEvent arg0) {
-				CommandActivator activator = activatorDoMapping.get(command);
+				CommandActivator activator = commandDoMapping.get(command);
 				if (activator != null && activator.isFullyEnabled()) {
 					menuItem.setEnabled(true);
 					// remove old listeners
@@ -77,22 +87,7 @@ public class Commands {
 	}
 
 	public static MenuItem getMenuItem(Do command, CommandActivator toolitem) {
-		System.out.println("Commands: add tool item: " + toolitem.getText() + ": " + toolitem.getToolTipText());
-		activatorDoMapping.put(command, toolitem);
 		return menuDoMapping.get(command);
-	}
-	
-	public static void clearToolbar(ToolBar toolBar) {
-		System.out.println("Commands: clearToolbar " + toolBar.getClass().getName());
-		for (ToolItem toolItem: toolBar.getItems()) {
-			Iterator<Entry<Do, CommandActivator>> items = activatorDoMapping.entrySet().iterator();
-			while (items.hasNext()) {
-				Entry<Do, CommandActivator> entry = items.next();
-				if (entry.getValue() == toolItem) {
-					items.remove();
-				}
-			}
-		}
 	}
 
 }

@@ -126,7 +126,7 @@ public class Rev extends Composite {
 
 		inputView.addListener(SWT.FocusIn, e -> setTitle());
 
-		ManagedToolbar revTools = new ManagedToolbar(inputView);
+		ManagedToolbar revTools = new ManagedToolbar(inputView, "Rev");
 
 		if ((revstyle & SAVE_AND_LOAD_BUTTONS) != 0) {
 			new CommandActivator(null, revTools, "loadIcon", SWT.PUSH, "Load", e -> doLoad());
