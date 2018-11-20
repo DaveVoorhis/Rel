@@ -14,7 +14,9 @@ If you wish to work with the source code, do this:
 
 6. Right-click in the Package Explorer and select "Import | Git | Projects from Git" to clone this project.
 
-7. Run DBrowser in the DBrowser subproject to launch the *Rel* graphical user interface.
+7. If you're developing on Windows or Linux, right click on the DBrowser subproject and select "Properties | Java Build Path | Libraries". Remove the swt_reldb.jar and swt.jar libary dependencies -- currently set to MacOS versions -- and replace them with swt_reldb.jar and swt.jar found in \_Deployment/lib/swt/<arch>, where <arch> is linux_64 or win_64 depending on your development platform.
+
+8. Run DBrowser in the DBrowser subproject to launch the *Rel* graphical user interface.
 
 You're ready to develop *Rel*.
 
