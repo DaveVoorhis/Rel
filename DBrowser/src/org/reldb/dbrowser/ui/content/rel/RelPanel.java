@@ -58,6 +58,11 @@ import org.reldb.dbrowser.ui.content.rel.view.VarViewDropper;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewExporter;
 import org.reldb.dbrowser.ui.content.rel.view.VarViewPlayer;
 import org.reldb.dbrowser.ui.content.rel.welcome.WelcomeView;
+import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
+import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
+import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
+import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
+import org.reldb.dbrowser.ui.preferences.Preferences;
 import org.reldb.rel.client.Tuple;
 import org.reldb.rel.client.Tuples;
 import org.reldb.rel.client.connection.CrashHandler;
@@ -89,6 +94,41 @@ public class RelPanel extends Composite {
 	
 	private CTabItem itemSelectedByMenu;
 	private int itemSelectedByMenuIndex;
+	private PreferenceChangeListener preferenceChangeListener;
+	
+	private static class IconTreeItem extends TreeItem {
+		private String iconName;
+		
+		public IconTreeItem(Tree tree, String iconName, int style) {
+			super(tree, style);
+			this.iconName = iconName;
+			if (iconName != null)
+				setImage(IconLoader.loadIcon(iconName));
+		}
+		
+		public IconTreeItem(TreeItem treeItem, String iconName, int style) {
+			super(treeItem, style);
+			this.iconName = iconName;
+			if (iconName != null)
+				setImage(IconLoader.loadIcon(iconName));
+		}
+		
+		public String getIconName() {
+			return iconName;
+		}
+
+		public void checkSubclass() {}
+	}
+	
+	private void refreshIcons(TreeItem tree[]) {
+		for (TreeItem treeItem: tree) {
+			if (treeItem.getImage() != null && treeItem instanceof IconTreeItem) {
+				System.out.println("RelPanel: resize icon for IconTreeItem " + ((IconTreeItem)treeItem).getIconName());
+				treeItem.setImage(IconLoader.loadIcon(((IconTreeItem)treeItem).getIconName()));
+			}
+			refreshIcons(treeItem.getItems());
+		}
+	}
 	
 	/**
 	 * Create the composite.
@@ -113,6 +153,18 @@ public class RelPanel extends Composite {
 		tree = new Tree(treeFolder, SWT.NONE);		
 		treeTab.setControl(tree);
 		treeFolder.setSelection(0);
+				
+		preferenceChangeListener = new PreferenceChangeAdapter("RelPanel(Tree)") {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent evt) {
+				refreshIcons(tree.getItems());
+				tree.layout(true);
+				tree.redraw();
+				treeTab.setImage(IconLoader.loadIcon("DatabaseIcon"));
+				getShell().layout(new Control[] {RelPanel.this}, SWT.DEFER);
+			}
+		};
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 		
 		tree.addListener(SWT.Selection, evt -> {
 			DbTreeItem selection = getSelection();
@@ -325,6 +377,11 @@ public class RelPanel extends Composite {
 		}
 	}
 
+	public void dispose() {
+		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
+		super.dispose();		
+	}
+	
 	private void focusOnSelectedTab() {
 		CTabItem selectedItem = tabFolder.getSelection();
 		if (selectedItem != null) {
@@ -515,11 +572,10 @@ public class RelPanel extends Composite {
 		buildDbTree();
 	}
 
-	private TreeItem getRoot(String section, Image image, DbTreeAction creator) {
+	private TreeItem getRoot(String section, String imageName, DbTreeAction creator) {
 		TreeItem root = treeRoots.get(section);
 		if (root == null) {
-			root = new TreeItem(tree, SWT.NONE);
-			root.setImage(image);
+			root = new IconTreeItem(tree, imageName, SWT.NONE);
 			root.setText(section);
 			treeRoots.put(section, root);
 			root.setData(new DbTreeItem(section, null, null, creator, null, null, null, null));
@@ -527,16 +583,15 @@ public class RelPanel extends Composite {
 		return root;
 	}
 	
-	private void buildSubtree(String section, Image image, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction editor, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
-		TreeItem root = getRoot(section, image, creator);
+	private void buildSubtree(String section, String imageName, String query, String displayAttributeName, Predicate<String> filter, DbTreeAction player, DbTreeAction editor, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
+		TreeItem root = getRoot(section, imageName, creator);
 		if (query != null) {
 			Tuples names = connection.getTuples(query);
 			if (names != null)
 				for (Tuple tuple: names) {
 					String name = tuple.getAttributeValue(displayAttributeName).toString();
 					if (filter.test(name)) {
-						TreeItem item = new TreeItem(root, SWT.NONE);
-						item.setImage(image);
+						TreeItem item = new IconTreeItem(root, imageName, SWT.NONE);
 						item.setText(name);
 						item.setData(new DbTreeItem(section, player, editor, creator, dropper, designer, renamer, exporter, name));
 					}
@@ -546,8 +601,6 @@ public class RelPanel extends Composite {
 	
 	private void buildSubtreeVar(String andSysStr, Predicate<String> filter) {
 		String section = CATEGORY_VARIABLE;
-		Image imageInternal = IconLoader.loadIcon("table");
-		Image imageExternal = IconLoader.loadIcon("table_external");
 		String query = "(sys.Catalog WHERE NOT isVirtual" + andSysStr + ") {Name, isExternal} ORDER (ASC Name)";
 		String displayAttributeName = "Name";
 		VarPlayer player = new VarPlayer(this);
@@ -557,18 +610,18 @@ public class RelPanel extends Composite {
 		VarDesigner designer = new VarDesigner(this);
 		VarExporter exporter = new VarExporter(this);
 		
-		TreeItem root = getRoot(section, imageInternal, creator);
+		TreeItem root = getRoot(section, "table", creator);
 		if (query != null) {
 			Tuples names = connection.getTuples(query);
 			if (names != null)
 				for (Tuple tuple: names) {
 					String name = tuple.getAttributeValue(displayAttributeName).toString();
 					if (filter.test(name)) {
-						TreeItem item = new TreeItem(root, SWT.NONE);
+						TreeItem item;
 						if (tuple.getAttributeValue("isExternal").toBoolean())
-							item.setImage(imageExternal);
+							item = new IconTreeItem(root, "table_external", SWT.NONE);
 						else
-							item.setImage(imageInternal);
+							item = new IconTreeItem(root, "table", SWT.NONE);
 						item.setText(name);
 						item.setData(new DbTreeItem(section, player, editor, creator, dropper, designer, null, exporter, name));
 					}
@@ -588,24 +641,21 @@ public class RelPanel extends Composite {
 			"ORDER (ASC Name)";
 		OperatorCreator creator = new OperatorCreator(this);
 		String section = CATEGORY_OPERATOR;
-		Image image = IconLoader.loadIcon("flow_chart");
-		TreeItem root = getRoot(section, image, creator);
+		TreeItem root = getRoot(section, "flow_chart", creator);
 		if (query != null) {
 			Tuples names = connection.getTuples(query);
 			if (names != null)
 				for (Tuple tuple: names) {
 					String name = tuple.getAttributeValue("Name").toString();
 					if (filter.test(name)) {
-						TreeItem itemHeading = new TreeItem(root, SWT.NONE);
-						itemHeading.setImage(image);
+						TreeItem itemHeading = new IconTreeItem(root, "flow_chart", SWT.NONE);
 						itemHeading.setText(name);
 						itemHeading.setData(new DbTreeItem(section, null, null, creator, null, null, null, null, name));
 						int implementationCount = 0;
 						String lastSignatureWithReturns = "";
 						DbTreeItem lastitem = null;
 						for (Tuple detailTuple: (Tuples)tuple.get("Impl")) {
-							TreeItem item = new TreeItem(itemHeading, SWT.NONE);
-							item.setImage(image);
+							TreeItem item = new IconTreeItem(itemHeading, "flow_chart", SWT.NONE);
 							lastSignatureWithReturns = detailTuple.getAttributeValue("SigReturn").toString();
 							lastitem = new DbTreeItem(section, 
 									new OperatorPlayer(this), 
@@ -639,8 +689,8 @@ public class RelPanel extends Composite {
 		root.dispose();
 	}
 	
-	private void buildSubtree(String section, Image image, String query, String displayAttributeName, DbTreeAction player, DbTreeAction editor, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
-		buildSubtree(section, image, query, displayAttributeName, (String attributeName) -> true, player, editor, creator, dropper, designer, renamer, exporter);
+	private void buildSubtree(String section, String imageName, String query, String displayAttributeName, DbTreeAction player, DbTreeAction editor, DbTreeAction creator, DbTreeAction dropper, DbTreeAction designer, DbTreeAction renamer, DbTreeAction exporter) {
+		buildSubtree(section, imageName, query, displayAttributeName, (String attributeName) -> true, player, editor, creator, dropper, designer, renamer, exporter);
 	}
 	
 	private void buildDbTree() {
@@ -655,21 +705,21 @@ public class RelPanel extends Composite {
 		
 		buildSubtreeVar(andSysStr, revSysNamesFilter);
 		
-		buildSubtree(CATEGORY_VIEW, IconLoader.loadIcon("view"), "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
+		buildSubtree(CATEGORY_VIEW, "view", "(sys.Catalog WHERE isVirtual" + andSysStr + ") {Name} ORDER (ASC Name)", "Name", revSysNamesFilter,
 			new VarViewPlayer(this), null, new VarViewCreator(this), new VarViewDropper(this), new VarViewDesigner(this), null, new VarViewExporter(this));
 		
 		buildSubtreeOperator(whereSysStr, revSysNamesFilter);
 		
-		buildSubtree(CATEGORY_TYPE, IconLoader.loadIcon("tau"), "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
+		buildSubtree(CATEGORY_TYPE, "tau", "(sys.Types" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
 			new TypePlayer(this), null, new TypeCreator(this), new TypeDropper(this), null, null, null);
 		
-		buildSubtree(CATEGORY_CONSTRAINT, IconLoader.loadIcon("constraint"), "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
+		buildSubtree(CATEGORY_CONSTRAINT, "constraint", "(sys.Constraints" + whereSysStr + ") {Name} ORDER (ASC Name)", "Name",
 			new ConstraintPlayer(this), null, new ConstraintCreator(this), new ConstraintDropper(this), new ConstraintDesigner(this), null, null);
 		
 		if (connection.hasRevExtensions() >= 0)
 			handleRevAddition();
 		
-		buildSubtree(CATEGORY_WELCOME, IconLoader.loadIcon("smile"), "REL {TUP {Name 'Introduction'}}", "Name",
+		buildSubtree(CATEGORY_WELCOME, "smile", "REL {TUP {Name 'Introduction'}}", "Name",
 				new WelcomeView(this), null, null, null, null, null, null);
 		
 		fireDbTreeNoSelectionEvent();
@@ -705,11 +755,11 @@ public class RelPanel extends Composite {
 
 	public void handleRevAddition() {
 		parentTab.refresh();
-		buildSubtree(CATEGORY_QUERY, IconLoader.loadIcon("query"), "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
+		buildSubtree(CATEGORY_QUERY, "query", "UNION {sys.rev.Query {model}, sys.rev.Relvar {model}}", "model",
 				new QueryPlayer(this), null, new QueryCreator(this), new QueryDropper(this), new QueryDesigner(this), null, null);
 		// buildSubtree("Forms", null, null, null, null, null, null, null);
 		// buildSubtree("Reports", null, null, null, null, null, null, null);
-		buildSubtree(CATEGORY_SCRIPT, IconLoader.loadIcon("script"), "sys.rev.Script {Name} ORDER (ASC Name)", "Name", 
+		buildSubtree(CATEGORY_SCRIPT, "script", "sys.rev.Script {Name} ORDER (ASC Name)", "Name", 
 			new ScriptPlayer(this), null, new ScriptCreator(this), new ScriptDropper(this), new ScriptDesigner(this), new ScriptRenamer(this), null);		
 	}
 	

@@ -2,6 +2,7 @@ package org.reldb.dbrowser.commands;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.reldb.dbrowser.ui.IconLoader;
@@ -25,7 +26,7 @@ public class ManagedToolbar extends ToolBar {
 						activator.setImage(IconLoader.loadIcon(activator.getIconName()));
 					}
 				}
-				layout();
+				getShell().layout(new Control[] {ManagedToolbar.this}, SWT.DEFER);
 			}
 		};
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
