@@ -12,6 +12,7 @@ Version 3.013 (1.0.26):
   - DBrowser: Under Preferences, moved alternate output display 
     option to Display tab.
 
+  - DBrowser: Improved handling of icon resizing via Preferences.
 
 Version 3.012 (1.0.25):
 
