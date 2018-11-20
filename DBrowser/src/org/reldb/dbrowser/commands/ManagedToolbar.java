@@ -13,11 +13,9 @@ import org.reldb.dbrowser.ui.preferences.Preferences;
 
 public class ManagedToolbar extends ToolBar {    
     private PreferenceChangeListener preferenceChangeListener;
-    private String name;
     
-	public ManagedToolbar(Composite parent, String name) {
+	public ManagedToolbar(Composite parent) {
 		super(parent, SWT.NONE);
-		this.name = name;
 		preferenceChangeListener = new PreferenceChangeAdapter("ManagedToolbar") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
@@ -31,10 +29,6 @@ public class ManagedToolbar extends ToolBar {
 			}
 		};
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
-	}
-		
-	public String getToolbarName() {
-		return name;
 	}
 	
 	public void addSeparator() {

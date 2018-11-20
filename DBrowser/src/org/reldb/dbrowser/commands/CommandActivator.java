@@ -25,52 +25,74 @@ public class CommandActivator extends ToolItem {
 	
 	private MenuItem menuItem;
 	private String iconName;
+	private Do command;
     private boolean visible = false;
-	
+    private ManagedToolbar toolbar;
+
+    private Timer stateTimer = new Timer();
+    
+    protected void notifyVisible() {
+    	Commands.addCommandActivator(this);
+    }
+    
+    protected void notifyHidden() {
+    	Commands.removeCommandActivator(this);
+    }
+    
+    private void visible() {
+    	if (visible)
+    		return;
+    	visible = true;
+    	notifyVisible();
+    }
+    
+    private void hidden() {
+    	if (!visible)
+    		return;
+    	visible = false;
+    	notifyHidden();
+    }
+
 	public CommandActivator(Do command, ManagedToolbar toolBar, String iconName, int style, String tooltipText, Listener listener) {
 		super(toolBar, style);
+		this.command = command;
+		this.toolbar = toolBar;
 		this.iconName = iconName;
 		setToolTipText(tooltipText);
 		setImage(IconLoader.loadIcon(iconName));
 		addListener(SWT.Selection, listener);
 		if (command != null) {
 			menuItem = Commands.getMenuItem(command, this);
-			addListener(SWT.Paint, e -> {
-				synchronized (iconName) {
-					Commands.addCommandDoMapping(command, CommandActivator.this);
-					visible = true;
-				}
-			});
-			Timer stateTimer = new Timer();
+			addListener(SWT.Paint, e -> visible());
 			stateTimer.schedule(new TimerTask() {
 				@Override
 				public void run() {
-					// TODO - Not visible? Don't deactivate unless there's no other visible CommandActivator for the given command
-					// TODO - Visible? Always activate.
-					CommandActivator.this.getDisplay().asyncExec(() -> {
-						if (isDisposed() || getParent().isDisposed()) {
-							stateTimer.cancel();
-							synchronized (iconName) {
-								Commands.removeCommandDoMapping(command);
-								visible = false;
+					if (isDisposed()) {
+						stateTimer.cancel();
+						hidden();
+					} else
+						getDisplay().asyncExec(() -> {
+							if (isDisposed() || getParent().isDisposed()) {
+								stateTimer.cancel();
+								hidden();
+							} else if (getParent().isVisible()) {
+								visible();
+							} else {
+								hidden();
 							}
-						} else if (getParent().isVisible()) {
-							synchronized (iconName) {
-								Commands.addCommandDoMapping(command, CommandActivator.this);
-								visible = true;
-							}
-						} else if (!getParent().isVisible()) {
-							synchronized (iconName) {
-								Commands.removeCommandDoMapping(command);
-								visible = false;
-							}
-						}
-					});
+						});
 				}
-			}, 1000, 1000);			
+			}, 250, 250);
 		}
 	}
 
+	public void dispose() {
+		if (command != null) {
+			stateTimer.cancel();
+			hidden();
+		}
+	}
+	
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
 		if (menuItem != null)
@@ -100,6 +122,18 @@ public class CommandActivator extends ToolItem {
 
 	public String getIconName() {
 		return iconName;
+	}
+	
+	public Do getCommand() {
+		return command;
+	}
+
+	public ManagedToolbar getManagedToolbar() {
+		return toolbar;
+	}
+	
+	public String toString() {
+		return "CommandActivator [" + command + ", " + iconName + "]" + (isDisposed() ? " *disposed*" : "");
 	}
 	
 	public void checkSubclass() {}

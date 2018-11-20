@@ -71,7 +71,7 @@ public class CmdPanelInput extends Composite {
 
 		this.cmdPanelOutput = cmdPanelOutput;
 		
-		ManagedToolbar toolBar = new ManagedToolbar(this, "Input");
+		ManagedToolbar toolBar = new ManagedToolbar(this);
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);
 		fd_toolBar.top = new FormAttachment(0);

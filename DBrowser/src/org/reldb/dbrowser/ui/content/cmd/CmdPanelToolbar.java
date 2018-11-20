@@ -15,7 +15,7 @@ public class CmdPanelToolbar extends ManagedToolbar {
 	private CommandActivator headingTypesToggle;
 	
 	public CmdPanelToolbar(Composite parent, CmdPanelOutput cmdPanel) {
-		super(parent, "Output");
+		super(parent);
 		
 		addAdditionalItemsBefore(this);
 

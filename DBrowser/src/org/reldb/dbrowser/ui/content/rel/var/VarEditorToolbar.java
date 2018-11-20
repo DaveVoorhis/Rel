@@ -10,7 +10,7 @@ import org.reldb.dbrowser.ui.content.rel.var.grids.RelvarEditor;
 public class VarEditorToolbar extends ManagedToolbar {
 
 	public VarEditorToolbar(Composite parent, RelvarEditor relvarEditor) {
-		super(parent, "Relvar Editor");
+		super(parent);
 
 		addAdditionalItemsBefore(this);
 

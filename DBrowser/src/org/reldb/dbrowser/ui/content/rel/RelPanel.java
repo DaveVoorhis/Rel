@@ -298,7 +298,7 @@ public class RelPanel extends Composite {
 				tabFolder.getItem(0).dispose();
 		});
 		
-		ManagedToolbar zoomer = new ManagedToolbar(tabFolder, "Zoom");
+		ManagedToolbar zoomer = new ManagedToolbar(tabFolder);
 		new CommandActivator(null, zoomer, "view_fullscreen", SWT.NONE, "Zoom in or out", e -> zoom());
 		tabFolder.setTopRight(zoomer);
 		

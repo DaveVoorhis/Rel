@@ -84,7 +84,7 @@ public class DbTab extends CTabItem {
 		gl_compDbLocation.marginHeight = 0;
 		compDbLocation.setLayout(gl_compDbLocation);
 
-		ManagedToolbar toolBarDatabase = new ManagedToolbar(compDbLocation, "Select Database");
+		ManagedToolbar toolBarDatabase = new ManagedToolbar(compDbLocation);
 		
 		new CommandActivator(null, toolBarDatabase, "NewDBIcon", SWT.NONE, "Create or open local database", e -> DBrowser.newDatabase());
 		new CommandActivator(null, toolBarDatabase, "OpenDBLocalIcon", SWT.NONE, "Open local database", e -> DBrowser.openLocalDatabase());
@@ -103,7 +103,7 @@ public class DbTab extends CTabItem {
 			}
 		});
 
-		toolBarMode = new ManagedToolbar(bannerDbLocationMode, "Mode");
+		toolBarMode = new ManagedToolbar(bannerDbLocationMode);
 		toolBarMode.setEnabled(false);
 		bannerDbLocationMode.setRight(toolBarMode);
 

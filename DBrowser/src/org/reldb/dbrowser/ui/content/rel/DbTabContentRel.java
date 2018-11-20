@@ -34,7 +34,7 @@ public class DbTabContentRel extends Composite {
 		super(contentParent, SWT.None);
 		setLayout(new FormLayout());
 
-		mainToolBar = new ManagedToolbar(this, "Database");
+		mainToolBar = new ManagedToolbar(this);
 		FormData fd_toolBar = new FormData();
 		fd_toolBar.left = new FormAttachment(0);
 		fd_toolBar.top = new FormAttachment(0);
