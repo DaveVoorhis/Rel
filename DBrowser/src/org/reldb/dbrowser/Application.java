@@ -230,7 +230,7 @@ public class Application {
  
  		new MenuItem(menu, SWT.SEPARATOR);
  
- 		linkCommand(Commands.Do.CopyOutputToInput, new DecoratedMenuItem(menu, "Copy input to output", 0, "copyToOutputIcon", SWT.CHECK));
+ 		linkCommand(Commands.Do.CopyInputToOutput, new DecoratedMenuItem(menu, "Copy input to output", 0, "copyToOutputIcon", SWT.CHECK));
  		linkCommand(Commands.Do.WrapText, new DecoratedMenuItem(menu, "Wrap text", 0, "wrapIcon", SWT.CHECK));
 	}
 	
