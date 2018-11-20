@@ -1,5 +1,7 @@
 ** TO DO **
 
+
+
 - DBrowser: Check and fix Preferences icon resizing on all toolbars.
 
 - DBrowser: Check that use of alternate output display option doesn't
@@ -25,6 +27,12 @@
 - DBrowser: https://github.com/DaveVoorhis/Rel/issues/1
   Navigation keys and undo appear to be consumed by Nattable without performing
   appropriate actions. Fix.
+
+- Rel: Issue:
+    S WHERE (WITH (x := true): x) 
+  works but 
+    S WHERE WITH (x := true): x 
+  doesn't. Look at operator precedence around WHERE and WITH.
 
 - Rel: This throws a fatal error:
     RELATION {TUPLE {RVA RELATION {TUPLE {K 1}}}} EXTEND {RR := RVA RANK (ASC K AS R)}
