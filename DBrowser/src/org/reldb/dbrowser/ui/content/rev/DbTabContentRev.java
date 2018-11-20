@@ -22,6 +22,10 @@ public class DbTabContentRev extends Composite {
 		new CommandActivator(null, toolBar, "view_fullscreen", SWT.PUSH, "Zoom in or out", e -> rev.zoom());
 	}
 
+	private void addBackup(ManagedToolbar toolbar, DbTab parentTab) {
+		new CommandActivator(Commands.Do.MakeBackup, toolbar, "safeIcon", SWT.PUSH, "Make backup", e -> parentTab.makeBackup());		
+	}
+	
 	private void makeToolbar(DbTab parentTab) {
 		if (toolBar != null) {
 			toolBar.dispose();
@@ -33,14 +37,14 @@ public class DbTabContentRev extends Composite {
 			toolBar = new VarEditorToolbar(this, relvarEditorView.getRelvarEditor()) {
 				@Override
 				public void addAdditionalItemsBefore(VarEditorToolbar toolbar) {
-					new CommandActivator(Commands.Do.MakeBackup, toolbar, "safeIcon", SWT.PUSH, "Make backup", e -> parentTab.makeBackup());
+					addBackup(toolbar, parentTab);
 				}
 			};
 		else
 			toolBar = new CmdPanelToolbar(this, rev.getCmdPanelOutput()) {
 				@Override
 				public void addAdditionalItemsBefore(CmdPanelToolbar toolbar) {
-					new CommandActivator(Commands.Do.MakeBackup, toolbar, "safeIcon", SWT.PUSH, "Make backup", e -> parentTab.makeBackup());
+					addBackup(toolbar, parentTab);
 				}
 			};
 		addZoom(toolBar);
