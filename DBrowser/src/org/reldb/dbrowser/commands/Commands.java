@@ -103,6 +103,8 @@ public class Commands {
 					}
 					// add new listener
 					menuItem.addListener(SWT.Selection, e -> activator.click());
+					// acquire the CommandActivator's tooltip
+					menuItem.setToolTipText(activator.getToolTipText());
 				} else
 					menuItem.setEnabled(false);
 			}

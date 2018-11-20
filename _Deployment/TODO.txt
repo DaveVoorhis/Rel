@@ -2,10 +2,6 @@
 
 - DBrowser: Check and fix Preferences icon resizing on all toolbars.
 
-- Main README: Note need to change native SWT depending on platform.
-
-- DBrowser: Finish menus, including enable/disable and tooltips.
-
 - DBrowser: Check that use of alternate output display option doesn't
   interfere with Rel shutting down properly. Note that using command-line
   with any output appears to cause problems exiting on Windows.
