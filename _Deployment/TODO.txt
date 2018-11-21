@@ -1,9 +1,5 @@
 ** TO DO **
 
-- DBrowser: Check that use of alternate output display option doesn't
-  interfere with Rel shutting down properly. Note that using command-line
-  with any output appears to cause problems exiting on Windows.
-
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
   disappear unless the main window is manually resized. Fix this.
 
