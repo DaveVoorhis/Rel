@@ -96,6 +96,8 @@ public class CommandActivator extends ToolItem {
 	}
 	
 	public void setEnabled(boolean enabled) {
+		if (isDisposed() || super.isDisposed())
+			return;
 		super.setEnabled(enabled);
 		if (menuItem != null)
 			menuItem.setEnabled(true);
