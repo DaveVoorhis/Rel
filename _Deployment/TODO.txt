@@ -1,9 +1,5 @@
 ** TO DO **
 
-
-
-- DBrowser: Check and fix Preferences icon resizing on all toolbars.
-
 - DBrowser: Check that use of alternate output display option doesn't
   interfere with Rel shutting down properly. Note that using command-line
   with any output appears to cause problems exiting on Windows.
