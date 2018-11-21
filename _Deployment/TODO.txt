@@ -1,5 +1,7 @@
 ** TO DO **
 
+- DBrowser: Why don't standard file dialog boxes have titles?
+
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
   disappear unless the main window is manually resized. Fix this.
 
