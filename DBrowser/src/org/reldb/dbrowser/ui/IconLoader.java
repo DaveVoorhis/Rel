@@ -1,6 +1,7 @@
 package org.reldb.dbrowser.ui;
 
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageDataProvider;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.wb.swt.SWTResourceManager;
@@ -15,25 +16,37 @@ public class IconLoader {
 		return (largeIcons) ? loadIconLarge(name) : loadIconNormal(name);
 	}
 	
+	static int scaleFactor;
+	
+	private static ImageData grabzoom(int zoom, Image image) {
+		scaleFactor = zoom;
+		return image.getImageData();
+	}
+	
+	public static int getDPIScaling() {
+		Image imgRaw = SWTResourceManager.getImage(base + "noimage.png");
+		new Image(Display.getCurrent(), (ImageDataProvider)zoom -> grabzoom(zoom, imgRaw));
+		return scaleFactor;
+	}
+	
 	public static Image loadIconNormal(String name) {
-		Image imgBigRaw = SWTResourceManager.getImageOrNull(base + name + "@2x.png");
-		Image imgSmallRaw = SWTResourceManager.getImageOrNull(base + name + ".png");
-		if (imgBigRaw == null && imgSmallRaw == null) {
-			imgBigRaw = SWTResourceManager.getImage(base + "noimage@2x.png");
-			imgSmallRaw = SWTResourceManager.getImage(base + "noimage.png");
-		}
-		Image imgLarge = (imgBigRaw == null) ? imgSmallRaw : imgBigRaw;
-		Image imgSmall = imgSmallRaw;
-		final ImageDataProvider imageDataProvider = zoom -> {
+		return new Image(Display.getCurrent(), (ImageDataProvider)zoom -> {
 			switch (zoom) {
 			case 200:
-				return imgLarge.getImageData();
+				Image imgRaw = SWTResourceManager.getImageOrNull(base + name + "@2x.png");
+				if (imgRaw == null) {
+					imgRaw = SWTResourceManager.getImageOrNull(base + name + ".png");
+					if (imgRaw == null)
+						imgRaw = SWTResourceManager.getImage(base + "noimage@2x.png");
+				}
+				return imgRaw.getImageData();
 			default:
-				return imgSmall.getImageData();
+				imgRaw = SWTResourceManager.getImageOrNull(base + name + ".png");
+				if (imgRaw == null)
+					imgRaw = SWTResourceManager.getImage(base + "noimage.png");
+				return imgRaw.getImageData();
 			}
-		};
-		// TODO - should cache image in SWTResourceManager here!
-		return new Image(Display.getCurrent(), imageDataProvider);
+		});
 	}
 	
 	public static Image loadIconLarge(String name) {
