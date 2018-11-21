@@ -53,7 +53,7 @@ public class DbTabContentRel extends Composite {
 		fd_composite.bottom = new FormAttachment(100);
 		rel.setLayoutData(fd_composite);
 			
-		new CommandActivator(Commands.Do.MakeBackup, mainToolBar, "SafeIcon", SWT.None, "Make backup", e -> parentTab.makeBackup());
+		new CommandActivator(Commands.Do.MakeBackup, mainToolBar, "safeIcon", SWT.None, "Make backup", e -> parentTab.makeBackup());
 		tlitmShow = new CommandActivator(Commands.Do.Show, mainToolBar, "play", SWT.None, "Show", e -> rel.playItem());
 		tlitmEdit = new CommandActivator(Commands.Do.Edit, mainToolBar, "item_edit", SWT.None, "Edit", e -> rel.editItem());
 		tlitmNew = new CommandActivator(Commands.Do.New, mainToolBar, "item_add", SWT.None, "New", e -> rel.createItem());
