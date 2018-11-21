@@ -21,8 +21,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.reldb.dbrowser.commands.Commands;
-import org.reldb.dbrowser.commands.DecoratedMenuItem;
+import org.reldb.dbrowser.commands.AcceleratedMenuItem;
 import org.reldb.dbrowser.ui.AboutDialog;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.feedback.BugReportDialog;
 import org.reldb.dbrowser.ui.feedback.SuggestionboxDialog;
 import org.reldb.dbrowser.ui.log.LogWin;
@@ -78,18 +79,18 @@ public class Application {
 		Menu menu = new Menu(fileItem);
 		fileItem.setMenu(menu);
 		
-		new DecoratedMenuItem(menu, "&New Database\tCtrl-N", SWT.MOD1 | 'N', "NewDBIcon", e -> DBrowser.newDatabase());
-		new DecoratedMenuItem(menu, "Open &local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> DBrowser.openLocalDatabase());
-		new DecoratedMenuItem(menu, "Open remote database\tCtrl-r", SWT.MOD1 | 'r', "OpenDBRemoteIcon", e-> DBrowser.openRemoteDatabase());
+		new AcceleratedMenuItem(menu, "&New Database\tCtrl-N", SWT.MOD1 | 'N', "NewDBIcon", e -> DBrowser.newDatabase());
+		new AcceleratedMenuItem(menu, "Open &local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> DBrowser.openLocalDatabase());
+		new AcceleratedMenuItem(menu, "Open remote database\tCtrl-r", SWT.MOD1 | 'r', "OpenDBRemoteIcon", e-> DBrowser.openRemoteDatabase());
 		
 		String[] dbURLs = DBrowser.getRecentlyUsedDatabaseList();
 		if (dbURLs.length > 0) {
 			new MenuItem(menu, SWT.SEPARATOR);
 			for (String dbURL: dbURLs)
-				new DecoratedMenuItem(menu, "Open " + dbURL, 0, "OpenDBLocalIcon", e -> DBrowser.openDatabase(dbURL));
+				new AcceleratedMenuItem(menu, "Open " + dbURL, 0, "OpenDBLocalIcon", e -> DBrowser.openDatabase(dbURL));
 			new MenuItem(menu, SWT.SEPARATOR);			
-			new DecoratedMenuItem(menu, "Clear above list of recently-opened databases", 0, (String)null, e -> DBrowser.clearRecentlyUsedDatabaseList());
-			new DecoratedMenuItem(menu, "Manage list of recently-opened databases...", 0, (String)null, e -> DBrowser.manageRecentlyUsedDatabaseList());
+			new AcceleratedMenuItem(menu, "Clear above list of recently-opened databases", 0, (String)null, e -> DBrowser.clearRecentlyUsedDatabaseList());
+			new AcceleratedMenuItem(menu, "Manage list of recently-opened databases...", 0, (String)null, e -> DBrowser.manageRecentlyUsedDatabaseList());
 		}
 		OSSpecific.addFileMenuItems(menu);
 	}
@@ -112,7 +113,7 @@ public class Application {
 	}
 	
 	// Link a command (which implies a toolbar-accessible action) with a menu item.
-	private static void linkCommand(Commands.Do command, DecoratedMenuItem menuItem) {
+	private static void linkCommand(Commands.Do command, AcceleratedMenuItem menuItem) {
 		Commands.linkCommand(command, menuItem);
 	}
 	
@@ -142,7 +143,7 @@ public class Application {
 		}
 	}
 	
-	private static DecoratedMenuItem createEditMenuItem(String methodName, DecoratedMenuItem menuItem) {
+	private static AcceleratedMenuItem createEditMenuItem(String methodName, AcceleratedMenuItem menuItem) {
 		class EditMenuAdapter extends MenuAdapter { 
 			Control focusControl;
 			LinkedList<Method> menuItemMethods = new LinkedList<Method>();
@@ -195,16 +196,16 @@ public class Application {
 		Menu menu = new Menu(editItem);
 		editItem.setMenu(menu);
 		
-		createEditMenuItem("undo", new DecoratedMenuItem(menu, "Undo\tCtrl-Z", SWT.MOD1 | 'Z', "undo"));
+		createEditMenuItem("undo", new AcceleratedMenuItem(menu, "Undo\tCtrl-Z", SWT.MOD1 | 'Z', "undo"));
 		
 		int redoAccelerator = SWT.MOD1 | (isMac() ? SWT.SHIFT | 'Z' : 'Y');
-		createEditMenuItem("redo", new DecoratedMenuItem(menu, "Redo\tCtrl-Y", redoAccelerator, "redo"));
+		createEditMenuItem("redo", new AcceleratedMenuItem(menu, "Redo\tCtrl-Y", redoAccelerator, "redo"));
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		
-		createEditMenuItem("cut", new DecoratedMenuItem(menu, "Cut\tCtrl-X", SWT.MOD1 | 'X', "cut"));
-		createEditMenuItem("copy", new DecoratedMenuItem(menu, "Copy\tCtrl-C", SWT.MOD1 | 'C', "copy"));
-		createEditMenuItem("paste", new DecoratedMenuItem(menu, "Paste\tCtrl-V", SWT.MOD1 | 'V', "paste") {
+		createEditMenuItem("cut", new AcceleratedMenuItem(menu, "Cut\tCtrl-X", SWT.MOD1 | 'X', "cut"));
+		createEditMenuItem("copy", new AcceleratedMenuItem(menu, "Copy\tCtrl-C", SWT.MOD1 | 'C', "copy"));
+		createEditMenuItem("paste", new AcceleratedMenuItem(menu, "Paste\tCtrl-V", SWT.MOD1 | 'V', "paste") {
 			public boolean canExecute() {
 				return isThereSomethingToPaste();
 			}
@@ -212,26 +213,26 @@ public class Application {
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		
-		createEditMenuItem("clear", new DecoratedMenuItem(menu, "Clear", 0, "clearIcon"));
-		createEditMenuItem("delete", new DecoratedMenuItem(menu, "Delete\tDel", SWT.DEL, "delete"));
-		createEditMenuItem("selectAll", new DecoratedMenuItem(menu, "Select All\tCtrl-A", SWT.MOD1 | 'A', "selectAll"));
-		linkCommand(Commands.Do.FindReplace, new DecoratedMenuItem(menu, "Find/Replace", 0, "edit_find_replace"));
+		createEditMenuItem("clear", new AcceleratedMenuItem(menu, "Clear", 0, "clearIcon"));
+		createEditMenuItem("delete", new AcceleratedMenuItem(menu, "Delete\tDel", SWT.DEL, "delete"));
+		createEditMenuItem("selectAll", new AcceleratedMenuItem(menu, "Select All\tCtrl-A", SWT.MOD1 | 'A', "selectAll"));
+		linkCommand(Commands.Do.FindReplace, new AcceleratedMenuItem(menu, "Find/Replace", 0, "edit_find_replace"));
 		
 		new MenuItem(menu, SWT.SEPARATOR);
 		
-		linkCommand(Commands.Do.SpecialCharacters, new DecoratedMenuItem(menu, "Special characters", 0, "characters"));
-		linkCommand(Commands.Do.PreviousHistory, new DecoratedMenuItem(menu, "Previous history", 0, "previousIcon"));
-		linkCommand(Commands.Do.NextHistory, new DecoratedMenuItem(menu, "Next history", 0, "nextIcon"));
-		linkCommand(Commands.Do.LoadFile, new DecoratedMenuItem(menu, "Load file", 0, "loadIcon"));
-		linkCommand(Commands.Do.InsertFile, new DecoratedMenuItem(menu, "Insert file", 0, "loadInsertIcon"));
-		linkCommand(Commands.Do.InsertFileName, new DecoratedMenuItem(menu, "Insert file name", 0, "pathIcon"));
-		linkCommand(Commands.Do.SaveFile, new DecoratedMenuItem(menu, "Save file", 0, "saveIcon"));
-		linkCommand(Commands.Do.SaveHistory, new DecoratedMenuItem(menu, "Save history", 0, "saveHistoryIcon"));
+		linkCommand(Commands.Do.SpecialCharacters, new AcceleratedMenuItem(menu, "Special characters", 0, "characters"));
+		linkCommand(Commands.Do.PreviousHistory, new AcceleratedMenuItem(menu, "Previous history", 0, "previousIcon"));
+		linkCommand(Commands.Do.NextHistory, new AcceleratedMenuItem(menu, "Next history", 0, "nextIcon"));
+		linkCommand(Commands.Do.LoadFile, new AcceleratedMenuItem(menu, "Load file", 0, "loadIcon"));
+		linkCommand(Commands.Do.InsertFile, new AcceleratedMenuItem(menu, "Insert file", 0, "loadInsertIcon"));
+		linkCommand(Commands.Do.InsertFileName, new AcceleratedMenuItem(menu, "Insert file name", 0, "pathIcon"));
+		linkCommand(Commands.Do.SaveFile, new AcceleratedMenuItem(menu, "Save file", 0, "saveIcon"));
+		linkCommand(Commands.Do.SaveHistory, new AcceleratedMenuItem(menu, "Save history", 0, "saveHistoryIcon"));
  
  		new MenuItem(menu, SWT.SEPARATOR);
  
- 		linkCommand(Commands.Do.CopyInputToOutput, new DecoratedMenuItem(menu, "Copy input to output", 0, "copyToOutputIcon", SWT.CHECK));
- 		linkCommand(Commands.Do.WrapText, new DecoratedMenuItem(menu, "Wrap text", 0, "wrapIcon", SWT.CHECK));
+ 		linkCommand(Commands.Do.CopyInputToOutput, new AcceleratedMenuItem(menu, "Copy input to output", 0, "copyToOutputIcon", SWT.CHECK));
+ 		linkCommand(Commands.Do.WrapText, new AcceleratedMenuItem(menu, "Wrap text", 0, "wrapIcon", SWT.CHECK));
 	}
 	
 	private static void createOutputMenu(Menu bar) {
@@ -241,22 +242,22 @@ public class Application {
 		Menu menu = new Menu(outputItem);
 		outputItem.setMenu(menu);
 		
-		linkCommand(Commands.Do.CopyOutputToInput, new DecoratedMenuItem(menu, "Copy output to input", 0, "copyToInputIcon"));
-	    linkCommand(Commands.Do.ClearOutput, new DecoratedMenuItem(menu, "Clear", 0, "clearIcon"));
-	    linkCommand(Commands.Do.SaveAsHTML, new DecoratedMenuItem(menu, "Save as HTML", 0, "saveHTMLIcon"));
-	    linkCommand(Commands.Do.SaveAsText, new DecoratedMenuItem(menu, "Save as text", 0, "saveTextIcon"));
+		linkCommand(Commands.Do.CopyOutputToInput, new AcceleratedMenuItem(menu, "Copy output to input", 0, "copyToInputIcon"));
+	    linkCommand(Commands.Do.ClearOutput, new AcceleratedMenuItem(menu, "Clear", 0, "clearIcon"));
+	    linkCommand(Commands.Do.SaveAsHTML, new AcceleratedMenuItem(menu, "Save as HTML", 0, "saveHTMLIcon"));
+	    linkCommand(Commands.Do.SaveAsText, new AcceleratedMenuItem(menu, "Save as text", 0, "saveTextIcon"));
 	    
 	    new MenuItem(menu, SWT.SEPARATOR);
 	    
-	    linkCommand(Commands.Do.DisplayEnhancedOutput, new DecoratedMenuItem(menu, "Enhanced output", 0, "enhancedIcon", SWT.CHECK));
-	    linkCommand(Commands.Do.DisplayOk, new DecoratedMenuItem(menu, "Write 'Ok' after execution", 0, "showOkIcon", SWT.CHECK));
-	    linkCommand(Commands.Do.DisplayAutoClear, new DecoratedMenuItem(menu, "Automatically clear output", 0, "autoclearIcon", SWT.CHECK));
-	    linkCommand(Commands.Do.ShowRelationHeadings, new DecoratedMenuItem(menu, "Show relation headings", 0, "headingIcon", SWT.CHECK));
-	    linkCommand(Commands.Do.ShowRelationHeadingAttributeTypes, new DecoratedMenuItem(menu, "Show attribute types in relation headings", 0, "headingIcon.png", SWT.CHECK));
+	    linkCommand(Commands.Do.DisplayEnhancedOutput, new AcceleratedMenuItem(menu, "Enhanced output", 0, "enhancedIcon", SWT.CHECK));
+	    linkCommand(Commands.Do.DisplayOk, new AcceleratedMenuItem(menu, "Write 'Ok' after execution", 0, "showOkIcon", SWT.CHECK));
+	    linkCommand(Commands.Do.DisplayAutoClear, new AcceleratedMenuItem(menu, "Automatically clear output", 0, "autoclearIcon", SWT.CHECK));
+	    linkCommand(Commands.Do.ShowRelationHeadings, new AcceleratedMenuItem(menu, "Show relation headings", 0, "headingIcon", SWT.CHECK));
+	    linkCommand(Commands.Do.ShowRelationHeadingAttributeTypes, new AcceleratedMenuItem(menu, "Show attribute types in relation headings", 0, "typeSuppressIcon", SWT.CHECK));
 	    
 	    new MenuItem(menu, SWT.SEPARATOR);
 	    
-	    linkCommand(Commands.Do.Refresh, new DecoratedMenuItem(menu, "Refresh", 0, "arrow_refresh"));
+	    linkCommand(Commands.Do.Refresh, new AcceleratedMenuItem(menu, "Refresh", 0, "arrow_refresh"));
 	}
 
 	private static void createDatabaseMenu(Menu bar) {
@@ -266,18 +267,18 @@ public class Application {
 		Menu menu = new Menu(databaseItem);
 		databaseItem.setMenu(menu);
 		
-		linkCommand(Commands.Do.MakeBackup, new DecoratedMenuItem(menu, "Backup", 0, "safeIcon"));
+		linkCommand(Commands.Do.MakeBackup, new AcceleratedMenuItem(menu, "Backup", 0, "safeIcon"));
         
 	    new MenuItem(menu, SWT.SEPARATOR);
 	    
-	    linkCommand(Commands.Do.Design, new DecoratedMenuItem(menu, "Design", 0, "item_design"));
-	    linkCommand(Commands.Do.Drop, new DecoratedMenuItem(menu, "Drop", 0, "item_delete"));
-	    linkCommand(Commands.Do.Edit, new DecoratedMenuItem(menu, "Edit", 0, "item_edit"));
-	    linkCommand(Commands.Do.Export, new DecoratedMenuItem(menu, "Export", 0, "export"));
-	    linkCommand(Commands.Do.New, new DecoratedMenuItem(menu, "New", 0, "item_add"));
-	    linkCommand(Commands.Do.Rename, new DecoratedMenuItem(menu, "Rename", 0, "rename"));
-	    linkCommand(Commands.Do.Show, new DecoratedMenuItem(menu, "Show", 0, "play"));
-	    linkCommand(Commands.Do.ShowSystemObjects, new DecoratedMenuItem(menu, "Show system objects", 0, "gears", SWT.CHECK));
+	    linkCommand(Commands.Do.Design, new AcceleratedMenuItem(menu, "Design", 0, "item_design"));
+	    linkCommand(Commands.Do.Drop, new AcceleratedMenuItem(menu, "Drop", 0, "item_delete"));
+	    linkCommand(Commands.Do.Edit, new AcceleratedMenuItem(menu, "Edit", 0, "item_edit"));
+	    linkCommand(Commands.Do.Export, new AcceleratedMenuItem(menu, "Export", 0, "export"));
+	    linkCommand(Commands.Do.New, new AcceleratedMenuItem(menu, "New", 0, "item_add"));
+	    linkCommand(Commands.Do.Rename, new AcceleratedMenuItem(menu, "Rename", 0, "rename"));
+	    linkCommand(Commands.Do.Show, new AcceleratedMenuItem(menu, "Show", 0, "play"));
+	    linkCommand(Commands.Do.ShowSystemObjects, new AcceleratedMenuItem(menu, "Show system objects", 0, "gears", SWT.CHECK));
 	}
 	
 	private static void createToolsMenu(Menu bar) {
@@ -287,11 +288,11 @@ public class Application {
 		Menu menu = new Menu(toolsItem);
 		toolsItem.setMenu(menu);
 		
-		new DecoratedMenuItem(menu, "View log", 0, e -> LogWin.open());
+		new AcceleratedMenuItem(menu, "View log", 0, e -> LogWin.open());
 		new MenuItem(menu, SWT.SEPARATOR);
-		new DecoratedMenuItem(menu, "Submit Feedback", 0, "ButterflyIcon", e -> SuggestionboxDialog.launch(shell));
-		new DecoratedMenuItem(menu, "Bug Report", 0, "BugIcon", e -> BugReportDialog.launch(shell));
-		new DecoratedMenuItem(menu, "Check for Updates", 0, e -> UpdatesCheckDialog.launch(shell));
+		new AcceleratedMenuItem(menu, "Submit Feedback", 0, "ButterflyIcon", e -> SuggestionboxDialog.launch(shell));
+		new AcceleratedMenuItem(menu, "Bug Report", 0, "BugIcon", e -> BugReportDialog.launch(shell));
+		new AcceleratedMenuItem(menu, "Check for Updates", 0, e -> UpdatesCheckDialog.launch(shell));
 	}
 	
 	private static void createHelpMenu(Menu bar) {
@@ -449,6 +450,7 @@ public class Application {
 		});
 		
 		shell = createShell();
+		shell.setImage(IconLoader.loadIcon("RelIcon"));
 		shell.setImages(loadIcons(display));
 		shell.setText(Version.getAppID());
 		shell.addListener(SWT.Close, e -> {

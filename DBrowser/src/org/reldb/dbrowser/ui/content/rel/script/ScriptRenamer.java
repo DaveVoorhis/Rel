@@ -2,7 +2,6 @@ package org.reldb.dbrowser.ui.content.rel.script;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.RevDatabase;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
@@ -17,7 +16,7 @@ public class ScriptRenamer extends DbTreeAction {
 	}
 
 	@Override
-	public void go(DbTreeItem item, Image image) {
+	public void go(DbTreeItem item, String imageName) {
 		RevDatabase database = new RevDatabase(relPanel.getConnection());
 		CTabItem tab = relPanel.getTab(item.getTabName());
 		if (tab != null) {

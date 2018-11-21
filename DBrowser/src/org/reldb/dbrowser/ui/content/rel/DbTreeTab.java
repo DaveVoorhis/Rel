@@ -2,15 +2,25 @@ package org.reldb.dbrowser.ui.content.rel;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
+import org.reldb.dbrowser.ui.preferences.PreferenceChangeAdapter;
+import org.reldb.dbrowser.ui.preferences.PreferenceChangeEvent;
+import org.reldb.dbrowser.ui.preferences.PreferenceChangeListener;
+import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
+import org.reldb.dbrowser.ui.preferences.Preferences;
+import org.reldb.rel.exceptions.ExceptionFatal;
 
 public class DbTreeTab extends CTabItem {
 	
 	protected RelPanel relPanel;
 	protected DbTreeItem dbTreeItem;
+	private String imageName;
+	private PreferenceChangeListener preferenceChangeListener;
 	
 	public DbTreeTab(RelPanel parent, DbTreeItem dbTreeItem) {
 		super(parent.getTabFolder(), SWT.NONE);
@@ -18,8 +28,33 @@ public class DbTreeTab extends CTabItem {
 		this.dbTreeItem = dbTreeItem;
 		setText(dbTreeItem.getTabName());
 		relPanel.notifyTabCreated();
+		preferenceChangeListener = new PreferenceChangeAdapter("DbTreeTab") {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent evt) {
+				reloadImage();
+			}
+		};
+		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
+	}
+	
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
+		reloadImage();
+	}
+	
+	public String getImageName() {
+		return imageName;
+	}
+	
+	@Deprecated
+	public void setImage(Image image) {
+		throw new ExceptionFatal("DbTreeTab: do not use setImage(Image); use setImageName(String).");
 	}
 
+	public void reloadImage() {
+		super.setImage(IconLoader.loadIcon(imageName));
+	}
+	
 	public void reload() {}
 	
 	public void ready() {
@@ -33,6 +68,7 @@ public class DbTreeTab extends CTabItem {
 	}
 	
 	public void dispose() {
+		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);		
 		super.dispose();
 		relPanel.fireDbTreeTabchangeEvent();
 	}

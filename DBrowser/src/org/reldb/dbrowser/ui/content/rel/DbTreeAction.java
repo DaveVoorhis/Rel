@@ -1,7 +1,5 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-import org.eclipse.swt.graphics.Image;
-
 public abstract class DbTreeAction {
 	
 	protected RelPanel relPanel;
@@ -10,5 +8,5 @@ public abstract class DbTreeAction {
 		this.relPanel = relPanel;
 	}
 	
-	public abstract void go(DbTreeItem item, Image image);
+	public abstract void go(DbTreeItem item, String imageName);
 }

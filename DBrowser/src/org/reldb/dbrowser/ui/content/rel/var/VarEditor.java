@@ -1,7 +1,6 @@
 package org.reldb.dbrowser.ui.content.rel.var;
 
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.content.filtersorter.FilterSorter;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
@@ -14,7 +13,7 @@ public class VarEditor extends DbTreeAction {
 	}
 
 	@Override
-	public void go(DbTreeItem item, Image image) {
+	public void go(DbTreeItem item, String imageName) {
 		FilterSorter filterSorter = null;		
 		CTabItem tab = relPanel.getTab(item);
 		if (tab != null) {
@@ -27,7 +26,7 @@ public class VarEditor extends DbTreeAction {
 				tab.dispose();
 		}
 		VarEditorTab editor = new VarEditorTab(relPanel, item, filterSorter);
-		relPanel.setTab(editor, image);
+		relPanel.setTab(editor, imageName);
 	}
 
 }

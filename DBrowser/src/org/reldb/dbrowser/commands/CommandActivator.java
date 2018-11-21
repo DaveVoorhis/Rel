@@ -59,8 +59,10 @@ public class CommandActivator extends ToolItem {
 		this.toolbar = toolBar;
 		this.iconName = iconName;
 		setToolTipText(tooltipText);
-		setImage(IconLoader.loadIcon(iconName));
-		addListener(SWT.Selection, listener);
+		if (iconName != null)
+			setImage(IconLoader.loadIcon(iconName));
+		if (listener != null)
+			addListener(SWT.Selection, listener);
 		if (command != null) {
 			menuItem = Commands.getMenuItem(command, this);
 			addListener(SWT.Paint, e -> visible());

@@ -1,6 +1,5 @@
 package org.reldb.dbrowser.ui.content.rel.operator;
 
-import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.NaiveShowTab;
@@ -15,7 +14,7 @@ public class OperatorPlayer extends DbTreeAction {
 	}
 
 	@Override
-	public void go(DbTreeItem item, Image image) {
+	public void go(DbTreeItem item, String imageName) {
 		String query =
 				"(UNION {" +
 				"	(sys.Operators UNGROUP Implementations) {Signature, Definition}," +
@@ -31,7 +30,7 @@ public class OperatorPlayer extends DbTreeAction {
 		if (definition.trim().length() == 0)
 			definition = "<System-generated definition is unavailable.>";
 		NaiveShowTab typetab = new NaiveShowTab(relPanel, item, definition);
-		relPanel.setTab(typetab, image);
+		relPanel.setTab(typetab, imageName);
 	}
 
 }

@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
+import org.reldb.dbrowser.commands.IconMenuItem;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.rel.client.Tuple;
@@ -482,10 +482,7 @@ public abstract class Designer extends Grid {
 		ContributionItem rowMenuItems = new ContributionItem() {
 			@Override
 			public void fill(Menu menu, int index) {
-				MenuItem doesDelete = new MenuItem(menu, SWT.PUSH);
-				doesDelete.setText("Delete");
-				doesDelete.setImage(IconLoader.loadIcon("table_row_delete"));
-				doesDelete.addListener(SWT.Selection, e -> askDeleteSelected());
+				new IconMenuItem(menu, "Delete", "table_row_delete", SWT.PUSH, e -> askDeleteSelected());
 			}
 		};
 		table.addConfiguration(new MenuConfiguration(GridRegion.ROW_HEADER,

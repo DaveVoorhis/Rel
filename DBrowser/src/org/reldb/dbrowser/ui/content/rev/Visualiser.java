@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.reldb.dbrowser.commands.IconMenuItem;
 import org.reldb.dbrowser.ui.RevDatabase;
 
 public abstract class Visualiser extends Composite implements Comparable<Visualiser> {
@@ -200,13 +200,8 @@ public abstract class Visualiser extends Composite implements Comparable<Visuali
 	protected void setupPopupMenu() {
 		Menu menuBar = new Menu(getShell(), SWT.POP_UP);
 
-		MenuItem disconnect = new MenuItem(menuBar, SWT.PUSH);
-		disconnect.setText("Disconnect");
-		disconnect.addListener(SWT.Selection, e -> disconnect());
-
-		MenuItem delete = new MenuItem(menuBar, SWT.PUSH);
-		delete.setText("Delete");
-		delete.addListener(SWT.Selection, e -> delete());
+		new IconMenuItem(menuBar, "Disconnect", null, SWT.PUSH, e -> disconnect());
+		new IconMenuItem(menuBar, "Delete", null, SWT.PUSH, e -> delete());
 
 		lblTitle.setMenu(menuBar);
 	}

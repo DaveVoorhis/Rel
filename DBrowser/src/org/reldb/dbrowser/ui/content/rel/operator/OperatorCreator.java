@@ -1,6 +1,5 @@
 package org.reldb.dbrowser.ui.content.rel.operator;
 
-import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.NaiveCreatorTab;
@@ -13,14 +12,14 @@ public class OperatorCreator extends DbTreeAction {
 	}
 
 	@Override
-	public void go(DbTreeItem item, Image image) {
+	public void go(DbTreeItem item, String imageName) {
 		DbTreeItem newItem = new DbTreeItem(item, "New Operator");
 		NaiveCreatorTab typetab = new NaiveCreatorTab(relPanel, newItem) {
 			protected String getGeneratedCommand(String name, String definition) {
 				return "OPERATOR " + name + " " + definition + ";";
 			}
 		};
-		relPanel.setTab(typetab, image);
+		relPanel.setTab(typetab, imageName);
 	}
 
 }

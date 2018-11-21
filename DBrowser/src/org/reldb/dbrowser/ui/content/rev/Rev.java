@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.reldb.dbrowser.commands.CommandActivator;
+import org.reldb.dbrowser.commands.IconMenuItem;
 import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.DbTab;
@@ -341,44 +342,33 @@ public class Rev extends Composite {
 			model.setMenu(menuBar);
 
 		// Custom relvars
-		MenuItem customRelvarsItem = new MenuItem(menuBar, SWT.CASCADE);
-		customRelvarsItem.setText("Variables");
+		IconMenuItem customRelvarsItem = new IconMenuItem(menuBar, "Variables", SWT.CASCADE);
 		customRelvarsItem.setMenu(obtainRelvarsMenu(menuBar, false));
 
 		// System relvars
-		MenuItem systemRelvarsItem = new MenuItem(menuBar, SWT.CASCADE);
-		systemRelvarsItem.setText("System variables");
+		IconMenuItem systemRelvarsItem = new IconMenuItem(menuBar, "System variables", SWT.CASCADE);
 		systemRelvarsItem.setMenu(obtainRelvarsMenu(menuBar, true));
 
 		// Operators
 		OpSelector[] queryOperators = getOperators();
-		MenuItem insOperatorsItem = new MenuItem(menuBar, SWT.CASCADE);
-		insOperatorsItem.setText("Operators and constants");
+		IconMenuItem insOperatorsItem = new IconMenuItem(menuBar, "Operators and constants", SWT.CASCADE);
 		Menu insOperatorsMenu = new Menu(menuBar);
 		for (int i = 0; i < queryOperators.length; i++) {
 			OpSelector selector = queryOperators[i];
 			if (selector.toString() == null)
 				new MenuItem(insOperatorsMenu, SWT.SEPARATOR);
 			else {
-				MenuItem item = new MenuItem(insOperatorsMenu, SWT.PUSH);
-				item.setText(selector.getMenuTitle());
-				item.addListener(SWT.Selection, e -> {
+				new IconMenuItem(insOperatorsMenu, selector.getMenuTitle(), null, SWT.PUSH, e -> {
 					Point lastMousePosition = model.getLastMousePosition();
-					obtainOperatorForKind(selector.toString(), selector.toString() + getUniqueNumber(), lastMousePosition.x, lastMousePosition.y);
+					obtainOperatorForKind(selector.toString(), selector.toString() + getUniqueNumber(), 
+							lastMousePosition.x, lastMousePosition.y);
 				});
 			}
 		}
 		insOperatorsItem.setMenu(insOperatorsMenu);
 
-		// Refresh
-		MenuItem refreshRev = new MenuItem(menuBar, SWT.PUSH);
-		refreshRev.setText("Refresh");
-		refreshRev.addListener(SWT.Selection, e -> refreshMenus());
-
-		// Clear
-		MenuItem clearRev = new MenuItem(menuBar, SWT.PUSH);
-		clearRev.setText("Clear");
-		clearRev.addListener(SWT.Selection, e -> {
+		new IconMenuItem(menuBar, "Refresh", null, SWT.PUSH, e -> refreshMenus());
+		new IconMenuItem(menuBar, "Clear", null, SWT.PUSH, e -> {
 			if (!MessageDialog.openConfirm(getShell(), "Rev", "Remove everything from this query?"))
 				return;
 			model.removeEverything();
@@ -417,9 +407,7 @@ public class Rev extends Composite {
 					boolean isSystemVar = owner.equals("Rel") || name.startsWith("sys.rev");
 					if (systemOnly != isSystemVar)
 						continue;
-					MenuItem item = new MenuItem(subMenu, SWT.PUSH);
-					item.setText(name);
-					item.addListener(SWT.Selection, e -> {
+					new IconMenuItem(subMenu, name, null, SWT.PUSH, e -> {
 						Point lastMousePosition = model.getLastMousePosition();
 						new Relvar(Rev.this, name + getUniqueNumber(), name, lastMousePosition.x, lastMousePosition.y);
 					});

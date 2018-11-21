@@ -75,7 +75,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
+import org.reldb.dbrowser.commands.IconMenuItem;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.content.filtersorter.FilterSorterSource;
@@ -851,15 +851,12 @@ public abstract class Editor extends Grid {
 		ContributionItem columnMenuItems = new ContributionItem() {
 			@Override
 			public void fill(Menu menu, int index) {
-				MenuItem doesPopupEdit = new MenuItem(menu, SWT.CHECK);
-				doesPopupEdit.setText("Pop-up Edit Box");
-				doesPopupEdit.setImage(IconLoader.loadIcon("popup"));
-				doesPopupEdit.setSelection(popupEdit);
-				doesPopupEdit.addListener(SWT.Selection, e -> {
+				IconMenuItem doesPopupEdit = new IconMenuItem(menu, "Pop-up Edit Box", "popup", SWT.CHECK, e -> {
 					popupEdit = !popupEdit;
 					table.addConfiguration(new PopupEditorConfiguration());
 					table.configure();
 				});
+				doesPopupEdit.setSelection(popupEdit);
 			}
 		};
 		table.addConfiguration(new MenuConfiguration(GridRegion.COLUMN_HEADER,
@@ -868,10 +865,7 @@ public abstract class Editor extends Grid {
 		ContributionItem rowMenuItems = new ContributionItem() {
 			@Override
 			public void fill(Menu menu, int index) {
-				MenuItem doesDelete = new MenuItem(menu, SWT.PUSH);
-				doesDelete.setText("Delete");
-				doesDelete.setImage(IconLoader.loadIcon("table_row_delete"));
-				doesDelete.addListener(SWT.Selection, e -> askDeleteSelected());
+				new IconMenuItem(menu, "Delete", "table_row_delete", SWT.PUSH, e -> askDeleteSelected());
 			}
 		};
 		table.addConfiguration(new MenuConfiguration(GridRegion.ROW_HEADER,

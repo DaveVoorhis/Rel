@@ -84,7 +84,7 @@ public class Commands {
 		}
 	}
 	
-	public static void linkCommand(Do command, DecoratedMenuItem menuItem) {
+	public static void linkCommand(Do command, AcceleratedMenuItem menuItem) {
 		menuDoMapping.put(command, menuItem);
 		menuItem.getParent().addMenuListener(new MenuAdapter() {
 			@Override

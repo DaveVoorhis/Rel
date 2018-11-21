@@ -1,6 +1,5 @@
 package org.reldb.dbrowser.ui.content.rel.type;
 
-import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.NaiveCreatorTab;
@@ -13,14 +12,14 @@ public class TypeCreator extends DbTreeAction {
 	}
 
 	@Override
-	public void go(DbTreeItem item, Image image) {
+	public void go(DbTreeItem item, String imageName) {
 		DbTreeItem newItem = new DbTreeItem(item, "New Type");
 		NaiveCreatorTab typetab = new NaiveCreatorTab(relPanel, newItem) {
 			protected String getGeneratedCommand(String name, String definition) {
 				return "TYPE " + name + " " + definition + ";";
 			}			
 		};
-		relPanel.setTab(typetab, image);
+		relPanel.setTab(typetab, imageName);
 	}
 
 }

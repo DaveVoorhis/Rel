@@ -13,7 +13,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabFolderEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -21,6 +20,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.reldb.dbrowser.commands.CommandActivator;
+import org.reldb.dbrowser.commands.IconMenuItem;
 import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.DbTab;
@@ -97,35 +97,38 @@ public class RelPanel extends Composite {
 	private PreferenceChangeListener preferenceChangeListener;
 	
 	private static class IconTreeItem extends TreeItem {
-		private String iconName;
+		private String imageName;
 		
-		public IconTreeItem(Tree tree, String iconName, int style) {
+		public IconTreeItem(Tree tree, String imageName, int style) {
 			super(tree, style);
-			this.iconName = iconName;
-			if (iconName != null)
-				setImage(IconLoader.loadIcon(iconName));
+			this.imageName = imageName;
+			if (imageName != null)
+				setImage(IconLoader.loadIcon(imageName));
 		}
 		
 		public IconTreeItem(TreeItem treeItem, String iconName, int style) {
 			super(treeItem, style);
-			this.iconName = iconName;
+			this.imageName = iconName;
 			if (iconName != null)
 				setImage(IconLoader.loadIcon(iconName));
 		}
 		
-		public String getIconName() {
-			return iconName;
+		public String getImageName() {
+			return imageName;
 		}
 
+		public void reloadImage() {
+			if (imageName != null)
+				setImage(IconLoader.loadIcon(imageName));
+		}
+		
 		public void checkSubclass() {}
 	}
 	
 	private void refreshIcons(TreeItem tree[]) {
 		for (TreeItem treeItem: tree) {
-			if (treeItem.getImage() != null && treeItem instanceof IconTreeItem) {
-				System.out.println("RelPanel: resize icon for IconTreeItem " + ((IconTreeItem)treeItem).getIconName());
-				treeItem.setImage(IconLoader.loadIcon(((IconTreeItem)treeItem).getIconName()));
-			}
+			if (treeItem instanceof IconTreeItem)
+				((IconTreeItem)treeItem).reloadImage();
 			refreshIcons(treeItem.getItems());
 		}
 	}
@@ -153,19 +156,17 @@ public class RelPanel extends Composite {
 		tree = new Tree(treeFolder, SWT.NONE);		
 		treeTab.setControl(tree);
 		treeFolder.setSelection(0);
-				
+
 		preferenceChangeListener = new PreferenceChangeAdapter("RelPanel(Tree)") {
 			@Override
 			public void preferenceChange(PreferenceChangeEvent evt) {
 				refreshIcons(tree.getItems());
-				tree.layout(true);
-				tree.redraw();
 				treeTab.setImage(IconLoader.loadIcon("DatabaseIcon"));
-				getShell().layout(new Control[] {RelPanel.this}, SWT.DEFER);
+				getShell().layout(new Control[] {RelPanel.this, tree}, SWT.DEFER);
 			}
 		};
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
-		
+	
 		tree.addListener(SWT.Selection, evt -> {
 			DbTreeItem selection = getSelection();
 			if (selection == null)
@@ -206,40 +207,13 @@ public class RelPanel extends Composite {
 
 		Menu menu = new Menu(this);
 		
-		MenuItem showItem = new MenuItem(menu, SWT.POP_UP);
-		showItem.setText("Show");
-		showItem.setImage(IconLoader.loadIcon("play"));
-		showItem.addListener(SWT.Selection, e -> playItem());
-
-		MenuItem editItem = new MenuItem(menu, SWT.POP_UP);
-		editItem.setText("Edit");
-		editItem.setImage(IconLoader.loadIcon("item_edit"));
-		editItem.addListener(SWT.Selection, e -> editItem());
-		
-		MenuItem createItem = new MenuItem(menu, SWT.POP_UP);
-		createItem.setText("Create");
-		createItem.setImage(IconLoader.loadIcon("item_add"));
-		createItem.addListener(SWT.Selection, e -> createItem());
-		
-		MenuItem dropItem = new MenuItem(menu, SWT.POP_UP);
-		dropItem.setText("Drop");
-		dropItem.setImage(IconLoader.loadIcon("item_delete"));
-		dropItem.addListener(SWT.Selection, e -> dropItem());
-		
-		MenuItem designItem = new MenuItem(menu, SWT.POP_UP);
-		designItem.setText("Design");
-		designItem.setImage(IconLoader.loadIcon("item_design"));
-		designItem.addListener(SWT.Selection, e -> designItem());
-		
-		MenuItem renameItem = new MenuItem(menu, SWT.POP_UP);
-		renameItem.setText("Rename");
-		renameItem.setImage(IconLoader.loadIcon("rename"));
-		renameItem.addListener(SWT.Selection, e -> renameItem());
-		
-		MenuItem exportItem = new MenuItem(menu, SWT.POP_UP);
-		exportItem.setText("Export");
-		exportItem.setImage(IconLoader.loadIcon("export"));
-		exportItem.addListener(SWT.Selection, e -> exportItem());
+		IconMenuItem showItem = new IconMenuItem(menu, "Show", "play", SWT.PUSH, e -> playItem());
+		IconMenuItem editItem = new IconMenuItem(menu, "Edit", "item_edit", SWT.PUSH, e -> editItem());
+		IconMenuItem createItem = new IconMenuItem(menu, "Create", "item_add", SWT.PUSH, e -> createItem());
+		IconMenuItem dropItem = new IconMenuItem(menu, "Drop", "item_delete", SWT.PUSH, e -> dropItem());
+		IconMenuItem designItem = new IconMenuItem(menu, "Design", "item_design", SWT.PUSH, e -> designItem());
+		IconMenuItem renameItem = new IconMenuItem(menu, "Rename", "rename", SWT.PUSH, e -> renameItem());
+		IconMenuItem exportItem = new IconMenuItem(menu, "Export", "export", SWT.PUSH, e -> exportItem());
 		
 		tree.setMenu(menu);
 		
@@ -283,18 +257,42 @@ public class RelPanel extends Composite {
 		
 		Menu tabControlMenu = new Menu(tabFolder);
 		tabFolder.setMenu(tabControlMenu);
-		MenuItem closer = new MenuItem(tabControlMenu, SWT.NONE);
-		MenuItem closeOthers = new MenuItem(tabControlMenu, SWT.NONE);
-		MenuItem closeLeft = new MenuItem(tabControlMenu, SWT.NONE);
-		MenuItem closeRight = new MenuItem(tabControlMenu, SWT.NONE);
-		new MenuItem(tabControlMenu, SWT.SEPARATOR);
-		MenuItem closeAll = new MenuItem(tabControlMenu, SWT.NONE);
 		
-		closer.setText("Close");
-		closeOthers.setText("Close others");
-		closeLeft.setText("Close left tabs");
-		closeRight.setText("Close right tabs");
-		closeAll.setText("Close all");
+		IconMenuItem closer = new IconMenuItem(tabControlMenu, "Close", null, SWT.NONE, e -> {
+			if (itemSelectedByMenu != null)
+				itemSelectedByMenu.dispose();
+		});
+		IconMenuItem closeOthers = new IconMenuItem(tabControlMenu, "Close others", null, SWT.NONE, e -> {
+			tabFolder.setSelection(itemSelectedByMenuIndex);
+			for (CTabItem tab: tabFolder.getItems())
+				if (tab != itemSelectedByMenu)
+					tab.dispose();
+		});
+		IconMenuItem closeLeft = new IconMenuItem(tabControlMenu, "Close left tabs", null, SWT.NONE, e -> {
+			if (itemSelectedByMenuIndex > 0) {
+				Vector<CTabItem> closers = new Vector<CTabItem>();
+				for (int i=0; i<itemSelectedByMenuIndex; i++)
+					closers.add(tabFolder.getItem(i));
+				tabFolder.setSelection(itemSelectedByMenuIndex);
+				for (CTabItem close: closers)
+					close.dispose();
+			}
+		});
+		IconMenuItem closeRight = new IconMenuItem(tabControlMenu, "Close right tabs", null, SWT.NONE, e -> {
+			if (itemSelectedByMenuIndex < tabFolder.getItemCount() - 1) {
+				Vector<CTabItem> closers = new Vector<CTabItem>();
+				for (int i = itemSelectedByMenuIndex + 1; i<tabFolder.getItemCount(); i++)
+					closers.add(tabFolder.getItem(i));
+				tabFolder.setSelection(itemSelectedByMenuIndex);
+				for (CTabItem close: closers)
+					close.dispose();
+			}
+		});
+		new MenuItem(tabControlMenu, SWT.SEPARATOR);
+		IconMenuItem closeAll = new IconMenuItem(tabControlMenu, "Close all", null, SWT.NONE, e -> {
+			while (tabFolder.getItemCount() > 0)
+				tabFolder.getItem(0).dispose();
+		});
 		
 		tabFolder.addListener(SWT.MenuDetect, e -> {
 			Point clickPosition = Display.getDefault().map(null, tabFolder, new Point(e.x, e.y));
@@ -309,45 +307,6 @@ public class RelPanel extends Composite {
 				closeRight.setEnabled(itemSelectedByMenuIndex >= 0 && itemSelectedByMenuIndex < tabFolder.getItemCount() - 1);
 				closeAll.setEnabled(tabFolder.getItemCount() > 0);
 			}
-		});
-		
-		closer.addListener(SWT.Selection, e -> {
-			if (itemSelectedByMenu != null)
-				itemSelectedByMenu.dispose();
-		});
-		
-		closeOthers.addListener(SWT.Selection, e -> {
-			tabFolder.setSelection(itemSelectedByMenuIndex);
-			for (CTabItem tab: tabFolder.getItems())
-				if (tab != itemSelectedByMenu)
-					tab.dispose();
-		});
-		
-		closeLeft.addListener(SWT.Selection, e -> {
-			if (itemSelectedByMenuIndex > 0) {
-				Vector<CTabItem> closers = new Vector<CTabItem>();
-				for (int i=0; i<itemSelectedByMenuIndex; i++)
-					closers.add(tabFolder.getItem(i));
-				tabFolder.setSelection(itemSelectedByMenuIndex);
-				for (CTabItem close: closers)
-					close.dispose();
-			}
-		});
-		
-		closeRight.addListener(SWT.Selection, e -> {
-			if (itemSelectedByMenuIndex < tabFolder.getItemCount() - 1) {
-				Vector<CTabItem> closers = new Vector<CTabItem>();
-				for (int i = itemSelectedByMenuIndex + 1; i<tabFolder.getItemCount(); i++)
-					closers.add(tabFolder.getItem(i));
-				tabFolder.setSelection(itemSelectedByMenuIndex);
-				for (CTabItem close: closers)
-					close.dispose();
-			}
-		});
-		
-		closeAll.addListener(SWT.Selection, e -> {
-			while (tabFolder.getItemCount() > 0)
-				tabFolder.getItem(0).dispose();
 		});
 		
 		ManagedToolbar zoomer = new ManagedToolbar(tabFolder);
@@ -528,38 +487,38 @@ public class RelPanel extends Composite {
 	}
 	
 	public void playItem() {
-		TreeItem treeSelection = getTreeSelection();
-		getSelection().play(treeSelection.getImage());
+		IconTreeItem treeSelection = (IconTreeItem)getTreeSelection();
+		getSelection().play(treeSelection.getImageName());
 		nudge();
 	}
 
 	public void editItem() {
-		getSelection().edit(IconLoader.loadIcon("item_edit"));
+		getSelection().edit("item_edit");
 		nudge();
 	}
 	
 	public void createItem() {
-		getSelection().create(IconLoader.loadIcon("item_add"));
+		getSelection().create("item_add");
 		nudge();
 	}
 
 	public void dropItem() {
-		getSelection().drop(IconLoader.loadIcon("item_delete"));
+		getSelection().drop("item_delete");
 		nudge();
 	}
 
 	public void designItem() {
-		getSelection().design(IconLoader.loadIcon("item_design"));
+		getSelection().design("item_design");
 		nudge();
 	}
 
 	protected void renameItem() {
-		getSelection().rename(IconLoader.loadIcon("rename"));
+		getSelection().rename("rename");
 		nudge();
 	}
 
 	protected void exportItem() {
-		getSelection().export(IconLoader.loadIcon("export"));
+		getSelection().export("export");
 		nudge();
 	}
 	
@@ -805,8 +764,8 @@ public class RelPanel extends Composite {
 		focusOnSelectedTab();
 	}
 
-	public void setTab(CTabItem tab, Image image) {
-		tab.setImage(image);
+	public void setTab(CTabItem tab, String imageName) {
+		((DbTreeTab)tab).setImageName(imageName);
 		setTab(tab);
 	}
 	

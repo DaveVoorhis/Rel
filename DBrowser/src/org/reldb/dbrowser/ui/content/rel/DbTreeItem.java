@@ -1,7 +1,5 @@
 package org.reldb.dbrowser.ui.content.rel;
 
-import org.eclipse.swt.graphics.Image;
-
 public class DbTreeItem {
 	private DbTreeAction player;
 	private DbTreeAction editor;
@@ -65,32 +63,32 @@ public class DbTreeItem {
 		return exporter != null;
 	}
 	
-	public void play(Image image) {
-		player.go(this, image);
+	public void play(String imageName) {
+		player.go(this, imageName);
 	}
 
-	public void edit(Image image) {
-		editor.go(this, image);
+	public void edit(String imageName) {
+		editor.go(this, imageName);
 	}
 	
-	public void create(Image image) {
-		creator.go(this, image);
+	public void create(String imageName) {
+		creator.go(this, imageName);
 	}
 
-	public void drop(Image image) {
-		dropper.go(this, image);
+	public void drop(String imageName) {
+		dropper.go(this, imageName);
 	}
 
-	public void design(Image image) {
-		designer.go(this, image);
+	public void design(String imageName) {
+		designer.go(this, imageName);
 	}
 
-	public void rename(Image image) {
-		renamer.go(this, image);
+	public void rename(String imageName) {
+		renamer.go(this, imageName);
 	}
 	
-	public void export(Image image) {
-		exporter.go(this, image);
+	public void export(String imageName) {
+		exporter.go(this, imageName);
 	}
 	
 	public String getSection() {

@@ -1,6 +1,5 @@
 package org.reldb.dbrowser.ui.content.rel.view;
 
-import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.NaiveCreatorTab;
@@ -13,14 +12,14 @@ public class VarViewCreator extends DbTreeAction {
 	}
 
 	@Override
-	public void go(DbTreeItem item, Image image) {
+	public void go(DbTreeItem item, String imageName) {
 		DbTreeItem newItem = new DbTreeItem(item, "New View");
 		NaiveCreatorTab typetab = new NaiveCreatorTab(relPanel, newItem) {
 			protected String getGeneratedCommand(String name, String definition) {
 				return "VAR " + name + " VIRTUAL " + definition + ";";
 			}
 		};
-		relPanel.setTab(typetab, image);
+		relPanel.setTab(typetab, imageName);
 	}
 
 }

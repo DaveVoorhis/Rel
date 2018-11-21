@@ -1,7 +1,6 @@
 package org.reldb.dbrowser.ui.content.rel.var;
 
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.graphics.Image;
 import org.reldb.dbrowser.ui.content.rel.DbTreeAction;
 import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
 import org.reldb.dbrowser.ui.content.rel.RelPanel;
@@ -13,7 +12,7 @@ public class VarDesigner extends DbTreeAction {
 	}
 
 	@Override
-	public void go(DbTreeItem item, Image image) {
+	public void go(DbTreeItem item, String imageName) {
 		CTabItem tab = relPanel.getTab(item);
 		if (tab != null) {
 			if (tab instanceof VarRealDesignerTab) {
@@ -23,7 +22,7 @@ public class VarDesigner extends DbTreeAction {
 				tab.dispose();
 		}
 		VarRealDesignerTab varDesignTab = new VarRealDesignerTab(relPanel, item);
-		relPanel.setTab(varDesignTab, image);
+		relPanel.setTab(varDesignTab, imageName);
 	}
 
 }

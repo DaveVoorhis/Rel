@@ -7,10 +7,9 @@ import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.reldb.dbrowser.commands.CommandActivator;
+import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.DbConnection;
-import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.rel.client.Attribute;
 
 public class FilterSorter extends Composite {
@@ -48,12 +47,12 @@ public class FilterSorter extends Composite {
 		layout.marginHeight = 0;
 		setLayout(layout);
 		
-		ToolBar toolBar = new ToolBar(this, SWT.FLAT | SWT.RIGHT);
+		ManagedToolbar toolBar = new ManagedToolbar(this);
 		toolBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		
-		ToolItem tltmQuickSearch = new ToolItem(toolBar, SWT.CHECK);
-		ToolItem tltmAdvancedSearch = new ToolItem(toolBar, SWT.CHECK);
-		ToolItem tltmSort = new ToolItem(toolBar, SWT.CHECK);
+		CommandActivator tltmQuickSearch = new CommandActivator(null, toolBar, "filtersorter_search", SWT.CHECK, "Quick search.", null);
+		CommandActivator tltmAdvancedSearch = new CommandActivator(null, toolBar, "filtersorter_filter", SWT.CHECK, "Advanced search...", null);
+		CommandActivator tltmSort = new CommandActivator(null, toolBar, "filtersorter_sort", SWT.CHECK, "Sort...", null);
 		
 		Composite contentPanel = new Composite(this, SWT.NONE);
 		contentPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -64,8 +63,6 @@ public class FilterSorter extends Composite {
 		SearchAdvanced advancedSearchPanel = new SearchAdvanced(this, contentPanel);
 		sorter = new Sorter(this, contentPanel);
 		
-		tltmQuickSearch.setToolTipText("Quick search.");
-		tltmQuickSearch.setImage(IconLoader.loadIcon("filtersorter_search"));
 		tltmQuickSearch.addListener(SWT.Selection, e -> {
 			tltmQuickSearch.setSelection(true);
 			tltmAdvancedSearch.setSelection(false);
@@ -78,8 +75,6 @@ public class FilterSorter extends Composite {
 			lastSearch = searcher;
 		});
 		
-		tltmAdvancedSearch.setToolTipText("Advanced search...");
-		tltmAdvancedSearch.setImage(IconLoader.loadIcon("filtersorter_filter"));
 		tltmAdvancedSearch.addListener(SWT.Selection, e -> {
 			tltmQuickSearch.setSelection(false);
 			tltmAdvancedSearch.setSelection(true);
@@ -93,8 +88,6 @@ public class FilterSorter extends Composite {
 			lastSearch = searcher;
 		});
 		
-		tltmSort.setToolTipText("Sort...");
-		tltmSort.setImage(IconLoader.loadIcon("filtersorter_sort"));
 		tltmSort.addListener(SWT.Selection, e -> {
 			tltmQuickSearch.setSelection(false);
 			tltmAdvancedSearch.setSelection(false);
