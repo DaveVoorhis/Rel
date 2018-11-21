@@ -24,7 +24,7 @@ public class IconLoader {
 	}
 	
 	public static int getDPIScaling() {
-		Image imgRaw = SWTResourceManager.getImage(base + "noimage.png");
+		Image imgRaw = SWTResourceManager.getMissingImage();
 		new Image(Display.getCurrent(), (ImageDataProvider)zoom -> grabzoom(zoom, imgRaw));
 		return scaleFactor;
 	}
