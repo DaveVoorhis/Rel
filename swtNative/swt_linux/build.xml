@@ -1,0 +1,28 @@
+<project name="swt_linux" basedir="." default="main">
+
+    <property name="src.dir"     value="src"/>
+    <property name="bin.dir"     value="bin"/>
+    <property name="lib.dir"     value="lib"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${bin.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${bin.dir}" includeantruntime="false"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${lib.dir}"/>
+        <jar destfile="${lib.dir}/swt_reldb.jar" basedir="${bin.dir}">
+            <manifest>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="clean-build" depends="clean,jar"/>
+
+    <target name="main" depends="clean-build"/>
+
+</project>
