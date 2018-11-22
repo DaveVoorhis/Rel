@@ -34,9 +34,9 @@ public class ClientLocalConnection extends ClientConnection {
 		rel = relCtor.newInstance(databaseDir, createDbAllowed, additionalJars);
 		getServerResponseInputStream = relClass.getMethod("getServerResponseInputStream", (Class<?>[])null);
 		sendEvaluate = relClass.getMethod("sendEvaluate", new Class<?>[] {String.class});
-		sendExecute = relClass.getMethod("sendEvaluate", new Class<?>[] {String.class});
+		sendExecute = relClass.getMethod("sendExecute", new Class<?>[] {String.class});
 		close = relClass.getMethod("close", (Class<?>[])null);
-		reset = relClass.getMethod("close", (Class<?>[])null);
+		reset = relClass.getMethod("reset", (Class<?>[])null);
 		convertToLatestFormat = relClass.getMethod("convertToLatestFormat", new Class<?>[] {String.class, PrintStream.class, String[].class});
 		obtainInitialServerResponse();
 		errorHandler.setInitialServerResponse(initialServerResponse.toString());
