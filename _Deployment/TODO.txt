@@ -1,7 +1,5 @@
 ** TO DO **
 
-- DBrowser: Find swt-mozilla.jar, if necessary, for Linux.
-
 - Build: Try to eliminate any dependencies on Rel module .jars. Should
   depend only on subprojects, thus avoiding the need to rebuild
   jars in order to develop Rel.
