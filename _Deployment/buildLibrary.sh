@@ -15,7 +15,7 @@ echo 'Build swt_win'
 pushd ../swtNative/swt_win
 ant -S
 popd
-cp ../swtNative/swt_macos/lib/* ../_Deployment/lib/swt/win_64
+cp ../swtNative/swt_win/lib/* ../_Deployment/lib/swt/win_64
 
 echo 'Build Shared'
 pushd ../Shared
