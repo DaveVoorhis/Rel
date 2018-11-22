@@ -2,6 +2,9 @@
 
 # This script constructs distributable Rel products. It is intended to run on MacOS.
 #
+# It requires that ant be available on the command line. On MacOS, it is easiest
+# to install by installing Homebrew, then brew install ant.
+#
 # It assumes copies of Java JDKs are available in the folder denoted by $jredir,
 # below, which expects to find untarred JDKs in linux, osx, and windows folders,
 # respectively. Each JDK should be untarred but in its folder, so the expected
@@ -64,7 +67,7 @@ linuxtargetRel=$linuxtarget/Rel
 mkdir -p $proddir/$linuxtargetRel
 cp -R MakeJRE/Linux/jre $proddir/$linuxtargetRel/jre
 cp nativeLaunchers/binaries/Linux/Rel $proddir/$linuxtargetRel
-cp *.txt $proddir/$linuxtargetRel
+cp productDocumentation/* $proddir/$linuxtargetRel
 cp -R lib $proddir/$linuxtargetRel
 rm -rf $proddir/$linuxtargetRel/lib/swt/win_64
 rm -rf $proddir/$linuxtargetRel/lib/swt/macos_64
@@ -80,7 +83,7 @@ echo "---------------------- MacOS Build ----------------------"
 mkdir $proddir/$mactarget
 cp -R nativeLaunchers/binaries/MacOS/Rel.app $proddir/$mactarget
 cp nativeLaunchers/binaries/MacOS/launchBinSrc/Rel $proddir/$mactarget/Rel.app/Contents/MacOS
-cp *.txt $proddir/$mactarget/Rel.app/Contents/MacOS
+cp productDocumentation/* $proddir/$mactarget/Rel.app/Contents/MacOS
 cp -R MakeJRE/MacOS/jre $proddir/$mactarget/Rel.app/Contents/MacOS/jre
 cp -R lib $proddir/$mactarget/Rel.app/Contents/MacOS/
 rm -rf $proddir/$mactarget/Rel.app/Contents/MacOS/lib/swt/linux_64
@@ -102,7 +105,7 @@ wintargetRel=$wintarget/Rel
 mkdir -p $proddir/$wintargetRel
 cp -R MakeJRE/Windows/jre $proddir/$wintargetRel/jre
 cp nativeLaunchers/binaries/Windows/x64/Release/Rel.exe $proddir/$wintargetRel
-cp *.txt $proddir/$wintargetRel
+cp productDocumentation/* $proddir/$wintargetRel
 cp -R lib $proddir/$wintargetRel
 rm -rf $proddir/$wintargetRel/lib/swt/linux_64
 rm -rf $proddir/$wintargetRel/lib/swt/macos_64
@@ -114,8 +117,11 @@ popd
 
 # Standalone Rel DBMS (Linux)
 echo "---------------------- Standalone DBMS Build (Linux) ----------------------"
-tar cf $proddir/Rel$relversion.$linuxTargetDBMS.tar *.txt lib/jdt/* lib/misc/* lib/rel/RelDBMS.jar lib/rel/RelTest.jar lib/rel/relshared.jar lib/rel/rel0000.jar lib/rel/relclient.jar
+tar cf $proddir/Rel$relversion.$linuxTargetDBMS.tar lib/jdt/* lib/misc/* lib/rel/RelDBMS.jar lib/rel/RelTest.jar lib/rel/relshared.jar lib/rel/rel0000.jar lib/rel/relclient.jar
 pushd nativeLaunchers/RelDBMS/Linux
+tar rf $proddir/Rel$relversion.$linuxTargetDBMS.tar *
+popd
+pushd productDocumentation
 tar rf $proddir/Rel$relversion.$linuxTargetDBMS.tar *
 popd
 pushd MakeJRE/Linux
@@ -127,8 +133,11 @@ popd
 
 # Standalone Rel DBMS (MacOS)
 echo "---------------------- Standalone DBMS Build (MacOS) ----------------------"
-tar cf $proddir/Rel$relversion.$macosTargetDBMS.tar *.txt lib/jdt/* lib/misc/* lib/rel/RelDBMS.jar lib/rel/RelTest.jar lib/rel/relshared.jar lib/rel/rel0000.jar lib/rel/relclient.jar
+tar cf $proddir/Rel$relversion.$macosTargetDBMS.tar lib/jdt/* lib/misc/* lib/rel/RelDBMS.jar lib/rel/RelTest.jar lib/rel/relshared.jar lib/rel/rel0000.jar lib/rel/relclient.jar
 pushd nativeLaunchers/RelDBMS/MacOS
+tar rf $proddir/Rel$relversion.$macosTargetDBMS.tar *
+popd
+pushd productDocumentation
 tar rf $proddir/Rel$relversion.$macosTargetDBMS.tar *
 popd
 pushd MakeJRE/MacOS
@@ -140,8 +149,11 @@ popd
 
 # Standalone Rel DBMS (Windows)
 echo "---------------------- Standalone Windows DBMS Build (Windows) ----------------------"
-zip -9r $proddir/Rel$relversion.$windowsTargetDBMS.zip *.txt lib/jdt/* lib/misc/* lib/rel/RelDBMS.jar lib/rel/RelTest.jar lib/rel/relshared.jar lib/rel/rel0000.jar lib/rel/relclient.jar
+zip -9r $proddir/Rel$relversion.$windowsTargetDBMS.zip lib/jdt/* lib/misc/* lib/rel/RelDBMS.jar lib/rel/RelTest.jar lib/rel/relshared.jar lib/rel/rel0000.jar lib/rel/relclient.jar
 pushd nativeLaunchers/RelDBMS/Windows
+zip -9r $proddir/Rel$relversion.$windowsTargetDBMS.zip *
+popd
+pushd productDocumentation
 zip -9r $proddir/Rel$relversion.$windowsTargetDBMS.zip *
 popd
 pushd MakeJRE/Windows
