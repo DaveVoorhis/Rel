@@ -24,7 +24,7 @@ public class PreferencePageGeneral extends FieldEditorPreferencePage {
 	protected void createFieldEditors() {
 		String reloadPrompt = "";
 		if (!Util.isMac()) {
-			reloadPrompt = "  Restart after changing to see the full effect.";
+			reloadPrompt = "  Restart after changing to see the full effect. ";
 			if (IconLoader.getDPIScaling() > 100)
 				reloadPrompt += "\nNOTE: larger icons may not work correctly on some HiDPI displays.";
 		}
