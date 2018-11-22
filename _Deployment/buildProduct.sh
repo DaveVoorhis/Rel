@@ -40,6 +40,9 @@ mkdir $proddir &>/dev/null
 ./clearProduct.sh
 rm `find ./ -name .DS_Store -print` &>/dev/null
 
+# Build libraries
+./buildLibrary.sh
+
 # Grammar
 ~/bin/jjdoc ../ServerV0000/src/org/reldb/rel/v0/languages/tutoriald/parser/TutorialD.jj
 mv TutorialD.html $proddir

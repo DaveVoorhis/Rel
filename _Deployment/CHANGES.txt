@@ -13,6 +13,9 @@ Version 3.013 (1.0.26):
     option to Display tab.
 
   - DBrowser: Improved handling of icon resizing via Preferences.
+  
+  - Build: Module jars now generated via Ant build files; product 
+    build scripts now generate all jars.
 
 Version 3.012 (1.0.25):
 

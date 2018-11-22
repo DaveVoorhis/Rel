@@ -1,7 +1,5 @@
 ** TO DO **
 
-- All: Use Maven to build .jars and incorporate into product build.
-
 - DBrowser: Why don't standard file dialog boxes have titles?
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars

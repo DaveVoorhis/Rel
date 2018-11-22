@@ -1,4 +1,4 @@
-<project name="DBrowser" basedir="." default="main">
+<project name="Rel" basedir="." default="main">
 
     <property name="src.dir"     value="src"/>
     <property name="bin.dir"     value="bin"/>
