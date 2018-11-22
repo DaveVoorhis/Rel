@@ -37,7 +37,7 @@ windowsTargetDBMS=windowsDBMS
 
 # Clear
 mkdir $proddir &>/dev/null
-./productClear.sh
+./clearProduct.sh
 rm `find ./ -name .DS_Store -print` &>/dev/null
 
 # Grammar
