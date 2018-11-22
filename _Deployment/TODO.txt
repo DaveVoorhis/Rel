@@ -1,9 +1,5 @@
 ** TO DO **
 
-- Build: Try to eliminate any dependencies on Rel module .jars. Should
-  depend only on subprojects, thus avoiding the need to rebuild
-  jars in order to develop Rel.
-
 - DBrowser: Why don't standard file dialog boxes have titles?
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
