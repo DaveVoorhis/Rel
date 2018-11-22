@@ -16,9 +16,9 @@ If you wish to work with the source code, do this:
 
 7. If you're developing on Windows or Linux, go to "Properties | Java Build Path". Then:
 
-  a) Select the "Projects" tab and remove the swt_macos Project and replace it with the swt_\<arch\> Project where \<arch\> is *linux* or *win* depending on your development platform.
+    a) Select the "Projects" tab and remove the swt_macos Project and replace it with the swt_\<arch\> Project where \<arch\> is *linux* or *win* depending on your development platform.
   
-  b) Select the "Libraries" tab and remove the swt_reldb.jar and swt.jar library dependencies -- currently set to MacOS versions -- and replace them with swt_reldb.jar and swt.jar found in \_Deployment/lib/swt/\<arch\>, where \<arch\> is *linux_64* or *win_64* depending on your development platform.
+    b) Select the "Libraries" tab and remove the swt_reldb.jar and swt.jar library dependencies -- currently set to MacOS versions -- and replace them with swt_reldb.jar and swt.jar found in \_Deployment/lib/swt/\<arch\>, where \<arch\> is *linux_64* or *win_64* depending on your development platform.
 
 8. Run DBrowser in the DBrowser subproject to launch the *Rel* graphical user interface.
 
