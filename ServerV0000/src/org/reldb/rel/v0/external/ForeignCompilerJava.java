@@ -16,7 +16,6 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.Enumeration;
 
-import org.eclipse.jdt.core.compiler.CompilationProgress;
 import org.reldb.rel.exceptions.*;
 import org.reldb.rel.v0.generator.*;
 import org.reldb.rel.v0.storage.RelDatabase;
@@ -158,9 +157,6 @@ public class ForeignCompilerJava {
        			notify("ForeignCompilerJava: extra jar for classpath: " + path);
 	    		classPath += java.io.File.pathSeparator + path;
         	}
-        else
-       		notify("ForeignCompilerJava: no extra jars for classpath");
-       	notify("ForeignCompilerJava: raw classpath is " + classPath);
         return classPath;
     }
 
@@ -227,8 +223,6 @@ public class ForeignCompilerJava {
     	} catch (IOException ioe) {
     		throw new ExceptionFatal("RS0293: Unable to save Java source: " + ioe.toString());
     	}
-
-   		notify("ForeignCompilerJava: classpath = " + classpath);
     	
     	// Start compilation using JDT
    		String commandLine = "-1.9 -source 1.9 -warn:" + 
@@ -236,28 +230,10 @@ public class ForeignCompilerJava {
     			"-cp " + classpath + " \"" + sourcef + "\"";
     	boolean compiled = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(
     			commandLine,
-    			new PrintWriter(messageStream), new PrintWriter(warningStream), 
-    			new CompilationProgress() {
-					@Override
-					public void begin(int arg0) {
-					}
-					@Override
-					public void done() {
-					}
-					@Override
-					public boolean isCanceled() {
-						return false;
-					}
-					@Override
-					public void setTaskName(String arg0) {
-						ForeignCompilerJava.this.notify(arg0);
-					}
-					@Override
-					public void worked(int arg0, int arg1) {
-					}
-    			}
-    	);
-
+    			new PrintWriter(messageStream), 
+    			new PrintWriter(warningStream), 
+    			null);
+ 
     	String compilerMessages = "";
     	// Parse the messages and the warnings.
     	BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(messageStream.toByteArray())));
