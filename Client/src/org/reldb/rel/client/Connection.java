@@ -1,6 +1,7 @@
 package org.reldb.rel.client;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.Stack;
 import java.util.Vector;
@@ -55,7 +56,7 @@ public class Connection implements AutoCloseable {
 	}
 	
 	/** Creates new connection, with additional JAR support for database development. */
-	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws MalformedURLException, IOException, DatabaseFormatVersionException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		this.dbURL = dbURL;
 		this.crashHandler = crashHandler;
 		this.additionalJars = additionalJars;
@@ -64,17 +65,17 @@ public class Connection implements AutoCloseable {
 	}
 	
 	/** Creates new connection. */
-	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+	public Connection(String dbURL, boolean createDbAllowed, CrashHandler crashHandler) throws MalformedURLException, IOException, DatabaseFormatVersionException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		this(dbURL, createDbAllowed, crashHandler, new String[0]);
 	}
 	
 	/** Creates new connection using CrashHandlerDefault. */
-	public Connection(String dbURL, boolean createDbAllowed) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+	public Connection(String dbURL, boolean createDbAllowed) throws MalformedURLException, IOException, DatabaseFormatVersionException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		this(dbURL, createDbAllowed, new CrashHandlerDefault());
 	}
 	
 	/** Creates new connection. Error thrown if database doesn't exist. */
-	public Connection(String dbURL) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+	public Connection(String dbURL) throws MalformedURLException, IOException, DatabaseFormatVersionException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		this(dbURL, false);
 	}
 
@@ -168,7 +169,7 @@ public class Connection implements AutoCloseable {
 	
 //	private Vector<StreamReceiverClient> connectionPool = new Vector<>();
 	
-	private StreamReceiverClient useConnection() throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+	private StreamReceiverClient useConnection() throws MalformedURLException, IOException, DatabaseFormatVersionException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 //		synchronized (connectionPool) {
 //			if (connectionPool.size() == 0)
 				return ClientFromURL.openConnection(dbURL, false, crashHandler, additionalJars);
@@ -212,7 +213,7 @@ public class Connection implements AutoCloseable {
 				try {
 					errorMessageTrap = new ErrorMessageTrap(client.getServerResponseInputStream());
 					parser = new ResponseParser(errorMessageTrap);
-				} catch (IOException e1) {
+				} catch (Throwable e1) {
 					e1.printStackTrace();
 					return;
 				}
@@ -333,7 +334,7 @@ public class Connection implements AutoCloseable {
 							htmlReceiver.endProgressiveHTMLRow();
 						}
 					};
-				} catch (IOException e1) {
+				} catch (Throwable e1) {
 					e1.printStackTrace();
 					return;
 				}

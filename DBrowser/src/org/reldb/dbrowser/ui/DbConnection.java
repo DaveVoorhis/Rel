@@ -2,6 +2,7 @@ package org.reldb.dbrowser.ui;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.Vector;
@@ -61,11 +62,11 @@ public class DbConnection {
 		return bundleJarPath;
 	}
 	
-	public DbConnection(String dbURL, boolean createDatabaseIfNotExists, CrashHandler crashHandler) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+	public DbConnection(String dbURL, boolean createDatabaseIfNotExists, CrashHandler crashHandler) throws MalformedURLException, IOException, DatabaseFormatVersionException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		connection = new Connection(dbURL, createDatabaseIfNotExists, crashHandler, getBundleJarPath(getClass()));		
 	}
 	
-	public DbConnection(String dbURL, CrashHandler crashHandler) throws NumberFormatException, MalformedURLException, IOException, DatabaseFormatVersionException {
+	public DbConnection(String dbURL, CrashHandler crashHandler) throws MalformedURLException, IOException, DatabaseFormatVersionException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		this(dbURL, false, crashHandler);
 	}
 

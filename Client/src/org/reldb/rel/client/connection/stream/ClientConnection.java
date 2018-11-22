@@ -3,11 +3,12 @@ package org.reldb.rel.client.connection.stream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 
 abstract class ClientConnection implements StreamReceiverClient {
 	protected StringBuffer initialServerResponse;
 
-	protected void obtainInitialServerResponse() throws IOException {
+	protected void obtainInitialServerResponse() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		initialServerResponse = new StringBuffer();
 		String r;
 		final BufferedReader input = new BufferedReader(new InputStreamReader(getServerResponseInputStream()));

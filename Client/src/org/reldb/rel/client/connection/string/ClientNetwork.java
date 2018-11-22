@@ -1,6 +1,7 @@
 package org.reldb.rel.client.connection.string;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 
 import org.reldb.rel.client.connection.stream.ClientNetworkConnection;
 
@@ -10,7 +11,7 @@ public class ClientNetwork implements StringReceiverClient {
 	private ClientNetworkConnection connection;
 	
 	/** Establish a connection with a server. */
-	public ClientNetwork(String serverName, int port) throws IOException {		
+	public ClientNetwork(String serverName, int port) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {		
 		connection = new ClientNetworkConnection(serverName, port);
 		input = new BufferedReader(new InputStreamReader(connection.getServerResponseInputStream())); 
 	}

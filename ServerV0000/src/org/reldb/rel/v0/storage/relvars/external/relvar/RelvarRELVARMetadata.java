@@ -1,6 +1,5 @@
 package org.reldb.rel.v0.storage.relvars.external.relvar;
 
-import java.io.IOException;
 import java.util.Vector;
 
 import org.reldb.rel.client.connection.string.ClientNetwork;
@@ -57,7 +56,7 @@ public class RelvarRELVARMetadata extends RelvarCustomMetadata {
 			String line;
 			while ((line = connection.receive()) != null)
 				response += line;
-		} catch (IOException ioe) {
+		} catch (Throwable ioe) {
 			throw new ExceptionSemantic("RS0494: Error obtaining remote Rel relvar: " + ioe);
 		}
 

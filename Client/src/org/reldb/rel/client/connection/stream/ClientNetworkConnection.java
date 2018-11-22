@@ -2,6 +2,7 @@ package org.reldb.rel.client.connection.stream;
 
 import java.net.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 
 public class ClientNetworkConnection extends ClientConnection {
 	
@@ -9,7 +10,7 @@ public class ClientNetworkConnection extends ClientConnection {
 	private PrintStream outputToServer;
 	
 	/** Establish a connection with a server. */
-	public ClientNetworkConnection(String serverName, int port) throws IOException {
+	public ClientNetworkConnection(String serverName, int port) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		socket = new Socket(serverName, port);
 		outputToServer = new PrintStream(socket.getOutputStream());
 		obtainInitialServerResponse();

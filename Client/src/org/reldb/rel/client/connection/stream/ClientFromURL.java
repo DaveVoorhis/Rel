@@ -1,6 +1,7 @@
 package org.reldb.rel.client.connection.stream;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 
 import org.reldb.rel.client.connection.CrashHandler;
@@ -12,11 +13,10 @@ public class ClientFromURL {
 	/** Open a connection. */
 	public static StreamReceiverClient openConnection(String databaseURL, boolean createDbAllowed,
 			CrashHandler crashHandler, String[] additionalJars)
-			throws NumberFormatException, IOException, MalformedURLException, DatabaseFormatVersionException {
+			throws IOException, MalformedURLException, DatabaseFormatVersionException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (databaseURL.toLowerCase().startsWith("db:"))
 			if (databaseURL.length() > 3)
-				return new ClientLocalConnection(databaseURL.substring(3).trim(), createDbAllowed, crashHandler,
-						additionalJars);
+				return new ClientLocalConnection(databaseURL.substring(3).trim(), createDbAllowed, crashHandler, additionalJars);
 			else
 				throw new MalformedURLException("Please specify a local database as db:<directory>");
 		else {

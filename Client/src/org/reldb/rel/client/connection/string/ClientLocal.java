@@ -1,6 +1,7 @@
 package org.reldb.rel.client.connection.string;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.reldb.rel.client.connection.CrashHandler;
@@ -14,7 +15,7 @@ public class ClientLocal implements StringReceiverClient {
 	private boolean receiverRunning;
 	
 	/** Establish a connection with a server. */
-	public ClientLocal(String databaseDir, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws IOException, DatabaseFormatVersionException {
+	public ClientLocal(String databaseDir, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws IOException, DatabaseFormatVersionException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		connection = new ClientLocalConnection(databaseDir, createDbAllowed, crashHandler, additionalJars);
 		final BufferedReader input = new BufferedReader(new InputStreamReader(connection.getServerResponseInputStream()));
 		Thread receiver = new Thread() {

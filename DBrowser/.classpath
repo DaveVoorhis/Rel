@@ -25,9 +25,6 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.poi_1.5.0.201703192131.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.poi.feature_1.5.0.201703192131.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.richtext_1.2.0.201703081533.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/swt/macos_64/swt_reldb.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/swt/macos_64/swt.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/swt/org.eclipse.swt_3.108.0.v20180904-1901.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/jdt/ecj-4.9.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-cli-1.4.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-codec-1.11.jar"/>
@@ -54,8 +51,12 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/poi-ooxml-schemas-4.0.0.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/postgresql-42.2.5.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/xmlbeans-3.0.1.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/swt/macos_64/swt.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/swt/org.eclipse.swt_3.108.0.v20180904-1901.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/swt_macos"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ServerV0000"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Server"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
