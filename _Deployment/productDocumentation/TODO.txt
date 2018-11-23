@@ -1,11 +1,5 @@
 ** TO DO **
 
-- Rel: Case #203: Chris Date says that R RENAME { A AS B , B AS A } should work 
-    (see "SQL and Relational Theory", Chapter 7 page 145).
-	So I tried: SP RENAME {SNO AS PNO, PNO AS SNO}
-	This gives: Error RS0249: Attribute 'PNO' has already been defined
-	Apparently this is done in sequence instead of in parallel.
-
 - DBrowser: Why don't standard file dialog boxes have titles?
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
@@ -27,6 +21,12 @@
 - DBrowser: https://github.com/DaveVoorhis/Rel/issues/1
   Navigation keys and undo appear to be consumed by Nattable without performing
   appropriate actions. Fix.
+
+- Rel: Case #203: Chris Date says that R RENAME { A AS B , B AS A } should work 
+    (see "SQL and Relational Theory", Chapter 7 page 145).
+	So I tried: SP RENAME {SNO AS PNO, PNO AS SNO}
+	This gives: Error RS0249: Attribute 'PNO' has already been defined
+	Apparently this is done in sequence instead of in parallel.
 
 - Rel: Issue:
     S WHERE (WITH (x := true): x) 
