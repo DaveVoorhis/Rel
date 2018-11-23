@@ -1,5 +1,8 @@
 package org.reldb.dbrowser;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.SplashScreen;
 import java.io.IOException;
 import java.io.InputStream;
@@ -403,40 +406,39 @@ public class DBrowser {
 			event -> (new Preferences(shell)).show()
 		);
 
-		executeSplashInteractor(() -> {
-			try {
-				/*
-				SplashScreen splash = SplashScreen.getSplashScreen();
-				if (splash != null) {
-					Graphics2D gc = splash.createGraphics();
-					Rectangle rect = splash.getBounds();
-					System.out.println("Application: rect = " + rect);
-					int barWidth = rect.width - 20;
-					int barHeight = 10;
-					Rectangle progressBarRect = new Rectangle(10, rect.height - 20, barWidth, barHeight);
-					gc.draw3DRect(progressBarRect.x, progressBarRect.y, progressBarRect.width, progressBarRect.height, false);
-					gc.setColor(Color.green);
-					(new Thread() {
-						public void run() {
-							while (SplashScreen.getSplashScreen() != null) {
-								int percent = Loading.getPercentageOfExpectedMessages();
-								System.out.println("Application: percent = " + percent);
-								int drawExtent = Math.min(barWidth * percent / 100, barWidth);
-								gc.fillRect(progressBarRect.x, progressBarRect.y, drawExtent, barHeight);
-								splash.update();
-								try {
-									Thread.sleep(250);
-								} catch (InterruptedException e) {
-								}
-							}							
-						}
-					}).start();
+		if (isMac())
+			executeSplashInteractor(() -> {
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e1) {
 				}
-				*/
-				Thread.sleep(300);
-			} catch (InterruptedException e1) {
-			}
-		});
+			});
+		else {
+			SplashScreen splash = SplashScreen.getSplashScreen();
+			if (splash != null) {
+				Graphics2D gc = splash.createGraphics();
+				Rectangle rect = splash.getBounds();
+				int barWidth = rect.width - 20;
+				int barHeight = 10;
+				Rectangle progressBarRect = new Rectangle(10, rect.height - 20, barWidth, barHeight);
+				gc.draw3DRect(progressBarRect.x, progressBarRect.y, progressBarRect.width, progressBarRect.height, false);
+				gc.setColor(Color.green);
+				(new Thread() {
+					public void run() {
+						while (SplashScreen.getSplashScreen() != null) {
+							int percent = Loading.getPercentageOfExpectedMessages();
+							int drawExtent = Math.min(barWidth * percent / 100, barWidth);
+							gc.fillRect(progressBarRect.x, progressBarRect.y, drawExtent, barHeight);
+							splash.update();					
+							try {
+								Thread.sleep(250);
+							} catch (InterruptedException e) {
+							}
+						}							
+					}
+				}).start();
+			}			
+		}
 		
 		shell = createShell();
 		shell.setImage(IconLoader.loadIcon("RelIcon"));
@@ -446,18 +448,16 @@ public class DBrowser {
 			shell.dispose();
 		});
 		shell.addDisposeListener(e -> quit());
-		shell.open();		
 		shell.layout();
-		
-		if (!isMac())
-			Loading.open();
 		
 		Core.launch(args, shell);
 	
-		if (!isMac())
+		if (!isMac()) {
 			Loading.close();
+			closeSplash();
+		}
 		
-		shell.layout(true);
+		shell.open();		
 		
 		while (!display.isDisposed()) {
 			try {
