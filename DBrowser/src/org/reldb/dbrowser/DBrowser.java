@@ -398,13 +398,8 @@ public class DBrowser {
 	
 	public static void main(String[] args) {
 		Display.setAppName(Version.getAppName());
+		Display.setAppVersion(Version.getVersion());
 		final Display display = new Display();
-
-		OSSpecific.launch(Version.getAppName(),
-			event -> quit(),
-			event -> new AboutDialog(shell).open(),
-			event -> (new Preferences(shell)).show()
-		);
 
 		if (isMac())
 			executeSplashInteractor(() -> {
@@ -413,7 +408,14 @@ public class DBrowser {
 				} catch (InterruptedException e1) {
 				}
 			});
-		else {
+
+		OSSpecific.launch(Version.getAppName(),
+			event -> quit(),
+			event -> new AboutDialog(shell).open(),
+			event -> (new Preferences(shell)).show()
+		);
+
+		if (!isMac()) {
 			SplashScreen splash = SplashScreen.getSplashScreen();
 			if (splash != null) {
 				Graphics2D gc = splash.createGraphics();
@@ -449,13 +451,13 @@ public class DBrowser {
 		});
 		shell.addDisposeListener(e -> quit());
 		shell.layout();
+
+		Loading.start();
 		
 		Core.launch(args, shell);
 	
-		if (!isMac()) {
-			Loading.close();
+		if (!isMac())
 			closeSplash();
-		}
 		
 		shell.open();		
 		

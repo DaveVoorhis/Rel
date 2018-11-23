@@ -5,11 +5,8 @@ public class Loading {
 	private static final int expectedMessageCount = 4;
 	private static int msgCount = 0;
 	
-	public static void open() {
+	public static void start() {
 		msgCount = 0;
-	}
-
-	public static void close() {
 	}
 
 	public static void action(String message) {
