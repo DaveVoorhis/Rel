@@ -8,9 +8,6 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.eclipse.swt.*;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.HTMLTransfer;
@@ -21,6 +18,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.reldb.dbrowser.commands.Commands;
+import org.reldb.dbrowser.loading.Loading;
 import org.reldb.dbrowser.commands.AcceleratedMenuItem;
 import org.reldb.dbrowser.ui.AboutDialog;
 import org.reldb.dbrowser.ui.IconLoader;
@@ -394,25 +392,16 @@ public class Application {
 		}
 		return iconImages.toArray(new Image[0]);		
 	}
-
-	private static void configureLog4j() {
-		BasicConfigurator.configure();
-		Logger.getRootLogger().setLevel(Level.INFO);
-	}
 	
 	public static void main(String[] args) {
 		Display.setAppName(Version.getAppName());
 		final Display display = new Display();
-		
-		configureLog4j();
 
 		OSSpecific.launch(Version.getAppName(),
 			event -> quit(),
 			event -> new AboutDialog(shell).open(),
 			event -> (new Preferences(shell)).show()
 		);
-		
-//		Loading.open();	
 
 		executeSplashInteractor(() -> {
 			try {
@@ -460,11 +449,11 @@ public class Application {
 		shell.open();		
 		shell.layout();
 		
-		// Loading.open();
+		Loading.open();
 		
 		DBrowser.launch(args, shell);
 	
-		// Loading.close();
+		Loading.close();
 		
 		shell.layout(true);
 		
