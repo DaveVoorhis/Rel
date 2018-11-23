@@ -30,7 +30,7 @@ import org.reldb.dbrowser.ui.updates.UpdatesCheckDialog;
 import org.reldb.dbrowser.ui.version.Version;
 import org.reldb.swt.os_specific.OSSpecific;
 
-public class Application {
+public class DBrowser {
 
 	static boolean createdScreenBar = false;
 	
@@ -375,7 +375,7 @@ public class Application {
 	}
 
 	private static Image[] loadIcons(Display display) {
-		ClassLoader loader = Application.class.getClassLoader();
+		ClassLoader loader = DBrowser.class.getClassLoader();
 		LinkedList<Image> iconImages = new LinkedList<>();
 		for (String resourceSpec: Version.getIconsPaths()) {
 			InputStream inputStream = loader.getResourceAsStream(resourceSpec);
