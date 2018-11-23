@@ -19,7 +19,7 @@ import org.reldb.dbrowser.utilities.FontSize;
 
 public class Loading {
 
-	private static final int expectedMessageCount = 4;
+	private static final int expectedMessageCount = 3;
 
 	private static final int backgroundWidth = 600;
 	private static final int backgroundHeight = 183;
@@ -134,7 +134,6 @@ public class Loading {
 	
 	private void setMessage(final String message) {
 		if (lblAction != null && !lblAction.isDisposed()) {
-			System.err.println("Loading: message: " + message);
 			String msg = message.trim().replace("\n\n", "\n");
 			if (msg.length() == 0)
 				return;

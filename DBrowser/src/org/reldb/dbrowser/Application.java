@@ -449,11 +449,13 @@ public class Application {
 		shell.open();		
 		shell.layout();
 		
-		Loading.open();
+		if (!isMac())
+			Loading.open();
 		
 		DBrowser.launch(args, shell);
 	
-		Loading.close();
+		if (!isMac())
+			Loading.close();
 		
 		shell.layout(true);
 		
