@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.reldb.dbrowser.DBrowser;
+import org.reldb.dbrowser.Core;
 
 public class OpenDocumentEventProcessor implements Listener {
 	private ArrayList<String> filesToOpen = new ArrayList<String>(1);
@@ -13,7 +13,7 @@ public class OpenDocumentEventProcessor implements Listener {
 	public synchronized void handleEvent(Event event) {
 		if (event.text != null)
 			if (retrieved)
-				DBrowser.openFile(event.text);
+				Core.openFile(event.text);
 			else
 				filesToOpen.add(event.text);
 	}

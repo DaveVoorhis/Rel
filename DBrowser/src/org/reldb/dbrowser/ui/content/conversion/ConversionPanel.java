@@ -16,7 +16,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.custom.StyledText;
-import org.reldb.dbrowser.DBrowser;
+import org.reldb.dbrowser.Core;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.dbrowser.ui.DbTab;
 
@@ -60,7 +60,7 @@ public class ConversionPanel extends Composite {
 			if (converted) {
 				dbTab.openLocalDatabase(dbDir);
 			} else {
-				if (MessageDialog.openConfirm(DBrowser.getShell(), "Convert Database to the Current Format?",
+				if (MessageDialog.openConfirm(Core.getShell(), "Convert Database to the Current Format?",
 						"Are you sure you wish to convert database " + dbDir + " to the current format?")) {
 					performConversion(dbDir);
 				}
@@ -123,7 +123,7 @@ public class ConversionPanel extends Composite {
 					getDisplay().asyncExec(() -> {
 						lblConvert.setText("Conversion complete.");
 						btnConvert.setText("Open database " + dbDir);
-						DBrowser.setStatus("Conversion complete.");
+						Core.setStatus("Conversion complete.");
 					});
 				} catch (Throwable e) {
 					outputRunning = false;

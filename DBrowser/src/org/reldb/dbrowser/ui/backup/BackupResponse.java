@@ -1,7 +1,7 @@
 package org.reldb.dbrowser.ui.backup;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.reldb.dbrowser.DBrowser;
+import org.reldb.dbrowser.Core;
 
 class BackupResponse {
 	public static enum ResponseType {
@@ -31,8 +31,8 @@ class BackupResponse {
 	
 	public void showMessage() {
 		if (messageType == ResponseType.ERROR)
-			MessageDialog.openError(DBrowser.getShell(), title, message);
+			MessageDialog.openError(Core.getShell(), title, message);
 		else if (messageType == ResponseType.INFORMATION)
-			MessageDialog.openInformation(DBrowser.getShell(), title, message);
+			MessageDialog.openInformation(Core.getShell(), title, message);
 	}
 }

@@ -11,7 +11,7 @@ import java.util.Calendar;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
-import org.reldb.dbrowser.DBrowser;
+import org.reldb.dbrowser.Core;
 import org.reldb.dbrowser.ui.DbConnection;
 import org.reldb.rel.client.connection.string.StringReceiverClient;
 
@@ -113,7 +113,7 @@ public class Backup {
 
 	public static void makeBackup(DbConnection connection) {
 		if (backupDialog == null) {
-			backupDialog = new FileDialog(DBrowser.getShell(), SWT.SAVE);
+			backupDialog = new FileDialog(Core.getShell(), SWT.SAVE);
 			backupDialog.setFilterPath(System.getProperty("user.home"));
 			backupDialog.setFilterExtensions(new String[] {"*.rel", "*.*"});
 			backupDialog.setFilterNames(new String[] {"Rel script", "All Files"});

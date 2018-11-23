@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.reldb.dbrowser.DBrowser;
+import org.reldb.dbrowser.Core;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
@@ -62,7 +62,7 @@ public class ManageRecentlyUsedDialog extends Dialog {
 		gl_composite.verticalSpacing = 0;
 		composite.setLayout(gl_composite);
 
-		recentlyOpenedList = DBrowser.getRecentlyUsedDatabaseList();
+		recentlyOpenedList = Core.getRecentlyUsedDatabaseList();
 		removals = new boolean[recentlyOpenedList.length];
 
 		Color backgroundHighlight = SWTResourceManager.getColor(220, 220, 220);
@@ -113,7 +113,7 @@ public class ManageRecentlyUsedDialog extends Dialog {
 		for (String dbURL : recentlyOpenedList)
 			if (!removals[n++])
 				keepers.add(dbURL);
-		DBrowser.setRecentlyUsedDatabaseList(keepers.toArray(new String[0]));
+		Core.setRecentlyUsedDatabaseList(keepers.toArray(new String[0]));
 		close();
 	}
 

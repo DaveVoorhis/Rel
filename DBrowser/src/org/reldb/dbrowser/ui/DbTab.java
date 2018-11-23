@@ -15,7 +15,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.reldb.dbrowser.DBrowser;
+import org.reldb.dbrowser.Core;
 import org.reldb.dbrowser.commands.CommandActivator;
 import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.backup.Backup;
@@ -60,13 +60,13 @@ public class DbTab extends CTabItem {
 	private PreferenceChangeListener preferenceChangeListener;
 
 	public DbTab() {
-		super(DBrowser.getTabFolder(), SWT.None);
+		super(Core.getTabFolder(), SWT.None);
 
 		crashTrap = new CrashTrap(this.getParent().getShell(), Version.getVersion());
 
 		setImage(IconLoader.loadIcon("plusIcon"));
 
-		Composite core = new Composite(DBrowser.getTabFolder(), SWT.None);
+		Composite core = new Composite(Core.getTabFolder(), SWT.None);
 		core.setLayout(new FormLayout());
 
 		CBanner bannerDbLocationMode = new CBanner(core, SWT.NONE);
@@ -86,9 +86,9 @@ public class DbTab extends CTabItem {
 
 		ManagedToolbar toolBarDatabase = new ManagedToolbar(compDbLocation);
 		
-		new CommandActivator(null, toolBarDatabase, "NewDBIcon", SWT.NONE, "Create or open local database", e -> DBrowser.newDatabase());
-		new CommandActivator(null, toolBarDatabase, "OpenDBLocalIcon", SWT.NONE, "Open local database", e -> DBrowser.openLocalDatabase());
-		new CommandActivator(null, toolBarDatabase, "OpenDBRemoteIcon", SWT.NONE, "Open remote database", e -> DBrowser.openRemoteDatabase());
+		new CommandActivator(null, toolBarDatabase, "NewDBIcon", SWT.NONE, "Create or open local database", e -> Core.newDatabase());
+		new CommandActivator(null, toolBarDatabase, "OpenDBLocalIcon", SWT.NONE, "Open local database", e -> Core.openLocalDatabase());
+		new CommandActivator(null, toolBarDatabase, "OpenDBRemoteIcon", SWT.NONE, "Open remote database", e -> Core.openRemoteDatabase());
 
 		textDbLocation = new Text(compDbLocation, SWT.BORDER);
 		textDbLocation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
@@ -190,7 +190,7 @@ public class DbTab extends CTabItem {
 				getParent().getCursor().dispose();
 				getParent().setCursor(oldCursor);
 				e.printStackTrace();
-				MessageDialog.openError(DBrowser.getShell(), "Unable to open local database",
+				MessageDialog.openError(Core.getShell(), "Unable to open local database",
 						wrapped("Unable to open command line due to error: " + e.toString()));
 				return;
 			}
@@ -265,14 +265,14 @@ public class DbTab extends CTabItem {
 
 		showConversion(message, dbURL.substring("db:".length()));
 
-		DBrowser.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
+		Core.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
 			public void close(CTabFolderEvent event) {
 				if (event.item == DbTab.this)
 					DbTab.this.close();
 			}
 		});
 
-		DBrowser.createNewTabIfNeeded();
+		Core.createNewTabIfNeeded();
 	}
 
 	private void doConnectionResultSuccess(DbConnection client, String dbURL, boolean permanent) {
@@ -300,16 +300,16 @@ public class DbTab extends CTabItem {
 			}
 		}
 
-		DBrowser.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
+		Core.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
 			public void close(CTabFolderEvent event) {
 				if (event.item == DbTab.this)
 					DbTab.this.close();
 			}
 		});
 
-		DBrowser.createNewTabIfNeeded();
+		Core.createNewTabIfNeeded();
 
-		DBrowser.updateRecentlyUsedDatabaseList(dbURL);
+		Core.updateRecentlyUsedDatabaseList(dbURL);
 	}
 
 	public void refresh() {
@@ -334,7 +334,7 @@ public class DbTab extends CTabItem {
 
 	public void setStatus(String s) {
 		status = s;
-		DBrowser.setStatus(status);
+		Core.setStatus(status);
 	}
 
 	private void doConnectionResultFailed(Throwable reason, String dbURL) {
@@ -343,16 +343,16 @@ public class DbTab extends CTabItem {
 		String msg = shortMsg + " - " + reason;
 		msg = wrapped(msg);
 		if (msg.contains("The environment cannot be locked for single writer access. ENV_LOCKED")) {
-			MessageDialog.openError(DBrowser.getShell(), "Unable to open local database",
+			MessageDialog.openError(Core.getShell(), "Unable to open local database",
 					"A copy of Rel is already accessing the database you're trying to open at " + dbURL);
 		} else if (msg.contains("Connection refused")) {
-			MessageDialog.openError(DBrowser.getShell(), "Unable to open remote database",
+			MessageDialog.openError(Core.getShell(), "Unable to open remote database",
 					"A Rel server doesn't appear to be running or available at " + dbURL);
 		} else if (msg.contains("RS0406:")) {
-			MessageDialog.openError(DBrowser.getShell(), "Unable to open local database",
+			MessageDialog.openError(Core.getShell(), "Unable to open local database",
 					dbURL + " either doesn't exist or doesn't contain a Rel database.");
 		} else if (msg.contains("RS0307:")) {
-			MessageDialog.openError(DBrowser.getShell(), "Unable to open local database", dbURL + " doesn't exist.");
+			MessageDialog.openError(Core.getShell(), "Unable to open local database", dbURL + " doesn't exist.");
 		} else if (msg.contains("RS0410:")) {
 			if (reason instanceof DatabaseFormatVersionException) {
 				DatabaseFormatVersionException dfve = (DatabaseFormatVersionException) reason;
@@ -360,14 +360,14 @@ public class DbTab extends CTabItem {
 					doConnectionResultConversion("Database " + dbURL + " needs to be converted to the current format.",
 							dbURL);
 				else
-					MessageDialog.openError(DBrowser.getShell(), "Unable to open local database", "The database at "
+					MessageDialog.openError(Core.getShell(), "Unable to open local database", "The database at "
 							+ dbURL + " appears to be a newer format than that supported by this version of Rel.");
 			} else
-				MessageDialog.openError(DBrowser.getShell(), "Unable to open local database", "You'll need to open "
+				MessageDialog.openError(Core.getShell(), "Unable to open local database", "You'll need to open "
 						+ dbURL
 						+ " in the version of Rel last used to access it, back it up, and import the backup into a new database.");
 		} else
-			MessageDialog.openError(DBrowser.getShell(), "Unable to open database", msg);
+			MessageDialog.openError(Core.getShell(), "Unable to open database", msg);
 	}
 
 	private AttemptConnectionResult openConnection(String dbURL, boolean createAllowed) {
@@ -391,7 +391,7 @@ public class DbTab extends CTabItem {
 		getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT));
 		try {
 			setText(dbURL);
-			if (DBrowser.isNoLocalRel() && dbURL.startsWith("db:")) {
+			if (Core.isNoLocalRel() && dbURL.startsWith("db:")) {
 				doConnectionResultFailed(new Throwable("Local Rel server is not installed."), dbURL);
 				return false;
 			}

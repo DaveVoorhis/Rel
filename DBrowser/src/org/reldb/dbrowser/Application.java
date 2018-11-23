@@ -77,18 +77,18 @@ public class Application {
 		Menu menu = new Menu(fileItem);
 		fileItem.setMenu(menu);
 		
-		new AcceleratedMenuItem(menu, "&New Database\tCtrl-N", SWT.MOD1 | 'N', "NewDBIcon", e -> DBrowser.newDatabase());
-		new AcceleratedMenuItem(menu, "Open &local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> DBrowser.openLocalDatabase());
-		new AcceleratedMenuItem(menu, "Open remote database\tCtrl-r", SWT.MOD1 | 'r', "OpenDBRemoteIcon", e-> DBrowser.openRemoteDatabase());
+		new AcceleratedMenuItem(menu, "&New Database\tCtrl-N", SWT.MOD1 | 'N', "NewDBIcon", e -> Core.newDatabase());
+		new AcceleratedMenuItem(menu, "Open &local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> Core.openLocalDatabase());
+		new AcceleratedMenuItem(menu, "Open remote database\tCtrl-r", SWT.MOD1 | 'r', "OpenDBRemoteIcon", e-> Core.openRemoteDatabase());
 		
-		String[] dbURLs = DBrowser.getRecentlyUsedDatabaseList();
+		String[] dbURLs = Core.getRecentlyUsedDatabaseList();
 		if (dbURLs.length > 0) {
 			new MenuItem(menu, SWT.SEPARATOR);
 			for (String dbURL: dbURLs)
-				new AcceleratedMenuItem(menu, "Open " + dbURL, 0, "OpenDBLocalIcon", e -> DBrowser.openDatabase(dbURL));
+				new AcceleratedMenuItem(menu, "Open " + dbURL, 0, "OpenDBLocalIcon", e -> Core.openDatabase(dbURL));
 			new MenuItem(menu, SWT.SEPARATOR);			
-			new AcceleratedMenuItem(menu, "Clear above list of recently-opened databases", 0, (String)null, e -> DBrowser.clearRecentlyUsedDatabaseList());
-			new AcceleratedMenuItem(menu, "Manage list of recently-opened databases...", 0, (String)null, e -> DBrowser.manageRecentlyUsedDatabaseList());
+			new AcceleratedMenuItem(menu, "Clear above list of recently-opened databases", 0, (String)null, e -> Core.clearRecentlyUsedDatabaseList());
+			new AcceleratedMenuItem(menu, "Manage list of recently-opened databases...", 0, (String)null, e -> Core.manageRecentlyUsedDatabaseList());
 		}
 		OSSpecific.addFileMenuItems(menu);
 	}
@@ -452,7 +452,7 @@ public class Application {
 		if (!isMac())
 			Loading.open();
 		
-		DBrowser.launch(args, shell);
+		Core.launch(args, shell);
 	
 		if (!isMac())
 			Loading.close();

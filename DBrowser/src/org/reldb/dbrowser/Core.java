@@ -23,7 +23,7 @@ import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
 /** Root of RelUI. */
-public class DBrowser {
+public class Core {
 	private final static String recentlyUsedDatabaseListPreference = "recentlyUsedDatabaseList";
 
 	private static MainPanel mainPanel;
@@ -121,7 +121,7 @@ public class DBrowser {
 		for (String fname : filesToOpen)
 			openFile(fname);
 
-		DBrowser.setSelection(0);
+		Core.setSelection(0);
 	}
 
 	public static CTabFolder getTabFolder() {
@@ -163,7 +163,7 @@ public class DBrowser {
 	public static DbTab selectEmptyTab() {
 		CTabItem[] tabs = mainPanel.getTabFolder().getItems();
 		DbTab lastTab = (DbTab) tabs[tabs.length - 1];
-		DBrowser.setSelection(tabs.length - 1);
+		Core.setSelection(tabs.length - 1);
 		return lastTab;
 	}
 
