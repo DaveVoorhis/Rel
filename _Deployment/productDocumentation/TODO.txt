@@ -21,6 +21,8 @@
 - DBrowser: https://github.com/DaveVoorhis/Rel/issues/1
   Navigation keys and undo appear to be consumed by Nattable without performing
   appropriate actions. Fix.
+  
+- Rev: Comment visualiser does not handle line breaks correctly on Windows or Linux.
 
 - Rel: Case #203: Chris Date says that R RENAME { A AS B , B AS A } should work 
     (see "SQL and Relational Theory", Chapter 7 page 145).
@@ -49,8 +51,6 @@
 	TUPLE {r RELATION {RATE RATIONAL} {
 		TUPLE {RATE 22.0}}}})
   UNGROUP r
-  
-- Rev: Comment visualiser does not handle line breaks correctly on Windows or Linux.
   
 - Rel: Provide CAST_AS_CHARACTER(OPERATOR) and CAST_AS_OPERATOR(CHARACTER).
 
