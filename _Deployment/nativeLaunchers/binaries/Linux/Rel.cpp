@@ -1,4 +1,4 @@
-// Rel native launcher for MacOS.
+// Rel native launcher for Linux.
 
 #include <iostream>
 #include <cstdlib>
@@ -25,5 +25,10 @@ int main(int argc, char **argv)
     return 10;
   }
 
-  return system(cmd.c_str());
+  std::string args("");
+  for (int i = 1; i < argc; i++)
+  	args += std::string(" ") + std::string(argv[i]);
+
+  setenv("SWT_GTK3", "0", 1);
+  return system((cmd + args).c_str());
 }
