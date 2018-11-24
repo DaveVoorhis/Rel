@@ -26,12 +26,16 @@ public class ClientLocalConnection extends ClientConnection {
 	private static Method convertToLatestFormat;
 	
 	/** Establish a connection with a local server. */
-	public ClientLocalConnection(String databaseDir, boolean createDbAllowed, CrashHandler errorHandler, String[] additionalJars) throws IOException, ClassNotFoundException, DatabaseFormatVersionException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public ClientLocalConnection(String databaseDir, boolean createDbAllowed, CrashHandler errorHandler, String[] additionalJars) throws IOException, DatabaseFormatVersionException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException {
 		this.errorHandler = errorHandler;
 		Class<?> relClass = Class.forName("org.reldb.rel.Rel");
 		Constructor<?> relCtor = relClass.getConstructor(String.class, boolean.class, String[].class);
 		// rel = new Rel(databaseDir, createDbAllowed, additionalJars);
-		rel = relCtor.newInstance(databaseDir, createDbAllowed, additionalJars);
+		try {
+			rel = relCtor.newInstance(databaseDir, createDbAllowed, additionalJars);
+		} catch (InvocationTargetException e) {
+			throw new IOException(e.getCause());
+		}
 		getServerResponseInputStream = relClass.getMethod("getServerResponseInputStream", (Class<?>[])null);
 		sendEvaluate = relClass.getMethod("sendEvaluate", new Class<?>[] {String.class});
 		sendExecute = relClass.getMethod("sendExecute", new Class<?>[] {String.class});
@@ -42,9 +46,13 @@ public class ClientLocalConnection extends ClientConnection {
 		errorHandler.setInitialServerResponse(initialServerResponse.toString());
 	}
 	
-	public InputStream getServerResponseInputStream() throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public InputStream getServerResponseInputStream() throws IOException {
 		// return rel.getServerResponseInputStream();
-		return (InputStream)getServerResponseInputStream.invoke(rel, (Object [])null);
+		try {
+			return (InputStream)getServerResponseInputStream.invoke(rel, (Object [])null);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new IOException(e.getCause());
+		}
 	}
 	
 	public void sendEvaluate(String source) {
