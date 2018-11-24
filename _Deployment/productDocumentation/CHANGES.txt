@@ -14,6 +14,10 @@ Version 3.013 (1.0.26):
 
   - DBrowser: Improved handling of icon resizing via Preferences.
   
+  - DBrowser: Preferences no longer stored in Rel application
+    directory; now stored in user's home directory. This allows
+    preserving preferences across Rel updates.
+  
   - Build: Module jars now generated via Ant build files; product 
     build scripts now generate all jars.
     

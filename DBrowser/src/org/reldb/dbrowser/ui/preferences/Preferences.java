@@ -1,6 +1,7 @@
 package org.reldb.dbrowser.ui.preferences;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Vector;
@@ -27,11 +28,12 @@ public class Preferences {
 	
 	public static PreferenceStore getPreferences() {
 		if (preferences == null) {
-			preferences = new PreferenceStore(Version.getPreferencesRepositoryName());
+			final String preferencePath = Paths.get(System.getProperty("user.home"), Version.getPreferencesRepositoryName()).toString();
+			preferences = new PreferenceStore(preferencePath);
 			try {
 				preferences.load();
 			} catch (IOException e) {
-				System.out.println("Preferences: Creating new preferences.");
+				System.out.println("Preferences: Creating new preferences store " + preferencePath);
 			}
 			preferenceListeners = new HashMap<String, HashSet<PreferenceChangeListener>>();
 			preferences.addPropertyChangeListener(new IPropertyChangeListener() {
@@ -39,7 +41,7 @@ public class Preferences {
 				public void propertyChange(PropertyChangeEvent event) {
 					dispatchPreferenceChangeEvent(event.getProperty(), event.getNewValue());
 				}
-			});		
+			});
 		}
 		return preferences;
 	}

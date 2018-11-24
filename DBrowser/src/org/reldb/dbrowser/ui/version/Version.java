@@ -19,7 +19,7 @@ public class Version {
 	}
 	
 	public static String getPreferencesRepositoryName() {
-		return "rel.reldb.org";
+		return ".rel";
 	}
 
 	public static String getReportLogURL() {
