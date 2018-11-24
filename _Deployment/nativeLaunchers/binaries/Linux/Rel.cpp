@@ -25,6 +25,7 @@ int main(int argc, char **argv)
     return 10;
   }
 
+  // Include command-line args.
   std::string args("");
   for (int i = 1; i < argc; i++)
   	args += std::string(" ") + std::string(argv[i]);
