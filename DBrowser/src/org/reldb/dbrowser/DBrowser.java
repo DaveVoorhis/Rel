@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.*;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.HTMLTransfer;
@@ -38,10 +39,6 @@ public class DBrowser {
 	static boolean createdScreenBar = false;
 	
 	static Shell shell = null;
-	
-	static boolean isMac() {
-		return SWT.getPlatform().equals("cocoa");
-	}
 	
 	private static synchronized void quit() {
 		Display display = Display.getCurrent();
@@ -194,7 +191,7 @@ public class DBrowser {
 		
 		createEditMenuItem("undo", new AcceleratedMenuItem(menu, "Undo\tCtrl-Z", SWT.MOD1 | 'Z', "undo"));
 		
-		int redoAccelerator = SWT.MOD1 | (isMac() ? SWT.SHIFT | 'Z' : 'Y');
+		int redoAccelerator = SWT.MOD1 | (Util.isMac() ? SWT.SHIFT | 'Z' : 'Y');
 		createEditMenuItem("redo", new AcceleratedMenuItem(menu, "Redo\tCtrl-Y", redoAccelerator, "redo"));
 		
 		new MenuItem(menu, SWT.SEPARATOR);
@@ -317,7 +314,7 @@ public class DBrowser {
 			createOutputMenu(bar);
 			createDatabaseMenu(bar);
 			createToolsMenu(bar);
-			if (!isMac())
+			if (!Util.isMac())
 				createHelpMenu(bar);
 			
 			if (!hasAppMenuBar) 
@@ -347,7 +344,7 @@ public class DBrowser {
 			return false;
 		
 		// Non-MacOS
-		if (!isMac()) {
+		if (!Util.isMac()) {
 			splashInteraction.run();
 			closeSplash();
 			return true;
@@ -396,7 +393,7 @@ public class DBrowser {
 		Display.setAppVersion(Version.getVersion());
 		final Display display = new Display();
 
-		if (isMac())
+		if (Util.isMac())
 			executeSplashInteractor(() -> {
 				try {
 					Thread.sleep(300);
@@ -410,7 +407,7 @@ public class DBrowser {
 			event -> (new Preferences(shell)).show()
 		);
 
-		if (!isMac()) {
+		if (!Util.isMac()) {
 			SplashScreen splash = SplashScreen.getSplashScreen();
 			if (splash != null) {
 				Graphics2D gc = splash.createGraphics();
@@ -451,7 +448,7 @@ public class DBrowser {
 		
 		Core.launch(args, shell);
 	
-		if (!isMac())
+		if (!Util.isMac())
 			closeSplash();
 		
 		shell.open();		
