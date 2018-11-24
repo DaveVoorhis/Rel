@@ -2,8 +2,6 @@
 
 - DBRowser: bind Delete menu item to Delete button on command-line input
   panel.
-  
-- DBrowser: Make all native launchers pass command-line parms to DBrowser
 
 - DBrowser: Why don't standard file dialog boxes have titles?
 
