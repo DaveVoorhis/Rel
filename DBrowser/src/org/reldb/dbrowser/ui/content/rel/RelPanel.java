@@ -334,6 +334,11 @@ public class RelPanel extends Composite {
 				fireDbTreeTabchangeEvent();
 			}
 		}
+		
+		if (tabFolder.getItemCount() > 0)
+			tabFolder.setFocus();
+		else
+			tree.setFocus();
 	}
 
 	public void dispose() {
