@@ -1,5 +1,7 @@
 ** TO DO **
 
+- DBrowser: Make all native launchers pass command-line parms to DBrowser
+
 - DBrowser: Why don't standard file dialog boxes have titles?
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
@@ -8,8 +10,6 @@
 - DBrowser: Make Windows native launcher dockable (hidden window?)
 
 - DBrowser: Make Linux native launcher use GTK2?
-
-- DBrowser: Make all native launchers pass command-line parms to DBrowser
 
 - DBrowser: Ensure command-line load of .rel files and databases works.
 
