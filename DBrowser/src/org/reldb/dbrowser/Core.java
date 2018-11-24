@@ -121,7 +121,7 @@ public class Core {
 		for (String fname : filesToOpen)
 			openFile(fname);
 
-		Core.setSelection(0);
+		Core.setSelectionToLastDatabaseTab();
 	}
 
 	public static CTabFolder getTabFolder() {
@@ -136,6 +136,14 @@ public class Core {
 		mainPanel.getTabFolder().setSelection(i);
 	}
 
+	public static void setSelectionToLastDatabaseTab() {
+		int tabCount = mainPanel.getTabFolder().getItemCount();
+		if (tabCount <= 1)
+			setSelection(0);
+		else
+			setSelection(tabCount - 2);
+	}
+	
 	public static void newDatabase() {
 		String result = newDatabaseDialog.open();
 		if (result != null)
