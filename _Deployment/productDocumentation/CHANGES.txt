@@ -22,8 +22,8 @@ Version 3.013 (1.0.26):
     build scripts now generate all jars.
     
   - Client library: Decoupled Server/ServerV0000 from Client to
-    permit use of relclient.jar on its own to facilitate 
-    developing purely remote clients.
+    permit use of relclient.jar on its own (plus relshared.jar) 
+    to facilitate developing purely remote clients.
 
 Version 3.012 (1.0.25):
 
