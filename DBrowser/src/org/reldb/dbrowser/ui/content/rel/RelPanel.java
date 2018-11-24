@@ -337,8 +337,10 @@ public class RelPanel extends Composite {
 		
 		if (tabFolder.getItemCount() > 0)
 			tabFolder.setFocus();
-		else
+		else {
+			tree.setSelection(tree.getItem(0));
 			tree.setFocus();
+		}
 	}
 
 	public void dispose() {
