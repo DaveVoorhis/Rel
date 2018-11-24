@@ -2,6 +2,6 @@
   Generating code
   1 of 257 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    4 functions had inline decision re-evaluated but remain unchanged
+    3 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Rel.vcxproj -> C:\Users\Dave Voorhis\source\repos\Rel\_Deployment\nativeLaunchers\binaries\Windows\x64\Release\Rel.exe
