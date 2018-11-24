@@ -43,10 +43,9 @@ public class DBrowser {
 		return SWT.getPlatform().equals("cocoa");
 	}
 	
-	private static void quit() {
+	private static synchronized void quit() {
 		Display display = Display.getCurrent();
 		Shell[] shells = display.getShells();
-		System.out.println("Application: close shells.");
 		try {
 		for (Shell shell: shells)
 			if (!shell.isDisposed())
@@ -55,7 +54,6 @@ public class DBrowser {
 			System.out.println("Error trying to close shells: " + t);
 			t.printStackTrace();
 		}
-		System.out.println("Application: close display.");
 		try {
 			if (!display.isDisposed()) 
 				display.dispose();
@@ -63,13 +61,11 @@ public class DBrowser {
 			System.out.println("Error trying to close display: " + t);
 			t.printStackTrace();
 		}
-		System.out.println("Application: free resources.");
 		try {
 			SWTResourceManager.dispose();
 		} catch (Throwable t) {
 			System.out.println("Error trying to free resources: " + t);
 		}
-		System.out.println("Application: shutdown.");
 		System.exit(0);
 	}
 	
@@ -466,7 +462,7 @@ public class DBrowser {
 				if (!display.readAndDispatch())
 					display.sleep();
 			} catch (Throwable t) {
-				System.out.println("Application: Exception: " + t);
+				System.out.println("DBrowser: Exception: " + t);
 				t.printStackTrace();
 			}
 		}
