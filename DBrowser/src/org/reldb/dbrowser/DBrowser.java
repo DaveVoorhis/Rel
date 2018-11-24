@@ -66,7 +66,6 @@ public class DBrowser {
 		} catch (Throwable t) {
 			System.out.println("Error trying to free resources: " + t);
 		}
-		System.exit(0);
 	}
 	
 	private static void createFileMenu(Menu bar) {	
@@ -466,8 +465,8 @@ public class DBrowser {
 				t.printStackTrace();
 			}
 		}
-
-		SWTResourceManager.dispose();
+		
+		System.exit(0);
 	}
 
 }
