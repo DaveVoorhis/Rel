@@ -1,8 +1,5 @@
 ** TO DO **
 
-- DBRowser: bind Delete menu item to Delete button on command-line input
-  panel.
-
 - DBrowser: Why don't standard file dialog boxes have titles?
 
 - DBrowser: Show recently-used database list in '+' tab.
