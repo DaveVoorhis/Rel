@@ -28,6 +28,15 @@
 		<string>English</string>		
 	<key>CFBundleDisplayName</key>
 	        <string>Rel</string>
+	<key>CFBundleTypeRole</key>          
+            <string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>rdb</string>
+				<string>rel</string>
+			</array>
+	<key>LSIsAppleDefaultForType</key>   <true/>
+	<key>CFBundleIconFile</key>  <string>RelAppIcon.icns</string>
   </dict>
 
 </plist>

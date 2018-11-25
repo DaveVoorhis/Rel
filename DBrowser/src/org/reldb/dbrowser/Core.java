@@ -31,8 +31,6 @@ public class Core {
 	private static DirectoryDialog newDatabaseDialog;
 	private static RemoteDatabaseDialog remoteDatabaseDialog;
 
-	private static OpenDocumentEventProcessor openDocProcessor = new OpenDocumentEventProcessor();
-
 	private static boolean noLocalRel = true;
 
 	private static String defaultDatabasePath = Paths.get(System.getProperty("user.home"), "DefaultRelDb").toString();
@@ -45,18 +43,18 @@ public class Core {
 		return noLocalRel;
 	}
 
-	public static void launch(String[] applicationArguments, Composite parent) {
-		parent.getDisplay().addListener(SWT.OpenDocument, openDocProcessor);
+	public static void launch(OpenDocumentEventProcessor openDocProcessor, Composite parent) {
 		parent.setLayout(new FillLayout());
 		mainPanel = new MainPanel(parent, SWT.None);
-		initialise(applicationArguments);
+		initialise(openDocProcessor);		
+		parent.getDisplay().addListener(SWT.OpenDocument, openDocProcessor);
 	}
 
 	public static void setStatus(String s) {
 		mainPanel.setStatus(s);
 	}
 
-	private static void initialise(String[] applicationArguments) {
+	private static void initialise(OpenDocumentEventProcessor openDocProcessor) {
 		openDatabaseDialog = new DirectoryDialog(getShell());
 		openDatabaseDialog.setText("Open Database");
 		openDatabaseDialog.setMessage("Select a folder that contains a database.");
@@ -116,7 +114,6 @@ public class Core {
 		if (!Preferences.getPreferenceBoolean(PreferencePageGeneral.SKIP_DEFAULT_DB_LOAD))
 			dbTab.openDefaultDatabase(defaultDatabasePath);
 
-		openDocProcessor.addFilesToOpen(applicationArguments);
 		String[] filesToOpen = openDocProcessor.retrieveFilesToOpen();
 		for (String fname : filesToOpen)
 			openFile(fname);
