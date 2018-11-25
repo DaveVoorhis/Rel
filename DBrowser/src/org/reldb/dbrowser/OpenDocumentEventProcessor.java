@@ -1,10 +1,9 @@
-package org.reldb.dbrowser.hooks;
+package org.reldb.dbrowser;
 
 import java.util.ArrayList;
 
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.reldb.dbrowser.Core;
 
 public class OpenDocumentEventProcessor implements Listener {
 	private ArrayList<String> filesToOpen = new ArrayList<String>(1);

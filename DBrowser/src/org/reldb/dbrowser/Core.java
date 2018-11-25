@@ -13,7 +13,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.reldb.dbrowser.hooks.OpenDocumentEventProcessor;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.MainPanel;
 import org.reldb.dbrowser.ui.ManageRecentlyUsedDialog;
@@ -22,7 +21,7 @@ import org.reldb.dbrowser.ui.RemoteDatabaseDialog.RemoteDatabaseDialogResponse;
 import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
-/** Root of RelUI. */
+/** Core of DBrowser. */
 public class Core {
 	private final static String recentlyUsedDatabaseListPreference = "recentlyUsedDatabaseList";
 
@@ -46,15 +45,7 @@ public class Core {
 	public static void launch(OpenDocumentEventProcessor openDocProcessor, Composite parent) {
 		parent.setLayout(new FillLayout());
 		mainPanel = new MainPanel(parent, SWT.None);
-		initialise(openDocProcessor);		
-		parent.getDisplay().addListener(SWT.OpenDocument, openDocProcessor);
-	}
-
-	public static void setStatus(String s) {
-		mainPanel.setStatus(s);
-	}
-
-	private static void initialise(OpenDocumentEventProcessor openDocProcessor) {
+		
 		openDatabaseDialog = new DirectoryDialog(getShell());
 		openDatabaseDialog.setText("Open Database");
 		openDatabaseDialog.setMessage("Select a folder that contains a database.");
@@ -115,10 +106,14 @@ public class Core {
 			dbTab.openDefaultDatabase(defaultDatabasePath);
 
 		String[] filesToOpen = openDocProcessor.retrieveFilesToOpen();
-		for (String fname : filesToOpen)
+		for (String fname: filesToOpen)
 			openFile(fname);
 
-		Core.setSelectionToLastDatabaseTab();
+		Core.setSelectionToLastDatabaseTab();		
+	}
+
+	public static void setStatus(String s) {
+		mainPanel.setStatus(s);
 	}
 
 	public static CTabFolder getTabFolder() {

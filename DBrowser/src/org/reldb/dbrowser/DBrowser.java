@@ -22,7 +22,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.reldb.dbrowser.commands.Commands;
-import org.reldb.dbrowser.hooks.OpenDocumentEventProcessor;
 import org.reldb.dbrowser.loading.Loading;
 import org.reldb.dbrowser.commands.AcceleratedMenuItem;
 import org.reldb.dbrowser.ui.AboutDialog;
@@ -390,12 +389,14 @@ public class DBrowser {
 	}
 	
 	public static void main(String[] args) {
-		OpenDocumentEventProcessor openDocProcessor = new OpenDocumentEventProcessor();
-		openDocProcessor.addFilesToOpen(args);
-
 		Display.setAppName(Version.getAppName());
 		Display.setAppVersion(Version.getVersion());
 		final Display display = new Display();
+		
+		OpenDocumentEventProcessor openDocProcessor = new OpenDocumentEventProcessor();
+		display.addListener(SWT.OpenDocument, openDocProcessor);
+		
+		openDocProcessor.addFilesToOpen(args);		
 
 		if (Util.isMac())
 			executeSplashInteractor(() -> {
@@ -408,7 +409,7 @@ public class DBrowser {
 		OSSpecific.launch(Version.getAppName(),
 			event -> quit(),
 			event -> new AboutDialog(shell).open(),
-			event -> (new Preferences(shell)).show()
+			event -> new Preferences(shell).show()
 		);
 
 		if (!Util.isMac()) {

@@ -27,16 +27,38 @@
 	<key>CFBundleDevelopmentRegion</key>
 		<string>English</string>		
 	<key>CFBundleDisplayName</key>
-	        <string>Rel</string>
-	<key>CFBundleTypeRole</key>          
-            <string>Editor</string>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>rdb</string>
-				<string>rel</string>
-			</array>
-	<key>LSIsAppleDefaultForType</key>   
-		<true/>
-  </dict>
+	    <string>Rel</string>
+	<key>CFBundleDocumentTypes</key> 
+		<array>
+		    <dict>
+		        <key>CFBundleTypeName</key>
+		        	<string>Rel database</string>
+		        <key>CFBundleTypeExtensions</key>
+		        	<array>
+		        		<string>rdb</string>
+		        	</array>
+		        <key>CFBundleTypeIconFile</key>
+		        	<string>RelAppIcon.icns</string>
+		        <key>CFBundleTypeRole</key>
+		        	<string>Editor</string>
+		        <key>LSHandlerRank</key>
+		        	<string>Owner</string>
+		    </dict>
+		    <dict>
+		        <key>CFBundleTypeName</key>
+		        	<string>Rel script</string>
+		        <key>CFBundleTypeExtensions</key>
+		        	<array>
+		        		<string>rel</string>
+		        	</array>
+		        <key>CFBundleTypeIconFile</key>
+		        	<string>RelAppIcon.icns</string>
+		        <key>CFBundleTypeRole</key>
+		        	<string>Editor</string>
+		        <key>LSHandlerRank</key>
+		        	<string>Owner</string>
+		    </dict>
+	    </array>
+</dict>
 
 </plist>
