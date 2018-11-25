@@ -20,6 +20,10 @@ public class CmdStyledText extends StyledText {
 		undoredo.redo();
 	}
 	
+	public void delete() {
+		parent.delete();
+	}
+	
 	public void selectAll() {
 		int topIndex = getTopIndex();
 		setSelection(0, getCharCount());
