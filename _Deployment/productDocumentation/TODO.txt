@@ -17,8 +17,6 @@
 - DBrowser: https://github.com/DaveVoorhis/Rel/issues/1
   Navigation keys and undo appear to be consumed by Nattable without performing
   appropriate actions. Fix.
-  
-- Rev: Comment visualiser does not handle line breaks correctly on Windows or Linux.
 
 - Rel: Add p LEFTJOIN q which would return 
         TUPLE {matched SAME_TYPE_AS(p JOIN q), missing SAME_TYPE_AS(q)}

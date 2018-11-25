@@ -17,6 +17,9 @@ Version 3.013 (1.0.26):
   - DBrowser: Preferences no longer stored in Rel application
     directory; now stored in user's home directory. This allows
     preserving preferences across Rel updates.
+
+  - DBrowser: Rev: The 'comment' visualiser now handles carriage
+    return correctly on all platforms.
   
   - Build: Module jars now generated via Ant build files; product 
     build scripts now generate all jars.
