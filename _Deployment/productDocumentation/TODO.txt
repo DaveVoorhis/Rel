@@ -1,7 +1,5 @@
 ** TO DO **
 
-- DBrowser: Saving a script with escape chars, e.g., \\blah, loads as \blah.
-
 - DBrowser: Closing a database tab should close its database.
 
 - DBrowser: Show recently-used database list in '+' tab.

@@ -29,7 +29,7 @@ public class Expression extends OperatorWithControlPanel {
 		if (tuple == null)
 			operatorLabel.setText("true");
 		else {
-			String definition = StringUtils.unquote(tuple.getAttributeValue("Definition").toString());
+			String definition = tuple.getAttributeValue("Definition").toString();
 			operatorLabel.setText(definition);
 		}
 	}

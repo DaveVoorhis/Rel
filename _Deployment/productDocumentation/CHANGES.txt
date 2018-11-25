@@ -20,7 +20,10 @@ Version 3.013 (1.0.26):
 
   - DBrowser: Rev: The 'comment' visualiser now handles carriage
     return correctly on all platforms.
-  
+    
+  - DBrowser: Bug: Saving a script with escape chars, 
+    e.g., \\blah, loads as \blah. Fixed.
+ 
   - Build: Module jars now generated via Ant build files; product 
     build scripts now generate all jars.
     

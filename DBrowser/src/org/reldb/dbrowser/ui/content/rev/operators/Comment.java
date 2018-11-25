@@ -46,7 +46,7 @@ public class Comment extends OperatorWithControlPanel {
 		if (tuple == null)
 			operatorLabel.setText("");
 		else {
-			String definition = StringUtils.unquote(tuple.getAttributeValue("Definition").toString());
+			String definition = tuple.getAttributeValue("Definition").toString();
 			operatorLabel.setText(definition);
 		}
 	}

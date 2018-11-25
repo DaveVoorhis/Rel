@@ -85,8 +85,8 @@ public class Update extends OperatorWithControlPanel {
 				specification += ",\n";
 			specification += "  TUPLE {";
 			specification += "ID " + (id++) + ", ";
-			specification += "attribute '" + updating.getAs() + "', ";
-			specification += "expression '" + StringUtils.quote(updating.getExpression()) + "'}";
+			specification += "attribute \"" + updating.getAs() + "\", ";
+			specification += "expression \"" + StringUtils.quote(updating.getExpression()) + "\"}";
 		}
 		specification += "}";
 		return specification;
@@ -100,7 +100,7 @@ public class Update extends OperatorWithControlPanel {
 		Iterator<Tuple> i = tuples.iterator();
 		while (i.hasNext()) {
 			Tuple t = i.next();
-			updatings.add(new Updating(StringUtils.unquote(t.getAttributeValue("expression").toString()),
+			updatings.add(new Updating(t.getAttributeValue("expression").toString(),
 					t.getAttributeValue("attribute").toString()));
 		}
 		updatings.add(new Updating());
