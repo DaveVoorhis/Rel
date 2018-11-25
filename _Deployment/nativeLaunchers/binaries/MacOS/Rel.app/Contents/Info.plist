@@ -35,8 +35,8 @@
 				<string>rdb</string>
 				<string>rel</string>
 			</array>
-	<key>LSIsAppleDefaultForType</key>   <true/>
-	<key>CFBundleIconFile</key>  <string>RelAppIcon.icns</string>
+	<key>LSIsAppleDefaultForType</key>   
+		<true/>
   </dict>
 
 </plist>
