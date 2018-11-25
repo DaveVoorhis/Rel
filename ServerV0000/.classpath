@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Client"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -32,7 +34,6 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/poi-ooxml-schemas-4.0.0.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/postgresql-42.2.5.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/xmlbeans-3.0.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Client"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-text-1.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

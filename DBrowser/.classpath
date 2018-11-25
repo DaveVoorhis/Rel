@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/swt_macos"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ServerV0000"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Client"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Server"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -53,10 +58,6 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/xmlbeans-3.0.1.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/swt/macos_64/swt.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/swt/org.eclipse.swt_3.108.0.v20180904-1901.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/swt_macos"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ServerV0000"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Client"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Server"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-text-1.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
