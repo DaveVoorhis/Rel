@@ -1,7 +1,5 @@
 ** TO DO **
 
-- DBrowser: Why don't standard file dialog boxes have titles?
-
 - DBrowser: Show recently-used database list in '+' tab.
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
@@ -13,6 +11,8 @@
   fail to launch editor.
 
 - DBrowser: Saving a script with escape chars, e.g., \\blah, loads as \blah.
+
+- DBrowser: Standard file dialog boxes missing titles on MacOS.
 
 - DBrowser: https://github.com/DaveVoorhis/Rel/issues/1
   Navigation keys and undo appear to be consumed by Nattable without performing
