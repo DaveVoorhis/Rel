@@ -1,5 +1,9 @@
 ** TO DO **
 
+- DBrowser: Saving a script with escape chars, e.g., \\blah, loads as \blah.
+
+- DBrowser: Closing a database tab should close its database.
+
 - DBrowser: Show recently-used database list in '+' tab.
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
@@ -9,8 +13,6 @@
 
 - DBrowser: Graphical editing of RVA value does not work. Appears to
   fail to launch editor.
-
-- DBrowser: Saving a script with escape chars, e.g., \\blah, loads as \blah.
 
 - DBrowser: Standard file dialog boxes missing titles on MacOS.
 
