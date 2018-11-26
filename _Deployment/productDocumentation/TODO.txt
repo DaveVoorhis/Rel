@@ -18,8 +18,14 @@
   Navigation keys and undo appear to be consumed by Nattable without performing
   appropriate actions. Fix.
 
-- Rel: Add p LEFTJOIN q which would return 
-        TUPLE {matched SAME_TYPE_AS(p JOIN q), missing SAME_TYPE_AS(q)}
+- Rel: Add p LEFT JOIN q which returns 
+        TUPLE {matched p JOIN q, missing p NOT MATCHING q}
+        
+- Rel: Add p RIGHT JOIN q which returns 
+        TUPLE {matched p JOIN q, missing q NOT MATCHING p}
+
+- Rel: Add p FULL JOIN q which returns
+        TUPLE {matched p JOIN q, missingLeft p NOT MATCHING q, missingRight q NOT MATCHING p}
 
 - Rel: Case #203: Chris Date says that R RENAME { A AS B , B AS A } should work 
     (see "SQL and Relational Theory", Chapter 7 page 145).
