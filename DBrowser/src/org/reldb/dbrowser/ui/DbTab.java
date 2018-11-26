@@ -16,6 +16,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.reldb.dbrowser.Core;
+import org.reldb.dbrowser.DBrowser;
 import org.reldb.dbrowser.commands.CommandActivator;
 import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.backup.Backup;
@@ -88,8 +89,10 @@ public class DbTab extends CTabItem {
 
 		ManagedToolbar toolBarDatabase = new ManagedToolbar(compDbLocation);
 		
-		new CommandActivator(null, toolBarDatabase, "NewDBIcon", SWT.NONE, "Create or open local database", e -> Core.newDatabase());
-		new CommandActivator(null, toolBarDatabase, "OpenDBLocalIcon", SWT.NONE, "Open local database", e -> Core.openLocalDatabase());
+		if (DBrowser.hasLocalRel()) {
+			new CommandActivator(null, toolBarDatabase, "NewDBIcon", SWT.NONE, "Create or open local database", e -> Core.newDatabase());
+			new CommandActivator(null, toolBarDatabase, "OpenDBLocalIcon", SWT.NONE, "Open local database", e -> Core.openLocalDatabase());
+		}
 		new CommandActivator(null, toolBarDatabase, "OpenDBRemoteIcon", SWT.NONE, "Open remote database", e -> Core.openRemoteDatabase());
 
 		textDbLocation = new Text(compDbLocation, SWT.BORDER);
@@ -419,7 +422,7 @@ public class DbTab extends CTabItem {
 		getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT));
 		try {
 			setText(dbURL);
-			if (Core.isNoLocalRel() && dbURL.startsWith("db:")) {
+			if (!DBrowser.hasLocalRel() && dbURL.startsWith("db:")) {
 				doConnectionResultFailed(new Throwable("Local Rel server is not installed."), dbURL);
 				return false;
 			}

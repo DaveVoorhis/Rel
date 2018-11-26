@@ -37,6 +37,7 @@ import org.reldb.swt.os_specific.OSSpecific;
 public class DBrowser {
 
 	static boolean createdScreenBar = false;
+	static boolean localRel = false;
 	
 	static Shell shell = null;
 	
@@ -72,8 +73,10 @@ public class DBrowser {
 		Menu menu = new Menu(fileItem);
 		fileItem.setMenu(menu);
 		
-		new AcceleratedMenuItem(menu, "&New Database\tCtrl-N", SWT.MOD1 | 'N', "NewDBIcon", e -> Core.newDatabase());
-		new AcceleratedMenuItem(menu, "Open &local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> Core.openLocalDatabase());
+		if (hasLocalRel()) {
+			new AcceleratedMenuItem(menu, "&New Database\tCtrl-N", SWT.MOD1 | 'N', "NewDBIcon", e -> Core.newDatabase());
+			new AcceleratedMenuItem(menu, "Open &local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> Core.openLocalDatabase());
+		}
 		new AcceleratedMenuItem(menu, "Open remote database\tCtrl-r", SWT.MOD1 | 'r', "OpenDBRemoteIcon", e-> Core.openRemoteDatabase());
 		
 		String[] dbURLs = Core.getRecentlyUsedDatabaseList();
@@ -81,6 +84,8 @@ public class DBrowser {
 			new MenuItem(menu, SWT.SEPARATOR);
 			int recentlyUsedCount = 0;
 			for (String dbURL: dbURLs) {
+				if (dbURL.startsWith("db:") && !hasLocalRel())
+					continue;
 				new AcceleratedMenuItem(menu, "Open " + dbURL, 0, "OpenDBLocalIcon", e -> Core.openDatabase(dbURL));
 				if (++recentlyUsedCount >= 15)	// arbitrarily decide 15 is enough
 					break;
@@ -392,6 +397,10 @@ public class DBrowser {
 		return iconImages.toArray(new Image[0]);		
 	}
 	
+	public static boolean hasLocalRel() {
+		return localRel;
+	}
+	
 	public static void main(String[] args) {
 		Display.setAppName(Version.getAppName());
 		Display.setAppVersion(Version.getVersion());
@@ -410,6 +419,13 @@ public class DBrowser {
 				}
 			});
 
+		try {
+			Class.forName("org.reldb.rel.Rel");
+			localRel = true;
+		} catch (ClassNotFoundException cnfe) {
+			localRel = false;
+		}
+		
 		OSSpecific.launch(Version.getAppName(),
 			event -> quit(),
 			event -> new AboutDialog(shell).open(),

@@ -30,16 +30,10 @@ public class Core {
 	private static DirectoryDialog newDatabaseDialog;
 	private static RemoteDatabaseDialog remoteDatabaseDialog;
 
-	private static boolean noLocalRel = true;
-
 	private static String defaultDatabasePath = Paths.get(System.getProperty("user.home"), "DefaultRelDb").toString();
 	
 	public static Shell getShell() {
 		return mainPanel.getShell();
-	}
-
-	public static boolean isNoLocalRel() {
-		return noLocalRel;
 	}
 
 	public static void launch(OpenDocumentEventProcessor openDocProcessor, Composite parent) {
@@ -93,13 +87,6 @@ public class Core {
 				System.exit(1);
 			}
 		});
-
-		try {
-			Class.forName("org.reldb.rel.Rel");
-			noLocalRel = false;
-		} catch (ClassNotFoundException cnfe) {
-			noLocalRel = true;
-		}
 
 		DbTab dbTab = new DbTab();
 		if (!Preferences.getPreferenceBoolean(PreferencePageGeneral.SKIP_DEFAULT_DB_LOAD))
