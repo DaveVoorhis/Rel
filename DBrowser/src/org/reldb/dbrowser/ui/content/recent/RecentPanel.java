@@ -10,8 +10,6 @@ import org.reldb.dbrowser.ui.DbTab;
 
 public class RecentPanel extends Composite {
 
-	private Label lblConvert;
-
 	/**
 	 * Create the composite.
 	 * 
@@ -25,7 +23,7 @@ public class RecentPanel extends Composite {
 		formLayout.marginHeight = 5;
 		setLayout(formLayout);
 
-		lblConvert = new Label(this, SWT.NONE);
+		Label lblConvert = new Label(this, SWT.NONE);
 		FormData fd_lblConvert = new FormData();
 		fd_lblConvert.top = new FormAttachment(0);
 		fd_lblConvert.left = new FormAttachment(0);
