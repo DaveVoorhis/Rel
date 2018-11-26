@@ -21,6 +21,7 @@ import org.reldb.dbrowser.commands.ManagedToolbar;
 import org.reldb.dbrowser.ui.backup.Backup;
 import org.reldb.dbrowser.ui.content.cmd.DbTabContentCmd;
 import org.reldb.dbrowser.ui.content.conversion.DbTabContentConversion;
+import org.reldb.dbrowser.ui.content.recent.DbTabContentRecent;
 import org.reldb.dbrowser.ui.content.rel.DbTabContentRel;
 import org.reldb.dbrowser.ui.content.rev.DbTabContentRev;
 import org.reldb.dbrowser.ui.crash.CrashTrap;
@@ -47,6 +48,7 @@ public class DbTab extends CTabItem {
 	private DbTabContentRel contentRel = null;
 	private DbTabContentRev contentRev = null;
 	private DbTabContentConversion contentConversion = null;
+	private DbTabContentRecent contentRecent = null;
 
 	private ManagedToolbar toolBarMode;
 
@@ -134,9 +136,30 @@ public class DbTab extends CTabItem {
 		};
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 
+		showRecentlyUsedList();
+		
 		core.pack();
 	}
 
+	private void showRecentlyUsedList() {
+		boolean existing = true;
+		if (contentRecent == null) {
+			existing = false;
+			Cursor oldCursor = getParent().getCursor();
+			getParent().setCursor(new Cursor(getParent().getDisplay(), SWT.CURSOR_WAIT));
+			try {
+				contentRecent = new DbTabContentRecent(DbTab.this, modeContent);
+			} finally {
+				getParent().getCursor().dispose();
+				getParent().setCursor(oldCursor);
+			}			
+		}
+		contentStack.topControl = contentRecent;
+		modeContent.layout();
+		if (existing)
+			contentRecent.redisplayed();
+	}
+	
 	private void showRel() {
 		boolean existing = true;
 		if (contentRel == null) {
@@ -248,6 +271,10 @@ public class DbTab extends CTabItem {
 		if (contentConversion != null) {
 			contentConversion.dispose();
 			contentConversion = null;
+		}
+		if (contentRecent != null) {
+			contentRecent.dispose();
+			contentRecent = null;
 		}
 		toolBarMode.setEnabled(false);
 	}
@@ -368,6 +395,7 @@ public class DbTab extends CTabItem {
 						+ " in the version of Rel last used to access it, back it up, and import the backup into a new database.");
 		} else
 			MessageDialog.openError(Core.getShell(), "Unable to open database", msg);
+		showRecentlyUsedList();
 	}
 
 	private AttemptConnectionResult openConnection(String dbURL, boolean createAllowed) {
@@ -447,8 +475,10 @@ public class DbTab extends CTabItem {
 
 	public void close() {
 		if (connection != null && connection.client != null) {
+			Core.removeRedundantPlusTabsExcept(this);
 			clearModes();
 			setImage(IconLoader.loadIcon("plusIcon"));
+			showRecentlyUsedList();
 		}
 	}
 

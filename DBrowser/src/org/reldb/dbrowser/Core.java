@@ -160,6 +160,18 @@ public class Core {
 			new DbTab();
 	}
 
+	public static void removeRedundantPlusTabsExcept(DbTab tabInUse) {
+		CTabItem[] tabs = mainPanel.getTabFolder().getItems();
+		for (CTabItem tab: tabs) {
+			if (tab instanceof DbTab) {
+				DbTab dbTab = (DbTab)tab;
+				if (!dbTab.isOpenOnADatabase() && dbTab != tabInUse)
+					dbTab.dispose();
+			}
+		}
+		mainPanel.layout();
+	}
+
 	public static DbTab selectEmptyTab() {
 		CTabItem[] tabs = mainPanel.getTabFolder().getItems();
 		DbTab lastTab = (DbTab) tabs[tabs.length - 1];
