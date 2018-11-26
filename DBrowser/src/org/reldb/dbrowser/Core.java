@@ -207,14 +207,13 @@ public class Core {
 
 	// Add this to the recently-used list if it's not there; move it up if it is
 	public static void updateRecentlyUsedDatabaseList(String dbURL) {
+		// TODO - Do something here to convert dbURL to some canonical version, particularly if local.
 		LinkedList<String> recentlyUsed = new LinkedList<String>();
 		recentlyUsed.addAll(Arrays.asList(Preferences.getPreferenceStringArray(recentlyUsedDatabaseListPreference)));
 		int indexOfDBURL = recentlyUsed.indexOf(dbURL);
 		if (indexOfDBURL >= 0)
 			recentlyUsed.remove(dbURL);
 		recentlyUsed.addFirst(dbURL);
-		if (recentlyUsed.size() > 15) // arbitrary maximum 15 items in the recently used database list
-			recentlyUsed.removeLast();
 		Preferences.setPreference(recentlyUsedDatabaseListPreference, recentlyUsed.toArray(new String[0]));
 	}
 

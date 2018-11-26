@@ -79,8 +79,12 @@ public class DBrowser {
 		String[] dbURLs = Core.getRecentlyUsedDatabaseList();
 		if (dbURLs.length > 0) {
 			new MenuItem(menu, SWT.SEPARATOR);
-			for (String dbURL: dbURLs)
+			int recentlyUsedCount = 0;
+			for (String dbURL: dbURLs) {
 				new AcceleratedMenuItem(menu, "Open " + dbURL, 0, "OpenDBLocalIcon", e -> Core.openDatabase(dbURL));
+				if (++recentlyUsedCount >= 15)	// arbitrarily decide 15 is enough
+					break;
+			}
 			new MenuItem(menu, SWT.SEPARATOR);			
 			new AcceleratedMenuItem(menu, "Clear above list of recently-opened databases", 0, (String)null, e -> Core.clearRecentlyUsedDatabaseList());
 			new AcceleratedMenuItem(menu, "Manage list of recently-opened databases...", 0, (String)null, e -> Core.manageRecentlyUsedDatabaseList());
