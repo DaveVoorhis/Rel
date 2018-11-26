@@ -23,6 +23,7 @@ public class RecentPanel extends Composite {
 		RowLayout rowLayout = new RowLayout();
 		rowLayout.wrap = true;
 		rowLayout.type = SWT.HORIZONTAL;
+		rowLayout.pack = false;
 		setLayout(rowLayout);
 		
 		Composite newDb = new Composite(this, SWT.BORDER);
