@@ -1,5 +1,7 @@
 ** TO DO **
 
+- DBrowser: Fix: closing last tab removes '+' tab.
+
 - DBrowser: Closing a database tab should close its database.
 
 - DBrowser: Show recently-used database list in '+' tab.

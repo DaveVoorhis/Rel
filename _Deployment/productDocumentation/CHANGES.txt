@@ -6,30 +6,38 @@ Version 3.013 (1.0.26):
     DBrowser provides same interface, but significantly
     fewer Eclipse framework dependencies.
 
-  - DBrowser: Export option dropped from relvar grids, as there
-    are other, better facilities for exporting to Excel.
+  - Enhancement: DBrowser: Export option dropped from relvar 
+    grids, as there are other, better facilities for 
+    exporting to Excel.
 
-  - DBrowser: Under Preferences, moved alternate output display 
-    option to Display tab.
+  - Enhancement: DBrowser: Under Preferences, moved 
+    alternate output display option to Display tab.
 
-  - DBrowser: Improved handling of icon resizing via Preferences.
+  - Enhancement: DBrowser: Improved handling of icon 
+    resizing via Preferences.
   
-  - DBrowser: Preferences no longer stored in Rel application
-    directory; now stored in user's home directory. This allows
-    preserving preferences across Rel updates.
+  - Enhancement: DBrowser: Preferences no longer stored in Rel 
+    application directory; now stored in user's home directory. 
+    This allows keeping preferences across Rel updates.
 
-  - DBrowser: Rev: The 'comment' visualiser now handles carriage
-    return correctly on all platforms.
+  - Enhancement: DBrowser: Now supports "remote only" mode
+    where only connections to remote databases are possible.
+    To enable, delete rel0*.jar (e.g. rel0000.jar),
+    RelDBMS.jar, and RelTest.jar from lib/rel.
+     
+  - Enhancement: Client library: Decoupled Server/ServerV0000 
+    from Client to permit use of relclient.jar on its own 
+    (plus relshared.jar) to facilitate developing purely 
+    remote clients.
+
+  - Enhancement: Build: Module jars now generated via Ant 
+    build files; product build scripts now generate all jars.
+
+  - Bug fix: DBrowser: The 'comment' visualiser in Rev now 
+    handles carriage return correctly on all platforms.
     
-  - DBrowser: Bug: Saving a script with escape chars, 
+  - Bug fix: DBrowser: Saving a script with escape chars, 
     e.g., \\blah, loads as \blah. Fixed.
- 
-  - Build: Module jars now generated via Ant build files; product 
-    build scripts now generate all jars.
-    
-  - Client library: Decoupled Server/ServerV0000 from Client to
-    permit use of relclient.jar on its own (plus relshared.jar) 
-    to facilitate developing purely remote clients.
 
 Version 3.012 (1.0.25):
 
