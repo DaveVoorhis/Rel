@@ -156,6 +156,7 @@ public class Core {
 					dbTab.dispose();
 			}
 		}
+		createNewTabIfNeeded();
 		mainPanel.layout();
 	}
 
