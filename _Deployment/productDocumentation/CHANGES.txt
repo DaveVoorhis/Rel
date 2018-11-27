@@ -48,6 +48,9 @@ Version 3.013 (1.0.26):
     Edit mode caused odd problems, such as the content not re-
     sizing, scrollbars disappearing, etc. Fixed.
 
+  - Bug fix: DBrowser: Graphical editing of RVA value did not work
+    due to failure to launch RVA editor. Fixed.
+
 Version 3.012 (1.0.25):
 
   - Enhancement: Rel DBMS: Now provides -q command-line option

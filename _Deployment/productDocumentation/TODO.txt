@@ -7,9 +7,6 @@
 
 - DBrowser: Make Windows native launcher dockable (hidden window?)
 
-- DBrowser: Graphical editing of RVA value does not work. Appears to
-  fail to launch editor.
-
 - DBrowser: Standard file dialog boxes missing titles on MacOS.
 
 - DBrowser: https://github.com/DaveVoorhis/Rel/issues/1

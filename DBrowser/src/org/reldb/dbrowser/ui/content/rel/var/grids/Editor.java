@@ -719,7 +719,7 @@ public abstract class Editor extends Grid {
 	}
 
 	public Editor(Composite parent, DbConnection connection, FilterSorterSource filterSorterSource) {
-		super(parent, connection, filterSorterSource.getFilterSorter().getBaseExpression());
+		super(parent, connection, (filterSorterSource != null) ? filterSorterSource.getFilterSorter().getBaseExpression() : null);
 		this.filterSorterSource = filterSorterSource;
 	}
 
@@ -996,7 +996,8 @@ public abstract class Editor extends Grid {
 	protected abstract String getAttributeSource();
 
 	protected Tuples obtainTuples() {
-		return connection.getTuples(filterSorterSource.getFilterSorter().getQuery());
+		return (filterSorterSource != null) ? connection.getTuples(filterSorterSource.getFilterSorter().getQuery())
+				: connection.getTuples(getAttributeSource());
 	}
 
 	public void goToInsertRow() {
