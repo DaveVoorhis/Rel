@@ -1,5 +1,11 @@
 ** TO DO **
 
+- DBrowser: Recently-used databases submenu shouldn't move to the bottom
+  of the File menu.
+
+- DBrowser: Resizing the main window causes odd resizing behaviour in
+  the content area of Rel mode, but only apparently under Windows.
+
 - DBrowser: Whilst using relvar edit grid, check for vanishing right-hand
   scrollbar on Windows.
 
