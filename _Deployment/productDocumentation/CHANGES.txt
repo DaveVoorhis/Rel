@@ -44,6 +44,10 @@ Version 3.013 (1.0.26):
   - Bug fix: DBrowser: Saving a script with escape chars, 
     e.g., \\blah, loads as \blah. Fixed.
 
+  - Bug fix: DBrowser: Resizing the Rel window whilst in relvar
+    Edit mode caused odd problems, such as the content not re-
+    sizing, scrollbars disappearing, etc. Fixed.
+
 Version 3.012 (1.0.25):
 
   - Enhancement: Rel DBMS: Now provides -q command-line option
