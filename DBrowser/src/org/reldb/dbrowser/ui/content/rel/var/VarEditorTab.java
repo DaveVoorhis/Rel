@@ -18,7 +18,6 @@ public class VarEditorTab extends DbTreeTab implements FilterSorterSource {
 	
 	public VarEditorTab(RelPanel parent, DbTreeItem item, FilterSorter filterSorter) {
 		super(parent, item);
-		parent.setLayout(null);
 		
 		Composite displayPanel = new Composite(parent.getTabFolder(), SWT.NONE) {
 			public boolean setFocus() {
@@ -43,7 +42,7 @@ public class VarEditorTab extends DbTreeTab implements FilterSorterSource {
 			relvarEditor.refresh();
 			ready();
 		});
-		
+
 		relvarEditor = new RelvarEditor(displayPanel, parent.getConnection(), this);
 		relvarEditor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
