@@ -10,6 +10,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Rectangle;
 import org.reldb.dbrowser.Core;
+import org.reldb.dbrowser.DBrowser;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.IconLoader;
 
@@ -59,12 +60,15 @@ public class RecentPanel extends ScrolledComposite {
 		createItem(content, "Create a new database", "large_database_create", null, e -> Core.newDatabase());
 		createItem(content, "Open a local database", "large_database_load", null, e -> Core.openLocalDatabase());
 		createItem(content, "Open a remote database", "large_database_load", null, e -> Core.openRemoteDatabase());
-		for (String dbURL: Core.getRecentlyUsedDatabaseList())
+		for (String dbURL: Core.getRecentlyUsedDatabaseList()) {
+			if (dbURL.startsWith("db:") && !DBrowser.hasLocalRel())
+				continue;
 			createItem(content,
 					"Open " + dbURL, 
 					"large_database_load",
 					dbURL,
 					e -> Core.openDatabase(dbURL));
+		}
 		
 		return content;
 	}
