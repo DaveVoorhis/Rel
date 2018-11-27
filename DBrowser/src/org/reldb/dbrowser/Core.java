@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Vector;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -15,7 +16,6 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.MainPanel;
-import org.reldb.dbrowser.ui.ManageRecentlyUsedDialog;
 import org.reldb.dbrowser.ui.RemoteDatabaseDialog;
 import org.reldb.dbrowser.ui.RemoteDatabaseDialog.RemoteDatabaseDialogResponse;
 import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
@@ -195,7 +195,10 @@ public class Core {
 
 	// Add this to the recently-used list if it's not there; move it up if it is
 	public static void updateRecentlyUsedDatabaseList(String dbURL) {
-		// TODO - Do something here to convert dbURL to some canonical version, particularly if local.
+		if (dbURL.startsWith("db:")) {
+			File urlFileRef = new File(dbURL.substring(3));
+			dbURL = "db:" + urlFileRef.getAbsolutePath();
+		}
 		LinkedList<String> recentlyUsed = new LinkedList<String>();
 		recentlyUsed.addAll(Arrays.asList(Preferences.getPreferenceStringArray(recentlyUsedDatabaseListPreference)));
 		int indexOfDBURL = recentlyUsed.indexOf(dbURL);
@@ -205,15 +208,11 @@ public class Core {
 		Preferences.setPreference(recentlyUsedDatabaseListPreference, recentlyUsed.toArray(new String[0]));
 	}
 
-	public static void clearRecentlyUsedDatabaseList() {
-		if (MessageDialog.openConfirm(getShell(), "Clear list of recently-opened databases?",
-				"Are you sure you wish to clear the list of recently-opened databases?"))
-			Preferences.setPreference(recentlyUsedDatabaseListPreference, new String[0]);
-	}
-
-	public static void manageRecentlyUsedDatabaseList() {
-		ManageRecentlyUsedDialog dialog = new ManageRecentlyUsedDialog(getShell());
-		dialog.open();
+	public static void removeFromRecentlyUsedDatabaseList(String dbURL) {
+		String[] keepers = getRecentlyUsedDatabaseList();
+		Vector<String> keeperVector = new Vector<>(Arrays.asList(keepers));
+		keeperVector.remove(dbURL);
+		setRecentlyUsedDatabaseList(keeperVector.toArray(new String[0]));
 	}
 
 	public static String[] getRecentlyUsedDatabaseList() {

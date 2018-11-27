@@ -25,6 +25,11 @@ Version 3.013 (1.0.26):
     To enable, delete rel0*.jar (e.g. rel0000.jar),
     RelDBMS.jar, and RelTest.jar from lib/rel.
      
+  - Enhancement: DBrowser: '+' tab now provides list of
+    recently-used databases and means to delete entries.
+    As a result, management entries removed from main
+    menu.
+     
   - Enhancement: Client library: Decoupled Server/ServerV0000 
     from Client to permit use of relclient.jar on its own 
     (plus relshared.jar) to facilitate developing purely 

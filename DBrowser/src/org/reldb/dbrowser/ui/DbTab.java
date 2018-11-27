@@ -306,6 +306,8 @@ public class DbTab extends CTabItem {
 	}
 
 	private void doConnectionResultSuccess(DbConnection client, String dbURL, boolean permanent) {
+		Core.updateRecentlyUsedDatabaseList(dbURL);
+		
 		setImage(IconLoader.loadIcon("DatabaseIcon"));
 
 		setStatus("Ok");
@@ -338,8 +340,6 @@ public class DbTab extends CTabItem {
 		});
 
 		Core.createNewTabIfNeeded();
-
-		Core.updateRecentlyUsedDatabaseList(dbURL);
 	}
 
 	public void refresh() {

@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.*;
 import org.eclipse.swt.dnd.Clipboard;
@@ -90,9 +91,6 @@ public class DBrowser {
 				if (++recentlyUsedCount >= 15)	// arbitrarily decide 15 is enough
 					break;
 			}
-			new MenuItem(menu, SWT.SEPARATOR);			
-			new AcceleratedMenuItem(menu, "Clear above list of recently-opened databases", 0, (String)null, e -> Core.clearRecentlyUsedDatabaseList());
-			new AcceleratedMenuItem(menu, "Manage list of recently-opened databases...", 0, (String)null, e -> Core.manageRecentlyUsedDatabaseList());
 		}
 		OSSpecific.addFileMenuItems(menu);
 	}
@@ -401,7 +399,7 @@ public class DBrowser {
 		return localRel;
 	}
 	
-	public static void main(String[] args) {
+	private static void launch(String[] args) {
 		Display.setAppName(Version.getAppName());
 		Display.setAppVersion(Version.getVersion());
 		final Display display = new Display();
@@ -487,8 +485,17 @@ public class DBrowser {
 				t.printStackTrace();
 			}
 		}
-		
-		System.exit(0);
+	}
+	
+	public static void main(String[] args) {
+		try {
+			launch(args);
+		} catch (Throwable t) {
+			t.printStackTrace();
+			MessageDialog.openError(null, "Launch Failure", "Check the system log for details about:\n\n" + t.toString());
+		} finally {
+			System.exit(0);
+		}
 	}
 
 }
