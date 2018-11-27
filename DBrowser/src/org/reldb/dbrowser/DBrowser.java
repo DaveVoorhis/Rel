@@ -66,6 +66,8 @@ public class DBrowser {
 			System.out.println("Error trying to free resources: " + t);
 		}
 	}
+
+	private static MenuItem recentItem;
 	
 	private static void createFileMenu(Menu bar) {	
 		MenuItem fileItem = new MenuItem(bar, SWT.CASCADE);			
@@ -79,19 +81,32 @@ public class DBrowser {
 			new AcceleratedMenuItem(menu, "Open &local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> Core.openLocalDatabase());
 		}
 		new AcceleratedMenuItem(menu, "Open remote database\tCtrl-r", SWT.MOD1 | 'r', "OpenDBRemoteIcon", e-> Core.openRemoteDatabase());
-		
-		String[] dbURLs = Core.getRecentlyUsedDatabaseList();
-		if (dbURLs.length > 0) {
-			new MenuItem(menu, SWT.SEPARATOR);
-			int recentlyUsedCount = 0;
-			for (String dbURL: dbURLs) {
-				if (dbURL.startsWith("db:") && !hasLocalRel())
-					continue;
-				new AcceleratedMenuItem(menu, "Open " + dbURL, 0, "OpenDBLocalIcon", e -> Core.openDatabase(dbURL));
-				if (++recentlyUsedCount >= 15)	// arbitrarily decide 15 is enough
-					break;
+				
+		menu.addMenuListener(new MenuAdapter() {
+			@Override
+			public void menuShown(MenuEvent arg0) {
+				if (recentItem != null)
+					recentItem.dispose();
+				String[] dbURLs = Core.getRecentlyUsedDatabaseList();
+				if (dbURLs.length > 0) {
+					recentItem = new MenuItem(menu, SWT.CASCADE);
+					recentItem.setText("Recently-opened databases");
+					Menu recentDatabases = new Menu(menu);
+					recentItem.setMenu(recentDatabases);
+					int recentlyUsedCount = 0;
+					for (String dbURL: dbURLs) {
+						if (dbURL.startsWith("db:") && !hasLocalRel())
+							continue;
+						(new AcceleratedMenuItem(recentDatabases, "Open " + dbURL, 0, "OpenDBLocalIcon", e -> Core.openDatabase(dbURL))).setEnabled(Core.databaseMayExist(dbURL));
+						if (++recentlyUsedCount >= 20)	// arbitrarily decide 20 is enough
+							break;
+					}
+					new MenuItem(recentDatabases, SWT.SEPARATOR);
+					new AcceleratedMenuItem(recentDatabases, "Clear this list...", 0, null, e -> Core.clearRecentlyUsedDatabaseList());
+				}
 			}
-		}
+		});
+		
 		OSSpecific.addFileMenuItems(menu);
 	}
 	

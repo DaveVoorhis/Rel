@@ -222,5 +222,19 @@ public class Core {
 	public static void setRecentlyUsedDatabaseList(String[] usedList) {
 		Preferences.setPreference(recentlyUsedDatabaseListPreference, usedList);
 	}
+	
+	public static void clearRecentlyUsedDatabaseList() {
+		if (MessageDialog.openConfirm(getShell(), "Clear list of recently-opened databases?",
+				"Are you sure you wish to clear the list of recently-opened databases?"))
+			Preferences.setPreference(recentlyUsedDatabaseListPreference, new String[0]);
+	}
+
+	/* Return true if a local database directory or .rdb file exists. Return true if it's a remote database. Otherwise return false. */
+	public static boolean databaseMayExist(String dbURL) {
+		if (!dbURL.startsWith("db:"))
+			return true;
+		File databaseFile = new File(dbURL.substring(3));
+		return databaseFile.exists();
+	}
 
 }

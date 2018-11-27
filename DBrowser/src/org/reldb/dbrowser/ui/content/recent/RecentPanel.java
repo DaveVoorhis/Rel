@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.layout.RowLayout;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Rectangle;
@@ -15,29 +16,36 @@ import org.reldb.dbrowser.ui.IconLoader;
 public class RecentPanel extends ScrolledComposite {
 
 	private void createItem(Composite parent, String prompt, String iconName, String dbURL, Listener action) {
+		boolean enabled = true;
+		if (dbURL != null)
+			enabled = Core.databaseMayExist(dbURL);
+
 		Composite panel = new Composite(parent, SWT.TRANSPARENT);		
 		panel.setLayout(new RowLayout(SWT.VERTICAL));
 		
 		Composite topPanel = new Composite(panel, SWT.TRANSPARENT);		
 		topPanel.setLayout(new RowLayout(SWT.HORIZONTAL));
 		
-		Label label = new Label(topPanel, SWT.NONE);
-		label.setImage(IconLoader.loadIcon(iconName));
-		label.addListener(SWT.MouseUp, action);
+		Button icon = new Button(topPanel, SWT.FLAT);
+		icon.setImage(IconLoader.loadIcon(iconName));
+		icon.addListener(SWT.Selection, action);
+		icon.setEnabled(enabled);
 		
 		if (dbURL != null) {
 			Button removeButton = new Button(topPanel, SWT.NONE);
 			removeButton.setText("X");
-			removeButton.setToolTipText("Remove this entry from this display.");
+			removeButton.setToolTipText("Remove this entry from this list of recently-used databases." + ((enabled) ? " The database will not be deleted." : ""));
 			removeButton.addListener(SWT.Selection, e -> {
 				Core.removeFromRecentlyUsedDatabaseList(dbURL);
 				((DbTabContentRecent)getParent()).redisplayed();
 			});
 		}
 
-		Label actionButton = new Label(panel, SWT.NONE);
-		actionButton.setText(prompt);
-		actionButton.addListener(SWT.MouseUp, action);
+		Label urlButton = new Label(panel, SWT.NONE);
+		urlButton.setText(prompt);
+		urlButton.addListener(SWT.MouseUp, action);
+		if (!enabled)
+			urlButton.setForeground(getDisplay().getSystemColor(SWT.COLOR_TITLE_INACTIVE_FOREGROUND));
 	}
 
 	private Composite obtainContent() {
