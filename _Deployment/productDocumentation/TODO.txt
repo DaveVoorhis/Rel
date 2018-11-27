@@ -1,5 +1,8 @@
 ** TO DO **
 
+- DBrowser: Whilst using relvar edit grid, check for vanishing right-hand
+  scrollbar on Windows.
+
 - DBrowser: Closing a database tab should close its database.
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
