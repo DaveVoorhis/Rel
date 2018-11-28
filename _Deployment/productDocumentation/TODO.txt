@@ -30,6 +30,12 @@
 	This gives: Error RS0249: Attribute 'PNO' has already been defined
 	Apparently this is done in sequence instead of in parallel.
 
+- Rel: Currently, it seems that Rel does not fully support the parallel 
+  execution of individual renamings which is specified in Tutorial D. For instance,
+	        TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x}
+  does not evaluate to tuple with x and y interchanged as it 
+  should (Rel reports an error).
+
 - Rel: Issue:
     S WHERE (WITH (x := true): x) 
   works but 
@@ -149,11 +155,6 @@
 	   VAR Base_data_type BASE RELATION { name identifier } KEY { name } ;
   Rel goes into an infinite loop on the final definition.
   Appears to be due to VALUE = THE_VALUE (...) which results in unresolved recursive reference.
-
-- Currently, it seems that Rel does not fully support the parallel execution of individual renamings 
-  which is specified in Tutorial D. For instance,
-	        TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x}
-  does not evaluate to tuple with x and y interchanged as it should (Rel reports an error).
   
 - Enhancement:  Use the following TCLOSE:
   // Based on submission by Vilem Vychodil, Palacky University in Olomouc (Czech Republic)
