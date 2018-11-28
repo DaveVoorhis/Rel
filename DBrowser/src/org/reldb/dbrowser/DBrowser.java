@@ -30,6 +30,7 @@ import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.feedback.BugReportDialog;
 import org.reldb.dbrowser.ui.feedback.SuggestionboxDialog;
 import org.reldb.dbrowser.ui.log.LogWin;
+import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 import org.reldb.dbrowser.ui.updates.UpdatesCheckDialog;
 import org.reldb.dbrowser.ui.version.Version;
@@ -75,7 +76,7 @@ public class DBrowser {
 		fileItem.setMenu(menu);
 		
 		if (hasLocalRel()) {
-			new AcceleratedMenuItem(menu, "&New Database\tCtrl-N", SWT.MOD1 | 'N', "NewDBIcon", e -> Core.newDatabase());
+			new AcceleratedMenuItem(menu, "&New Database\tCtrl-n", SWT.MOD1 | 'n', "NewDBIcon", e -> Core.newDatabase());
 			new AcceleratedMenuItem(menu, "Open &local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> Core.openLocalDatabase());
 		}
 		new AcceleratedMenuItem(menu, "Open remote database\tCtrl-r", SWT.MOD1 | 'r', "OpenDBRemoteIcon", e-> Core.openRemoteDatabase());
@@ -444,7 +445,7 @@ public class DBrowser {
 
 		if (!Util.isMac()) {
 			SplashScreen splash = SplashScreen.getSplashScreen();
-			if (splash != null) {
+			if (splash != null && !Preferences.getPreferenceBoolean(PreferencePageGeneral.SKIP_DEFAULT_DB_LOAD)) {
 				Graphics2D gc = splash.createGraphics();
 				Rectangle rect = splash.getBounds();
 				int barWidth = rect.width - 20;
