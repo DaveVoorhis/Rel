@@ -202,7 +202,8 @@ public class LogWin {
 	 * Close the window.
 	 */
 	private void close() {
-		shell.close();
+		if (!shell.isDisposed())
+			shell.close();
 	}
 
 	public void dispose() {
