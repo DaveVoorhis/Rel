@@ -24,18 +24,6 @@
         	missingRight q NOT MATCHING p
           }
 
-- Rel: Case #203: Chris Date says that R RENAME { A AS B , B AS A } should work 
-    (see "SQL and Relational Theory", Chapter 7 page 145).
-	So I tried: SP RENAME {SNO AS PNO, PNO AS SNO}
-	This gives: Error RS0249: Attribute 'PNO' has already been defined
-	Apparently this is done in sequence instead of in parallel.
-
-- Rel: Currently, it seems that Rel does not fully support the parallel 
-  execution of individual renamings which is specified in Tutorial D. For instance,
-	        TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x}
-  does not evaluate to tuple with x and y interchanged as it 
-  should (Rel reports an error).
-
 - Rel: Issue:
     S WHERE (WITH (x := true): x) 
   works but 

@@ -1255,14 +1255,18 @@ public class TutorialDParser implements TutorialDVisitor {
 			String getName() {return "RENAME";}
 			TypeTuple compileTupleOperation(TypeTuple operand) {
 				// Child 1 - renaming list
+				Renaming renaming = new Renaming();
+				compileChild(node, 1, renaming);
 				Heading newHeading = new Heading(operand);
-				compileChild(node, 1, newHeading);
+				newHeading.rename(renaming);
 				return new TypeTuple(newHeading);
 			}
 			TypeRelation compileRelationOperation(TypeRelation operand) {
 				// Child 1 - renaming list
+				Renaming renaming = new Renaming();
+				compileChild(node, 1, renaming);
 				Heading newHeading = new Heading(operand);
-				compileChild(node, 1, newHeading);
+				newHeading.rename(renaming);
 				return new TypeRelation(newHeading);
 			}
 		});
@@ -1271,51 +1275,48 @@ public class TutorialDParser implements TutorialDVisitor {
 	// Renaming list
 	public Object visit(ASTRenamingList node, Object data) {
 		currentNode = node;
-		Heading newHeading = (Heading)data;
+		Renaming renaming = (Renaming)data;
 		for (int i = 0; i < getChildCount(node); i++)
-			compileChild(node, i, newHeading);
+			compileChild(node, i, renaming);
 		return null;
 	}
 
 	// Simple rename element
 	public Object visit(ASTRenamingSimple node, Object data) {
 		currentNode = node;
-		// data is Heading
-		Heading newHeading = (Heading)data;
+		// data is Renaming
+		Renaming renaming = (Renaming)data;
 		// Child 0 - name from
 		String nameFrom = getTokenOfChild(node, 0);
 		// Child 1 - name to
 		String nameTo = getTokenOfChild(node, 1);
-		if (!newHeading.rename(nameFrom, nameTo))
-			throw new ExceptionSemantic("RS0120: Rename from " + nameFrom + " to " + nameTo + " found no matching attributes.");
+		renaming.addRename(nameFrom, nameTo);
 		return null;
 	}
 	
 	// Prefix rename element
 	public Object visit(ASTRenamingPrefix node, Object data) {
 		currentNode = node;
-		// data is Heading
-		Heading newHeading = (Heading)data;
+		// data is Renaming
+		Renaming renaming = (Renaming)data;
 		// Child 0 - name from
 		String nameFrom = (String)compileChild(node, 0, data);
 		// Child 1 - name to
 		String nameTo = (String)compileChild(node, 1, data);
-		if (!newHeading.renamePrefix(nameFrom, nameTo))
-			throw new ExceptionSemantic("RS0121: Rename from prefix " + nameFrom + " to " + nameTo + " found no matching attributes.");
+		renaming.addRenamePrefix(nameFrom, nameTo);		
 		return null;
 	}
 	
 	// Suffix rename element
 	public Object visit(ASTRenamingSuffix node, Object data) {
 		currentNode = node;
-		// data is Heading
-		Heading newHeading = (Heading)data;
+		// data is Renaming
+		Renaming renaming = (Renaming)data;
 		// Child 0 - name from
 		String nameFrom = (String)compileChild(node, 0, data);
 		// Child 1 - name to
 		String nameTo = (String)compileChild(node, 1, data);
-		if (!newHeading.renameSuffix(nameFrom, nameTo))
-			throw new ExceptionSemantic("RS0122: Rename from suffix " + nameFrom + " to " + nameTo + " found no matching attributes.");
+		renaming.addRenameSuffix(nameFrom, nameTo);		
 		return null;
 	}
 	
@@ -2619,18 +2620,24 @@ public class TutorialDParser implements TutorialDVisitor {
 			final String aggregationSerialAttributeName = "AGGREGATION_SERIAL";
 			
 			// sourceRenaming := source RENAME {AGGREGAND AS %random1, AGGREGATION_SERIAL AS %random2}
-			Heading sourceRenaming = (source instanceof TypeArray) ? ((TypeArray)source).getHeading() : ((TypeRelation)source).getHeading();
-			sourceRenaming.rename(aggregandAttributeName, sourceRenaming.getRandomFreeAttributeName());
-			sourceRenaming.rename(aggregationSerialAttributeName, sourceRenaming.getRandomFreeAttributeName());
+			Heading sourceHeading = (source instanceof TypeArray) ? ((TypeArray)source).getHeading() : ((TypeRelation)source).getHeading();
+			Renaming sourceRenaming = new Renaming();
+			if (sourceHeading.getAttribute(aggregandAttributeName) != null)
+				sourceRenaming.addRename(aggregandAttributeName, sourceHeading.getRandomFreeAttributeName());
+			if (sourceHeading.getAttribute(aggregationSerialAttributeName) != null)
+				sourceRenaming.addRename(aggregationSerialAttributeName, sourceHeading.getRandomFreeAttributeName());
+			sourceHeading.rename(sourceRenaming);
 
 			// extendedType := EXTEND sourceRenaming {AGGREGATION_SERIAL := serial_number()}
-			Generator.Extend extend = generator.new Extend(sourceRenaming);
+			Generator.Extend extend = generator.new Extend(sourceHeading);
 			extend.addExtendSerialiser(aggregationSerialAttributeName);
 			TypeArray extendedType = generator.endArrayExtend(extend);
 			
 			// renamed := extendedType RENAME {aggregandName AS AGGREGAND}
 			Heading renamed = extendedType.getHeading();
-			renamed.rename(aggregandName, aggregandAttributeName);
+			Renaming extendedTypeRenaming = new Renaming();
+			extendedTypeRenaming.addRename(aggregandName, aggregandAttributeName);
+			renamed.rename(extendedTypeRenaming);
 			
 			// extendedRelationExprType := renamed {AGGREGAND, AGGREGATION_SERIAL}
 			SelectAttributes attributes = new SelectAttributes();

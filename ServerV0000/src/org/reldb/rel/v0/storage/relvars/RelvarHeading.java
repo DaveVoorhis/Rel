@@ -5,6 +5,7 @@ import java.util.Vector;
 import org.reldb.rel.exceptions.*;
 import org.reldb.rel.v0.generator.SelectAttributes;
 import org.reldb.rel.v0.types.Heading;
+import org.reldb.rel.v0.types.Renaming;
 import org.reldb.rel.v0.types.Type;
 
 public class RelvarHeading {
@@ -81,8 +82,9 @@ public class RelvarHeading {
 	}
 
 	public void renameAttribute(String oldAttributeName, String newAttributeName) {
-		if (!heading.rename(oldAttributeName, newAttributeName))
-			throw new ExceptionSemantic("RS0436: Attribute '" + oldAttributeName + "' not found.");
+		Renaming renaming = new Renaming();
+		renaming.addRename(oldAttributeName, newAttributeName);
+		heading.rename(renaming);
 		if (keys.size() == 0)
 			return;
 		for (SelectAttributes key: keys)

@@ -50,6 +50,10 @@ Version 3.013 (1.0.26):
 
   - Bug fix: DBrowser: Graphical editing of RVA value did not work
     due to failure to launch RVA editor. Fixed.
+    
+  - Bug fix: Rel: parallel RENAME now supported. E.g., 
+    TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x} works.
+    Case #203 fixed.
 
 Version 3.012 (1.0.25):
 

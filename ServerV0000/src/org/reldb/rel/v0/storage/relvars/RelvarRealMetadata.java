@@ -7,6 +7,7 @@ import org.reldb.rel.v0.generator.SelectAttributes;
 import org.reldb.rel.v0.storage.RelDatabase;
 import org.reldb.rel.v0.storage.tables.StorageNames;
 import org.reldb.rel.v0.types.Heading;
+import org.reldb.rel.v0.types.Renaming;
 
 
 public class RelvarRealMetadata extends RelvarMetadata {
@@ -43,8 +44,9 @@ public class RelvarRealMetadata extends RelvarMetadata {
 			throw new ExceptionSemantic("RS0424: new attribute name '" + newAttributeName + "' already exists.");
 		
 		// update metadata, renaming the old attribute name to the new one
-		if (!heading.rename(oldAttributeName, newAttributeName))
-			throw new ExceptionSemantic("RS0422: attribute '" + oldAttributeName + "' not found.");
+		Renaming renaming = new Renaming();
+		renaming.addRename(oldAttributeName, newAttributeName);
+		heading.rename(renaming);
 		
 		// create new relvar heading (including updated KEY info) from freshly-updated old heading
 		RelvarHeading newHeading = new RelvarHeading(heading);

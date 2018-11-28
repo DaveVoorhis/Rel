@@ -108,46 +108,75 @@ public class Heading implements Comparable<Heading> {
 			throw new ExceptionSemantic("RS0247: Attribute '" + name + "' not found.");
 		attributes.remove(index);
 	}
-	
-	/** Rename a given attribute. */
-	private void rename(Attribute oldAttribute, String newName) {
-		int index = getIndexOf(oldAttribute.getName());
-		if (index == -1)
-			throw new ExceptionSemantic("RS0248: Attribute '" + oldAttribute.getName() + "' not found.");
-		if (getAttribute(newName) != null)
-			throw new ExceptionSemantic("RS0249: Attribute '" + newName + "' has already been defined.");
-		attributes.set(index, new Attribute(newName, oldAttribute.getType()));
-	}
-	
-	/** Rename an attribute.  Return false if no match found. */
-	public boolean rename(String from, String to) {
-		Attribute oldAttribute = getAttribute(from);
-		if (oldAttribute == null)
-			return false;
-		rename(oldAttribute, to);
-		return true;
-	}
-	
-	/** Rename all attributes with a given prefix.  Return false if no match found. */
-	public boolean renamePrefix(String from, String to) {
-		boolean renamed = false;
-		for (Attribute attribute: attributes)
-			if (attribute.getName().startsWith(from)) {
-				rename(attribute, to + attribute.getName().substring(from.length()));
-				renamed = true;
+		
+	/** Perform a renaming given a renaming specification. */
+	public void rename(Renaming renaming) {
+		HashMap<String, String> renamings = new HashMap<>();
+		for (Renaming.FromTo fromTo: renaming.getRenamings()) {
+			String from = fromTo.getFrom();
+			String to = fromTo.getTo();
+			if (fromTo instanceof Renaming.FromToPrefix) {
+				boolean renamed = false;
+				for (Attribute attribute: attributes) {
+					String attributeName = attribute.getName();
+					if (attributeName.startsWith(from)) {
+						String fullTo = to + attributeName.substring(from.length());
+						if (renamings.containsKey(attributeName))
+							throw new ExceptionSemantic("RS0249: Attribute '" + from + "' has already been renamed.");
+						else if (renamings.containsValue(fullTo))
+							throw new ExceptionSemantic("RS0436: New attribute name '" + to + "' has already been used.");
+						renamings.put(attributeName, fullTo);
+						renamed = true;
+					}
+				}
+				if (!renamed)
+					throw new ExceptionSemantic("RS0121: Rename from prefix " + from + " to " + to + " found no matching attributes in " + this);
+			} else if (fromTo instanceof Renaming.FromToSuffix) {
+				boolean renamed = false;
+				for (Attribute attribute: attributes) {
+					String attributeName = attribute.getName();
+					if (attributeName.endsWith(from)) {
+						String fullTo = attributeName.substring(0, attributeName.length() - from.length()) + to;
+						if (renamings.containsKey(attributeName))
+							throw new ExceptionSemantic("RS0249: Attribute '" + from + "' has already been renamed.");
+						else if (renamings.containsValue(fullTo))
+							throw new ExceptionSemantic("RS0436: New attribute name '" + to + "' has already been used.");
+						renamings.put(attributeName, fullTo);
+						renamed = true;
+					}
+				}
+				if (!renamed)
+					throw new ExceptionSemantic("RS0122: Rename from suffix " + from + " to " + to + " found no matching attributes in " + this);
+			} else {
+				boolean renamed = false;
+				for (Attribute attribute: attributes) {
+					String attributeName = attribute.getName();
+					if (attributeName.equals(from)) {
+						if (renamings.containsKey(attributeName))
+							throw new ExceptionSemantic("RS0249: Attribute '" + from + "' has already been renamed.");						
+						else if (renamings.containsValue(to))
+							throw new ExceptionSemantic("RS0436: New attribute name '" + to + "' has already been used.");
+						renamings.put(attributeName, to);
+						renamed = true;
+					}
+				}
+				if (!renamed)
+					throw new ExceptionSemantic("RS0120: Rename from " + from + " to " + to + " found no matching 'from' attribute in " + this);					
 			}
-		return renamed;
-	}
-	
-	/** Rename all attributes with a given suffix.  Return false if no match found. */
-	public boolean renameSuffix(String from, String to) {
-		boolean renamed = false;
-		for (Attribute attribute: attributes)
-			if (attribute.getName().endsWith(from)) {
-				rename(attribute, attribute.getName().substring(0, attribute.getName().length() - from.length()) + to);
-				renamed = true;
-			}
-		return renamed;
+		}
+		for (int index = 0; index < attributes.size(); index++) {
+			Attribute oldAttribute = attributes.get(index);
+			String newName = renamings.get(oldAttribute.getName());
+			if (newName != null)
+				attributes.set(index, new Attribute(newName, oldAttribute.getType()));			
+		}
+		HashSet<String> targets = new HashSet<>();
+		for (Attribute attribute: attributes) {
+			String attributeName = attribute.getName();
+			if (targets.contains(attributeName))
+				throw new ExceptionSemantic("RS0422: New attribute name '" + attributeName + "' appears more than once, to cause invalid heading: " + this);
+			targets.add(attributeName);
+		}
 	}
 	
 	public void add(String attributeName, Type attributeType) {
