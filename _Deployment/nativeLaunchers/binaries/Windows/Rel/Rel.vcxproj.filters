@@ -39,5 +39,8 @@
     <Image Include="RelAppIcon.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\..\..\..\..\DBrowser\src\org\reldb\dbrowser\icons\RelAppIcon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
