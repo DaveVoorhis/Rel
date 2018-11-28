@@ -169,7 +169,6 @@
     <ResourceCompile Include="Rel.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\DBrowser\src\org\reldb\dbrowser\icons\RelAppIcon.png" />
     <Image Include="RelAppIcon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
