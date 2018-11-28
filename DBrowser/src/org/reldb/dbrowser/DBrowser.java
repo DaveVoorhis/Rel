@@ -445,7 +445,7 @@ public class DBrowser {
 
 		if (!Util.isMac()) {
 			SplashScreen splash = SplashScreen.getSplashScreen();
-			if (splash != null && !Preferences.getPreferenceBoolean(PreferencePageGeneral.SKIP_DEFAULT_DB_LOAD)) {
+			if (splash != null && localRel && !Preferences.getPreferenceBoolean(PreferencePageGeneral.SKIP_DEFAULT_DB_LOAD)) {
 				Graphics2D gc = splash.createGraphics();
 				Rectangle rect = splash.getBounds();
 				int barWidth = rect.width - 20;
