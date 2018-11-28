@@ -21,12 +21,9 @@ import org.eclipse.jface.util.Util;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageDataProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.wb.swt.SWTResourceManager;
+import org.reldb.dbrowser.ui.IconLoader;
 
 public class BrowserSwing implements HtmlBrowser {
 
@@ -48,21 +45,6 @@ public class BrowserSwing implements HtmlBrowser {
 		for (String entry : style.getFormattedStyle())
 			css.addRule(entry);
 	}
-
-	private int zoom;
-	
-	private void setZoomFactor(int zoom) {
-		this.zoom = zoom;
-	}
-	
-	private int getZoom() {
-		final ImageDataProvider imageDataProvider = zoom -> {
-			setZoomFactor(zoom);
-			return SWTResourceManager.getImage("org/reldb/dbrowser/icons/noimage.png").getImageData();
-		};
-		new Image(Display.getCurrent(), imageDataProvider);
-		return zoom;
-	}
 	
 	@Override
 	public boolean createWidget(Composite parent) {
@@ -80,8 +62,10 @@ public class BrowserSwing implements HtmlBrowser {
 			}
 		});
 		
-		if (Util.isWin32() || Util.isGtk())
-			style = new Style(3, (double)getZoom() / 100.0);
+		if (Util.isWin32())
+			style = new Style(-3, (double)IconLoader.getDPIScaling() / 100.0);
+		else if (Util.isGtk())
+			style = new Style(-5, (double)IconLoader.getDPIScaling() / 100.0);
 		else
 			style = new Style(0);
 
