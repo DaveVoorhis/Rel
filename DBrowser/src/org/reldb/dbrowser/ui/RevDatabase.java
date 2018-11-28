@@ -370,7 +370,6 @@ public class RevDatabase {
 			String rawContent = tuple.get("text").toString();
 			content = rawContent;
 		}
-		System.out.println("RevDatabase: Retrieve script for: " + name + ": " + content);
 		query = "sys.rev.ScriptHistory WHERE Name=\"" + name + "\" ORDER (ASC timestamp)";
 		tuples = (Tuples)evaluate(query);
 		Vector<String> history = new Vector<String>();
@@ -383,7 +382,6 @@ public class RevDatabase {
 
 	public void setScript(String name, String content) {
 		String text = StringUtils.quote(content);
-		System.out.println("RevDatabase: Add script for: " + name + ": " + text);
 		String query = 
 			"IF COUNT(sys.rev.Script WHERE Name=\"" + name + "\") = 0 THEN " +
 			"  INSERT sys.rev.Script REL {TUP {Name \"" + name + "\", text \"" + text + "\"}}; " +
