@@ -23,13 +23,6 @@
         	missingLeft p NOT MATCHING q, 
         	missingRight q NOT MATCHING p
           }
-
-- Rel: Issue:
-    S WHERE (WITH (x := true): x) 
-  works but 
-    S WHERE WITH (x := true): x 
-  doesn't. Look at operator precedence around WHERE and WITH.
-
 - Rel: This throws a fatal error:
     RELATION {TUPLE {RVA RELATION {TUPLE {K 1}}}} EXTEND {RR := RVA RANK (ASC K AS R)}
   This prevents the fatal error, and works:
@@ -47,6 +40,17 @@
   UNGROUP r
   
 - Rel: Provide CAST_AS_CHARACTER(OPERATOR) and CAST_AS_OPERATOR(CHARACTER).
+
+- Rel: Issue:
+    S WHERE (WITH (x := true): x) 
+  works but 
+    S WHERE WITH (x := true): x 
+  doesn't. Look at operator precedence around WHERE and WITH.
+  Note that this is non-trivial to resolve, because without the
+  parentheses, it is ambiguous because both WITH and WHERE
+  end with the same term. Thus, S WHERE WITH (x = 2 * y): x AND p 
+  could mean WHERE (WITH (x = 2 * y): x) AND p
+  or could mean WHERE (WITH (x = 2 * y): x AND p).
 
 - Provide encrypted backups (and log-ins to a given database).
 
