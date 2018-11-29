@@ -23,6 +23,7 @@
         	missingLeft p NOT MATCHING q, 
         	missingRight q NOT MATCHING p
           }
+          
 - Rel: This throws a fatal error:
     RELATION {TUPLE {RVA RELATION {TUPLE {K 1}}}} EXTEND {RR := RVA RANK (ASC K AS R)}
   This prevents the fatal error, and works:
