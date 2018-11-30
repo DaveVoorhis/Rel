@@ -287,3 +287,6 @@
 /ASTRank.java
 /ASTAlgRank.java
 /ASTSearch.java
+/ASTAlgLeftJoin.java
+/ASTAlgRightJoin.java
+/ASTAlgFullJoin.java

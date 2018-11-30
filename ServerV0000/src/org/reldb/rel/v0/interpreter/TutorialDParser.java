@@ -955,6 +955,48 @@ public class TutorialDParser implements TutorialDVisitor {
 		});
 	}
 
+	// Left Join
+	public Object visit(ASTAlgLeftJoin node, Object data) {
+		currentNode = node;
+		return defineBinary(node, new BinaryDefinition() {
+			String getName() {return "LEFT JOIN";}
+			TypeTuple compileTupleOperation(TypeTuple left, TypeTuple right) {
+				return generator.compileTupleLeftJoin(left, right);
+			}
+			TypeRelation compileRelationOperation(TypeRelation left, TypeRelation right) {
+				return generator.compileRelationLeftJoin(left, right);
+			}
+		});
+	}
+
+	// Right Join
+	public Object visit(ASTAlgRightJoin node, Object data) {
+		currentNode = node;
+		return defineBinary(node, new BinaryDefinition() {
+			String getName() {return "RIGHT JOIN";}
+			TypeTuple compileTupleOperation(TypeTuple left, TypeTuple right) {
+				return generator.compileTupleRightJoin(left, right);
+			}
+			TypeRelation compileRelationOperation(TypeRelation left, TypeRelation right) {
+				return generator.compileRelationRightJoin(left, right);
+			}
+		});
+	}
+
+	// Full Join
+	public Object visit(ASTAlgFullJoin node, Object data) {
+		currentNode = node;
+		return defineBinary(node, new BinaryDefinition() {
+			String getName() {return "FULL JOIN";}
+			TypeTuple compileTupleOperation(TypeTuple left, TypeTuple right) {
+				return generator.compileTupleFullJoin(left, right);
+			}
+			TypeRelation compileRelationOperation(TypeRelation left, TypeRelation right) {
+				return generator.compileRelationFullJoin(left, right);
+			}
+		});
+	}
+
 	// Times
 	public Object visit(ASTAlgTimes node, Object data) {
 		currentNode = node;

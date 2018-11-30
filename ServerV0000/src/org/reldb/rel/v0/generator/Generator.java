@@ -2096,6 +2096,21 @@ public class Generator {
 		return new TypeRelation(result);
 	}
 
+	public TypeRelation compileRelationLeftJoin(TypeRelation left, TypeRelation right) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public TypeRelation compileRelationRightJoin(TypeRelation left, TypeRelation right) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public TypeRelation compileRelationFullJoin(TypeRelation left, TypeRelation right) {
+		// TODO Auto-generated method stub
+		return null;
+	}	
+	
 	public TypeRelation compileRelationTimes(TypeRelation leftType, TypeRelation rightType) {
 		Heading left = leftType.getHeading();
 		Heading right = rightType.getHeading();
@@ -2504,6 +2519,24 @@ public class Generator {
 		return new TypeTuple(destination);
 	}
 
+	/** Compile tuple left join. Return new TypeTuple. */
+	public TypeTuple compileTupleLeftJoin(TypeTuple left, TypeTuple right) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** Compile tuple right join. Return new TypeTuple. */
+	public TypeTuple compileTupleRightJoin(TypeTuple left, TypeTuple right) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** Compile tuple full join. Return new TypeTuple. */
+	public TypeTuple compileTupleFullJoin(TypeTuple left, TypeTuple right) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+		
 	/** Compile tuple project. Return new TypeTuple. */
 	public TypeTuple compileTupleProject(TypeTuple sourceType, SelectAttributes attributes) {
 		if (attributes.isEverything())

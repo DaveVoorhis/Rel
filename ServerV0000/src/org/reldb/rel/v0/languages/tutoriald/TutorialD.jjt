@@ -126,6 +126,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < FOREIGN: "FOREIGN" >: SCRIPT
 | < FOR: "FOR" >
 | < FROM: "FROM" >
+| < FULL: "FULL" >
 | < GROUP: "GROUP" >
 | < I_DELETE: "I_DELETE" >
 | < I_MINUS: "I_MINUS" >
@@ -139,6 +140,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < JOIN: "JOIN" >
 | < KEY: "KEY" >
 | < LEAVE: "LEAVE" >
+| < LEFT: "LEFT" >
 | < LOAD: "LOAD" >
 | < LAMBDA: "~[" >
 | < LAMBDAEND: "]~" >
@@ -165,6 +167,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < RENAME: "RENAME" >
 | < RETURN: "RETURN" >
 | < RETURNS: "RETURNS" >
+| < RIGHT: "RIGHT" >
 | < ROLLBACK: "ROLLBACK" >
 | < SAME_HEADING_AS: "SAME_HEADING_AS" >
 | < SAME_TYPE_AS: "SAME_TYPE_AS" >
@@ -1276,6 +1279,9 @@ void rel_op() :
 		|	<MINUS> rel_project() 														#AlgMinus(2)
 		|	<I_MINUS> rel_project() 													#AlgIMinus(2)
 		|	<JOIN> rel_project() 														#AlgJoin(2)
+		|   <LEFT> <JOIN> rel_project()													#AlgLeftJoin(2)
+		|   <RIGHT> <JOIN> rel_project()												#AlgRightJoin(2)
+		|   <FULL> <JOIN> rel_project()													#AlgFullJoin(2)
 		|	<TIMES> rel_project() 														#AlgTimes(2)
 		|	<COMPOSE> rel_project() 													#AlgCompose(2)
 		|	( <SEMIJOIN> | <MATCHING> ) rel_project() 									#AlgSemijoin(2)

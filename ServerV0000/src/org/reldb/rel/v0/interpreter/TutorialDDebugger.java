@@ -614,6 +614,21 @@ public class TutorialDDebugger implements TutorialDVisitor {
 		return dump(node, data);
 	}
 
+	// Left Join
+	public Object visit(ASTAlgLeftJoin node, Object data) {
+		return dump(node, data);
+	}
+
+	// Right Join
+	public Object visit(ASTAlgRightJoin node, Object data) {
+		return dump(node, data);
+	}
+
+	// Full Join
+	public Object visit(ASTAlgFullJoin node, Object data) {
+		return dump(node, data);
+	}
+
 	// Times
 	public Object visit(ASTAlgTimes node, Object data) {
 		return dump(node, data);
