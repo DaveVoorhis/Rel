@@ -392,7 +392,6 @@ public class RevDatabase {
 	}
 	
 	public void addScriptHistory(String name, String historyItem) {
-		System.out.println("RevDatabase: Add history for: " + name + ": " + StringUtils.quote(historyItem));
 		String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
 		String query = 
 			"INSERT sys.rev.ScriptHistory " + "REL {TUP {" +
