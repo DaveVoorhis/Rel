@@ -29,6 +29,9 @@ Version 3.013 (1.0.26):
     recently-used databases and means to delete entries.
     As a result, management entries removed from main
     menu.
+    
+  - Enhancement: DBrowser/Client: Tweaks to display of
+    RVAs to improve readability.
      
   - Enhancement: Client library: Decoupled Server/ServerV0000 
     from Client to permit use of relclient.jar on its own 
@@ -63,6 +66,9 @@ Version 3.013 (1.0.26):
 
   - Bug fix: DBrowser: Graphical editing of RVA value did not work
     due to failure to launch RVA editor. Fixed.
+ 
+  - Bug fix: DBrowser/Client: Fixed TUPLE of RVA display 
+    problems.
     
   - Bug fix: Rel: parallel RENAME now supported. E.g., 
     TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x} works.

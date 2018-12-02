@@ -90,27 +90,19 @@ public abstract class ResponseToHTML extends ResponseProcessor {
 	}
 	
 	public void beginContainer(int depth) {
-		if (depth == 0)
-			emitHTML("<table id=\"table\" cellpadding=\"1\" cellspacing=\"0\">");
-		else
-			emitHTML("<td valign=\"top\"><table cellpadding=\"1\" cellspacing=\"0\" width=\"100%\">");
+		emitHTML("<table id=\"table\" cellpadding=\"1\" cellspacing=\"0\">");
 	}
 	
 	public void endContainer(int depth) {
 		emitHTML("</table>");
-		if (depth > 0)
-			emitHTML("</td>");
 	}
 	
 	public void beginTuple(int depth) {
-		if (headingDisplayed && depth == 1)
-			emitHTML("<td valign=\"top\">");
-		if (depth != 2) {
+		if (depth != 2)
 			if (depth == 1)
 				emitHTML("<table cellpadding=\"1\" cellspacing=\"0\" width=\"100%\">");
 			else
 				emitHTML("<table cellpadding=\"1\" cellspacing=\"0\">");
-		}
 		emitHTML("<tr>");
 	}
 	
@@ -118,28 +110,19 @@ public abstract class ResponseToHTML extends ResponseProcessor {
 		emitHTML("</tr>");
 		if (depth != 2)
 			emitHTML("</table>");						
-		if (headingDisplayed && depth == 1)
-			emitHTML("</td>");
 	}
 	
 	public void attributeNameInTuple(int depth, String name) {
-		if (!headingDisplayed) {
-			emitHTML("<td valign=\"top\">");
-			if (isEmitHeading()) 
-				emitHTML("<i>" + name + "</i> ");
-		}
+		emitHTML("<td valign=\"top\">");
+		if (isEmitHeading() && (!headingDisplayed || depth < 1))
+			emitHTML("<i>" + name + "</i> ");
 	}
 	
 	public void beginScalar(int depth) {
-		if (depth == 0)
-			emitHTML("<br>");
-		else if (headingDisplayed)
-			emitHTML("<td valign=\"top\">");
 	}
 	
 	public void endScalar(int depth) {
-		if (depth != 0 && headingDisplayed)
-			emitHTML("</td>");
+		emitHTML("</td>");
 	}
 	
 	public void beginPossrep(String name) {
