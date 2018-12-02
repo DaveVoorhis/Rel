@@ -954,16 +954,37 @@ public class TutorialDParser implements TutorialDVisitor {
 			}
 		});
 	}
+	
+	private abstract class BinaryDefinitionTupleReturner {
+		abstract String getName();
+		abstract TypeTuple compileTupleOperation(TypeTuple left, TypeTuple right);
+		abstract TypeTuple compileRelationOperation(TypeRelation left, TypeRelation right);
+	}
+	
+	// Binary relation/tuple operator definer.
+	private Type defineBinary(SimpleNode node, BinaryDefinitionTupleReturner binary) {
+		currentNode = node;
+		// Child 0 - left hand operand
+		Type leftType = (Type)compileChild(node, 0, null);
+		// Child 1 - right hand operand
+		Type rightType = (Type)compileChild(node, 1, null);		
+		if (leftType instanceof TypeTuple && rightType instanceof TypeTuple) {
+			return binary.compileTupleOperation((TypeTuple)leftType, (TypeTuple)rightType);
+		} else if (leftType instanceof TypeRelation && rightType instanceof TypeRelation) {
+			return binary.compileRelationOperation((TypeRelation)leftType, (TypeRelation)rightType);
+		} else
+			throw new ExceptionSemantic("RS0508: Cannot perform " + binary.getName() + " on " + leftType + " with " + rightType);		
+	}
 
 	// Left Join
 	public Object visit(ASTAlgLeftJoin node, Object data) {
 		currentNode = node;
-		return defineBinary(node, new BinaryDefinition() {
+		return defineBinary(node, new BinaryDefinitionTupleReturner() {
 			String getName() {return "LEFT JOIN";}
 			TypeTuple compileTupleOperation(TypeTuple left, TypeTuple right) {
 				return generator.compileTupleLeftJoin(left, right);
 			}
-			TypeRelation compileRelationOperation(TypeRelation left, TypeRelation right) {
+			TypeTuple compileRelationOperation(TypeRelation left, TypeRelation right) {
 				return generator.compileRelationLeftJoin(left, right);
 			}
 		});
@@ -972,12 +993,12 @@ public class TutorialDParser implements TutorialDVisitor {
 	// Right Join
 	public Object visit(ASTAlgRightJoin node, Object data) {
 		currentNode = node;
-		return defineBinary(node, new BinaryDefinition() {
+		return defineBinary(node, new BinaryDefinitionTupleReturner() {
 			String getName() {return "RIGHT JOIN";}
 			TypeTuple compileTupleOperation(TypeTuple left, TypeTuple right) {
 				return generator.compileTupleRightJoin(left, right);
 			}
-			TypeRelation compileRelationOperation(TypeRelation left, TypeRelation right) {
+			TypeTuple compileRelationOperation(TypeRelation left, TypeRelation right) {
 				return generator.compileRelationRightJoin(left, right);
 			}
 		});
@@ -986,12 +1007,12 @@ public class TutorialDParser implements TutorialDVisitor {
 	// Full Join
 	public Object visit(ASTAlgFullJoin node, Object data) {
 		currentNode = node;
-		return defineBinary(node, new BinaryDefinition() {
+		return defineBinary(node, new BinaryDefinitionTupleReturner() {
 			String getName() {return "FULL JOIN";}
 			TypeTuple compileTupleOperation(TypeTuple left, TypeTuple right) {
 				return generator.compileTupleFullJoin(left, right);
 			}
-			TypeRelation compileRelationOperation(TypeRelation left, TypeRelation right) {
+			TypeTuple compileRelationOperation(TypeRelation left, TypeRelation right) {
 				return generator.compileRelationFullJoin(left, right);
 			}
 		});

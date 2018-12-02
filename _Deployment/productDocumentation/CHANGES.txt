@@ -1,4 +1,4 @@
-Last used Exception* number: RS0507
+Last used Exception* number: RS0508
 
 Version 3.013 (1.0.26):
 
@@ -34,6 +34,19 @@ Version 3.013 (1.0.26):
     from Client to permit use of relclient.jar on its own 
     (plus relshared.jar) to facilitate developing purely 
     remote clients.
+
+  - Enhancement: Rel: Added p LEFT JOIN q which returns 
+        TUPLE {Matched p JOIN q, Missing p NOT MATCHING q}
+
+  - Enhancement: Rel: Added p RIGHT JOIN q which returns 
+        TUPLE {Matched p JOIN q, Missing q NOT MATCHING p}
+
+  - Enhancement: Rel: Added p FULL JOIN q which returns
+          TUPLE {
+        	Matched p JOIN q, 
+        	MissingLeft p NOT MATCHING q, 
+        	MissingRight q NOT MATCHING p
+          }
 
   - Enhancement: Build: Module jars now generated via Ant 
     build files; product build scripts now generate all jars.

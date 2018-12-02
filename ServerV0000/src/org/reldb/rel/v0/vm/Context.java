@@ -99,7 +99,7 @@ public class Context {
 		this(caller, operator, caller);
 	}
 
-	private void dumpstack() {
+	public void dumpstack() {
 		if (variables != null) {
 			System.out.println("Variables:");
 			for (int i = 0; i < variables.length; i++) {
@@ -111,7 +111,7 @@ public class Context {
 			}
 		}
 		System.out.println("Stack:");
-		for (int i = 0; i < stackPointer; i++) {
+		for (int i = stackPointer - 1; i >= 0; i--) {
 			System.out.print("S[" + i + "] = ");
 			if (operandStack[i] == null)
 				System.out.println("uninitialised");
@@ -417,6 +417,28 @@ public class Context {
 		push(v2);
 	}
 
+	// Rotate top three values on stack.
+	public final void rotate() {
+		Value v1 = pop();
+		Value v2 = pop();
+		Value v3 = pop();
+		push(v2);
+		push(v1);
+		push(v3);
+	}
+
+	// Duplicate the nth item on the stack. Relative to top of stack, so duplicateN(0) is equivalent to duplicate().
+	public void duplicateN(int n) {
+		push(operandStack[stackPointer - n - 1]);
+	}
+
+	// Move the nth item on the stack to the top. Relative to top of stack, so liftN(0) is a no-op, liftN(1) is equivalent to swap().
+	public void liftN(int n) {
+		Value v1 = operandStack[stackPointer - n - 1];
+		System.arraycopy(operandStack, stackPointer - n, operandStack, stackPointer - n - 1, n);
+		operandStack[stackPointer - 1] = v1;
+	}
+	
 	// EXACTLY
 	// POP - n
 	// POP(countOfValues times) - Value

@@ -66,6 +66,7 @@ import org.reldb.rel.v0.vm.instructions.core.OpAverage;
 import org.reldb.rel.v0.vm.instructions.core.OpBranchIfFalse;
 import org.reldb.rel.v0.vm.instructions.core.OpConcatenate;
 import org.reldb.rel.v0.vm.instructions.core.OpDuplicate;
+import org.reldb.rel.v0.vm.instructions.core.OpDuplicateN;
 import org.reldb.rel.v0.vm.instructions.core.OpDuplicateUnder;
 import org.reldb.rel.v0.vm.instructions.core.OpExactly;
 import org.reldb.rel.v0.vm.instructions.core.OpGetTemporarilyUniqueInteger;
@@ -73,12 +74,14 @@ import org.reldb.rel.v0.vm.instructions.core.OpInvokeAnonymousEvaluate;
 import org.reldb.rel.v0.vm.instructions.core.OpInvokeDynamicCall;
 import org.reldb.rel.v0.vm.instructions.core.OpInvokeDynamicEvaluate;
 import org.reldb.rel.v0.vm.instructions.core.OpJump;
+import org.reldb.rel.v0.vm.instructions.core.OpLiftN;
 import org.reldb.rel.v0.vm.instructions.core.OpOutput;
 import org.reldb.rel.v0.vm.instructions.core.OpPop;
 import org.reldb.rel.v0.vm.instructions.core.OpPreserveContextInValueOperator;
 import org.reldb.rel.v0.vm.instructions.core.OpPushLiteral;
 import org.reldb.rel.v0.vm.instructions.core.OpReturn;
 import org.reldb.rel.v0.vm.instructions.core.OpReturnValue;
+import org.reldb.rel.v0.vm.instructions.core.OpRotate;
 import org.reldb.rel.v0.vm.instructions.core.OpSwap;
 import org.reldb.rel.v0.vm.instructions.core.OpWrite;
 import org.reldb.rel.v0.vm.instructions.core.OpWriteRaw;
@@ -2096,19 +2099,54 @@ public class Generator {
 		return new TypeRelation(result);
 	}
 
-	public TypeRelation compileRelationLeftJoin(TypeRelation left, TypeRelation right) {
-		// TODO Auto-generated method stub
-		return null;
+	public TypeTuple compileRelationLeftJoin(TypeRelation left, TypeRelation right) {
+		compileInstruction(new OpDuplicateN(1));
+		compileInstruction(new OpDuplicateN(1));
+		TypeRelation matched = compileRelationJoin(left, right);
+		compileInstruction(new OpSwap());
+		compileInstruction(new OpRotate());
+		compileInstruction(new OpSwap());
+		TypeRelation missing = compileRelationSemiminus(left, right);
+		compileInstruction(new OpTuplePushLiteral(2));
+		Heading heading = new Heading();
+		heading.add("Matched", matched);
+		heading.add("Missing", missing);
+		return new TypeTuple(heading);
 	}
 
-	public TypeRelation compileRelationRightJoin(TypeRelation left, TypeRelation right) {
-		// TODO Auto-generated method stub
-		return null;
+	public TypeTuple compileRelationRightJoin(TypeRelation left, TypeRelation right) {
+		compileInstruction(new OpDuplicateN(1));
+		compileInstruction(new OpDuplicateN(1));
+		TypeRelation matched = compileRelationJoin(left, right);
+		compileInstruction(new OpSwap());
+		compileInstruction(new OpRotate());
+		TypeRelation missing = compileRelationSemiminus(right, left);
+		compileInstruction(new OpTuplePushLiteral(2));
+		Heading heading = new Heading();
+		heading.add("Matched", matched);
+		heading.add("Missing", missing);
+		return new TypeTuple(heading);
 	}
 
-	public TypeRelation compileRelationFullJoin(TypeRelation left, TypeRelation right) {
-		// TODO Auto-generated method stub
-		return null;
+	public TypeTuple compileRelationFullJoin(TypeRelation left, TypeRelation right) {
+		compileInstruction(new OpDuplicateN(1));
+		compileInstruction(new OpDuplicateN(1));
+		compileInstruction(new OpDuplicateN(1));
+		compileInstruction(new OpDuplicateN(1));
+		TypeRelation matched = compileRelationJoin(left, right);
+		compileInstruction(new OpSwap());
+		compileInstruction(new OpRotate());
+		compileInstruction(new OpSwap());
+		TypeRelation missingLeft = compileRelationSemiminus(left, right);
+		compileInstruction(new OpLiftN(2));
+		compileInstruction(new OpLiftN(3));
+		TypeRelation missingRight = compileRelationSemiminus(right, left);
+		compileInstruction(new OpTuplePushLiteral(3));
+		Heading heading = new Heading();
+		heading.add("Matched", matched);
+		heading.add("MissingLeft", missingLeft);
+		heading.add("MissingRight", missingRight);
+		return new TypeTuple(heading);	
 	}	
 	
 	public TypeRelation compileRelationTimes(TypeRelation leftType, TypeRelation rightType) {
