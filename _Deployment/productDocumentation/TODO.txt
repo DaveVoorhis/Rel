@@ -10,11 +10,6 @@
 - DBrowser: https://github.com/DaveVoorhis/Rel/issues/1
   Navigation keys and undo appear to be consumed by Nattable without performing
   appropriate actions. Fix.
-          
-- Rel: This throws a fatal error:
-    RELATION {TUPLE {RVA RELATION {TUPLE {K 1}}}} EXTEND {RR := RVA RANK (ASC K AS R)}
-  This prevents the fatal error, and works:
-    RELATION {TUPLE {RVA RELATION {TUPLE {K 1}}}} EXTEND {RR := RVA {K} RANK (ASC K AS R)}
  
 - Rel: Check that UNGROUP of an RVA with a single attribute works correctly.
   (RELATION {RATE RELATION {RATE RATIONAL}} {

@@ -74,6 +74,11 @@ Version 3.013 (1.0.26):
     TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x} works.
     Case #203 fixed.
 
+  - Bug fix: Rel: This threw a fatal error:
+    RELATION {TUPLE {RVA RELATION {TUPLE {K 1}}}} 
+    	EXTEND {RR := RVA RANK (ASC K AS R)}
+    Fixed.
+
 Version 3.012 (1.0.25):
 
   - Enhancement: Rel DBMS: Now provides -q command-line option

@@ -2314,7 +2314,7 @@ public class Generator {
 	}
 
 	public TypeRelation compileRank(TypeRelation sourceRelationType, SelectOrder orderItems, String identifier) {
-		Heading heading = sourceRelationType.getHeading();
+		Heading heading = new Heading(sourceRelationType.getHeading());
 		if (heading.getIndexOf(identifier) >= 0)
 			throw new ExceptionSemantic(
 					"RS0500: " + sourceRelationType + " already has an attribute named " + identifier + ".");
