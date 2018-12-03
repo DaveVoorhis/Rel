@@ -206,8 +206,9 @@ public class CmdPanelOutput extends Composite {
 	}
 
 	public static boolean isLastNonWhitespaceNonCommentCharacter(String s, char c) {
-		String testString = s.replaceAll( "//.*|(\"(?:\\\\[^\"]|\\\\\"|.)*?\")|(?s)/\\*.*?\\*/", "$1 ").trim();
-		return (testString.endsWith(Character.toString(c)));
+		String noComments = CommentRemover.removeComments(s);
+		String noSpaces = noComments.replaceAll("\\s","");
+		return (noSpaces.endsWith(Character.toString(c)));
 	}
 
 	/**
