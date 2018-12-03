@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Rel: Implement TUPLE versions of LEFT|RIGHT|FULL JOIN.
-
 - DBrowser: Closing a database tab should close its database.
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars

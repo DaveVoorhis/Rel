@@ -2556,24 +2556,6 @@ public class Generator {
 		}
 		return new TypeTuple(destination);
 	}
-
-	/** Compile tuple left join. Return new TypeTuple. */
-	public TypeTuple compileTupleLeftJoin(TypeTuple left, TypeTuple right) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/** Compile tuple right join. Return new TypeTuple. */
-	public TypeTuple compileTupleRightJoin(TypeTuple left, TypeTuple right) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/** Compile tuple full join. Return new TypeTuple. */
-	public TypeTuple compileTupleFullJoin(TypeTuple left, TypeTuple right) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 		
 	/** Compile tuple project. Return new TypeTuple. */
 	public TypeTuple compileTupleProject(TypeTuple sourceType, SelectAttributes attributes) {

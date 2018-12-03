@@ -982,7 +982,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		return defineBinary(node, new BinaryDefinitionTupleReturner() {
 			String getName() {return "LEFT JOIN";}
 			TypeTuple compileTupleOperation(TypeTuple left, TypeTuple right) {
-				return generator.compileTupleLeftJoin(left, right);
+				return generator.compileTupleJoin(left, right);
 			}
 			TypeTuple compileRelationOperation(TypeRelation left, TypeRelation right) {
 				return generator.compileRelationLeftJoin(left, right);
@@ -996,7 +996,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		return defineBinary(node, new BinaryDefinitionTupleReturner() {
 			String getName() {return "RIGHT JOIN";}
 			TypeTuple compileTupleOperation(TypeTuple left, TypeTuple right) {
-				return generator.compileTupleRightJoin(left, right);
+				return generator.compileTupleJoin(left, right);
 			}
 			TypeTuple compileRelationOperation(TypeRelation left, TypeRelation right) {
 				return generator.compileRelationRightJoin(left, right);
@@ -1010,7 +1010,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		return defineBinary(node, new BinaryDefinitionTupleReturner() {
 			String getName() {return "FULL JOIN";}
 			TypeTuple compileTupleOperation(TypeTuple left, TypeTuple right) {
-				return generator.compileTupleFullJoin(left, right);
+				return generator.compileTupleJoin(left, right);
 			}
 			TypeTuple compileRelationOperation(TypeRelation left, TypeRelation right) {
 				return generator.compileRelationFullJoin(left, right);
