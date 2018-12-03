@@ -13,7 +13,7 @@ public class TestPossrep23 extends BaseOfTest {
   		String src = 
   			"BEGIN;" +
   			"TYPE StringTree UNION;" +
-  			"TYPE node IS {StringTree POSSREP {string CHAR, left StringTree, right StringTree}};" +
+  			"TYPE node IS {StringTree POSSREP {string CHAR, leftTree StringTree, rightTree StringTree}};" +
   			"TYPE nothing IS {StringTree POSSREP nothing {}};" +
   			"END; true";
   		String expected = "true";
