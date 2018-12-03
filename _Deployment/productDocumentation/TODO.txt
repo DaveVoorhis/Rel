@@ -1,5 +1,9 @@
 ** TO DO **
 
+- DBrowser: Under Linux, fix: BrowserNative: Native browser not available: java.lang.IllegalArgumentException: Argument cannot be null
+
+- DBrowser: HTML browser font size on non-HDPI is too small.
+
 - DBrowser: Closing a database tab should close its database.
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
