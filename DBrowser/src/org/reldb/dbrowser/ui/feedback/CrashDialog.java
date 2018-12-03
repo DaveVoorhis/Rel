@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.wb.swt.SWTResourceManager;
+import org.reldb.dbrowser.ui.IconLoader;
 import org.reldb.dbrowser.ui.feedback.FeedbackInfo;
 
 public class CrashDialog extends FeedbackDialog {
@@ -73,7 +73,7 @@ public class CrashDialog extends FeedbackDialog {
 
 		Label lblIconBoom = new Label(panelIntro, SWT.NONE);
 		lblIconBoom.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-		lblIconBoom.setImage(SWTResourceManager.getImage("org/reldb/dbrowser/icons/nuclear-explosion.png"));
+		lblIconBoom.setImage(IconLoader.loadIcon("nuclear-explosion"));
 
 		Label lblInstructions = new Label(panelIntro, SWT.WRAP);
 		lblInstructions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
