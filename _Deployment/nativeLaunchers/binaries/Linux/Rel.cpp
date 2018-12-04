@@ -30,6 +30,7 @@ int main(int argc, char **argv)
   for (int i = 1; i < argc; i++)
     args += std::string(" \"") + std::string(argv[i]) + std::string("\"");
 
-  setenv("SWT_GTK3", "0", 1);
+  // Uncomment the following line to use GTK2
+  // setenv("SWT_GTK3", "0", 1);
   return system((cmd + args).c_str());
 }

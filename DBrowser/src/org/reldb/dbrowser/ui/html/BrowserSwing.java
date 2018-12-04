@@ -65,7 +65,7 @@ public class BrowserSwing implements HtmlBrowser {
 		if (Util.isWin32())
 			style = new Style(-3, (double)IconLoader.getDPIScaling() / 100.0);
 		else if (Util.isGtk())
-			style = new Style(-5, (double)IconLoader.getDPIScaling() / 100.0);
+			style = new Style(3, (double)IconLoader.getDPIScaling() / 100.0);
 		else
 			style = new Style(0);
 
