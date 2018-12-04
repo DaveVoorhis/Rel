@@ -1,4 +1,4 @@
 Rel: Rel.cpp
-	g++ Rel.cpp -o Rel
+	g++ -Wall -Werror Rel.cpp -no-pie -o Rel
 	strip Rel
 
