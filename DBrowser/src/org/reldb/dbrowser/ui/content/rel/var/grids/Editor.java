@@ -353,7 +353,7 @@ public abstract class Editor extends Grid {
 				}
 				updateQuery += updateAttributes + "};";
 
-				System.out.println("RelvarEditor: query is " + updateQuery);
+				// System.out.println("RelvarEditor: query is " + updateQuery);
 
 				ExecuteResult result = connection.execute(updateQuery);
 
@@ -401,7 +401,7 @@ public abstract class Editor extends Grid {
 			} else {
 				String insertQuery = "D_INSERT " + relvarName + " RELATION {" + getTupleDefinitionFor(row) + "};";
 
-				System.out.println("RelvarEditor: query is " + insertQuery);
+				// System.out.println("RelvarEditor: query is " + insertQuery);
 
 				ExecuteResult result = connection.execute(insertQuery);
 
@@ -437,7 +437,7 @@ public abstract class Editor extends Grid {
 					}
 				deleteQuery += allKeysSpec + ";";
 
-				System.out.println("RelvarEditor: query is " + deleteQuery);
+				// System.out.println("RelvarEditor: query is " + deleteQuery);
 
 				ExecuteResult result = connection.execute(deleteQuery);
 
