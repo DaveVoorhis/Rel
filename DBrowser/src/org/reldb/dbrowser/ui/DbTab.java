@@ -90,7 +90,8 @@ public class DbTab extends CTabItem {
 		ManagedToolbar toolBarDatabase = new ManagedToolbar(compDbLocation);
 		
 		if (DBrowser.hasLocalRel()) {
-			new CommandActivator(null, toolBarDatabase, "NewDBIcon", SWT.NONE, "Create or open local database", e -> Core.newDatabase());
+			new CommandActivator(null, toolBarDatabase, "NewDBIcon", SWT.NONE, "Create or open a local database", e -> Core.newDatabase());
+			new CommandActivator(null, toolBarDatabase, "database_restore", SWT.NONE, "Create a local database from a backup", e -> Core.restoreDatabase());
 			new CommandActivator(null, toolBarDatabase, "OpenDBLocalIcon", SWT.NONE, "Open local database", e -> Core.openLocalDatabase());
 		}
 		new CommandActivator(null, toolBarDatabase, "OpenDBRemoteIcon", SWT.NONE, "Open remote database", e -> Core.openRemoteDatabase());

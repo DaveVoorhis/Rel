@@ -57,8 +57,11 @@ public class RecentPanel extends ScrolledComposite {
 		rowLayout.pack = false;
 		content.setLayout(rowLayout);
 		
-		createItem(content, "Create a new database", "large_database_create", null, e -> Core.newDatabase());
-		createItem(content, "Open a local database", "large_database_load", null, e -> Core.openLocalDatabase());
+		if (DBrowser.hasLocalRel()) {
+			createItem(content, "Create a new database", "large_database_create", null, e -> Core.newDatabase());
+			createItem(content, "Create a new database\nfrom a backup", "large_database_restore", null, e -> Core.restoreDatabase());
+			createItem(content, "Open a local database", "large_database_load", null, e -> Core.openLocalDatabase());
+		}
 		createItem(content, "Open a remote database", "large_database_load", null, e -> Core.openRemoteDatabase());
 		for (String dbURL: Core.getRecentlyUsedDatabaseList()) {
 			if (dbURL.startsWith("db:") && !DBrowser.hasLocalRel())

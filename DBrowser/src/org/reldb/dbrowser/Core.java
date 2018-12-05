@@ -129,6 +129,11 @@ public class Core {
 			getCurrentDbTab().newDatabase(result.toString());
 	}
 
+	public static Object restoreDatabase() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public static void openLocalDatabase() {
 		String result = openDatabaseDialog.open();
 		if (result != null)
