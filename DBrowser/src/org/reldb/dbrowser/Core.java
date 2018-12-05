@@ -18,6 +18,7 @@ import org.reldb.dbrowser.ui.DbTab;
 import org.reldb.dbrowser.ui.MainPanel;
 import org.reldb.dbrowser.ui.RemoteDatabaseDialog;
 import org.reldb.dbrowser.ui.RemoteDatabaseDialog.RemoteDatabaseDialogResponse;
+import org.reldb.dbrowser.ui.RestoreDatabaseDialog;
 import org.reldb.dbrowser.ui.preferences.PreferencePageGeneral;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
@@ -129,9 +130,8 @@ public class Core {
 			getCurrentDbTab().newDatabase(result.toString());
 	}
 
-	public static Object restoreDatabase() {
-		// TODO Auto-generated method stub
-		return null;
+	public static void restoreDatabase() {
+		(new RestoreDatabaseDialog(getShell())).open();
 	}
 
 	public static void openLocalDatabase() {
