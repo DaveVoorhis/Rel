@@ -412,6 +412,8 @@ public class CmdPanelOutput extends Composite {
 				response.parse();
 				return sb.toString();
 			} catch (ParseException pe) {
+				// Debug client-side response parser problems here.
+				// System.out.println("CmdPanelOutput: " + s + "\n" + pe);
 				return "<br>" + ResponseToHTML.textToHTML(s);
 			}
 		} else {

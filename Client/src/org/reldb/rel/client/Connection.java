@@ -282,6 +282,8 @@ public class Connection implements AutoCloseable {
 				try {
 					parser.parse();
 				} catch (ParseException e) {
+					// Debug client-side response parser problems here.
+					// System.out.println("Connection: " + e);
 					response.setResult(new Error(errorMessageTrap.toString()));
 				}
 				try {
@@ -341,6 +343,8 @@ public class Connection implements AutoCloseable {
 				try {
 					parser.parse();
 				} catch (ParseException e) {
+					// Debug client-side response parser problems here.
+					// System.out.println("Connection: " + e);
 					htmlReceiver.emitInitialHTML(errorMessageTrap.toString().replace(" ", "&nbsp;"));
 				}
 				try {

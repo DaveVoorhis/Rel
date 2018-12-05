@@ -17,7 +17,7 @@ public class ValueOperator extends ValueAbstract implements Serializable {
 	private volatile Operator operator;
 	private volatile Context enclosingContext;
 	
-	/** Create a new tuple with default attribute values. */
+	/** Create a new operator Value. */
 	public ValueOperator(Generator generator, Operator operator, String source) {
 		super(generator);
 		this.operator = operator;
@@ -72,7 +72,7 @@ public class ValueOperator extends ValueAbstract implements Serializable {
 	}
 	
 	public String toString() {
-		return "\"" + getSource() + "\"";
+		return getSource();
 	}
 
 }

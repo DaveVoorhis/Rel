@@ -182,6 +182,12 @@ TOKEN : /* SEPARATORS */
 | < COLON: ":" >
 }
 
+< OPCONTENT > TOKEN :
+{
+	< ENDOP : "END" >: DEFAULT
+|	< TEXT : ~[] >  
+}
+
 /***********************************************
  *          THE GRAMMAR STARTS HERE            *
  ***********************************************/
@@ -319,6 +325,14 @@ void primitive(boolean inPossrep) :
 	| t = <FLOATING_POINT_LITERAL> {responseHandler.primitive(t.image, false);}
 	| t = <TRUE> {responseHandler.primitive(t.image, false);}
 	| t = <FALSE> {responseHandler.primitive(t.image, false);}
+	| lambda()
 	| tuple_relation_or_array(0)
-	) 
+	)
 }
+
+void lambda() :
+{Token t; StringBuffer s = new StringBuffer();}
+{
+	<OPERATOR> {token_source.SwitchTo(OPCONTENT);} ( t = <TEXT> {s.append(t.toString());} )* <ENDOP> <OPERATOR>
+								{responseHandler.primitive("OPERATOR " + s.toString() + " END OPERATOR", false);}
+}  
