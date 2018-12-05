@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Rel: Emit anonymous OPERATOR type as its literal, not as a string literal.
+
 - DBrowser: Provide Create Database option to restore from backup.
 
 - Rev: Implement LEFT JOIN, RIGHT JOIN, FULL JOIN.
