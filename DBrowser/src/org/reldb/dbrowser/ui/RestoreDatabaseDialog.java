@@ -1,14 +1,19 @@
 package org.reldb.dbrowser.ui;
 
 import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Text;
+import org.reldb.dbrowser.Core;
+import org.reldb.rel.client.Connection;
 import org.eclipse.swt.widgets.Button;
 
 public class RestoreDatabaseDialog extends Dialog {
@@ -18,6 +23,11 @@ public class RestoreDatabaseDialog extends Dialog {
 	private Text textDatabaseDir;
 	private Text textSourceFile;
 	private Text textOutput;
+	private DirectoryDialog newDatabaseDialog;
+	private FileDialog restoreFileDialog;
+	
+	private Button btnCancel;
+	private Button btnOk;
 
 	/**
 	 * Create the dialog.
@@ -27,6 +37,17 @@ public class RestoreDatabaseDialog extends Dialog {
 	public RestoreDatabaseDialog(Shell parent) {
 		super(parent, SWT.DIALOG_TRIM | SWT.RESIZE);
 		setText("Create and Restore Database");
+		
+		newDatabaseDialog = new DirectoryDialog(parent);
+		newDatabaseDialog.setText("Create Database");
+		newDatabaseDialog.setMessage("Select a folder to hold a new database.");
+		newDatabaseDialog.setFilterPath(System.getProperty("user.home"));
+	
+		restoreFileDialog = new FileDialog(Core.getShell(), SWT.OPEN);
+		restoreFileDialog.setFilterPath(System.getProperty("user.home"));
+		restoreFileDialog.setFilterExtensions(new String[] {"*.rel", "*.*"});
+		restoreFileDialog.setFilterNames(new String[] {"Rel script", "All Files"});
+		restoreFileDialog.setText("Load Backup");
 	}
 
 	/**
@@ -46,6 +67,18 @@ public class RestoreDatabaseDialog extends Dialog {
 		return result;
 	}
 
+	private void process(String dbURL) {
+		textOutput.append("Ready to create database " + dbURL + "\n");
+		try (Connection connection = new Connection(dbURL, true)) {
+			textOutput.append("Database " + dbURL + " created.\n");
+			btnOk.setVisible(false);
+			btnCancel.setText("Close");
+		} catch (Exception e) {
+			textOutput.append("Unable to create database " + dbURL + "\n");
+			textOutput.append(e.getMessage());
+		}
+	}
+	
 	/**
 	 * Create contents of the dialog.
 	 */
@@ -68,6 +101,16 @@ public class RestoreDatabaseDialog extends Dialog {
 		FormData fd_btnDatabaseDir = new FormData();
 		btnDatabaseDir.setLayoutData(fd_btnDatabaseDir);
 		btnDatabaseDir.setText("Directory...");
+		btnDatabaseDir.addListener(SWT.Selection, e -> {
+			if (textDatabaseDir.getText().trim().length() == 0)
+				newDatabaseDialog.setFilterPath(System.getProperty("user.home"));
+			else
+				newDatabaseDialog.setFilterPath(textDatabaseDir.getText());
+			String result = newDatabaseDialog.open();
+			if (result == null)
+				return;
+			textDatabaseDir.setText(result);
+		});
 		
 		Label lblSourceFile = new Label(shell, SWT.NONE);
 		FormData fd_lblSourceFile = new FormData();
@@ -87,6 +130,26 @@ public class RestoreDatabaseDialog extends Dialog {
 		FormData fd_btnOk = new FormData();
 		btnOk.setLayoutData(fd_btnOk);
 		btnOk.setText("Ok");
+		btnOk.addListener(SWT.Selection, e -> {
+			String databaseDir = textDatabaseDir.getText().trim();
+			if (databaseDir.length() == 0) {
+				MessageDialog.openInformation(shell, "No Directory Specified", "No database directory was specified.");
+				return;
+			}
+			String dbURL = "db:" + databaseDir;
+			Connection connection;
+			try {
+				connection = new Connection(dbURL);
+				connection.close();
+				MessageDialog.openInformation(shell, "Database Exists", "A Rel database already exists at " + dbURL);
+			} catch (Exception e1) {
+				Throwable cause = e1.getCause();
+				if (cause != null && cause.getMessage().startsWith("RS0406:"))
+					process(dbURL);
+				else
+					MessageDialog.openError(shell, "Problem with Directory", "Unable to use " + dbURL + " due to: " + e1.getMessage());
+			}			
+		});
 		
 		Button btnCancel = new Button(shell, SWT.NONE);
 		FormData fd_btnCancel = new FormData();
