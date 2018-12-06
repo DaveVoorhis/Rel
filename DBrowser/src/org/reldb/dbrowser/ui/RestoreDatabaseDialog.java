@@ -44,6 +44,8 @@ public class RestoreDatabaseDialog extends Dialog {
 	private DirectoryDialog newDatabaseDialog;
 	private FileDialog restoreFileDialog;
 	
+	private Button btnDatabaseDir;
+	private Button btnSourceFile;
 	private Button btnCancel;
 	private Button btnOk;
 	
@@ -90,6 +92,8 @@ public class RestoreDatabaseDialog extends Dialog {
 	private void setupUIAsFinished() {
 		textDatabaseDir.setEnabled(false);
 		textSourceFile.setEnabled(false);
+		btnDatabaseDir.setEnabled(false);
+		btnSourceFile.setEnabled(false);
 		btnOk.setVisible(false);
 		btnCancel.setText("Close");
 		btnCancel.requestLayout();
@@ -99,6 +103,8 @@ public class RestoreDatabaseDialog extends Dialog {
 	private void setupUIAsReload() {
 		textDatabaseDir.setEnabled(false);
 		textSourceFile.setEnabled(true);
+		btnDatabaseDir.setEnabled(false);
+		btnSourceFile.setEnabled(true);
 		btnOk.setVisible(true);
 		btnOk.setText("Reload");
 		btnOk.requestLayout();
@@ -127,9 +133,14 @@ public class RestoreDatabaseDialog extends Dialog {
 	private void process(String dbURL, String backupToRestore) {
 		ClientLocalConnection connection = null;
 		try {
+			if (mode == Mode.CREATEDB)
+				output("Creating database...", green);
+			else
+				output("Opening database...", green);
 			connection = new ClientLocalConnection(dbURL, mode == Mode.CREATEDB, new CrashTrap(shell, Version.getVersion()), null);
+			output(connection.getServerAnnouncement(), black);
 			final BufferedReader input = new BufferedReader(new InputStreamReader(connection.getServerResponseInputStream()));
-			Thread thread = new Thread() {
+			Thread readerThread = new Thread() {
 				public void run() {
 					String r;
 					loadFail = false;
@@ -155,16 +166,24 @@ public class RestoreDatabaseDialog extends Dialog {
 					}
 				}
 			};
-			thread.start();
+			readerThread.start();
 			connection.sendExecute(backupToRestore);
 			while (running)
 				Thread.yield();
 			if (loadFail) {
 				output("Load failed due to " + lastError, red);
-				setupUIAsReload();
+				shell.getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						setupUIAsReload();						
+					}
+				});
 			} else {
 				output("Done.", green);
-				setupUIAsFinished();
+				shell.getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						setupUIAsFinished();
+					}
+				});
 			}
 		} catch (Exception e) {
 			output("Error:\n" + e.getMessage(), red);
@@ -199,7 +218,7 @@ public class RestoreDatabaseDialog extends Dialog {
 		FormData fd_textDatabaseDir = new FormData();
 		textDatabaseDir.setLayoutData(fd_textDatabaseDir);
 		
-		Button btnDatabaseDir = new Button(shell, SWT.NONE);
+		btnDatabaseDir = new Button(shell, SWT.NONE);
 		FormData fd_btnDatabaseDir = new FormData();
 		btnDatabaseDir.setLayoutData(fd_btnDatabaseDir);
 		btnDatabaseDir.setText("Directory...");
@@ -223,7 +242,7 @@ public class RestoreDatabaseDialog extends Dialog {
 		FormData fd_textSourceFile = new FormData();
 		textSourceFile.setLayoutData(fd_textSourceFile);
 		
-		Button btnSourceFile = new Button(shell, SWT.NONE);
+		btnSourceFile = new Button(shell, SWT.NONE);
 		FormData fd_btnSourceFile = new FormData();
 		btnSourceFile.setLayoutData(fd_btnSourceFile);
 		btnSourceFile.setText("Choose file...");
@@ -279,9 +298,15 @@ public class RestoreDatabaseDialog extends Dialog {
 					MessageDialog.openInformation(shell, "Database Exists", "A Rel database already exists at " + databaseDir);
 				} catch (Exception e1) {
 					Throwable cause = e1.getCause();
-					if (cause != null && cause.getMessage().startsWith("RS0406:"))
-						process(databaseDir, backup);
-					else
+					if (cause != null && cause.getMessage().startsWith("RS0406:")) {
+						final String backupStr = backup;
+						Thread processor = new Thread() {
+							public void run() {
+								process(databaseDir, backupStr);								
+							}
+						};
+						processor.start();
+					} else
 						MessageDialog.openError(shell, "Problem with Directory", "Unable to use " + databaseDir + " due to: " + e1.getMessage());
 				}
 			}
