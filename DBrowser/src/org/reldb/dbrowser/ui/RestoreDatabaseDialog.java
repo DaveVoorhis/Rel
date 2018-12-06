@@ -7,6 +7,11 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Label;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
@@ -14,15 +19,17 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Text;
 import org.reldb.dbrowser.Core;
 import org.reldb.rel.client.Connection;
+import org.reldb.rel.client.Response;
 import org.eclipse.swt.widgets.Button;
 
 public class RestoreDatabaseDialog extends Dialog {
 
-	protected Object result;
 	protected Shell shell;
+	
 	private Text textDatabaseDir;
 	private Text textSourceFile;
 	private Text textOutput;
+	
 	private DirectoryDialog newDatabaseDialog;
 	private FileDialog restoreFileDialog;
 	
@@ -52,9 +59,8 @@ public class RestoreDatabaseDialog extends Dialog {
 
 	/**
 	 * Open the dialog.
-	 * @return the result
 	 */
-	public Object open() {
+	public void open() {
 		createContents();
 		shell.open();
 		shell.layout();
@@ -64,15 +70,28 @@ public class RestoreDatabaseDialog extends Dialog {
 				display.sleep();
 			}
 		}
-		return result;
 	}
 
-	private void process(String dbURL) {
+	private void setupUIAsFinished() {
+		textDatabaseDir.setEnabled(false);
+		textSourceFile.setEnabled(false);
+		btnOk.setVisible(false);
+		btnCancel.setText("Close");		
+	}
+	
+	private void process(String dbURL, String backupToRestore) {
 		textOutput.append("Ready to create database " + dbURL + "\n");
 		try (Connection connection = new Connection(dbURL, true)) {
-			textOutput.append("Database " + dbURL + " created.\n");
-			btnOk.setVisible(false);
-			btnCancel.setText("Close");
+			textOutput.append("Database " + dbURL + " created.\n");			
+			try {
+				String serverAnnouncement = connection.getServerAnnouncement();
+				textOutput.append(serverAnnouncement + "\n");		
+				Response response = connection.execute(backupToRestore);
+				response.awaitResult(999999);
+				setupUIAsFinished();
+			} catch (IOException e1) {
+				textOutput.append("Unable to communicate with database due to " + e1.getMessage());
+			}
 		} catch (Exception e) {
 			textOutput.append("Unable to create database " + dbURL + "\n");
 			textOutput.append(e.getMessage());
@@ -126,7 +145,7 @@ public class RestoreDatabaseDialog extends Dialog {
 		btnSourceFile.setLayoutData(fd_btnSourceFile);
 		btnSourceFile.setText("Choose file...");
 		
-		Button btnOk = new Button(shell, SWT.NONE);
+		btnOk = new Button(shell, SWT.NONE);
 		FormData fd_btnOk = new FormData();
 		btnOk.setLayoutData(fd_btnOk);
 		btnOk.setText("Ok");
@@ -134,6 +153,27 @@ public class RestoreDatabaseDialog extends Dialog {
 			String databaseDir = textDatabaseDir.getText().trim();
 			if (databaseDir.length() == 0) {
 				MessageDialog.openInformation(shell, "No Directory Specified", "No database directory was specified.");
+				return;
+			}
+			String sourceFileName = textSourceFile.getText().trim();
+			if (sourceFileName.length() == 0) {
+				MessageDialog.openInformation(shell, "No Backup File Specified", "No database backup file to restore was specified.");
+				return;
+			}
+			File sourceFile = new File(sourceFileName);
+			if (!sourceFile.exists()) {
+				MessageDialog.openInformation(shell, "Unable to Open Backup File", "Database backup file cannot be found.");
+				return;
+			}
+			String backup = "";
+			try {
+				backup = new String(Files.readAllBytes(sourceFile.toPath()), "UTF-8");
+			} catch (IOException e2) {
+				MessageDialog.openInformation(shell, "Unable to Read Backup File", "The database backup file a can't be read due to " + e2.getMessage());
+				return;
+			}
+			if (backup.trim().length() == 0) {
+				MessageDialog.openInformation(shell, "Unable to Read Backup File", "The database backup file appears to be empty or unreadable.");
 				return;
 			}
 			String dbURL = "db:" + databaseDir;
@@ -145,13 +185,13 @@ public class RestoreDatabaseDialog extends Dialog {
 			} catch (Exception e1) {
 				Throwable cause = e1.getCause();
 				if (cause != null && cause.getMessage().startsWith("RS0406:"))
-					process(dbURL);
+					process(dbURL, backup);
 				else
 					MessageDialog.openError(shell, "Problem with Directory", "Unable to use " + dbURL + " due to: " + e1.getMessage());
-			}			
+			}
 		});
 		
-		Button btnCancel = new Button(shell, SWT.NONE);
+		btnCancel = new Button(shell, SWT.NONE);
 		FormData fd_btnCancel = new FormData();
 		btnCancel.setLayoutData(fd_btnCancel);
 		btnCancel.setText("Cancel");
