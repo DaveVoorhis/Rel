@@ -85,7 +85,9 @@ echo "---------------------- MacOS Build ----------------------"
 mkdir $proddir/$mactarget
 cp -R nativeLaunchers/binaries/MacOS/Rel.app $proddir/$mactarget
 cp nativeLaunchers/binaries/MacOS/launchBinSrc/Rel $proddir/$mactarget/Rel.app/Contents/MacOS
-cp doc/* $proddir/$mactarget/Rel.app/Contents/MacOS
+mkdir $proddir/$mactarget/Rel.app/Contents/MacOS/doc
+cp doc/* $proddir/$mactarget/Rel.app/Contents/MacOS/doc
+cp doc/LICENSE.txt $proddir/$mactarget/Rel.app/Contents/MacOS
 cp -R MakeJRE/MacOS/jre $proddir/$mactarget/Rel.app/Contents/MacOS/jre
 cp -R lib $proddir/$mactarget/Rel.app/Contents/MacOS/
 rm -rf $proddir/$mactarget/Rel.app/Contents/MacOS/lib/swt/linux_64
