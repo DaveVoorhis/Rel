@@ -36,6 +36,9 @@ The following enhancements have been made:
     
   - DBrowser: Tweaks to display of RVAs to improve readability.
      
+  - DBrowser: Now provides option to create and restore a database
+    from a backup as a unified operation.
+     
   - Client library: Decoupled Server/ServerV0000 from Client to permit
     use of relclient.jar on its own (plus relshared.jar) to facilitate
     developing purely remote clients.
