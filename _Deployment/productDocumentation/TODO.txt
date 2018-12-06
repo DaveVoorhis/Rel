@@ -1,7 +1,5 @@
 ** TO DO **
 
-- DBrowser: Provide Create Database option to restore from backup.
-
 - Rev: Implement LEFT JOIN, RIGHT JOIN, FULL JOIN.
 
 - DBrowser: Closing a database tab should close its database.

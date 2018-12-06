@@ -33,6 +33,9 @@ Version 3.013 (1.0.26):
   - Enhancement: DBrowser/Client: Tweaks to display of
     RVAs to improve readability.
      
+  - Enhancement: DBrowser now provides option to create
+    and restore a database from a backup.   
+     
   - Enhancement: Client library: Decoupled Server/ServerV0000 
     from Client to permit use of relclient.jar on its own 
     (plus relshared.jar) to facilitate developing purely 
