@@ -289,6 +289,7 @@ public class RestoreDatabaseDialog extends Dialog {
 				return;
 			}
 			if (mode == Mode.LOADDB) {
+				// TODO... use threading here too
 				process(databaseDir, backup);
 			} else {
 				Connection connection;
