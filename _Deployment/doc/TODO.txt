@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Rev: Implement LEFT JOIN, RIGHT JOIN, FULL JOIN.
-
 - DBrowser: Closing a database tab should close its database.
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
