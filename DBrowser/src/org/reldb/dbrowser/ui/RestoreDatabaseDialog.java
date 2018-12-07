@@ -33,9 +33,9 @@ public class RestoreDatabaseDialog extends Dialog {
 	
 	private enum Mode {CREATEDB, LOADDB, FINISHED};
 	
-	private static Mode mode = Mode.CREATEDB;
+	private Mode mode = Mode.CREATEDB;
 	
-	protected Shell shell;
+	private Shell shell;
 	
 	private Text textDatabaseDir;
 	private Text textSourceFile;
@@ -210,6 +210,8 @@ public class RestoreDatabaseDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
+		mode = Mode.CREATEDB;
+		
 		shell = new Shell(getParent(), getStyle());
 		shell.setSize(640, 480);
 		shell.setText(getText());
