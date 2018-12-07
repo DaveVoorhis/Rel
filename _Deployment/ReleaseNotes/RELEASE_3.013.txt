@@ -64,11 +64,11 @@ The following bugs have been fixed:
   - DBrowser: The 'comment' visualiser in Rev now handles carriage
     return correctly on all platforms.
     
-  - DBrowser: Saving a script with escape chars, e.g., \\blah, loads
+  - DBrowser: Saving a script with escape chars, e.g., \\blah, loaded
     as \blah. Fixed.
 
   - DBrowser: Resizing the Rel window whilst in relvar Edit mode
-    caused odd problems, such as the content not re- sizing,
+    caused odd problems, such as the content not re-sizing,
     scrollbars disappearing, etc. Fixed.
 
   - DBrowser: Graphical editing of RVA value did not work due to
