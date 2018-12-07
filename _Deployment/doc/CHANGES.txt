@@ -2,6 +2,8 @@ Last used Exception* number: RS0508
 
 Version 3.014 (1.0.27):
 
+  - Enhancement: DBrowser: Rel mascot image displayed
+    on background of Rel mode when no tabs are displayed.
 
 Version 3.013 (1.0.26):
 

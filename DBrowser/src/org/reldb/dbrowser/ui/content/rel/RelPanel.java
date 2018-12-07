@@ -13,7 +13,9 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -95,6 +97,8 @@ public class RelPanel extends Composite {
 	private CTabItem itemSelectedByMenu;
 	private int itemSelectedByMenuIndex;
 	private PreferenceChangeListener preferenceChangeListener;
+	
+	private Image tabFolderBackground;
 	
 	private static class IconTreeItem extends TreeItem {
 		private String imageName;
@@ -239,8 +243,22 @@ public class RelPanel extends Composite {
 		});
 		
 		treeRoots = new HashMap<String, TreeItem>();
+
+		tabFolderBackground = IconLoader.loadIcon("BirdSilhouette");
+		tabFolder = new CTabFolder(sashForm, SWT.BORDER | SWT.CLOSE | SWT.TRANSPARENT);
+		tabFolder.addListener(SWT.Paint, event -> {
+			if (tabFolderBackground.isDisposed())
+				return;
+			Image background;
+			Rectangle bounds = tabFolder.getClientArea();
+			if (bounds.width > 0 && bounds.height > 0) {
+				background = new Image(getDisplay(), tabFolderBackground.getImageData().scaledTo(bounds.width, bounds.height));			
+				event.gc.drawImage(background, bounds.x, bounds.y);
+				background.dispose();
+			}
+		});
+		tabFolder.addListener(SWT.Resize, e -> tabFolder.redraw());
 		
-		tabFolder = new CTabFolder(sashForm, SWT.BORDER | SWT.CLOSE);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		tabFolder.addListener(SWT.Selection, e -> fireDbTreeTabchangeEvent());
 		tabFolder.addCTabFolder2Listener(new CTabFolder2Adapter() {
@@ -344,6 +362,7 @@ public class RelPanel extends Composite {
 	}
 
 	public void dispose() {
+		tabFolderBackground.dispose();
 		Preferences.removePreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
 		super.dispose();		
 	}
