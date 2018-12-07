@@ -4,6 +4,8 @@
   use threading model employed by org.reldb.dbrowser.ui.RestoreDatabaseDialog
   in process(String dbDir, String backupToRestore).
 
+- Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
+
 - DBrowser: Closing a database tab should close its database.
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
@@ -40,8 +42,6 @@
   or could mean WHERE (WITH (x = 2 * y): x AND p).
 
 - Provide encrypted backups (and log-ins to a given database).
-
-- Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 
 - Allow overwrite of attributes in EXTEND (and RENAME?)
 
