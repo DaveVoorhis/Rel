@@ -130,14 +130,14 @@ public class RestoreDatabaseDialog extends Dialog {
 	private boolean running = false;
 	private String lastError = "";
 	
-	private void process(String dbURL, String backupToRestore) {
+	private void doRestore(String dbDir, String backupToRestore) {
 		ClientLocalConnection connection = null;
 		try {
 			if (mode == Mode.CREATEDB)
 				output("Creating database...", green);
 			else
 				output("Opening database...", green);
-			connection = new ClientLocalConnection(dbURL, mode == Mode.CREATEDB, new CrashTrap(shell, Version.getVersion()), null);
+			connection = new ClientLocalConnection(dbDir, mode == Mode.CREATEDB, new CrashTrap(shell, Version.getVersion()), null);
 			output(connection.getServerAnnouncement(), black);
 			final BufferedReader input = new BufferedReader(new InputStreamReader(connection.getServerResponseInputStream()));
 			Thread readerThread = new Thread() {
@@ -194,6 +194,15 @@ public class RestoreDatabaseDialog extends Dialog {
 			} catch (IOException e) {
 				output("Problem closing connection: " + e.getMessage(), red);
 			}
+	}
+	
+	private void process(String dbDir, String backupToRestore) {
+		Thread processor = new Thread() {
+			public void run() {
+				doRestore(dbDir, backupToRestore);								
+			}
+		};
+		processor.start();		
 	}
 	
 	/**
@@ -288,10 +297,9 @@ public class RestoreDatabaseDialog extends Dialog {
 				MessageDialog.openInformation(shell, "Unable to Read Backup File", "The database backup file appears to be empty or unreadable.");
 				return;
 			}
-			if (mode == Mode.LOADDB) {
-				// TODO... use threading here too
+			if (mode == Mode.LOADDB)
 				process(databaseDir, backup);
-			} else {
+			else {
 				Connection connection;
 				try {
 					connection = new Connection("db:" + databaseDir);
@@ -299,15 +307,9 @@ public class RestoreDatabaseDialog extends Dialog {
 					MessageDialog.openInformation(shell, "Database Exists", "A Rel database already exists at " + databaseDir);
 				} catch (Exception e1) {
 					Throwable cause = e1.getCause();
-					if (cause != null && cause.getMessage().startsWith("RS0406:")) {
-						final String backupStr = backup;
-						Thread processor = new Thread() {
-							public void run() {
-								process(databaseDir, backupStr);								
-							}
-						};
-						processor.start();
-					} else
+					if (cause != null && cause.getMessage().startsWith("RS0406:"))
+						process(databaseDir, backup);
+					else
 						MessageDialog.openError(shell, "Problem with Directory", "Unable to use " + databaseDir + " due to: " + e1.getMessage());
 				}
 			}
