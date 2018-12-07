@@ -76,9 +76,9 @@ public class DBrowser {
 		fileItem.setMenu(menu);
 		
 		if (hasLocalRel()) {
-			new AcceleratedMenuItem(menu, "&New Database\tCtrl-n", SWT.MOD1 | 'n', "NewDBIcon", e -> Core.newDatabase());
-			new AcceleratedMenuItem(menu, "New Database from backup", 0, "database_restore", e -> Core.restoreDatabase());
-			new AcceleratedMenuItem(menu, "Open &local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> Core.openLocalDatabase());
+			new AcceleratedMenuItem(menu, "New database\tCtrl-n", SWT.MOD1 | 'n', "NewDBIcon", e -> Core.newDatabase());
+			new AcceleratedMenuItem(menu, "New database from a backup", 0, "database_restore", e -> Core.restoreDatabase());
+			new AcceleratedMenuItem(menu, "Open local database\tCtrl-l", SWT.MOD1 | 'l', "OpenDBLocalIcon", e -> Core.openLocalDatabase());
 		}
 		new AcceleratedMenuItem(menu, "Open remote database\tCtrl-r", SWT.MOD1 | 'r', "OpenDBRemoteIcon", e-> Core.openRemoteDatabase());
 		
