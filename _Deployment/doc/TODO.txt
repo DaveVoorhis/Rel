@@ -8,6 +8,8 @@
 
 - DBrowser: Closing a database tab should close its database.
 
+- Provide encrypted backups (and log-ins to a given database).
+
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
   disappear unless the main window is manually resized. Fix this.
 
@@ -40,8 +42,6 @@
   end with the same term. Thus, S WHERE WITH (x = 2 * y): x AND p 
   could mean WHERE (WITH (x = 2 * y): x) AND p
   or could mean WHERE (WITH (x = 2 * y): x AND p).
-
-- Provide encrypted backups (and log-ins to a given database).
 
 - Allow overwrite of attributes in EXTEND (and RENAME?)
 
