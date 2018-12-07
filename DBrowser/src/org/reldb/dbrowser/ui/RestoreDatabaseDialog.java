@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Button;
 
 public class RestoreDatabaseDialog extends Dialog {
 	
-	private enum Mode {CREATEDB, LOADDB};
+	private enum Mode {CREATEDB, LOADDB, FINISHED};
 	
 	private static Mode mode = Mode.CREATEDB;
 	
@@ -94,10 +94,11 @@ public class RestoreDatabaseDialog extends Dialog {
 		textSourceFile.setEnabled(false);
 		btnDatabaseDir.setEnabled(false);
 		btnSourceFile.setEnabled(false);
-		btnOk.setVisible(false);
+		btnOk.setText("Open New Database");
+		btnOk.requestLayout();
 		btnCancel.setText("Close");
 		btnCancel.requestLayout();
-		mode = Mode.CREATEDB;
+		mode = Mode.FINISHED;
 	}
 	
 	private void setupUIAsReload() {
@@ -272,6 +273,11 @@ public class RestoreDatabaseDialog extends Dialog {
 		btnOk.setText("Ok");
 		btnOk.addListener(SWT.Selection, e -> {
 			String databaseDir = textDatabaseDir.getText().trim();
+			if (mode == Mode.FINISHED) {
+				Core.openDatabase("db:" + databaseDir);
+				shell.dispose();
+				return;
+			}
 			if (databaseDir.length() == 0) {
 				MessageDialog.openInformation(shell, "No Directory Specified", "No database directory was specified.");
 				return;
