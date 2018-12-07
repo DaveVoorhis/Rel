@@ -28,9 +28,9 @@ public class TestLambda3 extends BaseOfTest {
 		String src = "EXTEND myvar : {p := (y) (x, 3)}";
 		testEquals(
 			"RELATION {x INTEGER, y OPERATOR (INTEGER, INTEGER) RETURNS INTEGER, p INTEGER} {\n" +
-			"\tTUPLE {x 1, y \"OPERATOR ( a INTEGER , b INTEGER ) RETURNS INTEGER ; RETURN a + b ; END OPERATOR\", p 4},\n" +
-			"\tTUPLE {x 2, y \"OPERATOR ( a INTEGER , b INTEGER ) RETURNS INTEGER ; RETURN a - b ; END OPERATOR\", p -1},\n" +
-			"\tTUPLE {x 3, y \"OPERATOR ( a INTEGER , b INTEGER ) RETURNS INTEGER ; RETURN a * b ; END OPERATOR\", p 9}\n" +
+			"\tTUPLE {x 1, y OPERATOR ( a INTEGER , b INTEGER ) RETURNS INTEGER ; RETURN a + b ; END OPERATOR, p 4},\n" +
+			"\tTUPLE {x 2, y OPERATOR ( a INTEGER , b INTEGER ) RETURNS INTEGER ; RETURN a - b ; END OPERATOR, p -1},\n" +
+			"\tTUPLE {x 3, y OPERATOR ( a INTEGER , b INTEGER ) RETURNS INTEGER ; RETURN a * b ; END OPERATOR, p 9}\n" +
 			"}"
 		, src);
 	}
