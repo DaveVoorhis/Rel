@@ -4,6 +4,9 @@
 
 - DBrowser: Closing a database tab should close its database.
 
+- Provide "prepared statement" or parameterised query mechanism in client
+  library, to promote code re-use and avoid "Tutorial D injection".
+
 - DBrowser: On recently-used database display, provide options to sort alphabetically
   or by use frequency, and to display as tiles or a list.
 
@@ -51,9 +54,6 @@
   etc. — as opposed to simply explicitly running a script file — would be a 
   nice way to provide a “standard library” that can be extended, upgraded, 
   customised, or removed as needed.
-
-- Provide "prepared statement" or parameterised query mechanism in client
-  library, to promote code re-use and avoid "Tutorial D injection".
 
 - Remove read-only UPDATE operator (as long as EXTEND can serve the same purpose.)
 
