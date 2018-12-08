@@ -4,6 +4,9 @@
 
 - DBrowser: Closing a database tab should close its database.
 
+- DBrowser: On recently-used database display, provide options to sort alphabetically
+  or by use frequency, and to display as tiles or a list.
+
 - Provide encrypted backups (and log-ins to a given database).
 
 - DBrowser: When using alternative display mode on Windows, the content scrollbars
