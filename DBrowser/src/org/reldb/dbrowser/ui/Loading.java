@@ -1,4 +1,4 @@
-package org.reldb.dbrowser.loading;
+package org.reldb.dbrowser.ui;
 
 public class Loading {
 

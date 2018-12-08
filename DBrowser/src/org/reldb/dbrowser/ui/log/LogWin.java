@@ -22,8 +22,8 @@ import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
-import org.reldb.dbrowser.loading.Loading;
 import org.reldb.dbrowser.ui.IconLoader;
+import org.reldb.dbrowser.ui.Loading;
 import org.reldb.dbrowser.ui.preferences.Preferences;
 
 public class LogWin {
