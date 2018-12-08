@@ -47,8 +47,8 @@ public class ClientLocalConnection extends ClientConnection {
 	}
 	
 	public InputStream getServerResponseInputStream() throws IOException {
-		// return rel.getServerResponseInputStream();
 		try {
+			// return rel.getServerResponseInputStream();
 			return (InputStream)getServerResponseInputStream.invoke(rel, (Object [])null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			throw new IOException(e.getCause());
@@ -56,28 +56,32 @@ public class ClientLocalConnection extends ClientConnection {
 	}
 	
 	public void sendEvaluate(String source) {
-		try {
-			// rel.sendEvaluate(source);
-			sendEvaluate.invoke(rel, source);
-		} catch (Throwable t) {
-			reset();
-			errorHandler.process(t, source);
-		}
+		(new Thread(() -> {
+			try {
+				// rel.sendEvaluate(source);
+				sendEvaluate.invoke(rel, source);
+			} catch (Throwable e) {
+				reset();
+				errorHandler.process(e, source);
+			}
+		})).start();
 	}
 	
 	public void sendExecute(String source) {
-		try {
-			// rel.sendExecute(source);
-			sendExecute.invoke(rel, source);
-		} catch (Throwable t) {
-			reset();
-			errorHandler.process(t, source);
-		}
+		(new Thread(() -> {
+			try {
+				// rel.sendExecute(source);
+				sendExecute.invoke(rel, source);
+			} catch (Throwable t) {
+				reset();
+				errorHandler.process(t, source);
+			}
+		})).start();
 	}
 	
 	public void close() throws IOException {
-		// rel.close();
 		try {
+			// rel.close();
 			close.invoke(rel, (Object [])null);
 		} catch (Throwable t) {
 			reset();
@@ -86,8 +90,8 @@ public class ClientLocalConnection extends ClientConnection {
 	}
 
 	public void reset() {
-		// rel.reset();
 		try {
+			// rel.reset();
 			reset.invoke(rel, (Object [])null);
 		} catch (Throwable t) {
 			errorHandler.process(t, "");
@@ -95,8 +99,8 @@ public class ClientLocalConnection extends ClientConnection {
 	}
 
 	public static void convertToLatestFormat(String dbURL, PrintStream conversionOutput, String[] additionalJars) throws DatabaseFormatVersionException, IOException {
-		// Rel.convertToLatestFormat(dbURL, conversionOutput, additionalJars);
 		try {
+			// Rel.convertToLatestFormat(dbURL, conversionOutput, additionalJars);
 			convertToLatestFormat.invoke(null, dbURL, conversionOutput, additionalJars);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
