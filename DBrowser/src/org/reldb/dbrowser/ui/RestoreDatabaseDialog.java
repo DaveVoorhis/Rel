@@ -8,10 +8,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Label;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 
 import org.apache.poi.Version;
@@ -26,7 +24,7 @@ import org.eclipse.swt.widgets.Text;
 import org.reldb.dbrowser.Core;
 import org.reldb.dbrowser.ui.crash.CrashTrap;
 import org.reldb.rel.client.Connection;
-import org.reldb.rel.client.connection.stream.ClientLocalConnection;
+import org.reldb.rel.client.connection.string.ClientLocal;
 import org.eclipse.swt.widgets.Button;
 
 public class RestoreDatabaseDialog extends Dialog {
@@ -127,74 +125,37 @@ public class RestoreDatabaseDialog extends Dialog {
 		});
 	}
 
-	private boolean loadFail = true;
-	private boolean running = false;
-	private String lastError = "";
-	
 	private void doRestore(String dbDir, String backupToRestore) {
-		ClientLocalConnection connection = null;
-		try {
-			if (mode == Mode.CREATEDB)
-				output("Creating database...", green);
-			else
-				output("Opening database...", green);
-			connection = new ClientLocalConnection(dbDir, mode == Mode.CREATEDB, new CrashTrap(shell, Version.getVersion()), null);
+		if (mode == Mode.CREATEDB)
+			output("Creating database...", green);
+		else
+			output("Opening database...", green);
+		try (ClientLocal connection = new ClientLocal(dbDir, mode == Mode.CREATEDB, new CrashTrap(shell, Version.getVersion()), null)) {
 			output(connection.getServerAnnouncement(), black);
-			final BufferedReader input = new BufferedReader(new InputStreamReader(connection.getServerResponseInputStream()));
-			Thread readerThread = new Thread() {
-				public void run() {
-					String r;
-					loadFail = false;
-					running = true;
-					lastError = "";
-					try {
-						while ((r = input.readLine()) != null) {
-							if (r.equals("<EOT>")) {
-								break;
-							} else if (r.startsWith("ERROR:")) {
-								output(r, red);
-								lastError = r;
-								loadFail = true;
-								break;
-							} else if (!r.equals("Ok.")) {
-								output(r, black);
-							}
-							Thread.yield();
-						}
-						running = false;
-					} catch (IOException e) {
-						return;
-					}
-				}
-			};
-			readerThread.start();
 			connection.sendExecute(backupToRestore);
-			while (running)
-				Thread.yield();
+			boolean loadFail = false;
+			String lastError = "";
+			String r;
+			while ((r = connection.receive()) != null) {
+				if (r.startsWith("ERROR:")) {
+					output(r, red);
+					lastError = r;
+					loadFail = true;
+					break;
+				} else if (!r.equals("Ok.")) {
+					output(r, black);
+				}
+			}
 			if (loadFail) {
-				output("Load failed due to " + lastError, red);
-				shell.getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						setupUIAsReload();						
-					}
-				});
+				output("\nLoad failed due to " + lastError, red);
+				shell.getDisplay().asyncExec(() -> setupUIAsReload());
 			} else {
 				output("Done.", green);
-				shell.getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						setupUIAsFinished();
-					}
-				});
+				shell.getDisplay().asyncExec(() -> setupUIAsFinished());
 			}
-		} catch (Exception e) {
-			output("Error:\n" + e.getMessage(), red);
+		} catch (Throwable e) {
+			output("Error:\n" + e.getMessage(), red);			
 		}
-		if (connection != null)
-			try {
-				connection.close();
-			} catch (IOException e) {
-				output("Problem closing connection: " + e.getMessage(), red);
-			}
 	}
 	
 	private void process(String dbDir, String backupToRestore) {
@@ -203,7 +164,7 @@ public class RestoreDatabaseDialog extends Dialog {
 				doRestore(dbDir, backupToRestore);								
 			}
 		};
-		processor.start();		
+		processor.start();
 	}
 	
 	/**
