@@ -50,8 +50,7 @@ public class RelvarRELVARMetadata extends RelvarCustomMetadata {
 	
 		// Send query to remote Rel DBMS
 		String response = "";
-		try {
-			ClientNetwork connection = new ClientNetwork(host, port);
+		try (ClientNetwork connection = new ClientNetwork(host, port)) {
 			connection.sendEvaluate(relvar + " WHERE false");
 			String line;
 			while ((line = connection.receive()) != null)
