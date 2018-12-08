@@ -454,20 +454,18 @@ public class DBrowser {
 				Rectangle progressBarRect = new Rectangle(10, rect.height - 20, barWidth, barHeight);
 				gc.draw3DRect(progressBarRect.x, progressBarRect.y, progressBarRect.width, progressBarRect.height, false);
 				gc.setColor(Color.green);
-				(new Thread() {
-					public void run() {
-						while (SplashScreen.getSplashScreen() != null) {
-							int percent = Loading.getPercentageOfExpectedMessages();
-							int drawExtent = Math.min(barWidth * percent / 100, barWidth);
-							gc.fillRect(progressBarRect.x, progressBarRect.y, drawExtent, barHeight);
-							splash.update();					
-							try {
-								Thread.sleep(250);
-							} catch (InterruptedException e) {
-							}
-						}							
-					}
-				}).start();
+				(new Thread(() -> {
+					while (SplashScreen.getSplashScreen() != null) {
+						int percent = Loading.getPercentageOfExpectedMessages();
+						int drawExtent = Math.min(barWidth * percent / 100, barWidth);
+						gc.fillRect(progressBarRect.x, progressBarRect.y, drawExtent, barHeight);
+						splash.update();					
+						try {
+							Thread.sleep(250);
+						} catch (InterruptedException e) {
+						}
+					}							
+				})).start();
 			}			
 		}
 		

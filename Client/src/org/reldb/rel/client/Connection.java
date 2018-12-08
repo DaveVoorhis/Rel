@@ -153,17 +153,14 @@ public class Connection implements AutoCloseable {
 	
 	private void launchTransmitter(final StreamReceiverClient client, final Action action) {
 		// Transmit needs to run in separate thread for local connection, or the pipe will deadlock.
-		Thread sendRunner = new Thread() {
-			public void run() {
-				try {
-					action.run(client);
-				} catch (IOException e) {
-					e.printStackTrace();
-					return;
-				}						
+		(new Thread(() -> {
+			try {
+				action.run(client);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
 			}
-		};
-		sendRunner.start();
+		})).start();
 	}
 	
 	private Response launchParser(final Action sendAction, final Action receiveComplete) {
@@ -175,97 +172,94 @@ public class Connection implements AutoCloseable {
 			response.setResult(new Error(e.toString()));
 			return response;
 		}
-		Thread parseRunner = new Thread() {
-			public void run() {
-				ErrorMessageTrap errorMessageTrap;
-				ResponseParser parser;
-				try {
-					errorMessageTrap = new ErrorMessageTrap(client.getServerResponseInputStream());
-					parser = new ResponseParser(errorMessageTrap);
-				} catch (Throwable e1) {
-					e1.printStackTrace();
-					return;
-				}
-				parser.setResponseHandler(new ResponseAdapter() {
-					Stack<Value> valueReceiver = new Stack<Value>();
-					Stack<Heading> headingReceiver = new Stack<Heading>();
-					private void endData() {
-						Value value = valueReceiver.pop();
-						if (valueReceiver.size() > 0)
-							valueReceiver.peek().addValue(value, false);
-						else
-							response.setResult(value);
-					}
-					public void beginHeading(String typeName) {
-						Heading heading = new Heading(typeName);
-						headingReceiver.push(heading);
-					}
-					public Heading endHeading() {
-						Heading heading = headingReceiver.pop();
-						if (headingReceiver.size() > 0)
-							headingReceiver.peek().addAttributeType(heading);
-						return heading;
-					}
-					public void attributeName(String name) {
-						headingReceiver.peek().addAttributeName(name);
-					}
-					public void typeReference(String name) {
-						headingReceiver.peek().addAttributeType(new ScalarType(name));
-					}
-					public void beginScalar(int depth) {
-						valueReceiver.push(new Scalar());
-					}
-					public void endScalar(int depth) {
-						endData();
-					}
-					public void beginPossrep(String name) {
-						valueReceiver.push(new Selector(name));
-					}
-					public void endPossrep() {
-						endData();
-					}
-					public void primitive(String value, boolean quoted) {
-						valueReceiver.peek().addValue(new Scalar(value, quoted), quoted);
-					}
-					public void beginContainerBody(int depth, Heading heading, String typeName) {
-						Tuples tuples = (heading == null) ? new Tuples(typeName) : new Tuples(heading);
-						if (depth == 0)
-							response.setResult(tuples);
-						valueReceiver.push(tuples);
-					}
-					public void endContainer(int depth) {
-						Tuples tuples = (Tuples)valueReceiver.peek();
-						tuples.insertNullTuple();
-						endData();	
-					}
-					public void beginTuple(int depth) {
-						valueReceiver.push(new Tuple());
-					}
-					public void endTuple(int depth) {
-						endData();
-					}
-					public void attributeNameInTuple(int depth, String name) {
-						((Tuple)valueReceiver.peek()).addAttributeName(name);
-					}
-				});
-				try {
-					parser.parse();
-				} catch (ParseException e) {
-					// Debug client-side response parser problems here.
-					// System.out.println("Connection: " + e);
-					response.setResult(new Error(errorMessageTrap.toString()));
-				}
-				try {
-					if (receiveComplete != null)
-						receiveComplete.run(client);
-					client.close();
-				} catch (IOException e) {
-					System.out.println("Connection: run failed: " + e);
-					e.printStackTrace();
-				}
+		(new Thread(() -> {
+			ErrorMessageTrap errorMessageTrap;
+			ResponseParser parser;
+			try {
+				errorMessageTrap = new ErrorMessageTrap(client.getServerResponseInputStream());
+				parser = new ResponseParser(errorMessageTrap);
+			} catch (Throwable e1) {
+				e1.printStackTrace();
+				return;
 			}
-		};
-		parseRunner.start();
+			parser.setResponseHandler(new ResponseAdapter() {
+				Stack<Value> valueReceiver = new Stack<Value>();
+				Stack<Heading> headingReceiver = new Stack<Heading>();
+				private void endData() {
+					Value value = valueReceiver.pop();
+					if (valueReceiver.size() > 0)
+						valueReceiver.peek().addValue(value, false);
+					else
+						response.setResult(value);
+				}
+				public void beginHeading(String typeName) {
+					Heading heading = new Heading(typeName);
+					headingReceiver.push(heading);
+				}
+				public Heading endHeading() {
+					Heading heading = headingReceiver.pop();
+					if (headingReceiver.size() > 0)
+						headingReceiver.peek().addAttributeType(heading);
+					return heading;
+				}
+				public void attributeName(String name) {
+					headingReceiver.peek().addAttributeName(name);
+				}
+				public void typeReference(String name) {
+					headingReceiver.peek().addAttributeType(new ScalarType(name));
+				}
+				public void beginScalar(int depth) {
+					valueReceiver.push(new Scalar());
+				}
+				public void endScalar(int depth) {
+					endData();
+				}
+				public void beginPossrep(String name) {
+					valueReceiver.push(new Selector(name));
+				}
+				public void endPossrep() {
+					endData();
+				}
+				public void primitive(String value, boolean quoted) {
+					valueReceiver.peek().addValue(new Scalar(value, quoted), quoted);
+				}
+				public void beginContainerBody(int depth, Heading heading, String typeName) {
+					Tuples tuples = (heading == null) ? new Tuples(typeName) : new Tuples(heading);
+					if (depth == 0)
+						response.setResult(tuples);
+					valueReceiver.push(tuples);
+				}
+				public void endContainer(int depth) {
+					Tuples tuples = (Tuples)valueReceiver.peek();
+					tuples.insertNullTuple();
+					endData();	
+				}
+				public void beginTuple(int depth) {
+					valueReceiver.push(new Tuple());
+				}
+				public void endTuple(int depth) {
+					endData();
+				}
+				public void attributeNameInTuple(int depth, String name) {
+					((Tuple)valueReceiver.peek()).addAttributeName(name);
+				}
+			});
+			try {
+				parser.parse();
+			} catch (ParseException e) {
+				// Debug client-side response parser problems here.
+				// System.out.println("Connection: " + e);
+				response.setResult(new Error(errorMessageTrap.toString()));
+			}
+			try {
+				if (receiveComplete != null)
+					receiveComplete.run(client);
+				client.close();
+			} catch (IOException e) {
+				System.out.println("Connection: run failed: " + e);
+				e.printStackTrace();
+			}
+		})).start();
 		launchTransmitter(client, sendAction);
 		return response;
 	}
@@ -285,46 +279,43 @@ public class Connection implements AutoCloseable {
 			htmlReceiver.emitInitialHTML("Unable to open connection: " + e.toString().replace(" ", "&nbsp;"));
 			return;
 		}
-		Thread parseRunner = new Thread() {
-			public void run() {
-				ErrorMessageTrap errorMessageTrap;
-				ResponseToHTML parser;
-				try {
-					errorMessageTrap = new ErrorMessageTrap(client.getServerResponseInputStream());
-					parser = new ResponseToHTMLProgressive(errorMessageTrap) {						
-						public void emitInitialHTML(String s) {
-							htmlReceiver.emitInitialHTML(s);
-						}
-						public void endInitialHTML() {
-							htmlReceiver.endInitialHTML();
-						}
-						public void emitProgressiveHTML(String s) {
-							htmlReceiver.emitProgressiveHTML(s);
-						}
-						public void endProgressiveHTMLRow() {
-							htmlReceiver.endProgressiveHTMLRow();
-						}
-					};
-				} catch (Throwable e1) {
-					e1.printStackTrace();
-					return;
-				}
-				try {
-					parser.parse();
-				} catch (ParseException e) {
-					// Debug client-side response parser problems here.
-					// System.out.println("Connection: " + e);
-					htmlReceiver.emitInitialHTML(errorMessageTrap.toString().replace(" ", "&nbsp;"));
-				}
-				try {
-					client.close();
-				} catch (IOException e) {
-					System.out.println("Connection: close failed: " + e);
-					e.printStackTrace();
-				}
+		(new Thread(() -> {
+			ErrorMessageTrap errorMessageTrap;
+			ResponseToHTML parser;
+			try {
+				errorMessageTrap = new ErrorMessageTrap(client.getServerResponseInputStream());
+				parser = new ResponseToHTMLProgressive(errorMessageTrap) {						
+					public void emitInitialHTML(String s) {
+						htmlReceiver.emitInitialHTML(s);
+					}
+					public void endInitialHTML() {
+						htmlReceiver.endInitialHTML();
+					}
+					public void emitProgressiveHTML(String s) {
+						htmlReceiver.emitProgressiveHTML(s);
+					}
+					public void endProgressiveHTMLRow() {
+						htmlReceiver.endProgressiveHTMLRow();
+					}
+				};
+			} catch (Throwable e1) {
+				e1.printStackTrace();
+				return;
 			}
-		};
-		parseRunner.start();
+			try {
+				parser.parse();
+			} catch (ParseException e) {
+				// Debug client-side response parser problems here.
+				// System.out.println("Connection: " + e);
+				htmlReceiver.emitInitialHTML(errorMessageTrap.toString().replace(" ", "&nbsp;"));
+			}
+			try {
+				client.close();
+			} catch (IOException e) {
+				System.out.println("Connection: close failed: " + e);
+				e.printStackTrace();
+			}
+		})).start();
 		launchTransmitter(client, action);
 	}
 

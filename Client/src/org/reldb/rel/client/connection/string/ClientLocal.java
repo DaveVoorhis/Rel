@@ -18,24 +18,22 @@ public class ClientLocal implements StringReceiverClient {
 	public ClientLocal(String databaseDir, boolean createDbAllowed, CrashHandler crashHandler, String[] additionalJars) throws IOException, DatabaseFormatVersionException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		connection = new ClientLocalConnection(databaseDir, createDbAllowed, crashHandler, additionalJars);
 		final BufferedReader input = new BufferedReader(new InputStreamReader(connection.getServerResponseInputStream()));
-		Thread receiver = new Thread() {
-			public void run() {
-				receiverRunning = true;
-				while (receiverRunning) {
+		Thread receiver = new Thread(() -> {
+			receiverRunning = true;
+			while (receiverRunning) {
+				try {
+					String received = input.readLine();
+					if (received != null)							
+						outputStringQueue.add(received);
+				} catch (IOException ioe) {
+					if (!(ioe.getMessage().equals("Write end dead") || ioe.getMessage().equals("Pipe broken")))
+						System.out.println("ClientLocal: " + ioe.getMessage());
 					try {
-						String received = input.readLine();
-						if (received != null)							
-							outputStringQueue.add(received);
-					} catch (IOException ioe) {
-						if (!(ioe.getMessage().equals("Write end dead") || ioe.getMessage().equals("Pipe broken")))
-							System.out.println("ClientLocal: " + ioe.getMessage());
-						try {
-							sleep(250);
-						} catch (InterruptedException ie) {}
-					}
+						Thread.sleep(250);
+					} catch (InterruptedException ie) {}
 				}
 			}
-		};
+		});
 		receiver.setDaemon(true);
 		receiver.start();
 	}

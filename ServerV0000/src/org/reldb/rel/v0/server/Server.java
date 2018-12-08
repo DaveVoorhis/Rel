@@ -45,23 +45,21 @@ public class Server {
 			System.out.println("Server: " + ioe);
 			return;
 		}
-		daemon = new Thread() {
-			public void run() {
-				running = true;
-				InetAddress ip = serverSocket.getInetAddress();
-				System.out.println("Server: Listening for connections on " + ip + ":" + portNumber + " (" + rel.getHost() + ")");
-				while (running) {
-					try {
-						new Session(Server.this, serverSocket.accept());
-					} catch (IOException ioe) {
-						System.out.println("Server: " + ioe.getMessage());
-						running = false;
-						break;
-					}
+		daemon = new Thread(() -> {
+			running = true;
+			InetAddress ip = serverSocket.getInetAddress();
+			System.out.println("Server: Listening for connections on " + ip + ":" + portNumber + " (" + rel.getHost() + ")");
+			while (running) {
+				try {
+					new Session(Server.this, serverSocket.accept());
+				} catch (IOException ioe) {
+					System.out.println("Server: " + ioe.getMessage());
+					running = false;
+					break;
 				}
-				System.out.println("Server: Turned off.");
 			}
-		};
+			System.out.println("Server: Turned off.");
+		});
 		daemon.start();
 	}
 	

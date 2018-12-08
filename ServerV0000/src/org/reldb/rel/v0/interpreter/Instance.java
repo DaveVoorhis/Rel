@@ -77,40 +77,34 @@ public class Instance {
 	private static void setupShutdownHook() {
 		if (shutdownHookSetup)
 			return;
-		Thread serverShutdownHook = new Thread() {
-			public void run() {
-				if (server != null)
-					server.shutdown();
-			}
-		};
+		Thread serverShutdownHook = new Thread(() -> {
+			if (server != null)
+				server.shutdown();
+		});
 		Runtime.getRuntime().addShutdownHook(serverShutdownHook);
 		if (openDatabases == null) {
 			openDatabases = new HashMap<File, RelDatabase>();
-			Thread dbShutdownHook = new Thread() {
-				public void run() {
-					for (RelDatabase database : openDatabases.values())
-						if (database.isOpen())
-							database.close();
-				}
-			};
+			Thread dbShutdownHook = new Thread(() -> {
+				for (RelDatabase database : openDatabases.values())
+					if (database.isOpen())
+						database.close();
+			});
 			Runtime.getRuntime().addShutdownHook(dbShutdownHook);
 		}
 		localHostName = "<host name not yet available...>";
-		(new Thread() {
-			public void run() {
-				try {
-					InetAddress localHost = InetAddress.getLocalHost();
-					localHostName = localHost.toString();
-					(new Thread() {
-						public void run() {
-							localHostName = localHost.getCanonicalHostName();
-						}
-					}).start();
-				} catch (UnknownHostException e) {
-					localHostName = "<unknown>";
-				}
+		(new Thread(() -> {
+			try {
+				InetAddress localHost = InetAddress.getLocalHost();
+				localHostName = localHost.toString();
+				(new Thread() {
+					public void run() {
+						localHostName = localHost.getCanonicalHostName();
+					}
+				}).start();
+			} catch (UnknownHostException e) {
+				localHostName = "<unknown>";
 			}
-		}).start();
+		})).start();
 		shutdownHookSetup = true;
 	}
     

@@ -23,54 +23,51 @@ public class Session {
 		System.out.println("Session: Open session " + sessionid + " to " + ip + ":" + remotePort);
 		server = owner;
 		socket = channel;
-		Thread sessionThread = new Thread() {
-			public void run() {
-				try {
-					server.addSession(Session.this);
-					PrintStream output = new PrintStream(socket.getOutputStream());
-					Interpreter interpreter = new Interpreter(owner.getInstance().getDatabase(), output);
-					running = true;
-					owner.getInstance().announceActive(output);
+		(new Thread(() -> {
+			try {
+				server.addSession(Session.this);
+				PrintStream output = new PrintStream(socket.getOutputStream());
+				Interpreter interpreter = new Interpreter(owner.getInstance().getDatabase(), output);
+				running = true;
+				owner.getInstance().announceActive(output);
+				output.println("<EOT>");
+				output.flush();
+				while (running) {
+					try {
+						int prefix = socket.getInputStream().read();
+						if (prefix < 0)
+							break;
+						if (Character.isWhitespace((char)prefix))
+							continue;
+						if (prefix == 'E') {
+							interpreter.evaluate(socket.getInputStream()).toStream(output);
+							output.println();
+						}
+						else if (prefix == 'X') {
+							interpreter.interpret(socket.getInputStream());
+							output.println("\nOk.");
+						} 
+						else if (prefix == 'R') {
+							interpreter.reset();
+							output.println("\nCancel.");
+						}
+						else
+							output.println("ERROR: Rel server protocol error: expected 'R', 'E' or 'X', but got '" + (char)prefix + "'.");
+					} catch (SocketException se) {
+						break;
+					} catch (Throwable t) {
+						interpreter.reset();
+						output.println("ERROR: " + t.getMessage());
+					}
 					output.println("<EOT>");
 					output.flush();
-					while (running) {
-						try {
-							int prefix = socket.getInputStream().read();
-							if (prefix < 0)
-								break;
-							if (Character.isWhitespace((char)prefix))
-								continue;
-							if (prefix == 'E') {
-								interpreter.evaluate(socket.getInputStream()).toStream(output);
-								output.println();
-							}
-							else if (prefix == 'X') {
-								interpreter.interpret(socket.getInputStream());
-								output.println("\nOk.");
-							} 
-							else if (prefix == 'R') {
-								interpreter.reset();
-								output.println("\nCancel.");
-							}
-							else
-								output.println("ERROR: Rel server protocol error: expected 'R', 'E' or 'X', but got '" + (char)prefix + "'.");
-						} catch (SocketException se) {
-							break;
-						} catch (Throwable t) {
-							interpreter.reset();
-							output.println("ERROR: " + t.getMessage());
-						}
-						output.println("<EOT>");
-						output.flush();
-					}
-					output.close();
-				} catch (IOException ioe) {
-					System.out.println("Session: " + ioe);
 				}
-				kill();
+				output.close();
+			} catch (IOException ioe) {
+				System.out.println("Session: " + ioe);
 			}
-		};
-		sessionThread.start();
+			kill();
+		})).start();
 	}
 
 	public long getId() {
