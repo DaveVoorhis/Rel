@@ -29,8 +29,6 @@ public class DbTabContentRecent extends Composite {
 
 		redisplayed();
 		
-		setBackgroundMode(SWT.INHERIT_FORCE);
-		
 		setupIcons();
 		
 		preferenceChangeListener = new PreferenceChangeAdapter("DbTabContentLRU") {
@@ -40,14 +38,17 @@ public class DbTabContentRecent extends Composite {
 			}
 		};		
 		Preferences.addPreferenceChangeListener(PreferencePageGeneral.LARGE_ICONS, preferenceChangeListener);
+				
+		setBackgroundMode(SWT.INHERIT_FORCE);
 		
 		addListener(SWT.Resize, e -> {
-			Image background = IconLoader.loadIcon("BirdSilhouette");
+			Image background = IconLoader.loadIcon("BirdSilhouetteWhiteBackground");
 			Rectangle bounds = getBounds();
 			if (bounds.width > 0 && bounds.height > 0)
 				background = new Image(getDisplay(), background.getImageData().scaledTo(bounds.width, bounds.height));			
 			setBackgroundImage(background);
 		});
+
 	}
 
 	public void dispose() {
