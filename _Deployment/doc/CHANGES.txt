@@ -7,6 +7,9 @@ Version 3.014 (1.0.27):
 
   - Enhancement: Client: AutoCloseable interface implemented
     on connection classes.
+    
+  - Enhancement: DBrowser: Simplified code in
+    RestoreDatabaseDialog.
 
 Version 3.013 (1.0.26):
 
