@@ -45,7 +45,7 @@
   could mean WHERE (WITH (x = 2 * y): x) AND p
   or could mean WHERE (WITH (x = 2 * y): x AND p).
 
-- Allow overwrite of attributes in EXTEND (and RENAME?)
+- Allow overwrite of attributes in EXTEND.
 
 - "Standard library": A mechanism to load/include/use/import specific types, 
   sets of operators, or other definitions (e.g., pre-built database schemas) 
