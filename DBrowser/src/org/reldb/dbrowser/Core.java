@@ -153,6 +153,8 @@ public class Core {
 	}
 
 	public static void removeRedundantPlusTabsExcept(DbTab tabInUse) {
+		if (mainPanel.isDisposed())
+			return;
 		CTabItem[] tabs = mainPanel.getTabFolder().getItems();
 		for (CTabItem tab: tabs) {
 			if (tab instanceof DbTab) {

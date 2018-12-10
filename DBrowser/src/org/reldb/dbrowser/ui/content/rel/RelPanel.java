@@ -247,7 +247,7 @@ public class RelPanel extends Composite {
 		tabFolderBackground = IconLoader.loadIcon("BirdSilhouette");
 		tabFolder = new CTabFolder(sashForm, SWT.BORDER | SWT.CLOSE | SWT.TRANSPARENT);
 		tabFolder.addListener(SWT.Paint, event -> {
-			if (tabFolderBackground.isDisposed())
+			if (tabFolderBackground.isDisposed() || tabFolder.isDisposed())
 				return;
 			Image background;
 			Rectangle bounds = tabFolder.getClientArea();
