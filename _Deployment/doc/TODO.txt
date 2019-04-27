@@ -1,5 +1,11 @@
 ** TO DO **
 
+- Case #229: Executing the following...
+    OPERATOR myOperator (x INTEGER, y INTEGER) RETURNS INTEGER; RETURN x + y * 2;
+	END OPERATOR;
+	CALL myOperator(3, 4);
+  ...causes a fatal error.
+
 - Improve connection handling to reduce socket consumption in org.reldb.rel.client.Connection.
 
 - DBrowser: Closing a database tab should close its database.
