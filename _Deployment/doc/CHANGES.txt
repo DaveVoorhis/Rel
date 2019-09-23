@@ -2,6 +2,9 @@ Last used Exception* number: RS0508
 
 Version 3.014 (1.0.27):
 
+  - Enhancement: Rel: RATIONAL literals Infinity and NaN now
+    recognised by parser.
+
   - Enhancement: DBrowser: Rel mascot image displayed
     on background of Rel mode when no tabs are displayed.
 

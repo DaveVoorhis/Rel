@@ -4044,7 +4044,12 @@ public class TutorialDParser implements TutorialDVisitor {
 	public Object visit(ASTRational node, Object data) {
 		currentNode = node;
 		try {
-			generator.compilePush(Double.parseDouble(node.tokenValue));
+			if (node.tokenValue.equalsIgnoreCase("NAN"))
+				generator.compilePush(Double.NaN);
+			else if (node.tokenValue.equalsIgnoreCase("INFINITY"))
+				generator.compilePush(Double.POSITIVE_INFINITY);
+			else
+				generator.compilePush(Double.parseDouble(node.tokenValue));
 		} catch (java.lang.NumberFormatException nfe) {
 			throw new ExceptionSemantic("RS0197: Invalid RATIONAL '" + node.tokenValue + "'");			
 		}

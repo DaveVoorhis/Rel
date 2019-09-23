@@ -133,6 +133,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < IF: "IF" >
 | < IMAGE_IN: "IMAGE_IN" >
 | < IN: "IN" >
+| < INFINITY: "INFINITY" >
 | < INIT: "INIT" >
 | < INSERT: "INSERT" >
 | < INTERSECT: "INTERSECT" >
@@ -148,6 +149,7 @@ TOKEN [IGNORE_CASE] : /* RESERVED WORDS AND LITERALS */
 | < MAX: "MAX" >
 | < MIN: "MIN" >
 | < MINUS: "MINUS" >
+| < NAN: "NAN" >
 | < NOEMPTY: "NOEMPTY" >
 | < NOT: "NOT" >
 | < OPERATOR: "OPERATOR" >
@@ -1925,8 +1927,10 @@ void integer() #Integer :
 
 void rational() #Rational : 
 {Token t;} 
-{ 
-	t = <FLOATING_POINT_LITERAL> {jjtThis.tokenValue = t.image;}
+{
+		t = <FLOATING_POINT_LITERAL> {jjtThis.tokenValue = t.image;}
+	| 	t = <INFINITY> {jjtThis.tokenValue = t.image;}
+	| 	t = <NAN> {jjtThis.tokenValue = t.image;}
 }
 
 void bool() : 
