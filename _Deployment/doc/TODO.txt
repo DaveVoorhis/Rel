@@ -1,11 +1,5 @@
 ** TO DO **
 
-- Case #229: Executing the following...
-    OPERATOR myOperator (x INTEGER, y INTEGER) RETURNS INTEGER; RETURN x + y * 2;
-	END OPERATOR;
-	CALL myOperator(3, 4);
-  ...causes a fatal error.
-
 - Case #228: Cut and pasting in the command window pastes 
   multiple times; possibly related to how many times the cmd-c combo was pressed.
 

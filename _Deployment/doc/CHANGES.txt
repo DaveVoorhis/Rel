@@ -1,6 +1,17 @@
-Last used Exception* number: RS0508
+Last used Exception* number: RS0509
 
 Version 3.014 (1.0.27):
+
+  - Fix: Rel: Case #229:
+    Executing the following...
+      OPERATOR myOperator (x INTEGER, y INTEGER) RETURNS INTEGER; RETURN x + y * 2;
+	  END OPERATOR;
+	  CALL myOperator(3, 4);
+    ...caused a fatal error. Fixed.
+
+  - Fix: Rel: In some cases, INSERTing a relation into a
+    relvar that should ignore duplicate tuples will indicate
+    it has inserted tuples but fail to insert any. Fixed.
 
   - Enhancement: Rel: RATIONAL literals Infinity and NaN now
     recognised by parser.
