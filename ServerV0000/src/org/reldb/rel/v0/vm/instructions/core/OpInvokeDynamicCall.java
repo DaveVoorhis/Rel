@@ -14,9 +14,7 @@ public class OpInvokeDynamicCall extends Instruction {
 		dispatcher = new DynamicDispatch(generator, invocation, generator.getCurrentOperatorDefinition()) {
 			void invoke(OperatorDefinition operator, Context context) {
 				operator.call(context);
-				if (operator.getDeclaredReturnType() != null)
-					context.pop();
-			}			
+			}
 		};
 	}
 	
