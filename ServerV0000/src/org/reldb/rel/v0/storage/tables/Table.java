@@ -66,6 +66,7 @@ public abstract class Table {
 		return theKey;
 	}
 
+	/** Insert tuple. Throw exception if attempt made to duplicate keys. */
 	public boolean insertTupleNoDuplicates(Generator generator, Storage table, Transaction txn, ValueTuple tuple,
 			String description) throws DatabaseException {
 		DatabaseEntry theData = new DatabaseEntry();
@@ -81,16 +82,24 @@ public abstract class Table {
 		return true;
 	}
 
+	/** Insert tuple. Silently ignore attempts to duplicate keys. */
 	private boolean insertTuple(Generator generator, Storage table, Transaction txn, ValueTuple tuple, String description)
 			throws DatabaseException {
 		DatabaseEntry theData = new DatabaseEntry();
 		database.getTupleBinding().objectToEntry(tuple, theData);
-		// Put it in the database. Skip it silently if duplicate.
+		// Check for attempt to insert duplicate keys and silently ignore them
 		for (int i = 0; i < table.size(); i++) {
 			Database tab = table.getDatabase(i);
 			DatabaseEntry entry = (i == 0) ? theData : database.getKeyTableEntry();
-			if (tab.putNoOverwrite(txn, getKeyValueFromTuple(generator, tuple, i), entry) == OperationStatus.KEYEXIST)
+			if (tab.get(txn, getKeyValueFromTuple(generator, tuple, i), entry, LockMode.READ_COMMITTED) == OperationStatus.SUCCESS)
 				return false;
+		}
+		// Put it in the database. Abort if failed.
+		for (int i = 0; i < table.size(); i++) {
+			Database tab = table.getDatabase(i);
+			DatabaseEntry entry = (i == 0) ? theData : database.getKeyTableEntry();
+			if (tab.putNoOverwrite(txn, getKeyValueFromTuple(generator, tuple, i), entry) != OperationStatus.SUCCESS)
+				throw new ExceptionFatal("RS0509: " + description + " tuple failed due to unknown error.");
 		}
 		return true;
 	}
@@ -111,7 +120,8 @@ public abstract class Table {
 		}
 	}
 
-	private static abstract class Inserter {
+	@FunctionalInterface
+	private abstract interface Inserter {
 		abstract boolean insert(Generator generator, Storage table, Transaction txn, ValueTuple tuple, String comment);
 	}
 
@@ -142,8 +152,6 @@ public abstract class Table {
 								ValueTuple tuple = iterator.next();
 								if (inserter.insert(generator, table, txn, tuple, "Inserting"))
 									insertCount++;
-								else
-									rollback();
 							}
 						} finally {
 							iterator.close();
@@ -163,19 +171,11 @@ public abstract class Table {
 	}
 
 	public long insert(final Generator generator, final ValueRelation relation) {
-		return insert(generator, relation, new Inserter() {
-			boolean insert(Generator generator, Storage table, Transaction txn, ValueTuple tuple, String comment) {
-				return insertTuple(generator, table, txn, tuple, comment);
-			}
-		});
+		return insert(generator, relation, (gen, table, txn, tuple, comment) -> insertTuple(gen, table, txn, tuple, comment));
 	}
 
 	public long insertNoDuplicates(Generator generator, ValueRelation relation) {
-		return insert(generator, relation, new Inserter() {
-			boolean insert(Generator generator, Storage table, Transaction txn, ValueTuple tuple, String comment) {
-				return insertTupleNoDuplicates(generator, table, txn, tuple, comment);
-			}
-		});
+		return insert(generator, relation, (gen, table, txn, tuple, comment) -> insertTupleNoDuplicates(gen, table, txn, tuple, comment));
 	}
 
 	public long getCardinality() {
