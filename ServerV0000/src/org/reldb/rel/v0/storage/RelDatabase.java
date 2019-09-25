@@ -524,9 +524,15 @@ public class RelDatabase {
 			System.out.println("Database " + homeDir + " is closed.");
 	}
 
-	public void reset() {
+	private void reset() {
 		operatorCache = new HashMap<OperatorSignature, OperatorDefinition>();
 		typeCache.clear();
+		try {
+			registeredTupleIterators.forEach(rti -> rti.forceClose());
+		} catch (Throwable t) {
+			System.out.println("RelDatabase: reset: clearing tuple iterators threw: "  + t.getMessage());
+		}
+		registeredTupleIterators.clear();
 	}
 
 	/** Get the user Java code definition directory. */

@@ -545,4 +545,34 @@ public class CmdPanelOutput extends Composite {
 		go(text, false);
 	}
 
+	public void evaluate(String text, boolean copyInputToOutput) {
+		Runnable timer = new Runnable() {
+			public void run() {
+				getDisplay().asyncExec(() -> {
+					if (getAutoclear())
+						clearOutput();
+					if (copyInputToOutput)
+						userResponse(text);
+					sendEvaluate(text);
+				});
+			}
+		};
+		getDisplay().timerExec(0, timer);
+	}
+
+	public void execute(String text, boolean copyInputToOutput) {
+		Runnable timer = new Runnable() {
+			public void run() {
+				getDisplay().asyncExec(() -> {
+					if (getAutoclear())
+						clearOutput();
+					if (copyInputToOutput)
+						userResponse(text);
+					sendExecute(text);
+				});
+			}
+		};
+		getDisplay().timerExec(0, timer);
+	}
+
 }

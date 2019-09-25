@@ -13,6 +13,10 @@ Version 3.014 (1.0.27):
     relvar that should ignore duplicate tuples will indicate
     it has inserted tuples but fail to insert any. Fixed.
 
+  - Enhancement: DBrowser: Command-line now provides Execute
+    and Evaluate buttons to explicitly choose command execution
+    or expression evaluation.
+
   - Enhancement: DBrowser: Disabled OK/Cancel buttons and 
     provide indication of running status when restoring database 
     in RestoreDatabaseDialog.

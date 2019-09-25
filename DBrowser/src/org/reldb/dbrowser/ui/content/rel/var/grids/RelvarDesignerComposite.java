@@ -90,7 +90,7 @@ public class RelvarDesignerComposite extends Composite {
 		fd_designer.bottom = new FormAttachment(applyButton, -10);
 
 		try {
-			cmdPanel = new CmdPanel(connection, sashForm, CmdPanel.NO_INPUT_TOOLBAR) {
+			cmdPanel = new CmdPanel(connection, sashForm, CmdPanel.NO_INPUT_TOOLBAR | CmdPanel.NO_EXECUTE_EVALUATE) {
 				public void notifyExecuteSuccess() {
 					applyButton.setEnabled(false);
 					hasPendingChanges = false;

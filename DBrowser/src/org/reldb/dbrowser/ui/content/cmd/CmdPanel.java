@@ -15,6 +15,7 @@ public class CmdPanel extends Composite {
 
 	public static final int NONE = 0;
 	public static final int NO_INPUT_TOOLBAR = 1;
+	public static final int NO_EXECUTE_EVALUATE = 2;
 
 	private CmdPanelOutput cmdPanelOutput;
 	private CmdPanelInput cmdPanelInput;

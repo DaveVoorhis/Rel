@@ -44,7 +44,7 @@ public abstract class NaiveCreatorTab extends DbTreeTab {
 		Composite entrySide = new Composite(sash, SWT.NONE);
 		
 		try {
-			cmdPanel = new CmdPanel(relPanel.getConnection(), sash, CmdPanel.NO_INPUT_TOOLBAR) {
+			cmdPanel = new CmdPanel(relPanel.getConnection(), sash, CmdPanel.NO_INPUT_TOOLBAR | CmdPanel.NO_EXECUTE_EVALUATE) {
 				public void notifyExecuteSuccess() {
 					relPanel.redisplayed();
 					MessageDialog.openInformation(relPanel.getShell(), "Note", "Success!");					

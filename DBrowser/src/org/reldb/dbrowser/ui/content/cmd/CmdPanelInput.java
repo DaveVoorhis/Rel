@@ -149,14 +149,22 @@ public class CmdPanelInput extends Composite {
 				event.lineBackground = backgroundHighlight;
 		});
 
-		cmdPanelBottom = new CmdPanelBottom(this, SWT.NONE) {
+		cmdPanelBottom = new CmdPanelBottom(this, cmdStyle, SWT.NONE) {
 			@Override
 			public void go() {
 				run();
 			}
-
+			@Override
 			public void cancel() {
 				stop();
+			}
+			@Override
+			public void execute() {
+				CmdPanelInput.this.execute();
+			}
+			@Override
+			public void evaluate() {
+				CmdPanelInput.this.evaluate();
 			}
 		};
 		fd_inputText.bottom = new FormAttachment(cmdPanelBottom, 191);
@@ -205,7 +213,7 @@ public class CmdPanelInput extends Composite {
 
 		specialCharacterDisplay = new SpecialCharacters(parent.getShell(), inputText);
 	}
-	
+
 	public void selectAll() {
 		inputText.selectAll();
 	}
@@ -352,6 +360,14 @@ public class CmdPanelInput extends Composite {
 		cmdPanelOutput.go(text, copyInputToOutput);
 	}
 
+	private void notifyEvaluate(String text) {
+		cmdPanelOutput.evaluate(text, copyInputToOutput);
+	}
+	
+	private void notifyExecute(String text) {
+		cmdPanelOutput.execute(text, copyInputToOutput);
+	}
+	
 	private void replaceInputText(String newText) {
 		inputText.setText(newText);
 	}
@@ -531,6 +547,18 @@ public class CmdPanelInput extends Composite {
 		showRunningStart();
 		String text = saveToHistory();
 		notifyGo(text);
+	}
+	
+	private void evaluate() {
+		showRunningStart();
+		String text = saveToHistory();
+		notifyEvaluate(text);
+	}
+
+	private void execute() {
+		showRunningStart();
+		String text = saveToHistory();
+		notifyExecute(text);
 	}
 
 	public String saveToHistory() {
