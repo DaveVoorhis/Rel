@@ -26,6 +26,7 @@ import org.reldb.dbrowser.ui.crash.CrashTrap;
 import org.reldb.rel.client.Connection;
 import org.reldb.rel.client.connection.string.ClientLocal;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.ProgressBar;
 
 public class RestoreDatabaseDialog extends Dialog {
 	
@@ -41,6 +42,8 @@ public class RestoreDatabaseDialog extends Dialog {
 	
 	private DirectoryDialog newDatabaseDialog;
 	private FileDialog restoreFileDialog;
+	
+	private ProgressBar progressBar;
 	
 	private Button btnDatabaseDir;
 	private Button btnSourceFile;
@@ -92,10 +95,13 @@ public class RestoreDatabaseDialog extends Dialog {
 		textSourceFile.setEnabled(false);
 		btnDatabaseDir.setEnabled(false);
 		btnSourceFile.setEnabled(false);
+		btnOk.setVisible(true);
 		btnOk.setText("Open New Database");
 		btnOk.requestLayout();
+		btnCancel.setVisible(true);
 		btnCancel.setText("Close");
 		btnCancel.requestLayout();
+		progressBar.setVisible(false);
 		mode = Mode.FINISHED;
 	}
 	
@@ -107,7 +113,19 @@ public class RestoreDatabaseDialog extends Dialog {
 		btnOk.setVisible(true);
 		btnOk.setText("Reload");
 		btnOk.requestLayout();
+		btnCancel.setVisible(true);
+		progressBar.setVisible(false);
 		mode = Mode.LOADDB;
+	}
+	
+	private void setupUIAsRunning() {
+		textDatabaseDir.setEnabled(false);
+		textSourceFile.setEnabled(false);
+		btnDatabaseDir.setEnabled(false);
+		btnSourceFile.setEnabled(false);
+		btnOk.setVisible(false);
+		btnCancel.setVisible(false);
+		progressBar.setVisible(true);
 	}
 	
 	private void output(String s, Color color) {
@@ -159,6 +177,7 @@ public class RestoreDatabaseDialog extends Dialog {
 	}
 	
 	private void process(String dbDir, String backupToRestore) {
+		setupUIAsRunning();
 		Thread processor = new Thread() {
 			public void run() {
 				doRestore(dbDir, backupToRestore);								
@@ -229,7 +248,12 @@ public class RestoreDatabaseDialog extends Dialog {
 				return;
 			textSourceFile.setText(result);
 		});
-		
+
+		progressBar = new ProgressBar(shell, SWT.INDETERMINATE);
+		FormData fd_progressBar = new FormData();
+		progressBar.setLayoutData(fd_progressBar);
+		progressBar.setVisible(false);
+				
 		btnOk = new Button(shell, SWT.NONE);
 		FormData fd_btnOk = new FormData();
 		btnOk.setLayoutData(fd_btnOk);
@@ -322,7 +346,12 @@ public class RestoreDatabaseDialog extends Dialog {
 		fd_btnSourceFile.top = new FormAttachment(lblDatabaseDir, 25);
 		fd_btnSourceFile.right = new FormAttachment(100, -5);
 		
-		fd_lblOutput.top = new FormAttachment(textSourceFile, 30);
+		fd_progressBar.top = new FormAttachment(textSourceFile, 10);
+//		fd_progressBar.bottom = new FormAttachment(lblOutput, -6);
+		fd_progressBar.right = new FormAttachment(textOutput, 0, SWT.RIGHT);
+		fd_progressBar.left = new FormAttachment(textOutput, 0, SWT.LEFT);
+		
+		fd_lblOutput.top = new FormAttachment(progressBar, 5);
 		fd_lblOutput.left = new FormAttachment(0, 5);
 		
 		fd_textOutput.top = new FormAttachment(lblOutput, 5);

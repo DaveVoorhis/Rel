@@ -1,8 +1,5 @@
 ** TO DO **
 
-- Disable OK button and provide indication of running status when loading
-  database in RestoreDatabaseDialog.
-
 - Case #228: Cut and pasting in the command window pastes 
   multiple times; possibly related to how many times the cmd-c combo was pressed.
 
