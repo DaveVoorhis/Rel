@@ -5,7 +5,7 @@
 	<key>CFBundleExecutable</key>
 		<string>Rel</string>
 	<key>CFBundleGetInfoString</key>
-		<string>Rel for Mac OS X, Copyright reldb.org 2004 - 2018. All rights reserved.</string>
+		<string>Rel for Mac OS X, Copyright reldb.org 2004 - 2019. All rights reserved.</string>
 	<key>CFBundleIconFile</key>
 		<string>RelAppIcon.icns</string>
 	<key>CFBundleIdentifier</key>

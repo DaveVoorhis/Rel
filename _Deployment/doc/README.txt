@@ -110,5 +110,5 @@ above, and execute it.
 
 For more information, please see http://reldb.org
 
-Copyright (c) 2004-2018 Dave Voorhis
+Copyright (c) 2004-2019 Dave Voorhis
 All Rights Reserved
