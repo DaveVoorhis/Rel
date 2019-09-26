@@ -2,7 +2,7 @@ package org.reldb.dbrowser.ui.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.util.Util;
+// import org.eclipse.jface.util.Util;
 
 /**
  * This class creates a preference page
@@ -17,11 +17,11 @@ public class PreferencePageDisplay extends FieldEditorPreferencePage {
 	}
 
 	protected void createFieldEditors() {
-		if (!Util.isGtk())
+	//	if (!Util.isGtk())
 			addField(new BooleanFieldEditor(CMD_BROWSER_SWING, "Use an alternative output display to try to fix output problems.", getFieldEditorParent()));
-		else {
-			new LabelFieldEditor("...Not available under Linux.", getFieldEditorParent());
-		}
+	//	else {
+	//		new LabelFieldEditor("...Not available under Linux.", getFieldEditorParent());
+	//	}
 	}
 
 }

@@ -1,6 +1,6 @@
 package org.reldb.dbrowser.ui.html;
 
-import org.eclipse.jface.util.Util;
+// import org.eclipse.jface.util.Util;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.HTMLTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -41,7 +41,7 @@ public class BrowserManager implements HtmlBrowser {
 			content = browser.getContent();
 			browser.dispose();
 		}
-		if (!Preferences.getPreferenceBoolean(PreferencePageDisplay.CMD_BROWSER_SWING) && !Util.isGtk()) {
+		if (!Preferences.getPreferenceBoolean(PreferencePageDisplay.CMD_BROWSER_SWING) /* && !Util.isGtk() */) {
 			browser = new BrowserNative();
 			if (browser.createWidget(parent)) {
 				if (content != null)
