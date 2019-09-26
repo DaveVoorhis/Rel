@@ -2,9 +2,9 @@ This is the live development repository for *Rel*, an implementation of Date & D
 
 If you wish to work with the source code, do this:
 
-1. Install a Java 11 JDK from (for example) https://jdk.java.net
+1. Install a Java 13 JDK from (for example) https://jdk.java.net
 
-2. Download Eclipse for Java Developers version 2018-09 or above.
+2. Download Eclipse for Java Developers version 2019-06 or above.
 
 3. Run Eclipse.
 
