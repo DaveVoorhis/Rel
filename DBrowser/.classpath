@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/swt_macos"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ServerV0000"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Client"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Server"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
@@ -12,11 +11,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/ca.odell.glazedlists_1.9.0.v201303080712.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.core.commands_3.9.200.v20180827-1727.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.core.runtime_3.15.0.v20180817-1401.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.equinox.common_3.10.100.v20180827-1235.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.jface_3.13.2.v20171022-1656.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.jface.text_3.12.2.v20180112-1341.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.cwt_1.0.0.201703081533.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.cdatetime_1.0.0.201703081533.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.core_1.5.0.201703192131.jar"/>
@@ -56,8 +50,13 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/poi-ooxml-schemas-4.0.0.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/postgresql-42.2.5.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/xmlbeans-3.0.1.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/swt/macos_64/swt.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/swt/org.eclipse.swt_3.108.0.v20180904-1901.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-text-1.6.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/swt/macos_64/swt_reldb.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/swt/macos_64/swt.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.core.commands_3.9.400.v20190516-1358.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.core.runtime_3.15.300.v20190508-0543.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.equinox.common_3.10.400.v20190516-1504.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.jface_3.16.0.v20190528-0922.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.jface.text_3.15.200.v20190519-2344.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

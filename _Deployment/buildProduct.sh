@@ -25,7 +25,7 @@
 #         ...etc...
 #
 
-relversion=3.015
+relversion=3.014
 javaversion=jdk-13
 jredir=~/Documents/OpenJDKs
 proddir=~/git/Rel/_Deployment/product

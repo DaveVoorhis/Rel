@@ -1,3 +1,7 @@
+NOTE: The Linux 3.014 release has been temporarily withdrawn to fix
+      a missing library problem. A similar problem with the MacOS
+      3.014 release has been corrected and is now available.
+
 == Version 3.014 Release Notes ==
 
 This release of Rel, an implementation of Date & Darwen's "Tutorial D"
