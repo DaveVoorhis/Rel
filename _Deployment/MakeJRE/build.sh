@@ -2,11 +2,13 @@
 
 MODULES=makejre.reldb
 
-JLINK=/Library/Java/JavaVirtualMachines/jdk-13.jdk/Contents/Home/bin/jlink
+JAVA_VERSION=jdk-13
 
-MODS_MACOS=~/Documents/OpenJDKs/osx/jdk-13.jdk/Contents/Home/jmods
-MODS_LINUX=~/Documents/OpenJDKs/linux/jdk-13/jmods
-MODS_WINDOWS=~/Documents/OpenJDKs/windows/jdk-13/jmods
+JLINK=/Library/Java/JavaVirtualMachines/$JAVA_VERSION.jdk/Contents/Home/bin/jlink
+
+MODS_MACOS=~/Documents/OpenJDKs/osx/$JAVA_VERSION.jdk/Contents/Home/jmods
+MODS_LINUX=~/Documents/OpenJDKs/linux/$JAVA_VERSION/jmods
+MODS_WINDOWS=~/Documents/OpenJDKs/windows/$JAVA_VERSION/jmods
 
 OPTIONS="--strip-debug --compress=2 --no-header-files --no-man-pages"
 
