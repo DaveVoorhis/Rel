@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Server"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Client"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ServerV0000"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/swt_macos"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/ca.odell.glazedlists_1.9.0.v201303080712.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.cwt_1.0.0.201703081533.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.cdatetime_1.0.0.201703081533.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.core_1.5.0.201703192131.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.core.feature_1.5.0.201703192131.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.e4_1.1.0.201703192131.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.e4.feature_1.1.0.201703192131.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.glazedlists_1.5.0.201703192131.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature_1.5.0.201703192131.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.nebula_1.1.0.201703192131.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.nebula.feature_1.1.0.201703192131.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.poi_1.5.0.201703192131.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.poi.feature_1.5.0.201703192131.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.richtext_1.2.0.201703081533.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/jdt/ecj-4.9.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-cli-1.4.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-codec-1.11.jar"/>
@@ -49,15 +40,18 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-text-1.6.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/swt/macos_64/swt_reldb.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/swt/macos_64/swt.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.core.commands_3.9.400.v20190516-1358.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.core.runtime_3.15.300.v20190508-0543.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.equinox.common_3.10.400.v20190516-1504.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.jface_3.16.0.v20190528-0922.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.jface.text_3.15.200.v20190519-2344.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Server"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Client"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ServerV0000"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/swt_macos"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/eclipse/org.eclipse.core.commands_3.9.500.v20190805-1157.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/eclipse/org.eclipse.core.runtime_3.16.0.v20190823-1314.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/eclipse/org.eclipse.equinox.common_3.10.500.v20190815-1535.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/eclipse/org.eclipse.jface_3.17.0.v20190820-1444.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/eclipse/org.eclipse.jface.text_3.15.300.v20190819-0725.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.cwt_1.1.0.201907151344.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.cdatetime_1.4.0.201907151344.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.core_1.6.0.201909181823.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.e4_1.2.0.201909181823.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.glazedlists_1.6.0.201909181823.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.nebula_1.2.0.201909181823.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.nattable.extension.poi_1.5.1.201909181823.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/nattable/org.eclipse.nebula.widgets.richtext_1.3.0.201907151344.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
