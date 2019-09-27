@@ -1,7 +1,3 @@
-NOTE: The Linux 3.014 release has been temporarily withdrawn to fix
-      a missing library problem. A similar problem with the MacOS
-      3.014 release has been corrected and is now available.
-
 == Version 3.014 Release Notes ==
 
 This release of Rel, an implementation of Date & Darwen's "Tutorial D"
@@ -39,6 +35,16 @@ The following bugs have been fixed:
   - Rel: In some cases, INSERTing a relation into a
     relvar that should ignore duplicate tuples will indicate
     it has inserted tuples but fail to insert any. Fixed.
+    
+NOTE: The Linux 3.014 release may have issues with the alternative
+      display mode (File | Preferences | Display | Use an alternative...)
+      so it is recommended to not use the alternative display mode.
+      
+NOTE: The MacOS 3.014 release may fail to refresh the display
+      when focus is lost and then restored. Clicking anywhere within
+      the Rel window will normally refresh it.
+
+The Windows 3.014 release should work correctly.
 
 == Version 3.013 Release Notes ==
 
