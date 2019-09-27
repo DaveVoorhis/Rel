@@ -1,5 +1,9 @@
 ** TO DO **
 
+- Fix Nattable display refresh issues on MacOS.
+
+- Fix SWT_AWT bridge problems using alternative display on Linux.
+
 - Case #228: Cut and pasting in the command window pastes 
   multiple times; possibly related to how many times the cmd-c combo was pressed.
 
