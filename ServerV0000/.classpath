@@ -12,7 +12,6 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-cli-1.4.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-codec-1.11.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-collections4-4.2.jar"/>
-	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-compress-1.18.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-io-2.6.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-lang3-3.8.1.jar"/>
@@ -35,5 +34,6 @@
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/postgresql-42.2.5.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/xmlbeans-3.0.1.jar"/>
 	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-text-1.6.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-compress-1.19.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
