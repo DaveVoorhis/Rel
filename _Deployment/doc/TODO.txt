@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Ensure AVG returns NaN for no records everywhere it's used.
+
 - Fix Nattable display refresh issues on MacOS.
 
 - Fix SWT_AWT bridge problems using alternative display on Linux.
