@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Allow KEY {...} to be optional, equivalent to KEY {ALL BUT}.
+
 - Ensure AVG returns NaN for no records everywhere it's used.
 
 - Fix Nattable display refresh issues on MacOS.
