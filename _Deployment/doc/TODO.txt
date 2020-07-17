@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Add WITH statement.
+
 - Allow KEY {...} to be optional, equivalent to KEY {ALL BUT}.
 
 - Ensure AVG returns NaN for no records everywhere it's used.
