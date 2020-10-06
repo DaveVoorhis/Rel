@@ -3,6 +3,8 @@ Last used Exception* number: RS0509
 Version 3.015 (1.0.28):
 
   - Enhancement: Rel: Update commons-compress dependency to version 1.19
+  
+  - Enhancement: Update to Java 15.
 
 Version 3.014 (1.0.27):
 
