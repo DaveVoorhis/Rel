@@ -18,7 +18,6 @@ import org.reldb.rel.exceptions.*;
 import org.reldb.rel.shared.Defaults;
 import org.reldb.rel.v0.server.Server;
 import org.reldb.rel.v0.version.Version;
-import org.reldb.rel.v0.interpreter.Interpreter;
 import org.reldb.rel.v0.storage.RelDatabase;
 import org.reldb.rel.v0.interpreter.Instance;
 

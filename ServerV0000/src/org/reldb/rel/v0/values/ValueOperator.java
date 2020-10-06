@@ -47,6 +47,7 @@ public class ValueOperator extends ValueAbstract implements Serializable {
 		return "OPERATOR";
 	}
 
+	@SuppressWarnings("resource")
 	public Operator getOperator(Generator generator) {
 		if (operator == null)
 			operator = generator.getDatabase().compileAnonymousOperator(getSource(), generator.getPrintStream()).operator;

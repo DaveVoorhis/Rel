@@ -15,9 +15,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.reldb.dbrowser.ui.content.cmd.CmdPanel;
-import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
-import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
-import org.reldb.dbrowser.ui.content.rel.RelPanel;
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 
 public abstract class NaiveCreatorTab extends DbTreeTab {

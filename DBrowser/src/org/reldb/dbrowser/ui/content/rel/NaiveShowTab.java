@@ -3,9 +3,6 @@ package org.reldb.dbrowser.ui.content.rel;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.reldb.dbrowser.ui.content.rel.DbTreeItem;
-import org.reldb.dbrowser.ui.content.rel.DbTreeTab;
-import org.reldb.dbrowser.ui.content.rel.RelPanel;
 
 public class NaiveShowTab extends DbTreeTab {
 	

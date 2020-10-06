@@ -1,6 +1,5 @@
 package org.reldb.dbrowser.ui.content.rev;
 
-import org.reldb.dbrowser.ui.content.rev.Parameter;
 import org.reldb.dbrowser.ui.content.rev.graphics.Arrow;
 import org.reldb.dbrowser.ui.content.rev.graphics.LineHorizontal;
 import org.reldb.dbrowser.ui.content.rev.graphics.LineVertical;

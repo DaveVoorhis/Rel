@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import java.util.Stack;
 import java.util.Vector;
 
-import org.reldb.rel.client.Error;
 import org.reldb.rel.client.connection.CrashHandler;
 import org.reldb.rel.client.connection.CrashHandlerDefault;
 import org.reldb.rel.client.connection.stream.ClientFromURL;

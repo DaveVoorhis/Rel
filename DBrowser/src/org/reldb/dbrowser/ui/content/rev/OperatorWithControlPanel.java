@@ -6,10 +6,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.reldb.dbrowser.ui.content.rev.ControlPanel;
-import org.reldb.dbrowser.ui.content.rev.Operator;
-import org.reldb.dbrowser.ui.content.rev.Rev;
-import org.reldb.dbrowser.ui.content.rev.Visualiser;
 
 public abstract class OperatorWithControlPanel extends Operator {
 
