@@ -6,6 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-text-1.6.jar"/>
+	<classpathentry kind="lib" path="/_Deployment/lib/misc/commons-text-1.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
