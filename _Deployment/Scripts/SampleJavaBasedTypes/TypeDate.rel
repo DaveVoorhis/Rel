@@ -47,6 +47,18 @@ TYPE Date Java FOREIGN
 		d = new java.util.Date(milliseconds.longValue());
 	}
 
+	/** Value constructor.  Construct date given a SimpleDateFormat format and a date string. */
+	public Date(Generator generator, ValueCharacter format, ValueCharacter dateString)  {
+		super(generator);
+		try {
+			d = new java.text.SimpleDateFormat(format.stringValue(),
+							   java.util.Locale.ENGLISH)
+	  			.parse(dateString.stringValue());
+		} catch (java.text.ParseException e) {
+		    e.printStackTrace();
+		}
+	}
+
 	/** Return this Date as a number of milliseconds since the epoch. */
 	public ValueInteger milliseconds(Generator generator) {
 		return ValueInteger.select(generator, d.getTime());
