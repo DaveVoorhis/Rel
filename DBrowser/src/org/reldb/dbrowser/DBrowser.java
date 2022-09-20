@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
@@ -413,14 +415,26 @@ public class DBrowser {
 		return localRel;
 	}
 	
+	private static void log(String msg) {
+		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+		System.out.println("" + timeStamp + ": " + msg);
+	}
+	
 	private static void launch(String[] args) {
+		log("Starting");
+		log("Setting app name");
 		Display.setAppName(Version.getAppName());
+		log("Setting app version");
 		Display.setAppVersion(Version.getVersion());
+		log("Creating display");
 		final Display display = new Display();
 		
+		log("Creating document event processor.");
 		OpenDocumentEventProcessor openDocProcessor = new OpenDocumentEventProcessor();
+		log("Launching document event processor.");
 		display.addListener(SWT.OpenDocument, openDocProcessor);
 		
+		log("Adding command-line args to document event processor.");
 		openDocProcessor.addFilesToOpen(args);		
 
 		if (Util.isMac())
@@ -431,20 +445,26 @@ public class DBrowser {
 				}
 			});
 
+		log("Looking for local Rel DBMS.");
 		try {
 			Class.forName("org.reldb.rel.Rel");
+			log("Local Rel DBMS found.");
 			localRel = true;
 		} catch (ClassNotFoundException cnfe) {
+			log("Local Rel DBMS not found.");
 			localRel = false;
 		}
 		
+		log("Invoking platform launch.");
 		OSSpecific.launch(Version.getAppName(),
 			event -> quit(),
 			event -> new AboutDialog(shell).open(),
 			event -> new Preferences(shell).show()
 		);
+		log("Platform launch done.");
 
 		if (!Util.isMac()) {
+			log("Launching splash screen.");
 			SplashScreen splash = SplashScreen.getSplashScreen();
 			if (splash != null && localRel && !Preferences.getPreferenceBoolean(PreferencePageGeneral.SKIP_DEFAULT_DB_LOAD)) {
 				Graphics2D gc = splash.createGraphics();
@@ -466,28 +486,43 @@ public class DBrowser {
 						}
 					}							
 				})).start();
-			}			
+			}
+			log("Splash screen launched.");
 		}
 		
+		log("Creating shell.");
 		shell = createShell();
+		log("Setting icon.");
 		shell.setImage(IconLoader.loadIcon("RelIcon"));
+		log("Setting icon images.");
 		shell.setImages(loadIcons(display));
+		log("Setting shell title.");
 		shell.setText(Version.getAppID());
+		log("Adding shutdown listener.");
 		shell.addListener(SWT.Close, e -> {
 			shell.dispose();
 		});
+		log("Adding shell dispose listener.");
 		shell.addDisposeListener(e -> quit());
+		log("Laying out UI.");
 		shell.layout();
 
+		log("Starting loading indicator.");
 		Loading.start();
 		
+		log("Launching document processor on shell.");
 		Core.launch(openDocProcessor, shell);
 		
-		if (!Util.isMac())
-			closeSplash();
+		if (!Util.isMac()) {
+			log("Closing splash screen.");
+			closeSplash();			
+			log("Splash screen closed.");
+		}
 		
+		log("Opening shell.");
 		shell.open();		
 		
+		log("Entering event loop.");
 		while (!display.isDisposed()) {
 			try {
 				if (!display.readAndDispatch())
@@ -497,6 +532,7 @@ public class DBrowser {
 				t.printStackTrace();
 			}
 		}
+		log("Exitted event loop.");
 	}
 	
 	public static void main(String[] args) {

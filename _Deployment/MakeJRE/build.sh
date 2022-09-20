@@ -2,7 +2,7 @@
 
 MODULES=makejre.reldb
 
-JAVA_VERSION=jdk-15
+JAVA_VERSION=jdk-19
 
 JLINK=/Library/Java/JavaVirtualMachines/$JAVA_VERSION.jdk/Contents/Home/bin/jlink
 
