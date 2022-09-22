@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>org.reldb.rel</groupId>
+    <artifactId>rel</artifactId>
+    <version>3.015-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>dbrowser</artifactId>
+  <name>DBrowser</name>
+  <description>Rel UI frontend.</description>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.reldb.rel</groupId>
+      <artifactId>shared</artifactId>
+      <version>3.015-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.reldb.rel</groupId>
+      <artifactId>server</artifactId>
+      <version>3.015-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.reldb.rel</groupId>
+      <artifactId>serverv0000</artifactId>
+      <version>3.015-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.reldb.rel</groupId>
+      <artifactId>client</artifactId>
+      <version>3.015-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.reldb.rel</groupId>
+      <artifactId>swt_macos</artifactId>
+      <version>3.015-SNAPSHOT</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.jface -->
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.jface</artifactId>
+      <version>3.27.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.eclipse.nebula.widgets.nattable/org.eclipse.nebula.widgets.nattable.core -->
+    <dependency>
+      <groupId>org.eclipse.nebula.widgets.nattable</groupId>
+      <artifactId>org.eclipse.nebula.widgets.nattable.core</artifactId>
+      <version>2.0.3</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.13</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+	<directory>src</directory>
+	<excludes>
+	  <exclude>**/*.java</exclude>
+	</excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>3.8.1</version>
+	<configuration>
+	  <release>${java.version}</release>
+	</configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

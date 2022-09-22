@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.reldb.rel</groupId>
+    <artifactId>rel</artifactId>
+    <version>3.015-SNAPSHOT</version>
+    <name>Rel</name>
+    <description>Rel: An implementation of Tutorial D.</description>
+    <packaging>pom</packaging>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://reldb.org</url>
+    </scm>
+
+    <organization>
+        <name>RelDB</name>
+        <url>https://reldb.org</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>DaveVoorhis</id>
+            <name>Dave Voorhis</name>
+            <email>voorhis@gmail.com</email>
+            <url>https://github.com/DaveVoorhis</url>
+            <organization>RelDB</organization>
+            <organizationUrl>https://reldb.org</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/London</timezone>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>11</java.version>
+        <junit.version>5.5.2</junit.version>
+        <maven-compiler.version>3.8.1</maven-compiler.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+    </properties>
+
+    <modules>
+      <module>Client</module>
+      <module>DBrowser</module>
+      <module>Server</module>
+      <module>ServerV0000</module>
+      <module>Shared</module>
+      <module>Tests</module>
+      <module>swtNative</module>
+    </modules>
+
+</project>

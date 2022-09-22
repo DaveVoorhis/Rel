@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.reldb.rel</groupId>
+        <artifactId>rel</artifactId>
+        <version>3.015-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>swtNative</artifactId>
+    <name>swtNative</name>
+    <packaging>pom</packaging>
+
+    <properties>
+        <swt.native.version>3.121.0</swt.native.version>
+    </properties>
+
+    <modules>
+        <module>swt_linux</module>
+        <module>swt_macos</module>
+        <module>swt_win</module>
+    </modules>
+</project>
