@@ -11,6 +11,7 @@
     <artifactId>dbrowser</artifactId>
     <name>DBrowser</name>
     <description>Rel UI frontend.</description>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -74,6 +75,18 @@
                 <version>3.8.1</version>
                 <configuration>
                     <release>${java.version}</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>DBrowser</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
             <plugin>
