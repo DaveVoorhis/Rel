@@ -12,7 +12,7 @@ public class Version {
     private static final int REVISION = 28;
     private static final String RELEASE = "Beta";
     
-	public final static String expectedBerkeleyDBVersion = "7.5.11";
+	public final static String expectedBerkeleyDBVersion = "18.3.12";
     
     /** No instances. */
     private Version() {}
@@ -65,7 +65,7 @@ public class Version {
     /** Get copyright string. */
     public static String getCopyright() {
         return "Rel DBMS version " + getVersion() + "\n" +
-            "Copyright (c) 2004 - 2019 Dave Voorhis\n" +
+            "Copyright (c) 2004 - 2022 Dave Voorhis\n" +
             "All Rights Reserved\n" +
             "For further information, please see http://reldb.org";
     }
