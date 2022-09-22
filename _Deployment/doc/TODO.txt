@@ -1,5 +1,9 @@
 ** TO DO **
 
+- JavaCC maven build for ServerV0000 and Client
+- Executable JAR generation
+- Rework _Deployment/buildProduct.sh, etc.
+
 - Add WITH statement.
 
 - Allow KEY {...} to be optional, equivalent to KEY {ALL BUT}.
