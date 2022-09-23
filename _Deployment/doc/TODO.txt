@@ -1,7 +1,6 @@
 ** TO DO **
 
 - Implement TutorialD.html grammar generator.
-- Implement OS-based org.reldb.rel.swt_* dependency selection in DBrowser pom.xml.
 
 - Add WITH statement.
 
