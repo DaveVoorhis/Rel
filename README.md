@@ -1,6 +1,22 @@
 This is the live development repository for *Rel*, an implementation of Date & Darwen's **Tutorial D** database language.
 
-To set up for local development:
+## To Use _Rel_
+
+These aren't the files you're looking for.
+Ready-to-run distributions of *Rel* are available on SourceForge at https://sourceforge.net/projects/dbappbuilder/files/Rel/
+
+Read the *_Deployment/README.txt* file for further information on running *Rel*.
+
+## To Learn More About _Rel_
+
+For further information, see the *Rel* home page at https://reldb.org
+
+For support or to discuss *Rel*, see the *Rel* Forum at https://reldb.org/forum
+
+See other relational projects at http://www.thethirdmanifesto.com and join the TTM Forum at
+https://forum.thethirdmanifesto.com
+
+## To Contribute to _Rel_ Development
 
 1. Install a Java 19 JDK from (for example) https://jdk.java.net
 2. Install Maven, if you don't have it already.
@@ -9,14 +25,3 @@ To set up for local development:
 5. Run DBrowser in the DBrowser subproject to launch the *Rel* graphical user interface.
 
 You're ready to develop *Rel*.
-
-For further information, see the *Rel* home page at https://reldb.org
-
-Ready-to-run distributions of *Rel* are available on SourceForge at https://sourceforge.net/projects/dbappbuilder/files/Rel/
-
-Read the *_Deployment/README.txt* file for further information on running *Rel*.
-
-For support or to discuss *Rel*, see the *Rel* Forum at https://reldb.org/forum  
-
-See other relational projects at http://www.thethirdmanifesto.com and join the TTM Forum at
-https://forum.thethirdmanifesto.com
