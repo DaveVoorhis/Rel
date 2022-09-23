@@ -1,6 +1,6 @@
 This is the live development repository for *Rel*, an implementation of Date & Darwen's **Tutorial D** database language.
 
-If you wish to work with the source code, do this:
+To set up for local development:
 
 1. Install a Java 19 JDK from (for example) https://jdk.java.net
 2. Install Maven, if you don't have it already.
