@@ -1411,8 +1411,6 @@ public class Generator {
 		 * 
 		 * @param expressionType
 		 * 
-		 * @param where
-		 *            - DeleteWhere
 		 * @return - TypeRelation
 		 */
 		public TypeRelation endDeleteHandler(Type expressionType) {
@@ -1991,8 +1989,6 @@ public class Generator {
 		/**
 		 * Must follow the boolean expression of a WHERE operator.
 		 * 
-		 * @param where
-		 *            - Where
 		 * @return - TypeRelation
 		 */
 		public TypeRelation endWhere() {

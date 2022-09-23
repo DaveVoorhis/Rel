@@ -27,7 +27,6 @@ options {
   NODE_DEFAULT_VOID = true;
   NODE_EXTENDS = "org.reldb.rel.v0.languages.tutoriald.BaseASTNode";
   NODE_PACKAGE = "org.reldb.rel.v0.languages.tutoriald.parser";
-  JJTREE_OUTPUT_DIRECTORY = "parser";
   JDK_VERSION = "1.8";
 }
 
@@ -51,7 +50,7 @@ public class TutorialD {
   }
 
   public int getTabSize() {
-       return jj_input_stream.getTabSize(0);
+       return jj_input_stream.getTabSize();
   }
 }
 PARSER_END(TutorialD)
@@ -232,7 +231,8 @@ TOKEN : /* LITERALS */
 |
   < STRING_LITERAL:
      ( 
-      (        "\""
+      (
+        "\""
       | "‘"
       | "’"
       | "“"
@@ -374,7 +374,8 @@ ASTEvaluate evaluate() #Evaluate :
 
 void statement_list() #StatementList :
 {}
-{	( statement() )*
+{
+	( statement() )*
 }
 
 ASTCode code() #Code :
@@ -451,7 +452,8 @@ void statement_body() :
 void backup() #Backup :
 {}
 {
-  <BACKUP>}
+  <BACKUP>
+}
 
 /* Rel extension - non-TTM */
 void write() #Write :
@@ -513,12 +515,14 @@ void lambda() :
 {}
 {
     <OPERATOR> lambda_definition() <END> [ <OPERATOR> ]
-  | <LAMBDA> lambda_definition() <LAMBDAEND>}
+  | <LAMBDA> lambda_definition() <LAMBDAEND>
+}
 
 void lambda_definition() #Lambda :
 {}
 {
-   "(" parameter_def_commalist() ")" <RETURNS> type_ref() ";" op_body()}
+   "(" parameter_def_commalist() ")" <RETURNS> type_ref() ";" op_body()
+}
 
 void external_op_def() #ExternalOpDef(4) :
 {Token t; StringBuffer s = new StringBuffer();}
@@ -648,13 +652,16 @@ void alter_var_action_optional() #AlterVarActionOptional :
 void alter_var_action() :
 {}
 {
-  <RENAME> identifier() <TO> identifier()			 	#AlterVarActionRename(2)| <TYPE_OF> identifier() <TO> type_ref() 				#AlterVarActionChangeType(2)
+  <RENAME> identifier() <TO> identifier()			 	#AlterVarActionRename(2)
+| <TYPE_OF> identifier() <TO> type_ref() 				#AlterVarActionChangeType(2)
 | <INSERT> attribute_spec() 							#AlterVarActionInsert(1)
 | <DROP> identifier() 									#AlterVarActionDrop(1)
 }
 
 void op_type() #OpType :
-{}{	<OPERATOR> "(" type_ref_commalist() ")" [ <RETURNS> type_ref() ]
+{}
+{
+	<OPERATOR> "(" type_ref_commalist() ")" [ <RETURNS> type_ref() ]
 }
 
 void type_ref_commalist() #TypeRefCommalist :
@@ -896,7 +903,9 @@ void var_relvar() :
 }
 
 void var_relvar_external() 	#VarRelvarExternal :
-{}{		<EXTERNAL>	identifier() string_literal() [ identifier() ]
+{}
+{
+		<EXTERNAL>	identifier() string_literal() [ identifier() ]
 }
 
 void var_keydeflist() #KeyDefList :
@@ -1123,8 +1132,10 @@ void assign() :
 	|	<UPDATE> identifier() update_where() ":" update_assignment()	#UpdateStatement(3)
 }
 
-void delete_parameter() #DeleteParameter :{}
-{	[ [ <WHERE> #DeleteWhere ] expression() ]
+void delete_parameter() #DeleteParameter :
+{}
+{
+	[ [ <WHERE> #DeleteWhere ] expression() ]
 }
 
 void update_where() #UpdateWhere :
@@ -1465,7 +1476,8 @@ void search() #Search :
 
 void type_of() #TypeOf :
 {}
-{  	<TYPE_OF> "(" expression() ")"
+{
+  	<TYPE_OF> "(" expression() ")"
 }
 
 void image_in() :
@@ -1526,7 +1538,8 @@ void substitute() #Substitute :
 
 void nadic_optional_heading() :
 {}
-{	     LOOKAHEAD(heading() "{" heading_exp_commalist() "}") heading() #NadicHeading "{" heading_exp_commalist() "}"
+{
+	     LOOKAHEAD(heading() "{" heading_exp_commalist() "}") heading() #NadicHeading "{" heading_exp_commalist() "}"
 	   | "{" heading_exp_commalist() "}" 
 }
 
@@ -1562,12 +1575,14 @@ void nadic_join() #NadicJoin :
 
 void nadic_times() #NadicTimes :
 {}
-{	<TIMES> "{" heading_exp_commalist() "}"
+{
+	<TIMES> "{" heading_exp_commalist() "}"
 }
 
 void nadic_compose() #NadicCompose :
 {}
-{	<COMPOSE> "{" heading_exp_commalist() "}"
+{
+	<COMPOSE> "{" heading_exp_commalist() "}"
 }
 
 void nadic_or() #NadicOr :
