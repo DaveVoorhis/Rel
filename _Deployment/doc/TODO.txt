@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Implement TutorialD.html grammar generator.
-
 - Add WITH statement.
 
 - Allow KEY {...} to be optional, equivalent to KEY {ALL BUT}.

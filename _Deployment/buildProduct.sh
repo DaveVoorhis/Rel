@@ -2,7 +2,10 @@
 
 # This script constructs distributable Rel products. It is intended to run on MacOS.
 #
-# It assumes Maven is installed to drive the Java build stages.
+# It assumes Maven is installed, to drive the Java build stages.
+#
+# It assumes jjtree and jjdoc (components of javacc) are installed in ~/bin, to
+# generate the TutorialD.html grammar reference.
 #
 # It assumes copies of Java JDKs are available in the folder denoted by $jredir,
 # below, which expects to find untarred JDKs in linux, osx, and windows folders,
@@ -48,8 +51,11 @@ mvn clean install
 popd
 
 # Grammar
-~/bin/jjdoc ../ServerV0000/src/org/reldb/rel/v0/languages/tutoriald/definition/TutorialD.jjt
+mkdir grammar
+~/bin/jjtree -OUTPUT_DIRECTORY="./grammar" ../ServerV0000/src/org/reldb/rel/v0/languages/tutoriald/definition/TutorialD.jjt
+~/bin/jjdoc ./grammar/TutorialD.jj
 mv TutorialD.html $proddir
+rm -rf grammar
 
 # Scripts
 cp -R Scripts $proddir/RelScripts
