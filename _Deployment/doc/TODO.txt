@@ -1,7 +1,6 @@
 ** TO DO **
 
 - Check executable JARs work.
-- JavaCC maven build for ServerV0000 and Client
 - Rework _Deployment/buildProduct.sh, etc.
 
 - Add WITH statement.
