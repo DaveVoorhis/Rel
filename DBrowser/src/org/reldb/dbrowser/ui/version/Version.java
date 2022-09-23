@@ -11,7 +11,7 @@ public class Version {
 	}
 
 	public static String getCopyright() {
-		return "Copyright 2004 - 2019 Dave Voorhis";
+		return "Copyright © 2004 - 2022 Dave Voorhis";
 	}
 	
 	public static String getURL() {
