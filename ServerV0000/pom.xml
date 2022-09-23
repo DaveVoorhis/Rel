@@ -107,24 +107,10 @@
                         <id>javacc</id>
                         <goals>
                             <goal>jjtree-javacc</goal>
-                            <goal>jjdoc</goal>
+                            <!-- <goal>jjdoc</goal> -->
                         </goals>
                         <configuration>
                             <sourceDirectory>${basedir}/src/org/reldb/rel/v0/languages/tutoriald/definition</sourceDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
