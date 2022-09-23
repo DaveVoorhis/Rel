@@ -2,13 +2,13 @@ Last used Exception* number: RS0509
 
 Version 3.015 (1.0.28):
 
-  - Enhancement: Rel: Update commons-compress dependency to version 1.19
-  
   - Enhancement: Update to Java 19.
   
   - Enhancement: Upgraded 3rd party libraries.
 
   - Enhancement: Added more detailed startup diagnostic logging.
+
+  - Enhancement: Java build uses Maven. Ant and Eclipse not required.
 
 Version 3.014 (1.0.27):
 
