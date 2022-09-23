@@ -48,6 +48,8 @@
         <maven-compiler.version>3.8.1</maven-compiler.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven-jar.version>3.1.0</maven-jar.version>
+        <javacc.version>3.0.1</javacc.version>
     </properties>
 
     <modules>

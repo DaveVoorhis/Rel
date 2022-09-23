@@ -32,7 +32,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${maven-compiler.version}</version>
                 <configuration>
                     <release>${java.version}</release>
                 </configuration>
@@ -40,7 +40,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>javacc-maven-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>${javacc.version}</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
