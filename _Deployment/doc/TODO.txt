@@ -1,6 +1,5 @@
 ** TO DO **
 
-- Check executable JARs work.
 - Rework _Deployment/buildProduct.sh, etc.
 
 - Add WITH statement.

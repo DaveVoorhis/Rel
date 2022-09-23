@@ -3,31 +3,20 @@ This is the live development repository for *Rel*, an implementation of Date & D
 If you wish to work with the source code, do this:
 
 1. Install a Java 19 JDK from (for example) https://jdk.java.net
-
-2. Download Eclipse for Java Developers version 2019-06 or above.
-
-3. Run Eclipse.
-
-4. Go to "Preferences | Java | Installed JREs" and install the above JDK and set it to be the default.
-
-5. Install the JavaCC plugin from the Eclipse Marketplace.
-
-6. Right-click in the Package Explorer and select "Import | Git | Projects from Git" to clone this project.
-
-7. If you're developing on Windows or Linux, go to the DBrowser subproject and select "Properties | Java Build Path". Then:
-
-    a) Select the "Projects" tab and remove the swt_macos Project and replace it with the swt_\<arch\> Project where \<arch\> is *linux* or *win* depending on your development platform.
-    
-    b) Select the "Libraries" tab and remove the swt_reldb.jar and swt.jar library dependencies -- currently set to MacOS versions -- and replace them with swt_reldb.jar and swt.jar found in \_Deployment/lib/swt/\<arch\>, where \<arch\> is *linux_64* or *win_64* depending on your development platform.
-
-8. Run DBrowser in the DBrowser subproject to launch the *Rel* graphical user interface.
+2. Install Maven, if you don't have it already.
+3. Clone the *Rel* project from GitHub at https://github.com/DaveVoorhis/Rel
+4. Build the *Rel* project with ```mvn clean install```
+5. Run DBrowser in the DBrowser subproject to launch the *Rel* graphical user interface.
 
 You're ready to develop *Rel*.
 
-For further information, see the *Rel* home page at http://reldb.org
+For further information, see the *Rel* home page at https://reldb.org
 
 Ready-to-run distributions of *Rel* are available on SourceForge at https://sourceforge.net/projects/dbappbuilder/files/Rel/
 
-Read the \_Deployment/README.txt file for further information on running *Rel*.
+Read the *_Deployment/README.txt* file for further information on running *Rel*.
 
-For support or to discuss *Rel*, see the *Rel* Forum at http://reldb.org/forum
+For support or to discuss *Rel*, see the *Rel* Forum at https://reldb.org/forum  
+
+See other relational projects at http://www.thethirdmanifesto.com and join the TTM Forum at
+https://forum.thethirdmanifesto.com
