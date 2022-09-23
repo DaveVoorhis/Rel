@@ -29,5 +29,5 @@ sed -i '' -e "s/RELEASE = $oldRELEASE/RELEASE = $newRELEASE/" ../ServerV0000/src
 sed -i '' -e "s/relversion=$olddbrowserVersion/relversion=$newdbrowserVersion/" ../_Deployment/buildProduct.sh
 
 pushd ../
-mvn --batch-mode release:update-versions -DdevelopmentVersion=$newRelV
+mvn --batch-mode release:update-versions -DdevelopmentVersion=$newdbrowserVersion
 popd
