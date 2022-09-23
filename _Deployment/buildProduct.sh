@@ -72,8 +72,8 @@ mkdir $proddir/$linuxtargetRel/doc
 cp doc/* $proddir/$linuxtargetRel/doc
 cp doc/LICENSE.txt $proddir/$linuxtargetRel
 cp -R ../DBrowser/target/lib $proddir/$linuxtargetRel
-rm $proddir/$linuxtargetRel/lib/org.eclipse.swt*
-rm $proddir/$linuxtargetRel/lib/swt_*
+rm $proddir/$linuxtargetRel/lib/org.eclipse.swt.*
+rm $proddir/$linuxtargetRel/lib/org.reldb.rel.swt_*
 cp ../DBrowser/target/*.jar $proddir/$linuxtargetRel/lib
 cp ../swtNative/swt_linux/target/lib/* $proddir/$linuxtargetRel/lib
 cp ../swtNative/swt_linux/target/*.jar $proddir/$linuxtargetRel/lib
@@ -95,8 +95,8 @@ rm $proddir/$mactarget/Rel.app/Contents/MacOS/README.txt
 cp doc/LICENSE.txt $proddir/$mactarget/Rel.app/Contents/MacOS
 cp -R MakeJRE/MacOS/jre $proddir/$mactarget/Rel.app/Contents/MacOS/jre
 cp -R ../DBrowser/target/lib $proddir/$mactarget/Rel.app/Contents/MacOS/
-rm $proddir/$mactarget/Rel.app/Contents/MacOS/lib/org.eclipse.swt*
-rm $proddir/$mactarget/Rel.app/Contents/MacOS/lib/swt_*
+rm $proddir/$mactarget/Rel.app/Contents/MacOS/lib/org.eclipse.swt.*
+rm $proddir/$mactarget/Rel.app/Contents/MacOS/lib/org.reldb.rel.swt_*
 cp ../DBrowser/target/*.jar $proddir/$mactarget/Rel.app/Contents/MacOS/lib
 cp ../swtNative/swt_macos/target/lib/* $proddir/$mactarget/Rel.app/Contents/MacOS/lib
 cp ../swtNative/swt_macos/target/*.jar $proddir/$mactarget/Rel.app/Contents/MacOS/lib
@@ -121,8 +121,8 @@ mkdir $proddir/$wintargetRel/doc
 cp doc/* $proddir/$wintargetRel/doc
 cp doc/LICENSE.txt $proddir/$wintargetRel
 cp -R ../DBrowser/target/lib $proddir/$wintargetRel
-rm $proddir/$wintargetRel/lib/org.eclipse.swt*
-rm $proddir/$wintargetRel/lib/swt_*
+rm $proddir/$wintargetRel/lib/org.eclipse.swt.*
+rm $proddir/$wintargetRel/lib/org.reldb.rel.swt_*
 cp ../DBrowser/target/*.jar $proddir/$wintargetRel
 cp ../swtNative/swt_win/target/lib/* $proddir/$wintargetRel/lib
 cp ../swtNative/swt_win/target/*.jar $proddir/$wintargetRel/lib

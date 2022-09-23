@@ -1,6 +1,6 @@
 ** TO DO **
 
-- Rework _Deployment/buildProduct.sh, etc.
+- Implement TutorialD.html grammar generator
 
 - Add WITH statement.
 

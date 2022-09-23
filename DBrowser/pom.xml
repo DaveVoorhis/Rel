@@ -1,14 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.reldb.rel</groupId>
         <artifactId>rel</artifactId>
-        <version>3.015-SNAPSHOT</version>
+        <version>3.015</version>
     </parent>
 
-    <artifactId>dbrowser</artifactId>
+    <artifactId>org.reldb.rel.dbrowser</artifactId>
     <name>DBrowser</name>
     <description>Rel UI frontend.</description>
     <packaging>jar</packaging>
@@ -16,28 +15,28 @@
     <dependencies>
         <dependency>
             <groupId>org.reldb.rel</groupId>
-            <artifactId>shared</artifactId>
-            <version>3.015-SNAPSHOT</version>
+            <artifactId>org.reldb.rel.shared</artifactId>
+            <version>3.015</version>
         </dependency>
         <dependency>
             <groupId>org.reldb.rel</groupId>
-            <artifactId>server</artifactId>
-            <version>3.015-SNAPSHOT</version>
+            <artifactId>org.reldb.rel.server</artifactId>
+            <version>3.015</version>
         </dependency>
         <dependency>
             <groupId>org.reldb.rel</groupId>
-            <artifactId>serverv0000</artifactId>
-            <version>3.015-SNAPSHOT</version>
+            <artifactId>org.reldb.rel.serverv0000</artifactId>
+            <version>3.015</version>
         </dependency>
         <dependency>
             <groupId>org.reldb.rel</groupId>
-            <artifactId>client</artifactId>
-            <version>3.015-SNAPSHOT</version>
+            <artifactId>org.reldb.rel.client</artifactId>
+            <version>3.015</version>
         </dependency>
         <dependency>
             <groupId>org.reldb.rel</groupId>
-            <artifactId>swt_macos</artifactId>
-            <version>3.015-SNAPSHOT</version>
+            <artifactId>org.reldb.rel.swt_macos</artifactId>
+            <version>3.015</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.jface -->
         <dependency>

@@ -27,3 +27,7 @@ sed -i '' -e "s/REVISION = $oldREVISION/REVISION = $newREVISION/" ../ServerV0000
 sed -i '' -e "s/RELEASE = $oldRELEASE/RELEASE = $newRELEASE/" ../ServerV0000/src/org/reldb/rel/v0/version/Version.java
 
 sed -i '' -e "s/relversion=$olddbrowserVersion/relversion=$newdbrowserVersion/" ../_Deployment/buildProduct.sh
+
+pushd ../
+mvn --batch-mode release:update-versions -DdevelopmentVersion=$newRelV
+popd
