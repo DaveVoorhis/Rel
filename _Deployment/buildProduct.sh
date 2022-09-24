@@ -7,7 +7,7 @@
 # It assumes jjtree and jjdoc (components of javacc) are installed in ~/bin, to
 # generate the TutorialD.html grammar reference.
 #
-# It assumes there is a JDK with javac and jlink binaries specified by
+# It assumes there is a JDK ($hostjdk) with javac and jlink binaries specified by
 # $jlink and $javac, below. It should be the same version as the JDKs
 # described in the next paragraph.
 #
@@ -36,8 +36,10 @@ javaversion=jdk-19
 jredir=~/Documents/OpenJDKs
 proddir=~/git/Rel/_Deployment/product
 
-jlink=/Library/Java/JavaVirtualMachines/$javaversion.jdk/Contents/Home/bin/jlink
-javac=/Library/Java/JavaVirtualMachines/$javaversion.jdk/Contents/Home/bin/javac
+hostjdk=/Library/Java/JavaVirtualMachines/$javaversion.jdk
+hostjdkbin=$hostjdk/Contents/Home/bin
+jlink=$hostjdkbin/jlink
+javac=$hostjdkbin/javac
 
 linuxtarget=linux
 mactarget=macos
