@@ -7,6 +7,10 @@
 # It assumes jjtree and jjdoc (components of javacc) are installed in ~/bin, to
 # generate the TutorialD.html grammar reference.
 #
+# It assumes there is a JDK with javac and jlink binaries specified by
+# $jlink and $javac, below. It should be the same version as the JDKs
+# described in the next paragraph.
+#
 # It assumes copies of Java JDKs are available in the folder denoted by $jredir,
 # below, which expects to find untarred JDKs in linux, osx, and windows folders,
 # respectively. Each JDK should be untarred but in its folder, so the expected
@@ -19,7 +23,7 @@
 #         ...etc...
 #   osx
 #      jdk-11.0.1.jdk
-#         bin 
+#         Contents
 #         ...etc...
 #   windows
 #      jdk-11.0.1
@@ -29,8 +33,12 @@
 
 relversion=3.015
 javaversion=jdk-19
+
 jredir=~/Documents/OpenJDKs
 proddir=~/git/Rel/_Deployment/product
+
+jlink=/Library/Java/JavaVirtualMachines/$javaversion.jdk/Contents/Home/bin/jlink
+javac=/Library/Java/JavaVirtualMachines/$javaversion.jdk/Contents/Home/bin/javac
 
 linuxtarget=linux
 mactarget=macos
@@ -48,6 +56,11 @@ rm `find ./ -name .DS_Store -print` &>/dev/null
 # Java build
 pushd ../
 mvn clean install
+if [ ! "$?" -eq 0 ]; then
+  popd
+  echo "*** Build failed. ***"
+  exit 1
+fi
 popd
 
 # Verify build
@@ -78,7 +91,27 @@ popd
 
 # Build JREs
 pushd MakeJRE
-./build.sh
+MODS_MACOS=$jredir/osx/$javaversion.jdk/Contents/Home/jmods
+MODS_LINUX=$jredir/linux/$javaversion/jmods
+MODS_WINDOWS=$jredir/windows/$javaversion/jmods
+MODULES=makejre.reldb
+OPTIONS="--strip-debug --compress=2 --no-header-files --no-man-pages"
+echo 'Obtaining JREs...'
+echo '  Removing previous build.'
+rm -rf out Linux Windows MacOS
+echo '  Compiling module-info.'
+$javac -d out src/module-info.java
+echo '  Compiling project.'
+$javac -d out --module-path out src/org/reldb/makejre/*.java
+mkdir Linux MacOS Windows
+echo '  Building for Linux...'
+$jlink --module-path $MODS_LINUX:out --add-modules $MODULES $OPTIONS --output Linux/jre
+echo '  Building for MacOS...'
+$jlink --module-path $MODS_MACOS:out --add-modules $MODULES $OPTIONS --output MacOS/jre
+echo '  Building for Windows...'
+$jlink --module-path $MODS_WINDOWS:out --add-modules $MODULES $OPTIONS --output Windows/jre
+rm -rf out
+echo 'JREs are ready.'
 popd
 
 # Linux GTK 64bit
@@ -91,13 +124,8 @@ mkdir $proddir/$linuxtargetRel/doc
 cp doc/* $proddir/$linuxtargetRel/doc
 cp doc/LICENSE.txt $proddir/$linuxtargetRel
 cp -R ../DBrowser/target/lib $proddir/$linuxtargetRel
-rm $proddir/$linuxtargetRel/lib/org.eclipse.swt.*
-rm $proddir/$linuxtargetRel/lib/org.reldb.rel.swt_*
-cp ../DBrowser/target/*.jar $proddir/$linuxtargetRel/lib
-cp ../swtNative/swt_linux/target/lib/* $proddir/$linuxtargetRel/lib
-cp ../swtNative/swt_linux/target/*.jar $proddir/$linuxtargetRel/lib
-cp nativeLaunchers/Rel/Linux/Rel.ini $proddir/$linuxtargetRel/lib
-cp splash.png $proddir/$linuxtargetRel/lib
+rm $proddir/$linuxtargetRel/lib/org.eclipse.swt.* $proddir/$linuxtargetRel/lib/org.reldb.rel.swt_*
+cp ../DBrowser/target/*.jar ../swtNative/swt_linux/target/lib/* ../swtNative/swt_linux/target/*.jar nativeLaunchers/Rel/Linux/Rel.ini splash.png $proddir/$linuxtargetRel/lib
 chmod +x $proddir/$linuxtargetRel/jre/bin/*
 pushd $proddir/$linuxtarget
 tar cfz ../Rel$relversion.$linuxtarget.tar.gz Rel
@@ -114,20 +142,13 @@ rm $proddir/$mactarget/Rel.app/Contents/MacOS/README.txt
 cp doc/LICENSE.txt $proddir/$mactarget/Rel.app/Contents/MacOS
 cp -R MakeJRE/MacOS/jre $proddir/$mactarget/Rel.app/Contents/MacOS/jre
 cp -R ../DBrowser/target/lib $proddir/$mactarget/Rel.app/Contents/MacOS/
-rm $proddir/$mactarget/Rel.app/Contents/MacOS/lib/org.eclipse.swt.*
-rm $proddir/$mactarget/Rel.app/Contents/MacOS/lib/org.reldb.rel.swt_*
-cp ../DBrowser/target/*.jar $proddir/$mactarget/Rel.app/Contents/MacOS/lib
-cp ../swtNative/swt_macos/target/lib/* $proddir/$mactarget/Rel.app/Contents/MacOS/lib
-cp ../swtNative/swt_macos/target/*.jar $proddir/$mactarget/Rel.app/Contents/MacOS/lib
-cp nativeLaunchers/Rel/MacOS/Rel.ini $proddir/$mactarget/Rel.app/Contents/MacOS/lib
-cp splash.png $proddir/$mactarget/Rel.app/Contents/MacOS/lib
-cp OSXPackager/Background.png $proddir/$mactarget
-cp OSXPackager/Package.command $proddir/$mactarget
+rm $proddir/$mactarget/Rel.app/Contents/MacOS/lib/org.eclipse.swt.* $proddir/$mactarget/Rel.app/Contents/MacOS/lib/org.reldb.rel.swt_*
+cp ../DBrowser/target/*.jar ../swtNative/swt_macos/target/lib/* ../swtNative/swt_macos/target/*.jar nativeLaunchers/Rel/MacOS/Rel.ini splash.png $proddir/$mactarget/Rel.app/Contents/MacOS/lib
+cp OSXPackager/Background.png OSXPackager/Package.command $proddir/$mactarget
 pushd $proddir/$mactarget
 ./Package.command $relversion
 mv *.dmg $proddir
-rm Background.png
-rm Package.command
+rm Background.png Package.command
 popd
 
 # Windows 64bit
@@ -140,21 +161,15 @@ mkdir $proddir/$wintargetRel/doc
 cp doc/* $proddir/$wintargetRel/doc
 cp doc/LICENSE.txt $proddir/$wintargetRel
 cp -R ../DBrowser/target/lib $proddir/$wintargetRel
-rm $proddir/$wintargetRel/lib/org.eclipse.swt.*
-rm $proddir/$wintargetRel/lib/org.reldb.rel.swt_*
-cp ../DBrowser/target/*.jar $proddir/$wintargetRel
-cp ../swtNative/swt_win/target/lib/* $proddir/$wintargetRel/lib
-cp ../swtNative/swt_win/target/*.jar $proddir/$wintargetRel/lib
-cp nativeLaunchers/Rel/Windows/Rel.ini $proddir/$wintargetRel/lib
-cp splash.png $proddir/$wintargetRel/lib
+rm $proddir/$wintargetRel/lib/org.eclipse.swt.* $proddir/$wintargetRel/lib/org.reldb.rel.swt_*
+cp ../DBrowser/target/*.jar ../swtNative/swt_win/target/lib/* ../swtNative/swt_win/target/*.jar nativeLaunchers/Rel/Windows/Rel.ini splash.png $proddir/$wintargetRel/lib
 pushd $proddir/$wintarget
 zip -9r ../Rel$relversion.$wintarget.zip Rel
 popd
 
 # Get lib
 cp -R ../Server/target/lib .
-cp ../Server/target/*.jar lib
-cp ../Tests/target/*.jar lib
+cp ../Server/target/*.jar ../Tests/target/*.jar lib
 
 # Standalone Rel DBMS (Linux)
 echo "---------------------- Standalone DBMS Build (Linux) ----------------------"
@@ -203,9 +218,6 @@ popd
 
 # Cleanup
 echo "Cleanup..."
-rm -rf lib
-rm -rf MakeJRE/Linux
-rm -rf MakeJRE/MacOS
-rm -rf MakeJRE/Windows
+rm -rf lib MakeJRE/Linux MakeJRE/MacOS MakeJRE/Windows
 
-echo "Done."
+echo "*** Done. ***"
