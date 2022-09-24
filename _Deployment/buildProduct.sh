@@ -183,15 +183,16 @@ cp ../Server/target/*.jar ../Tests/target/*.jar lib
 
 # Standalone Rel DBMS (Linux)
 echo "---------------------- Standalone DBMS Build (Linux) ----------------------"
-tar cf $proddir/Rel$relversion.$linuxTargetDBMS.tar doc/* lib/*
+target=$proddir/Rel$relversion.$linuxTargetDBMS.tar
+tar cf $target doc/* lib/*
 pushd nativeLaunchers/RelDBMS/Linux
-tar rf $proddir/Rel$relversion.$linuxTargetDBMS.tar *
+tar rf $target *
 popd
 pushd doc
-tar rf $proddir/Rel$relversion.$linuxTargetDBMS.tar LICENSE.txt
+tar rf $target LICENSE.txt
 popd
 pushd MakeJRE/Linux
-tar rf $proddir/Rel$relversion.$linuxTargetDBMS.tar *
+tar rf $target *
 popd
 pushd $proddir
 gzip -9 Rel$relversion.$linuxTargetDBMS.tar
@@ -199,15 +200,16 @@ popd
 
 # Standalone Rel DBMS (MacOS)
 echo "---------------------- Standalone DBMS Build (MacOS) ----------------------"
-tar cf $proddir/Rel$relversion.$macosTargetDBMS.tar doc/* lib/*
+target=$proddir/Rel$relversion.$macosTargetDBMS.tar
+tar cf $target doc/* lib/*
 pushd nativeLaunchers/RelDBMS/MacOS
-tar rf $proddir/Rel$relversion.$macosTargetDBMS.tar *
+tar rf $target *
 popd
 pushd doc
-tar rf $proddir/Rel$relversion.$macosTargetDBMS.tar LICENSE.txt
+tar rf $target LICENSE.txt
 popd
 pushd MakeJRE/MacOS
-tar rf $proddir/Rel$relversion.$macosTargetDBMS.tar *
+tar rf $target *
 popd
 pushd $proddir
 gzip -9 Rel$relversion.$macosTargetDBMS.tar
@@ -215,15 +217,16 @@ popd
 
 # Standalone Rel DBMS (Windows)
 echo "---------------------- Standalone Windows DBMS Build (Windows) ----------------------"
-zip -9r $proddir/Rel$relversion.$windowsTargetDBMS.zip doc/* lib/*
+target=$proddir/Rel$relversion.$windowsTargetDBMS.zip
+zip -9r $target doc/* lib/*
 pushd nativeLaunchers/RelDBMS/Windows
-zip -9r $proddir/Rel$relversion.$windowsTargetDBMS.zip *
+zip -9r $target *
 popd
 pushd doc
-zip -9r $proddir/Rel$relversion.$windowsTargetDBMS.zip LICENSE.txt
+zip -9r $target LICENSE.txt
 popd
 pushd MakeJRE/Windows
-zip -9r $proddir/Rel$relversion.$windowsTargetDBMS.zip *
+zip -9r $target *
 popd
 
 # Cleanup
