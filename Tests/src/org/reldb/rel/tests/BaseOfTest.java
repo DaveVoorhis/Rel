@@ -14,7 +14,7 @@ public class BaseOfTest {
 	
 	protected static Instance getInstance() {
 		try {
-			return new Instance("./", true, System.out);
+			return new Instance("./TestDB", true, System.out);
 		} catch (DatabaseFormatVersionException e) {
 			throw new ExceptionFatal("Database already exists and is in an older format.");
 		}
