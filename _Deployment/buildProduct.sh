@@ -50,6 +50,19 @@ pushd ../
 mvn clean install
 popd
 
+# Verify build
+pushd ../Tests/target
+echo "----- Running Tests -----"
+java -cp "lib/*:tests-$relversion.jar" AllTests
+if [ ! "$?" -eq 0 ]; then
+  rm -rf ./Reldb ./Relplugins ./Extensions ClickToOpen.rdb
+  popd
+  echo "*** Test(s) failed. ***"
+  exit 1
+fi
+rm -rf ./Reldb ./Relplugins ./Extensions ClickToOpen.rdb
+popd
+
 # Grammar
 mkdir grammar
 ~/bin/jjtree -OUTPUT_DIRECTORY="./grammar" ../ServerV0000/src/org/reldb/rel/v0/languages/tutoriald/definition/TutorialD.jjt
