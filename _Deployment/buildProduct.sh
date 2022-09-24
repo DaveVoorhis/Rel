@@ -121,7 +121,7 @@ echo 'JREs are ready.'
 popd
 
 # Linux GTK 64bit
-echo "---------------------- DBrowser full Linux Build ----------------------"
+echo "---------------------- DBrowser package (Linux) ----------------------"
 targetBase=$proddir/$linuxtarget
 target=$targetBase/Rel
 mkdir -p $target
@@ -139,7 +139,7 @@ tar cfz ../Rel$relversion.$linuxtarget.tar.gz Rel
 popd
 
 # MacOS (64bit)
-echo "---------------------- DBrowser full MacOS Build ----------------------"
+echo "---------------------- DBrowser package (MacOS) ----------------------"
 targetBase=$proddir/$mactarget
 target=$targetBase/Rel.app/Contents/MacOS
 mkdir $targetBase
@@ -161,7 +161,7 @@ rm Background.png Package.command
 popd
 
 # Windows 64bit
-echo "---------------------- DBrowser full Windows Build ----------------------"
+echo "---------------------- DBrowser package (Windows) ----------------------"
 targetBase=$proddir/$wintarget
 target=$targetBase/Rel
 mkdir -p $target
@@ -182,7 +182,7 @@ cp -R ../Server/target/lib .
 cp ../Server/target/*.jar ../Tests/target/*.jar lib
 
 # Standalone Rel DBMS (Linux)
-echo "---------------------- Standalone DBMS Build (Linux) ----------------------"
+echo "---------------------- Standalone DBMS package (Linux) ----------------------"
 target=$proddir/Rel$relversion.$linuxTargetDBMS.tar
 tar cf $target doc/* lib/*
 pushd nativeLaunchers/RelDBMS/Linux
@@ -199,7 +199,7 @@ gzip -9 Rel$relversion.$linuxTargetDBMS.tar
 popd
 
 # Standalone Rel DBMS (MacOS)
-echo "---------------------- Standalone DBMS Build (MacOS) ----------------------"
+echo "---------------------- Standalone DBMS package (MacOS) ----------------------"
 target=$proddir/Rel$relversion.$macosTargetDBMS.tar
 tar cf $target doc/* lib/*
 pushd nativeLaunchers/RelDBMS/MacOS
@@ -216,7 +216,7 @@ gzip -9 Rel$relversion.$macosTargetDBMS.tar
 popd
 
 # Standalone Rel DBMS (Windows)
-echo "---------------------- Standalone Windows DBMS Build (Windows) ----------------------"
+echo "---------------------- Standalone DBMS package (Windows) ----------------------"
 target=$proddir/Rel$relversion.$windowsTargetDBMS.zip
 zip -9r $target doc/* lib/*
 pushd nativeLaunchers/RelDBMS/Windows
