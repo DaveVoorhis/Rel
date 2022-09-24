@@ -31,7 +31,6 @@
 #         ...etc...
 #
 
-relversion=3.015
 javaversion=jdk-19
 
 jredir=~/Documents/OpenJDKs
@@ -47,6 +46,11 @@ wintarget=windows
 linuxTargetDBMS=linuxDBMS
 macosTargetDBMS=macosDBMS
 windowsTargetDBMS=windowsDBMS
+
+versionfile=../DBrowser/src/org/reldb/dbrowser/ui/version/Version.java
+relversion=`awk 'c&&!--c;/getVersionNumber/{c=1}' "$versionfile" | awk '{print $2}' | sed 's/.$//' | xargs`
+
+echo "Building version $relversion"
 
 # Clear
 mkdir $proddir &>/dev/null
