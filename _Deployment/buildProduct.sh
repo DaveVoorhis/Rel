@@ -74,12 +74,12 @@ pushd ../Tests/target
 echo "----- Running Tests -----"
 java -cp "lib/*:tests-$relversion.jar" AllTests
 if [ ! "$?" -eq 0 ]; then
-  rm -rf ./Reldb ./Relplugins ./Extensions ClickToOpen.rdb
+  rm -rf ./TestDB
   popd
   echo "*** Test(s) failed. ***"
   exit 1
 fi
-rm -rf ./Reldb ./Relplugins ./Extensions ClickToOpen.rdb
+rm -rf ./TestDB
 popd
 
 # Grammar
