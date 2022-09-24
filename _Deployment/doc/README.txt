@@ -108,7 +108,7 @@ automatically upgrade databases made with older Rel versions. You must
 go to the command-line, load the backup script created in Step 1
 above, and execute it.
 
-For more information, please see http://reldb.org
+For more information, please see https://reldb.org
 
-Copyright (c) 2004-2019 Dave Voorhis
+Copyright © 2004-2022 Dave Voorhis
 All Rights Reserved
