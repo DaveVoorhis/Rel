@@ -122,36 +122,39 @@ popd
 
 # Linux GTK 64bit
 echo "---------------------- DBrowser full Linux Build ----------------------"
-linuxtargetRel=$linuxtarget/Rel
-mkdir -p $proddir/$linuxtargetRel
-cp -R MakeJRE/Linux/jre $proddir/$linuxtargetRel/jre
-cp nativeLaunchers/binaries/Linux/Rel $proddir/$linuxtargetRel
-mkdir $proddir/$linuxtargetRel/doc
-cp doc/* $proddir/$linuxtargetRel/doc
-cp doc/LICENSE.txt $proddir/$linuxtargetRel
-cp -R ../DBrowser/target/lib $proddir/$linuxtargetRel
-rm $proddir/$linuxtargetRel/lib/org.eclipse.swt.* $proddir/$linuxtargetRel/lib/org.reldb.rel.swt_*
-cp ../DBrowser/target/*.jar ../swtNative/swt_linux/target/lib/* ../swtNative/swt_linux/target/*.jar nativeLaunchers/Rel/Linux/Rel.ini splash.png $proddir/$linuxtargetRel/lib
-chmod +x $proddir/$linuxtargetRel/jre/bin/*
-pushd $proddir/$linuxtarget
+targetBase=$proddir/$linuxtarget
+target=$targetBase/Rel
+mkdir -p $target
+cp -R MakeJRE/Linux/jre $target/jre
+cp nativeLaunchers/binaries/Linux/Rel $target
+mkdir $target/doc
+cp doc/* $target/doc
+cp doc/LICENSE.txt $target
+cp -R ../DBrowser/target/lib $target
+rm $target/lib/org.eclipse.swt.* $target/lib/org.reldb.rel.swt_*
+cp ../DBrowser/target/*.jar ../swtNative/swt_linux/target/lib/* ../swtNative/swt_linux/target/*.jar nativeLaunchers/Rel/Linux/Rel.ini splash.png $target/lib
+chmod +x $target/jre/bin/*
+pushd $targetBase
 tar cfz ../Rel$relversion.$linuxtarget.tar.gz Rel
 popd
 
 # MacOS (64bit)
 echo "---------------------- DBrowser full MacOS Build ----------------------"
-mkdir $proddir/$mactarget
-cp -R nativeLaunchers/binaries/MacOS/Rel.app $proddir/$mactarget
-cp nativeLaunchers/binaries/MacOS/launchBinSrc/Rel $proddir/$mactarget/Rel.app/Contents/MacOS
-mkdir $proddir/$mactarget/Rel.app/Contents/MacOS/doc
-cp doc/* $proddir/$mactarget/Rel.app/Contents/MacOS/doc
-rm $proddir/$mactarget/Rel.app/Contents/MacOS/README.txt
-cp doc/LICENSE.txt $proddir/$mactarget/Rel.app/Contents/MacOS
-cp -R MakeJRE/MacOS/jre $proddir/$mactarget/Rel.app/Contents/MacOS/jre
-cp -R ../DBrowser/target/lib $proddir/$mactarget/Rel.app/Contents/MacOS/
-rm $proddir/$mactarget/Rel.app/Contents/MacOS/lib/org.eclipse.swt.* $proddir/$mactarget/Rel.app/Contents/MacOS/lib/org.reldb.rel.swt_*
-cp ../DBrowser/target/*.jar ../swtNative/swt_macos/target/lib/* ../swtNative/swt_macos/target/*.jar nativeLaunchers/Rel/MacOS/Rel.ini splash.png $proddir/$mactarget/Rel.app/Contents/MacOS/lib
-cp OSXPackager/Background.png OSXPackager/Package.command $proddir/$mactarget
-pushd $proddir/$mactarget
+targetBase=$proddir/$mactarget
+target=$targetBase/Rel.app/Contents/MacOS
+mkdir $targetBase
+cp -R nativeLaunchers/binaries/MacOS/Rel.app $targetBase
+cp nativeLaunchers/binaries/MacOS/launchBinSrc/Rel $target
+mkdir $target/doc
+cp doc/* $target/doc
+rm $target/README.txt
+cp doc/LICENSE.txt $target
+cp -R MakeJRE/MacOS/jre $target/jre
+cp -R ../DBrowser/target/lib $target/
+rm $target/lib/org.eclipse.swt.* $target/lib/org.reldb.rel.swt_*
+cp ../DBrowser/target/*.jar ../swtNative/swt_macos/target/lib/* ../swtNative/swt_macos/target/*.jar nativeLaunchers/Rel/MacOS/Rel.ini splash.png $target/lib
+cp OSXPackager/Background.png OSXPackager/Package.command $targetBase
+pushd $targetBase
 ./Package.command $relversion
 mv *.dmg $proddir
 rm Background.png Package.command
@@ -159,17 +162,18 @@ popd
 
 # Windows 64bit
 echo "---------------------- DBrowser full Windows Build ----------------------"
-wintargetRel=$wintarget/Rel
-mkdir -p $proddir/$wintargetRel
-cp -R MakeJRE/Windows/jre $proddir/$wintargetRel/jre
-cp nativeLaunchers/binaries/Windows/x64/Release/Rel.exe $proddir/$wintargetRel
-mkdir $proddir/$wintargetRel/doc
-cp doc/* $proddir/$wintargetRel/doc
-cp doc/LICENSE.txt $proddir/$wintargetRel
-cp -R ../DBrowser/target/lib $proddir/$wintargetRel
-rm $proddir/$wintargetRel/lib/org.eclipse.swt.* $proddir/$wintargetRel/lib/org.reldb.rel.swt_*
-cp ../DBrowser/target/*.jar ../swtNative/swt_win/target/lib/* ../swtNative/swt_win/target/*.jar nativeLaunchers/Rel/Windows/Rel.ini splash.png $proddir/$wintargetRel/lib
-pushd $proddir/$wintarget
+targetBase=$proddir/$wintarget
+target=$targetBase/Rel
+mkdir -p $target
+cp -R MakeJRE/Windows/jre $target/jre
+cp nativeLaunchers/binaries/Windows/x64/Release/Rel.exe $target
+mkdir $target/doc
+cp doc/* $target/doc
+cp doc/LICENSE.txt $target
+cp -R ../DBrowser/target/lib $target
+rm $target/lib/org.eclipse.swt.* $target/lib/org.reldb.rel.swt_*
+cp ../DBrowser/target/*.jar ../swtNative/swt_win/target/lib/* ../swtNative/swt_win/target/*.jar nativeLaunchers/Rel/Windows/Rel.ini splash.png $target/lib
+pushd $targetBase
 zip -9r ../Rel$relversion.$wintarget.zip Rel
 popd
 
