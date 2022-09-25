@@ -23,6 +23,11 @@
             <artifactId>org.reldb.rel.serverv0000</artifactId>
             <version>3.015</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+        </dependency>
     </dependencies>
 
     <build>
