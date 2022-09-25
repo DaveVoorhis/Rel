@@ -17,7 +17,7 @@ public class TestVM {
 	private VirtualMachine machine;
 	
 	public TestVM() throws DatabaseFormatVersionException {
-		instance = new Instance("./", true, System.out);
+		instance = new Instance("./target/testdb1", true, System.out);
 		RelDatabase database = instance.getDatabase();
 		Interpreter interpreter = new Interpreter(database, System.out);
 		generator = interpreter.getGenerator();

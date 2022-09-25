@@ -23,7 +23,7 @@ public class TestStorage {
 	private RelDatabase database;
 	
 	public TestStorage() throws DatabaseFormatVersionException {
-		instance = new Instance("./", true, System.out);
+		instance = new Instance("./target/testdb1", true, System.out);
 		database = instance.getDatabase();
 	}
 	
