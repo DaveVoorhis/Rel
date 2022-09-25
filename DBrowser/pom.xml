@@ -87,8 +87,9 @@
         <profile>
             <id>linux</id>
             <activation>
+                <activeByDefault>true</activeByDefault>
                 <os>
-                    <family>unix</family>
+                    <family>!mac</family>
                 </os>
             </activation>
             <dependencies>
@@ -102,15 +103,6 @@
     </profiles>
 
     <build>
-        <sourceDirectory>src</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>src</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

@@ -80,15 +80,6 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>src</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>src</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -110,7 +101,7 @@
                             <!-- <goal>jjdoc</goal> -->
                         </goals>
                         <configuration>
-                            <sourceDirectory>${basedir}/src/org/reldb/rel/v0/languages/tutoriald/definition</sourceDirectory>
+                            <sourceDirectory>${basedir}/src/main/java/org/reldb/rel/v0/languages/tutoriald/definition</sourceDirectory>
                         </configuration>
                     </execution>
                 </executions>

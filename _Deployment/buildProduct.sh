@@ -49,7 +49,7 @@ linuxTargetDBMS=linuxDBMS
 macosTargetDBMS=macosDBMS
 windowsTargetDBMS=windowsDBMS
 
-versionfile=../DBrowser/src/org/reldb/dbrowser/ui/version/Version.java
+versionfile=../DBrowser/src/main/java/org/reldb/dbrowser/ui/version/Version.java
 relversion=`awk 'c&&!--c;/getVersionNumber/{c=1}' "$versionfile" | awk '{print $2}' | sed 's/.$//' | xargs`
 
 echo "Building version $relversion"
@@ -84,7 +84,7 @@ popd
 
 # Grammar
 mkdir grammar
-~/bin/jjtree -OUTPUT_DIRECTORY="./grammar" ../ServerV0000/src/org/reldb/rel/v0/languages/tutoriald/definition/TutorialD.jjt
+~/bin/jjtree -OUTPUT_DIRECTORY="./grammar" ../ServerV0000/src/main/java/org/reldb/rel/v0/languages/tutoriald/definition/TutorialD.jjt
 ~/bin/jjdoc ./grammar/TutorialD.jj
 mv TutorialD.html $proddir
 rm -rf grammar
