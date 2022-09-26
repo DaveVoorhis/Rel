@@ -54,6 +54,14 @@ relversion=`awk 'c&&!--c;/getVersionNumber/{c=1}' "$versionfile" | awk '{print $
 
 echo "Building version $relversion"
 
+pushd () {
+    command pushd "$@" > /dev/null
+}
+
+popd () {
+    command popd "$@" > /dev/null
+}
+
 # Clear
 mkdir $proddir &>/dev/null
 ./clearProduct.sh
@@ -120,7 +128,10 @@ rm -rf out
 echo 'JREs are ready.'
 popd
 
-# Linux GTK 64bit
+#
+# DBrowser packages
+#
+
 echo "---------------------- DBrowser package (Linux) ----------------------"
 targetBase=$proddir/$linuxtarget
 target=$targetBase/Rel
@@ -138,7 +149,6 @@ pushd $targetBase
 tar cfz ../Rel$relversion.$linuxtarget.tar.gz Rel
 popd
 
-# MacOS (64bit)
 echo "---------------------- DBrowser package (MacOS) ----------------------"
 targetBase=$proddir/$mactarget
 target=$targetBase/Rel.app/Contents/MacOS
@@ -160,7 +170,6 @@ mv *.dmg $proddir
 rm Background.png Package.command
 popd
 
-# Windows 64bit
 echo "---------------------- DBrowser package (Windows) ----------------------"
 targetBase=$proddir/$wintarget
 target=$targetBase/Rel
@@ -174,14 +183,17 @@ cp -R ../DBrowser/target/lib $target
 rm $target/lib/org.eclipse.swt.* $target/lib/org.reldb.rel.swt_*
 cp ../DBrowser/target/*.jar ../swtNative/swt_win/target/lib/* ../swtNative/swt_win/target/*.jar nativeLaunchers/Rel/Windows/Rel.ini splash.png $target/lib
 pushd $targetBase
-zip -9r ../Rel$relversion.$wintarget.zip Rel
+zip -q9r ../Rel$relversion.$wintarget.zip Rel
 popd
 
 # Get lib
 cp -R ../Server/target/lib .
 cp ../Server/target/*.jar ../Tests/target/*.jar lib
 
-# Standalone Rel DBMS (Linux)
+#
+# Standalone Rel DBMS packages
+#
+
 echo "---------------------- Standalone DBMS package (Linux) ----------------------"
 target=$proddir/Rel$relversion.$linuxTargetDBMS.tar
 tar cf $target doc/* lib/*
@@ -198,7 +210,6 @@ pushd $proddir
 gzip -9 Rel$relversion.$linuxTargetDBMS.tar
 popd
 
-# Standalone Rel DBMS (MacOS)
 echo "---------------------- Standalone DBMS package (MacOS) ----------------------"
 target=$proddir/Rel$relversion.$macosTargetDBMS.tar
 tar cf $target doc/* lib/*
@@ -215,18 +226,17 @@ pushd $proddir
 gzip -9 Rel$relversion.$macosTargetDBMS.tar
 popd
 
-# Standalone Rel DBMS (Windows)
 echo "---------------------- Standalone DBMS package (Windows) ----------------------"
 target=$proddir/Rel$relversion.$windowsTargetDBMS.zip
-zip -9r $target doc/* lib/*
+zip -q9r $target doc/* lib/*
 pushd nativeLaunchers/RelDBMS/Windows
-zip -9r $target *
+zip -q9r $target *
 popd
 pushd doc
-zip -9r $target LICENSE.txt
+zip -q9r $target LICENSE.txt
 popd
 pushd MakeJRE/Windows
-zip -9r $target *
+zip -q9r $target *
 popd
 
 # Cleanup
