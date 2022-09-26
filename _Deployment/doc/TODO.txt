@@ -1,5 +1,8 @@
 ** TO DO **
 
+- Refactor tests.
+- Include XLS external relvar tests by providing .xls file(s) in test resources.
+
 - Add WITH statement.
 
 - Allow KEY {...} to be optional, equivalent to KEY {ALL BUT}.
