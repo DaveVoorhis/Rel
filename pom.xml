@@ -49,6 +49,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-jar.version>3.1.0</maven-jar.version>
+        <maven-surefire.version>3.0.0-M7</maven-surefire.version>
         <javacc.version>3.0.1</javacc.version>
     </properties>
 

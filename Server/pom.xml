@@ -23,6 +23,13 @@
             <artifactId>org.reldb.rel.serverv0000</artifactId>
             <version>3.015</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -44,6 +51,24 @@
                             <mainClass>Rel</mainClass>
                         </manifest>
                     </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*TestExternalRelvar*</exclude>
+                        <exclude>**/*JDBC*</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
