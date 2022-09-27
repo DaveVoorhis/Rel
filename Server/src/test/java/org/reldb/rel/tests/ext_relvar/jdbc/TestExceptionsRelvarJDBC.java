@@ -2,9 +2,11 @@ package org.reldb.rel.tests.ext_relvar.jdbc;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.reldb.rel.exceptions.ExceptionSemantic;
 
+@Ignore
 public class TestExceptionsRelvarJDBC extends JDBCSettings {
 	@Before
 	public void testJDBC1() {
