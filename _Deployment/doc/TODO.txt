@@ -1,7 +1,7 @@
 ** TO DO **
 
 - Refactor tests.
-- Include XLS external relvar tests by providing .xls file(s) in test resources.
+- Include JDBC tests by using SQLite
 
 - Add WITH statement.
 
