@@ -77,19 +77,6 @@ if [ ! "$?" -eq 0 ]; then
 fi
 popd
 
-# Verify build
-pushd ../Tests/target
-echo "----- Running Tests -----"
-java -cp "lib/*:tests-$relversion.jar" AllTests
-if [ ! "$?" -eq 0 ]; then
-  rm -rf ./TestDB
-  popd
-  echo "*** Test(s) failed. ***"
-  exit 1
-fi
-rm -rf ./TestDB
-popd
-
 # Grammar
 mkdir grammar
 ~/bin/jjtree -OUTPUT_DIRECTORY="./grammar" ../ServerV0000/src/main/java/org/reldb/rel/v0/languages/tutoriald/definition/TutorialD.jjt
@@ -186,9 +173,10 @@ pushd $targetBase
 zip -q9r ../Rel$relversion.$wintarget.zip Rel
 popd
 
+echo "Prepare libraries for standalone DBMS packaging."
 # Get lib
 cp -R ../Server/target/lib .
-cp ../Server/target/*.jar ../Tests/target/*.jar lib
+cp ../Server/target/*.jar lib
 
 #
 # Standalone Rel DBMS packages

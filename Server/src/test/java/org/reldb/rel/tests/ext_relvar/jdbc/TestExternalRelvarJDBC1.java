@@ -2,8 +2,10 @@ package org.reldb.rel.tests.ext_relvar.jdbc;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class TestExternalRelvarJDBC1 extends JDBCSettings {
 	@Before
 	public void before() {
@@ -11,8 +13,8 @@ public class TestExternalRelvarJDBC1 extends JDBCSettings {
 		sqlExec("INSERT INTO " + table + " values (1, 2, 3);");
 		sqlExec("INSERT INTO " + table + " values (4, 5, 6);");
 		sqlExec("INSERT INTO " + table + " values (7, 8, 9);");
-//		String src = "BEGIN;\n" + "var myvar external jdbc \"" + absolutePath + "\" autokey;" + "END;\n" + "true";
-//		testEquals("true", src);
+		String src = "BEGIN;\n" + "var myvar external jdbc \"" + absolutePath + "\" autokey;" + "END;\n" + "true";
+		testEquals("true", src);
 	}
 
 	@Test
@@ -25,8 +27,8 @@ public class TestExternalRelvarJDBC1 extends JDBCSettings {
 
 	@After
 	public void after() {
-//		String src = "BEGIN;\n" + "drop var myvar;" + "END;\n" + "true";
-//		testEquals("true", src);
+		String src = "BEGIN;\n" + "drop var myvar;" + "END;\n" + "true";
+		testEquals("true", src);
 		sqlExec("DROP TABLE " + table + ";");
 	}
 }

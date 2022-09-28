@@ -2,8 +2,10 @@ package org.reldb.rel.tests.ext_relvar.jdbc;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class TestExternalRelvarJDBC4 extends JDBCSettings {
 	@Before
 	public void testJDBC1() {

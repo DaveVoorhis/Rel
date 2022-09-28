@@ -59,7 +59,6 @@
       <module>Server</module>
       <module>ServerV0000</module>
       <module>Shared</module>
-      <module>Tests</module>
       <module>swtNative</module>
     </modules>
 
