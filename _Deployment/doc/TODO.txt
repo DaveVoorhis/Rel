@@ -1,7 +1,6 @@
 ** TO DO **
 
-- Refactor tests.
-- Include JDBC tests by using SQLite
+- Fix SQLite JDBC tests in org.reldb.rel.tests.ext_relvar.jdbc in Server.
 
 - Add WITH statement.
 
