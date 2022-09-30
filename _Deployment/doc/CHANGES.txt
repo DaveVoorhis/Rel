@@ -10,6 +10,11 @@ Version 3.015 (1.0.28):
 
   - Enhancement: Java build uses Maven. Ant and Eclipse not required.
 
+  - Fix: Bogus .rel preference key starting with \u0000 removed if present.
+
+  - Fix: Recently-used database list now limited to 25 databases, to prevent
+    startup slowdown and possible resource limit issues.
+
 Version 3.014 (1.0.27):
 
   - Fix: Rel: Case #229:

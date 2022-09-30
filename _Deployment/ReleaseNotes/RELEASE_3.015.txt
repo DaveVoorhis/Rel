@@ -2,8 +2,8 @@
 
 This release of Rel, an implementation of Date & Darwen's "Tutorial D"
 database language, upgrades some dependencies, adds more detailed logging
-to the DBrowser startup, and provides a Maven-based build for Rel
-developers.
+to the DBrowser startup, fixes some issues, and provides a Maven-based
+build for Rel developers.
 
 The following enhancements have been made:
 
@@ -14,6 +14,14 @@ The following enhancements have been made:
   - Enhancement: Added more detailed startup diagnostic logging.
 
   - Enhancement: Java build uses Maven. Ant and Eclipse not required.
+
+The following issues have been addressed:
+
+  - Fix: A bogus preference key starting with \u0000 may have been inserted into
+    the .rel preferences file. It is removed if present.
+
+  - Fix: Recently-used database list now limited to 25 databases, to prevent
+    startup slowdown and possible resource limit issues.
 
 == Version 3.014 Release Notes ==
 

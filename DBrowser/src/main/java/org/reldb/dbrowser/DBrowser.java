@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
@@ -163,7 +162,7 @@ public class DBrowser {
 		class EditMenuAdapter extends MenuAdapter { 
 			Control focusControl;
 			LinkedList<Method> menuItemMethods = new LinkedList<Method>();
-		};
+		}
 		EditMenuAdapter menuAdapter = new EditMenuAdapter() {
 			@Override
 			public void menuShown(MenuEvent arg0) {
@@ -415,7 +414,7 @@ public class DBrowser {
 		return localRel;
 	}
 	
-	private static void log(String msg) {
+	public static void log(String msg) {
 		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
 		System.out.println("" + timeStamp + ": " + msg);
 	}
@@ -532,7 +531,7 @@ public class DBrowser {
 				t.printStackTrace();
 			}
 		}
-		log("Exitted event loop.");
+		log("Exited event loop.");
 	}
 	
 	public static void main(String[] args) {

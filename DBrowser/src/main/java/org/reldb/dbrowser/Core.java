@@ -25,6 +25,7 @@ import org.reldb.dbrowser.ui.preferences.Preferences;
 /** Core of DBrowser. */
 public class Core {
 	private final static String recentlyUsedDatabaseListPreference = "recentlyUsedDatabaseList";
+	private final static int recentlyUsedListSize = 25;
 
 	private static MainPanel mainPanel;
 	private static DirectoryDialog openDatabaseDialog;
@@ -212,7 +213,13 @@ public class Core {
 		if (indexOfDBURL >= 0)
 			recentlyUsed.remove(dbURL);
 		recentlyUsed.addFirst(dbURL);
-		Preferences.setPreference(recentlyUsedDatabaseListPreference, recentlyUsed.toArray(new String[0]));
+		String[] recentlyUsedArray = recentlyUsed.toArray(new String[0]);
+		String[] prunedRecentlyUsedArray = prune(recentlyUsedArray, recentlyUsedListSize);
+		Preferences.setPreference(recentlyUsedDatabaseListPreference, prunedRecentlyUsedArray);
+	}
+
+	private static String[] prune(String[] array, int maximumSize) {
+		return Arrays.copyOfRange(array, 0, Math.min(array.length, maximumSize));
 	}
 
 	public static void removeFromRecentlyUsedDatabaseList(String dbURL) {
@@ -223,10 +230,10 @@ public class Core {
 	}
 
 	public static String[] getRecentlyUsedDatabaseList() {
-		return Preferences.getPreferenceStringArray(recentlyUsedDatabaseListPreference);
+		return prune(Preferences.getPreferenceStringArray(recentlyUsedDatabaseListPreference), recentlyUsedListSize);
 	}
 
-	public static void setRecentlyUsedDatabaseList(String[] usedList) {
+	private static void setRecentlyUsedDatabaseList(String[] usedList) {
 		Preferences.setPreference(recentlyUsedDatabaseListPreference, usedList);
 	}
 	

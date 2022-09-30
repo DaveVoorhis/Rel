@@ -1,9 +1,13 @@
 package org.reldb.dbrowser.ui.preferences;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Vector;
 
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -29,6 +33,7 @@ public class Preferences {
 	public static PreferenceStore getPreferences() {
 		if (preferences == null) {
 			final String preferencePath = Paths.get(System.getProperty("user.home"), Version.getPreferencesRepositoryName()).toString();
+			preferencesCleanup(preferencePath);
 			preferences = new PreferenceStore(preferencePath);
 			try {
 				preferences.load();
@@ -44,6 +49,28 @@ public class Preferences {
 			});
 		}
 		return preferences;
+	}
+
+	private static void preferencesCleanup(String preferencePath) {
+		// Some preference files may have bogus entries. Purge them here.
+		Properties properties = new Properties();
+		try (FileInputStream reader = new FileInputStream(preferencePath)) {
+			properties.load(reader);
+		} catch (IOException e) {
+			System.out.println("Preferences: Unable to load preferences to clean them.");
+		}
+		properties.forEach((key, value) -> {
+			if (key.toString().startsWith("\u0000")) {
+				System.out.println("Invalid preference in " + preferencePath + " removed where key=" + key);
+				properties.remove(key);
+			}
+		});
+		try (FileOutputStream writer = new FileOutputStream(preferencePath)) {
+			String timestamp = ZonedDateTime.now().toString();
+			properties.store(writer, timestamp);
+		} catch (IOException e) {
+			System.out.println("Preferences: Unable to save preferences after cleaning them.");
+		}
 	}
 
 	public static void setPreference(String name, Rectangle rect) {
@@ -183,11 +210,12 @@ public class Preferences {
 	private static void save() {
 		try {
 			preferences.save();
+			System.out.println("Preferences saved.");
 		} catch (IOException e) {
 			System.out.println("Preferences: Unable to save preferences: " + e);
 		}		
 	}
-	
+
 	public void show() {
 		preferenceDialog.open();
 		save();
