@@ -1,7 +1,5 @@
 ** TO DO **
 
-- Fix SQLite JDBC tests in org.reldb.rel.tests.ext_relvar.jdbc in Server.
-
 - Add WITH statement.
 
 - Allow KEY {...} to be optional, equivalent to KEY {ALL BUT}.
