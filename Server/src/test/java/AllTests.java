@@ -15,7 +15,8 @@ public class AllTests {
 		"org.reldb.rel.tests.external",
 		"org.reldb.rel.tests.inheritance",
 		"org.reldb.rel.tests.ext_relvar.csv",
-		"org.reldb.rel.tests.ext_relvar.xls"
+		"org.reldb.rel.tests.ext_relvar.xls",
+		"org.reldb.rel.tests.ext_relvar.jdbc"
 	};
 	
 	/**
