@@ -19,15 +19,7 @@ import org.reldb.rel.v0.storage.relvars.RelvarHeading;
 import org.reldb.rel.v0.storage.relvars.external.CSVLineParse;
 import org.reldb.rel.v0.storage.tables.TableCustom;
 import org.reldb.rel.v0.types.Heading;
-import org.reldb.rel.v0.values.RelTupleFilter;
-import org.reldb.rel.v0.values.RelTupleMap;
-import org.reldb.rel.v0.values.TupleFilter;
-import org.reldb.rel.v0.values.TupleIterator;
-import org.reldb.rel.v0.values.TupleIteratorAutokey;
-import org.reldb.rel.v0.values.Value;
-import org.reldb.rel.v0.values.ValueCharacter;
-import org.reldb.rel.v0.values.ValueRelation;
-import org.reldb.rel.v0.values.ValueTuple;
+import org.reldb.rel.v0.values.*;
 import org.reldb.rel.v0.vm.Context;
 
 public class TableJDBC extends TableCustom {
@@ -74,7 +66,7 @@ public class TableJDBC extends TableCustom {
 					return SQLIterator(query);
 				case DUP_COUNT: 
 					query = "SELECT COUNT(*) AS DUP_COUNT, " + getAttributeList() + " FROM " + meta.getTable() + " GROUP BY " + getAttributeList();
-					return SQLIterator(query);
+					return new TupleIteratorDupCount(SQLIterator(query), generator);
 				case AUTOKEY: 
 					query = "SELECT * FROM " + meta.getTable();
 					return new TupleIteratorAutokey(SQLIterator(query), generator);
