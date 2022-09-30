@@ -15,6 +15,9 @@ Version 3.015 (1.0.28):
   - Fix: Recently-used database list now limited to 25 databases, to prevent
     startup slowdown and possible resource limit issues.
 
+  - Fix: The DUP_COUNT option for external JDBC-based relvars has been
+    fixed. Previously, it returned incorrect values.
+
 Version 3.014 (1.0.27):
 
   - Fix: Rel: Case #229:

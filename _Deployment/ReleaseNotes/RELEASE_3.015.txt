@@ -23,6 +23,9 @@ The following issues have been addressed:
   - Fix: Recently-used database list now limited to 25 databases, to prevent
     startup slowdown and possible resource limit issues.
 
+  - Fix: The DUP_COUNT option for external JDBC-based relvars has been
+    fixed. Previously, it returned incorrect values.
+
 == Version 3.014 Release Notes ==
 
 This release of Rel, an implementation of Date & Darwen's "Tutorial D"
