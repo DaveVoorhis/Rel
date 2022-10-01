@@ -27,7 +27,7 @@ public class TestExternalRelvarCSV4 extends BaseOfTest {
 
 		String src = 
 				"BEGIN;\n" +
-						"var myvar external csv \"" + file.getAbsolutePath() + "\";" +
+						"var myvar external csv \"" + file.getAbsolutePath().replace("\\", "\\\\") + "\";" +
 				"END;\n" +
 				"true";
 		testEquals("true", src);

@@ -27,7 +27,7 @@ public class TestExternalRelvarCSV2 extends BaseOfTest {
 
 		String src = 
 				"BEGIN;\n" +
-						"var myvar external csv \"" + file.getAbsolutePath() + "\" dup_remove;" +
+						"var myvar external csv \"" + file.getAbsolutePath().replace("\\", "\\\\") + "\" dup_remove;" +
 				"END;\n" +
 				"true";
 		testEquals("true", src);
