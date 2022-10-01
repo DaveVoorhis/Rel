@@ -1,6 +1,6 @@
 package org.reldb.rel.tests.ext_relvar.xls;
 
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,18 +10,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class TestRelvarXLSXExceptions extends XLTestHelper {
+public class TestExternalRelvarXLSExceptions extends XLTestHelper {
 
-    private File NonExistingFile = new File("test2.xlsx");
+    private File NonExistingFile = new File("test2.xls");
 
-    public TestRelvarXLSXExceptions() {
-        super("test.xlsx");
+    public TestExternalRelvarXLSExceptions() {
+        super("test.xls");
     }
 
     @Before
-    public void testXLSX1() {
+    public void testXLS1() {
         try {
-            try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            try (HSSFWorkbook workbook = new HSSFWorkbook()) {
                 workbook.createSheet();
                 file.createNewFile();
                 try (FileOutputStream out = new FileOutputStream(file)) {
@@ -42,20 +42,20 @@ public class TestRelvarXLSXExceptions extends XLTestHelper {
     }
 
     @Test //Relvar created from empty file
-    public void testXLSX2() {
+    public void testXLS2() {
         String src = "myvar";
         testEquals("RELATION {} {\n}", src);
     }
 
     @Test(expected = ExceptionSemantic.class)
-    public void testXLSX3() { //Calling relvar after manually deleting file
+    public void testXLS3() { //Calling relvar after manually deleting file
         file.delete();
         String src = "myvar";
         testEvaluate(src);
     }
 
     @Test(expected = ExceptionSemantic.class)
-    public void testXLSX4() { //Creating relvar from non-existing file
+    public void testXLS4() { //Creating relvar from non-existing file
         String src =
                 "BEGIN;\n" +
                         "var brokenVAR external xls \"" + NonExistingFile.getAbsolutePath().replace("\\", "\\\\") + "\" dup_remove;" +
@@ -64,7 +64,7 @@ public class TestRelvarXLSXExceptions extends XLTestHelper {
     }
 
     @Test(expected = ExceptionSemantic.class)
-    public void testXLSX5() { //Creating relvar with non-identified duplicate handling method
+    public void testXLS5() { //Creating relvar with non-identified duplicate handling method
         String src =
                 "BEGIN;\n" +
                         "var brokenVAR external xls \"" + file.getAbsolutePath().replace("\\", "\\\\") + "\" something;" +
@@ -73,7 +73,7 @@ public class TestRelvarXLSXExceptions extends XLTestHelper {
     }
 
     @After
-    public void testXLSX10() { //Drop relvar and delete test file
+    public void testXLS10() { //Drop relvar and delete test file
         String src =
                 "BEGIN;\n" +
                         "drop var myvar;" +

@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.reldb.rel.exceptions.ExceptionSemantic;
 
-public class TestExceptionsRelvarJDBC extends JDBCSettings {
+public class TestExternalRelvarJDBCExceptions extends JDBCSettings {
 	@Before
 	public void before() {
 		sqlExecIgnoreErrors("DROP TABLE " + table + ";");

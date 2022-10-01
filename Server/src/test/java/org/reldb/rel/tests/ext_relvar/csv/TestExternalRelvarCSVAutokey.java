@@ -9,13 +9,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class TestExternalRelvarCSV3 extends BaseOfTest {
+public class TestExternalRelvarCSVAutokey extends BaseOfTest {
 	
 	private final String path = "test.csv";
 	private File file = new File(path);
 	
 	@Before
-	public void testCSV1() {
+	public void before() {
 		try {
 			file.createNewFile();
 			FileWriter fw = new FileWriter(file.getAbsolutePath());
@@ -27,23 +27,28 @@ public class TestExternalRelvarCSV3 extends BaseOfTest {
 
 		String src = 
 				"BEGIN;\n" +
-						"var myvar external csv \"" + file.getAbsolutePath().replace("\\", "\\\\") + "\" dup_count;" +
+						"var myvar external csv \"" + file.getAbsolutePath().replace("\\", "\\\\") + "\" autokey;" +
 				"END;\n" +
 				"true";
 		testEquals("true", src);
 	}
 	
 	@Test
-	public void testCSV2() {
+	public void testCSVAutokey() {
 		String src = "myvar";		
-		testEquals(	"RELATION {_DUP_COUNT INTEGER, A CHARACTER, B CHARACTER, C CHARACTER} {" +
-				"\n\tTUPLE {_DUP_COUNT 2, A \"1\", B \"2\", C \"3\"}," +
-				"\n\tTUPLE {_DUP_COUNT 3, A \"4\", B \"5\", C \"6\"}," +
-				"\n\tTUPLE {_DUP_COUNT 2, A \"7\", B \"8\", C \"9\"}\n}", src);
+		testEquals(	"RELATION {_AUTOKEY INTEGER, A CHARACTER, B CHARACTER, C CHARACTER} {\n" +
+				"\tTUPLE {_AUTOKEY 1, A \"1\", B \"2\", C \"3\"},\n" +
+				"\tTUPLE {_AUTOKEY 2, A \"4\", B \"5\", C \"6\"},\n" +
+				"\tTUPLE {_AUTOKEY 3, A \"4\", B \"5\", C \"6\"},\n" +
+				"\tTUPLE {_AUTOKEY 4, A \"1\", B \"2\", C \"3\"},\n" +
+				"\tTUPLE {_AUTOKEY 5, A \"7\", B \"8\", C \"9\"},\n" +
+				"\tTUPLE {_AUTOKEY 6, A \"7\", B \"8\", C \"9\"},\n" +
+				"\tTUPLE {_AUTOKEY 7, A \"4\", B \"5\", C \"6\"}\n" +
+				"}", src);
 	}
 	
 	@After
-	public void testCSV3() {
+	public void after() {
 		String src = 
 				"BEGIN;\n" +
 						"drop var myvar;" +

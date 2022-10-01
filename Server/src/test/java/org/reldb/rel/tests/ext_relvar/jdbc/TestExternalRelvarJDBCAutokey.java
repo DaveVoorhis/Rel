@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestExternalRelvarJDBC4 extends JDBCSettings {
+public class TestExternalRelvarJDBCAutokey extends JDBCSettings {
 	@Before
 	public void before() {
 		sqlExecIgnoreErrors("DROP TABLE " + table + ";");
@@ -12,12 +12,12 @@ public class TestExternalRelvarJDBC4 extends JDBCSettings {
 		sqlExec("INSERT INTO " + table + " values (1, 2, 3);");
 		sqlExec("INSERT INTO " + table + " values (4, 5, 6);");
 		sqlExec("INSERT INTO " + table + " values (7, 8, 9);");
-		String src = "BEGIN;\n" + "var myvar external jdbc \"" + absolutePath + "\";" + "END;\n" + "true";
+		String src = "BEGIN;\n" + "var myvar external jdbc \"" + absolutePath + "\" autokey;" + "END;\n" + "true";
 		testEquals("true", src);
 	}
 
 	@Test
-	public void testRelvarJDBCDefault() {
+	public void testRelvarJDBCAutokey() {
 		String src = "myvar";
 		testEquals("RELATION {_AUTOKEY INTEGER, A CHARACTER, B CHARACTER, C CHARACTER} {"
 				+ "\n\tTUPLE {_AUTOKEY 1, A \"1\", B \"2\", C \"3\"},"
@@ -29,6 +29,6 @@ public class TestExternalRelvarJDBC4 extends JDBCSettings {
 	public void after() {
 		String src = "BEGIN;\n" + "drop var myvar;" + "END;\n" + "true";
 		testEquals("true", src);
-		sqlExec("drop table " + table);
+		sqlExec("DROP TABLE " + table + ";");
 	}
 }

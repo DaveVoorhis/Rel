@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestExternalRelvarJDBC3 extends JDBCSettings {
+public class TestExternalRelvarJDBCDupCount extends JDBCSettings {
 	@Before
 	public void before() {
 		sqlExecIgnoreErrors("DROP TABLE " + table + ";");
