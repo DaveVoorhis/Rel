@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.reldb.rel.exceptions.ExceptionSemantic;
+import org.reldb.rel.tests.helpers.XLTestHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;

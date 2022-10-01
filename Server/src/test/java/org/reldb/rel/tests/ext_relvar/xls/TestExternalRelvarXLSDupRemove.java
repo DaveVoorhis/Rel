@@ -6,6 +6,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;
+import org.reldb.rel.tests.helpers.XLSTestHelper;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

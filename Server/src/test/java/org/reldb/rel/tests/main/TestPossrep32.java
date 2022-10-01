@@ -4,7 +4,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.reldb.rel.exceptions.ExceptionSemantic;
-import org.reldb.rel.tests.BaseOfTest;
+import org.reldb.rel.tests.helpers.BaseOfTest;
 
 import static org.junit.Assert.assertEquals;
 

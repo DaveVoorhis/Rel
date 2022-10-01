@@ -6,6 +6,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;
+import org.reldb.rel.tests.helpers.XLSXTestHelper;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

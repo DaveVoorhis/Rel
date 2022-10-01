@@ -1,6 +1,4 @@
-package org.reldb.rel.tests.ext_relvar.xls;
-
-import org.reldb.rel.tests.BaseOfTest;
+package org.reldb.rel.tests.helpers;
 
 import java.io.File;
 

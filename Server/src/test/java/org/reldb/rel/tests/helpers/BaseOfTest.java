@@ -1,4 +1,4 @@
-package org.reldb.rel.tests;
+package org.reldb.rel.tests.helpers;
 
 import org.reldb.rel.exceptions.DatabaseFormatVersionException;
 import org.reldb.rel.exceptions.ExceptionFatal;

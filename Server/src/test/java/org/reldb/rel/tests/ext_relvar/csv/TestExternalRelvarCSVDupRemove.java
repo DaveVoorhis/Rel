@@ -3,7 +3,7 @@ package org.reldb.rel.tests.ext_relvar.csv;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.reldb.rel.tests.BaseOfTest;
+import org.reldb.rel.tests.helpers.BaseOfTest;
 
 import java.io.File;
 import java.io.FileWriter;

@@ -3,8 +3,9 @@ package org.reldb.rel.tests.ext_relvar.jdbc;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.reldb.rel.tests.helpers.JDBCHelper;
 
-public class TestExternalRelvarJDBCDefault extends JDBCSettings {
+public class TestExternalRelvarJDBCDefault extends JDBCHelper {
 	@Before
 	public void before() {
 		sqlExecIgnoreErrors("DROP TABLE " + table + ";");

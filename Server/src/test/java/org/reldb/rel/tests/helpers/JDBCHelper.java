@@ -1,15 +1,13 @@
-package org.reldb.rel.tests.ext_relvar.jdbc;
+package org.reldb.rel.tests.helpers;
 
 
-
-import org.reldb.rel.tests.BaseOfTest;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class JDBCSettings extends BaseOfTest {
+public class JDBCHelper extends BaseOfTest {
 	private final static String user = "";
 	private final static String password = "";
 

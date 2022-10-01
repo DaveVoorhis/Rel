@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.reldb.rel.tests;
+package org.reldb.rel.tests.helpers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

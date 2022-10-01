@@ -1,6 +1,7 @@
 package org.reldb.rel.tests;
 
 import org.junit.Test;
+import org.reldb.rel.tests.helpers.BaseOfTest;
 
 public class TestRelWorkInProgress extends BaseOfTest {
 

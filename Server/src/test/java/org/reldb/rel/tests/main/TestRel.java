@@ -2,7 +2,7 @@ package org.reldb.rel.tests.main;
 
 import org.junit.Test;
 import org.reldb.rel.exceptions.ExceptionSemantic;
-import org.reldb.rel.tests.BaseOfTest;
+import org.reldb.rel.tests.helpers.BaseOfTest;
 import org.reldb.rel.v0.storage.relvars.external.ColumnName;
 import org.reldb.rel.v0.values.*;
 

@@ -1,4 +1,4 @@
-package org.reldb.rel.tests.ext_relvar.xls;
+package org.reldb.rel.tests.helpers;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;

@@ -3,7 +3,7 @@ package org.reldb.rel.tests.main;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.reldb.rel.tests.BaseOfTest;
+import org.reldb.rel.tests.helpers.BaseOfTest;
 import org.reldb.rel.v0.values.ValueBoolean;
 
 public class TestLambda3 extends BaseOfTest {
