@@ -1,22 +1,31 @@
 #!/bin/bash
 
-# This script constructs distributable Rel products. It is intended to run on MacOS,
-# but will mostly work (it won't generate a Macos .dmg file) on any bash
-# shell interpreter that provides the following:
+# This script constructs distributable Rel products.
 #
-# It assumes Maven is installed, to drive the Java build stages.
+# The generated product package files will be written to $proddir.
+# It must be an absolute path.
 #
-# It assumes jjtree and jjdoc (components of javacc) are installed in ~/bin, to
-# generate the TutorialD.html grammar reference.
+# This is intended to run on MacOS, but will mostly work (it won't generate
+# a Macos .dmg file) on any bash shell interpreter that provides the following:
 #
-# It assumes there is a JDK ($hostjdk) with javac and jlink binaries specified by
+# It assumes Maven is installed on the path, to drive the Java build stages.
+#
+# It assumes zip is installed on the path, to create .zip archives.
+# It assumes tar is installed on the path, to create .tar and .tgz archives.
+#
+# It assumes jjtree and jjdoc (components of javacc) are referenced by
+# $jjtree and $jjdoc, to generate the TutorialD.html grammar reference document.
+#
+# It assumes there is a JDK with javac and jlink binaries specified by
 # $jlink and $javac, below. It should be the same version as the JDKs
 # described in the next paragraph.
 #
 # It assumes copies of Java JDKs are available in the folder denoted by $jredir,
-# below, which expects to find untarred JDKs in linux, osx, and windows folders,
-# respectively. Each JDK should be untarred but in its folder, so the expected
-# directory subtree for JDK version 11.0.1 would be:
+# with the version specified by $javaversion. It expects to find untarred
+# JDKs in linux, osx, and windows folders, respectively. Each JDK should be
+# untarred but in its folder, so the expected directory subtree for e.g.
+# JDK version 11.0.1 (which must be in $javaversion, i.e., javaversion=11.0.1)
+# would be:
 # 
 # OpenJDKs
 #   linux
@@ -31,12 +40,14 @@
 #      jdk-11.0.1
 #         bin 
 #         ...etc...
-#
 
-javaversion=jdk-19
+proddir=~/git/Rel/_Deployment/product
+
+jjtree=~/bin/jjtree
+jjdoc=~/bin/jjdoc
 
 jredir=~/Documents/OpenJDKs
-proddir=~/git/Rel/_Deployment/product
+javaversion=jdk-19
 
 hostjdk=/Library/Java/JavaVirtualMachines/$javaversion.jdk
 hostjdkbin=$hostjdk/Contents/Home/bin
@@ -81,8 +92,8 @@ popd
 
 # Grammar
 mkdir grammar
-~/bin/jjtree -OUTPUT_DIRECTORY="./grammar" ../ServerV0000/src/main/java/org/reldb/rel/v0/languages/tutoriald/definition/TutorialD.jjt
-~/bin/jjdoc ./grammar/TutorialD.jj
+$jjtree -OUTPUT_DIRECTORY="./grammar" ../ServerV0000/src/main/java/org/reldb/rel/v0/languages/tutoriald/definition/TutorialD.jjt
+$jjdoc ./grammar/TutorialD.jj
 mv TutorialD.html $proddir
 rm -rf grammar
 
