@@ -5,6 +5,14 @@
 
 # slightly modified for Rel packaging by Dave Voorhis
 
+pushd () {
+    command pushd "$@" > /dev/null
+}
+
+popd () {
+    command popd "$@" > /dev/null
+}
+
 # make sure we are in the correct dir when we double-click a .command file
 dir=${0%/*}
 if [ -d "$dir" ]; then

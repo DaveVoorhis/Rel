@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# This script constructs distributable Rel products. It is intended to run on MacOS.
+# This script constructs distributable Rel products. It is intended to run on MacOS,
+# but will mostly work (it won't generate a Macos .dmg file) on any bash
+# shell interpreter that provides the following:
 #
 # It assumes Maven is installed, to drive the Java build stages.
 #
@@ -150,12 +152,21 @@ cp -R MakeJRE/MacOS/jre $target/jre
 cp -R ../DBrowser/target/lib $target/
 rm $target/lib/org.eclipse.swt.* $target/lib/org.reldb.rel.swt_*
 cp ../DBrowser/target/*.jar ../swtNative/swt_macos/target/lib/* ../swtNative/swt_macos/target/*.jar nativeLaunchers/Rel/MacOS/Rel.ini splash.png $target/lib
-cp OSXPackager/Background.png OSXPackager/Package.command $targetBase
-pushd $targetBase
-./Package.command $relversion
-mv *.dmg $proddir
-rm Background.png Package.command
-popd
+hdiutil=/usr/bin/hdiutil
+if [ -f "$hdiutil" ]; then
+  cp OSXPackager/Background.png OSXPackager/Package.command $targetBase
+  pushd $targetBase
+  ./Package.command $relversion
+  mv *.dmg $proddir
+  rm Background.png Package.command
+  popd
+else
+  echo "Either this isn't MacOS or $hdiutil doesn't exist, so no MacOS DMG packaging."
+  echo "Making a .tgz instead."
+  pushd $targetBase
+  tar cfz ../Rel$relversion.$mactarget.tar.gz Rel.app
+  popd
+fi
 
 echo "---------------------- DBrowser package (Windows) ----------------------"
 targetBase=$proddir/$wintarget
