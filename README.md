@@ -23,5 +23,4 @@ https://forum.thethirdmanifesto.com
 3. Clone the *Rel* project from GitHub at https://github.com/DaveVoorhis/Rel
 4. Build the *Rel* project with ```mvn clean install```
 5. Run DBrowser in the DBrowser subproject to launch the *Rel* graphical user interface.
-
-You're ready to develop *Rel*.
+6. Submit a pull request when you've done something good.
