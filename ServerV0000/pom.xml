@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.reldb.rel</groupId>
         <artifactId>rel</artifactId>
-        <version>3.015</version>
+        <version>3.016</version>
     </parent>
 
     <artifactId>org.reldb.rel.serverv0000</artifactId>
@@ -15,12 +15,12 @@
         <dependency>
             <groupId>org.reldb.rel</groupId>
             <artifactId>org.reldb.rel.shared</artifactId>
-            <version>3.015</version>
+            <version>3.016</version>
         </dependency>
         <dependency>
             <groupId>org.reldb.rel</groupId>
             <artifactId>org.reldb.rel.client</artifactId>
-            <version>3.015</version>
+            <version>3.016</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.sleepycat/je -->
         <dependency>

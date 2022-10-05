@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.reldb.rel</groupId>
         <artifactId>rel</artifactId>
-        <version>3.015</version>
+        <version>3.016</version>
     </parent>
 
     <artifactId>swtNative</artifactId>
