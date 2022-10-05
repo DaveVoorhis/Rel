@@ -1,16 +1,16 @@
 #!/bin/bash
 
-olddbrowserVersion=3.014
-newdbrowserVersion=3.015
+olddbrowserVersion=3.015
+newdbrowserVersion=3.016
 
 oldPRODUCT_VERSION=1
 oldDATABASE_VERSION=0
-oldREVISION=27
+oldREVISION=28
 oldRELEASE=Beta
 
 newPRODUCT_VERSION=1
 newDATABASE_VERSION=0
-newREVISION=28
+newREVISION=29
 newRELEASE=Beta
 
 oldRelV=$oldPRODUCT_VERSION.$oldDATABASE_VERSION.$oldREVISION
@@ -27,5 +27,6 @@ sed -i '' -e "s/REVISION = $oldREVISION/REVISION = $newREVISION/" ../ServerV0000
 sed -i '' -e "s/RELEASE = $oldRELEASE/RELEASE = $newRELEASE/" ../ServerV0000/src/main/java/org/reldb/rel/v0/version/Version.java
 
 pushd ../
-mvn --batch-mode release:update-versions -DdevelopmentVersion=$newdbrowserVersion
+mvn versions:set -DnewVersion=$newdbrowserVersion
+mvn versions:commit
 popd
