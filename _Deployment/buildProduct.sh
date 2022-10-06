@@ -204,8 +204,12 @@ cp ../Server/target/*.jar lib
 # Standalone Rel DBMS packages
 #
 
+dbmsSubDir=StandAloneDBMS
+DBMSDir=$proddir/$dbmsSubDir
+mkdir -p $DBMSDir
+
 echo "---------------------- Standalone DBMS package (Linux) ----------------------"
-target=$proddir/Rel$relversion.$linuxTargetDBMS.tar
+target=$DBMSDir/Rel$relversion.$linuxTargetDBMS.tar
 tar cf $target doc/* lib/*
 pushd nativeLaunchers/RelDBMS/Linux
 tar rf $target *
@@ -216,12 +220,12 @@ popd
 pushd MakeJRE/Linux
 tar rf $target *
 popd
-pushd $proddir
+pushd $DBMSDir
 gzip -9 Rel$relversion.$linuxTargetDBMS.tar
 popd
 
 echo "---------------------- Standalone DBMS package (MacOS) ----------------------"
-target=$proddir/Rel$relversion.$macosTargetDBMS.tar
+target=$DBMSDir/Rel$relversion.$macosTargetDBMS.tar
 tar cf $target doc/* lib/*
 pushd nativeLaunchers/RelDBMS/MacOS
 tar rf $target *
@@ -232,12 +236,12 @@ popd
 pushd MakeJRE/MacOS
 tar rf $target *
 popd
-pushd $proddir
+pushd $DBMSDir
 gzip -9 Rel$relversion.$macosTargetDBMS.tar
 popd
 
 echo "---------------------- Standalone DBMS package (Windows) ----------------------"
-target=$proddir/Rel$relversion.$windowsTargetDBMS.zip
+target=$DBMSDir/Rel$relversion.$windowsTargetDBMS.zip
 zip -q9r $target doc/* lib/*
 pushd nativeLaunchers/RelDBMS/Windows
 zip -q9r $target *
@@ -249,8 +253,12 @@ pushd MakeJRE/Windows
 zip -q9r $target *
 popd
 
+# Ancillary docs
+echo "Copying ancillary documents..."
+cp doc/LICENSE.txt doc/README.txt ReleaseNotes/RELEASE_$relversion.txt $proddir
+
 # Cleanup
 echo "Cleanup..."
-rm -rf lib MakeJRE/Linux MakeJRE/MacOS MakeJRE/Windows
+rm -rf lib MakeJRE/Linux MakeJRE/MacOS MakeJRE/Windows $proddir/RelScripts $proddir/linux $proddir/macos $proddir/windows
 
 echo "*** Done. ***"
