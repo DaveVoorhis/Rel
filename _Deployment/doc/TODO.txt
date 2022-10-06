@@ -1,5 +1,8 @@
 ** TO DO **
 
+- Case #320: DBrowser's built-in backup crashes, apparently due
+  to inability to find the script.
+
 - Add WITH statement.
 
 - Allow KEY {...} to be optional, equivalent to KEY {ALL BUT}.
