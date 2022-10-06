@@ -1,0 +1,906 @@
+== Version 3.016 Release Notes ==
+
+This release of Rel, an implementation of Date & Darwen's "Tutorial D"
+database language, fixes a bug that prevented the Rel DBMS 'BACKUP'
+command working, and thus prevented correct operation of DBRowser's
+backup facility.
+
+This has been corrected, so backups should now work.
+
+== Version 3.015 Release Notes ==
+
+This release of Rel, an implementation of Date & Darwen's "Tutorial D"
+database language, upgrades some dependencies, adds more detailed logging
+to the DBrowser startup, fixes some issues, and provides a Maven-based
+build for Rel developers.
+
+The following enhancements have been made:
+
+  - Enhancement: Update to Java 19.
+
+  - Enhancement: Upgraded 3rd party libraries.
+
+  - Enhancement: Added more detailed startup diagnostic logging.
+
+  - Enhancement: Java build uses Maven. Ant and Eclipse not required.
+
+The following issues have been addressed:
+
+  - Fix: A bogus preference key starting with \u0000 may have been inserted into
+    the .rel preferences file. It is removed if present.
+
+  - Fix: Recently-used database list now limited to 25 databases, to prevent
+    startup slowdown and possible resource limit issues.
+
+  - Fix: The DUP_COUNT option for external JDBC-based relvars has been
+    fixed. Previously, it returned incorrect values.
+
+== Version 3.014 Release Notes ==
+
+This release of Rel, an implementation of Date & Darwen's "Tutorial D"
+database language, improves the user interface, adds Infinity and NaN
+(Not a Number) to the recognised RATIONAL literals, and fixes some bugs.
+
+The following enhancements have been made:
+
+  - DBrowser: The command-line now provides Execute
+    and Evaluate buttons in addition to the Run button. This allows
+    the user to explicitly choose command execution or expression 
+    evaluation, which provides a handy workaround for input that 
+    DBrowser incorrectly identifies as an expression (or statements) 
+    when it isn't.
+    
+  - DBrowser: The "Create and Restore Database" dialog box now
+    disables the OK/Cancel buttons whilst running, and 
+    provide indication of running status.
+  
+  - Rel: RATIONAL literals Infinity and NaN are now
+    correctly recognised by the parser.
+
+  - DBrowser: The Rel mascot (bird) image is displayed
+    on the background of Rel mode when no tabs are displayed.
+
+The following bugs have been fixed:
+
+  - Rel: Case #229:
+    Executing the following...
+      OPERATOR myOperator (x INTEGER, y INTEGER) RETURNS INTEGER; RETURN x + y * 2;
+	  END OPERATOR;
+	  CALL myOperator(3, 4);
+    ...caused a fatal error. Fixed.
+
+  - Rel: In some cases, INSERTing a relation into a
+    relvar that should ignore duplicate tuples will indicate
+    it has inserted tuples but fail to insert any. Fixed.
+    
+NOTE: The Linux 3.014 release may have issues with the alternative
+      display mode (File | Preferences | Display | Use an alternative...)
+      so it is recommended to not use the alternative display mode.
+      
+NOTE: The MacOS 3.014 release may fail to refresh the display
+      when focus is lost and then restored. Clicking anywhere within
+      the Rel window will normally refresh it.
+
+The Windows 3.014 release should work correctly.
+
+== Version 3.013 Release Notes ==
+
+This release of Rel, an implementation of Date & Darwen's "Tutorial D"
+database language, improves the user interface, fixes some bugs, adds
+support for outer joins, and significantly reduces the size of the Rel
+distribution whilst improving startup speed.
+
+The following enhancements have been made:
+
+  - The Rel user interface (known as DBrowser) provides same familiar
+    interface but now has significantly fewer Eclipse framework
+    dependencies. The result is a smaller distribution and improved
+    start-up time.
+
+  - DBrowser: Export option dropped from relvar edit grids, as there
+    are other, better facilities for exporting to Excel available on
+    right-click menus, etc.
+
+  - DBrowser: Under Preferences, moved alternate output display option
+    to Display tab.
+
+  - DBrowser: Improved handling of icon resizing via Preferences. On
+    MacOS, all icon sizes change without needing to restart.
+  
+  - DBrowser: Preferences data is no longer stored in Rel application
+    directory; now stored in user's home directory.  This allows
+    keeping preferences across Rel updates.
+
+  - DBrowser now supports "remote only" mode where only connections to
+    remote databases are possible.  To enable, delete rel0*.jar
+    (e.g. rel0000.jar), RelDBMS.jar, and RelTest.jar from lib/rel.
+     
+  - DBrowser '+' tab now provides list of recently-used databases and
+    means to delete entries.  As a result, management entries removed
+    from main menu.
+    
+  - DBrowser: Tweaks to display of RVAs to improve readability.
+     
+  - DBrowser: Now provides option to create and restore a database
+    from a backup as a unified operation.
+     
+  - Client library: Decoupled Server/ServerV0000 from Client to permit
+    use of relclient.jar on its own (plus relshared.jar) to facilitate
+    developing purely remote clients.
+
+  - Rel: Added p LEFT JOIN q which returns 
+        TUPLE {Matched p JOIN q, Missing p NOT MATCHING q}
+
+  - Rel: Added p RIGHT JOIN q which returns 
+        TUPLE {Matched p JOIN q, Missing q NOT MATCHING p}
+
+  - Rel: Added p FULL JOIN q which returns
+          TUPLE {
+        	Matched p JOIN q, 
+        	MissingLeft p NOT MATCHING q, 
+        	MissingRight q NOT MATCHING p
+          }
+
+  - Build: Module jars now generated via Ant build files; product
+    build scripts now generate all jars.
+
+The following bugs have been fixed:
+
+  - DBrowser: The 'comment' visualiser in Rev now handles carriage
+    return correctly on all platforms.
+    
+  - DBrowser: Saving a script with escape chars, e.g., \\blah, loaded
+    as \blah. Fixed.
+
+  - DBrowser: Resizing the Rel window whilst in relvar Edit mode
+    caused odd problems, such as the content not re-sizing,
+    scrollbars disappearing, etc. Fixed.
+
+  - DBrowser: Graphical editing of RVA value did not work due to
+    failure to launch RVA editor. Fixed.
+ 
+  - DBrowser/Client: Fixed TUPLE of RVA display problems.
+    
+  - Rel: parallel RENAME now supported. E.g., 
+    TUPLE {x 10, y 20, z 30} RENAME {x AS y, y AS x} works.
+    Case #203 fixed.
+
+  - Rel: This threw a fatal error:
+    RELATION {TUPLE {RVA RELATION {TUPLE {K 1}}}} 
+    	EXTEND {RR := RVA RANK (ASC K AS R)}
+    Fixed.
+
+== Version 3.012 Release Notes ==
+
+This release of Rel, an implementation of Date & Darwen's "Tutorial D"
+database language, improves the user interface and fixes some bugs.
+
+The following enhancements have been made:
+
+- Rel DBMS: Now provides -q command-line option to disable
+  startup/shutdown information messages. This is intended to make it
+  easier to implement standalone scripts that produce console output
+  for later redirection.
+  
+- Rel UI: Tabular displays of views, relvars, or expression evaluation
+  results (in Rev visual query editor) now provide mechanism to search
+  and sort the results.
+
+- Rev visual query editor: Advanced search available in Restrict
+  (WHERE) operator.
+
+- Rev visual query editor: A Comment node has been provided, to add
+  commentary to a visual query.
+
+- Rel DBMS: new built-in operator SEARCH(t TUPLE{*}, regex CHAR)
+  RETURNS BOOLEAN, which returns true if any CAST_AS_CHAR(a), where a
+  is an attribute of t, matches regex. This permits general text
+  search of tuples, e.g., S WHERE SEARCH(TUP {*}, ".*3.*") returns any
+  tuple in S with a '3' in some attribute value.
+
+The following bugs have been fixed:
+
+- Rel UI: In the command-line interface, attempting to execute a
+  statement like WRITELN "blah//"; -- or other statement with a string
+  with an embedded comment character sequence -- caused syntax error,
+  because // was treated as an expression ending in a comment rather
+  than a statement. Fixed.
+
+== Version 3.011 Release Notes ==
+
+This release of Rel, an implementation of Date & Darwen's "Tutorial D"
+database language, improves the user interface and fixes some bugs.
+
+The following enhancements have been made:
+
+- Rel UI: Opening a relvar in Edit mode now positions the cursor in
+  the blank row at the bottom, ready to enter a new tuple.  Cursor
+  keys may be used to navigate, and Ctrl/Cmd-Cursor keys may be used
+  to jump to top/bottom or right/left.
+
+- Rel UI: Font scaling has been improved when using alternative output
+  display on HiDPI Windows displays.
+
+- Rel UI: The bundled Java runtime is now version 8u161.
+
+- Rel DBMS: Using SAME_HEADING_AS(...) in a relation literal heading
+  was previously not permitted. E.g., REL SAME_HEADING_AS(S) {} was a
+  syntax error.  It is now permitted.
+  
+- Rel DBMS and Rel Client now check for and correctly handle 'null'
+  source code.
+
+The following bugs have been fixed:
+
+- Rel UI: Cut/copy/paste/selectAll drop-down menus and keyboard
+  shortcuts now work consistently and are generally available wherever
+  they should appear.
+
+- Rel DBMS: ABS(n) always returned a RATIONAL value, even if n was
+  INTEGER. Fixed.
+
+- Rel UI: 
+
+  Given: Ubuntu 16.xx, 17.xx and other GTK3 environments.
+
+  Result: Multiple GUI failures similar to those when using the
+  Eclipse IDE under GTK3.
+
+  Fixed. Startup forces GTK2. Some issues remain, but at least it's
+  usable.
+
+- Rel UI: 
+
+  Given: In the relvar Edit mode, press "Go to INSERT row" button on
+  relvar with high enough cardinality to require scrolling.
+	
+  Result: It was was supposed to do what Ctrl-End should also do:
+  position the display on the blank row and put the cursor in it. It
+  doesn't.
+	
+  Fixed. Ctrl-Cursor preferred over Ctrl-End.
+
+- Rev:
+	
+  Given: Create an Expression and set its text to "WRITELN '&blah'".
+
+  Result: The & won't show. If you change the text to "WRITELN
+  '&&blah'", it shows &, but is treated as "WRITELN '&&blah'".  
+
+  Fixed.
+  			
+- Rel DBMS:
+	
+  Given: https://reldb.org/forum/viewtopic.php?f=2&t=1527&p=2863#p2863
+	
+  Result: Fatal error instead of semantic error.
+	
+  Fix: Now throws semantic error, plus gives a helpful hint for fixing
+  a typical error.
+
+- Rel DBMS:
+
+  Given: S GROUP {blah} AS rva
+	
+  Result: Java NullPointerException due to undefined attribute 'blah'.
+	
+  Fixed.
+
+== Version 3.010 Release Notes ==
+
+This release of Rel, an implementation of Date & Darwen's "Tutorial D"
+database language, improves the user interface and fixes some bugs.
+
+The following enhancements have been made to the user interface:
+
+- Drop-down menus are now provided for most major operations.
+
+- Double-clicking on a database tree item causes focus to be set to
+  the contents of the tab.
+
+- Double-click now expands/contracts database tree item headings, in
+  addition to the usual keystrokes.
+
+- Variable and View "play" mode shows relation value with improved
+  formatting; "edit" is available from the drop-down and pop-up
+  (right-click) menus.
+
+- The CPU and memory displays in the lower-right corner now follow the
+  typical paradigm of showing resource use, rather than showing
+  resource available.
+
+The following enhancements have been made to the DBMS:
+
+- The storage engine has been updated to Berkeley Java DB version
+  7.5.11.
+
+- To reduce confusion when copying and pasting code examples that have
+  been auto-corrected, the parser now recognises Unicode asymmetric
+  quotes (‘ ’ “ ”) and generates a human-friendly error.
+
+The following bugs have been fixed:
+
+- fix: DBMS:
+  Given:
+	COUNT {S WHERE CITY = CITY, S WHERE STATUS = STATUS}
+   Result:
+   	Returns type mismatch error when it shouldn't.
+  Fixed.
+
+- fix: DBMS:
+  Given:
+	VAR TEST4 REAL RELATION 
+		{ID INTEGER, RVA RELATION {RID INTEGER, STR CHAR}} KEY {ID};
+	INSERT TEST4 RELATION {
+		TUPLE {ID 1, RVA RELATION 
+		{TUPLE {RID 11, STR 'A'}, TUPLE {RID 22, STR 'E'}}}
+	};
+  Execute:
+	UPDATE TEST4 WHERE ID = 1: 
+	       {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};
+	UPDATE TEST4 WHERE ID = 1: 
+	       {UPDATE RVA WHERE RID = 22: {STR := 'blah'}};
+  Result: TUPLE {RID 22, STR 'blah'} is incorrectly deleted.
+  Fixed.
+ 
+- fix: UI: CSS on exported HTML for tabular displays did not correctly
+  format table heading text. Fixed.
+
+- fix: UI: Command-line correctly detects execute vs evaluate by
+  ignoring whitespace and comments.
+
+== Version 3.009 Release Notes ==
+
+This is a minor bug-fix release of Rel, an implementation of Date &
+Darwen's "Tutorial D" database language.
+
+A performance bottleneck has been corrected that caused slow database
+loading and interaction on some networks.
+
+The bundled Java JRE has been updated to version 8u151.
+
+== Version 3.008 Release Notes ==
+
+This is a minor bug-fix release of Rel, an implementation of Date &
+Darwen's "Tutorial D" database language. There was a bug in INSERT
+that caused additional KEY constraints to be ignored. For example,
+given the following:
+
+VAR myvar REAL RELATION {x INT, y INT} KEY {x} KEY {y};
+INSERT myvar REL {TUP {x 1, y 1}};
+
+The following would correctly report 0 tuples inserted:
+
+INSERT myvar REL {TUP {x 2, y 1}};
+
+But would erroneously insert the tuple. This has been corrected.
+
+The Berkeley Java DB library (used to implement the storage engine)
+has been updated to version 7.4.5, and the Java JRE has been updated
+to version 8u144.
+
+== Version 3.007 Release Notes ==
+
+This is a minor release of Rel, an implementation of Date & Darwen's
+"Tutorial D" database language. It adds EQUIV and RANK operators,
+slightly tweaks the Tutorial D grammar implementation to reduce the
+need for parentheses, provides infix invocation for certain operators,
+and fixes some bugs.
+
+The following enhancements have been made to the Rel implementation of
+Tutorial D:
+
+- Infix syntax for EXTEND, SUMMARIZE and UPDATE expressions is now
+  available. The prefix syntax has been retained, but these are now
+  allowed:
+
+   S EXTEND {SS := STATUS}
+   S EXTEND: {SS := STATUS}
+   S SUMMARIZE BY {CITY} {SS := SUM(STATUS)}
+   S SUMMARIZE BY {CITY}: {SS := SUM(STATUS)}
+   S UPDATE {STATUS := 2}
+   S UPDATE: {STATUS := 2}
+
+- Dyadic and monadic relational operators now have equal precedence,
+  except WHERE (lower precedence) and projection (higher
+  precedence). This means operators may often be "chained" naturally
+  without requiring parentheses.  E.g., S RENAME {CITY AS PLACE} WRAP
+  {PLACE, STATUS} AS T is allowed, where previously (S RENAME {CITY AS
+  PLACE}) WRAP {PLACE, STATUS} AS T would have been required. This
+  should not affect existing code.
+
+- RANK has been implemented, per Date & Darwen's "Data Types and the
+  Relational Model". Both prefix and infix syntax are available:
+
+   RANK S BY (ASC STATUS AS Ranking) 
+   S RANK BY (ASC STATUS AS Ranking) 
+   S RANK (ASC STATUS AS Ranking)
+
+- EQUIV has been implemented, per Date & Darwen's "Database
+  Explorations".
+
+The following bugs have been fixed:
+
+- Case #139 - #142: In the Rel UI, a fatal error was sometimes
+  inappropriately generated when a query was cancelled in the
+  command-line view. This has been fixed.
+
+- Case #153: Errors in built-in or user-defined Java-based operators
+  now generate an error message rather than causing a fatal error.
+
+== Version 3.006 Release Notes ==
+
+This is a minor maintenance release of Rel, an implementation of Date
+& Darwen's "Tutorial D" database language. It makes some improvements
+to the Rel user interface, now provides a selection of built-in
+operators that previously had to be loaded from a script, and fixes
+various minor bugs.
+
+IMPORTANT NOTE: Once opened with this or later versions of Rel,
+                databases cannot be read by earlier versions.
+
+The following enhancements have been made:
+
+- In the Rel DBMS, all operators previously found in the
+  UsefulOperatorsAndViews.rel script are now built-in, and the
+  sys.OperatorsBuiltin relvar provides documentation of built-in
+  relvars via the Definition attribute. In the Rel UI, this can be
+  displayed by double-clicking on an Operator, or by pressing the
+  associated Play button.
+
+- The Rel DBMS's storage engine has been updated to Oracle Berkeley DB
+  JE version 7.3.7
+
+- The Rel DBMS now supports external Rel DBMS relvars. This requires
+  that a standalone Rel DBMS be running on the specified host.  
+  E.g.:
+     VAR myvar EXTERNAL RELVAR "host,username,password,relvarname"; 
+     VAR myvar EXTERNAL RELVAR "host,user,pass,vname,1234"; // port is 1234
+
+- The Rel DBMS now provides built-in QUOTE(CHAR) RETURNS CHAR and
+  UNQUOTE(CHAR) RETURNS CHAR operators to quote/unquote delimiters and
+  special characters.
+
+The following bugs have been fixed:
+         
+- Rel DBMS: External relvar column name cleanup erroneously turned 'g'
+  and 'i' to '_'. Fixed.
+
+- Rel DBMS: Extraneous spaces are no longer inserted into EXTERNAL
+  ACCDB and EXTERNAL JDBC relvar definitions.
+
+- Rel DBMS: The UPDATE operator (not statement) allowed duplicate
+  tuples to be emitted. Fixed.
+
+- Rel DBMS: The IN operator sometimes returned an incorrect result if
+  the tuple operand had a different attribute order from the relation
+  operand. Fixed.
+
+- Rel UI: In Rev, single quotes in a RESTRICT, EXTEND, SUMMARIZE or
+  UPDATE expression caused the expression not to be saved. Fixed.
+
+== Version 3.005 Release Notes ==
+
+This is a minor maintenance release of Rel, an implementation of Date &
+Darwen's "Tutorial D" database language. It makes some improvements to
+the Rel user interface, adds some system relvars, and fixes two bugs.
+
+IMPORTANT NOTE: Once opened with this or later versions of Rel, 
+                databases cannot be read by earlier versions.
+
+The following enhancements have been made:
+
+- The Rel user interface's REAL relvar design view has been
+  aesthetically improved -- the command-line display can be hidden or
+  revealed by clicking a button.
+
+- The Rel user interface's REAL relvar design view now prompts the
+  user if an attempt is made to close a tab without first applying
+  pending changes.
+
+- The Rel user interface now provides user-friendly support for
+  creating external relvars via dialog boxes.
+
+- The Rel DBMS provides a sys.ExternalRelvarTypes relvar that
+  documents the available external relvar types.
+
+- The Rel DBMS provides a sys.Keywords relvar that lists all keywords
+  in the Rel / Tutorial D language grammar.
+
+The following bugs have been fixed:
+
+- Case #135: Rel UI: Special characters now work correctly under
+  Windows.
+
+- Case #136: Rel UI: The command-line entry panel is now always in
+  focus after executing code.
+
+== Version 3.004 Release Notes ==
+
+This is a maintenance release of Rel, an implementation of Date &
+Darwen's "Tutorial D" database language. It fixes some bugs, and
+provides some minor enhancements including a faster GROUP operator,
+the ability to use Unicode character symbols for certain operators,
+and some refinements to the Rel user interface.
+
+The following enhancements have been made:
+
+- Case #133: The Rel command-line's 'Save' operation's default
+  filename and path is now set to the filename and path of the most
+  recent 'Load file' operation.
+
+- !!SP or !!(SP) is now equivalent to IMAGE_IN(SP), and !!(SP, TUP{x
+  1}) is equivalent to IMAGE_IN(SP, TUP {x 1}). This brings Rel into
+  line with Date & Darwen's "Database Explorations" text.
+
+- The following Unicode operator symbols are now supported: 
+  ≤ Less than or equal 
+  ≥ Greater than or equal 
+  ≠ Not equal 
+  × Scalar multiplication 
+  ÷ Scalar division 
+  ‼ Image in (see above) 
+  ⊂ Proper subset 
+  ⊆ Subset 
+  ⊃ Proper superset 
+  ⊇ Superset 
+  ∈ Is element of (alias for IN)
+
+- In the Rel user interface's command-line entry panel (the lower
+  panel of any command-line), a button has been provided to launch a
+  dialog box to facilitate entering the above Unicode operators.
+
+- The GROUP operator is now significantly faster, at the expense of
+  somewhat increased memory consumption.
+
+Note: The Unicode support described above has been found to be buggy
+on (at least) Windows 7 and Windows 10. This will be corrected in a
+future update. It works correctly on OS X and Linux.
+
+The following bugs have been fixed:
+
+- Case #134: In the Rel user interface, the command-line entry panel
+  now consistently focuses on highlighted errors. This makes it
+  possible to immediately type a correction without having to click on
+  the entry panel.
+
+- Due to a bug in the GROUP operator, the following produced an
+  incorrect result:
+
+   RELATION {TUPLE {SID 1, PID 1}, TUPLE {SID 4, PID 5}} GROUP {PID}
+      AS PARTS UNION RELATION {TUPLE {SID 1, PARTS RELATION {TUPLE
+      {PID 1}}}, TUPLE {SID 4, PARTS RELATION {TUPLE {PID 5}}}}
+
+  This has been corrected.
+
+- In the Rel user interface's visual query language, the "View Query"
+  '?' dialog invoked from any query node no longer crashes after
+  changing mode.
+
+- In the Rel user interface, viewing a VIEW or relvar with no
+  attributes no longer crashes.
+
+- In the Rel user interface, the 'Zoom in or out' button in the
+  command-line mode is now positioned correctly in its
+  toolbar. Previously, it was positioned too far to the right.
+
+== Version 3.003 Release Notes ==
+
+This is a maintenance release of Rel, an implementation of Date &
+Darwen's "Tutorial D" database language. The most significant new
+feature is the ability to connect to external CSV files, XLS and XLSX
+spreadsheets, Microsoft Access databases, and JDBC database
+connections, and represent their contents as relation-valued variables
+(aka relvars). Facilities have also been provided to easily export
+relvars and query results as CSV and spreadsheet (XLS or XLSX) files.
+
+IMPORTANT NOTE: Once opened with this or later versions of Rel, 
+                databases cannot be read by earlier versions.
+
+The following enhancements have been made:
+
+- Support for UNORDER() (the inverse of ORDER(), to convert an ARRAY
+  to a RELATION) has been added to the visual query editor in the Rel
+  user interface.
+
+- In the Rel user interface, a "refresh" toolbar item has been added
+  to VIEWs, the same as for VARiables.
+
+- In the Rel user interface, the visual query editor's "View Query"
+  '?' dialog now provides option to emit query text, or VIEW and
+  OPERATOR definitions, directly to command-line. Furthermore, the
+  dialog box is no longer modal; makes it easier to use query
+  definition elsewhere.
+
+- In the Rel user interface's command-line, the initial use of the
+  Save dialog defaults to directory of the most recent Load, if Load
+  used first. Likewise, the initial Load dialog defaults to directory
+  of most recent Save, if Save is used first.
+
+- In the Rel user interface, Variables (relvars), Views, and visual
+  query results may now be exported to CSV text files and XLS/XLSX
+  spreadsheet files.
+
+- In the standalone Rel DBMS, all application .jars have been moved to
+  the /lib subdirectory.
+
+- Support for accessing CSV files, XLS/XLSX spreadsheet files,
+  Microsoft Access databases, and JDBC databases for various popular
+  DBMSs, and representing their contents as relation-valued variables
+  (relvars) is now built-in.
+
+ External relvars are of the form: 
+
+ VAR <varname> EXTERNAL <kind> <connection_string> [ DUP_REMOVE |
+      DUP_COUNT | AUTOKEY ];
+
+   <kind> is the kind of external relvar. Built-in are CSV, XLS, JDBC
+      and ACCDB. Additional kinds, and JDBC drivers, can be put in the
+      Extensions directory of a Rel database, but are only recognised
+      by the standalone RelDBMS.
+
+   <connection_string> is a CHAR specific to the kind of external
+      relvar.
+
+   DUP_REMOVE silently removes duplicate tuples.
+
+   DUP_COUNT adds an INTEGER attribute named _DUP_COUNT that indicates
+      a count of duplicate tuples.
+      
+   AUTOKEY adds an INTEGER attribute named _AUTOKEY that is serially
+      numbered. In the absence of DUP_REMOVE, DUP_COUNT, or AUTOKEY,
+      the default is AUTOKEY.
+
+ Examples: 
+
+  VAR myvar EXTERNAL CSV "/home/dave/test.csv";
+
+  VAR myvar EXTERNAL CSV "/home/dave/test.csv,HOHEADING" DUP_REMOVE;
+
+  VAR myvar EXTERNAL XLS "/home/dave/test.xls" DUP_REMOVE;
+
+  VAR myvar EXTERNAL XLS "/home/dave/test.xlsx" DUP_COUNT;
+
+  VAR myvar EXTERNAL XLS "/home/dave/test.xlsx,1" DUP_COUNT;
+
+  VAR myvar EXTERNAL XLS "/home/dave/test.xls,2,NOHEADING" DUP_REMOVE;
+
+  VAR myvar EXTERNAL JDBC
+      "jdbc:postgresql://localhost/database,sqluser,sqluserpw,MyTable"
+      AUTOKEY;
+
+  VAR myvar EXTERNAL ACCDB "c:\\users\\me\\mydb.accdb,mytable";
+
+  VAR myvar EXTERNAL ACCDB "c:\\users\\me\\mydb.accdb,mytable"
+      DUP_REMOVE;
+
+ NOTE: In the XLS connection string, the number after the optional ','
+       indicates the zero-based tab number.
+
+ NOTE: In the XLS & CSV connection string, NOHEADING indicates that
+       the spreadsheet does not have a heading row.
+
+ Built-in JDBC support is provided for MySQL, MariaDB, PostgreSQL,
+ Oracle Database and Microsoft SQL Server. E.g.:
+
+  VAR myvar EXTERNAL JDBC
+      "jdbc:mysql://localhost/database,sqluser,sqluserpw,MyTable";
+
+  VAR myvar EXTERNAL JDBC
+      "jdbc:mariadb://localhost/database,sqluser,sqluserpw,MyTable";
+      
+  VAR myvar EXTERNAL JDBC
+      "jdbc:postgresql://localhost/database,sqluser,sqluserpw,MyTable";
+      
+  VAR myvar EXTERNAL JDBC
+      "jdbc:oracle:thin:@localhost:1521:database,sqluser,sqluserpw,MyTable";
+      
+  VAR myvar EXTERNAL JDBC
+      "jdbc:sqlserver://localhost:1433;databaseName=db,user,userpw,MyTable";
+
+The following bugs have been fixed:
+
+- In the Rel user interface, spaces in application path caused
+  external Java-based operator compilation to fail. Fixed.
+
+- In the Rel user interface, the "Get File Path" button now correctly
+  returns backslashes in file path as '\\'.
+  
+- In the Rel user interface, failing to open a database could allow
+  all database tabs to be closed, which left the Rel UI in an unstable
+  state. Fixed.
+
+== Version 3.002 Release Notes ==
+
+This is a minor maintenance release of Rel, an implementation of Date
+& Darwen's "Tutorial D" database language.
+
+The following enhancements have been made:
+
+- The Rel user interface can now load a specified database from the
+  operating system command-line. E.g.: 
+  	    Rel "c:\Users\Dave\My Database"
+
+- The Rel user interface now provides an option to specify that the
+  user's default database should not be automatically displayed in a
+  tab when the Rel user interface is launched. See Preferences |
+  General | Do not automatically load user's default database.
+
+The following bugs have been fixed:
+
+- If the database path contained spaces, it would cause Java-based
+  operators to fail to compile when being defined. This has been
+  fixed.
+
+- Opening a new database tab would sometimes hide the mode
+  (Rel/Rev/Cmd) buttons. This has been fixed.
+
+- Under Windows, double-clicking on an *.rdb or *.rel file in the file
+  explorer failed to start up Rel and load the specified database or
+  file despite specifying appropriate file associations. This has been
+  fixed.  Note that file associations must be set via the operating
+  system.
+
+== Version 3.001 Release Notes ==
+
+This is a minor maintenance release of Rel, an implementation of Date
+& Darwen's "Tutorial D" database language.
+
+The following enhancements have been made:
+
+- A startup progress bar displays whilst the Rel user interface is
+  loading. On slow machines, this makes it clear that loading is
+  progressing and not stuck.
+
+- More detailed crash reporting has been implemented, to help the
+  development team find and fix bugs.
+
+- An ATTRIBUTES_OF(r) pseudo-operator has been provided. It may be
+  used anywhere a comma-separated list of attributes can appear.
+  E.g., WITH (t := TUPLE {STATUS 20}): (S JOIN RELATION {t})
+  {ATTRIBUTES_OF(t)} or WITH (t := TUPLE {STATUS 20}): (S JOIN
+  RELATION {t}) {ALL BUT ATTRIBUTES_OF(t)}
+
+The following bugs have been fixed:
+
+- In the Rel user interface, a crash occurred in Windows when showing
+  row/tuple delete confirmation. This has been fixed.
+
+- Case #94: org.reldb.rel.v0.languages.tutoriald.parser.TokenMgrError
+  should have been ExceptionSemantic, not ExceptionFatal.
+
+- Case #113 - #118: A crash in the Rel UI when editing a relvar with
+  no attributes has been fixed.
+
+- Case ID #119: VAR test BASE RELATION {x INTEGER, y INTEGER} INIT
+  (TUPLE {x 10, y 20}) KEY {}; threw a fatal exception that should
+  have been a semantic exception. This has been fixed.
+
+== Version 3.000 Release Notes ==
+
+This is a major release of Rel, an implementation of Date & Darwen's
+"Tutorial D" database language. It introduces a new graphical "front
+end" user interface that provides rich desktop database management
+functionality and a native look-and-feel on Windows, Mac OS X, and
+Linux. It is the starting point for what will be a significant focus
+on friendly, end-user oriented functionality in forthcoming releases.
+
+As part of this release, the version numbering system has changed. The
+entire Rel release, including the standalone DBMS and the
+user-interface, is version 3.000. The standalone DBMS carries on the
+Rel version numbering from before; the last release was version 1.0.12
+so the standalone DBMS is now version 1.0.13.
+
+Rel now runs under Java 8. Running a standalone Rel DBMS requires that
+it be installed, but a typical Rel distribution including the user
+interface bundles a Java runtime, so it's usually not necessary to
+download Java separately.
+
+The source code is now available on GitHub under
+https://github.com/DaveVoorhis/Rel and is easily loaded into the
+Eclipse IDE to facilitate further development.
+
+Major features of the new user interface include:
+
+1. Displaying, editing, and designing relation-valued variables,
+operators, constraints, types, queries (expressions), and other
+database objects can now be done via a graphical interface, in
+addition to the traditional command-line.
+
+2. Code entry is now enhanced with syntax highlighting, find/replace,
+undo/redo, persistent edit history, and "zoom" buttons to maximize the
+input or output display. Rel scripts may be saved in and retrieved
+from the database.
+
+3. A graphical query language called Rev, based on a data-flow
+metaphor, is fully integrated and generates Tutorial D / Rel code.
+
+4. The backup facility is now fully integrated. Database backups can
+be made at the click of a button and do not rely on an external
+script.
+
+5. The default database is created in the user's home directory,
+rather than inside the Rel program folder or directory. Other
+databases can be easily loaded from the user interface and multiple
+local and remote databases can be used simultaneously.
+
+Significant enhancements have also been made to the Rel implementation
+of the Tutorial D database language:
+
+1. TUPLE {*} now returns the "current tuple" in any open
+expression. TUPLE {*} is equivalent to TUPLE {A1 A1, ..., AAn}, where
+A1, ..., An are the attributes of an implied relation such as the
+relation operand to an invocation of WHERE or EXTEND.  The keyword
+TUPLE can be abbreviated to TUP, as in other places where it appears
+in the language.
+
+2. IMAGE_IN(r, t) where r is a relation and t is a tuple, is
+equivalent to (r JOIN RELATION {t}) {ALL BUT A1, ..., An}, where A1,
+..., An are the attributes of t. The tuple operand to IMAGE_IN may be
+omitted, defaulting to TUPLE {*}. Thus, IMAGE_IN(r) is equivalent to
+!!r as proposed in Date & Darwen's Database Explorations, Chapter 14.
+
+3. ARRAY TUPLE {...} is now a valid parameter type.
+
+4. User-defined aggregate operators are now supported, as described in
+http://reldb.org/c/wp-content/uploads/2016/06/User-Defined-Aggregate-Operators-in-Tutorial-D-and-Rel.pdf
+
+5. Altering relvar definitions is now supported via:
+   ALTER VAR <relvar> TYPE_OF <attrname> TO <newattrtype>
+   ALTER VAR <relvar> RENAME <oldattrname> AS <newattrname>
+   ALTER VAR <relvar> INSERT <newattrname> <newattrtype>
+   ALTER VAR <relvar> DROP <attrname>  
+   ALTER VAR <relvar> KEY {<keyspec>} [... KEY {<keyspec>}] (must be last)
+
+6. All data definition statements are now logged in sys.DefinitionHistory.
+
+7. SET_UNIQUE_NUMBER(INT) built-in operator has been provided and is
+used in the DatabaseToScript.rel script.
+
+8. IF, CASE, DO, WHILE, FOR and OPERATOR definitions now support
+multiple statements without requiring BEGIN .. END blocks.
+
+9. Keywords IF, CASE, DO, WHILE, FOR and OPERATOR are now optional
+after the END that closes a block.
+
+10. POSSREP component definitions may now be surrounded with "( ... )"
+(preferred) or "{ ... }" (deprecated).
+
+11. Updated storage engine to Oracle Berkeley DB JE version 7.0.6
+  
+12. External Java compilation is now fully integrated; a JDK is no
+longer required.
+
+13. System startup announcement now provides more information about
+the runtime platform.
+
+14. Removed octal and hex integer representations, as these were a
+source of confusion.
+
+15. Empty EXTEND, e.g., EXTEND S: {}, is now permitted.
+
+16. Empty UPDATE, e.g., UPDATE S: {}, is now permitted.
+
+17. Added a sequence generator built-in operator:
+OPERATOR SEQUENCE(first INT, last INT, step INT) RELATION {n INT};
+OPERATOR SEQUENCE(first INT, last INT) RELATION {n INT};
+
+18. TYPE_OF(e) pseudo-operator returns type metadata about any
+expression using new built-in types TypeInfo, Scalar and NonScalar.
+
+19. The sys.Catalog relvar now provides Attributes and Keys metadata.
+
+20. Relvar update notices can be turned off with 
+SET VerboseRelvarUpdates Off.
+
+21. All relations are now emitted with their heading. This improves
+readability & parse-ability.
+
+22. A modulo operator (%) is now built-in. E.g., 3 % 4 is a valid
+expression.
+
+23. A bug has been fixed: UNION (RELATION {x RELATION {y INT}} {}, x)
+returned an error. It should have returned RELATION {y INT}} {}. The
+same applies to D_UNION and XUNION. This has been corrected.
+
+For more information or to download Rel, go to http://reldb.org
