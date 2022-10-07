@@ -18,9 +18,9 @@ https://forum.thethirdmanifesto.com
 
 ## To Contribute to _Rel_ Development
 
-1. Install a Java 19 JDK from (for example) https://jdk.java.net
-2. Install Maven, if you don't have it already.
+1. Install a Java 11 or higher JDK from (for example) https://jdk.java.net
+2. Install Maven (https://maven.apache.org/install.html) if you don't have it already.
 3. Clone the *Rel* project from GitHub at https://github.com/DaveVoorhis/Rel
 4. Build the *Rel* project with ```mvn clean install```
-5. Run DBrowser in the DBrowser subproject to launch the *Rel* graphical user interface.
+5. Run DBrowser in the DBrowser subproject to launch the *Rel* graphical user interface. On MacOS, add `-XstartOnFirstThread` to the Java VM launch.
 6. Submit a pull request when you've done something good.
