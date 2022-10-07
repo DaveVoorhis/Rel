@@ -7,7 +7,7 @@ package org.reldb.rel.v0.version;
  */
 public class Version {
    
-    private static final double PRODUCT_VERSION = 3.016;
+    private static final double PRODUCT_VERSION = 3.017;
     private static final int DATABASE_VERSION = 0;
 
 	public final static String expectedBerkeleyDBVersion = "18.3.12";

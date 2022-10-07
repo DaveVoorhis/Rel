@@ -3,7 +3,7 @@
 
     <groupId>org.reldb.rel</groupId>
     <artifactId>rel</artifactId>
-    <version>3.016</version>
+    <version>3.017</version>
     <name>Rel</name>
     <description>Rel: An implementation of Tutorial D.</description>
     <packaging>pom</packaging>

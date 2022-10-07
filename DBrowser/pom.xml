@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.reldb.rel</groupId>
         <artifactId>rel</artifactId>
-        <version>3.016</version>
+        <version>3.017</version>
     </parent>
 
     <artifactId>org.reldb.rel.dbrowser</artifactId>
@@ -17,22 +17,22 @@
         <dependency>
             <groupId>org.reldb.rel</groupId>
             <artifactId>org.reldb.rel.shared</artifactId>
-            <version>3.016</version>
+            <version>3.017</version>
         </dependency>
         <dependency>
             <groupId>org.reldb.rel</groupId>
             <artifactId>org.reldb.rel.server</artifactId>
-            <version>3.016</version>
+            <version>3.017</version>
         </dependency>
         <dependency>
             <groupId>org.reldb.rel</groupId>
             <artifactId>org.reldb.rel.serverv0000</artifactId>
-            <version>3.016</version>
+            <version>3.017</version>
         </dependency>
         <dependency>
             <groupId>org.reldb.rel</groupId>
             <artifactId>org.reldb.rel.client</artifactId>
-            <version>3.016</version>
+            <version>3.017</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.jface -->
         <dependency>
@@ -66,7 +66,7 @@
                 <dependency>
                     <groupId>org.reldb.rel</groupId>
                     <artifactId>org.reldb.rel.swt_win</artifactId>
-                    <version>3.016</version>
+                    <version>3.017</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -81,7 +81,7 @@
                 <dependency>
                     <groupId>org.reldb.rel</groupId>
                     <artifactId>org.reldb.rel.swt_macos</artifactId>
-                    <version>3.016</version>
+                    <version>3.017</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -97,7 +97,7 @@
                 <dependency>
                     <groupId>org.reldb.rel</groupId>
                     <artifactId>org.reldb.rel.swt_linux</artifactId>
-                    <version>3.016</version>
+                    <version>3.017</version>
                 </dependency>
             </dependencies>
         </profile>

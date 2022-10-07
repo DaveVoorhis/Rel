@@ -1,6 +1,6 @@
 #!/bin/bash
 
-newVersion=3.016
+newVersion=3.017
 
 versionfile=../DBrowser/src/main/java/org/reldb/dbrowser/ui/version/Version.java
 dbmsversionfile=../ServerV0000/src/main/java/org/reldb/rel/v0/version/Version.java
