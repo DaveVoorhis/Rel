@@ -14,6 +14,9 @@ backup facility, and changes the schema of the sys.Version relvar.
   attributes: db_version for the database format, and
   product_version for the release version.
 
+- Enhancement: Spelling changed from 'updateable' to 'updatable' in
+  error messages where it appears, to be consistent with typical use.
+
 == Version 3.015 Release Notes ==
 
 This release of Rel, an implementation of Date & Darwen's "Tutorial D"
