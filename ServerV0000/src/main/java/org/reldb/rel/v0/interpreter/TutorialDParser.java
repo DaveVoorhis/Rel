@@ -2400,7 +2400,7 @@ public class TutorialDParser implements TutorialDVisitor {
 			if (!reference.getType().canAccept(expressionType))
 				throw new ExceptionSemantic("RS0153: Cannot assign " + expressionType + " to '" + refName + "' which is a " + reference.getType());
 			if (reference.isParameter())
-				throw new ExceptionSemantic("RS0403: Parameter is not updateable.");			
+				throw new ExceptionSemantic("RS0403: Parameter is not updatable.");			
 			generator.compileReformat(reference.getType(), expressionType);
 			generator.compileSet(reference);
 		}
@@ -2474,7 +2474,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		String identifier = getTokenOfChild(node, 0);
 		Slot slot = generator.findReference(identifier);
 		if (slot.isParameter())
-			throw new ExceptionSemantic("RS0404: Parameter is not updateable.");
+			throw new ExceptionSemantic("RS0404: Parameter is not updatable.");
 		Type slotType = slot.getType();
 		if (slotType instanceof TypeTuple) {
 			if (getChildCountOfChild(node, 1) > 0)
@@ -2518,7 +2518,7 @@ public class TutorialDParser implements TutorialDVisitor {
 		String identifier = getTokenOfChild(node, 0);
 		Slot slot = generator.findReference(identifier);
 		if (slot.isParameter())
-			throw new ExceptionSemantic("RS0405: Parameter is not updateable.");
+			throw new ExceptionSemantic("RS0405: Parameter is not updatable.");
 		Type slotType = slot.getType();
 		if (slotType instanceof TypeRelation) {
 			// is a parameter present?

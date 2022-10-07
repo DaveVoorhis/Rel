@@ -1218,21 +1218,21 @@ public class Generator {
 
 	public void compileRelvarInsert(Slot slot, String relvarName, TypeRelation expressionType) {
 		if (slot.isParameter())
-			throw new ExceptionSemantic("RS0397: Parameter is not updateable.");
+			throw new ExceptionSemantic("RS0397: Parameter is not updatable.");
 		slot.compileGet(this);
 		compileInstruction(new OpRelvarInsert());
 	}
 
 	public void compileRelvarInsertNoDuplicates(Slot slot, String relvarName, TypeRelation expressionType) {
 		if (slot.isParameter())
-			throw new ExceptionSemantic("RS0398: Parameter is not updateable.");
+			throw new ExceptionSemantic("RS0398: Parameter is not updatable.");
 		slot.compileGet(this);
 		compileInstruction(new OpRelvarInsertNoDuplicates());
 	}
 
 	public void compileRelvarPurge(Slot slot, String relvarName) {
 		if (slot.isParameter())
-			throw new ExceptionSemantic("RS0399: Parameter is not updateable.");
+			throw new ExceptionSemantic("RS0399: Parameter is not updatable.");
 		slot.compileGet(this);
 		compileInstruction(new OpRelvarPurge());
 	}
@@ -1395,7 +1395,7 @@ public class Generator {
 						"RS0059: Expected a relation-valued variable or attribute in DELETE but got "
 								+ reference.getType());
 			if (reference.isParameter())
-				throw new ExceptionSemantic("RS0400: Parameter is not updateable.");
+				throw new ExceptionSemantic("RS0400: Parameter is not updatable.");
 			operandType = operand;
 			whereOperator = null;
 		}
@@ -1432,7 +1432,7 @@ public class Generator {
 
 	public void compileRelvarIDelete(Slot slot, String identifier) {
 		if (slot.isParameter())
-			throw new ExceptionSemantic("RS0401: Parameter is not updateable.");
+			throw new ExceptionSemantic("RS0401: Parameter is not updatable.");
 		slot.compileGet(Generator.this);
 		compileInstruction(new OpRelvarIDelete());
 	}
@@ -1457,7 +1457,7 @@ public class Generator {
 						"RS0061: Expected a relation-valued variable or attribute in UPDATE ... WHERE but got "
 								+ reference.getType());
 			if (reference.isParameter())
-				throw new ExceptionSemantic("RS0402: Parameter is not updateable.");
+				throw new ExceptionSemantic("RS0402: Parameter is not updatable.");
 			sourceTupleType = new TypeTuple(sourceType.getHeading());
 		}
 

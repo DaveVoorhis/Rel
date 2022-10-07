@@ -76,7 +76,7 @@ public class RelvarVirtual extends RelvarGlobal {
 	}
 	
 	private void noUpdates() {
-		throw new ExceptionSemantic("RS0231: VIRTUAL relation-valued variables are not yet updateable.");
+		throw new ExceptionSemantic("RS0231: VIRTUAL relation-valued variables are not yet updatable.");
 	}
 	
 	public void setValue(ValueRelation relation) {
