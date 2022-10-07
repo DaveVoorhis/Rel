@@ -22,5 +22,5 @@ https://forum.thethirdmanifesto.com
 2. Install Maven (https://maven.apache.org/install.html) if you don't have it already.
 3. Clone the *Rel* project from GitHub at https://github.com/DaveVoorhis/Rel
 4. Build the *Rel* project with ```mvn clean install```
-5. Run DBrowser in the DBrowser subproject to launch the *Rel* graphical user interface. On MacOS, add `-XstartOnFirstThread` to the Java VM launch.
+5. Run DBrowser in the DBrowser subproject to launch the *Rel* graphical user interface. On MacOS, you need to add `-XstartOnFirstThread` to the Java VM launch.
 6. Submit a pull request when you've done something good.
