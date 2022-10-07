@@ -206,7 +206,7 @@ public class RelDatabase {
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter(getVersionFileName(), false);
-			writer.write(Integer.toString(Version.getDatabaseVersion()));
+			writer.write(Integer.toString(Version.getDatabaseFormatVersion()));
 		} finally {
 			if (writer != null)
 				writer.close();
@@ -275,11 +275,11 @@ public class RelDatabase {
 			if (detectedVersion < 0) {
 				throw new ExceptionSemantic("RS0407: Database in " + homeDir
 						+ " has no version information, or it's invalid.  The database must be upgraded manually.\nBack it up with the version of Rel used to create it and load the backup into a new database.");
-			} else if (detectedVersion < Version.getDatabaseVersion()) {
+			} else if (detectedVersion < Version.getDatabaseFormatVersion()) {
 				String msg = "RS0410: Database requires conversion from format v" + detectedVersion + " to format v"
-						+ Version.getDatabaseVersion();
+						+ Version.getDatabaseFormatVersion();
 				throw new DatabaseFormatVersionException(msg, detectedVersion);
-			} else if (detectedVersion > Version.getDatabaseVersion()) {
+			} else if (detectedVersion > Version.getDatabaseFormatVersion()) {
 				throw new ExceptionSemantic("RS0409: Database in " + homeDir
 						+ " appears to have been created by a newer version of Rel than this one.\nOpen it with the latest version of Rel.");
 			}
@@ -398,6 +398,28 @@ public class RelDatabase {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
+
+			// Check and update sys.Version relvar format if needed
+			var relvarVersionName = Catalog.relvarVersion;
+			try {
+				(new TransactionRunner() {
+					public Object run(Transaction txn) throws Throwable {
+						var metadata = getRelvarMetadata(txn, relvarVersionName);
+						var headingDefinition = metadata.getHeadingDefinition(RelDatabase.this);
+						var heading = headingDefinition.getHeading();
+						var minorAttributeFromOldVersion = heading.getAttribute("minor");
+						if (minorAttributeFromOldVersion != null) {
+							System.out.println("Migrating to new " + relvarVersionName + " format.");
+							dropRelvarMetadata(txn, relvarVersionName);
+							putRelvarMetadata(txn, relvarVersionName, new RelvarVersionMetadata(RelDatabase.this));
+							System.out.println("Migrated to new " + relvarVersionName + " format.");
+						}
+						return null;
+					}
+				}).execute(this);
+			} catch (Throwable e) {
+				System.out.println("WARNING: Unable to migrate " + relvarVersionName + " due to " + e);
+			}
 
 			// Prepare for battle.
 			reset();

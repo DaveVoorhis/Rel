@@ -19,7 +19,6 @@ import org.reldb.rel.shared.Defaults;
 import org.reldb.rel.v0.server.Server;
 import org.reldb.rel.v0.version.Version;
 import org.reldb.rel.v0.storage.RelDatabase;
-import org.reldb.rel.v0.interpreter.Instance;
 
 /** A self-contained instance of the Rel system. */
 public class Instance {
@@ -39,11 +38,11 @@ public class Instance {
 	
 	public void announceActive(PrintStream output) {
 		output.println(Version.getCopyright());
-		output.println("Rel is running on " + localHostName);
+		output.println("Rel version " + Version.getVersion() + " is running on " + localHostName);
 		output.println("using " + System.getProperty("java.vendor") + "'s Java version " + System.getProperty("java.version") + " from " + System.getProperty("java.vendor.url"));
 		output.println("at " + System.getProperty("java.home"));
 		output.println("on " + System.getProperty("os.name") + " version " + System.getProperty("os.version") + " for " + System.getProperty("os.arch"));
-		output.println("with database format v" + Version.getDatabaseVersion() + ".");
+		output.println("with database format v" + Version.getDatabaseFormatVersion() + ".");
 		output.println("Persistence is provided by " + database.getNativeDBVersion());
 		output.println(Version.getLicense());
 		output.println("Ok.");
@@ -133,7 +132,7 @@ public class Instance {
 		if (oldVersion == -1)
 			throw new DatabaseFormatVersionException("RS0415: Database is already the latest format.");
 		try {
-			String launchMsg = "Database conversion from format v" + oldVersion + " to v" + Version.getDatabaseVersion() + " launched...";
+			String launchMsg = "Database conversion from format v" + oldVersion + " to v" + Version.getDatabaseFormatVersion() + " launched...";
 			conversionOutput.println(launchMsg);
 			// Load detected version's .jar file (should already be done externally if run as Eclipse RCP app.)
 //			ClassPathHack.addFile("lib/" + Version.getCoreJarFilename(oldVersion));

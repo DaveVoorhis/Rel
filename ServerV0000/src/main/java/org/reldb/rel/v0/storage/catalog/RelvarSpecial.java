@@ -44,7 +44,7 @@ public abstract class RelvarSpecial extends RelvarGlobal {
 	public abstract TupleIterator iterator(Generator generator);
 	
 	private void noUpdates() {
-		throw new ExceptionSemantic("RS0203: The " + getName() + " relvar is not updateable.");		
+		throw new ExceptionSemantic("RS0203: The " + getName() + " relvar is not updatable.");
 	}
 	
 	public void setValue(ValueRelation relation) {

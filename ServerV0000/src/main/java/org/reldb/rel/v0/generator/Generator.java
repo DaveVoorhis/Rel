@@ -413,7 +413,7 @@ public class Generator {
 		if (relvarsInProgress.containsKey(varname) || database.isRelvarExists(varname))
 			throw new ExceptionSemantic("RS0025: " + varname + " already exists.");
 
-		String className = "org.reldb.rel.v" + Version.getDatabaseVersion() + ".storage.relvars.external."
+		String className = "org.reldb.rel.v" + Version.getDatabaseFormatVersion() + ".storage.relvars.external."
 				+ externalRelvarType.toLowerCase() + ".Relvar" + externalRelvarType.toUpperCase() + "Metadata";
 		Class<?> clazz;
 		try {

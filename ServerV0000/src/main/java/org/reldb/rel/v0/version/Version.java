@@ -7,23 +7,20 @@ package org.reldb.rel.v0.version;
  */
 public class Version {
    
-    private static final int PRODUCT_VERSION = 1;
+    private static final double PRODUCT_VERSION = 3.016;
     private static final int DATABASE_VERSION = 0;
-    private static final int REVISION = 29;
-    private static final String RELEASE = "Beta";
-    
+
 	public final static String expectedBerkeleyDBVersion = "18.3.12";
     
     /** No instances. */
     private Version() {}
     
-    /** Get major version number. Changes to this mean a whole new product series. */
-    public static int getProductVersion() {
+    public static double getProductVersion() {
         return PRODUCT_VERSION;
     }
     
-    /** Get minor version number. Changes to this mean databases are not compatible. This serves as the database format version number. */
-    public static int getDatabaseVersion() {
+    /** Get database version number. Changes to this mean databases are not compatible. */
+    public static int getDatabaseFormatVersion() {
         return DATABASE_VERSION;
     }
 
@@ -34,32 +31,17 @@ public class Version {
     
     /** Name of the jar file that contains this class. */
 	public static String getCoreJarFilename() {
-		return getCoreJarFilename(getDatabaseVersion());
+		return getCoreJarFilename(getDatabaseFormatVersion());
 	}
 
 	/** Name of the jar file that contains the Berkeley Java DB. */
 	public static String getBerkeleyDbJarFilename() {
 		return "je-" + expectedBerkeleyDBVersion + ".jar";
 	}
-	
-    /** Get revision number. Changes to this mean bug fixes and enhancements. */
-    public static int getRevision() {
-        return REVISION;
-    }
-    
-    /** Get release type. */
-    public static String getRelease() {
-        return RELEASE;
-    }
-    
-    /** Get numeric version string, without release. */
-    public static String getNumericVersion() {
-    	return getProductVersion() + "." + getDatabaseVersion() + "." + getRevision();
-    }
-    
+
     /** Get version string. */
     public static String getVersion() {
-        return getNumericVersion() + " " + getRelease();
+        return String.valueOf(getProductVersion());
     }
     
     /** Get copyright string. */

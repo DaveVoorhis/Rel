@@ -2,10 +2,17 @@
 
 This release of Rel, an implementation of Date & Darwen's "Tutorial D"
 database language, fixes a bug that prevented the Rel DBMS 'BACKUP'
-command working, and thus prevented correct operation of DBRowser's
-backup facility.
+command working and thus prevented correct operation of DBRowser's
+backup facility, and changes the schema of the sys.Version relvar.
 
-This has been corrected, so backups should now work.
+- Fix: Reorganisation of the Rel build infrastructure inadvertently
+  made the internal backup script inaccessible. This has been corrected,
+  so backups -- whether via DBrowser or BACKUP command -- should now work.
+
+- Enhancement: The format of the sys.Version relvar has been simplified
+  to remove the multiple version attributes and replace them with two
+  attributes: db_version for the database format, and
+  product_version for the release version.
 
 == Version 3.015 Release Notes ==
 

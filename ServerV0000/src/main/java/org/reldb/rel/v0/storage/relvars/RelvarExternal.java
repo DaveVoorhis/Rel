@@ -27,7 +27,7 @@ public class RelvarExternal extends RelvarGlobal {
 		String tableName = metadata.tableClassName();
 		String type = metadata.getType();
 		try {
-			table = (TableCustom)Class.forName("org.reldb.rel.v" + Version.getDatabaseVersion() + ".storage.relvars.external." + type.toLowerCase() + "." + tableName).getConstructors()[0].newInstance(name, metadata, generator, duplicates);
+			table = (TableCustom)Class.forName("org.reldb.rel.v" + Version.getDatabaseFormatVersion() + ".storage.relvars.external." + type.toLowerCase() + "." + tableName).getConstructors()[0].newInstance(name, metadata, generator, duplicates);
 		} catch (ClassNotFoundException e) {
 			throw new ExceptionSemantic("RS0223: VAR " + name + " of type " + type + " could not be found");
 		} catch (ClassCastException e) {

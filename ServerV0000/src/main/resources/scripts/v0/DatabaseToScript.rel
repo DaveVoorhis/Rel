@@ -1,9 +1,9 @@
-VAR scriptVersion INIT("0.3.7");
+VAR scriptVersion INIT("0.3.8");
 
 WRITELN "/*** Rel Database Backup ***/";
 WRITELN;
 
-WRITELN "// Created in Rel Version " || (ver FROM TUPLE FROM (EXTEND sys.Version : {ver := major || "." || minor || "." || revision || " " || release}));
+WRITELN "// Created in Rel Version " || (ver FROM TUPLE FROM (EXTEND sys.Version : {ver := product_version || "." || db_version}));
 WRITELN "// Using DatabaseToScript version " || scriptVersion;
 WRITELN;
 

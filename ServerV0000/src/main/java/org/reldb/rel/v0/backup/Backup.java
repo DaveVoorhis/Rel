@@ -15,7 +15,7 @@ public class Backup {
 	public static String obtainBackupScript(RelDatabase database) {
 		try {
 			var loader = database.getClass().getClassLoader();
-			var scriptLocation = "scripts/v" + Version.getDatabaseVersion() + "/DatabaseToScript.rel";
+			var scriptLocation = "scripts/v" + Version.getDatabaseFormatVersion() + "/DatabaseToScript.rel";
 			try (var backupScriptStream = loader.getResourceAsStream(scriptLocation)) {
 				if (backupScriptStream == null) {
 					throw new ExceptionFatal("RS0414: Unable to find backup script at " + scriptLocation);

@@ -24,16 +24,12 @@ public class RelvarVersion extends RelvarSpecial {
 			}
 			public ValueTuple next() {
 				try {
-					Value rawTuple[] = new Value[] {
-						ValueInteger.select(generator, Version.getDatabaseVersion()),
-						ValueInteger.select(generator, Version.getProductVersion()),
-						ValueInteger.select(generator, Version.getRevision()),
+					Value[] rawTuple = new Value[] {
+						ValueInteger.select(generator, Version.getDatabaseFormatVersion()),
+						ValueRational.select(generator, Version.getProductVersion()),
 						ValueCharacter.select(generator, Version.getCopyright()),
 						ValueCharacter.select(generator, Version.getLicense()),
-						ValueCharacter.select(generator, Version.getNumericVersion()),
 						ValueCharacter.select(generator, Version.getRedistribution()),
-						ValueCharacter.select(generator, Version.getRelease()),
-						ValueCharacter.select(generator, Version.getVersion()),
 						ValueCharacter.select(generator, Version.getWarranty())
 					};
 					return new ValueTuple(generator, rawTuple);
