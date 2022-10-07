@@ -1,6 +1,9 @@
 Last used Exception* number: RS0509
 
-Version 3.016 (1.0.29):
+Version 3.017:
+
+
+Version 3.016:
 
   - Fix: Case #320: DBrowser's built-in backup crashed, due to the Rel
     DBMS 'BACKUP' command failing to find the backup generation script. Fixed.
