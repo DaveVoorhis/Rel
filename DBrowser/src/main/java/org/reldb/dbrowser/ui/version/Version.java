@@ -1,9 +1,11 @@
 package org.reldb.dbrowser.ui.version;
 
+import static org.reldb.rel.shared.Version.*;
+
 public class Version {
 	
 	public static double getVersionNumber() {
-		return 3.017;
+		return PRODUCT_VERSION;
 	}
 	
 	public static String getVersion() {
@@ -11,11 +13,11 @@ public class Version {
 	}
 
 	public static String getCopyright() {
-		return "Copyright © 2004 - 2022 Dave Voorhis";
+		return COPYRIGHT;
 	}
 	
 	public static String getURL() {
-		return "https://reldb.org";
+		return HOMEPAGE;
 	}
 	
 	public static String getPreferencesRepositoryName() {
@@ -31,7 +33,7 @@ public class Version {
 	}
 
 	public static String getAppName() {
-		return "Rel";
+		return APPNAME;
 	}
 
 	public static String getAppID() {

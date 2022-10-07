@@ -1,5 +1,7 @@
 package org.reldb.rel.v0.version;
 
+import static org.reldb.rel.shared.Version.*;
+
 /**
  * Version, copyright, and license information.
  *
@@ -7,7 +9,6 @@ package org.reldb.rel.v0.version;
  */
 public class Version {
    
-    private static final double PRODUCT_VERSION = 3.017;
     private static final int DATABASE_VERSION = 0;
 
 	public final static String expectedBerkeleyDBVersion = "18.3.12";
@@ -46,15 +47,15 @@ public class Version {
     
     /** Get copyright string. */
     public static String getCopyright() {
-        return "Rel DBMS version " + getVersion() + "\n" +
-            "Copyright © 2004 - 2022 Dave Voorhis\n" +
+        return APPNAME + " DBMS version " + getVersion() + "\n" +
+            COPYRIGHT + "\n" +
             "All Rights Reserved\n" +
-            "For further information, please see https://reldb.org";
+            "For further information, please see " + HOMEPAGE;
     }
     
     /** Get in-software license information. */
     public static String getLicense() {
-        return "Rel comes with ABSOLUTELY NO WARRANTY; for details, type:\n" +
+        return APPNAME + " comes with ABSOLUTELY NO WARRANTY; for details, type:\n" +
                "\twarranty FROM TUPLE FROM sys.Version\n" + 
                "This is free software, and you are welcome to redistribute it\n" + 
                "under certain conditions.\n" +
@@ -66,28 +67,28 @@ public class Version {
     
     /** Get in-software warranty information. */
     public static String getWarranty() {
-        return "BECAUSE REL IS LICENSED FREE OF CHARGE," + "\n" +
-               "THERE IS NO WARRANTY FOR REL, TO THE EXTENT" + "\n" +
+        return "BECAUSE " + APPNAME + " IS LICENSED FREE OF CHARGE," + "\n" +
+               "THERE IS NO WARRANTY FOR " + APPNAME + ", TO THE EXTENT" + "\n" +
                "PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE" + "\n" +
                "STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER" + "\n" +
-               "PARTIES PROVIDE REL 'AS IS' WITHOUT WARRANTY" + "\n" +
+               "PARTIES PROVIDE " + APPNAME + " 'AS IS' WITHOUT WARRANTY" + "\n" +
                "OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING," + "\n" +
                "BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF" + "\n" +
                "MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE." + "\n" +
                "THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE" + "\n" +
-               "PROGRAM IS WITH YOU. SHOULD REL PROVE DEFECTIVE," + "\n" +
+               "PROGRAM IS WITH YOU. SHOULD " + APPNAME + " PROVE DEFECTIVE," + "\n" +
                "YOU ASSUME THE COST OF ALL NECESSARY SERVICING," + "\n" +
                "REPAIR OR CORRECTION." + "\n" + "\n" +
                "IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR" + "\n" +
                "AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER," + "\n" +
                "OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE" + "\n" +
-               "REL AS PERMITTED ABOVE, BE LIABLE TO YOU FOR" + "\n" +
+               APPNAME + " AS PERMITTED ABOVE, BE LIABLE TO YOU FOR" + "\n" +
                "DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL" + "\n" +
                "OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE" + "\n" +
-               "OR INABILITY TO USE REL (INCLUDING BUT NOT" + "\n" +
+               "OR INABILITY TO USE " + APPNAME + " (INCLUDING BUT NOT" + "\n" +
                "LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE" + "\n" +
                "OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE" + "\n" +
-               "OF REL TO OPERATE WITH ANY OTHER PROGRAMS)," + "\n" +
+               "OF " + APPNAME + " TO OPERATE WITH ANY OTHER PROGRAMS)," + "\n" +
                "EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED" + "\n" +
                "OF THE POSSIBILITY OF SUCH DAMAGES.";
     }

@@ -62,8 +62,8 @@ linuxTargetDBMS=linuxDBMS
 macosTargetDBMS=macosDBMS
 windowsTargetDBMS=windowsDBMS
 
-versionfile=../DBrowser/src/main/java/org/reldb/dbrowser/ui/version/Version.java
-relversion=`awk 'c&&!--c;/getVersionNumber/{c=1}' "$versionfile" | awk '{print $2}' | sed 's/.$//' | xargs`
+versionfile=../Shared/src/main/java/org/reldb/rel/shared/Version.java
+relversion=`grep "PRODUCT_VERSION =" "$versionfile" | awk '{print $7}' | sed 's/.$//' | xargs`
 
 echo "Building version $relversion"
 
