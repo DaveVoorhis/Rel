@@ -2,6 +2,8 @@ Last used Exception* number: RS0509
 
 Version 3.017:
 
+  - Enhancement: Added railway diagram generator to product build;
+    made available on reldb.org TutorialD grammar Web site content.
 
 Version 3.016:
 

@@ -27,24 +27,28 @@
 # JDK version 11.0.1 (which must be in $javaversion, i.e., javaversion=11.0.1)
 # would be:
 # 
-# OpenJDKs
-#   linux
-#      jdk-11.0.1
-#         bin 
-#         ...etc...
-#   osx
-#      jdk-11.0.1.jdk
-#         Contents
-#         ...etc...
-#   windows
-#      jdk-11.0.1
-#         bin 
-#         ...etc...
+#   OpenJDKs
+#     linux
+#        jdk-11.0.1
+#           bin
+#           ...etc...
+#     osx
+#        jdk-11.0.1.jdk
+#           Contents
+#           ...etc...
+#     windows
+#        jdk-11.0.1
+#           bin
+#           ...etc...
+#
+# It optionally supports presenting the Rel / TutorialD grammar as a railway diagram
+# using the railway diagram generator from https://bottlecaps.de/rr/ui. The downloadable
+# zip should be unzipped and placed in a directory referenced by $rr.
 
 proddir=~/git/Rel/_Deployment/product
 
-jjtree=~/bin/jjtree
-jjdoc=~/bin/jjdoc
+jjtree=/usr/local/bin/jjtree
+jjdoc=/usr/local/bin/jjdoc
 
 jredir=~/Documents/OpenJDKs
 javaversion=jdk-19
@@ -53,6 +57,8 @@ hostjdk=/Library/Java/JavaVirtualMachines/$javaversion.jdk
 hostjdkbin=$hostjdk/Contents/Home/bin
 jlink=$hostjdkbin/jlink
 javac=$hostjdkbin/javac
+
+rr=~/rr-1.63-java8/rr.war
 
 linuxtarget=linux
 mactarget=macos
@@ -95,6 +101,14 @@ mkdir grammar
 $jjtree -OUTPUT_DIRECTORY="./grammar" ../ServerV0000/src/main/java/org/reldb/rel/v0/languages/tutoriald/definition/TutorialD.jjt
 $jjdoc ./grammar/TutorialD.jj
 mv TutorialD.html $proddir
+$jjdoc -text ./grammar/TutorialD.jj
+if [ -f "$rr" ]; then
+  sed 's/</"/g; s/>/"/g; s/:=/::=/g' < TutorialD.txt | awk '/NON-TERMINALS/{flag=1; next} /DOCUMENT END/{flag=0} flag' > ./grammar/TutorialD.bnf
+  java -jar $rr -out:$proddir/TutorialD_railway.xhtml ./grammar/TutorialD.bnf
+  rm -f TutorialD.txt
+else
+  echo "Railway diagram generator not found. Skipping railway diagram generation."
+fi
 rm -rf grammar
 
 # Scripts
