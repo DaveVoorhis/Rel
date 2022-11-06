@@ -101,8 +101,8 @@ mkdir grammar
 $jjtree -OUTPUT_DIRECTORY="./grammar" ../ServerV0000/src/main/java/org/reldb/rel/v0/languages/tutoriald/definition/TutorialD.jjt
 $jjdoc ./grammar/TutorialD.jj
 mv TutorialD.html $proddir
-$jjdoc -text ./grammar/TutorialD.jj
 if [ -f "$rr" ]; then
+  $jjdoc -text ./grammar/TutorialD.jj
   sed 's/</"/g; s/>/"/g; s/:=/::=/g' < TutorialD.txt | awk '/NON-TERMINALS/{flag=1; next} /DOCUMENT END/{flag=0} flag' > ./grammar/TutorialD.bnf
   java -jar $rr -out:$proddir/TutorialD_railway.xhtml ./grammar/TutorialD.bnf
   rm -f TutorialD.txt
