@@ -1,5 +1,14 @@
 ** TO DO **
 
+- Request: "Over the past seven years I've frequently had to use ctrl+home when
+  simply displaying the contents of a relvar (base or virtual) with no intention
+  to add, delete, or update. I know it takes only a second, but nevertheless,
+  starting at the top is by far the most likely preference for everybody,
+  partly because you immediately see the attribute names and types.
+  Very often I'm flipping between Rel and command line, needing the
+  names and types to help me draft a command or query.
+  So, any chance of having cake as well as eating it? Bottom for Edit, top for Show."
+
 - Add WITH statement.
 
 - Allow KEY {...} to be optional, equivalent to KEY {ALL BUT}.
