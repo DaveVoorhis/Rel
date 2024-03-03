@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Fix commandline colour schema issues on MacOS dark mode.
+
 - Request: https://reldb.org/forum/viewtopic.php?p=3079
 
 - Request: "Over the past seven years I've frequently had to use ctrl+home when
