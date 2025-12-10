@@ -1,5 +1,7 @@
 ** TO DO **
 
+- Provide internal lightmode/darkmode switch.
+
 - Fix commandline colour schema issues on MacOS dark mode.
 
 - Request: https://reldb.org/forum/viewtopic.php?p=3079
