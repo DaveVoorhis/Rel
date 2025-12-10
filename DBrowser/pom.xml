@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.jface</artifactId>
-            <version>3.27.0</version>
+            <version>3.31.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.eclipse.nebula.widgets.nattable/org.eclipse.nebula.widgets.nattable.core -->
         <dependency>
